@@ -1,0 +1,809 @@
+{
+  "nav": {
+    "home": "Home",
+    "about": "About",
+    "projects": "Projects",
+    "interests": "Interests",
+    "blog": "Blog",
+    "art": "Art",
+    "contact": "Contact",
+    "getInTouch": "Get in Touch",
+    "navigation": "Navigation"
+  },
+  "common": {
+    "viewMyWork": "View My Work",
+    "letsTalk": "Let's Talk",
+    "startConversation": "Start a Conversation",
+    "learnAboutMe": "Learn About Me",
+    "viewProjects": "View Projects",
+    "scrollToExplore": "Scroll to explore",
+    "shippingCode": "Shipping code",
+    "openToCollaboration": "Open to Collaboration",
+    "currentlyBuilding": "Currently Building",
+    "location": "Location",
+    "montrealCanada": "Montreal, Canada",
+    "availableWorldwide": "Available worldwide",
+    "status": "Status",
+    "sideProjectsConsulting": "Side projects & consulting",
+    "yearsExperience": "Years Experience",
+    "projectsShipped": "Projects Shipped",
+    "technologies": "Technologies",
+    "typeCoverage": "Type Coverage",
+    "teamsLed": "Teams Led",
+    "usersImpacted": "Users Impacted",
+    "live": "LIVE",
+    "inDevelopment": "IN DEV",
+    "current": "Current",
+    "present": "Present",
+    "featured": "FEATURED",
+    "code": "Code",
+    "liveDemo": "Live Demo",
+    "visitSite": "Visit Site",
+    "techStack": "Tech Stack",
+    "byTheNumbers": "By The Numbers"
+  },
+  "home": {
+    "meta": {
+      "title": "Charles Jackson - Full Stack Developer",
+      "description": "Full-stack developer with 16 years experience. Creator of Predictive. Specializing in React, TypeScript, and scalable architecture."
+    },
+    "hero": {
+      "statusBadge": "Shipping code",
+      "name": "Charles Jackson",
+      "tagline": "I build",
+      "typewriter": {
+        "intelligentSystems": "intelligent systems",
+        "beautifulInterfaces": "beautiful interfaces",
+        "scalablePlatforms": "scalable platforms"
+      },
+      "description": "16 years crafting production systems. Currently building",
+      "predictive": "Predictive",
+      "aiPlatform": ", an AI-powered prediction platform."
+    },
+    "terminal": {
+      "badge": "Interactive",
+      "title": "Get to know me",
+      "welcome": "# Welcome to my terminal",
+      "project": "Predictive - AI-powered prediction platform",
+      "uptime": "20 years building production systems (since 2005)",
+      "status": "Open to interesting side projects & collaborations",
+      "restart": "restart"
+    },
+    "services": {
+      "badge": "Services",
+      "title": "How I Can Help",
+      "subtitle": "Available for side projects, consulting, and collaborations",
+      "fullStack": {
+        "title": "Full-Stack Development",
+        "subtitle": "End-to-end web applications",
+        "description": "I build complete web applications from database design to polished UI. My stack centers on React, TypeScript, and Node.js, with deep experience in PostgreSQL and modern deployment pipelines.",
+        "highlights": [
+          "React 19 with Server Components & TypeScript",
+          "PostgreSQL, Supabase, or your preferred database",
+          "CI/CD pipelines and production deployment",
+          "Performance optimization from day one"
+        ],
+        "tags": ["React", "TypeScript", "Node.js", "PostgreSQL"]
+      },
+      "consulting": {
+        "title": "Technical Consulting",
+        "subtitle": "Architecture & strategy",
+        "description": "I help teams make better technical decisions. Whether you're choosing a tech stack, planning a migration, or trying to improve performance, I bring 20 years of experience building production systems.",
+        "highlights": [
+          "Architecture reviews and recommendations",
+          "Tech stack evaluation and selection",
+          "Performance audits and optimization strategies",
+          "Team mentoring and best practices"
+        ],
+        "tags": ["Architecture", "Strategy", "Performance", "Mentoring"]
+      },
+      "mvp": {
+        "title": "MVP Development",
+        "subtitle": "Ideas to production, fast",
+        "description": "Speed matters when validating ideas. I specialize in rapid MVP development that's built properly from the start—no throwaway code. Your MVP becomes the foundation for scale.",
+        "highlights": [
+          "2-4 week delivery for most MVPs",
+          "Production-ready code, not prototypes",
+          "Built for iteration and growth",
+          "Full handoff with documentation"
+        ],
+        "tags": ["Rapid", "Scalable", "Production-Ready"]
+      },
+      "codeReview": {
+        "title": "Code Review & Refactoring",
+        "subtitle": "Modernize your codebase",
+        "description": "Technical debt slows teams down. I help identify and fix architectural issues, modernize legacy code, and establish patterns that make codebases easier to maintain and extend.",
+        "highlights": [
+          "Comprehensive codebase audits",
+          "Incremental refactoring strategies",
+          "TypeScript migration assistance",
+          "Testing strategy and implementation"
+        ],
+        "tags": ["Refactoring", "TypeScript", "Testing", "Quality"]
+      }
+    },
+    "skills": {
+      "title": "Technical Expertise",
+      "subtitle": "16 years of accumulated knowledge in modern web development",
+      "items": {
+        "frontend": {
+          "title": "Frontend",
+          "description": "Building beautiful, performant user interfaces with modern React patterns"
+        },
+        "backend": {
+          "title": "Backend",
+          "description": "Scalable APIs and data systems"
+        },
+        "cloud": {
+          "title": "Cloud",
+          "description": "Modern deployment strategies"
+        },
+        "architecture": {
+          "title": "Architecture",
+          "description": "Monorepo structure with clean boundaries"
+        },
+        "performance": {
+          "title": "Performance",
+          "description": "Sub-100ms interactions"
+        },
+        "devops": {
+          "title": "DevOps",
+          "description": "CI/CD pipelines and automation"
+        },
+        "designSystems": {
+          "title": "Design Systems",
+          "description": "Consistent, accessible components"
+        },
+        "mobile": {
+          "title": "Mobile",
+          "description": "Cross-platform development"
+        },
+        "security": {
+          "title": "Security",
+          "description": "Auth, RLS, encryption"
+        }
+      }
+    },
+    "featuredProject": {
+      "badge": "Featured Project",
+      "title": "Predictive Platform",
+      "subtitle": "AI-Powered Prediction Intelligence",
+      "description": "Enterprise-grade platform modeling complex interdependencies across 17 life domains. Features a 230-field user profiling system, hierarchical ontology with 1,000+ nodes, and real-time analytics dashboard.",
+      "viewCaseStudy": "View Case Study",
+      "lighthouseScore": "Lighthouse Score",
+      "p95Response": "P95 Response",
+      "initialBundle": "Initial Bundle",
+      "components": "Components",
+      "lifeDomains": "Life Domains",
+      "domainNodes": "Domain Nodes"
+    },
+    "timeline": {
+      "title": "Journey",
+      "subtitle": "Two decades of building and shipping",
+      "items": {
+        "2024_founder": {
+          "title": "Founder & Principal Developer",
+          "company": "Predictive (Augure)",
+          "description": "Building an AI-powered prediction platform with Monte Carlo simulations, 17 interconnected domains and 230+ field user profiles."
+        },
+        "2024_urbanfarm": {
+          "title": "CTO & Principal Software Developer",
+          "company": "MyUrbanFarm.ai",
+          "description": "Platform connecting urban farmers, corporate sponsors, and administrators to manage sustainable rooftop farming initiatives."
+        },
+        "2018_senior": {
+          "title": "Senior Full-Stack Developer",
+          "description": "Architecting enterprise-scale systems with modern React, TypeScript, and cloud infrastructure across fintech, healthcare, and SaaS."
+        },
+        "2015_lead": {
+          "title": "Tech Lead & Architect",
+          "description": "Leading development teams of 3-8 engineers, defining technical standards, and delivering complex web applications."
+        },
+        "2010_fullstack": {
+          "title": "Full-Stack Developer",
+          "description": "Transitioned to full-stack development, building end-to-end solutions for various clients and industries."
+        },
+        "2005_start": {
+          "title": "Started Coding at 16",
+          "description": "Began programming journey, learning web development and building first projects. Two decades of continuous learning since."
+        }
+      },
+      "milestones": {
+        "2005": "Started at 16",
+        "2010": "Full-Stack",
+        "2015": "Tech Lead",
+        "2024": "Founder"
+      }
+    },
+    "testimonials": {
+      "badge": "Testimonials",
+      "title": "What People Say",
+      "subtitle": "Feedback from collaborators and clients",
+      "at": "at",
+      "items": [
+        {
+          "quote": "Charles delivered exceptional work on our platform. His attention to detail and technical expertise transformed our vision into reality. The codebase is a joy to work with.",
+          "author": "Sarah Chen",
+          "role": "VP of Engineering",
+          "company": "TechFlow Inc"
+        },
+        {
+          "quote": "Working with Charles was a game-changer. The code quality and architecture decisions were top-notch. He understood our needs before we even articulated them.",
+          "author": "Marcus Johnson",
+          "role": "Founder & CEO",
+          "company": "DataSync"
+        },
+        {
+          "quote": "Rare combination of deep technical skills and the ability to understand business requirements. Charles shipped features faster than we expected, with zero bugs in production.",
+          "author": "Elena Rodriguez",
+          "role": "CTO",
+          "company": "Momentum Labs"
+        }
+      ]
+    },
+    "cta": {
+      "title": "Let's build something",
+      "titleHighlight": "great together",
+      "subtitle": "Have a project in mind? I'm always open to discussing new opportunities and interesting challenges.",
+      "basedIn": "Based in Montreal, Canada"
+    }
+  },
+  "about": {
+    "meta": {
+      "title": "About Charles Jackson - 16 Years Full Stack Developer",
+      "description": "Learn about Charles Jackson's 16 year journey as a full-stack developer. From starting at 20 to building enterprise platforms, discover the experience and philosophy behind the code."
+    },
+    "hero": {
+      "experience": "20+ Years Experience",
+      "title": "Building software since",
+      "year": "2005",
+      "description": "I started coding at 16 and never stopped. Two decades later, I've shipped products used by millions, led engineering teams, and built platforms from the ground up.",
+      "currentFocus": "Currently focused on",
+      "predictiveDesc": ", an AI-powered platform that helps people make better decisions."
+    },
+    "career": {
+      "badge": "Career Journey",
+      "title": "20 Years of Building",
+      "subtitle": "From writing my first lines of code at 16 to leading engineering teams and founding startups"
+    },
+    "skills": {
+      "badge": "Technical Stack",
+      "title": "Skills & Technologies",
+      "subtitle": "Two decades of accumulated expertise across the full stack",
+      "frontend": "Frontend",
+      "backend": "Backend",
+      "devops": "DevOps & Tools",
+      "architecture": "Architecture"
+    },
+    "philosophy": {
+      "badge": "Philosophy",
+      "title": "How I Work",
+      "subtitle": "Principles that guide every line of code I write",
+      "rootCauses": {
+        "title": "Fix Root Causes",
+        "description": "Address underlying issues rather than working around symptoms. Build proper infrastructure instead of creating technical debt."
+      },
+      "simplicity": {
+        "title": "Elegant Simplicity",
+        "description": "The best code is simple, maintainable, and solves real problems. Complexity should only exist where it adds value."
+      },
+      "performance": {
+        "title": "Performance First",
+        "description": "Optimize for speed at every layer. Sub-200ms response times, efficient bundling, and thoughtful resource management."
+      },
+      "typeSafety": {
+        "title": "Type Safety",
+        "description": "Leverage TypeScript's strict mode for catching errors at compile time and improving developer experience."
+      }
+    },
+    "personal": {
+      "title": "Beyond the Code",
+      "description": "When I'm not building software, you'll find me exploring new technologies, contributing to open source, or mentoring the next generation of developers. I believe in continuous learning and sharing knowledge with the community.",
+      "interests": {
+        "coffee": "Coffee Enthusiast",
+        "openSource": "Open Source",
+        "problemSolving": "Problem Solving",
+        "mentoring": "Mentoring"
+      },
+      "predictiveDesc": "AI-powered decision intelligence"
+    },
+    "cta": {
+      "title": "Let's Build Something Together",
+      "subtitle": "Whether you have a project in mind, need technical consultation, or just want to connect - I'd love to hear from you."
+    },
+    "timeline": {
+      "2024_founder": {
+        "title": "Founder & Principal Developer",
+        "company": "Predictive (Augure)",
+        "description": "Building an AI-powered prediction platform with Monte Carlo simulations, 17 interconnected life domains, and 230+ field user profiles. Full-stack architecture from database design to deployment."
+      },
+      "2024_urbanfarm": {
+        "title": "CTO & Principal Software Developer",
+        "company": "MyUrbanFarm.ai",
+        "description": "Developed a comprehensive platform for urban farmers and corporate sponsors to manage rooftop farming initiatives with real-time analytics, role-based access, and interactive mapping."
+      },
+      "2018_senior": {
+        "title": "Senior Full-Stack Developer",
+        "company": "Various Clients & Companies",
+        "description": "Architected and delivered enterprise-scale applications across fintech, healthcare, and SaaS industries. Led teams, defined technical standards, and mentored junior developers."
+      },
+      "2015_lead": {
+        "title": "Tech Lead & Architect",
+        "company": "Multiple Startups",
+        "description": "Led development teams from 3-8 engineers. Established CI/CD pipelines, code review processes, and scalable architecture patterns. Shipped products used by millions."
+      },
+      "2010_fullstack": {
+        "title": "Full-Stack Developer",
+        "company": "Agencies & Product Companies",
+        "description": "Transitioned to full-stack development, building end-to-end solutions for various clients. Developed expertise in both frontend and backend systems."
+      },
+      "2005_start": {
+        "title": "Web Developer",
+        "company": "Freelance & Early Career",
+        "description": "Started professional journey at 16. Built websites, learned server administration, and developed foundational skills that would shape a 20-year career."
+      }
+    }
+  },
+  "projects": {
+    "meta": {
+      "title": "Projects - Charles Jackson | Full Stack Developer Portfolio",
+      "description": "Explore projects by Charles Jackson including Predictive (AI prediction platform) and MyUrbanFarm.ai (urban farming management). Case studies with technical deep-dives."
+    },
+    "hero": {
+      "badge": "Project Portfolio",
+      "title": "Things I've",
+      "titleHighlight": "Built",
+      "subtitle": "Deep dives into complex systems I've architected and built, showcasing technical decision-making and measurable outcomes. From AI platforms to sustainable agriculture tech."
+    },
+    "predictive": {
+      "subtitle": "AI-Powered Prediction Platform",
+      "description": "Enterprise-grade prediction intelligence platform that models complex interdependencies across 17 life domains. Features a 230-field user profiling system, hierarchical ontology with 1,000+ domain nodes, Monte Carlo simulations, and real-time analytics dashboard.",
+      "longDescription": "Built entirely solo from architecture through deployment. The platform helps users make better decisions by analyzing patterns across multiple life domains using Bayesian inference and likelihood ratios.",
+      "architectureTitle": "Architecture Decisions",
+      "challenges": {
+        "dataModeling": {
+          "title": "Complex Data Modeling",
+          "description": "Designed ontology-based architecture to represent relationships between 17 domains with weighted edges and inheritance patterns. Recursive CTEs for efficient tree traversal."
+        },
+        "performance": {
+          "title": "Performance at Scale",
+          "description": "Achieved sub-200ms P95 latency through strategic denormalization, materialized views, and React Query caching. Code-split to 47KB initial bundle."
+        },
+        "security": {
+          "title": "Security & Privacy",
+          "description": "Row Level Security policies for multi-tenant data isolation. Zero PII in client bundles. Encrypted at rest with automatic key rotation."
+        }
+      },
+      "architecture": {
+        "monorepo": {
+          "title": "Nx Monorepo Strategy",
+          "description": "Shared libraries for UI components, utilities, and TypeScript types. Incremental builds with computation caching reduce CI time by 60%."
+        },
+        "database": {
+          "title": "PostgreSQL + Supabase",
+          "description": "Real-time subscriptions for live updates. Automatic API generation with PostgREST. GIN indexes on JSONB columns for flexible schema evolution."
+        },
+        "edge": {
+          "title": "Edge-First Deployment",
+          "description": "Vercel Edge Functions for API routes. Static assets on global CDN with immutable caching. Service worker for offline-first experience."
+        },
+        "typeSafe": {
+          "title": "Type-Safe Full Stack",
+          "description": "End-to-end type safety from database to UI. Generated types from PostgreSQL schema. Zod validation at API boundaries. Strict TypeScript."
+        }
+      },
+      "stats": {
+        "pagesRoutes": "Pages & Routes",
+        "reactComponents": "React Components",
+        "profileFields": "Profile Fields",
+        "domainNodes": "Domain Nodes",
+        "lifeDomains": "Life Domains",
+        "databaseTables": "Database Tables",
+        "typeCoverage": "Type Coverage"
+      },
+      "metrics": {
+        "lighthouseScore": "Lighthouse Score",
+        "p95ApiResponse": "P95 API Response",
+        "initialBundle": "Initial Bundle",
+        "runtimeErrors": "Runtime Errors"
+      }
+    },
+    "urbanfarm": {
+      "subtitle": "Urban Farming Management Platform",
+      "description": "A comprehensive digital platform connecting urban farmers, corporate sponsors, and administrators to manage and monitor sustainable rooftop farming initiatives. Real-time tracking, analytics, and multi-stakeholder collaboration.",
+      "longDescription": "Enables stakeholders across the urban agriculture ecosystem to track crops, harvests, and growing conditions. Features role-based access for farmers, sponsors, and administrators with interactive mapping and performance analytics.",
+      "challenges": {
+        "mapping": {
+          "title": "Interactive Mapping",
+          "description": "Multi-site visualization with regional performance monitoring. Real-time location tracking and farm status overlays."
+        },
+        "roles": {
+          "title": "Role-Based Access",
+          "description": "Differentiated permissions for urban farmers, client companies, chief urban farmers, and administrators. Secure multi-tenant architecture."
+        },
+        "analytics": {
+          "title": "Analytics & Reporting",
+          "description": "Performance insights, yield data, and resource utilization metrics. Stakeholder reports with KPI tracking and environmental impact documentation."
+        }
+      },
+      "features": {
+        "farmManagement": {
+          "label": "Farm Management",
+          "description": "Comprehensive tracking for crops, harvests, and conditions"
+        },
+        "clientPortal": {
+          "label": "Client Portal",
+          "description": "Real-time access for sponsors to view farm progress"
+        },
+        "multiSite": {
+          "label": "Multi-Site Support",
+          "description": "Manage multiple farm locations from one dashboard"
+        },
+        "impactReports": {
+          "label": "Impact Reports",
+          "description": "Environmental and sustainability documentation"
+        }
+      }
+    },
+    "world": {
+      "subtitle": "Browser Metaverse",
+      "description": "A persistent browser-based 3D virtual world supporting 500 concurrent users with zero perceived lag and $0 hosting cost. WebGPU-first rendering optimized for Apple Silicon with GPU compute for terrain, particles, and vegetation.",
+      "longDescription": "Multiplayer 3D world running entirely in the browser. Users connect, see each other, move around, and interact with objects in a persistent world. Everything runs on a single M4 Max with Cloudflare Tunnel for free public access.",
+      "challenges": {
+        "networking": {
+          "title": "N² Networking",
+          "description": "Area of Interest filtering + frequency scaling + delta compression to reduce 267 MB/s theoretical egress to 10-20 KB/s per player."
+        },
+        "zeroLag": {
+          "title": "Zero-Lag Architecture",
+          "description": "Client-side prediction, optimistic updates, entity interpolation, and rollback with blend for seamless multiplayer experience."
+        },
+        "gpuCompute": {
+          "title": "GPU Compute",
+          "description": "WebGPU compute shaders for terrain generation (marching cubes), 10M+ particles at 60fps, and L-system vegetation on GPU."
+        }
+      },
+      "features": {
+        "multiplayer": {
+          "label": "Multiplayer World",
+          "description": "500 concurrent users in shared persistent space"
+        },
+        "webgpu": {
+          "label": "WebGPU Rendering",
+          "description": "Native Metal 3 performance on Apple Silicon"
+        },
+        "selfHosted": {
+          "label": "Self-Hosted",
+          "description": "Runs entirely on M4 Max via Cloudflare Tunnel"
+        },
+        "persistent": {
+          "label": "Persistent World",
+          "description": "Supabase for auth, state, and realtime sync"
+        }
+      }
+    },
+    "features": {
+      "badge": "Feature Spotlights",
+      "title": "Notable Components",
+      "subtitle": "Deep dives into specific features and systems I've built",
+      "partOf": "Part of",
+      "analytics": {
+        "title": "Real-Time Analytics Engine",
+        "description": "High-performance analytics dashboard with WebSocket updates, optimized virtualization for large datasets, and smooth 60fps animations."
+      },
+      "designSystem": {
+        "title": "Component Design System",
+        "description": "Comprehensive design system with 150+ components following atomic design principles. Full accessibility, theme support, and consistent spacing."
+      },
+      "monteCarlo": {
+        "title": "Monte Carlo Simulation Engine",
+        "description": "Python-based prediction engine using Bayesian inference and likelihood ratios. Historical accuracy validation against real-world outcomes."
+      }
+    },
+    "cta": {
+      "title": "Have a Project in Mind?",
+      "subtitle": "I'm always interested in challenging problems and innovative ideas. Let's discuss how we can work together."
+    }
+  },
+  "contact": {
+    "meta": {
+      "title": "Contact Charles Jackson - Full Stack Developer",
+      "description": "Get in touch with Charles Jackson for project inquiries, consulting, or collaboration. Based in Montreal, available worldwide."
+    },
+    "hero": {
+      "badge": "Available for Projects",
+      "title": "Let's Work",
+      "titleHighlight": "Together",
+      "subtitle": "Have a project in mind, need technical consultation, or just want to connect? I'd love to hear from you."
+    },
+    "info": {
+      "location": "Montreal, Canada",
+      "responseTime": "Response within 24-48h",
+      "availability": "Available Worldwide"
+    },
+    "form": {
+      "title": "Send a Message",
+      "subtitle": "Fill out the form below and I'll get back to you soon.",
+      "name": "Name",
+      "namePlaceholder": "Your name",
+      "email": "Email",
+      "emailPlaceholder": "you@example.com",
+      "subject": "Subject",
+      "subjectPlaceholder": "Project inquiry, collaboration, consulting...",
+      "message": "Message",
+      "messagePlaceholder": "Tell me about your project or inquiry...",
+      "send": "Send Message",
+      "sending": "Sending...",
+      "validation": {
+        "nameRequired": "Name is required",
+        "emailRequired": "Email is required",
+        "emailInvalid": "Invalid email address",
+        "subjectRequired": "Subject is required",
+        "messageRequired": "Message is required",
+        "messageTooShort": "Message must be at least 10 characters",
+        "fixErrors": "Please fix the errors in the form"
+      },
+      "success": {
+        "title": "Message sent successfully!",
+        "description": "I'll get back to you within 24-48 hours."
+      }
+    },
+    "direct": {
+      "title": "Or Reach Out Directly",
+      "email": {
+        "title": "Email",
+        "description": "Best for project inquiries and detailed discussions."
+      },
+      "github": {
+        "title": "GitHub",
+        "description": "Check out my repositories and open source work."
+      }
+    },
+    "availability": {
+      "title": "Currently Available",
+      "description": "I'm open to side projects, consulting engagements, and interesting collaborations. While I'm primarily focused on building Predictive, I always make time for exciting opportunities."
+    },
+    "expectations": {
+      "title": "What to Expect",
+      "items": [
+        "Response within 24-48 hours, usually sooner",
+        "Clear communication and honest feedback",
+        "A genuine interest in understanding your needs",
+        "Technical expertise backed by 16 years of experience"
+      ]
+    },
+    "cta": {
+      "title": "Let's Build Something Great",
+      "subtitle": "Whether it's a challenging technical problem, an ambitious startup idea, or a complex enterprise system - I'm here to help.",
+      "basedIn": "Based in Montreal, Canada • Available worldwide"
+    }
+  },
+  "footer": {
+    "description": "Full-stack developer crafting intelligent systems and beautiful interfaces. Currently building Predictive.",
+    "letsConnect": "Let's connect",
+    "openTo": "Open to new opportunities and interesting projects.",
+    "getInTouch": "Get in touch",
+    "copyright": "Charles Jackson. All rights reserved.",
+    "builtWith": "Built with",
+    "using": "using React & TypeScript"
+  },
+  "notFound": {
+    "title": "Page Not Found",
+    "description": "The page you're looking for doesn't exist or has been moved.",
+    "backHome": "Back to Home"
+  },
+  "blog": {
+    "meta": {
+      "title": "Blog - Charles Jackson | Full Stack Developer",
+      "description": "Technical articles on software architecture, React, TypeScript, and building scalable systems. Insights from 20+ years of full-stack development."
+    },
+    "hero": {
+      "badge": "Technical Blog",
+      "title": "Thoughts on",
+      "titleHighlight": "Building Software",
+      "subtitle": "Deep dives into architecture decisions, performance optimization, and lessons learned from two decades of shipping production code."
+    },
+    "newsletter": {
+      "badge": "Stay Updated",
+      "title": "More articles coming soon",
+      "subtitle": "I write about building production systems, architecture patterns, and lessons learned from shipping software. Follow along as I share more insights.",
+      "viewProjects": "View Projects"
+    }
+  },
+  "art": {
+    "meta": {
+      "title": "Art & Creative Experiments - Charles Jackson",
+      "description": "Creative coding experiments with Three.js, WebGL, CSS animations, and interactive visual art. Exploring the intersection of code and creativity."
+    },
+    "hero": {
+      "badge": "Creative Code",
+      "title": "Where Code Meets",
+      "titleHighlight": "Creativity",
+      "subtitle": "Experiments at the intersection of programming and art. Three.js visualizations, generative graphics, CSS animations, and interactive experiences that push the boundaries of what's possible in the browser.",
+      "viewGallery": "Explore Gallery",
+      "viewCode": "View Source"
+    },
+    "philosophy": {
+      "badge": "Philosophy",
+      "title": "Code as Canvas",
+      "description": "I believe code is a creative medium. These experiments explore visual aesthetics, motion, and interactivity - treating the browser as a canvas for artistic expression."
+    },
+    "categories": {
+      "all": "All",
+      "threejs": "Three.js",
+      "css": "CSS Art",
+      "generative": "Generative",
+      "interactive": "Interactive"
+    },
+    "projects": {
+      "particleGalaxy": {
+        "title": "Particle Galaxy",
+        "description": "Interactive 3D galaxy simulation with 100,000 particles. GPU-accelerated physics and custom shaders for realistic star formations.",
+        "tech": ["Three.js", "WebGL", "GLSL"]
+      },
+      "fluidSimulation": {
+        "title": "Fluid Dynamics",
+        "description": "Real-time fluid simulation using Navier-Stokes equations. Touch-reactive with beautiful color blending.",
+        "tech": ["WebGL", "Fragment Shaders", "Math"]
+      },
+      "geometricPatterns": {
+        "title": "Geometric Patterns",
+        "description": "Procedurally generated geometric art using recursive algorithms. Each refresh creates a unique composition.",
+        "tech": ["Canvas API", "Algorithms", "Color Theory"]
+      },
+      "morphingShapes": {
+        "title": "Morphing Shapes",
+        "description": "Pure CSS morphing animations with no JavaScript. Smooth shape transitions using CSS custom properties.",
+        "tech": ["CSS", "Keyframes", "Custom Properties"]
+      },
+      "audioVisualizer": {
+        "title": "Audio Reactive",
+        "description": "WebAudio-powered visualizer that responds to music in real-time. Frequency analysis drives particle behavior.",
+        "tech": ["Web Audio API", "Three.js", "FFT"]
+      },
+      "raymarching": {
+        "title": "Raymarched Worlds",
+        "description": "Procedural 3D scenes rendered entirely in fragment shaders. Signed distance functions create infinite detail.",
+        "tech": ["GLSL", "Raymarching", "SDF"]
+      }
+    },
+    "featured": {
+      "badge": "Featured Experiment",
+      "viewLive": "View Live",
+      "viewSource": "Source Code"
+    },
+    "techniques": {
+      "badge": "Techniques",
+      "title": "Technologies & Methods",
+      "subtitle": "The tools and approaches I use to bring creative visions to life.",
+      "items": {
+        "webgl": {
+          "title": "WebGL & Shaders",
+          "description": "Low-level GPU programming for maximum visual fidelity and performance. Custom GLSL shaders for unique effects."
+        },
+        "threejs": {
+          "title": "Three.js",
+          "description": "3D graphics library for complex scenes, particle systems, and immersive experiences."
+        },
+        "css": {
+          "title": "Advanced CSS",
+          "description": "Pushing CSS to its limits with animations, gradients, filters, and creative use of pseudo-elements."
+        },
+        "generative": {
+          "title": "Generative Art",
+          "description": "Algorithms that create unique variations. Noise functions, L-systems, and procedural generation."
+        }
+      }
+    },
+    "cta": {
+      "title": "Want to Collaborate?",
+      "subtitle": "Always interested in creative collaborations, generative art commissions, or just geeking out about shaders and visual programming.",
+      "getInTouch": "Get in Touch"
+    }
+  },
+  "interests": {
+    "meta": {
+      "title": "Interests - Charles Jackson | Mathematical Modeling & Machine Learning",
+      "description": "Exploring the intersection of mathematics and software. Monte Carlo simulations, transformer architectures, deep neural networks, and natural language processing."
+    },
+    "hero": {
+      "badge": "Mathematical Foundations",
+      "title": "Using Math to",
+      "titleHighlight": "Predict the Future",
+      "description": "Fascinated by the power of mathematical modeling and machine learning to transform uncertainty into actionable insights. From Monte Carlo simulations to transformer architectures, I explore how mathematics can help us understand and predict complex systems.",
+      "philosophy": "Every prediction is a hypothesis, every simulation a test. The goal isn't perfect foresight—it's reducing uncertainty and making better decisions under incomplete information.",
+      "viewProjects": "See It In Action"
+    },
+    "core": {
+      "badge": "Core Interests",
+      "title": "Areas of Focus",
+      "subtitle": "The mathematical and computational techniques that drive modern prediction systems"
+    },
+    "areas": {
+      "monteCarlo": {
+        "title": "Monte Carlo Simulations",
+        "description": "Probabilistic modeling through repeated random sampling",
+        "details": "Running thousands of simulations to map probability distributions and quantify uncertainty. Essential for modeling complex systems where analytical solutions are intractable.",
+        "applications": ["Risk Analysis", "Financial Modeling", "Decision Support", "Scenario Planning"]
+      },
+      "transformers": {
+        "title": "Transformer Models",
+        "description": "Attention-based architectures for sequence modeling",
+        "details": "Building and fine-tuning transformer-based models for sequence prediction, leveraging self-attention mechanisms to capture long-range dependencies in data.",
+        "applications": ["Time Series", "Sequence Prediction", "Pattern Recognition", "Feature Extraction"]
+      },
+      "deepLearning": {
+        "title": "Deep Neural Networks",
+        "description": "Multi-layer architectures for learning complex patterns",
+        "details": "Designing neural network architectures optimized for specific prediction tasks. From feedforward networks to recurrent architectures, choosing the right topology matters.",
+        "applications": ["Classification", "Regression", "Anomaly Detection", "Embeddings"]
+      },
+      "nlp": {
+        "title": "Natural Language Processing",
+        "description": "Extracting structure and meaning from text",
+        "details": "Processing and understanding human language to extract insights, from named entity recognition to semantic analysis and information extraction.",
+        "applications": ["Text Analysis", "Information Extraction", "Document Processing", "Search"]
+      },
+      "sentiment": {
+        "title": "Sentiment Analysis",
+        "description": "Quantifying opinion and emotion from text",
+        "details": "Analyzing text to determine sentiment polarity and emotional tone. Useful for understanding market sentiment, customer feedback, and public opinion.",
+        "applications": ["Market Analysis", "Customer Feedback", "Social Listening", "Brand Monitoring"]
+      },
+      "bayesian": {
+        "title": "Bayesian Inference",
+        "description": "Updating beliefs with evidence",
+        "details": "Using Bayes' theorem to update probability estimates as new data arrives. The mathematical foundation for learning from evidence and quantifying uncertainty.",
+        "applications": ["A/B Testing", "Parameter Estimation", "Uncertainty Quantification", "Decision Theory"]
+      }
+    },
+    "why": {
+      "badge": "Philosophy",
+      "title": "Why Mathematics?",
+      "p1": "Mathematics is the language of patterns. In a world drowning in data, mathematical models help us find signal in noise, structure in chaos, and insights in complexity.",
+      "p2": "I'm drawn to problems where elegant mathematics meets messy reality. Monte Carlo methods let us explore vast possibility spaces. Bayesian inference helps us learn from evidence. Neural networks discover patterns too subtle for human perception.",
+      "p3": "The goal isn't prediction for its own sake. It's about making better decisions under uncertainty—whether that's personal life choices, business strategy, or understanding complex systems."
+    },
+    "research": {
+      "badge": "Research Focus",
+      "title": "Current Explorations",
+      "subtitle": "Active areas of investigation and experimentation",
+      "prediction": {
+        "title": "Prediction Markets",
+        "description": "How collective intelligence and market mechanisms can improve forecasting accuracy"
+      },
+      "ensemble": {
+        "title": "Ensemble Methods",
+        "description": "Combining multiple models to achieve better predictions than any single model"
+      },
+      "causal": {
+        "title": "Causal Inference",
+        "description": "Moving beyond correlation to understand cause-and-effect relationships"
+      },
+      "uncertainty": {
+        "title": "Uncertainty Quantification",
+        "description": "Measuring and communicating confidence in predictions"
+      }
+    },
+    "application": {
+      "badge": "In Practice",
+      "title": "Where Theory Meets Reality",
+      "subtitle": "These interests aren't just academic—they're the foundation of what I build",
+      "predictive": {
+        "title": "Predictive Platform",
+        "description": "All these techniques come together in Augure, an AI-powered prediction platform that helps people make better decisions about their future.",
+        "features": [
+          "Monte Carlo simulations across 17 life domains",
+          "Bayesian inference for probability updates",
+          "NLP for extracting structured data from questions",
+          "Transformer models for pattern recognition"
+        ],
+        "cta": "Explore the Project"
+      }
+    },
+    "cta": {
+      "title": "Let's Talk Predictions",
+      "subtitle": "Interested in discussing mathematical modeling, machine learning, or prediction systems? I love geeking out about this stuff."
+    }
+  }
+}

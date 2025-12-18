@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=1200, height=630">
+  <title>OG Image - Charles Jackson</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      width: 1200px;
+      height: 630px;
+      background: #09090b;
+      color: #fafafa;
+      font-family: 'Geist', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* Section boundary grid lines */
+    .grid-lines {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+    }
+
+    .grid-lines svg {
+      width: 100%;
+      height: 100%;
+    }
+
+    /* Gradient background effects */
+    .gradient-wash {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 60%;
+      background: linear-gradient(180deg, rgba(255,255,255,0.03) 0%, rgba(255,255,255,0.015) 40%, transparent 100%);
+    }
+
+    .glow-top-left {
+      position: absolute;
+      top: -100px;
+      left: -100px;
+      width: 500px;
+      height: 500px;
+      background: radial-gradient(circle, rgba(255,255,255,0.06) 0%, transparent 60%);
+      border-radius: 50%;
+    }
+
+    .glow-bottom-right {
+      position: absolute;
+      bottom: -150px;
+      right: -100px;
+      width: 600px;
+      height: 600px;
+      background: radial-gradient(circle, rgba(255,255,255,0.04) 0%, transparent 60%);
+      border-radius: 50%;
+    }
+
+    /* Content */
+    .content {
+      position: relative;
+      z-index: 10;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      height: 100%;
+      padding: 80px;
+    }
+
+    .status {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 16px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 100px;
+      font-size: 14px;
+      font-family: 'Geist Mono', monospace;
+      color: rgba(255,255,255,0.6);
+      margin-bottom: 32px;
+      width: fit-content;
+    }
+
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      background: #22c55e;
+      border-radius: 50%;
+    }
+
+    .name {
+      font-size: 96px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      background: linear-gradient(to right, #fafafa, rgba(250,250,250,0.9), rgba(250,250,250,0.7));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 16px;
+    }
+
+    .title {
+      font-size: 32px;
+      color: rgba(255,255,255,0.5);
+      font-weight: 400;
+      margin-bottom: 48px;
+    }
+
+    .tech-badges {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .badge {
+      padding: 10px 20px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 100px;
+      font-size: 16px;
+      font-family: 'Geist Mono', monospace;
+      color: rgba(255,255,255,0.6);
+    }
+
+    /* Domain in corner */
+    .domain {
+      position: absolute;
+      bottom: 40px;
+      right: 80px;
+      font-family: 'Geist Mono', monospace;
+      font-size: 18px;
+      color: rgba(255,255,255,0.4);
+    }
+  </style>
+</head>
+<body>
+  <!-- Background effects -->
+  <div class="gradient-wash"></div>
+  <div class="glow-top-left"></div>
+  <div class="glow-bottom-right"></div>
+
+  <!-- Grid lines with + markers -->
+  <div class="grid-lines">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" preserveAspectRatio="none">
+      <!-- Vertical lines at container edges -->
+      <line x1="80" y1="0" x2="80" y2="630" stroke="rgba(255,255,255,0.04)" stroke-width="1"/>
+      <line x1="1120" y1="0" x2="1120" y2="630" stroke="rgba(255,255,255,0.04)" stroke-width="1"/>
+
+      <!-- Horizontal lines -->
+      <line x1="0" y1="80" x2="1200" y2="80" stroke="rgba(255,255,255,0.04)" stroke-width="1"/>
+      <line x1="0" y1="550" x2="1200" y2="550" stroke="rgba(255,255,255,0.04)" stroke-width="1"/>
+
+      <!-- + markers at corners -->
+      <!-- Top-left -->
+      <line x1="80" y1="73" x2="80" y2="87" stroke="rgba(255,255,255,0.15)" stroke-width="1.5" stroke-linecap="round"/>
+      <line x1="73" y1="80" x2="87" y2="80" stroke="rgba(255,255,255,0.15)" stroke-width="1.5" stroke-linecap="round"/>
+
+      <!-- Top-right -->
+      <line x1="1120" y1="73" x2="1120" y2="87" stroke="rgba(255,255,255,0.15)" stroke-width="1.5" stroke-linecap="round"/>
+      <line x1="1113" y1="80" x2="1127" y2="80" stroke="rgba(255,255,255,0.15)" stroke-width="1.5" stroke-linecap="round"/>
+
+      <!-- Bottom-left -->
+      <line x1="80" y1="543" x2="80" y2="557" stroke="rgba(255,255,255,0.15)" stroke-width="1.5" stroke-linecap="round"/>
+      <line x1="73" y1="550" x2="87" y2="550" stroke="rgba(255,255,255,0.15)" stroke-width="1.5" stroke-linecap="round"/>
+
+      <!-- Bottom-right -->
+      <line x1="1120" y1="543" x2="1120" y2="557" stroke="rgba(255,255,255,0.15)" stroke-width="1.5" stroke-linecap="round"/>
+      <line x1="1113" y1="550" x2="1127" y2="550" stroke="rgba(255,255,255,0.15)" stroke-width="1.5" stroke-linecap="round"/>
+    </svg>
+  </div>
+
+  <!-- Main content -->
+  <div class="content">
+    <div class="status">
+      <div class="status-dot"></div>
+      Shipping code
+    </div>
+
+    <h1 class="name">Charles Jackson</h1>
+    <p class="title">Full Stack Developer · 16 Years Experience</p>
+
+    <div class="tech-badges">
+      <span class="badge">React</span>
+      <span class="badge">TypeScript</span>
+      <span class="badge">Python</span>
+      <span class="badge">Node.js</span>
+      <span class="badge">Supabase</span>
+    </div>
+  </div>
+
+  <div class="domain">charlesjackson.dev</div>
+</body>
+</html>

@@ -1,0 +1,51 @@
+{
+  "name": "charles-web",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "apps/charles/web/src",
+  "projectType": "application",
+  "targets": {
+    "dev": {
+      "executor": "@nx/vite:dev-server",
+      "options": {
+        "buildTarget": "charles-web:build",
+        "port": 3003,
+        "configFile": "apps/charles/web/vite.config.ts"
+      },
+      "configurations": {
+        "production": {
+          "buildTarget": "charles-web:build:production",
+          "hmr": false
+        }
+      }
+    },
+    "build": {
+      "executor": "@nx/vite:build",
+      "outputs": ["{projectRoot}/dist"],
+      "dependsOn": ["^build"],
+      "options": {
+        "outputPath": "apps/charles/web/dist",
+        "configFile": "apps/charles/web/vite.config.ts"
+      },
+      "configurations": {
+        "production": {
+          "mode": "production"
+        }
+      }
+    },
+    "preview": {
+      "executor": "@nx/vite:preview-server",
+      "options": {
+        "buildTarget": "charles-web:build",
+        "port": 4174
+      }
+    },
+    "lint": {
+      "executor": "@nx/eslint:lint",
+      "options": {
+        "lintFilePatterns": ["apps/charles/web/src/**/*.{ts,tsx,js,jsx}"]
+      }
+    }
+  },
+  "tags": ["type:app", "scope:charles", "platform:web"]
+}
+

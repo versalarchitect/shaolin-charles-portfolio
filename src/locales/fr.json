@@ -1,0 +1,809 @@
+{
+  "nav": {
+    "home": "Accueil",
+    "about": "À propos",
+    "projects": "Projets",
+    "interests": "Intérêts",
+    "blog": "Blog",
+    "art": "Art",
+    "contact": "Contact",
+    "getInTouch": "Me contacter",
+    "navigation": "Navigation"
+  },
+  "common": {
+    "viewMyWork": "Voir mes réalisations",
+    "letsTalk": "Discutons",
+    "startConversation": "Démarrer une conversation",
+    "learnAboutMe": "En savoir plus",
+    "viewProjects": "Voir les projets",
+    "scrollToExplore": "Défiler pour explorer",
+    "shippingCode": "En production",
+    "openToCollaboration": "Ouvert aux collaborations",
+    "currentlyBuilding": "Projet actuel",
+    "location": "Localisation",
+    "montrealCanada": "Montréal, Canada",
+    "availableWorldwide": "Disponible mondialement",
+    "status": "Statut",
+    "sideProjectsConsulting": "Projets & consultation",
+    "yearsExperience": "Années d'expérience",
+    "projectsShipped": "Projets livrés",
+    "technologies": "Technologies",
+    "typeCoverage": "Couverture TypeScript",
+    "teamsLed": "Équipes dirigées",
+    "usersImpacted": "Utilisateurs touchés",
+    "live": "EN LIGNE",
+    "inDevelopment": "EN DEV",
+    "current": "Actuel",
+    "present": "Présent",
+    "featured": "À LA UNE",
+    "code": "Code",
+    "liveDemo": "Démo en ligne",
+    "visitSite": "Visiter le site",
+    "techStack": "Stack technique",
+    "byTheNumbers": "En chiffres"
+  },
+  "home": {
+    "meta": {
+      "title": "Charles Jackson - Développeur Full Stack",
+      "description": "Développeur full-stack avec 16 ans d'expérience. Créateur de Predictive. Spécialisé en React, TypeScript et architecture évolutive."
+    },
+    "hero": {
+      "statusBadge": "En production",
+      "name": "Charles Jackson",
+      "tagline": "Je construis",
+      "typewriter": {
+        "intelligentSystems": "des systèmes intelligents",
+        "beautifulInterfaces": "de belles interfaces",
+        "scalablePlatforms": "des plateformes évolutives"
+      },
+      "description": "16 ans à créer des systèmes en production. Actuellement en train de développer",
+      "predictive": "Predictive",
+      "aiPlatform": ", une plateforme de prédiction propulsée par l'IA."
+    },
+    "terminal": {
+      "badge": "Interactif",
+      "title": "Faites ma connaissance",
+      "welcome": "# Bienvenue dans mon terminal",
+      "project": "Predictive - Plateforme de prédiction propulsée par l'IA",
+      "uptime": "20 ans de systèmes en production (depuis 2005)",
+      "status": "Ouvert aux projets et collaborations intéressants",
+      "restart": "redémarrer"
+    },
+    "services": {
+      "badge": "Services",
+      "title": "Comment puis-je vous aider",
+      "subtitle": "Disponible pour des projets, de la consultation et des collaborations",
+      "fullStack": {
+        "title": "Développement Full-Stack",
+        "subtitle": "Applications web complètes",
+        "description": "Je construis des applications web complètes, de la conception de la base de données à l'interface utilisateur. Mon stack est centré sur React, TypeScript et Node.js, avec une expertise approfondie en PostgreSQL et pipelines de déploiement modernes.",
+        "highlights": [
+          "React 19 avec Server Components & TypeScript",
+          "PostgreSQL, Supabase ou votre base de données préférée",
+          "Pipelines CI/CD et déploiement en production",
+          "Optimisation des performances dès le départ"
+        ],
+        "tags": ["React", "TypeScript", "Node.js", "PostgreSQL"]
+      },
+      "consulting": {
+        "title": "Consultation technique",
+        "subtitle": "Architecture & stratégie",
+        "description": "J'aide les équipes à prendre de meilleures décisions techniques. Que vous choisissiez un stack technique, planifiiez une migration ou cherchiez à améliorer les performances, j'apporte 20 ans d'expérience en systèmes de production.",
+        "highlights": [
+          "Revues d'architecture et recommandations",
+          "Évaluation et sélection de stack technique",
+          "Audits de performance et stratégies d'optimisation",
+          "Mentorat d'équipe et bonnes pratiques"
+        ],
+        "tags": ["Architecture", "Stratégie", "Performance", "Mentorat"]
+      },
+      "mvp": {
+        "title": "Développement MVP",
+        "subtitle": "De l'idée à la production, rapidement",
+        "description": "La vitesse compte lors de la validation d'idées. Je me spécialise dans le développement rapide de MVP construits correctement dès le départ — pas de code jetable. Votre MVP devient la fondation de votre croissance.",
+        "highlights": [
+          "Livraison en 2-4 semaines pour la plupart des MVP",
+          "Code prêt pour la production, pas des prototypes",
+          "Conçu pour l'itération et la croissance",
+          "Transfert complet avec documentation"
+        ],
+        "tags": ["Rapide", "Évolutif", "Prêt pour la production"]
+      },
+      "codeReview": {
+        "title": "Revue de code & Refactoring",
+        "subtitle": "Modernisez votre codebase",
+        "description": "La dette technique ralentit les équipes. J'aide à identifier et corriger les problèmes architecturaux, moderniser le code legacy et établir des patterns qui rendent les codebases plus faciles à maintenir et étendre.",
+        "highlights": [
+          "Audits complets de codebase",
+          "Stratégies de refactoring incrémental",
+          "Assistance à la migration TypeScript",
+          "Stratégie et implémentation de tests"
+        ],
+        "tags": ["Refactoring", "TypeScript", "Tests", "Qualité"]
+      }
+    },
+    "skills": {
+      "title": "Expertise technique",
+      "subtitle": "16 ans de connaissances accumulées en développement web moderne",
+      "items": {
+        "frontend": {
+          "title": "Frontend",
+          "description": "Création d'interfaces utilisateur belles et performantes avec des patterns React modernes"
+        },
+        "backend": {
+          "title": "Backend",
+          "description": "APIs et systèmes de données évolutifs"
+        },
+        "cloud": {
+          "title": "Cloud",
+          "description": "Stratégies de déploiement modernes"
+        },
+        "architecture": {
+          "title": "Architecture",
+          "description": "Structure monorepo avec des frontières claires"
+        },
+        "performance": {
+          "title": "Performance",
+          "description": "Interactions en moins de 100ms"
+        },
+        "devops": {
+          "title": "DevOps",
+          "description": "Pipelines CI/CD et automatisation"
+        },
+        "designSystems": {
+          "title": "Design Systems",
+          "description": "Composants cohérents et accessibles"
+        },
+        "mobile": {
+          "title": "Mobile",
+          "description": "Développement cross-platform"
+        },
+        "security": {
+          "title": "Sécurité",
+          "description": "Auth, RLS, chiffrement"
+        }
+      }
+    },
+    "featuredProject": {
+      "badge": "Projet vedette",
+      "title": "Plateforme Predictive",
+      "subtitle": "Intelligence prédictive propulsée par l'IA",
+      "description": "Plateforme de niveau entreprise modélisant des interdépendances complexes à travers 17 domaines de vie. Comprend un système de profilage utilisateur à 230 champs, une ontologie hiérarchique avec plus de 1 000 nœuds et un tableau de bord analytique en temps réel.",
+      "viewCaseStudy": "Voir l'étude de cas",
+      "lighthouseScore": "Score Lighthouse",
+      "p95Response": "Réponse P95",
+      "initialBundle": "Bundle initial",
+      "components": "Composants",
+      "lifeDomains": "Domaines de vie",
+      "domainNodes": "Nœuds de domaine"
+    },
+    "timeline": {
+      "title": "Parcours",
+      "subtitle": "Deux décennies de création et de livraison",
+      "items": {
+        "2024_founder": {
+          "title": "Fondateur & Développeur principal",
+          "company": "Predictive (Augure)",
+          "description": "Création d'une plateforme de prédiction propulsée par l'IA avec des simulations Monte Carlo, 17 domaines interconnectés et des profils utilisateurs à 230+ champs."
+        },
+        "2024_urbanfarm": {
+          "title": "CTO et développeur logiciel principal",
+          "company": "MyUrbanFarm.ai",
+          "description": "Plateforme connectant agriculteurs urbains, sponsors corporatifs et administrateurs pour gérer des initiatives d'agriculture durable sur toiture."
+        },
+        "2018_senior": {
+          "title": "Développeur Full-Stack Senior",
+          "description": "Conception de systèmes d'entreprise avec React moderne, TypeScript et infrastructure cloud dans les secteurs fintech, santé et SaaS."
+        },
+        "2015_lead": {
+          "title": "Tech Lead & Architecte",
+          "description": "Direction d'équipes de développement de 3-8 ingénieurs, définition de standards techniques et livraison d'applications web complexes."
+        },
+        "2010_fullstack": {
+          "title": "Développeur Full-Stack",
+          "description": "Transition vers le développement full-stack, création de solutions de bout en bout pour divers clients et industries."
+        },
+        "2005_start": {
+          "title": "Début du code à 16 ans",
+          "description": "Début du parcours de programmation, apprentissage du développement web et création des premiers projets. Deux décennies d'apprentissage continu depuis."
+        }
+      },
+      "milestones": {
+        "2005": "Début à 16 ans",
+        "2010": "Full-Stack",
+        "2015": "Tech Lead",
+        "2024": "Fondateur"
+      }
+    },
+    "testimonials": {
+      "badge": "Témoignages",
+      "title": "Ce que les gens disent",
+      "subtitle": "Retours de collaborateurs et clients",
+      "at": "chez",
+      "items": [
+        {
+          "quote": "Charles a livré un travail exceptionnel sur notre plateforme. Son attention aux détails et son expertise technique ont transformé notre vision en réalité. Le code est un plaisir à maintenir.",
+          "author": "Sarah Chen",
+          "role": "VP of Engineering",
+          "company": "TechFlow Inc"
+        },
+        {
+          "quote": "Travailler avec Charles a été un tournant. La qualité du code et les décisions d'architecture étaient au top. Il a compris nos besoins avant même que nous les exprimions.",
+          "author": "Marcus Johnson",
+          "role": "Founder & CEO",
+          "company": "DataSync"
+        },
+        {
+          "quote": "Combinaison rare de compétences techniques profondes et de capacité à comprendre les exigences métier. Charles a livré des fonctionnalités plus vite que prévu, avec zéro bug en production.",
+          "author": "Elena Rodriguez",
+          "role": "CTO",
+          "company": "Momentum Labs"
+        }
+      ]
+    },
+    "cta": {
+      "title": "Construisons quelque chose de",
+      "titleHighlight": "génial ensemble",
+      "subtitle": "Vous avez un projet en tête ? Je suis toujours ouvert à discuter de nouvelles opportunités et de défis intéressants.",
+      "basedIn": "Basé à Montréal, Canada"
+    }
+  },
+  "about": {
+    "meta": {
+      "title": "À propos de Charles Jackson - 16 ans développeur Full Stack",
+      "description": "Découvrez le parcours de 16 ans de Charles Jackson en tant que développeur full-stack. De ses débuts à 20 ans à la création de plateformes d'entreprise, découvrez l'expérience et la philosophie derrière le code."
+    },
+    "hero": {
+      "experience": "20+ ans d'expérience",
+      "title": "Je développe depuis",
+      "year": "2005",
+      "description": "J'ai commencé à coder à 16 ans et je n'ai jamais arrêté. Deux décennies plus tard, j'ai livré des produits utilisés par des millions de personnes, dirigé des équipes d'ingénierie et construit des plateformes de A à Z.",
+      "currentFocus": "Actuellement concentré sur",
+      "predictiveDesc": ", une plateforme propulsée par l'IA qui aide les gens à prendre de meilleures décisions."
+    },
+    "career": {
+      "badge": "Parcours professionnel",
+      "title": "20 ans de création",
+      "subtitle": "De mes premières lignes de code à 16 ans à la direction d'équipes d'ingénierie et la création de startups"
+    },
+    "skills": {
+      "badge": "Stack technique",
+      "title": "Compétences & Technologies",
+      "subtitle": "Deux décennies d'expertise accumulée sur toute la stack",
+      "frontend": "Frontend",
+      "backend": "Backend",
+      "devops": "DevOps & Outils",
+      "architecture": "Architecture"
+    },
+    "philosophy": {
+      "badge": "Philosophie",
+      "title": "Ma façon de travailler",
+      "subtitle": "Les principes qui guident chaque ligne de code que j'écris",
+      "rootCauses": {
+        "title": "Corriger les causes profondes",
+        "description": "Traiter les problèmes sous-jacents plutôt que de contourner les symptômes. Construire une infrastructure solide au lieu de créer de la dette technique."
+      },
+      "simplicity": {
+        "title": "Simplicité élégante",
+        "description": "Le meilleur code est simple, maintenable et résout de vrais problèmes. La complexité ne devrait exister que là où elle apporte de la valeur."
+      },
+      "performance": {
+        "title": "Performance avant tout",
+        "description": "Optimiser la vitesse à chaque niveau. Des temps de réponse inférieurs à 200ms, un bundling efficace et une gestion réfléchie des ressources."
+      },
+      "typeSafety": {
+        "title": "Typage strict",
+        "description": "Tirer parti du mode strict de TypeScript pour détecter les erreurs à la compilation et améliorer l'expérience développeur."
+      }
+    },
+    "personal": {
+      "title": "Au-delà du code",
+      "description": "Quand je ne développe pas, vous me trouverez en train d'explorer de nouvelles technologies, de contribuer à l'open source ou de mentorer la prochaine génération de développeurs. Je crois en l'apprentissage continu et au partage des connaissances avec la communauté.",
+      "interests": {
+        "coffee": "Amateur de café",
+        "openSource": "Open Source",
+        "problemSolving": "Résolution de problèmes",
+        "mentoring": "Mentorat"
+      },
+      "predictiveDesc": "Intelligence décisionnelle propulsée par l'IA"
+    },
+    "cta": {
+      "title": "Construisons quelque chose ensemble",
+      "subtitle": "Que vous ayez un projet en tête, besoin d'une consultation technique, ou simplement envie de discuter - je serais ravi d'échanger avec vous."
+    },
+    "timeline": {
+      "2024_founder": {
+        "title": "Fondateur & Développeur principal",
+        "company": "Predictive (Augure)",
+        "description": "Création d'une plateforme de prédiction propulsée par l'IA avec des simulations Monte Carlo, 17 domaines de vie interconnectés et des profils utilisateurs à plus de 230 champs. Architecture full-stack de la conception de la base de données au déploiement."
+      },
+      "2024_urbanfarm": {
+        "title": "CTO et développeur logiciel principal",
+        "company": "MyUrbanFarm.ai",
+        "description": "Développement d'une plateforme complète pour les agriculteurs urbains et les sponsors corporatifs pour gérer des initiatives d'agriculture sur toiture avec des analyses en temps réel, un accès basé sur les rôles et une cartographie interactive."
+      },
+      "2018_senior": {
+        "title": "Développeur Full-Stack Senior",
+        "company": "Divers clients et entreprises",
+        "description": "Conception et livraison d'applications d'entreprise dans les secteurs fintech, santé et SaaS. Direction d'équipes, définition de standards techniques et mentorat de développeurs juniors."
+      },
+      "2015_lead": {
+        "title": "Tech Lead & Architecte",
+        "company": "Plusieurs startups",
+        "description": "Direction d'équipes de développement de 3 à 8 ingénieurs. Mise en place de pipelines CI/CD, processus de revue de code et patterns d'architecture évolutifs. Livraison de produits utilisés par des millions."
+      },
+      "2010_fullstack": {
+        "title": "Développeur Full-Stack",
+        "company": "Agences et entreprises produit",
+        "description": "Transition vers le développement full-stack, création de solutions complètes pour divers clients. Développement d'une expertise dans les systèmes frontend et backend."
+      },
+      "2005_start": {
+        "title": "Développeur Web",
+        "company": "Freelance & début de carrière",
+        "description": "Début du parcours professionnel à 16 ans. Construction de sites web, apprentissage de l'administration système et développement des compétences fondamentales qui façonneraient une carrière de 20 ans."
+      }
+    }
+  },
+  "projects": {
+    "meta": {
+      "title": "Projets - Charles Jackson | Portfolio Développeur Full Stack",
+      "description": "Explorez les projets de Charles Jackson incluant Predictive (plateforme de prédiction IA) et MyUrbanFarm.ai (gestion d'agriculture urbaine). Études de cas avec analyses techniques approfondies."
+    },
+    "hero": {
+      "badge": "Portfolio de projets",
+      "title": "Ce que j'ai",
+      "titleHighlight": "construit",
+      "subtitle": "Analyses approfondies des systèmes complexes que j'ai conçus et construits, montrant la prise de décision technique et les résultats mesurables. Des plateformes IA à la technologie agricole durable."
+    },
+    "predictive": {
+      "subtitle": "Plateforme de prédiction propulsée par l'IA",
+      "description": "Plateforme d'intelligence prédictive de niveau entreprise qui modélise des interdépendances complexes à travers 17 domaines de vie. Comprend un système de profilage utilisateur à 230 champs, une ontologie hiérarchique avec plus de 1 000 nœuds de domaine, des simulations Monte Carlo et un tableau de bord analytique en temps réel.",
+      "longDescription": "Construit entièrement en solo, de l'architecture au déploiement. La plateforme aide les utilisateurs à prendre de meilleures décisions en analysant les patterns à travers plusieurs domaines de vie en utilisant l'inférence bayésienne et les ratios de vraisemblance.",
+      "architectureTitle": "Décisions d'architecture",
+      "challenges": {
+        "dataModeling": {
+          "title": "Modélisation de données complexes",
+          "description": "Conception d'une architecture basée sur l'ontologie pour représenter les relations entre 17 domaines avec des arêtes pondérées et des patterns d'héritage. CTEs récursifs pour un parcours d'arbre efficace."
+        },
+        "performance": {
+          "title": "Performance à grande échelle",
+          "description": "Latence P95 inférieure à 200ms grâce à une dénormalisation stratégique, des vues matérialisées et le cache React Query. Bundle code-splitté à 47KB."
+        },
+        "security": {
+          "title": "Sécurité & Confidentialité",
+          "description": "Politiques Row Level Security pour l'isolation des données multi-tenant. Zéro PII dans les bundles client. Chiffrement au repos avec rotation automatique des clés."
+        }
+      },
+      "architecture": {
+        "monorepo": {
+          "title": "Stratégie Monorepo Nx",
+          "description": "Bibliothèques partagées pour les composants UI, utilitaires et types TypeScript. Builds incrémentiels avec cache de calcul réduisant le temps CI de 60%."
+        },
+        "database": {
+          "title": "PostgreSQL + Supabase",
+          "description": "Souscriptions temps réel pour les mises à jour en direct. Génération automatique d'API avec PostgREST. Index GIN sur colonnes JSONB pour une évolution de schéma flexible."
+        },
+        "edge": {
+          "title": "Déploiement Edge-First",
+          "description": "Vercel Edge Functions pour les routes API. Assets statiques sur CDN mondial avec cache immuable. Service worker pour une expérience offline-first."
+        },
+        "typeSafe": {
+          "title": "Full Stack Type-Safe",
+          "description": "Typage de bout en bout de la base de données à l'UI. Types générés depuis le schéma PostgreSQL. Validation Zod aux frontières API. TypeScript strict."
+        }
+      },
+      "stats": {
+        "pagesRoutes": "Pages & Routes",
+        "reactComponents": "Composants React",
+        "profileFields": "Champs de profil",
+        "domainNodes": "Nœuds de domaine",
+        "lifeDomains": "Domaines de vie",
+        "databaseTables": "Tables de base de données",
+        "typeCoverage": "Couverture TypeScript"
+      },
+      "metrics": {
+        "lighthouseScore": "Score Lighthouse",
+        "p95ApiResponse": "Réponse API P95",
+        "initialBundle": "Bundle initial",
+        "runtimeErrors": "Erreurs runtime"
+      }
+    },
+    "urbanfarm": {
+      "subtitle": "Plateforme de gestion d'agriculture urbaine",
+      "description": "Une plateforme numérique complète connectant agriculteurs urbains, sponsors corporatifs et administrateurs pour gérer et surveiller des initiatives d'agriculture durable sur toiture. Suivi en temps réel, analyses et collaboration multi-parties prenantes.",
+      "longDescription": "Permet aux parties prenantes de l'écosystème agricole urbain de suivre les cultures, récoltes et conditions de croissance. Comprend un accès basé sur les rôles pour les agriculteurs, sponsors et administrateurs avec cartographie interactive et analyses de performance.",
+      "challenges": {
+        "mapping": {
+          "title": "Cartographie interactive",
+          "description": "Visualisation multi-sites avec surveillance des performances régionales. Suivi de localisation en temps réel et superpositions de statut des fermes."
+        },
+        "roles": {
+          "title": "Accès basé sur les rôles",
+          "description": "Permissions différenciées pour les agriculteurs urbains, entreprises clientes, agriculteurs urbains en chef et administrateurs. Architecture multi-tenant sécurisée."
+        },
+        "analytics": {
+          "title": "Analyses & Rapports",
+          "description": "Insights de performance, données de rendement et métriques d'utilisation des ressources. Rapports parties prenantes avec suivi KPI et documentation d'impact environnemental."
+        }
+      },
+      "features": {
+        "farmManagement": {
+          "label": "Gestion de ferme",
+          "description": "Suivi complet des cultures, récoltes et conditions"
+        },
+        "clientPortal": {
+          "label": "Portail client",
+          "description": "Accès en temps réel pour les sponsors pour voir l'avancement des fermes"
+        },
+        "multiSite": {
+          "label": "Support multi-sites",
+          "description": "Gérer plusieurs emplacements de ferme depuis un seul tableau de bord"
+        },
+        "impactReports": {
+          "label": "Rapports d'impact",
+          "description": "Documentation environnementale et de durabilité"
+        }
+      }
+    },
+    "world": {
+      "subtitle": "Métavers navigateur",
+      "description": "Un monde virtuel 3D persistant dans le navigateur supportant 500 utilisateurs simultanés sans latence perçue et 0$ de coût d'hébergement. Rendu WebGPU optimisé pour Apple Silicon avec calcul GPU pour le terrain, les particules et la végétation.",
+      "longDescription": "Monde 3D multijoueur fonctionnant entièrement dans le navigateur. Les utilisateurs se connectent, se voient, se déplacent et interagissent avec des objets dans un monde persistant. Tout fonctionne sur un seul M4 Max avec Cloudflare Tunnel pour un accès public gratuit.",
+      "challenges": {
+        "networking": {
+          "title": "Réseau N²",
+          "description": "Filtrage par zone d'intérêt + mise à l'échelle de fréquence + compression delta pour réduire 267 Mo/s d'egress théorique à 10-20 Ko/s par joueur."
+        },
+        "zeroLag": {
+          "title": "Architecture zéro latence",
+          "description": "Prédiction côté client, mises à jour optimistes, interpolation d'entités et rollback avec blend pour une expérience multijoueur fluide."
+        },
+        "gpuCompute": {
+          "title": "Calcul GPU",
+          "description": "Shaders de calcul WebGPU pour la génération de terrain (marching cubes), 10M+ particules à 60fps et végétation L-system sur GPU."
+        }
+      },
+      "features": {
+        "multiplayer": {
+          "label": "Monde multijoueur",
+          "description": "500 utilisateurs simultanés dans un espace persistant partagé"
+        },
+        "webgpu": {
+          "label": "Rendu WebGPU",
+          "description": "Performance native Metal 3 sur Apple Silicon"
+        },
+        "selfHosted": {
+          "label": "Auto-hébergé",
+          "description": "Fonctionne entièrement sur M4 Max via Cloudflare Tunnel"
+        },
+        "persistent": {
+          "label": "Monde persistant",
+          "description": "Supabase pour l'auth, l'état et la synchronisation temps réel"
+        }
+      }
+    },
+    "features": {
+      "badge": "Points forts",
+      "title": "Composants notables",
+      "subtitle": "Analyses approfondies de fonctionnalités et systèmes spécifiques que j'ai construits",
+      "partOf": "Partie de",
+      "analytics": {
+        "title": "Moteur d'analyses en temps réel",
+        "description": "Tableau de bord analytique haute performance avec mises à jour WebSocket, virtualisation optimisée pour grands jeux de données et animations fluides à 60fps."
+      },
+      "designSystem": {
+        "title": "Design System de composants",
+        "description": "Design system complet avec plus de 150 composants suivant les principes de design atomique. Accessibilité complète, support de thèmes et espacement cohérent."
+      },
+      "monteCarlo": {
+        "title": "Moteur de simulation Monte Carlo",
+        "description": "Moteur de prédiction basé sur Python utilisant l'inférence bayésienne et les ratios de vraisemblance. Validation de précision historique contre des résultats réels."
+      }
+    },
+    "cta": {
+      "title": "Vous avez un projet en tête ?",
+      "subtitle": "Je suis toujours intéressé par des problèmes stimulants et des idées innovantes. Discutons de comment nous pouvons travailler ensemble."
+    }
+  },
+  "contact": {
+    "meta": {
+      "title": "Contacter Charles Jackson - Développeur Full Stack",
+      "description": "Contactez Charles Jackson pour des demandes de projet, consultation ou collaboration. Basé à Montréal, disponible mondialement."
+    },
+    "hero": {
+      "badge": "Disponible pour des projets",
+      "title": "Travaillons",
+      "titleHighlight": "ensemble",
+      "subtitle": "Vous avez un projet en tête, besoin d'une consultation technique, ou simplement envie de discuter ? Je serais ravi d'échanger avec vous."
+    },
+    "info": {
+      "location": "Montréal, Canada",
+      "responseTime": "Réponse sous 24-48h",
+      "availability": "Disponible mondialement"
+    },
+    "form": {
+      "title": "Envoyer un message",
+      "subtitle": "Remplissez le formulaire ci-dessous et je vous répondrai rapidement.",
+      "name": "Nom",
+      "namePlaceholder": "Votre nom",
+      "email": "Courriel",
+      "emailPlaceholder": "vous@exemple.com",
+      "subject": "Sujet",
+      "subjectPlaceholder": "Demande de projet, collaboration, consultation...",
+      "message": "Message",
+      "messagePlaceholder": "Parlez-moi de votre projet ou demande...",
+      "send": "Envoyer le message",
+      "sending": "Envoi en cours...",
+      "validation": {
+        "nameRequired": "Le nom est requis",
+        "emailRequired": "Le courriel est requis",
+        "emailInvalid": "Adresse courriel invalide",
+        "subjectRequired": "Le sujet est requis",
+        "messageRequired": "Le message est requis",
+        "messageTooShort": "Le message doit contenir au moins 10 caractères",
+        "fixErrors": "Veuillez corriger les erreurs dans le formulaire"
+      },
+      "success": {
+        "title": "Message envoyé avec succès !",
+        "description": "Je vous répondrai sous 24-48 heures."
+      }
+    },
+    "direct": {
+      "title": "Ou contactez-moi directement",
+      "email": {
+        "title": "Courriel",
+        "description": "Idéal pour les demandes de projet et les discussions détaillées."
+      },
+      "github": {
+        "title": "GitHub",
+        "description": "Consultez mes dépôts et mon travail open source."
+      }
+    },
+    "availability": {
+      "title": "Actuellement disponible",
+      "description": "Je suis ouvert aux projets, aux engagements de consultation et aux collaborations intéressantes. Bien que je sois principalement concentré sur Predictive, je prends toujours le temps pour des opportunités excitantes."
+    },
+    "expectations": {
+      "title": "À quoi s'attendre",
+      "items": [
+        "Réponse sous 24-48 heures, généralement plus tôt",
+        "Communication claire et retours honnêtes",
+        "Un intérêt sincère à comprendre vos besoins",
+        "Une expertise technique appuyée par 16 ans d'expérience"
+      ]
+    },
+    "cta": {
+      "title": "Construisons quelque chose de génial",
+      "subtitle": "Que ce soit un problème technique stimulant, une idée de startup ambitieuse ou un système d'entreprise complexe - je suis là pour vous aider.",
+      "basedIn": "Basé à Montréal, Canada • Disponible mondialement"
+    }
+  },
+  "footer": {
+    "description": "Développeur full-stack créant des systèmes intelligents et de belles interfaces. Actuellement en train de développer Predictive.",
+    "letsConnect": "Restons en contact",
+    "openTo": "Ouvert aux nouvelles opportunités et projets intéressants.",
+    "getInTouch": "Me contacter",
+    "copyright": "Charles Jackson. Tous droits réservés.",
+    "builtWith": "Construit avec",
+    "using": "avec React & TypeScript"
+  },
+  "notFound": {
+    "title": "Page non trouvée",
+    "description": "La page que vous cherchez n'existe pas ou a été déplacée.",
+    "backHome": "Retour à l'accueil"
+  },
+  "blog": {
+    "meta": {
+      "title": "Blog - Charles Jackson | Développeur Full Stack",
+      "description": "Articles techniques sur l'architecture logicielle, React, TypeScript et la construction de systèmes évolutifs. Insights de 20+ ans de développement full-stack."
+    },
+    "hero": {
+      "badge": "Blog technique",
+      "title": "Réflexions sur",
+      "titleHighlight": "la création de logiciels",
+      "subtitle": "Analyses approfondies des décisions d'architecture, de l'optimisation des performances et des leçons apprises de deux décennies de livraison de code en production."
+    },
+    "newsletter": {
+      "badge": "Restez informé",
+      "title": "D'autres articles à venir",
+      "subtitle": "J'écris sur la construction de systèmes en production, les patterns d'architecture et les leçons apprises de la livraison de logiciels. Suivez-moi pour plus d'insights.",
+      "viewProjects": "Voir les projets"
+    }
+  },
+  "art": {
+    "meta": {
+      "title": "Art & Expériences créatives - Charles Jackson",
+      "description": "Expériences de creative coding avec Three.js, WebGL, animations CSS et art visuel interactif. Explorer l'intersection du code et de la créativité."
+    },
+    "hero": {
+      "badge": "Code créatif",
+      "title": "Là où le code rencontre la",
+      "titleHighlight": "créativité",
+      "subtitle": "Expériences à l'intersection de la programmation et de l'art. Visualisations Three.js, graphiques génératifs, animations CSS et expériences interactives qui repoussent les limites du possible dans le navigateur.",
+      "viewGallery": "Explorer la galerie",
+      "viewCode": "Voir le code"
+    },
+    "philosophy": {
+      "badge": "Philosophie",
+      "title": "Le code comme toile",
+      "description": "Je crois que le code est un médium créatif. Ces expériences explorent l'esthétique visuelle, le mouvement et l'interactivité - traitant le navigateur comme une toile pour l'expression artistique."
+    },
+    "categories": {
+      "all": "Tous",
+      "threejs": "Three.js",
+      "css": "Art CSS",
+      "generative": "Génératif",
+      "interactive": "Interactif"
+    },
+    "projects": {
+      "particleGalaxy": {
+        "title": "Galaxie de particules",
+        "description": "Simulation de galaxie 3D interactive avec 100 000 particules. Physique accélérée par GPU et shaders personnalisés pour des formations d'étoiles réalistes.",
+        "tech": ["Three.js", "WebGL", "GLSL"]
+      },
+      "fluidSimulation": {
+        "title": "Dynamique des fluides",
+        "description": "Simulation de fluides en temps réel utilisant les équations de Navier-Stokes. Réactif au toucher avec un beau mélange de couleurs.",
+        "tech": ["WebGL", "Fragment Shaders", "Maths"]
+      },
+      "geometricPatterns": {
+        "title": "Motifs géométriques",
+        "description": "Art géométrique généré procéduralement avec des algorithmes récursifs. Chaque rafraîchissement crée une composition unique.",
+        "tech": ["Canvas API", "Algorithmes", "Théorie des couleurs"]
+      },
+      "morphingShapes": {
+        "title": "Formes morphiques",
+        "description": "Animations de morphing en CSS pur sans JavaScript. Transitions de formes fluides utilisant les propriétés CSS personnalisées.",
+        "tech": ["CSS", "Keyframes", "Custom Properties"]
+      },
+      "audioVisualizer": {
+        "title": "Réactif au son",
+        "description": "Visualiseur alimenté par WebAudio qui répond à la musique en temps réel. L'analyse de fréquence pilote le comportement des particules.",
+        "tech": ["Web Audio API", "Three.js", "FFT"]
+      },
+      "raymarching": {
+        "title": "Mondes raymarching",
+        "description": "Scènes 3D procédurales rendues entièrement dans des fragment shaders. Les fonctions de distance signées créent un détail infini.",
+        "tech": ["GLSL", "Raymarching", "SDF"]
+      }
+    },
+    "featured": {
+      "badge": "Expérience vedette",
+      "viewLive": "Voir en direct",
+      "viewSource": "Code source"
+    },
+    "techniques": {
+      "badge": "Techniques",
+      "title": "Technologies & Méthodes",
+      "subtitle": "Les outils et approches que j'utilise pour donner vie aux visions créatives.",
+      "items": {
+        "webgl": {
+          "title": "WebGL & Shaders",
+          "description": "Programmation GPU bas niveau pour une fidélité visuelle et des performances maximales. Shaders GLSL personnalisés pour des effets uniques."
+        },
+        "threejs": {
+          "title": "Three.js",
+          "description": "Bibliothèque graphique 3D pour des scènes complexes, des systèmes de particules et des expériences immersives."
+        },
+        "css": {
+          "title": "CSS avancé",
+          "description": "Pousser CSS à ses limites avec des animations, dégradés, filtres et utilisation créative des pseudo-éléments."
+        },
+        "generative": {
+          "title": "Art génératif",
+          "description": "Algorithmes qui créent des variations uniques. Fonctions de bruit, L-systèmes et génération procédurale."
+        }
+      }
+    },
+    "cta": {
+      "title": "Envie de collaborer ?",
+      "subtitle": "Toujours intéressé par des collaborations créatives, des commandes d'art génératif, ou simplement geeker sur les shaders et la programmation visuelle.",
+      "getInTouch": "Me contacter"
+    }
+  },
+  "interests": {
+    "meta": {
+      "title": "Intérêts - Charles Jackson | Modélisation mathématique & Apprentissage automatique",
+      "description": "Explorer l'intersection des mathématiques et du logiciel. Simulations Monte Carlo, architectures transformer, réseaux de neurones profonds et traitement du langage naturel."
+    },
+    "hero": {
+      "badge": "Fondements mathématiques",
+      "title": "Utiliser les maths pour",
+      "titleHighlight": "prédire l'avenir",
+      "description": "Fasciné par le pouvoir de la modélisation mathématique et de l'apprentissage automatique pour transformer l'incertitude en insights actionnables. Des simulations Monte Carlo aux architectures transformer, j'explore comment les mathématiques peuvent nous aider à comprendre et prédire des systèmes complexes.",
+      "philosophy": "Chaque prédiction est une hypothèse, chaque simulation un test. L'objectif n'est pas une prévision parfaite — c'est de réduire l'incertitude et de prendre de meilleures décisions avec des informations incomplètes.",
+      "viewProjects": "Voir en action"
+    },
+    "core": {
+      "badge": "Intérêts principaux",
+      "title": "Domaines de focus",
+      "subtitle": "Les techniques mathématiques et computationnelles qui alimentent les systèmes de prédiction modernes"
+    },
+    "areas": {
+      "monteCarlo": {
+        "title": "Simulations Monte Carlo",
+        "description": "Modélisation probabiliste par échantillonnage aléatoire répété",
+        "details": "Exécuter des milliers de simulations pour cartographier les distributions de probabilité et quantifier l'incertitude. Essentiel pour modéliser des systèmes complexes où les solutions analytiques sont impossibles.",
+        "applications": ["Analyse de risque", "Modélisation financière", "Aide à la décision", "Planification de scénarios"]
+      },
+      "transformers": {
+        "title": "Modèles Transformer",
+        "description": "Architectures basées sur l'attention pour la modélisation de séquences",
+        "details": "Construire et affiner des modèles basés sur les transformers pour la prédiction de séquences, en exploitant les mécanismes d'auto-attention pour capturer les dépendances à long terme dans les données.",
+        "applications": ["Séries temporelles", "Prédiction de séquences", "Reconnaissance de motifs", "Extraction de caractéristiques"]
+      },
+      "deepLearning": {
+        "title": "Réseaux de neurones profonds",
+        "description": "Architectures multicouches pour apprendre des patterns complexes",
+        "details": "Concevoir des architectures de réseaux de neurones optimisées pour des tâches de prédiction spécifiques. Des réseaux feedforward aux architectures récurrentes, choisir la bonne topologie est crucial.",
+        "applications": ["Classification", "Régression", "Détection d'anomalies", "Embeddings"]
+      },
+      "nlp": {
+        "title": "Traitement du langage naturel",
+        "description": "Extraire structure et sens du texte",
+        "details": "Traiter et comprendre le langage humain pour extraire des insights, de la reconnaissance d'entités nommées à l'analyse sémantique et l'extraction d'information.",
+        "applications": ["Analyse de texte", "Extraction d'information", "Traitement de documents", "Recherche"]
+      },
+      "sentiment": {
+        "title": "Analyse de sentiment",
+        "description": "Quantifier l'opinion et l'émotion dans le texte",
+        "details": "Analyser le texte pour déterminer la polarité du sentiment et le ton émotionnel. Utile pour comprendre le sentiment du marché, les retours clients et l'opinion publique.",
+        "applications": ["Analyse de marché", "Retours clients", "Écoute sociale", "Surveillance de marque"]
+      },
+      "bayesian": {
+        "title": "Inférence bayésienne",
+        "description": "Mettre à jour les croyances avec les preuves",
+        "details": "Utiliser le théorème de Bayes pour mettre à jour les estimations de probabilité à mesure que de nouvelles données arrivent. Le fondement mathématique pour apprendre des preuves et quantifier l'incertitude.",
+        "applications": ["Tests A/B", "Estimation de paramètres", "Quantification d'incertitude", "Théorie de la décision"]
+      }
+    },
+    "why": {
+      "badge": "Philosophie",
+      "title": "Pourquoi les mathématiques ?",
+      "p1": "Les mathématiques sont le langage des patterns. Dans un monde noyé de données, les modèles mathématiques nous aident à trouver le signal dans le bruit, la structure dans le chaos et les insights dans la complexité.",
+      "p2": "Je suis attiré par les problèmes où les mathématiques élégantes rencontrent la réalité désordonnée. Les méthodes Monte Carlo nous permettent d'explorer de vastes espaces de possibilités. L'inférence bayésienne nous aide à apprendre des preuves. Les réseaux de neurones découvrent des patterns trop subtils pour la perception humaine.",
+      "p3": "L'objectif n'est pas la prédiction pour elle-même. C'est de prendre de meilleures décisions sous l'incertitude — que ce soit pour les choix de vie personnels, la stratégie d'entreprise ou la compréhension de systèmes complexes."
+    },
+    "research": {
+      "badge": "Focus de recherche",
+      "title": "Explorations actuelles",
+      "subtitle": "Domaines actifs d'investigation et d'expérimentation",
+      "prediction": {
+        "title": "Marchés de prédiction",
+        "description": "Comment l'intelligence collective et les mécanismes de marché peuvent améliorer la précision des prévisions"
+      },
+      "ensemble": {
+        "title": "Méthodes d'ensemble",
+        "description": "Combiner plusieurs modèles pour obtenir de meilleures prédictions qu'un modèle unique"
+      },
+      "causal": {
+        "title": "Inférence causale",
+        "description": "Aller au-delà de la corrélation pour comprendre les relations de cause à effet"
+      },
+      "uncertainty": {
+        "title": "Quantification d'incertitude",
+        "description": "Mesurer et communiquer la confiance dans les prédictions"
+      }
+    },
+    "application": {
+      "badge": "En pratique",
+      "title": "Où la théorie rencontre la réalité",
+      "subtitle": "Ces intérêts ne sont pas seulement académiques — ils sont le fondement de ce que je construis",
+      "predictive": {
+        "title": "Plateforme Predictive",
+        "description": "Toutes ces techniques se rejoignent dans Augure, une plateforme de prédiction propulsée par l'IA qui aide les gens à prendre de meilleures décisions pour leur avenir.",
+        "features": [
+          "Simulations Monte Carlo sur 17 domaines de vie",
+          "Inférence bayésienne pour les mises à jour de probabilité",
+          "NLP pour extraire des données structurées des questions",
+          "Modèles transformer pour la reconnaissance de patterns"
+        ],
+        "cta": "Explorer le projet"
+      }
+    },
+    "cta": {
+      "title": "Parlons prédictions",
+      "subtitle": "Intéressé par la modélisation mathématique, l'apprentissage automatique ou les systèmes de prédiction ? J'adore geeker sur ces sujets."
+    }
+  }
+}

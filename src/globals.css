@@ -1,0 +1,410 @@
+@import 'tailwindcss';
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar: var(--sidebar);
+  --color-chart-5: var(--chart-5);
+  --color-chart-4: var(--chart-4);
+  --color-chart-3: var(--chart-3);
+  --color-chart-2: var(--chart-2);
+  --color-chart-1: var(--chart-1);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --radius-sm: 0.125rem;
+  --radius-md: 0.125rem;
+  --radius-lg: 0.125rem;
+  --radius-xl: 0.125rem;
+}
+
+:root {
+  /* Font families */
+  --font-geist-sans: 'Geist', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-geist-mono: 'Geist Mono', ui-monospace, 'Courier New', monospace;
+
+  --radius: 0.125rem; /* Ultra-sharp corners for clinical precision - 2px */
+
+  /* Clinical slight off-white background with black text */
+  --background: oklch(0.98 0 0); /* Slight off-white for subtle warmth */
+  --foreground: oklch(0.1 0 0); /* Darker black for more contrast */
+
+  /* Cards - pure white for contrast against off-white background */
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.1 0 0);
+
+  /* Popovers */
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.1 0 0);
+
+  /* Primary: Pure black for clinical emphasis */
+  --primary: oklch(0.1 0 0);
+  --primary-foreground: oklch(1 0 0);
+
+  /* Secondary: Very subtle gray */
+  --secondary: oklch(0.98 0 0);
+  --secondary-foreground: oklch(0.1 0 0);
+
+  /* Muted backgrounds and text */
+  --muted: oklch(0.98 0 0);
+  --muted-foreground: oklch(0.55 0 0);
+
+  /* Accent: Light gray */
+  --accent: oklch(0.95 0 0);
+  --accent-foreground: oklch(0.1 0 0);
+
+  /* Destructive: Dark gray (clinical, not red) */
+  --destructive: oklch(0.2 0 0);
+  --destructive-foreground: oklch(1 0 0);
+
+  /* Borders: More subtle gray */
+  --border: oklch(0.92 0 0);
+  --input: oklch(0.92 0 0);
+  --ring: oklch(0.1 0 0);
+
+  /* Charts: Grayscale palette */
+  --chart-1: oklch(0.2 0 0);
+  --chart-2: oklch(0.3 0 0);
+  --chart-3: oklch(0.4 0 0);
+  --chart-4: oklch(0.5 0 0);
+  --chart-5: oklch(0.6 0 0);
+
+  /* Sidebar */
+  --sidebar: oklch(1 0 0);
+  --sidebar-foreground: oklch(0.1 0 0);
+  --sidebar-primary: oklch(0.1 0 0);
+  --sidebar-primary-foreground: oklch(1 0 0);
+  --sidebar-accent: oklch(0.98 0 0);
+  --sidebar-accent-foreground: oklch(0.1 0 0);
+  --sidebar-border: oklch(0.92 0 0);
+  --sidebar-ring: oklch(0.1 0 0);
+}
+
+.dark {
+  /* Sophisticated dark theme with clear elevation hierarchy */
+  /* Level 0: Base background - Rich dark charcoal, not absolute black */
+  --background: oklch(0.15 0.015 240);
+  --foreground: oklch(0.98 0.005 240);
+
+  /* Level 2: Cards - Clear elevation with consistent +0.06 lift from base */
+  --card: oklch(0.21 0.015 240);
+  --card-foreground: oklch(0.98 0.005 240);
+
+  /* Level 1: Popovers - Subtle lift, between background and cards */
+  --popover: oklch(0.18 0.015 240);
+  --popover-foreground: oklch(0.98 0.005 240);
+
+  /* Primary: Clean white for emphasis */
+  --primary: oklch(0.98 0.005 240);
+  --primary-foreground: oklch(0.15 0.015 240);
+
+  /* Secondary: Medium gray with clear contrast */
+  --secondary: oklch(0.25 0.015 240);
+  --secondary-foreground: oklch(0.98 0.005 240);
+
+  /* Muted backgrounds and text - Level 2.5 elevation */
+  --muted: oklch(0.23 0.015 240);
+  --muted-foreground: oklch(0.65 0.012 240);
+
+  /* Accent: Clearly visible interactive surfaces */
+  --accent: oklch(0.25 0.015 240);
+  --accent-foreground: oklch(0.98 0.005 240);
+
+  /* Destructive: Muted gray (not red) */
+  --destructive: oklch(0.7 0.012 240);
+  --destructive-foreground: oklch(0.15 0.015 240);
+
+  /* Borders: Visible but subtle - slightly desaturated */
+  --border: oklch(0.28 0.012 240);
+  --input: oklch(0.3 0.012 240);
+  --ring: oklch(0.98 0.005 240);
+
+  /* Charts: Balanced grayscale palette with good contrast */
+  --chart-1: oklch(0.75 0.012 240);
+  --chart-2: oklch(0.65 0.012 240);
+  --chart-3: oklch(0.55 0.012 240);
+  --chart-4: oklch(0.45 0.012 240);
+  --chart-5: oklch(0.35 0.012 240);
+
+  /* Sidebar: Level 1 elevation, same as popovers */
+  --sidebar: oklch(0.18 0.015 240);
+  --sidebar-foreground: oklch(0.98 0.005 240);
+  --sidebar-primary: oklch(0.98 0.005 240);
+  --sidebar-primary-foreground: oklch(0.15 0.015 240);
+  --sidebar-accent: oklch(0.25 0.015 240);
+  --sidebar-accent-foreground: oklch(0.98 0.005 240);
+  --sidebar-border: oklch(0.28 0.012 240);
+  --sidebar-ring: oklch(0.98 0.005 240);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+
+  /* Custom scrollbar - subtle, monochromatic */
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: oklch(0.7 0 0 / 0.3);
+    border-radius: 4px;
+    border: 2px solid transparent;
+    background-clip: content-box;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: oklch(0.5 0 0 / 0.5);
+    background-clip: content-box;
+  }
+
+  ::-webkit-scrollbar-corner {
+    background: transparent;
+  }
+
+  /* Dark mode scrollbar */
+  .dark ::-webkit-scrollbar-thumb {
+    background: oklch(0.7 0.012 240 / 0.25);
+    background-clip: content-box;
+  }
+
+  .dark ::-webkit-scrollbar-thumb:hover {
+    background: oklch(0.7 0.012 240 / 0.45);
+    background-clip: content-box;
+  }
+
+  /* Firefox scrollbar */
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: oklch(0.7 0 0 / 0.3) transparent;
+  }
+
+  .dark * {
+    scrollbar-color: oklch(0.7 0.012 240 / 0.25) transparent;
+  }
+}
+
+/* Clinical Design Utilities - Minimal custom utilities, leverage shadcn where possible */
+@layer utilities {
+  /* Monospace for all data, numbers, and technical content */
+  .font-data {
+    font-family: var(--font-mono);
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -0.01em;
+  }
+
+  /* Confidence interval display */
+  .confidence-interval {
+    @apply font-mono text-xs text-muted-foreground;
+  }
+
+  /* Float animation for cards */
+  @keyframes float {
+    0%,
+    100% {
+      transform: translateY(0px);
+    }
+    50% {
+      transform: translateY(-10px);
+    }
+  }
+
+  .animate-float {
+    animation: float 3s ease-in-out infinite;
+  }
+
+  /* Shimmer animation for progress bars and loading states */
+  @keyframes shimmer {
+    0% {
+      transform: translateX(-100%);
+    }
+    100% {
+      transform: translateX(100%);
+    }
+  }
+
+  .animate-shimmer {
+    animation: shimmer 2s infinite;
+  }
+
+  /* Skeleton loading animation */
+  @keyframes skeleton-pulse {
+    0%, 100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.4;
+    }
+  }
+
+  .animate-skeleton {
+    animation: skeleton-pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+
+  /* Gradient border animation */
+  @keyframes gradient-rotate {
+    0% {
+      --gradient-angle: 0deg;
+    }
+    100% {
+      --gradient-angle: 360deg;
+    }
+  }
+
+  .animate-gradient-border {
+    animation: gradient-rotate 3s linear infinite;
+  }
+
+  /* Text gradient animation */
+  @keyframes gradient-shift {
+    0%, 100% {
+      background-position: 0% 50%;
+    }
+    50% {
+      background-position: 100% 50%;
+    }
+  }
+
+  .animate-gradient-text {
+    background-size: 200% 200%;
+    animation: gradient-shift 3s ease infinite;
+  }
+
+  /* Pulse glow effect */
+  @keyframes pulse-glow {
+    0%, 100% {
+      box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.1);
+    }
+    50% {
+      box-shadow: 0 0 20px 5px rgba(255, 255, 255, 0.05);
+    }
+  }
+
+  .animate-pulse-glow {
+    animation: pulse-glow 2s ease-in-out infinite;
+  }
+
+  /* Subtle spotlight breathing */
+  @keyframes spotlight-breathe {
+    0%, 100% {
+      opacity: 0.6;
+      transform: scale(0.98);
+    }
+    50% {
+      opacity: 1;
+      transform: scale(1.02);
+    }
+  }
+
+  .animate-spotlight-breathe {
+    animation: spotlight-breathe 8s ease-in-out infinite;
+  }
+
+  /* Gentle gradient drift */
+  @keyframes gradient-drift {
+    0% {
+      background-position: 0% 50%;
+    }
+    50% {
+      background-position: 100% 50%;
+    }
+    100% {
+      background-position: 0% 50%;
+    }
+  }
+
+  .animate-gradient-drift {
+    background-size: 200% 200%;
+    animation: gradient-drift 20s ease infinite;
+  }
+
+  /* Subtle ambient pulse */
+  @keyframes ambient-pulse {
+    0%, 100% {
+      opacity: 0.02;
+      filter: blur(80px);
+    }
+    50% {
+      opacity: 0.04;
+      filter: blur(100px);
+    }
+  }
+
+  .animate-ambient-pulse {
+    animation: ambient-pulse 10s ease-in-out infinite;
+  }
+
+  /* 3D perspective container */
+  .perspective-1000 {
+    perspective: 1000px;
+  }
+
+  .perspective-2000 {
+    perspective: 2000px;
+  }
+
+  /* Preserve 3D for children */
+  .preserve-3d {
+    transform-style: preserve-3d;
+  }
+
+  /* Backface hidden for 3D effects */
+  .backface-hidden {
+    backface-visibility: hidden;
+  }
+}
+
+/* Reduced motion preferences - respect user settings */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  .animate-float,
+  .animate-shimmer,
+  .animate-skeleton,
+  .animate-gradient-border,
+  .animate-gradient-text,
+  .animate-pulse-glow {
+    animation: none !important;
+  }
+}
+
