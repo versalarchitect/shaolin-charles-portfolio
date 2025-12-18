@@ -240,76 +240,67 @@ const myUrbanFarmProject = {
   ],
 }
 
-const worldProject = {
-  id: 'world',
-  title: 'World',
-  subtitle: 'Browser Metaverse',
+const nxSupabaseProject = {
+  id: 'nxsupabase',
+  title: 'NxSupabase',
+  subtitle: 'Official Nx Plugin for Supabase',
   type: 'PROJECT',
-  status: 'development',
-  year: '2024 - Present',
-  role: 'Creator & Developer',
+  status: 'live',
+  year: '2024',
+  role: 'Creator & Maintainer',
   description:
-    'A persistent browser-based 3D virtual world supporting 500 concurrent users with zero perceived lag and $0 hosting cost. WebGPU-first rendering optimized for Apple Silicon with GPU compute for terrain, particles, and vegetation.',
+    'The official Nx plugin that streamlines Supabase integration within monorepo environments. Automates database migrations, TypeScript type generation, and local development setup with zero configuration.',
   longDescription:
-    'Multiplayer 3D world running entirely in the browser. Users connect, see each other, move around, and interact with objects in a persistent world. Everything runs on a single M4 Max with Cloudflare Tunnel for free public access.',
+    'Built to solve the complexity of managing Supabase in Nx monorepos. Features smart port management for multiple concurrent instances, Nx caching for generated types, and full lifecycle support from local development to production deployment.',
   links: {
-    live: 'https://world.charlesjackson.dev',
-    github: 'https://github.com/versalarchitect/world',
+    github: 'https://github.com/nxsupabase/nxsupabase',
   },
   techStack: [
-    'Three.js',
-    'WebGPU',
-    'React Three Fiber',
     'TypeScript',
-    'Colyseus',
-    'Rapier.js',
+    'Nx',
     'Supabase',
-    'Dragonfly',
-    'Cloudflare Tunnel',
-  ],
-  metrics: [
-    { value: 500, label: 'Concurrent Users', color: '', prefix: '', suffix: '' },
-    { value: 60, label: 'Target FPS', color: 'green', prefix: '', suffix: '' },
-    { value: 0, label: 'Hosting Cost', color: 'green', prefix: '$', suffix: '' },
-    { value: 10, label: 'Million Particles', color: '', prefix: '', suffix: 'M' },
+    'Node.js',
+    'Docker',
+    'PostgreSQL',
+    'PL/pgSQL',
   ],
   challenges: [
     {
-      icon: Network,
-      title: 'N² Networking',
-      desc: 'Area of Interest filtering + frequency scaling + delta compression to reduce 267 MB/s theoretical egress to 10-20 KB/s per player.',
+      icon: GitBranch,
+      title: 'Multi-Project Support',
+      desc: 'Automatic port allocation and project inference via createNodesV2 for seamless multi-project monorepo setups.',
     },
     {
-      icon: Zap,
-      title: 'Zero-Lag Architecture',
-      desc: 'Client-side prediction, optimistic updates, entity interpolation, and rollback with blend for seamless multiplayer experience.',
+      icon: Database,
+      title: 'Smart Type Generation',
+      desc: 'Nx-cached TypeScript types regenerated only when schema changes. Zero manual configuration with config.toml auto-detection.',
     },
     {
-      icon: Cpu,
-      title: 'GPU Compute',
-      desc: 'WebGPU compute shaders for terrain generation (marching cubes), 10M+ particles at 60fps, and L-system vegetation on GPU.',
+      icon: Server,
+      title: 'Docker Orchestration',
+      desc: 'Full Supabase stack orchestration with executors for local instances, migrations, and Edge Function deployment.',
     },
   ],
   features: [
     {
-      icon: Gamepad2,
-      label: 'Multiplayer World',
-      desc: '500 concurrent users in shared persistent space',
-    },
-    {
-      icon: Cpu,
-      label: 'WebGPU Rendering',
-      desc: 'Native Metal 3 performance on Apple Silicon',
+      icon: Code2,
+      label: 'Generators',
+      desc: 'Scaffold projects, migrations, Edge Functions, and seed files',
     },
     {
       icon: Server,
-      label: 'Self-Hosted',
-      desc: 'Runs entirely on M4 Max via Cloudflare Tunnel',
+      label: 'Executors',
+      desc: 'Manage local instances, run migrations, deploy to production',
     },
     {
       icon: Database,
-      label: 'Persistent World',
-      desc: 'Supabase for auth, state, and realtime sync',
+      label: 'Type Safety',
+      desc: 'Auto-generated TypeScript types from your database schema',
+    },
+    {
+      icon: GitBranch,
+      label: 'Nx Integration',
+      desc: 'Full caching, task orchestration, and dependency graph',
     },
   ],
 }
@@ -583,6 +574,113 @@ export default function Projects() {
         </div>
       </Section>
 
+      {/* NxSupabase Project */}
+      <Section id="projects-nxsupabase" className="py-16 lg:py-24 relative overflow-hidden">
+        <SectionSpots variant="default" />
+        <div className="container mx-auto px-6 lg:px-8 relative z-10">
+          <RevealOnScroll direction="left">
+            <HoverCard3D className="rounded-2xl" glowColor="rgba(255, 255, 255, 0.08)" depth={35}>
+              <Card className="overflow-hidden border-foreground/10 bg-gradient-to-br from-background to-foreground/[0.02]">
+                <div className="p-8 md:p-12 space-y-8">
+                  {/* Header */}
+                  <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-6">
+                    <div>
+                      <div className="flex flex-wrap items-center gap-3 mb-4">
+                        <span className="text-xs font-mono text-green-500 bg-green-500/10 px-3 py-1 rounded flex items-center gap-1.5">
+                          <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
+                          {t('common.live')}
+                        </span>
+                        <span className="text-xs font-mono text-muted-foreground">
+                          {nxSupabaseProject.year}
+                        </span>
+                      </div>
+                      <h2 className="text-3xl md:text-4xl font-bold mb-2">
+                        {nxSupabaseProject.title}
+                      </h2>
+                      <p className="text-lg text-muted-foreground">
+                        {t('projects.nxsupabase.subtitle')}
+                      </p>
+                    </div>
+                    <Magnetic strength={0.2}>
+                      <Button variant="outline" className="font-mono gap-2" asChild>
+                        <a
+                          href={nxSupabaseProject.links.github}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          <Github className="h-4 w-4" />
+                          {t('common.code')}
+                        </a>
+                      </Button>
+                    </Magnetic>
+                  </div>
+
+                  {/* Description */}
+                  <div className="space-y-4">
+                    <p className="text-muted-foreground leading-relaxed text-lg">
+                      {t('projects.nxsupabase.description')}
+                    </p>
+                    <p className="text-muted-foreground leading-relaxed">
+                      {t('projects.nxsupabase.longDescription')}
+                    </p>
+                  </div>
+
+                  {/* Features Grid */}
+                  <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
+                    {nxSupabaseProject.features?.map(({ icon: Icon, label, desc }) => (
+                      <motion.div
+                        key={label}
+                        whileHover={{ y: -4, scale: 1.02 }}
+                        className="p-4 bg-foreground/5 rounded-lg cursor-default group hover:bg-foreground/10 transition-all"
+                      >
+                        <Icon className="h-6 w-6 text-foreground/60 mb-3 group-hover:text-foreground/80 transition-colors" />
+                        <h4 className="font-semibold mb-1">{label}</h4>
+                        <p className="text-xs text-muted-foreground">{desc}</p>
+                      </motion.div>
+                    ))}
+                  </div>
+
+                  {/* Technical Challenges */}
+                  <div className="grid md:grid-cols-3 gap-6 pt-6 border-t border-border">
+                    {nxSupabaseProject.challenges.map(({ icon: Icon, title, desc }) => (
+                      <motion.div
+                        key={title}
+                        whileHover={{ y: -4 }}
+                        className="space-y-3 p-4 rounded-lg hover:bg-foreground/5 transition-colors cursor-default"
+                      >
+                        <div className="flex items-center gap-2">
+                          <Icon className="h-5 w-5 text-foreground/60" />
+                          <h4 className="text-sm font-bold">{title}</h4>
+                        </div>
+                        <p className="text-xs text-muted-foreground leading-relaxed">{desc}</p>
+                      </motion.div>
+                    ))}
+                  </div>
+
+                  {/* Tech Stack */}
+                  <div className="space-y-4 pt-6 border-t border-border">
+                    <h3 className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                      {t('common.techStack')}
+                    </h3>
+                    <div className="flex flex-wrap gap-2">
+                      {nxSupabaseProject.techStack.map((tech) => (
+                        <motion.span
+                          key={tech}
+                          whileHover={{ scale: 1.05, y: -2 }}
+                          className="text-xs font-mono bg-muted px-3 py-1.5 rounded cursor-default"
+                        >
+                          {tech}
+                        </motion.span>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </Card>
+            </HoverCard3D>
+          </RevealOnScroll>
+        </div>
+      </Section>
+
       {/* MyUrbanFarm.ai Project */}
       <Section id="projects-urbanfarm" className="py-16 lg:py-24 relative overflow-hidden">
         <SectionSpots variant="accent" />
@@ -673,150 +771,6 @@ export default function Projects() {
                     </h3>
                     <div className="flex flex-wrap gap-2">
                       {myUrbanFarmProject.techStack.map((tech) => (
-                        <motion.span
-                          key={tech}
-                          whileHover={{ scale: 1.05, y: -2 }}
-                          className="text-xs font-mono bg-muted px-3 py-1.5 rounded cursor-default"
-                        >
-                          {tech}
-                        </motion.span>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-              </Card>
-            </HoverCard3D>
-          </RevealOnScroll>
-        </div>
-      </Section>
-
-      {/* World Project */}
-      <Section id="projects-world" className="py-16 lg:py-24 relative overflow-hidden">
-        <SectionSpots variant="default" />
-        <div className="container mx-auto px-6 lg:px-8 relative z-10">
-          <RevealOnScroll direction="left">
-            <HoverCard3D className="rounded-2xl" glowColor="rgba(255, 255, 255, 0.08)" depth={35}>
-              <Card className="overflow-hidden border-foreground/10 bg-gradient-to-br from-background to-foreground/[0.02]">
-                <div className="p-8 md:p-12 space-y-8">
-                  {/* Header */}
-                  <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-6">
-                    <div>
-                      <div className="flex flex-wrap items-center gap-3 mb-4">
-                        <span className="text-xs font-mono text-yellow-500 bg-yellow-500/10 px-3 py-1 rounded flex items-center gap-1.5">
-                          <span className="w-1.5 h-1.5 rounded-full bg-yellow-500 animate-pulse" />
-                          {t('common.inDevelopment')}
-                        </span>
-                        <span className="text-xs font-mono text-muted-foreground">
-                          {worldProject.year}
-                        </span>
-                      </div>
-                      <h2 className="text-3xl md:text-4xl font-bold mb-2">
-                        {worldProject.title}
-                      </h2>
-                      <p className="text-lg text-muted-foreground">
-                        {t('projects.world.subtitle')}
-                      </p>
-                    </div>
-                    <div className="flex gap-3">
-                      <Magnetic strength={0.2}>
-                        <Button variant="outline" className="font-mono gap-2" asChild>
-                          <a
-                            href={worldProject.links.github}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                          >
-                            <Github className="h-4 w-4" />
-                            {t('common.code')}
-                          </a>
-                        </Button>
-                      </Magnetic>
-                      <Magnetic strength={0.2}>
-                        <Button className="font-mono gap-2" asChild>
-                          <a
-                            href={worldProject.links.live}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                          >
-                            <ExternalLink className="h-4 w-4" />
-                            {t('common.liveDemo')}
-                          </a>
-                        </Button>
-                      </Magnetic>
-                    </div>
-                  </div>
-
-                  {/* Performance Metrics */}
-                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4 p-6 bg-foreground/5 rounded-xl">
-                    {worldProject.metrics.map((metric) => (
-                      <motion.div
-                        key={metric.label}
-                        className="text-center group cursor-default"
-                        whileHover={{ scale: 1.05 }}
-                      >
-                        <div
-                          className={`font-mono text-2xl md:text-3xl font-bold ${
-                            metric.color === 'green' ? 'text-green-500' : ''
-                          }`}
-                        >
-                          {metric.prefix}
-                          <AnimatedCounter value={metric.value} suffix={metric.suffix || ''} />
-                        </div>
-                        <div className="text-xs font-mono text-muted-foreground">
-                          {metric.label}
-                        </div>
-                      </motion.div>
-                    ))}
-                  </div>
-
-                  {/* Description */}
-                  <div className="space-y-4">
-                    <p className="text-muted-foreground leading-relaxed text-lg">
-                      {t('projects.world.description')}
-                    </p>
-                    <p className="text-muted-foreground leading-relaxed">
-                      {t('projects.world.longDescription')}
-                    </p>
-                  </div>
-
-                  {/* Features Grid */}
-                  <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
-                    {worldProject.features?.map(({ icon: Icon, label, desc }) => (
-                      <motion.div
-                        key={label}
-                        whileHover={{ y: -4, scale: 1.02 }}
-                        className="p-4 bg-foreground/5 rounded-lg cursor-default group hover:bg-foreground/10 transition-all"
-                      >
-                        <Icon className="h-6 w-6 text-foreground/60 mb-3 group-hover:text-foreground/80 transition-colors" />
-                        <h4 className="font-semibold mb-1">{label}</h4>
-                        <p className="text-xs text-muted-foreground">{desc}</p>
-                      </motion.div>
-                    ))}
-                  </div>
-
-                  {/* Technical Challenges */}
-                  <div className="grid md:grid-cols-3 gap-6 pt-6 border-t border-border">
-                    {worldProject.challenges.map(({ icon: Icon, title, desc }) => (
-                      <motion.div
-                        key={title}
-                        whileHover={{ y: -4 }}
-                        className="space-y-3 p-4 rounded-lg hover:bg-foreground/5 transition-colors cursor-default"
-                      >
-                        <div className="flex items-center gap-2">
-                          <Icon className="h-5 w-5 text-foreground/60" />
-                          <h4 className="text-sm font-bold">{title}</h4>
-                        </div>
-                        <p className="text-xs text-muted-foreground leading-relaxed">{desc}</p>
-                      </motion.div>
-                    ))}
-                  </div>
-
-                  {/* Tech Stack */}
-                  <div className="space-y-4 pt-6 border-t border-border">
-                    <h3 className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-                      {t('common.techStack')}
-                    </h3>
-                    <div className="flex flex-wrap gap-2">
-                      {worldProject.techStack.map((tech) => (
                         <motion.span
                           key={tech}
                           whileHover={{ scale: 1.05, y: -2 }}

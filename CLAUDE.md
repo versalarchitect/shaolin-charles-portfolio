@@ -91,7 +91,7 @@ Restraint is more impressive than excess. A single well-placed animation beats t
 ### Role Titles
 - **Predictive (Augure)**: "Founder & Principal Developer"
 - **MyUrbanFarm.ai**: "CTO & Principal Software Developer"
-- **World**: "Creator & Developer"
+- **NxSupabase**: "Creator & Maintainer"
 
 ### Footer
 - Keep it minimal - copyright only

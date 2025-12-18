@@ -445,40 +445,40 @@
         }
       }
     },
-    "world": {
-      "subtitle": "Métavers navigateur",
-      "description": "Un monde virtuel 3D persistant dans le navigateur supportant 500 utilisateurs simultanés sans latence perçue et 0$ de coût d'hébergement. Rendu WebGPU optimisé pour Apple Silicon avec calcul GPU pour le terrain, les particules et la végétation.",
-      "longDescription": "Monde 3D multijoueur fonctionnant entièrement dans le navigateur. Les utilisateurs se connectent, se voient, se déplacent et interagissent avec des objets dans un monde persistant. Tout fonctionne sur un seul M4 Max avec Cloudflare Tunnel pour un accès public gratuit.",
+    "nxsupabase": {
+      "subtitle": "Plugin Nx officiel pour Supabase",
+      "description": "Le plugin Nx officiel qui simplifie l'intégration de Supabase dans les environnements monorepo. Automatise les migrations de base de données, la génération de types TypeScript et la configuration du développement local sans aucune configuration.",
+      "longDescription": "Construit pour résoudre la complexité de la gestion de Supabase dans les monorepos Nx. Propose une gestion intelligente des ports pour plusieurs instances concurrentes, un cache Nx pour les types générés et un support complet du cycle de vie du développement local au déploiement en production.",
       "challenges": {
-        "networking": {
-          "title": "Réseau N²",
-          "description": "Filtrage par zone d'intérêt + mise à l'échelle de fréquence + compression delta pour réduire 267 Mo/s d'egress théorique à 10-20 Ko/s par joueur."
+        "multiProject": {
+          "title": "Support multi-projets",
+          "description": "Allocation automatique des ports et inférence de projet via createNodesV2 pour des configurations monorepo multi-projets fluides."
         },
-        "zeroLag": {
-          "title": "Architecture zéro latence",
-          "description": "Prédiction côté client, mises à jour optimistes, interpolation d'entités et rollback avec blend pour une expérience multijoueur fluide."
+        "typeGeneration": {
+          "title": "Génération de types intelligente",
+          "description": "Types TypeScript mis en cache par Nx, régénérés uniquement lors des changements de schéma. Zéro configuration manuelle avec détection automatique de config.toml."
         },
-        "gpuCompute": {
-          "title": "Calcul GPU",
-          "description": "Shaders de calcul WebGPU pour la génération de terrain (marching cubes), 10M+ particules à 60fps et végétation L-system sur GPU."
+        "docker": {
+          "title": "Orchestration Docker",
+          "description": "Orchestration complète de la stack Supabase avec des executors pour les instances locales, les migrations et le déploiement de Edge Functions."
         }
       },
       "features": {
-        "multiplayer": {
-          "label": "Monde multijoueur",
-          "description": "500 utilisateurs simultanés dans un espace persistant partagé"
+        "generators": {
+          "label": "Générateurs",
+          "description": "Créer des projets, migrations, Edge Functions et fichiers seed"
         },
-        "webgpu": {
-          "label": "Rendu WebGPU",
-          "description": "Performance native Metal 3 sur Apple Silicon"
+        "executors": {
+          "label": "Executors",
+          "description": "Gérer les instances locales, exécuter les migrations, déployer en production"
         },
-        "selfHosted": {
-          "label": "Auto-hébergé",
-          "description": "Fonctionne entièrement sur M4 Max via Cloudflare Tunnel"
+        "typeSafety": {
+          "label": "Typage strict",
+          "description": "Types TypeScript générés automatiquement depuis votre schéma de base de données"
         },
-        "persistent": {
-          "label": "Monde persistant",
-          "description": "Supabase pour l'auth, l'état et la synchronisation temps réel"
+        "nxIntegration": {
+          "label": "Intégration Nx",
+          "description": "Cache complet, orchestration des tâches et graphe de dépendances"
         }
       }
     },

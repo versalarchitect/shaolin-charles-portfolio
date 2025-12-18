@@ -445,40 +445,40 @@
         }
       }
     },
-    "world": {
-      "subtitle": "Browser Metaverse",
-      "description": "A persistent browser-based 3D virtual world supporting 500 concurrent users with zero perceived lag and $0 hosting cost. WebGPU-first rendering optimized for Apple Silicon with GPU compute for terrain, particles, and vegetation.",
-      "longDescription": "Multiplayer 3D world running entirely in the browser. Users connect, see each other, move around, and interact with objects in a persistent world. Everything runs on a single M4 Max with Cloudflare Tunnel for free public access.",
+    "nxsupabase": {
+      "subtitle": "Official Nx Plugin for Supabase",
+      "description": "The official Nx plugin that streamlines Supabase integration within monorepo environments. Automates database migrations, TypeScript type generation, and local development setup with zero configuration.",
+      "longDescription": "Built to solve the complexity of managing Supabase in Nx monorepos. Features smart port management for multiple concurrent instances, Nx caching for generated types, and full lifecycle support from local development to production deployment.",
       "challenges": {
-        "networking": {
-          "title": "N² Networking",
-          "description": "Area of Interest filtering + frequency scaling + delta compression to reduce 267 MB/s theoretical egress to 10-20 KB/s per player."
+        "multiProject": {
+          "title": "Multi-Project Support",
+          "description": "Automatic port allocation and project inference via createNodesV2 for seamless multi-project monorepo setups."
         },
-        "zeroLag": {
-          "title": "Zero-Lag Architecture",
-          "description": "Client-side prediction, optimistic updates, entity interpolation, and rollback with blend for seamless multiplayer experience."
+        "typeGeneration": {
+          "title": "Smart Type Generation",
+          "description": "Nx-cached TypeScript types regenerated only when schema changes. Zero manual configuration with config.toml auto-detection."
         },
-        "gpuCompute": {
-          "title": "GPU Compute",
-          "description": "WebGPU compute shaders for terrain generation (marching cubes), 10M+ particles at 60fps, and L-system vegetation on GPU."
+        "docker": {
+          "title": "Docker Orchestration",
+          "description": "Full Supabase stack orchestration with executors for local instances, migrations, and Edge Function deployment."
         }
       },
       "features": {
-        "multiplayer": {
-          "label": "Multiplayer World",
-          "description": "500 concurrent users in shared persistent space"
+        "generators": {
+          "label": "Generators",
+          "description": "Scaffold projects, migrations, Edge Functions, and seed files"
         },
-        "webgpu": {
-          "label": "WebGPU Rendering",
-          "description": "Native Metal 3 performance on Apple Silicon"
+        "executors": {
+          "label": "Executors",
+          "description": "Manage local instances, run migrations, deploy to production"
         },
-        "selfHosted": {
-          "label": "Self-Hosted",
-          "description": "Runs entirely on M4 Max via Cloudflare Tunnel"
+        "typeSafety": {
+          "label": "Type Safety",
+          "description": "Auto-generated TypeScript types from your database schema"
         },
-        "persistent": {
-          "label": "Persistent World",
-          "description": "Supabase for auth, state, and realtime sync"
+        "nxIntegration": {
+          "label": "Nx Integration",
+          "description": "Full caching, task orchestration, and dependency graph"
         }
       }
     },
