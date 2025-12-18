@@ -3,7 +3,7 @@ import { Link, useLocation } from 'react-router-dom'
 import { motion, AnimatePresence, useReducedMotion } from 'framer-motion'
 import { useTranslation } from 'react-i18next'
 import { Button } from './ui/button'
-import { AlignJustify, X, ArrowUpRight } from 'lucide-react'
+import { AlignJustify, X, ArrowUpRight, Github } from 'lucide-react'
 import { LanguageSwitcher } from './language-switcher'
 import { Logo } from './ui/logo'
 import { HEADER_NAV, SOCIAL_LINKS, SITE } from '@/lib/constants'
@@ -105,6 +105,14 @@ export function Header() {
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.5 }}
         >
+          <a
+            href="https://github.com/versalarchitect"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="p-2 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
+          >
+            <Github className="h-4 w-4" />
+          </a>
           <LanguageSwitcher />
           <Button size="sm" className="font-mono gap-1.5 group" asChild>
             <Link to="/contact">
@@ -116,6 +124,14 @@ export function Header() {
 
         {/* Mobile menu button */}
         <div className="flex items-center gap-2 lg:hidden">
+          <a
+            href="https://github.com/versalarchitect"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="p-2 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
+          >
+            <Github className="h-4 w-4" />
+          </a>
           <LanguageSwitcher />
           <button
             type="button"
