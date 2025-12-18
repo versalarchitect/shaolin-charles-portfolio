@@ -1,5 +1,51 @@
 # Charles Portfolio - Development Guidelines
 
+## Project Overview
+
+Personal portfolio website for Charles Jackson showcasing projects, skills, and 3D art experiments.
+
+### Live URLs
+
+- **Primary**: https://shaolincharles.dev
+- **WWW**: https://www.shaolincharles.dev
+- **Vercel**: https://shaolin-charles.vercel.app
+
+### Repository
+
+- **GitHub**: https://github.com/versalarchitect/shaolin-charles-portfolio
+
+### Deployment
+
+- **Platform**: Vercel
+- **Project**: `shaolin-charles` under `charles-jacksons-projects` team
+- **Framework**: Vite + React
+- **Auto-deploy**: Pushes to `main` branch trigger production deployments
+
+### Development
+
+```bash
+# From monorepo root
+npx nx dev charles-web      # Start dev server
+npx nx build charles-web    # Production build
+npx nx lint charles-web     # Run linter
+
+# From this directory (standalone)
+bun run dev                 # Start dev server
+bun run build               # Production build
+```
+
+### Tech Stack
+
+| Category | Technology |
+|----------|------------|
+| Framework | React 19 + TypeScript |
+| Build | Vite 7 |
+| Styling | Tailwind CSS 4 |
+| Animation | Framer Motion |
+| 3D | Three.js |
+| Icons | Lucide React |
+| i18n | i18next (EN/FR) |
+
 ## Design Philosophy
 
 **Sophistication is in subtlety.**
