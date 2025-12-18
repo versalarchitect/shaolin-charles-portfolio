@@ -1,5 +1,4 @@
 import { useEffect, useState, useRef, type MouseEvent } from 'react'
-import { Helmet } from 'react-helmet-async'
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { Button } from '@/components/ui/button'
@@ -45,6 +44,7 @@ import {
   GlowBorder,
 } from '@/components/ui/aaa-effects'
 import { SectionSpots, Section } from '@/components/ui/gradient-background'
+import { SEO } from '@/components/SEO'
 import {
   Accordion,
   AccordionItem,
@@ -244,19 +244,14 @@ export default function Home() {
 
   return (
     <>
-      <Helmet>
-        <title>{t('home.meta.title')}</title>
-        <meta name="description" content={t('home.meta.description')} />
-        {/* Open Graph */}
-        <meta property="og:title" content={t('home.meta.title')} />
-        <meta property="og:description" content={t('home.meta.description')} />
-        <meta property="og:type" content="website" />
-        <meta property="og:image" content="/og-image.png" />
-        {/* Twitter Card */}
-        <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content={t('home.meta.title')} />
-        <meta name="twitter:description" content={t('home.meta.description')} />
-      </Helmet>
+      <SEO
+        title={t('home.meta.title')}
+        description={t('home.meta.description')}
+        path=""
+        image="/og-image.png"
+        imageAlt="Charles Jackson - Full Stack Developer | Building intelligent systems and scalable platforms"
+        keywords="full stack developer, react developer, typescript, python, software engineer, montreal developer, charles jackson, predictive, augure"
+      />
 
       {/* Hero Section */}
       <Section id="hero" className="relative min-h-screen flex items-center overflow-hidden">

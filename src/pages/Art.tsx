@@ -1,5 +1,7 @@
 import { useState, Suspense, lazy, useRef, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
+import { SEO } from '@/components/SEO'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Section } from '@/components/ui/gradient-background'
 import { BlurFadeIn } from '@/components/ui/aaa-effects'
@@ -14,6 +16,29 @@ const BaliSceneCanvas = lazy(() =>
   import('@/components/art/bali/index').then((m) => ({ default: m.BaliScene }))
 )
 
+// Generative art canvases (p5.js)
+const CurrentsCanvas = lazy(() =>
+  import('@/components/art/generative/currents').then((m) => ({ default: m.CurrentsCanvas }))
+)
+const TessellationCanvas = lazy(() =>
+  import('@/components/art/generative/tessellation').then((m) => ({ default: m.TessellationCanvas }))
+)
+const ResonanceCanvas = lazy(() =>
+  import('@/components/art/generative/resonance').then((m) => ({ default: m.ResonanceCanvas }))
+)
+const GestureCanvas = lazy(() =>
+  import('@/components/art/generative/gesture').then((m) => ({ default: m.GestureCanvas }))
+)
+const AttractorCanvas = lazy(() =>
+  import('@/components/art/generative/attractor').then((m) => ({ default: m.AttractorCanvas }))
+)
+const TopologyCanvas = lazy(() =>
+  import('@/components/art/generative/topology').then((m) => ({ default: m.TopologyCanvas }))
+)
+const EmergenceCanvas = lazy(() =>
+  import('@/components/art/generative/emergence').then((m) => ({ default: m.EmergenceCanvas }))
+)
+
 // Categories
 type Category = 'abstract' | 'worlds'
 
@@ -24,6 +49,7 @@ const categories: { id: Category; label: string }[] = [
 
 // Art pieces data
 const artPieces = [
+  // Worlds - 3D immersive scenes
   {
     id: 'bali',
     title: 'Bali Sunset',
@@ -47,6 +73,63 @@ const artPieces = [
     color: 'from-emerald-500/20 to-teal-500/20',
     category: 'worlds' as const,
   },
+  // Abstract - generative p5.js art
+  {
+    id: 'currents',
+    title: 'Currents',
+    thumbnail: '/art/currents-thumb.jpg',
+    color: 'from-slate-500/20 to-zinc-500/20',
+    category: 'abstract' as const,
+    hasCanvas: true,
+  },
+  {
+    id: 'tessellation',
+    title: 'Tessellation',
+    thumbnail: '/art/tessellation-thumb.jpg',
+    color: 'from-neutral-500/20 to-stone-500/20',
+    category: 'abstract' as const,
+    hasCanvas: true,
+  },
+  {
+    id: 'resonance',
+    title: 'Resonance',
+    thumbnail: '/art/resonance-thumb.jpg',
+    color: 'from-gray-500/20 to-zinc-500/20',
+    category: 'abstract' as const,
+    hasCanvas: true,
+  },
+  {
+    id: 'gesture',
+    title: 'Gesture',
+    thumbnail: '/art/gesture-thumb.jpg',
+    color: 'from-zinc-500/20 to-neutral-500/20',
+    category: 'abstract' as const,
+    hasCanvas: true,
+  },
+  {
+    id: 'attractor',
+    title: 'Attractor',
+    thumbnail: '/art/attractor-thumb.jpg',
+    color: 'from-stone-500/20 to-slate-500/20',
+    category: 'abstract' as const,
+    hasCanvas: true,
+  },
+  {
+    id: 'topology',
+    title: 'Topology',
+    thumbnail: '/art/topology-thumb.jpg',
+    color: 'from-neutral-500/20 to-zinc-500/20',
+    category: 'abstract' as const,
+    hasCanvas: true,
+  },
+  {
+    id: 'emergence',
+    title: 'Emergence',
+    thumbnail: '/art/emergence-thumb.jpg',
+    color: 'from-zinc-500/20 to-stone-500/20',
+    category: 'abstract' as const,
+    hasCanvas: true,
+  },
 ]
 
 // Loading fallback
@@ -64,10 +147,26 @@ function CanvasLoader({ title }: { title: string }) {
 // Render canvas based on piece id
 function ArtCanvas({ pieceId }: { pieceId: string }) {
   switch (pieceId) {
+    // 3D worlds
     case 'bali':
       return <BaliSceneCanvas />
     case 'asian-city':
       return <AsianCityCanvas loadExternalModels />
+    // Generative abstract
+    case 'currents':
+      return <CurrentsCanvas />
+    case 'tessellation':
+      return <TessellationCanvas />
+    case 'resonance':
+      return <ResonanceCanvas />
+    case 'gesture':
+      return <GestureCanvas />
+    case 'attractor':
+      return <AttractorCanvas />
+    case 'topology':
+      return <TopologyCanvas />
+    case 'emergence':
+      return <EmergenceCanvas />
     default:
       return null
   }
@@ -161,11 +260,34 @@ function ArtPreview({ piece }: { piece: (typeof artPieces)[0] }) {
       <Suspense
         fallback={<div className={`w-full h-full bg-gradient-to-br ${piece.color}`} />}
       >
+        {/* 3D worlds */}
         {piece.id === 'bali' && (
           <BaliSceneCanvas preview mouseX={mousePos.x} mouseY={mousePos.y} />
         )}
         {piece.id === 'asian-city' && (
           <AsianCityCanvas preview mouseX={mousePos.x} mouseY={mousePos.y} />
+        )}
+        {/* Generative abstract */}
+        {piece.id === 'currents' && (
+          <CurrentsCanvas preview mouseX={mousePos.x} mouseY={mousePos.y} />
+        )}
+        {piece.id === 'tessellation' && (
+          <TessellationCanvas preview mouseX={mousePos.x} mouseY={mousePos.y} />
+        )}
+        {piece.id === 'resonance' && (
+          <ResonanceCanvas preview mouseX={mousePos.x} mouseY={mousePos.y} />
+        )}
+        {piece.id === 'gesture' && (
+          <GestureCanvas preview mouseX={mousePos.x} mouseY={mousePos.y} />
+        )}
+        {piece.id === 'attractor' && (
+          <AttractorCanvas preview mouseX={mousePos.x} mouseY={mousePos.y} />
+        )}
+        {piece.id === 'topology' && (
+          <TopologyCanvas preview mouseX={mousePos.x} mouseY={mousePos.y} />
+        )}
+        {piece.id === 'emergence' && (
+          <EmergenceCanvas preview mouseX={mousePos.x} mouseY={mousePos.y} />
         )}
       </Suspense>
     </div>
@@ -214,6 +336,7 @@ function ArtGridItem({
 }
 
 export default function Art() {
+  const { t } = useTranslation()
   const { category } = useParams<{ category: string }>()
   const navigate = useNavigate()
   const [selectedPiece, setSelectedPiece] = useState<(typeof artPieces)[0] | null>(null)
@@ -231,6 +354,15 @@ export default function Art() {
 
   return (
     <>
+      <SEO
+        title={t('art.meta.title')}
+        description={t('art.meta.description')}
+        path="/art"
+        image="/og-art.png"
+        imageAlt="Charles Jackson Visual Experiments - Generative art, shaders, and interactive visuals"
+        keywords="creative coding, three.js, webgl, generative art, interactive visuals, shader art, canvas experiments, visual programming"
+      />
+
       {/* Fullscreen view */}
       <AnimatePresence>
         {selectedPiece && (

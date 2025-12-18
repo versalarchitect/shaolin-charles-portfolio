@@ -1,6 +1,6 @@
-import { Helmet } from 'react-helmet-async'
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
+import { SEO } from '@/components/SEO'
 import { Button } from '@/components/ui/button'
 import { Home } from 'lucide-react'
 
@@ -9,10 +9,11 @@ export default function NotFound() {
 
   return (
     <>
-      <Helmet>
-        <title>404 - {t('notFound.title')}</title>
-        <meta name="description" content={t('notFound.title')} />
-      </Helmet>
+      <SEO
+        title={`404 - ${t('notFound.title')}`}
+        description={t('notFound.description')}
+        noindex
+      />
 
       <div className="min-h-[70vh] flex items-center justify-center px-6">
         <div className="text-center space-y-6">

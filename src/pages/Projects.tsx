@@ -1,6 +1,6 @@
 import { useEffect, useState, useRef } from 'react'
-import { Helmet } from 'react-helmet-async'
 import { Link } from 'react-router-dom'
+import { SEO } from '@/components/SEO'
 import { useTranslation } from 'react-i18next'
 import {
   ExternalLink,
@@ -360,13 +360,14 @@ export default function Projects() {
 
   return (
     <>
-      <Helmet>
-        <title>{t('projects.meta.title')}</title>
-        <meta name="description" content={t('projects.meta.description')} />
-        <meta property="og:title" content={t('projects.meta.title')} />
-        <meta property="og:description" content={t('projects.meta.description')} />
-        <meta property="og:type" content="website" />
-      </Helmet>
+      <SEO
+        title={t('projects.meta.title')}
+        description={t('projects.meta.description')}
+        path="/projects"
+        image="/og-projects.png"
+        imageAlt="Charles Jackson Projects - AI platforms, urban agriculture tech, and browser metaverses"
+        keywords="predictive platform, augure, myurbanfarm.ai, developer portfolio, react projects, typescript projects, ai platform, urban farming"
+      />
 
       {/* Hero Section */}
       <Section

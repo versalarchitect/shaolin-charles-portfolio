@@ -1,6 +1,6 @@
-import { Helmet } from 'react-helmet-async'
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
+import { SEO } from '@/components/SEO'
 import { Button } from '@/components/ui/button'
 import { motion, useReducedMotion } from 'framer-motion'
 import {
@@ -167,13 +167,14 @@ export default function Interests() {
 
   return (
     <>
-      <Helmet>
-        <title>{t('interests.meta.title')}</title>
-        <meta name="description" content={t('interests.meta.description')} />
-        <meta property="og:title" content={t('interests.meta.title')} />
-        <meta property="og:description" content={t('interests.meta.description')} />
-        <meta property="og:type" content="website" />
-      </Helmet>
+      <SEO
+        title={t('interests.meta.title')}
+        description={t('interests.meta.description')}
+        path="/interests"
+        image="/og-interests.png"
+        imageAlt="Charles Jackson Interests - Mathematical modeling, machine learning, and prediction systems"
+        keywords="monte carlo simulations, bayesian inference, machine learning, transformer models, nlp, mathematical modeling, prediction systems, deep learning"
+      />
 
       {/* Hero Section */}
       <Section id="interests-hero" className="relative min-h-[70vh] flex items-center overflow-hidden">

@@ -21,6 +21,35 @@ Personal portfolio website for Charles Jackson showcasing projects, skills, and 
 - **Framework**: Vite + React
 - **Auto-deploy**: Pushes to `main` branch trigger production deployments
 
+### Deployment Workflow
+
+The standard workflow for deploying changes:
+
+```bash
+# 1. Build the project
+bun run build
+
+# 2. Run the linter (fix any new errors you introduced)
+bun run lint
+
+# 3. Stage and commit changes
+git add .
+git commit -m "Description of changes"
+
+# 4. Push to trigger Vercel deployment
+git push origin main
+
+# 5. Check Vercel logs for deployment status
+#    - Go to: https://vercel.com/charles-jacksons-projects/shaolin-charles
+#    - Or use: vercel logs --scope charles-jacksons-projects
+```
+
+**Important:**
+- Always build before pushing to catch errors locally
+- Lint errors will NOT block Vercel deployment, but fix them anyway
+- Vercel auto-deploys on push to `main` - no manual deployment needed
+- Check Vercel dashboard for build logs if deployment fails
+
 ### Development
 
 ```bash

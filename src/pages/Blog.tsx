@@ -1,6 +1,6 @@
 import { useState } from 'react'
-import { Helmet } from 'react-helmet-async'
 import { Link } from 'react-router-dom'
+import { SEO } from '@/components/SEO'
 import { useTranslation } from 'react-i18next'
 import {
   ArrowRight,
@@ -353,28 +353,15 @@ export default function Blog() {
 
   return (
     <>
-      <Helmet>
-        <title>{t('blog.meta.title', 'Blog - Charles Jackson | Full Stack Developer')}</title>
-        <meta
-          name="description"
-          content={t(
-            'blog.meta.description',
-            'Technical articles on software architecture, React, TypeScript, and building scalable systems. Insights from 20+ years of full-stack development.'
-          )}
-        />
-        <meta
-          property="og:title"
-          content={t('blog.meta.title', 'Blog - Charles Jackson | Full Stack Developer')}
-        />
-        <meta
-          property="og:description"
-          content={t(
-            'blog.meta.description',
-            'Technical articles on software architecture, React, TypeScript, and building scalable systems.'
-          )}
-        />
-        <meta property="og:type" content="website" />
-      </Helmet>
+      <SEO
+        title={t('blog.meta.title')}
+        description={t('blog.meta.description')}
+        path="/blog"
+        type="blog"
+        image="/og-blog.png"
+        imageAlt="Charles Jackson Technical Blog - Architecture, Performance, and TypeScript"
+        keywords="software architecture blog, react typescript articles, full stack development tutorials, web development insights, performance optimization"
+      />
 
       {/* Hero Section */}
       <Section id="blog-hero" className="relative min-h-[50vh] flex items-center overflow-hidden">

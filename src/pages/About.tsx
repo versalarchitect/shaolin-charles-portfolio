@@ -1,6 +1,6 @@
-import { Helmet } from 'react-helmet-async'
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
+import { SEO } from '@/components/SEO'
 import { Button } from '@/components/ui/button'
 import { motion } from 'framer-motion'
 import {
@@ -150,16 +150,15 @@ export default function About() {
 
   return (
     <>
-      <Helmet>
-        <title>{t('about.meta.title')}</title>
-        <meta
-          name="description"
-          content={t('about.meta.description')}
-        />
-        <meta property="og:title" content={t('about.meta.title')} />
-        <meta property="og:description" content={t('about.meta.description')} />
-        <meta property="og:type" content="profile" />
-      </Helmet>
+      <SEO
+        title={t('about.meta.title')}
+        description={t('about.meta.description')}
+        path="/about"
+        type="profile"
+        image="/og-about.png"
+        imageAlt="About Charles Jackson - 20+ years of full-stack development experience"
+        keywords="charles jackson about, full stack developer experience, 20 years developer, montreal software engineer, tech lead, startup founder"
+      />
 
       {/* Hero Section */}
       <Section id="about-hero" className="relative min-h-[70vh] flex items-center overflow-hidden">

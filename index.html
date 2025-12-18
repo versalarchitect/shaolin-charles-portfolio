@@ -7,32 +7,49 @@
     <!-- Primary Meta Tags -->
     <title>Charles Jackson - Full Stack Developer</title>
     <meta name="title" content="Charles Jackson - Full Stack Developer" />
-    <meta name="description" content="Full-stack developer with 16 years experience. Specializing in React, TypeScript, Python, and scalable architecture." />
+    <meta name="description" content="Full-stack developer with 20+ years experience building intelligent systems and scalable platforms. Creator of Predictive (Augure). Specializing in React, TypeScript, Python, and modern web architecture." />
     <meta name="author" content="Charles Jackson" />
-    <meta name="keywords" content="full stack developer, react, typescript, python, node.js, software engineer, web developer, montreal" />
+    <meta name="keywords" content="full stack developer, react, typescript, python, node.js, software engineer, web developer, montreal, predictive, augure, supabase, nx monorepo, senior developer, tech lead" />
+    <meta name="creator" content="Charles Jackson" />
+    <meta name="publisher" content="Charles Jackson" />
+    <meta name="generator" content="Vite + React" />
 
     <!-- Canonical URL -->
-    <link rel="canonical" href="https://charlesjackson.dev" />
+    <link rel="canonical" href="https://shaolincharles.dev" />
 
-    <!-- Open Graph / Facebook / LinkedIn / Discord / Slack / WhatsApp / Telegram -->
+    <!-- Open Graph / Facebook / LinkedIn / Discord / Slack / WhatsApp / Telegram / iMessage -->
     <meta property="og:type" content="website" />
-    <meta property="og:url" content="https://charlesjackson.dev" />
+    <meta property="og:url" content="https://shaolincharles.dev" />
     <meta property="og:site_name" content="Charles Jackson" />
     <meta property="og:title" content="Charles Jackson - Full Stack Developer" />
-    <meta property="og:description" content="Full-stack developer with 16 years experience. Specializing in React, TypeScript, Python, and scalable architecture." />
-    <meta property="og:image" content="https://charlesjackson.dev/og-image.png" />
+    <meta property="og:description" content="Full-stack developer with 20+ years experience building intelligent systems and scalable platforms. Creator of Predictive (Augure). Specializing in React, TypeScript, Python, and modern web architecture." />
+    <meta property="og:image" content="https://shaolincharles.dev/og-image.png" />
+    <meta property="og:image:secure_url" content="https://shaolincharles.dev/og-image.png" />
+    <meta property="og:image:type" content="image/png" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
-    <meta property="og:image:alt" content="Charles Jackson - Full Stack Developer" />
+    <meta property="og:image:alt" content="Charles Jackson - Full Stack Developer | Building intelligent systems and scalable platforms" />
     <meta property="og:locale" content="en_US" />
+    <meta property="og:locale:alternate" content="fr_CA" />
 
     <!-- Twitter / X -->
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:url" content="https://charlesjackson.dev" />
+    <meta name="twitter:site" content="@shaolincharles" />
+    <meta name="twitter:creator" content="@shaolincharles" />
+    <meta name="twitter:domain" content="shaolincharles.dev" />
+    <meta name="twitter:url" content="https://shaolincharles.dev" />
     <meta name="twitter:title" content="Charles Jackson - Full Stack Developer" />
-    <meta name="twitter:description" content="Full-stack developer with 16 years experience. Specializing in React, TypeScript, Python, and scalable architecture." />
-    <meta name="twitter:image" content="https://charlesjackson.dev/og-image.png" />
-    <meta name="twitter:image:alt" content="Charles Jackson - Full Stack Developer" />
+    <meta name="twitter:description" content="Full-stack developer with 20+ years experience. Building intelligent systems, beautiful interfaces, and scalable platforms." />
+    <meta name="twitter:image" content="https://shaolincharles.dev/og-image.png" />
+    <meta name="twitter:image:alt" content="Charles Jackson - Full Stack Developer | Building intelligent systems and scalable platforms" />
+
+    <!-- Schema.org / Google+ / Pinterest microdata -->
+    <meta itemprop="name" content="Charles Jackson - Full Stack Developer" />
+    <meta itemprop="description" content="Full-stack developer with 20+ years experience building intelligent systems and scalable platforms. Creator of Predictive (Augure)." />
+    <meta itemprop="image" content="https://shaolincharles.dev/og-image.png" />
+
+    <!-- LinkedIn specific (uses OG but sometimes needs nudging) -->
+    <meta name="linkedin:owner" content="Charles Jackson" />
 
     <!-- Favicon and Icons -->
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
@@ -41,17 +58,52 @@
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
 
     <!-- Theme Color (for browser UI) -->
-    <meta name="theme-color" content="#09090b" />
+    <meta name="theme-color" content="#09090b" media="(prefers-color-scheme: dark)" />
+    <meta name="theme-color" content="#09090b" media="(prefers-color-scheme: light)" />
     <meta name="msapplication-TileColor" content="#09090b" />
+    <meta name="color-scheme" content="dark" />
 
     <!-- Apple Mobile Web App -->
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
     <meta name="apple-mobile-web-app-title" content="Charles Jackson" />
+    <meta name="format-detection" content="telephone=no" />
 
     <!-- Robots -->
-    <meta name="robots" content="index, follow" />
-    <meta name="googlebot" content="index, follow" />
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+    <meta name="googlebot" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+
+    <!-- Geo Tags -->
+    <meta name="geo.region" content="CA-QC" />
+    <meta name="geo.placename" content="Montreal" />
+
+    <!-- Structured Data / JSON-LD -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "Person",
+        "name": "Charles Jackson",
+        "url": "https://shaolincharles.dev",
+        "image": "https://shaolincharles.dev/og-image.png",
+        "jobTitle": "Full Stack Developer",
+        "description": "Full-stack developer with 20+ years experience building intelligent systems and scalable platforms. Creator of Predictive (Augure).",
+        "sameAs": [
+          "https://github.com/versalarchitect"
+        ],
+        "knowsAbout": ["React", "TypeScript", "Python", "Node.js", "PostgreSQL", "Supabase", "Software Architecture", "Web Development"],
+        "address": {
+          "@type": "PostalAddress",
+          "addressLocality": "Montreal",
+          "addressRegion": "Quebec",
+          "addressCountry": "Canada"
+        },
+        "worksFor": {
+          "@type": "Organization",
+          "name": "Predictive (Augure)",
+          "url": "https://augure.app"
+        }
+      }
+    </script>
   </head>
   <body>
     <div id="root"></div>

@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react'
 import { useParams, Link, useNavigate } from 'react-router-dom'
-import { Helmet } from 'react-helmet-async'
 import { useTranslation } from 'react-i18next'
+import { SEO } from '@/components/SEO'
 import {
   ArrowLeft,
   Calendar,
@@ -1224,18 +1224,21 @@ export default function BlogPost() {
 
   return (
     <>
-      <Helmet>
-        <title>{post.title} - Charles Jackson</title>
-        <meta name="description" content={post.excerpt} />
-        <meta property="og:title" content={post.title} />
-        <meta property="og:description" content={post.excerpt} />
-        <meta property="og:type" content="article" />
-        <meta property="article:published_time" content={post.publishedAt} />
-        <meta property="article:author" content="Charles Jackson" />
-        {post.tags.map((tag) => (
-          <meta key={tag} property="article:tag" content={tag} />
-        ))}
-      </Helmet>
+      <SEO
+        title={post.title}
+        description={post.excerpt}
+        path={`/blog/${post.slug}`}
+        type="article"
+        image="/og-blog.png"
+        imageAlt={`${post.title} - Article by Charles Jackson`}
+        keywords={post.tags.join(', ') + ', charles jackson, software engineering'}
+        article={{
+          publishedTime: post.publishedAt,
+          author: 'Charles Jackson',
+          section: post.category,
+          tags: post.tags,
+        }}
+      />
 
       {/* Reading Progress Bar */}
       <ReadingProgress />

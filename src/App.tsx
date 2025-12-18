@@ -1,5 +1,6 @@
-import { useEffect } from 'react'
+import { Suspense, useEffect } from 'react'
 import { Outlet, useLocation } from 'react-router-dom'
+import PageLoading from '@/components/page-loading'
 import { Header } from '@/components/header'
 import { Footer } from '@/components/footer'
 import { Toaster } from '@/components/ui/sonner'
@@ -104,7 +105,9 @@ export default function App() {
                   animate="animate"
                   exit="exit"
                 >
-                  <Outlet />
+                  <Suspense fallback={<PageLoading />}>
+                    <Outlet />
+                  </Suspense>
                 </motion.main>
               </AnimatePresence>
             </div>

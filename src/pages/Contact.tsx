@@ -1,7 +1,7 @@
 import { useState } from 'react'
-import { Helmet } from 'react-helmet-async'
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
+import { SEO } from '@/components/SEO'
 import { Github, Mail, Send, Loader2, Clock, ArrowRight, Calendar } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
@@ -115,16 +115,14 @@ export default function Contact() {
 
   return (
     <>
-      <Helmet>
-        <title>{t('contact.meta.title')}</title>
-        <meta
-          name="description"
-          content={t('contact.meta.description')}
-        />
-        <meta property="og:title" content={t('contact.meta.title')} />
-        <meta property="og:description" content={t('contact.meta.description')} />
-        <meta property="og:type" content="website" />
-      </Helmet>
+      <SEO
+        title={t('contact.meta.title')}
+        description={t('contact.meta.description')}
+        path="/contact"
+        image="/og-contact.png"
+        imageAlt="Contact Charles Jackson - Available for projects and consulting worldwide"
+        keywords="contact charles jackson, hire full stack developer, consulting, freelance developer montreal, software development services"
+      />
 
       {/* Hero Section */}
       <Section id="contact-hero" className="relative min-h-[50vh] flex items-center overflow-hidden">
