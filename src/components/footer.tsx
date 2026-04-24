@@ -26,9 +26,9 @@ export function Footer() {
           <div className="lg:col-span-1">
             <Link to="/" className="flex items-center gap-2 mb-4">
               <div className="w-10 h-10 rounded-lg bg-foreground flex items-center justify-center">
-                <span className="text-background font-bold">CG</span>
+                <span className="text-background font-bold">CJ</span>
               </div>
-              <span className="text-xl font-bold">Charles</span>
+              <span className="text-xl font-bold">Charles Jackson</span>
             </Link>
             <p className="text-sm text-muted-foreground leading-relaxed max-w-sm">
               {t('footer.description')}

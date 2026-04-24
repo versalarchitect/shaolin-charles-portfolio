@@ -240,6 +240,7 @@ export default function Home() {
     t('home.hero.typewriter.intelligentSystems'),
     t('home.hero.typewriter.beautifulInterfaces'),
     t('home.hero.typewriter.scalablePlatforms'),
+    t('home.hero.typewriter.shippingReal'),
   ]
 
   return (
@@ -249,8 +250,8 @@ export default function Home() {
         description={t('home.meta.description')}
         path=""
         image="/og-image.png"
-        imageAlt="Charles Jackson - Full Stack Developer | Building intelligent systems and scalable platforms"
-        keywords="full stack developer, react developer, typescript, python, software engineer, montreal developer, charles jackson, predictive, augure"
+        imageAlt="Charles Jackson - Software Instructor | Building software with AI the right way"
+        keywords="software instructor, ai course, building with ai, react, typescript, claude code, next.js, charles jackson, principles-first"
       />
 
       {/* Hero Section */}
@@ -327,7 +328,7 @@ export default function Home() {
                       className="h-12 px-8 font-mono group relative overflow-hidden"
                       asChild
                     >
-                      <Link to="/projects">
+                      <Link to="/tiers">
                         <span className="relative z-10 flex items-center">
                           {t('common.viewMyWork')}
                           <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
@@ -391,13 +392,13 @@ export default function Home() {
             <div className="relative h-[500px] lg:h-[600px] hidden lg:block">
               {/* Floating tech badges */}
               {[
-                { text: 'React', x: '10%', y: '15%', delay: 0 },
-                { text: 'TypeScript', x: '60%', y: '5%', delay: 0.1 },
-                { text: 'Supabase', x: '75%', y: '25%', delay: 0.2 },
-                { text: 'Tailwind', x: '5%', y: '45%', delay: 0.3 },
-                { text: 'Node.js', x: '65%', y: '50%', delay: 0.4 },
-                { text: 'PostgreSQL', x: '25%', y: '70%', delay: 0.5 },
-                { text: 'Nx Monorepo', x: '70%', y: '75%', delay: 0.6 },
+                { text: '8 Principles', x: '60%', y: '5%', delay: 0 },
+                { text: '52 Hours', x: '10%', y: '15%', delay: 0.1 },
+                { text: '4 Capstones', x: '75%', y: '25%', delay: 0.2 },
+                { text: 'Next.js', x: '5%', y: '45%', delay: 0.3 },
+                { text: 'Claude Code', x: '65%', y: '50%', delay: 0.4 },
+                { text: 'Supabase', x: '25%', y: '70%', delay: 0.5 },
+                { text: 'Ship to Learn', x: '70%', y: '75%', delay: 0.6 },
                 { text: 'Vercel', x: '15%', y: '85%', delay: 0.7 },
               ].map((badge, i) => (
                 <motion.div
@@ -608,10 +609,10 @@ export default function Home() {
         <div className="container mx-auto px-6 lg:px-8 relative z-10">
           <StaggerContainer className="grid grid-cols-2 md:grid-cols-4 gap-8" staggerDelay={0.15}>
             {[
-              { value: 20, suffix: '+', label: t('common.yearsExperience') },
-              { value: 50, suffix: '+', label: t('common.projectsShipped') },
-              { value: 25, suffix: '+', label: t('common.technologies') },
-              { value: 100, suffix: '%', label: t('common.typeCoverage') },
+              { value: 52, suffix: '', label: t('common.hoursOfInstruction') },
+              { value: 51, suffix: '', label: t('home.featuredProject.p95Response') },
+              { value: 8, suffix: '', label: t('home.featuredProject.initialBundle') },
+              { value: 4, suffix: '', label: t('common.capstonesShipped') },
             ].map(({ value, suffix, label }) => (
               <motion.div key={label} variants={staggerItemVariants} className="text-center group">
                 <motion.div
@@ -657,7 +658,7 @@ export default function Home() {
                             {t('common.live')}
                           </span>
                           <span className="text-xs font-mono text-muted-foreground">
-                            2024 - {t('common.present')}
+                            2026 - {t('common.present')}
                           </span>
                         </div>
 
@@ -670,7 +671,7 @@ export default function Home() {
                         </p>
 
                         <div className="flex flex-wrap gap-2">
-                          {['React 19', 'TypeScript', 'Supabase', 'Nx Monorepo', 'Vercel'].map(
+                          {['Next.js 16', 'TypeScript', 'Supabase', 'Claude Code', 'Vercel'].map(
                             (tech) => (
                               <motion.span
                                 key={tech}
@@ -686,7 +687,7 @@ export default function Home() {
                         <div className="flex items-center gap-4 pt-4">
                           <Magnetic strength={0.2}>
                             <Button className="gap-2 font-mono group" asChild>
-                              <Link to="/projects">
+                              <Link to="/tiers">
                                 {t('home.featuredProject.viewCaseStudy')}
                                 <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
                               </Link>
@@ -694,14 +695,10 @@ export default function Home() {
                           </Magnetic>
                           <Magnetic strength={0.2}>
                             <Button variant="outline" className="gap-2 font-mono group" asChild>
-                              <a
-                                href="https://augure.app"
-                                target="_blank"
-                                rel="noopener noreferrer"
-                              >
-                                {t('common.liveDemo')}
-                                <ExternalLink className="h-4 w-4 group-hover:rotate-12 transition-transform" />
-                              </a>
+                              <Link to="/curriculum">
+                                Course Preview
+                                <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
+                              </Link>
                             </Button>
                           </Magnetic>
                         </div>
@@ -711,27 +708,27 @@ export default function Home() {
                       <StaggerContainer className="grid grid-cols-2 gap-4" staggerDelay={0.08}>
                         {[
                           {
-                            value: 98,
+                            value: 52,
                             label: t('home.featuredProject.lighthouseScore'),
+                            suffix: 'h',
+                          },
+                          {
+                            value: 51,
+                            label: t('home.featuredProject.p95Response'),
                             suffix: '',
                           },
                           {
-                            value: 200,
-                            label: t('home.featuredProject.p95Response'),
-                            prefix: '<',
-                            suffix: 'ms',
-                          },
-                          {
-                            value: 47,
+                            value: 8,
                             label: t('home.featuredProject.initialBundle'),
-                            suffix: 'KB',
+                            suffix: '',
                           },
-                          { value: 150, label: t('home.featuredProject.components'), suffix: '+' },
-                          { value: 17, label: t('home.featuredProject.lifeDomains'), suffix: '' },
+                          { value: 4, label: t('home.featuredProject.components'), suffix: '' },
+                          { value: 4, label: t('home.featuredProject.lifeDomains'), suffix: '' },
                           {
-                            value: 1000,
+                            value: 0,
                             label: t('home.featuredProject.domainNodes'),
-                            suffix: '+',
+                            prefix: '$',
+                            suffix: '',
                           },
                         ].map(({ value, label, prefix = '', suffix }) => (
                           <motion.div
@@ -840,8 +837,8 @@ export default function Home() {
               <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-12">
                 <Magnetic strength={0.15}>
                   <Button size="lg" className="h-14 px-10 font-mono group" asChild>
-                    <Link to="/contact">
-                      {t('common.startConversation')}
+                    <Link to="/curriculum">
+                      Start Learning
                       <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
                     </Link>
                   </Button>

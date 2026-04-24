@@ -30,7 +30,7 @@ export function BentoGrid() {
       icon: Code2,
       titleKey: 'home.skills.items.frontend.title',
       descriptionKey: 'home.skills.items.frontend.description',
-      tech: ['React 19', 'TypeScript', 'Tailwind v4', 'Framer Motion'],
+      tech: ['Next.js 16', 'React 19', 'TypeScript', 'Tailwind v4'],
       className: 'md:col-span-2 md:row-span-2',
       featured: true,
     },
@@ -38,49 +38,49 @@ export function BentoGrid() {
       icon: Database,
       titleKey: 'home.skills.items.backend.title',
       descriptionKey: 'home.skills.items.backend.description',
-      tech: ['Supabase', 'PostgreSQL', 'Node.js'],
+      tech: ['Supabase', 'PostgreSQL'],
     },
     {
       icon: Cloud,
       titleKey: 'home.skills.items.cloud.title',
       descriptionKey: 'home.skills.items.cloud.description',
-      tech: ['Vercel', 'Edge Functions'],
+      tech: ['Vercel', 'Preview Deploys'],
     },
     {
       icon: Layers,
       titleKey: 'home.skills.items.architecture.title',
       descriptionKey: 'home.skills.items.architecture.description',
-      tech: ['Nx', 'Module Federation'],
+      tech: ['Drizzle', 'Type Safety'],
     },
     {
       icon: Zap,
       titleKey: 'home.skills.items.performance.title',
       descriptionKey: 'home.skills.items.performance.description',
-      tech: ['Vite', 'SWC', 'Code Splitting'],
+      tech: ['Claude Code', 'Skills'],
     },
     {
       icon: GitBranch,
       titleKey: 'home.skills.items.devops.title',
       descriptionKey: 'home.skills.items.devops.description',
-      tech: ['GitHub Actions', 'Playwright'],
+      tech: ['Stripe', 'Webhooks'],
     },
     {
       icon: Palette,
       titleKey: 'home.skills.items.designSystems.title',
       descriptionKey: 'home.skills.items.designSystems.description',
-      tech: ['Radix UI', 'shadcn/ui'],
+      tech: ['shadcn/ui', 'Tailwind'],
     },
     {
       icon: Smartphone,
       titleKey: 'home.skills.items.mobile.title',
       descriptionKey: 'home.skills.items.mobile.description',
-      tech: ['React Native', 'Expo'],
+      tech: ['Inngest', 'Durable Jobs'],
     },
     {
       icon: Lock,
       titleKey: 'home.skills.items.security.title',
       descriptionKey: 'home.skills.items.security.description',
-      tech: ['Auth.js', 'RLS'],
+      tech: ['Vitest', 'Playwright'],
     },
   ]
 
@@ -219,17 +219,16 @@ function BentoCard({
   )
 }
 
-// Skill proficiency visualization
 export function SkillBadges() {
   const skills = [
-    { name: 'React', years: 8 },
-    { name: 'TypeScript', years: 6 },
-    { name: 'Node.js', years: 10 },
-    { name: 'PostgreSQL', years: 12 },
-    { name: 'Supabase', years: 3 },
-    { name: 'Tailwind', years: 5 },
-    { name: 'Nx', years: 3 },
-    { name: 'Python', years: 8 },
+    { name: 'Next.js', tiers: 'T1–T4' },
+    { name: 'TypeScript', tiers: 'T1–T4' },
+    { name: 'Supabase', tiers: 'T2–T3' },
+    { name: 'Claude Code', tiers: 'T1–T4' },
+    { name: 'Stripe', tiers: 'T2' },
+    { name: 'Drizzle ORM', tiers: 'T2–T3' },
+    { name: 'Inngest', tiers: 'T3' },
+    { name: 'Vercel', tiers: 'T1–T4' },
   ]
 
   return (
@@ -247,18 +246,17 @@ export function SkillBadges() {
             <div className="flex items-center gap-2">
               <span className="font-mono text-sm text-foreground/80">{skill.name}</span>
               <span className="text-[10px] font-mono text-foreground/40 tabular-nums">
-                {skill.years}y
+                {skill.tiers}
               </span>
             </div>
           </div>
 
-          {/* Hover tooltip */}
           <motion.div
             className="absolute -top-8 left-1/2 -translate-x-1/2 px-2 py-1 bg-foreground text-background text-[10px] font-mono rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap"
             initial={{ y: 4 }}
             whileHover={{ y: 0 }}
           >
-            {skill.years} years
+            Used in {skill.tiers}
           </motion.div>
         </motion.div>
       ))}

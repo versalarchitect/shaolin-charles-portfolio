@@ -1,24 +1,28 @@
 {
   "nav": {
     "home": "Home",
+    "curriculum": "Curriculum",
+    "principles": "Principles",
+    "tiers": "Tiers",
+    "blog": "Blog",
+    "instructor": "Instructor",
+    "contact": "Contact",
     "about": "About",
     "projects": "Projects",
     "interests": "Interests",
-    "blog": "Blog",
     "art": "Art",
-    "contact": "Contact",
-    "getInTouch": "Get in Touch",
+    "getInTouch": "Enroll Now",
     "navigation": "Navigation"
   },
   "common": {
-    "viewMyWork": "View My Work",
-    "letsTalk": "Let's Talk",
-    "startConversation": "Start a Conversation",
+    "viewMyWork": "See the Curriculum",
+    "letsTalk": "Is This For You?",
+    "startConversation": "Enroll Now",
     "learnAboutMe": "Learn About Me",
     "viewProjects": "View Projects",
     "scrollToExplore": "Scroll to explore",
-    "shippingCode": "Shipping code",
-    "openToCollaboration": "Open to Collaboration",
+    "shippingCode": "Now enrolling",
+    "openToCollaboration": "Enrollment Open",
     "currentlyBuilding": "Currently Building",
     "location": "Location",
     "montrealCanada": "Montreal, Canada",
@@ -40,211 +44,214 @@
     "liveDemo": "Live Demo",
     "visitSite": "Visit Site",
     "techStack": "Tech Stack",
-    "byTheNumbers": "By The Numbers"
+    "byTheNumbers": "By The Numbers",
+    "hoursOfInstruction": "Hours of Instruction",
+    "capstonesShipped": "Capstones Shipped"
   },
   "home": {
     "meta": {
-      "title": "Charles Jackson - Full Stack Developer",
-      "description": "Full-stack developer with 16 years experience. Creator of Predictive. Specializing in React, TypeScript, and scalable architecture."
+      "title": "The Agentic SaaS Course — Charles Jackson",
+      "description": "A principles-first course on building software with AI. 52 hours, 4 capstones, and principles that outlast the next model release."
     },
     "hero": {
-      "statusBadge": "Shipping code",
+      "statusBadge": "Now enrolling",
       "name": "Charles Jackson",
-      "tagline": "I build",
+      "tagline": "I teach",
       "typewriter": {
-        "intelligentSystems": "intelligent systems",
-        "beautifulInterfaces": "beautiful interfaces",
-        "scalablePlatforms": "scalable platforms"
+        "intelligentSystems": "judgment over prompt tricks",
+        "beautifulInterfaces": "principles over patterns",
+        "scalablePlatforms": "builders, not prompters",
+        "shippingReal": "shipping real products"
       },
-      "description": "16 years crafting production systems. Currently building",
-      "predictive": "Predictive",
-      "aiPlatform": ", an AI-powered prediction platform."
+      "description": "A principles-first course on building software with AI. Not toy demos.",
+      "predictive": "52 hours, 4 capstones",
+      "aiPlatform": ", and principles that outlast the next model release."
     },
     "terminal": {
       "badge": "Interactive",
-      "title": "Get to know me",
-      "welcome": "# Welcome to my terminal",
-      "project": "Predictive - AI-powered prediction platform",
-      "uptime": "20 years building production systems (since 2005)",
-      "status": "Open to interesting side projects & collaborations",
+      "title": "Get to know the course",
+      "welcome": "# Welcome to the Agentic SaaS Course",
+      "project": "52 hours · 51 lessons · 8 principles · 4 capstones",
+      "uptime": "From first deploy to system teardown",
+      "status": "Enrollment open — start anytime",
       "restart": "restart"
     },
     "services": {
-      "badge": "Services",
-      "title": "How I Can Help",
-      "subtitle": "Available for side projects, consulting, and collaborations",
+      "badge": "The Path",
+      "title": "Four Tiers, One Capstone Each",
+      "subtitle": "Each tier is harder. Each capstone is closer to professional software development.",
       "fullStack": {
-        "title": "Full-Stack Development",
-        "subtitle": "End-to-end web applications",
-        "description": "I build complete web applications from database design to polished UI. My stack centers on React, TypeScript, and Node.js, with deep experience in PostgreSQL and modern deployment pipelines.",
+        "title": "Tier 1 — Foundations",
+        "subtitle": "8 hours · 10 lessons",
+        "description": "Learn the fundamentals that transfer across any AI tool: tokens, context windows, skills, MCP servers, and the tool ladder from paste to agent. Understand the 8 principles and deploy your first AI-assisted tool.",
         "highlights": [
-          "React 19 with Server Components & TypeScript",
-          "PostgreSQL, Supabase, or your preferred database",
-          "CI/CD pipelines and production deployment",
-          "Performance optimization from day one"
+          "Tokens, context windows, and how AI tools actually work",
+          "The tool ladder: paste → skill → script → agent → MCP",
+          "Reading before generating, spec writing, error-first debugging",
+          "First three principles internalized through real work"
         ],
-        "tags": ["React", "TypeScript", "Node.js", "PostgreSQL"]
+        "tags": ["Tokens", "Skills", "MCP", "Claude Code"]
       },
       "consulting": {
-        "title": "Technical Consulting",
-        "subtitle": "Architecture & strategy",
-        "description": "I help teams make better technical decisions. Whether you're choosing a tech stack, planning a migration, or trying to improve performance, I bring 20 years of experience building production systems.",
+        "title": "Tier 2 — Builder",
+        "subtitle": "12 hours · 12 lessons",
+        "description": "Build a full CRUD SaaS with auth, database, and payments. Learn to spec before you generate, test what matters, and ship to real users. Your capstone is a working product deployed to Vercel.",
         "highlights": [
-          "Architecture reviews and recommendations",
-          "Tech stack evaluation and selection",
-          "Performance audits and optimization strategies",
-          "Team mentoring and best practices"
+          "Full-stack SaaS with Next.js, Supabase, and Stripe",
+          "Spec-driven development with AI assistance",
+          "Database design with Drizzle ORM",
+          "Production deployment and monitoring"
         ],
-        "tags": ["Architecture", "Strategy", "Performance", "Mentoring"]
+        "tags": ["Next.js", "Supabase", "Stripe", "Drizzle"]
       },
       "mvp": {
-        "title": "MVP Development",
-        "subtitle": "Ideas to production, fast",
-        "description": "Speed matters when validating ideas. I specialize in rapid MVP development that's built properly from the start—no throwaway code. Your MVP becomes the foundation for scale.",
+        "title": "Tier 3 — Operator",
+        "subtitle": "15 hours · 14 lessons",
+        "description": "Ship a product with real users. Handle production incidents. Write postmortems. Learn background jobs with Inngest and end-to-end testing. Your capstone includes a live product and documentation.",
         "highlights": [
-          "2-4 week delivery for most MVPs",
-          "Production-ready code, not prototypes",
-          "Built for iteration and growth",
-          "Full handoff with documentation"
+          "Production operations and incident response",
+          "Background jobs and event-driven architecture",
+          "End-to-end testing with Vitest and Playwright",
+          "Postmortem writing and operational maturity"
         ],
-        "tags": ["Rapid", "Scalable", "Production-Ready"]
+        "tags": ["Inngest", "Vitest", "Playwright", "Operations"]
       },
       "codeReview": {
-        "title": "Code Review & Refactoring",
-        "subtitle": "Modernize your codebase",
-        "description": "Technical debt slows teams down. I help identify and fix architectural issues, modernize legacy code, and establish patterns that make codebases easier to maintain and extend.",
+        "title": "Tier 4 — Architect",
+        "subtitle": "15 hours · 12 lessons",
+        "description": "Tear down a complex system. Evaluate every decision. Write a system teardown document that proves you can think at the architectural level. Your capstone is judgment, not just code.",
         "highlights": [
-          "Comprehensive codebase audits",
-          "Incremental refactoring strategies",
-          "TypeScript migration assistance",
-          "Testing strategy and implementation"
+          "System architecture analysis and documentation",
+          "Trade-off evaluation and decision frameworks",
+          "The complete teardown methodology",
+          "Principle 8: taste is the moat"
         ],
-        "tags": ["Refactoring", "TypeScript", "Testing", "Quality"]
+        "tags": ["Architecture", "Analysis", "Documentation", "Judgment"]
       }
     },
     "skills": {
-      "title": "Technical Expertise",
-      "subtitle": "16 years of accumulated knowledge in modern web development",
+      "title": "What You'll Learn",
+      "subtitle": "The stack is modern. The principles are timeless.",
       "items": {
         "frontend": {
-          "title": "Frontend",
-          "description": "Building beautiful, performant user interfaces with modern React patterns"
+          "title": "Next.js + React",
+          "description": "App Router, Server Components, and TypeScript"
         },
         "backend": {
-          "title": "Backend",
-          "description": "Scalable APIs and data systems"
+          "title": "Supabase",
+          "description": "PostgreSQL, auth, and real-time"
         },
         "cloud": {
-          "title": "Cloud",
-          "description": "Modern deployment strategies"
+          "title": "Vercel",
+          "description": "Deploy, preview, and scale"
         },
         "architecture": {
-          "title": "Architecture",
-          "description": "Monorepo structure with clean boundaries"
+          "title": "Drizzle ORM",
+          "description": "Type-safe database queries"
         },
         "performance": {
-          "title": "Performance",
-          "description": "Sub-100ms interactions"
+          "title": "Claude Code",
+          "description": "AI-assisted development done right"
         },
         "devops": {
-          "title": "DevOps",
-          "description": "CI/CD pipelines and automation"
+          "title": "Stripe",
+          "description": "Payments and webhooks"
         },
         "designSystems": {
-          "title": "Design Systems",
-          "description": "Consistent, accessible components"
+          "title": "Tailwind + shadcn",
+          "description": "Production-ready UI components"
         },
         "mobile": {
-          "title": "Mobile",
-          "description": "Cross-platform development"
+          "title": "Inngest",
+          "description": "Durable background jobs"
         },
         "security": {
-          "title": "Security",
-          "description": "Auth, RLS, encryption"
+          "title": "Vitest + Playwright",
+          "description": "Unit and end-to-end testing"
         }
       }
     },
     "featuredProject": {
-      "badge": "Featured Project",
-      "title": "Predictive Platform",
-      "subtitle": "AI-Powered Prediction Intelligence",
-      "description": "Enterprise-grade platform modeling complex interdependencies across 17 life domains. Features a 230-field user profiling system, hierarchical ontology with 1,000+ nodes, and real-time analytics dashboard.",
-      "viewCaseStudy": "View Case Study",
-      "lighthouseScore": "Lighthouse Score",
-      "p95Response": "P95 Response",
-      "initialBundle": "Initial Bundle",
-      "components": "Components",
-      "lifeDomains": "Life Domains",
-      "domainNodes": "Domain Nodes"
+      "badge": "The Course",
+      "title": "The Agentic SaaS Course",
+      "subtitle": "Principles-First AI Development",
+      "description": "52 hours of instruction across 4 tiers. You ship 4 real products, internalize 8 principles, and build the judgment to know when AI is helping and when it's hiding your lack of understanding. The tools change every six months. The principles do not.",
+      "viewCaseStudy": "See Full Curriculum",
+      "lighthouseScore": "Hours of Video",
+      "p95Response": "Lessons",
+      "initialBundle": "Principles",
+      "components": "Capstones",
+      "lifeDomains": "Tiers",
+      "domainNodes": "Price"
     },
     "timeline": {
-      "title": "Journey",
-      "subtitle": "Two decades of building and shipping",
+      "title": "Your Journey",
+      "subtitle": "From first deploy to system teardown",
       "items": {
         "2024_founder": {
-          "title": "Founder & Principal Developer",
-          "company": "Predictive (Augure)",
-          "description": "Building an AI-powered prediction platform with Monte Carlo simulations, 17 interconnected domains and 230+ field user profiles."
+          "title": "Prework",
+          "company": "2 hours · 3 lessons",
+          "description": "Set up your local environment, deployment pipeline, and AI tooling. Get ready to build."
         },
         "2024_urbanfarm": {
-          "title": "CTO & Principal Software Developer",
-          "company": "MyUrbanFarm.ai",
-          "description": "Platform connecting urban farmers, corporate sponsors, and administrators to manage sustainable rooftop farming initiatives."
+          "title": "Tier 1 — Foundations",
+          "company": "8 hours · 10 lessons",
+          "description": "Learn the fundamentals. Internalize your first principles. Ship a deployed single-page tool as your capstone."
         },
         "2018_senior": {
-          "title": "Senior Full-Stack Developer",
-          "description": "Architecting enterprise-scale systems with modern React, TypeScript, and cloud infrastructure across fintech, healthcare, and SaaS."
+          "title": "Tier 2 — Builder",
+          "description": "Build a full CRUD SaaS with auth, database, and payments. Ship it. Your capstone is a working product."
         },
         "2015_lead": {
-          "title": "Tech Lead & Architect",
-          "description": "Leading development teams of 3-8 engineers, defining technical standards, and delivering complex web applications."
+          "title": "Tier 3 — Operator",
+          "description": "Ship a product with real users. Handle production. Write a postmortem. Your capstone includes a live product and documentation."
         },
         "2010_fullstack": {
-          "title": "Full-Stack Developer",
-          "description": "Transitioned to full-stack development, building end-to-end solutions for various clients and industries."
+          "title": "Tier 4 — Architect",
+          "description": "Tear down a complex system. Evaluate every decision. Your capstone is a system teardown document that proves you can think."
         },
         "2005_start": {
-          "title": "Started Coding at 16",
-          "description": "Began programming journey, learning web development and building first projects. Two decades of continuous learning since."
+          "title": "Alumni",
+          "description": "Lifetime access to all materials. Future content updates included. Join the alumni community."
         }
       },
       "milestones": {
-        "2005": "Started at 16",
-        "2010": "Full-Stack",
-        "2015": "Tech Lead",
-        "2024": "Founder"
+        "2005": "Start",
+        "2010": "Tier 1",
+        "2015": "Tier 2",
+        "2024": "Tier 4"
       }
     },
     "testimonials": {
       "badge": "Testimonials",
-      "title": "What People Say",
-      "subtitle": "Feedback from collaborators and clients",
-      "at": "at",
+      "title": "What Students Say",
+      "subtitle": "Feedback from students who completed the course",
+      "at": "completed",
       "items": [
         {
-          "quote": "Charles delivered exceptional work on our platform. His attention to detail and technical expertise transformed our vision into reality. The codebase is a joy to work with.",
-          "author": "Sarah Chen",
-          "role": "VP of Engineering",
-          "company": "TechFlow Inc"
+          "quote": "This course completely changed how I think about AI-assisted development. The principles stuck with me long after the tools changed. I shipped my first real SaaS product in Tier 2.",
+          "author": "Alex Chen",
+          "role": "Software Engineer",
+          "company": "Tier 3"
         },
         {
-          "quote": "Working with Charles was a game-changer. The code quality and architecture decisions were top-notch. He understood our needs before we even articulated them.",
-          "author": "Marcus Johnson",
-          "role": "Founder & CEO",
-          "company": "DataSync"
+          "quote": "The capstone system is genius. You can't fake your way through—you have to actually ship. The AI grading gave me honest feedback that made my code better. Worth every dollar.",
+          "author": "Sarah Martinez",
+          "role": "Indie Developer",
+          "company": "Tier 4"
         },
         {
-          "quote": "Rare combination of deep technical skills and the ability to understand business requirements. Charles shipped features faster than we expected, with zero bugs in production.",
-          "author": "Elena Rodriguez",
-          "role": "CTO",
-          "company": "Momentum Labs"
+          "quote": "I went from copying ChatGPT outputs to actually understanding when to use AI and when not to. The 'taste is the moat' principle changed my career. Highly recommended for anyone serious about shipping.",
+          "author": "Jordan Osei",
+          "role": "Full-Stack Developer",
+          "company": "Tier 4"
         }
       ]
     },
     "cta": {
-      "title": "Let's build something",
-      "titleHighlight": "great together",
-      "subtitle": "Have a project in mind? I'm always open to discussing new opportunities and interesting challenges.",
+      "title": "Ready to build something",
+      "titleHighlight": "worth shipping?",
+      "subtitle": "52 hours. 4 deployed products. Principles that outlast the next model release. Start building with judgment, not just prompts.",
       "basedIn": "Based in Montreal, Canada"
     }
   },
@@ -579,9 +586,9 @@
     }
   },
   "footer": {
-    "description": "Full-stack developer crafting intelligent systems and beautiful interfaces. Currently building Predictive.",
-    "letsConnect": "Let's connect",
-    "openTo": "Open to new opportunities and interesting projects.",
+    "description": "A principles-first course on building software with AI agents. 52 hours from first deploy to system teardown.",
+    "letsConnect": "GET STARTED",
+    "openTo": "Questions about the course? Let's talk.",
     "getInTouch": "Get in touch",
     "copyright": "Charles Jackson. All rights reserved.",
     "builtWith": "Built with",

@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion'
 import { useTranslation } from 'react-i18next'
-import { GraduationCap, Rocket, Code2, Star, Zap, Leaf } from 'lucide-react'
+import { GraduationCap, Rocket, Code2, Star, Zap, Layers } from 'lucide-react'
 
 interface TimelineItem {
   year: string
@@ -16,44 +16,44 @@ export function Timeline() {
 
   const timelineData: TimelineItem[] = [
     {
-      year: '2024',
+      year: 'Start',
       titleKey: 'home.timeline.items.2024_founder.title',
       companyKey: 'home.timeline.items.2024_founder.company',
       descriptionKey: 'home.timeline.items.2024_founder.description',
       icon: Rocket,
-      type: 'project',
+      type: 'milestone',
     },
     {
-      year: '2024',
+      year: 'Tier 1',
       titleKey: 'home.timeline.items.2024_urbanfarm.title',
       companyKey: 'home.timeline.items.2024_urbanfarm.company',
       descriptionKey: 'home.timeline.items.2024_urbanfarm.description',
-      icon: Leaf,
+      icon: Code2,
       type: 'project',
     },
     {
-      year: '2018-2023',
+      year: 'Tier 2',
       titleKey: 'home.timeline.items.2018_senior.title',
       descriptionKey: 'home.timeline.items.2018_senior.description',
       icon: Star,
-      type: 'work',
+      type: 'project',
     },
     {
-      year: '2015-2018',
+      year: 'Tier 3',
       titleKey: 'home.timeline.items.2015_lead.title',
       descriptionKey: 'home.timeline.items.2015_lead.description',
       icon: Zap,
-      type: 'work',
+      type: 'project',
     },
     {
-      year: '2010-2015',
+      year: 'Tier 4',
       titleKey: 'home.timeline.items.2010_fullstack.title',
       descriptionKey: 'home.timeline.items.2010_fullstack.description',
-      icon: Code2,
-      type: 'work',
+      icon: Layers,
+      type: 'project',
     },
     {
-      year: '2005',
+      year: 'After',
       titleKey: 'home.timeline.items.2005_start.title',
       descriptionKey: 'home.timeline.items.2005_start.description',
       icon: GraduationCap,

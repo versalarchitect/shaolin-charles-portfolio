@@ -83,55 +83,54 @@ function TerminalWindow({ content, style }: TerminalWindowProps) {
 
 const terminalContents: TerminalContent[] = [
   {
-    title: 'charles@dev ~ projects',
+    title: 'student@tier1 ~ foundations',
     lines: [
-      { type: 'command', content: 'git log --oneline -3' },
-      { type: 'output', content: 'a1b2c3d feat: add prediction engine' },
-      { type: 'output', content: 'e4f5g6h fix: optimize monte carlo sim' },
-      { type: 'output', content: '7h8i9j0 chore: update dependencies' },
+      { type: 'command', content: 'claude "build a tip calculator"' },
+      { type: 'output', content: '✓ Generated 47 lines' },
+      { type: 'output', content: '✓ All lines reviewed' },
+      { type: 'output', content: '→ Principle 2: generate ≤ read' },
     ],
   },
   {
-    title: 'charles@dev ~ code',
+    title: 'student@tier2 ~ builder',
     lines: [
-      { type: 'comment', content: 'Building something new...' },
-      { type: 'command', content: 'nx build predictive-web' },
-      { type: 'output', content: '✓ Compiled successfully' },
-      { type: 'output', content: '✓ Bundle size: 612KB' },
+      { type: 'comment', content: 'Spec before you generate...' },
+      { type: 'command', content: 'cat spec.md | claude "implement"' },
+      { type: 'output', content: '✓ Auth, DB, payments wired' },
+      { type: 'output', content: '✓ Deployed to Vercel' },
     ],
   },
   {
-    title: 'charles@dev ~ deploy',
+    title: 'student@tier2 ~ deploy',
     lines: [
       { type: 'command', content: 'vercel --prod' },
       { type: 'output', content: '▲ Deploying to production...' },
-      { type: 'output', content: '✓ Ready: https://augure.app' },
+      { type: 'output', content: '✓ Ready: https://my-saas.vercel.app' },
     ],
   },
   {
-    title: 'charles@dev ~ tests',
+    title: 'student@tier3 ~ operator',
     lines: [
-      { type: 'command', content: 'nx test --coverage' },
-      { type: 'output', content: 'PASS  src/lib/prediction.test.ts' },
-      { type: 'output', content: 'Coverage: 94.2%' },
-      { type: 'output', content: '✓ All tests passed' },
+      { type: 'command', content: 'bun run test' },
+      { type: 'output', content: 'PASS src/lib/stripe.test.ts' },
+      { type: 'output', content: 'PASS src/lib/auth.test.ts' },
+      { type: 'output', content: '✓ 24 tests passed' },
     ],
   },
   {
-    title: 'charles@dev ~ api',
+    title: 'student@tier3 ~ monitor',
     lines: [
-      { type: 'command', content: 'curl localhost:8000/health' },
-      { type: 'output', content: '{"status": "healthy"}' },
-      { type: 'output', content: '{"uptime": "99.9%"}' },
+      { type: 'command', content: 'inngest dev' },
+      { type: 'output', content: '✓ 3 functions registered' },
+      { type: 'output', content: '✓ Webhook handler: active' },
     ],
   },
   {
-    title: 'charles@dev ~ docker',
+    title: 'student@tier4 ~ architect',
     lines: [
-      { type: 'command', content: 'docker ps' },
-      { type: 'output', content: 'monte-carlo-api   Up 3 days' },
-      { type: 'output', content: 'postgres          Up 3 days' },
-      { type: 'output', content: 'redis             Up 3 days' },
+      { type: 'command', content: 'cat teardown.md | wc -w' },
+      { type: 'output', content: '3,847 words' },
+      { type: 'output', content: '→ Principle 8: taste is the moat' },
     ],
   },
 ]

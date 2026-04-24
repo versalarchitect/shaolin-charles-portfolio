@@ -18,41 +18,31 @@ import {
   SectionBoundaryGrid,
 } from '@/components/ui/gradient-background'
 
-// Premium page transition variants with blur and scale
 const pageVariants = {
   initial: {
     opacity: 0,
-    y: 30,
-    filter: 'blur(10px)',
-    scale: 0.98,
+    y: 12,
   },
   animate: {
     opacity: 1,
     y: 0,
-    filter: 'blur(0px)',
-    scale: 1,
     transition: {
-      duration: 0.5,
-      ease: [0.22, 1, 0.36, 1], // Custom easing for smooth feel
+      duration: 0.25,
+      ease: [0.22, 1, 0.36, 1],
     },
   },
   exit: {
     opacity: 0,
-    y: -20,
-    filter: 'blur(5px)',
-    scale: 0.99,
     transition: {
-      duration: 0.35,
-      ease: [0.22, 1, 0.36, 1],
+      duration: 0.1,
     },
   },
 }
 
-// Reduced motion variants
 const reducedMotionVariants = {
   initial: { opacity: 0 },
-  animate: { opacity: 1, transition: { duration: 0.2 } },
-  exit: { opacity: 0, transition: { duration: 0.15 } },
+  animate: { opacity: 1, transition: { duration: 0.1 } },
+  exit: { opacity: 0, transition: { duration: 0.05 } },
 }
 
 export default function App() {
@@ -97,19 +87,9 @@ export default function App() {
           <div className="relative z-10">
             {/* Add top padding for fixed header */}
             <div className="pt-16">
-              <AnimatePresence mode="wait">
-                <motion.main
-                  key={location.pathname}
-                  variants={prefersReducedMotion ? reducedMotionVariants : pageVariants}
-                  initial="initial"
-                  animate="animate"
-                  exit="exit"
-                >
-                  <Suspense fallback={<PageLoading />}>
-                    <Outlet />
-                  </Suspense>
-                </motion.main>
-              </AnimatePresence>
+              <Suspense fallback={<PageLoading />}>
+                <Outlet />
+              </Suspense>
             </div>
 
             <Footer />

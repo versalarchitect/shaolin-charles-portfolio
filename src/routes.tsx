@@ -6,6 +6,10 @@ import App from './App'
 import Home from './pages/Home'
 
 // Lazy load all other pages (React Router v7 + React 19 code splitting)
+const Curriculum = lazy(() => import('./pages/Curriculum'))
+const Principles = lazy(() => import('./pages/Principles'))
+const Tiers = lazy(() => import('./pages/Tiers'))
+const Instructor = lazy(() => import('./pages/Instructor'))
 const About = lazy(() => import('./pages/About'))
 const Projects = lazy(() => import('./pages/Projects'))
 const Blog = lazy(() => import('./pages/Blog'))
@@ -27,6 +31,22 @@ const router = createBrowserRouter([
         element: <Home />,
       },
       // Main pages
+      {
+        path: 'curriculum',
+        element: <Curriculum />,
+      },
+      {
+        path: 'principles',
+        element: <Principles />,
+      },
+      {
+        path: 'tiers',
+        element: <Tiers />,
+      },
+      {
+        path: 'instructor',
+        element: <Instructor />,
+      },
       {
         path: 'about',
         element: <About />,

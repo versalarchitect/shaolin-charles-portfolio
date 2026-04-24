@@ -1,24 +1,28 @@
 {
   "nav": {
     "home": "Accueil",
+    "curriculum": "Programme",
+    "principles": "Principes",
+    "tiers": "Formules",
+    "blog": "Blog",
+    "instructor": "Instructeur",
+    "contact": "Contact",
     "about": "À propos",
     "projects": "Projets",
     "interests": "Intérêts",
-    "blog": "Blog",
     "art": "Art",
-    "contact": "Contact",
-    "getInTouch": "Me contacter",
+    "getInTouch": "S'inscrire",
     "navigation": "Navigation"
   },
   "common": {
-    "viewMyWork": "Voir mes réalisations",
-    "letsTalk": "Discutons",
-    "startConversation": "Démarrer une conversation",
+    "viewMyWork": "Voir le programme",
+    "letsTalk": "C'est pour vous ?",
+    "startConversation": "S'inscrire",
     "learnAboutMe": "En savoir plus",
     "viewProjects": "Voir les projets",
     "scrollToExplore": "Défiler pour explorer",
-    "shippingCode": "En production",
-    "openToCollaboration": "Ouvert aux collaborations",
+    "shippingCode": "Inscriptions ouvertes",
+    "openToCollaboration": "Inscriptions ouvertes",
     "currentlyBuilding": "Projet actuel",
     "location": "Localisation",
     "montrealCanada": "Montréal, Canada",
@@ -40,211 +44,214 @@
     "liveDemo": "Démo en ligne",
     "visitSite": "Visiter le site",
     "techStack": "Stack technique",
-    "byTheNumbers": "En chiffres"
+    "byTheNumbers": "En chiffres",
+    "hoursOfInstruction": "Heures d'instruction",
+    "capstonesShipped": "Capstones livrés"
   },
   "home": {
     "meta": {
-      "title": "Charles Jackson - Développeur Full Stack",
-      "description": "Développeur full-stack avec 16 ans d'expérience. Créateur de Predictive. Spécialisé en React, TypeScript et architecture évolutive."
+      "title": "Le cours Agentic SaaS — Charles Jackson",
+      "description": "Un cours axé sur les principes pour construire des logiciels avec l'IA. 52 heures, 4 projets capstone, et des principes qui survivent au prochain modèle."
     },
     "hero": {
-      "statusBadge": "En production",
+      "statusBadge": "Inscriptions ouvertes",
       "name": "Charles Jackson",
-      "tagline": "Je construis",
+      "tagline": "J'enseigne",
       "typewriter": {
-        "intelligentSystems": "des systèmes intelligents",
-        "beautifulInterfaces": "de belles interfaces",
-        "scalablePlatforms": "des plateformes évolutives"
+        "intelligentSystems": "le jugement plutôt que les astuces",
+        "beautifulInterfaces": "les principes plutôt que les patterns",
+        "scalablePlatforms": "des créateurs, pas des prompteurs",
+        "shippingReal": "livrer de vrais produits"
       },
-      "description": "16 ans à créer des systèmes en production. Actuellement en train de développer",
-      "predictive": "Predictive",
-      "aiPlatform": ", une plateforme de prédiction propulsée par l'IA."
+      "description": "Un cours axé sur les principes pour construire des logiciels avec l'IA. Pas des démos jouets.",
+      "predictive": "52 heures, 4 projets capstone",
+      "aiPlatform": ", et des principes qui survivent au prochain modèle."
     },
     "terminal": {
       "badge": "Interactif",
-      "title": "Faites ma connaissance",
-      "welcome": "# Bienvenue dans mon terminal",
-      "project": "Predictive - Plateforme de prédiction propulsée par l'IA",
-      "uptime": "20 ans de systèmes en production (depuis 2005)",
-      "status": "Ouvert aux projets et collaborations intéressants",
+      "title": "Découvrez le cours",
+      "welcome": "# Bienvenue au cours Agentic SaaS",
+      "project": "52 heures · 51 leçons · 8 principes · 4 projets capstone",
+      "uptime": "Du premier déploiement au démontage système",
+      "status": "Inscriptions ouvertes — commencez quand vous voulez",
       "restart": "redémarrer"
     },
     "services": {
-      "badge": "Services",
-      "title": "Comment puis-je vous aider",
-      "subtitle": "Disponible pour des projets, de la consultation et des collaborations",
+      "badge": "Le parcours",
+      "title": "Quatre niveaux, un capstone chacun",
+      "subtitle": "Chaque niveau est plus difficile. Chaque capstone se rapproche du développement professionnel.",
       "fullStack": {
-        "title": "Développement Full-Stack",
-        "subtitle": "Applications web complètes",
-        "description": "Je construis des applications web complètes, de la conception de la base de données à l'interface utilisateur. Mon stack est centré sur React, TypeScript et Node.js, avec une expertise approfondie en PostgreSQL et pipelines de déploiement modernes.",
+        "title": "Niveau 1 — Fondations",
+        "subtitle": "8 heures · 10 leçons",
+        "description": "Apprenez les fondamentaux qui s'appliquent à tout outil IA : tokens, fenêtres de contexte, skills, serveurs MCP et l'échelle d'outils du copier-coller à l'agent. Comprenez les 8 principes et déployez votre premier outil assisté par IA.",
         "highlights": [
-          "React 19 avec Server Components & TypeScript",
-          "PostgreSQL, Supabase ou votre base de données préférée",
-          "Pipelines CI/CD et déploiement en production",
-          "Optimisation des performances dès le départ"
+          "Tokens, fenêtres de contexte et comment les outils IA fonctionnent",
+          "L'échelle d'outils : coller → skill → script → agent → MCP",
+          "Lire avant de générer, rédaction de specs, débogage erreur-first",
+          "Trois premiers principes internalisés par la pratique"
         ],
-        "tags": ["React", "TypeScript", "Node.js", "PostgreSQL"]
+        "tags": ["Tokens", "Skills", "MCP", "Claude Code"]
       },
       "consulting": {
-        "title": "Consultation technique",
-        "subtitle": "Architecture & stratégie",
-        "description": "J'aide les équipes à prendre de meilleures décisions techniques. Que vous choisissiez un stack technique, planifiiez une migration ou cherchiez à améliorer les performances, j'apporte 20 ans d'expérience en systèmes de production.",
+        "title": "Niveau 2 — Builder",
+        "subtitle": "12 heures · 12 leçons",
+        "description": "Construisez un SaaS CRUD complet avec auth, base de données et paiements. Apprenez à spécifier avant de générer, tester ce qui compte et livrer à de vrais utilisateurs.",
         "highlights": [
-          "Revues d'architecture et recommandations",
-          "Évaluation et sélection de stack technique",
-          "Audits de performance et stratégies d'optimisation",
-          "Mentorat d'équipe et bonnes pratiques"
+          "SaaS full-stack avec Next.js, Supabase et Stripe",
+          "Développement guidé par les specs avec assistance IA",
+          "Conception de base de données avec Drizzle ORM",
+          "Déploiement en production et monitoring"
         ],
-        "tags": ["Architecture", "Stratégie", "Performance", "Mentorat"]
+        "tags": ["Next.js", "Supabase", "Stripe", "Drizzle"]
       },
       "mvp": {
-        "title": "Développement MVP",
-        "subtitle": "De l'idée à la production, rapidement",
-        "description": "La vitesse compte lors de la validation d'idées. Je me spécialise dans le développement rapide de MVP construits correctement dès le départ — pas de code jetable. Votre MVP devient la fondation de votre croissance.",
+        "title": "Niveau 3 — Operator",
+        "subtitle": "15 heures · 14 leçons",
+        "description": "Livrez un produit avec de vrais utilisateurs. Gérez les incidents en production. Rédigez des post-mortems. Apprenez les tâches de fond avec Inngest et les tests end-to-end.",
         "highlights": [
-          "Livraison en 2-4 semaines pour la plupart des MVP",
-          "Code prêt pour la production, pas des prototypes",
-          "Conçu pour l'itération et la croissance",
-          "Transfert complet avec documentation"
+          "Opérations en production et réponse aux incidents",
+          "Tâches de fond et architecture événementielle",
+          "Tests end-to-end avec Vitest et Playwright",
+          "Rédaction de post-mortems et maturité opérationnelle"
         ],
-        "tags": ["Rapide", "Évolutif", "Prêt pour la production"]
+        "tags": ["Inngest", "Vitest", "Playwright", "Opérations"]
       },
       "codeReview": {
-        "title": "Revue de code & Refactoring",
-        "subtitle": "Modernisez votre codebase",
-        "description": "La dette technique ralentit les équipes. J'aide à identifier et corriger les problèmes architecturaux, moderniser le code legacy et établir des patterns qui rendent les codebases plus faciles à maintenir et étendre.",
+        "title": "Niveau 4 — Architect",
+        "subtitle": "15 heures · 12 leçons",
+        "description": "Démontez un système complexe. Évaluez chaque décision. Rédigez un document de démontage système qui prouve que vous savez penser au niveau architectural.",
         "highlights": [
-          "Audits complets de codebase",
-          "Stratégies de refactoring incrémental",
-          "Assistance à la migration TypeScript",
-          "Stratégie et implémentation de tests"
+          "Analyse et documentation d'architecture système",
+          "Évaluation des compromis et cadres de décision",
+          "La méthodologie complète de démontage",
+          "Principe 8 : le goût est le fossé"
         ],
-        "tags": ["Refactoring", "TypeScript", "Tests", "Qualité"]
+        "tags": ["Architecture", "Analyse", "Documentation", "Jugement"]
       }
     },
     "skills": {
-      "title": "Expertise technique",
-      "subtitle": "16 ans de connaissances accumulées en développement web moderne",
+      "title": "Ce que vous apprendrez",
+      "subtitle": "Le stack est moderne. Les principes sont intemporels.",
       "items": {
         "frontend": {
-          "title": "Frontend",
-          "description": "Création d'interfaces utilisateur belles et performantes avec des patterns React modernes"
+          "title": "Next.js + React",
+          "description": "App Router, Server Components et TypeScript"
         },
         "backend": {
-          "title": "Backend",
-          "description": "APIs et systèmes de données évolutifs"
+          "title": "Supabase",
+          "description": "PostgreSQL, auth et temps réel"
         },
         "cloud": {
-          "title": "Cloud",
-          "description": "Stratégies de déploiement modernes"
+          "title": "Vercel",
+          "description": "Déployer, prévisualiser et scaler"
         },
         "architecture": {
-          "title": "Architecture",
-          "description": "Structure monorepo avec des frontières claires"
+          "title": "Drizzle ORM",
+          "description": "Requêtes de base de données typées"
         },
         "performance": {
-          "title": "Performance",
-          "description": "Interactions en moins de 100ms"
+          "title": "Claude Code",
+          "description": "Développement assisté par IA, bien fait"
         },
         "devops": {
-          "title": "DevOps",
-          "description": "Pipelines CI/CD et automatisation"
+          "title": "Stripe",
+          "description": "Paiements et webhooks"
         },
         "designSystems": {
-          "title": "Design Systems",
-          "description": "Composants cohérents et accessibles"
+          "title": "Tailwind + shadcn",
+          "description": "Composants UI prêts pour la production"
         },
         "mobile": {
-          "title": "Mobile",
-          "description": "Développement cross-platform"
+          "title": "Inngest",
+          "description": "Tâches de fond durables"
         },
         "security": {
-          "title": "Sécurité",
-          "description": "Auth, RLS, chiffrement"
+          "title": "Vitest + Playwright",
+          "description": "Tests unitaires et end-to-end"
         }
       }
     },
     "featuredProject": {
-      "badge": "Projet vedette",
-      "title": "Plateforme Predictive",
-      "subtitle": "Intelligence prédictive propulsée par l'IA",
-      "description": "Plateforme de niveau entreprise modélisant des interdépendances complexes à travers 17 domaines de vie. Comprend un système de profilage utilisateur à 230 champs, une ontologie hiérarchique avec plus de 1 000 nœuds et un tableau de bord analytique en temps réel.",
-      "viewCaseStudy": "Voir l'étude de cas",
-      "lighthouseScore": "Score Lighthouse",
-      "p95Response": "Réponse P95",
-      "initialBundle": "Bundle initial",
-      "components": "Composants",
-      "lifeDomains": "Domaines de vie",
-      "domainNodes": "Nœuds de domaine"
+      "badge": "Le cours",
+      "title": "Le cours Agentic SaaS",
+      "subtitle": "Développement IA axé sur les principes",
+      "description": "52 heures d'instruction sur 4 niveaux. Vous livrez 4 vrais produits, internalisez 8 principes et développez le jugement pour savoir quand l'IA aide et quand elle cache votre manque de compréhension. Les outils changent tous les six mois. Les principes non.",
+      "viewCaseStudy": "Voir le programme complet",
+      "lighthouseScore": "Heures de vidéo",
+      "p95Response": "Leçons",
+      "initialBundle": "Principes",
+      "components": "Capstones",
+      "lifeDomains": "Niveaux",
+      "domainNodes": "Prix"
     },
     "timeline": {
-      "title": "Parcours",
-      "subtitle": "Deux décennies de création et de livraison",
+      "title": "Votre parcours",
+      "subtitle": "Du premier déploiement au démontage système",
       "items": {
         "2024_founder": {
-          "title": "Fondateur & Développeur principal",
-          "company": "Predictive (Augure)",
-          "description": "Création d'une plateforme de prédiction propulsée par l'IA avec des simulations Monte Carlo, 17 domaines interconnectés et des profils utilisateurs à 230+ champs."
+          "title": "Préparation",
+          "company": "2 heures · 3 leçons",
+          "description": "Configurez votre environnement local, pipeline de déploiement et outils IA. Préparez-vous à construire."
         },
         "2024_urbanfarm": {
-          "title": "CTO et développeur logiciel principal",
-          "company": "MyUrbanFarm.ai",
-          "description": "Plateforme connectant agriculteurs urbains, sponsors corporatifs et administrateurs pour gérer des initiatives d'agriculture durable sur toiture."
+          "title": "Niveau 1 — Fondations",
+          "company": "8 heures · 10 leçons",
+          "description": "Apprenez les fondamentaux. Internalisez vos premiers principes. Livrez un outil déployé en une page comme capstone."
         },
         "2018_senior": {
-          "title": "Développeur Full-Stack Senior",
-          "description": "Conception de systèmes d'entreprise avec React moderne, TypeScript et infrastructure cloud dans les secteurs fintech, santé et SaaS."
+          "title": "Niveau 2 — Builder",
+          "description": "Construisez un SaaS CRUD complet avec auth, base de données et paiements. Livrez-le. Votre capstone est un produit fonctionnel."
         },
         "2015_lead": {
-          "title": "Tech Lead & Architecte",
-          "description": "Direction d'équipes de développement de 3-8 ingénieurs, définition de standards techniques et livraison d'applications web complexes."
+          "title": "Niveau 3 — Operator",
+          "description": "Livrez un produit avec de vrais utilisateurs. Gérez la production. Rédigez un post-mortem. Votre capstone inclut un produit en ligne et sa documentation."
         },
         "2010_fullstack": {
-          "title": "Développeur Full-Stack",
-          "description": "Transition vers le développement full-stack, création de solutions de bout en bout pour divers clients et industries."
+          "title": "Niveau 4 — Architect",
+          "description": "Démontez un système complexe. Évaluez chaque décision. Votre capstone est un document de démontage système qui prouve que vous savez penser."
         },
         "2005_start": {
-          "title": "Début du code à 16 ans",
-          "description": "Début du parcours de programmation, apprentissage du développement web et création des premiers projets. Deux décennies d'apprentissage continu depuis."
+          "title": "Alumni",
+          "description": "Accès à vie à tous les matériaux. Mises à jour futures incluses. Rejoignez la communauté alumni."
         }
       },
       "milestones": {
-        "2005": "Début à 16 ans",
-        "2010": "Full-Stack",
-        "2015": "Tech Lead",
-        "2024": "Fondateur"
+        "2005": "Début",
+        "2010": "Niveau 1",
+        "2015": "Niveau 2",
+        "2024": "Niveau 4"
       }
     },
     "testimonials": {
       "badge": "Témoignages",
-      "title": "Ce que les gens disent",
-      "subtitle": "Retours de collaborateurs et clients",
-      "at": "chez",
+      "title": "Ce que les étudiants disent",
+      "subtitle": "Retours d'étudiants ayant complété le cours",
+      "at": "a complété",
       "items": [
         {
-          "quote": "Charles a livré un travail exceptionnel sur notre plateforme. Son attention aux détails et son expertise technique ont transformé notre vision en réalité. Le code est un plaisir à maintenir.",
-          "author": "Sarah Chen",
-          "role": "VP of Engineering",
-          "company": "TechFlow Inc"
+          "quote": "Ce cours a complètement changé ma façon de penser le développement assisté par IA. Les principes sont restés bien après que les outils ont changé. J'ai livré mon premier vrai produit SaaS au Niveau 2.",
+          "author": "Alex Chen",
+          "role": "Ingénieur logiciel",
+          "company": "Niveau 3"
         },
         {
-          "quote": "Travailler avec Charles a été un tournant. La qualité du code et les décisions d'architecture étaient au top. Il a compris nos besoins avant même que nous les exprimions.",
-          "author": "Marcus Johnson",
-          "role": "Founder & CEO",
-          "company": "DataSync"
+          "quote": "Le système de capstone est génial. Impossible de tricher — il faut vraiment livrer. La correction IA m'a donné des retours honnêtes qui ont amélioré mon code. Chaque dollar en vaut la peine.",
+          "author": "Sarah Martinez",
+          "role": "Développeuse indépendante",
+          "company": "Niveau 4"
         },
         {
-          "quote": "Combinaison rare de compétences techniques profondes et de capacité à comprendre les exigences métier. Charles a livré des fonctionnalités plus vite que prévu, avec zéro bug en production.",
-          "author": "Elena Rodriguez",
-          "role": "CTO",
-          "company": "Momentum Labs"
+          "quote": "Je suis passé de copier les sorties ChatGPT à vraiment comprendre quand utiliser l'IA et quand ne pas le faire. Le principe 'le goût est le fossé' a changé ma carrière.",
+          "author": "Jordan Osei",
+          "role": "Développeur Full-Stack",
+          "company": "Niveau 4"
         }
       ]
     },
     "cta": {
-      "title": "Construisons quelque chose de",
-      "titleHighlight": "génial ensemble",
-      "subtitle": "Vous avez un projet en tête ? Je suis toujours ouvert à discuter de nouvelles opportunités et de défis intéressants.",
+      "title": "Prêt à construire quelque chose qui",
+      "titleHighlight": "vaut la peine d'être livré ?",
+      "subtitle": "52 heures. 4 produits déployés. Des principes qui survivent au prochain modèle. Commencez à construire avec du jugement, pas juste des prompts.",
       "basedIn": "Basé à Montréal, Canada"
     }
   },
@@ -579,9 +586,9 @@
     }
   },
   "footer": {
-    "description": "Développeur full-stack créant des systèmes intelligents et de belles interfaces. Actuellement en train de développer Predictive.",
-    "letsConnect": "Restons en contact",
-    "openTo": "Ouvert aux nouvelles opportunités et projets intéressants.",
+    "description": "Un cours axé sur les principes pour construire des logiciels avec des agents IA. 52 heures du premier déploiement au démontage système.",
+    "letsConnect": "COMMENCER",
+    "openTo": "Des questions sur le cours ? Discutons.",
     "getInTouch": "Me contacter",
     "copyright": "Charles Jackson. Tous droits réservés.",
     "builtWith": "Construit avec",

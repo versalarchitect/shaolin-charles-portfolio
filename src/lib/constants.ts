@@ -8,8 +8,8 @@ export const SITE = {
   name: 'Charles Jackson',
   shortName: 'Charles',
   initials: 'CJ',
-  title: 'Full Stack Developer',
-  description: 'Full-stack developer with 20+ years of experience building scalable systems.',
+  title: 'Software Instructor',
+  description: 'A principles-first course on building software with AI.',
   url: 'https://charlesjackson.dev',
   email: 'hello@charlesjackson.dev',
 } as const
@@ -37,12 +37,16 @@ export interface NavItem {
  */
 export const NAV_ITEMS: NavItem[] = [
   { nameKey: 'nav.home', href: '/', showInHeader: true, showInFooter: true },
-  { nameKey: 'nav.interests', href: '/interests', showInHeader: true, showInFooter: true },
-  { nameKey: 'nav.about', href: '/about', showInHeader: true, showInFooter: true },
-  { nameKey: 'nav.projects', href: '/projects', showInHeader: true, showInFooter: true },
+  { nameKey: 'nav.curriculum', href: '/curriculum', showInHeader: true, showInFooter: true },
+  { nameKey: 'nav.principles', href: '/principles', showInHeader: true, showInFooter: true },
+  { nameKey: 'nav.tiers', href: '/tiers', showInHeader: true, showInFooter: true },
   { nameKey: 'nav.blog', href: '/blog', showInHeader: true, showInFooter: true },
-  { nameKey: 'nav.art', href: '/art', showInHeader: true, showInFooter: true },
+  { nameKey: 'nav.instructor', href: '/instructor', showInHeader: true, showInFooter: true },
   { nameKey: 'nav.contact', href: '/contact', showInHeader: true, showInFooter: true },
+  { nameKey: 'nav.interests', href: '/interests', showInHeader: false, showInFooter: false },
+  { nameKey: 'nav.about', href: '/about', showInHeader: false, showInFooter: false },
+  { nameKey: 'nav.projects', href: '/projects', showInHeader: false, showInFooter: false },
+  { nameKey: 'nav.art', href: '/art', showInHeader: false, showInFooter: false },
 ]
 
 /** Navigation items for the header */
@@ -70,11 +74,6 @@ export const SOCIAL_LINKS: SocialLink[] = [
     name: 'GitHub',
     href: 'https://github.com/versalarchitect',
     icon: Github,
-  },
-  {
-    name: 'Instagram',
-    href: 'https://www.instagram.com/shaolincharles/',
-    icon: Instagram,
   },
   {
     name: 'Email',
