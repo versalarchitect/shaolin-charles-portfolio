@@ -1,0 +1,43 @@
+# Charles Jackson — The Agentic SaaS Course
+
+> A principles-first course on building software with AI. 52 hours, 4 capstones, and principles that outlast the next model release.
+
+## About
+
+Charles Jackson is a software instructor with 20+ years of experience building production systems. Based in Montreal, Canada. Founder of Predictive (Augure), former CTO of MyUrbanFarm.ai, and creator of the NxSupabase plugin.
+
+## The Course
+
+The Agentic SaaS Course teaches principles-first AI-assisted development across 4 tiers:
+
+- **Tier 1 — Foundations** (8 hours, 10 lessons): Tokens, context windows, MCP servers, the tool ladder, first 3 principles
+- **Tier 2 — Builder** (12 hours, 12 lessons): Full CRUD SaaS with Next.js, Supabase, Stripe, Drizzle ORM
+- **Tier 3 — Operator** (15 hours, 14 lessons): Production operations, Inngest, Vitest, Playwright, postmortems
+- **Tier 4 — Architect** (15 hours, 12 lessons): System teardowns, architecture analysis, judgment over code
+
+Each tier has a real capstone project that must be shipped.
+
+## 8 Principles
+
+The course teaches 8 timeless principles including: judgment over prompt tricks, principles over patterns, builders not prompters, and shipping real products.
+
+## Tech Stack
+
+Next.js, React, TypeScript, Supabase, Claude Code, Vercel, Drizzle ORM, Stripe, Tailwind CSS, shadcn/ui, Inngest, Vitest, Playwright
+
+## Links
+
+- Website: https://shaolincharles.dev
+- Curriculum: https://shaolincharles.dev/curriculum
+- Principles: https://shaolincharles.dev/principles
+- Tiers & Pricing: https://shaolincharles.dev/tiers
+- Instructor: https://shaolincharles.dev/instructor
+- Projects: https://shaolincharles.dev/projects
+- Blog: https://shaolincharles.dev/blog
+- Contact: https://shaolincharles.dev/contact
+- GitHub: https://github.com/versalarchitect
+- Email: hello@charlesjackson.dev
+
+## Optional
+
+- [Full details](https://shaolincharles.dev/llms-full.txt)
