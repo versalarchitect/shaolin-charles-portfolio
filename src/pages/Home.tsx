@@ -250,8 +250,8 @@ export default function Home() {
         description={t('home.meta.description')}
         path=""
         image="/og-image.png"
-        imageAlt="Charles Jackson - Software Instructor | Building software with AI the right way"
-        keywords="software instructor, ai course, building with ai, react, typescript, claude code, next.js, charles jackson, principles-first"
+        imageAlt="The Agentic SaaS Course by Charles Jackson — principles-first AI development"
+        keywords="agentic saas course, ai development course, build software with ai, claude code course, next.js course, react typescript course, supabase course, vercel deployment, charles jackson instructor, principles-first development, ship real products, learn ai coding"
       />
 
       {/* Hero Section */}

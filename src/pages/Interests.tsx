@@ -173,7 +173,20 @@ export default function Interests() {
         path="/interests"
         image="/og-interests.png"
         imageAlt="Charles Jackson Interests - Mathematical modeling, machine learning, and prediction systems"
-        keywords="monte carlo simulations, bayesian inference, machine learning, transformer models, nlp, mathematical modeling, prediction systems, deep learning"
+        keywords="monte carlo simulations, bayesian inference, machine learning, transformer models, nlp, mathematical modeling, prediction systems, deep learning, sentiment analysis, causal inference"
+        jsonLd={{
+          '@type': 'WebPage',
+          name: 'Mathematical Modeling & Machine Learning Interests',
+          description: 'Exploring Monte Carlo simulations, transformer architectures, Bayesian inference, and NLP to build better prediction systems.',
+          url: 'https://shaolincharles.dev/interests',
+          author: { '@type': 'Person', name: 'Charles Jackson' },
+          about: [
+            { '@type': 'Thing', name: 'Monte Carlo Simulation' },
+            { '@type': 'Thing', name: 'Bayesian Inference' },
+            { '@type': 'Thing', name: 'Machine Learning' },
+            { '@type': 'Thing', name: 'Natural Language Processing' },
+          ],
+        }}
       />
 
       {/* Hero Section */}

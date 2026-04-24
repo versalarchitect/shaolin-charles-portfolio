@@ -356,8 +356,31 @@ export default function Projects() {
         description={t('projects.meta.description')}
         path="/projects"
         image="/og-projects.png"
-        imageAlt="Charles Jackson Projects - AI platforms, urban agriculture tech, and browser metaverses"
-        keywords="predictive platform, augure, myurbanfarm.ai, developer portfolio, react projects, typescript projects, ai platform, urban farming"
+        imageAlt="Charles Jackson Projects - AI platforms, urban agriculture tech, and Nx Supabase plugin"
+        keywords="predictive platform, augure ai, myurbanfarm.ai, nxsupabase, developer portfolio, react projects, typescript projects, ai prediction platform, urban farming tech, nx monorepo supabase"
+        jsonLd={[
+          {
+            '@type': 'CollectionPage',
+            name: 'Projects by Charles Jackson',
+            description: 'Portfolio of production systems: Predictive (AI prediction platform), MyUrbanFarm.ai (urban farming), and NxSupabase (Nx plugin).',
+            url: 'https://shaolincharles.dev/projects',
+            mainEntity: {
+              '@type': 'ItemList',
+              itemListElement: [
+                { '@type': 'ListItem', position: 1, name: 'Predictive (Augure)', url: 'https://augure.app' },
+                { '@type': 'ListItem', position: 2, name: 'MyUrbanFarm.ai' },
+                { '@type': 'ListItem', position: 3, name: 'NxSupabase', url: 'https://github.com/versalarchitect' },
+              ],
+            },
+          },
+          {
+            '@type': 'BreadcrumbList',
+            itemListElement: [
+              { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://shaolincharles.dev/' },
+              { '@type': 'ListItem', position: 2, name: 'Projects', item: 'https://shaolincharles.dev/projects' },
+            ],
+          },
+        ]}
       />
 
       {/* Hero Section */}

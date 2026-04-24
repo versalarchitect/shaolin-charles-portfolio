@@ -357,10 +357,17 @@ export default function Art() {
       <SEO
         title={t('art.meta.title')}
         description={t('art.meta.description')}
-        path="/art"
+        path="/art/abstract"
         image="/og-art.png"
         imageAlt="Charles Jackson Visual Experiments - Generative art, shaders, and interactive visuals"
-        keywords="creative coding, three.js, webgl, generative art, interactive visuals, shader art, canvas experiments, visual programming"
+        keywords="creative coding, three.js, webgl, generative art, interactive visuals, shader art, canvas experiments, visual programming, p5.js, glsl shaders"
+        jsonLd={{
+          '@type': 'CollectionPage',
+          name: 'Creative Code Experiments',
+          description: 'Experiments at the intersection of programming and art. Three.js visualizations, generative graphics, CSS animations, and interactive browser experiences.',
+          url: 'https://shaolincharles.dev/art/abstract',
+          author: { '@type': 'Person', name: 'Charles Jackson' },
+        }}
       />
 
       {/* Fullscreen view */}

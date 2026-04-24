@@ -8,38 +8,21 @@ const DEFAULT_IMAGE = `${SITE_URL}/og-image.png`
 interface SEOProps {
   title: string
   description: string
-  path?: string // e.g., '/about', '/projects'
-  image?: string // Full URL or path like '/og-about.png'
+  path?: string
+  image?: string
   imageAlt?: string
   type?: 'website' | 'article' | 'profile' | 'blog'
   keywords?: string
   noindex?: boolean
-  // Article-specific
   article?: {
     publishedTime?: string
     author?: string
     section?: string
     tags?: string[]
   }
+  jsonLd?: Record<string, unknown> | Record<string, unknown>[]
 }
 
-/**
- * SEO Component - Comprehensive meta tags for all platforms
- *
- * Supported platforms:
- * - Facebook / Meta
- * - Twitter / X
- * - LinkedIn
- * - Discord
- * - Slack
- * - WhatsApp
- * - Telegram
- * - iMessage
- * - Pinterest
- * - Reddit
- * - Microsoft Teams
- * - Google Search
- */
 export function SEO({
   title,
   description,
@@ -50,11 +33,11 @@ export function SEO({
   keywords,
   noindex = false,
   article,
+  jsonLd,
 }: SEOProps) {
-  const url = `${SITE_URL}${path}`
+  const url = `${SITE_URL}${path ? `/${path.replace(/^\//, '')}` : ''}`
   const fullTitle = path === '' ? title : `${title} | ${SITE_NAME}`
 
-  // Resolve image URL (handle both full URLs and paths)
   const imageUrl = image
     ? image.startsWith('http')
       ? image
@@ -62,6 +45,8 @@ export function SEO({
     : DEFAULT_IMAGE
 
   const imageAltText = imageAlt || `${title} - ${SITE_NAME}`
+
+  const jsonLdItems = jsonLd ? (Array.isArray(jsonLd) ? jsonLd : [jsonLd]) : []
 
   return (
     <Helmet>
@@ -81,7 +66,12 @@ export function SEO({
       {/* Canonical */}
       <link rel="canonical" href={url} />
 
-      {/* Open Graph / Facebook / LinkedIn / Discord / Slack / WhatsApp / Telegram / iMessage */}
+      {/* Hreflang alternate links */}
+      <link rel="alternate" hreflang="en" href={url} />
+      <link rel="alternate" hreflang="fr" href={`${url}${url.includes('?') ? '&' : '?'}lng=fr`} />
+      <link rel="alternate" hreflang="x-default" href={url} />
+
+      {/* Open Graph */}
       <meta property="og:type" content={type} />
       <meta property="og:url" content={url} />
       <meta property="og:site_name" content={SITE_NAME} />
@@ -94,6 +84,7 @@ export function SEO({
       <meta property="og:image:height" content="630" />
       <meta property="og:image:alt" content={imageAltText} />
       <meta property="og:locale" content="en_US" />
+      <meta property="og:locale:alternate" content="fr_CA" />
 
       {/* Profile type extras */}
       {type === 'profile' && (
@@ -128,10 +119,17 @@ export function SEO({
       <meta name="twitter:image" content={imageUrl} />
       <meta name="twitter:image:alt" content={imageAltText} />
 
-      {/* Schema.org microdata (Google, Pinterest, etc.) */}
+      {/* Schema.org microdata */}
       <meta itemProp="name" content={fullTitle} />
       <meta itemProp="description" content={description} />
       <meta itemProp="image" content={imageUrl} />
+
+      {/* Per-page JSON-LD structured data */}
+      {jsonLdItems.map((item, i) => (
+        <script key={`jsonld-${i}`} type="application/ld+json">
+          {JSON.stringify({ '@context': 'https://schema.org', ...item })}
+        </script>
+      ))}
     </Helmet>
   )
 }

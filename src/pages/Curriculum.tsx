@@ -8,9 +8,20 @@ export default function Curriculum() {
   return (
     <>
       <SEO
-        title="Curriculum - Charles Jackson"
-        description="Course curriculum for building software with AI. 52 hours of principles-first instruction."
+        title="Curriculum — The Agentic SaaS Course"
+        description="52 hours across 51 lessons and 4 tiers. From tokens and context windows to system teardowns. Learn Next.js, Supabase, Claude Code, Stripe, and Vercel — guided by 8 timeless principles."
         path="/curriculum"
+        keywords="agentic saas curriculum, ai development lessons, course syllabus, next.js lessons, supabase tutorial, claude code training, full stack course outline, 52 hour coding course"
+        jsonLd={{
+          '@type': 'Course',
+          name: 'The Agentic SaaS Course — Full Curriculum',
+          description: '52 hours of principles-first instruction across 51 lessons and 4 tiers, from first deploy to system teardown.',
+          url: 'https://shaolincharles.dev/curriculum',
+          provider: { '@type': 'Person', name: 'Charles Jackson' },
+          numberOfCredits: '52 hours',
+          educationalLevel: 'Intermediate to Advanced',
+          teaches: ['AI-Assisted Development', 'Next.js', 'React', 'TypeScript', 'Supabase', 'Claude Code', 'Vercel', 'Drizzle ORM', 'Stripe', 'Production Operations'],
+        }}
       />
 
       <Section id="curriculum" className="relative min-h-screen flex items-center justify-center">

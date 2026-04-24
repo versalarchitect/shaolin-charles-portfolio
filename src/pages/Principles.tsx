@@ -8,9 +8,17 @@ export default function Principles() {
   return (
     <>
       <SEO
-        title="Principles - Charles Jackson"
-        description="The 8 principles behind building software with AI the right way."
+        title="8 Principles — The Agentic SaaS Course"
+        description="The 8 timeless principles behind building software with AI. Judgment over prompt tricks, principles over patterns, builders not prompters. These outlast the next model release."
         path="/principles"
+        keywords="ai development principles, software engineering principles, building with ai guidelines, judgment over prompts, principles-first development, agentic development philosophy"
+        jsonLd={{
+          '@type': 'ItemList',
+          name: '8 Principles of the Agentic SaaS Course',
+          description: 'Timeless principles for building software with AI that outlast the next model release.',
+          url: 'https://shaolincharles.dev/principles',
+          numberOfItems: 8,
+        }}
       />
 
       <Section id="principles" className="relative min-h-screen flex items-center justify-center">

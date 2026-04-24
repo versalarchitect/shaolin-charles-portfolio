@@ -1,0 +1,5 @@
+# robots.txt — shaolincharles.dev
+User-agent: *
+Allow: /
+
+Sitemap: https://shaolincharles.dev/sitemap.xml

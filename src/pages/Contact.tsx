@@ -121,7 +121,19 @@ export default function Contact() {
         path="/contact"
         image="/og-contact.png"
         imageAlt="Contact Charles Jackson - Available for projects and consulting worldwide"
-        keywords="contact charles jackson, hire full stack developer, consulting, freelance developer montreal, software development services"
+        keywords="contact charles jackson, hire full stack developer, consulting, freelance developer montreal, software development services, course enrollment questions"
+        jsonLd={{
+          '@type': 'ContactPage',
+          name: 'Contact Charles Jackson',
+          description: 'Get in touch for project inquiries, consulting, or course questions. Based in Montreal, available worldwide.',
+          url: 'https://shaolincharles.dev/contact',
+          mainEntity: {
+            '@type': 'Person',
+            name: 'Charles Jackson',
+            email: 'hello@charlesjackson.dev',
+            address: { '@type': 'PostalAddress', addressLocality: 'Montreal', addressRegion: 'Quebec', addressCountry: 'CA' },
+          },
+        }}
       />
 
       {/* Hero Section */}

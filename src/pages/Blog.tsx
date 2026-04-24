@@ -360,7 +360,15 @@ export default function Blog() {
         type="blog"
         image="/og-blog.png"
         imageAlt="Charles Jackson Technical Blog - Architecture, Performance, and TypeScript"
-        keywords="software architecture blog, react typescript articles, full stack development tutorials, web development insights, performance optimization"
+        keywords="software architecture blog, react typescript articles, full stack development tutorials, web development insights, performance optimization, ai development articles, next.js tutorials"
+        jsonLd={{
+          '@type': 'Blog',
+          name: 'Charles Jackson Technical Blog',
+          description: 'Technical articles on software architecture, React, TypeScript, and building scalable systems.',
+          url: 'https://shaolincharles.dev/blog',
+          author: { '@type': 'Person', name: 'Charles Jackson' },
+          inLanguage: 'en',
+        }}
       />
 
       {/* Hero Section */}
