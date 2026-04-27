@@ -23,7 +23,7 @@ export function AmbientGlowZones() {
             width: zone.size,
             height: zone.size,
             transform: 'translate(-50%, -50%)',
-            background: `radial-gradient(circle, rgba(255,255,255,${zone.opacity}) 0%, rgba(255,255,255,${zone.opacity * 0.5}) 30%, transparent 70%)`,
+            background: `radial-gradient(circle, rgba(var(--effect-rgb),${zone.opacity}) 0%, rgba(var(--effect-rgb),${zone.opacity * 0.5}) 30%, transparent 70%)`,
             filter: 'blur(60px)',
           }}
         />
@@ -40,7 +40,7 @@ export function GradientWash() {
       <div
         className="absolute top-0 left-0 right-0 h-[60vh]"
         style={{
-          background: 'linear-gradient(180deg, rgba(255,255,255,0.03) 0%, rgba(255,255,255,0.015) 40%, transparent 100%)',
+          background: 'linear-gradient(180deg, rgba(var(--effect-rgb),0.03) 0%, rgba(var(--effect-rgb),0.015) 40%, transparent 100%)',
         }}
       />
 
@@ -48,7 +48,7 @@ export function GradientWash() {
       <div
         className="absolute inset-0"
         style={{
-          background: 'linear-gradient(135deg, transparent 0%, rgba(255,255,255,0.015) 30%, rgba(255,255,255,0.02) 50%, rgba(255,255,255,0.015) 70%, transparent 100%)',
+          background: 'linear-gradient(135deg, transparent 0%, rgba(var(--effect-rgb),0.015) 30%, rgba(var(--effect-rgb),0.02) 50%, rgba(var(--effect-rgb),0.015) 70%, transparent 100%)',
         }}
       />
 
@@ -56,7 +56,7 @@ export function GradientWash() {
       <div
         className="absolute bottom-0 right-0 w-[50vw] h-[40vh]"
         style={{
-          background: 'radial-gradient(ellipse at bottom right, rgba(255,255,255,0.02) 0%, transparent 70%)',
+          background: 'radial-gradient(ellipse at bottom right, rgba(var(--effect-rgb),0.02) 0%, transparent 70%)',
         }}
       />
     </div>
@@ -71,7 +71,7 @@ export function SpotlightCones() {
       <div
         className="absolute -top-20 -left-20 w-[800px] h-[800px]"
         style={{
-          background: 'conic-gradient(from 180deg at 0% 0%, transparent 0deg, rgba(255,255,255,0.02) 45deg, transparent 90deg)',
+          background: 'conic-gradient(from 180deg at 0% 0%, transparent 0deg, rgba(var(--effect-rgb),0.02) 45deg, transparent 90deg)',
         }}
       />
 
@@ -79,7 +79,7 @@ export function SpotlightCones() {
       <div
         className="absolute -top-20 -right-20 w-[600px] h-[600px]"
         style={{
-          background: 'conic-gradient(from 90deg at 100% 0%, transparent 0deg, rgba(255,255,255,0.015) 45deg, transparent 90deg)',
+          background: 'conic-gradient(from 90deg at 100% 0%, transparent 0deg, rgba(var(--effect-rgb),0.015) 45deg, transparent 90deg)',
         }}
       />
 
@@ -87,7 +87,7 @@ export function SpotlightCones() {
       <div
         className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[1000px] h-[600px]"
         style={{
-          background: 'radial-gradient(ellipse at center top, rgba(255,255,255,0.025) 0%, rgba(255,255,255,0.01) 40%, transparent 70%)',
+          background: 'radial-gradient(ellipse at center top, rgba(var(--effect-rgb),0.025) 0%, rgba(var(--effect-rgb),0.01) 40%, transparent 70%)',
         }}
       />
     </div>
@@ -105,19 +105,19 @@ export function GradientMesh() {
       <div
         className="absolute -top-40 -right-40 w-[800px] h-[800px] rounded-full"
         style={{
-          background: 'radial-gradient(circle, rgba(255,255,255,0.08) 0%, transparent 60%)',
+          background: 'radial-gradient(circle, rgba(var(--effect-rgb),0.08) 0%, transparent 60%)',
         }}
       />
       <div
         className="absolute -bottom-60 -left-60 w-[700px] h-[700px] rounded-full"
         style={{
-          background: 'radial-gradient(circle, rgba(255,255,255,0.06) 0%, transparent 60%)',
+          background: 'radial-gradient(circle, rgba(var(--effect-rgb),0.06) 0%, transparent 60%)',
         }}
       />
       <div
         className="absolute top-1/3 left-1/4 w-[500px] h-[500px] rounded-full"
         style={{
-          background: 'radial-gradient(circle, rgba(255,255,255,0.05) 0%, transparent 50%)',
+          background: 'radial-gradient(circle, rgba(var(--effect-rgb),0.05) 0%, transparent 50%)',
         }}
       />
 
@@ -138,8 +138,8 @@ export function AnimatedGrid() {
         className="absolute inset-0 opacity-[0.02]"
         style={{
           backgroundImage: `
-            linear-gradient(rgba(255,255,255,0.5) 1px, transparent 1px),
-            linear-gradient(90deg, rgba(255,255,255,0.5) 1px, transparent 1px)
+            linear-gradient(rgba(var(--effect-rgb),0.5) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(var(--effect-rgb),0.5) 1px, transparent 1px)
           `,
           backgroundSize: '60px 60px',
         }}
@@ -193,7 +193,7 @@ export function SpotlightEffect() {
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
       if (spotlightRef.current) {
-        spotlightRef.current.style.background = `radial-gradient(800px circle at ${e.clientX}px ${e.clientY}px, rgba(255,255,255,0.04), transparent 40%)`
+        spotlightRef.current.style.background = `radial-gradient(800px circle at ${e.clientX}px ${e.clientY}px, rgba(var(--effect-rgb),0.04), transparent 40%)`
       }
     }
 
@@ -234,7 +234,7 @@ export function GradientBlobs() {
             height: 200 + i * 100,
             left: `${10 + i * 15}%`,
             top: `${20 + (i % 3) * 30}%`,
-            background: `rgba(255,255,255,${0.02 - i * 0.002})`,
+            background: `rgba(var(--effect-rgb),${0.02 - i * 0.002})`,
           }}
         />
       ))}
@@ -284,7 +284,7 @@ export function SectionSpots({
             width: spot.size,
             height: spot.size,
             transform: 'translate(-50%, -50%)',
-            background: `radial-gradient(circle, rgba(255,255,255,${spot.opacity}) 0%, transparent 70%)`,
+            background: `radial-gradient(circle, rgba(var(--effect-rgb),${spot.opacity}) 0%, transparent 70%)`,
             filter: 'blur(40px)',
           }}
         />
@@ -327,7 +327,7 @@ export function IntersectionGrid({
   // Horizontal line: (5,12) to (19,12) - 14px wide
   // stroke="rgba(20, 20, 20, 0.15)" for light backgrounds
   // We use white for dark backgrounds
-  const plusSvg = `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M 12 5 L 12 19 M 5 12 L 19 12' fill='transparent' stroke-width='${strokeWidth}' stroke='rgba(255, 255, 255, ${opacity})' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E`
+  const plusSvg = `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M 12 5 L 12 19 M 5 12 L 19 12' fill='transparent' stroke-width='${strokeWidth}' stroke='rgba(var(--effect-rgb),${opacity})' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E`
 
   return (
     <div className={`absolute inset-0 overflow-hidden pointer-events-none ${className}`}>
@@ -547,7 +547,7 @@ export function SectionBoundaryGrid({
           y1={0}
           x2={leftLineX}
           y2={documentHeight}
-          stroke={`rgba(255, 255, 255, ${lineOpacity})`}
+          stroke={`rgba(var(--effect-rgb),${lineOpacity})`}
           strokeWidth={1}
         />
         <line
@@ -555,7 +555,7 @@ export function SectionBoundaryGrid({
           y1={0}
           x2={rightLineX}
           y2={documentHeight}
-          stroke={`rgba(255, 255, 255, ${lineOpacity})`}
+          stroke={`rgba(var(--effect-rgb),${lineOpacity})`}
           strokeWidth={1}
         />
 
@@ -567,7 +567,7 @@ export function SectionBoundaryGrid({
             y1={y}
             x2={viewportWidth}
             y2={y}
-            stroke={`rgba(255, 255, 255, ${lineOpacity})`}
+            stroke={`rgba(var(--effect-rgb),${lineOpacity})`}
             strokeWidth={1}
           />
         ))}
@@ -581,7 +581,7 @@ export function SectionBoundaryGrid({
               y1={-markerSize / 2}
               x2={0}
               y2={markerSize / 2}
-              stroke={`rgba(255, 255, 255, ${markerOpacity})`}
+              stroke={`rgba(var(--effect-rgb),${markerOpacity})`}
               strokeWidth={1.5}
               strokeLinecap="round"
             />
@@ -591,7 +591,7 @@ export function SectionBoundaryGrid({
               y1={0}
               x2={markerSize / 2}
               y2={0}
-              stroke={`rgba(255, 255, 255, ${markerOpacity})`}
+              stroke={`rgba(var(--effect-rgb),${markerOpacity})`}
               strokeWidth={1.5}
               strokeLinecap="round"
             />

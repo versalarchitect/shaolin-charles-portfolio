@@ -11,17 +11,11 @@ import {
   Zap,
   Target,
   Award,
+  Play,
+  ChevronRight,
 } from 'lucide-react'
 import { SEO } from '@/components/SEO'
-import {
-  BlurFadeIn,
-  ScrollFadeIn,
-  AnimatedNumber,
-  StaggerContainer,
-  staggerItemVariants,
-  SpotlightCard,
-} from '@/components/ui/aaa-effects'
-import { SectionSpots, Section } from '@/components/ui/gradient-background'
+import { AnimatedNumber } from '@/components/ui/aaa-effects'
 import {
   CURRICULUM,
   ACHIEVEMENTS,
@@ -39,9 +33,6 @@ import {
   getOverallProgress,
 } from '@/stores/progress'
 
-// ============================================================================
-// HELPER: Level icon mapping
-// ============================================================================
 function LevelIcon({ levelName, className }: { levelName: string; className?: string }) {
   switch (levelName) {
     case 'Diamond':
@@ -57,10 +48,7 @@ function LevelIcon({ levelName, className }: { levelName: string; className?: st
   }
 }
 
-// ============================================================================
-// SECTION 1: Hero Stats Bar
-// ============================================================================
-function HeroStatsBar() {
+function StatsBar() {
   const progress = useProgress()
   const level = getLevel()
   const nextLevel = getNextLevel()
@@ -73,549 +61,281 @@ function HeroStatsBar() {
     : 100
 
   return (
-    <Section id="dashboard-hero" className="pt-28 pb-12 lg:pt-32 lg:pb-16 px-6 lg:px-8">
-      <SectionSpots variant="hero" />
-      <div className="relative max-w-5xl mx-auto">
-        <BlurFadeIn>
-          <div className="flex flex-col gap-6">
-            {/* Top row: Level badge + streak */}
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <div className="flex items-center justify-center w-12 h-12 rounded-xl bg-foreground/[0.05] border border-foreground/10">
-                  <LevelIcon levelName={level.name} className="w-6 h-6 text-foreground/80" />
-                </div>
-                <div>
-                  <p className="text-xs font-mono uppercase tracking-widest text-foreground/40">
-                    Current Rank
-                  </p>
-                  <p className="text-xl font-semibold tracking-tight">{level.name}</p>
-                </div>
-              </div>
+    <div className="space-y-4">
+      {/* Top stats row */}
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+        <div className="rounded-xl border border-foreground/[0.08] bg-foreground/[0.02] p-4">
+          <div className="flex items-center gap-2 mb-2">
+            <LevelIcon levelName={level.name} className="w-4 h-4 text-foreground/60" />
+            <span className="text-[10px] font-mono uppercase tracking-wider text-foreground/40">Rank</span>
+          </div>
+          <p className="text-lg font-semibold">{level.name}</p>
+        </div>
 
-              <div className="flex items-center gap-6">
-                {/* Streak */}
+        <div className="rounded-xl border border-foreground/[0.08] bg-foreground/[0.02] p-4">
+          <div className="flex items-center gap-2 mb-2">
+            <Flame className="w-4 h-4 text-foreground/60" />
+            <span className="text-[10px] font-mono uppercase tracking-wider text-foreground/40">Streak</span>
+          </div>
+          <p className="text-lg font-mono font-semibold">
+            {progress.currentStreak} <span className="text-sm text-foreground/40">days</span>
+          </p>
+        </div>
+
+        <div className="rounded-xl border border-foreground/[0.08] bg-foreground/[0.02] p-4">
+          <div className="flex items-center gap-2 mb-2">
+            <Check className="w-4 h-4 text-foreground/60" />
+            <span className="text-[10px] font-mono uppercase tracking-wider text-foreground/40">Lessons</span>
+          </div>
+          <p className="text-lg font-mono font-semibold">
+            {overall.completed}<span className="text-sm text-foreground/30">/{TOTAL_LESSONS}</span>
+          </p>
+        </div>
+
+        <div className="rounded-xl border border-foreground/[0.08] bg-foreground/[0.02] p-4">
+          <div className="flex items-center gap-2 mb-2">
+            <Trophy className="w-4 h-4 text-foreground/60" />
+            <span className="text-[10px] font-mono uppercase tracking-wider text-foreground/40">Achievements</span>
+          </div>
+          <p className="text-lg font-mono font-semibold">
+            {progress.unlockedAchievements.length}<span className="text-sm text-foreground/30">/{ACHIEVEMENTS.length}</span>
+          </p>
+        </div>
+      </div>
+
+      {/* XP Progress */}
+      <div className="rounded-xl border border-foreground/[0.08] bg-foreground/[0.02] p-4">
+        <div className="flex items-center justify-between mb-2">
+          <div className="flex items-center gap-2">
+            <Zap className="w-4 h-4 text-foreground/60" />
+            <span className="font-mono text-sm font-semibold">
+              <AnimatedNumber value={progress.totalXp} />
+              <span className="text-foreground/30"> / {TOTAL_XP} XP</span>
+            </span>
+          </div>
+          {nextLevel && (
+            <span className="text-xs font-mono text-foreground/40">
+              {nextLevel.minXp - progress.totalXp} to {nextLevel.name}
+            </span>
+          )}
+        </div>
+        <div className="relative h-2 rounded-full bg-foreground/[0.05] overflow-hidden">
+          <motion.div
+            className="absolute inset-y-0 left-0 rounded-full bg-foreground/25"
+            initial={{ width: 0 }}
+            animate={{ width: `${levelPercent}%` }}
+            transition={{ duration: 0.8, ease: [0.33, 1, 0.68, 1] }}
+          />
+        </div>
+        <div className="flex justify-between mt-1.5">
+          {XP_LEVELS.map((lvl) => (
+            <span
+              key={lvl.name}
+              className={`text-[9px] font-mono ${
+                lvl.name === level.name ? 'text-foreground/70' : 'text-foreground/20'
+              }`}
+            >
+              {lvl.name}
+            </span>
+          ))}
+        </div>
+      </div>
+    </div>
+  )
+}
+
+function NextLesson() {
+  const nextLesson = useMemo(() => {
+    for (const tier of CURRICULUM) {
+      for (const lesson of tier.lessons) {
+        const status = getLessonStatus(lesson.id)
+        if (status === 'in_progress' || status === 'available') {
+          return { lesson, tier }
+        }
+      }
+    }
+    return null
+  }, [])
+
+  if (!nextLesson) return null
+
+  const { lesson, tier } = nextLesson
+  const status = getLessonStatus(lesson.id)
+
+  return (
+    <Link
+      to={`/learn/${lesson.id}`}
+      className="block rounded-xl border border-foreground/10 bg-foreground/[0.03] hover:bg-foreground/[0.05] hover:border-foreground/15 transition-all p-5 group"
+    >
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-4">
+          <div className="flex items-center justify-center w-10 h-10 rounded-full bg-foreground/10 group-hover:bg-foreground/15 transition-colors">
+            {status === 'in_progress' ? (
+              <Play className="w-4 h-4 text-foreground/80 ml-0.5" />
+            ) : (
+              <ChevronRight className="w-4 h-4 text-foreground/80" />
+            )}
+          </div>
+          <div>
+            <p className="text-[10px] font-mono text-foreground/40 uppercase tracking-wider mb-0.5">
+              {status === 'in_progress' ? 'Continue' : 'Up Next'} — {tier.subtitle || tier.name}
+            </p>
+            <p className="font-medium text-foreground/90 group-hover:text-foreground transition-colors">
+              {lesson.title}
+            </p>
+          </div>
+        </div>
+        <div className="flex items-center gap-3 text-xs text-foreground/40 shrink-0">
+          <span className="font-mono">{lesson.duration}m</span>
+          <span className="font-mono">+{lesson.xp} XP</span>
+        </div>
+      </div>
+    </Link>
+  )
+}
+
+function TierProgress() {
+  return (
+    <div className="space-y-3">
+      <h2 className="text-sm font-mono uppercase tracking-wider text-foreground/40">
+        Progress by Tier
+      </h2>
+
+      <div className="space-y-2">
+        {CURRICULUM.map((tier) => {
+          const tierProgress = getTierProgress(tier.id)
+          const isComplete = tierProgress.percent === 100
+
+          return (
+            <div
+              key={tier.id}
+              className="rounded-xl border border-foreground/[0.08] bg-foreground/[0.02] p-4"
+            >
+              <div className="flex items-center justify-between mb-2">
                 <div className="flex items-center gap-2">
-                  <div className="flex items-center justify-center w-10 h-10 rounded-lg bg-foreground/[0.05] border border-foreground/10">
-                    <Flame className="w-5 h-5 text-foreground/70" />
-                  </div>
-                  <div>
-                    <p className="text-lg font-mono font-semibold leading-none">
-                      {progress.currentStreak}
-                    </p>
-                    <p className="text-xs text-foreground/40 font-mono">streak</p>
-                  </div>
+                  {isComplete && <Check className="w-3.5 h-3.5 text-foreground/60" />}
+                  <span className="text-sm font-medium">
+                    {tier.id === 'prework' ? 'Prework' : `Tier ${tier.number}`}
+                  </span>
+                  <span className="text-xs text-foreground/40">{tier.subtitle}</span>
                 </div>
-
-                {/* Completion */}
-                <div className="hidden sm:flex items-center gap-2">
-                  <div className="flex items-center justify-center w-10 h-10 rounded-lg bg-foreground/[0.05] border border-foreground/10">
-                    <Target className="w-5 h-5 text-foreground/70" />
-                  </div>
-                  <div>
-                    <p className="text-lg font-mono font-semibold leading-none">
-                      {overall.percent}%
-                    </p>
-                    <p className="text-xs text-foreground/40 font-mono">complete</p>
-                  </div>
-                </div>
+                <span className="text-xs font-mono text-foreground/50">
+                  {tierProgress.completed}/{tierProgress.total}
+                </span>
               </div>
-            </div>
-
-            {/* XP Progress Bar */}
-            <div className="rounded-2xl border border-foreground/[0.08] bg-foreground/[0.02] p-5">
-              <div className="flex items-center justify-between mb-3">
-                <div className="flex items-baseline gap-2">
-                  <Zap className="w-4 h-4 text-foreground/60 relative top-0.5" />
-                  <span className="font-mono text-2xl font-bold">
-                    <AnimatedNumber value={progress.totalXp} />
-                  </span>
-                  <span className="text-sm text-foreground/40 font-mono">
-                    / {TOTAL_XP} XP
-                  </span>
-                </div>
-                {nextLevel && (
-                  <span className="text-xs font-mono text-foreground/40">
-                    {nextLevel.minXp - progress.totalXp} XP to {nextLevel.name}
-                  </span>
-                )}
-              </div>
-
-              {/* Progress bar */}
-              <div className="relative h-3 rounded-full bg-foreground/[0.05] overflow-hidden">
+              <div className="relative h-1.5 rounded-full bg-foreground/[0.05] overflow-hidden">
                 <motion.div
                   className="absolute inset-y-0 left-0 rounded-full bg-foreground/20"
                   initial={{ width: 0 }}
-                  animate={{ width: `${levelPercent}%` }}
-                  transition={{ duration: 1, ease: [0.33, 1, 0.68, 1], delay: 0.3 }}
-                />
-                <motion.div
-                  className="absolute inset-y-0 left-0 rounded-full bg-foreground/40"
-                  initial={{ width: 0 }}
-                  animate={{ width: `${levelPercent}%` }}
-                  transition={{ duration: 1.2, ease: [0.33, 1, 0.68, 1], delay: 0.3 }}
-                  style={{ opacity: 0.5 }}
+                  animate={{ width: `${tierProgress.percent}%` }}
+                  transition={{ duration: 0.6, ease: [0.33, 1, 0.68, 1] }}
                 />
               </div>
 
-              {/* Level markers */}
-              <div className="flex justify-between mt-2">
-                {XP_LEVELS.map((lvl) => (
-                  <span
-                    key={lvl.name}
-                    className={`text-[10px] font-mono ${
-                      lvl.name === level.name
-                        ? 'text-foreground/80'
-                        : 'text-foreground/25'
-                    }`}
-                  >
-                    {lvl.name}
-                  </span>
-                ))}
-              </div>
-            </div>
-
-            {/* Quick stats row */}
-            <div className="grid grid-cols-3 gap-3">
-              {[
-                {
-                  label: 'Lessons Done',
-                  value: overall.completed,
-                  total: TOTAL_LESSONS,
-                  icon: <Check className="w-4 h-4" />,
-                },
-                {
-                  label: 'Total XP',
-                  value: progress.totalXp,
-                  total: TOTAL_XP,
-                  icon: <Zap className="w-4 h-4" />,
-                },
-                {
-                  label: 'Achievements',
-                  value: progress.unlockedAchievements.length,
-                  total: ACHIEVEMENTS.length,
-                  icon: <Trophy className="w-4 h-4" />,
-                },
-              ].map((stat) => (
-                <div
-                  key={stat.label}
-                  className="rounded-xl border border-foreground/[0.08] bg-foreground/[0.02] p-4 text-center"
-                >
-                  <div className="flex items-center justify-center gap-1.5 text-foreground/50 mb-1">
-                    {stat.icon}
-                    <span className="text-[10px] font-mono uppercase tracking-wider">
-                      {stat.label}
-                    </span>
-                  </div>
-                  <p className="font-mono text-xl font-bold">
-                    <AnimatedNumber value={stat.value} />
-                    <span className="text-foreground/30 text-sm">/{stat.total}</span>
-                  </p>
-                </div>
-              ))}
-            </div>
-          </div>
-        </BlurFadeIn>
-      </div>
-    </Section>
-  )
-}
-
-// ============================================================================
-// SECTION 2: Skill Path (Duolingo-style snaking path)
-// ============================================================================
-
-function LessonNode({
-  lesson,
-  status,
-  index,
-  isCapstone,
-}: {
-  lesson: Lesson
-  status: LessonStatus
-  index: number
-  isCapstone: boolean
-}) {
-  const nodeSize = isCapstone ? 'w-20 h-20' : 'w-14 h-14'
-  const iconSize = isCapstone ? 'w-7 h-7' : 'w-5 h-5'
-
-  const nodeContent = (
-    <motion.div
-      className="relative flex flex-col items-center group"
-      variants={staggerItemVariants}
-    >
-      {/* Connector line from previous node */}
-      {index > 0 && (
-        <div
-          className={`absolute -top-10 left-1/2 -translate-x-1/2 w-px h-10 ${
-            status === 'locked'
-              ? 'bg-gradient-to-b from-foreground/[0.06] to-foreground/[0.03]'
-              : 'bg-gradient-to-b from-foreground/15 to-foreground/10'
-          }`}
-        />
-      )}
-
-      {/* Node circle */}
-      <div className="relative">
-        {/* Pulsing glow for available lessons */}
-        {status === 'available' && (
-          <motion.div
-            className={`absolute inset-0 rounded-full bg-foreground/10 ${nodeSize}`}
-            animate={{
-              scale: [1, 1.4, 1],
-              opacity: [0.3, 0, 0.3],
-            }}
-            transition={{
-              duration: 2,
-              repeat: Infinity,
-              ease: 'easeInOut',
-            }}
-          />
-        )}
-
-        {/* Animated border for in-progress */}
-        {status === 'in_progress' && (
-          <motion.div
-            className={`absolute -inset-0.5 rounded-full`}
-            style={{
-              background:
-                'conic-gradient(from 0deg, rgba(255,255,255,0.3), rgba(255,255,255,0.05), rgba(255,255,255,0.3))',
-            }}
-            animate={{ rotate: 360 }}
-            transition={{ duration: 3, repeat: Infinity, ease: 'linear' }}
-          />
-        )}
-
-        <div
-          className={`
-            relative ${nodeSize} rounded-full flex items-center justify-center
-            transition-all duration-300 border-2
-            ${
-              status === 'completed'
-                ? 'bg-foreground/15 border-foreground/30 text-foreground'
-                : status === 'in_progress'
-                  ? 'bg-foreground/[0.08] border-foreground/20 text-foreground/80'
-                  : status === 'available'
-                    ? 'bg-foreground/[0.04] border-foreground/15 text-foreground/70 hover:bg-foreground/[0.08] hover:border-foreground/25 cursor-pointer'
-                    : 'bg-foreground/[0.02] border-foreground/[0.06] text-foreground/20'
-            }
-          `}
-        >
-          {status === 'completed' ? (
-            isCapstone ? (
-              <Crown className={iconSize} />
-            ) : (
-              <Check className={iconSize} />
-            )
-          ) : status === 'locked' ? (
-            <Lock className={iconSize} />
-          ) : isCapstone ? (
-            <Star className={iconSize} />
-          ) : (
-            <span className="font-mono text-sm font-semibold">{lesson.number}</span>
-          )}
-        </div>
-
-        {/* XP badge for completed lessons */}
-        {status === 'completed' && (
-          <motion.div
-            initial={{ scale: 0 }}
-            animate={{ scale: 1 }}
-            className="absolute -top-1 -right-1 flex items-center gap-0.5 px-1.5 py-0.5 rounded-full bg-foreground/10 border border-foreground/15"
-          >
-            <Zap className="w-2.5 h-2.5 text-foreground/60" />
-            <span className="text-[9px] font-mono font-bold text-foreground/70">
-              {lesson.xp}
-            </span>
-          </motion.div>
-        )}
-      </div>
-
-      {/* Label */}
-      <div className="mt-2 text-center max-w-[120px]">
-        <p
-          className={`text-xs font-medium leading-tight ${
-            status === 'locked' ? 'text-foreground/20' : 'text-foreground/60'
-          }`}
-        >
-          {lesson.title}
-        </p>
-        {status !== 'completed' && status !== 'locked' && (
-          <p className="text-[10px] font-mono text-foreground/30 mt-0.5">
-            {lesson.xp} XP
-          </p>
-        )}
-      </div>
-    </motion.div>
-  )
-
-  if (status === 'available' || status === 'in_progress') {
-    return (
-      <Link to={`/learn/${lesson.id}`} className="block">
-        {nodeContent}
-      </Link>
-    )
-  }
-
-  return nodeContent
-}
-
-function TierPath({ tierIndex }: { tierIndex: number }) {
-  const tier = CURRICULUM[tierIndex]
-  const tierProgress = getTierProgress(tier.id)
-
-  return (
-    <ScrollFadeIn delay={tierIndex * 0.15}>
-      <div className="relative">
-        {/* Tier header card */}
-        <div className="relative rounded-2xl border border-foreground/[0.08] bg-foreground/[0.02] p-6 mb-8 overflow-hidden">
-          {/* Large watermark number */}
-          <div className="absolute -right-4 -top-4 text-[120px] font-bold leading-none text-foreground/[0.02] select-none pointer-events-none">
-            {tier.number}
-          </div>
-
-          <div className="relative">
-            <div className="flex items-center justify-between mb-3">
-              <div>
-                <p className="text-[10px] font-mono uppercase tracking-widest text-foreground/40 mb-1">
-                  Tier {tier.number}
-                </p>
-                <h3 className="text-lg font-semibold tracking-tight">{tier.name}</h3>
-                <p className="text-sm text-foreground/50 mt-0.5">{tier.subtitle}</p>
-              </div>
-              <div className="text-right">
-                <p className="font-mono text-sm font-semibold">
-                  {tierProgress.completed}
-                  <span className="text-foreground/30">/{tierProgress.total}</span>
-                </p>
-                <p className="text-[10px] font-mono text-foreground/40">lessons</p>
-              </div>
-            </div>
-
-            {/* Tier progress bar */}
-            <div className="relative h-1.5 rounded-full bg-foreground/[0.05] overflow-hidden">
-              <motion.div
-                className="absolute inset-y-0 left-0 rounded-full bg-foreground/25"
-                initial={{ width: 0 }}
-                animate={{ width: `${tierProgress.percent}%` }}
-                transition={{ duration: 0.8, ease: [0.33, 1, 0.68, 1], delay: 0.2 }}
-              />
-            </div>
-          </div>
-        </div>
-
-        {/* Snaking lesson path */}
-        <StaggerContainer
-          className="relative flex flex-col items-center pb-12"
-          staggerDelay={0.08}
-          delayStart={tierIndex * 0.1}
-        >
-          {tier.lessons.map((lesson, lessonIndex) => {
-            const status = getLessonStatus(lesson.id)
-
-            // Compute horizontal offset for snaking: alternate left/right
-            // 0 = center, odd = left, even = right (after first)
-            const snakeOffset =
-              lessonIndex === 0
-                ? 0
-                : lessonIndex % 2 === 1
-                  ? -80
-                  : 80
-
-            return (
-              <motion.div
-                key={lesson.id}
-                className="relative"
-                style={{
-                  marginTop: lessonIndex === 0 ? 0 : 40,
-                  transform: `translateX(${snakeOffset}px)`,
-                }}
-                variants={staggerItemVariants}
-              >
-                {/* Curved connector line between offset nodes */}
-                {lessonIndex > 0 && (
-                  <svg
-                    className="absolute pointer-events-none"
-                    style={{
-                      top: -40,
-                      left: '50%',
-                      transform: 'translateX(-50%)',
-                      width: 200,
-                      height: 40,
-                    }}
-                    viewBox="0 0 200 40"
-                    fill="none"
-                    preserveAspectRatio="none"
-                  >
-                    <path
-                      d={
-                        snakeOffset > 0
-                          ? 'M 20 0 C 20 20, 180 20, 180 40'
-                          : snakeOffset < 0
-                            ? 'M 180 0 C 180 20, 20 20, 20 40'
-                            : 'M 100 0 L 100 40'
-                      }
-                      stroke={
-                        status === 'locked'
-                          ? 'rgba(255,255,255,0.04)'
-                          : 'rgba(255,255,255,0.1)'
-                      }
-                      strokeWidth="1.5"
-                      strokeDasharray={status === 'locked' ? '4 4' : 'none'}
+              {/* Lesson dots */}
+              <div className="flex gap-1 mt-2.5">
+                {tier.lessons.map((lesson) => {
+                  const status = getLessonStatus(lesson.id)
+                  return (
+                    <Link
+                      key={lesson.id}
+                      to={status !== 'locked' ? `/learn/${lesson.id}` : '#'}
+                      className={`
+                        flex-1 h-1.5 rounded-full transition-colors
+                        ${status === 'completed'
+                          ? 'bg-foreground/30'
+                          : status === 'in_progress'
+                            ? 'bg-foreground/15 animate-pulse'
+                            : status === 'available'
+                              ? 'bg-foreground/10 hover:bg-foreground/15'
+                              : 'bg-foreground/[0.04]'
+                        }
+                      `}
+                      title={`${lesson.number} — ${lesson.title}`}
                     />
-                  </svg>
-                )}
-                <LessonNode
-                  lesson={lesson}
-                  status={status}
-                  index={lessonIndex}
-                  isCapstone={lesson.isCapstone}
-                />
-              </motion.div>
-            )
-          })}
-        </StaggerContainer>
+                  )
+                })}
+              </div>
+            </div>
+          )
+        })}
       </div>
-    </ScrollFadeIn>
+    </div>
   )
 }
 
-function SkillPath() {
-  return (
-    <Section id="dashboard-path" className="py-16 lg:py-24 px-6 lg:px-8">
-      <SectionSpots variant="default" />
-      <div className="relative max-w-2xl mx-auto">
-        <ScrollFadeIn>
-          <div className="text-center mb-12">
-            <p className="text-xs font-mono uppercase tracking-widest text-foreground/40 mb-2">
-              Your Learning Path
-            </p>
-            <h2 className="text-3xl font-semibold tracking-tight">Skill Path</h2>
-            <p className="text-foreground/50 mt-2 max-w-md mx-auto text-sm">
-              Complete lessons in order. Each unlocks the next. Capstone projects prove
-              mastery.
-            </p>
-          </div>
-        </ScrollFadeIn>
-
-        {CURRICULUM.map((_, tierIndex) => (
-          <TierPath key={CURRICULUM[tierIndex].id} tierIndex={tierIndex} />
-        ))}
-      </div>
-    </Section>
-  )
-}
-
-// ============================================================================
-// SECTION 3: Achievements
-// ============================================================================
-function AchievementsSection() {
+function AchievementsGrid() {
   const progress = useProgress()
 
   const achievementIconMap: Record<string, React.ReactNode> = {
-    'first-lesson': <Target className="w-6 h-6" />,
-    'streak-3': <Flame className="w-6 h-6" />,
-    'streak-7': <Zap className="w-6 h-6" />,
-    'streak-30': <Crown className="w-6 h-6" />,
-    'prework-done': <Check className="w-6 h-6" />,
-    'tier1-done': <Star className="w-6 h-6" />,
-    'tier2-done': <Award className="w-6 h-6" />,
-    'tier3-done': <Trophy className="w-6 h-6" />,
-    'tier4-done': <Crown className="w-6 h-6" />,
-    'speed-learner': <Zap className="w-6 h-6" />,
-    'half-way': <Star className="w-6 h-6" />,
-    'full-course': <Trophy className="w-6 h-6" />,
+    'first-lesson': <Target className="w-5 h-5" />,
+    'streak-3': <Flame className="w-5 h-5" />,
+    'streak-7': <Zap className="w-5 h-5" />,
+    'streak-30': <Crown className="w-5 h-5" />,
+    'prework-done': <Check className="w-5 h-5" />,
+    'tier1-done': <Star className="w-5 h-5" />,
+    'tier2-done': <Award className="w-5 h-5" />,
+    'tier3-done': <Trophy className="w-5 h-5" />,
+    'tier4-done': <Crown className="w-5 h-5" />,
+    'speed-learner': <Zap className="w-5 h-5" />,
+    'half-way': <Star className="w-5 h-5" />,
+    'full-course': <Trophy className="w-5 h-5" />,
   }
 
   return (
-    <Section id="dashboard-achievements" className="py-16 lg:py-24 px-6 lg:px-8">
-      <SectionSpots variant="accent" />
-      <div className="relative max-w-5xl mx-auto">
-        <ScrollFadeIn>
-          <div className="text-center mb-10">
-            <p className="text-xs font-mono uppercase tracking-widest text-foreground/40 mb-2">
-              Milestones
-            </p>
-            <h2 className="text-3xl font-semibold tracking-tight">Achievements</h2>
-          </div>
-        </ScrollFadeIn>
+    <div className="space-y-3">
+      <h2 className="text-sm font-mono uppercase tracking-wider text-foreground/40">
+        Achievements
+      </h2>
 
-        <StaggerContainer
-          className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3"
-          staggerDelay={0.05}
-        >
-          {ACHIEVEMENTS.map((achievement) => {
-            const isUnlocked = progress.unlockedAchievements.includes(achievement.id)
+      <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+        {ACHIEVEMENTS.map((achievement) => {
+          const isUnlocked = progress.unlockedAchievements.includes(achievement.id)
 
-            return (
-              <motion.div key={achievement.id} variants={staggerItemVariants}>
-                <SpotlightCard
-                  className={`
-                    relative rounded-xl border p-4 text-center transition-all
-                    ${
-                      isUnlocked
-                        ? 'border-foreground/15 bg-foreground/[0.04]'
-                        : 'border-foreground/[0.06] bg-foreground/[0.01] opacity-50'
-                    }
-                  `}
-                >
-                  <div className="relative z-10">
-                    <div
-                      className={`
-                        mx-auto w-12 h-12 rounded-xl flex items-center justify-center mb-3
-                        ${
-                          isUnlocked
-                            ? 'bg-foreground/10 text-foreground/80'
-                            : 'bg-foreground/[0.04] text-foreground/20'
-                        }
-                      `}
-                    >
-                      {isUnlocked ? (
-                        achievementIconMap[achievement.id] || (
-                          <Trophy className="w-6 h-6" />
-                        )
-                      ) : (
-                        <Lock className="w-5 h-5" />
-                      )}
-                    </div>
-                    <p
-                      className={`text-sm font-medium ${
-                        isUnlocked ? 'text-foreground/80' : 'text-foreground/30'
-                      }`}
-                    >
-                      {isUnlocked ? achievement.name : '???'}
-                    </p>
-                    {isUnlocked && (
-                      <p className="text-[10px] text-foreground/40 mt-0.5">
-                        {achievement.description}
-                      </p>
-                    )}
-                    <div
-                      className={`
-                        mt-2 inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-mono
-                        ${
-                          isUnlocked
-                            ? 'bg-foreground/[0.05] text-foreground/50'
-                            : 'bg-foreground/[0.02] text-foreground/20'
-                        }
-                      `}
-                    >
-                      <Zap className="w-2.5 h-2.5" />
-                      {achievement.xpReward} XP
-                    </div>
-                  </div>
-                </SpotlightCard>
-              </motion.div>
-            )
-          })}
-        </StaggerContainer>
+          return (
+            <div
+              key={achievement.id}
+              className={`
+                rounded-xl border p-3 text-center transition-all
+                ${isUnlocked
+                  ? 'border-foreground/10 bg-foreground/[0.03]'
+                  : 'border-foreground/[0.05] bg-foreground/[0.01] opacity-40'
+                }
+              `}
+            >
+              <div
+                className={`
+                  mx-auto w-9 h-9 rounded-lg flex items-center justify-center mb-2
+                  ${isUnlocked
+                    ? 'bg-foreground/10 text-foreground/70'
+                    : 'bg-foreground/[0.04] text-foreground/20'
+                  }
+                `}
+              >
+                {isUnlocked ? (
+                  achievementIconMap[achievement.id] || <Trophy className="w-5 h-5" />
+                ) : (
+                  <Lock className="w-4 h-4" />
+                )}
+              </div>
+              <p className={`text-xs font-medium ${isUnlocked ? 'text-foreground/80' : 'text-foreground/25'}`}>
+                {isUnlocked ? achievement.name : '???'}
+              </p>
+              {isUnlocked && (
+                <p className="text-[10px] text-foreground/40 mt-0.5">{achievement.description}</p>
+              )}
+              <div className={`mt-1.5 inline-flex items-center gap-0.5 text-[10px] font-mono ${isUnlocked ? 'text-foreground/40' : 'text-foreground/15'}`}>
+                <Zap className="w-2.5 h-2.5" />
+                {achievement.xpReward} XP
+              </div>
+            </div>
+          )
+        })}
       </div>
-    </Section>
+    </div>
   )
 }
 
-// ============================================================================
-// SECTION 4: Streak Calendar (GitHub-style contribution graph)
-// ============================================================================
 function StreakCalendar() {
   const progress = useProgress()
 
@@ -634,112 +354,77 @@ function StreakCalendar() {
     return result
   }, [progress.streakDates])
 
-  const dayLabels = ['Mon', 'Wed', 'Fri']
-
   return (
-    <Section id="dashboard-streak" className="py-16 lg:py-24 px-6 lg:px-8">
-      <SectionSpots variant="subtle" />
-      <div className="relative max-w-2xl mx-auto">
-        <ScrollFadeIn>
-          <div className="rounded-2xl border border-foreground/[0.08] bg-foreground/[0.02] p-6">
-            <div className="flex items-center justify-between mb-6">
-              <div>
-                <p className="text-xs font-mono uppercase tracking-widest text-foreground/40 mb-1">
-                  Activity
-                </p>
-                <h3 className="text-lg font-semibold tracking-tight">
-                  Last 30 Days
-                </h3>
-              </div>
-              <div className="flex items-center gap-2">
-                <Flame className="w-5 h-5 text-foreground/50" />
-                <span className="font-mono text-lg font-bold">
-                  {progress.currentStreak}
-                </span>
-                <span className="text-xs text-foreground/40 font-mono">day streak</span>
-              </div>
-            </div>
-
-            {/* Calendar grid */}
-            <div className="flex gap-1.5 items-end">
-              {/* Day labels */}
-              <div className="flex flex-col gap-1.5 mr-1 shrink-0">
-                {dayLabels.map((label) => (
-                  <span
-                    key={label}
-                    className="text-[9px] font-mono text-foreground/25 h-[14px] flex items-center"
-                  >
-                    {label}
-                  </span>
-                ))}
-              </div>
-
-              {/* Grid of day squares */}
-              <div className="flex gap-[3px] flex-wrap">
-                {days.map((day) => (
-                  <motion.div
-                    key={day.date}
-                    className={`
-                      w-[14px] h-[14px] rounded-[3px] transition-colors
-                      ${
-                        day.active
-                          ? 'bg-foreground/25 border border-foreground/30'
-                          : 'bg-foreground/[0.04] border border-foreground/[0.06]'
-                      }
-                    `}
-                    title={`${day.date}${day.active ? ' - Active' : ''}`}
-                    whileHover={{ scale: 1.3 }}
-                    transition={{ type: 'spring', stiffness: 400, damping: 17 }}
-                  />
-                ))}
-              </div>
-            </div>
-
-            {/* Legend */}
-            <div className="flex items-center gap-3 mt-4 justify-end">
-              <span className="text-[9px] font-mono text-foreground/30">Less</span>
-              <div className="flex gap-1">
-                {[0.04, 0.08, 0.15, 0.25].map((opacity, i) => (
-                  <div
-                    key={i}
-                    className="w-[10px] h-[10px] rounded-[2px]"
-                    style={{
-                      backgroundColor: `rgba(255, 255, 255, ${opacity})`,
-                      border: `1px solid rgba(255, 255, 255, ${opacity + 0.04})`,
-                    }}
-                  />
-                ))}
-              </div>
-              <span className="text-[9px] font-mono text-foreground/30">More</span>
-            </div>
-          </div>
-        </ScrollFadeIn>
+    <div className="space-y-3">
+      <div className="flex items-center justify-between">
+        <h2 className="text-sm font-mono uppercase tracking-wider text-foreground/40">
+          Activity — Last 30 Days
+        </h2>
+        <div className="flex items-center gap-1.5">
+          <Flame className="w-3.5 h-3.5 text-foreground/50" />
+          <span className="text-sm font-mono font-semibold">{progress.currentStreak}</span>
+          <span className="text-[10px] text-foreground/40 font-mono">day streak</span>
+        </div>
       </div>
-    </Section>
+
+      <div className="rounded-xl border border-foreground/[0.08] bg-foreground/[0.02] p-4">
+        <div className="grid grid-cols-10 gap-[3px]">
+          {days.map((day) => (
+            <div
+              key={day.date}
+              className={`
+                aspect-square rounded-[3px] transition-colors
+                ${day.active
+                  ? 'bg-foreground/25 border border-foreground/30'
+                  : 'bg-foreground/[0.04] border border-foreground/[0.06]'
+                }
+              `}
+              title={`${day.date}${day.active ? ' — Active' : ''}`}
+            />
+          ))}
+        </div>
+        <div className="flex items-center gap-2 mt-3 justify-end">
+          <span className="text-[9px] font-mono text-foreground/25">Less</span>
+          <div className="flex gap-1">
+            {[0.04, 0.1, 0.18, 0.25].map((opacity, i) => (
+              <div
+                key={i}
+                className="w-[8px] h-[8px] rounded-[2px]"
+                style={{
+                  backgroundColor: `rgba(var(--effect-rgb),${opacity})`,
+                  border: `1px solid rgba(var(--effect-rgb),${opacity + 0.04})`,
+                }}
+              />
+            ))}
+          </div>
+          <span className="text-[9px] font-mono text-foreground/25">More</span>
+        </div>
+      </div>
+    </div>
   )
 }
 
-// ============================================================================
-// MAIN DASHBOARD PAGE
-// ============================================================================
 export default function Dashboard() {
   return (
     <>
       <SEO
         title="Dashboard"
-        description="Track your progress through The Agentic SaaS Course. Complete lessons, earn XP, and unlock achievements."
+        description="Track your progress through The Agentic SaaS Course."
         path="dashboard"
         keywords="dashboard, progress, learning, agentic saas course"
       />
 
-      <div className="min-h-screen">
-        <HeroStatsBar />
-        <SkillPath />
-        <AchievementsSection />
-        <StreakCalendar />
+      <div className="p-6 lg:p-8 max-w-4xl space-y-8">
+        <div>
+          <h1 className="text-2xl font-bold tracking-tight mb-1">Dashboard</h1>
+          <p className="text-sm text-muted-foreground">Track your progress and pick up where you left off.</p>
+        </div>
 
-        {/* Bottom spacer */}
-        <div className="h-16" />
+        <NextLesson />
+        <StatsBar />
+        <TierProgress />
+        <StreakCalendar />
+        <AchievementsGrid />
       </div>
     </>
   )

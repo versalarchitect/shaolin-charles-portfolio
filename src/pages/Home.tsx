@@ -256,8 +256,8 @@ export default function Home() {
             '@type': 'Course',
             name: 'The Agentic SaaS Course',
             description: 'Learn to orchestrate AI agents from first principles. 52 hours from tokens to coordinating agent fleets that build production software.',
-            url: 'https://shaolincharles.dev',
-            provider: { '@type': 'Person', name: 'Charles Jackson', url: 'https://shaolincharles.dev/instructor' },
+            url: 'https://charlesjackson.dev',
+            provider: { '@type': 'Person', name: 'Charles Jackson', url: 'https://charlesjackson.dev/instructor' },
             educationalLevel: 'Intermediate to Advanced',
             numberOfCredits: '52 hours',
             teaches: ['AI-Assisted Development', 'Next.js', 'React', 'TypeScript', 'Supabase', 'Claude Code', 'Vercel'],
@@ -265,7 +265,7 @@ export default function Home() {
           {
             '@type': 'BreadcrumbList',
             itemListElement: [
-              { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://shaolincharles.dev/' },
+              { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://charlesjackson.dev/' },
             ],
           },
         ]}
@@ -283,7 +283,7 @@ export default function Home() {
               <BlurFadeIn delay={0} immediate>
                 <GlowBorder
                   className="inline-block rounded-full"
-                  glowColor="rgba(255,255,255,0.1)"
+                  glowColor="rgba(var(--effect-rgb),0.1)"
                   glowSize={8}
                 >
                   <div className="inline-flex items-center gap-2 px-4 py-2 bg-foreground/5 backdrop-blur-sm border border-foreground/10 rounded-full">
@@ -663,7 +663,7 @@ export default function Home() {
           </ScrollFadeIn>
 
           <BlurFadeIn delay={0.2}>
-            <SpotlightCard spotlightColor="rgba(255,255,255,0.04)" spotlightSize={600}>
+            <SpotlightCard spotlightColor="rgba(var(--effect-rgb),0.04)" spotlightSize={600}>
               <Card className="overflow-hidden border-foreground/10 bg-gradient-to-br from-background to-foreground/[0.02] hover:border-foreground/15 transition-colors duration-500">
                 <div className="p-8 md:p-12">
                   <div className="grid md:grid-cols-2 gap-12 items-center">

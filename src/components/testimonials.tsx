@@ -106,7 +106,7 @@ function TestimonialCard({ testimonial }: { testimonial: Testimonial; index: num
           <motion.div
             className="absolute pointer-events-none -inset-px rounded-[inherit]"
             style={{
-              background: `radial-gradient(300px circle at ${mousePosition.x}px ${mousePosition.y}px, rgba(255,255,255,0.06), transparent 60%)`,
+              background: `radial-gradient(300px circle at ${mousePosition.x}px ${mousePosition.y}px, rgba(var(--effect-rgb),0.06), transparent 60%)`,
               opacity: isHovered ? 1 : 0,
               transition: 'opacity 0.3s',
             }}

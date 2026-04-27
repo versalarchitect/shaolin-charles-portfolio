@@ -1,6 +1,6 @@
 import { Helmet } from 'react-helmet-async'
 
-const SITE_URL = 'https://shaolincharles.dev'
+const SITE_URL = 'https://charlesjackson.dev'
 const SITE_NAME = 'Charles Jackson'
 const TWITTER_HANDLE = '@shaolincharles'
 const DEFAULT_IMAGE = `${SITE_URL}/og-image.png`
@@ -112,7 +112,7 @@ export function SEO({
       <meta name="twitter:card" content="summary_large_image" />
       <meta name="twitter:site" content={TWITTER_HANDLE} />
       <meta name="twitter:creator" content={TWITTER_HANDLE} />
-      <meta name="twitter:domain" content="shaolincharles.dev" />
+      <meta name="twitter:domain" content="charlesjackson.dev" />
       <meta name="twitter:url" content={url} />
       <meta name="twitter:title" content={fullTitle} />
       <meta name="twitter:description" content={description} />

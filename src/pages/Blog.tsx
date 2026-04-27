@@ -348,7 +348,7 @@ export default function Blog() {
           '@type': 'Blog',
           name: 'Charles Jackson Technical Blog',
           description: 'Technical articles on software architecture, React, TypeScript, and building scalable systems.',
-          url: 'https://shaolincharles.dev/blog',
+          url: 'https://charlesjackson.dev/blog',
           author: { '@type': 'Person', name: 'Charles Jackson' },
           inLanguage: 'en',
         }}

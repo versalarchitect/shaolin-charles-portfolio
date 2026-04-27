@@ -1,38 +1,61 @@
-import { createContext, useContext, useEffect } from 'react'
+import { createContext, useContext, useEffect, useState } from 'react'
 
-type Theme = 'dark'
+type Theme = 'light' | 'dark' | 'system'
+type ResolvedTheme = 'light' | 'dark'
 
 interface ThemeProviderProps {
   children: React.ReactNode
+  defaultTheme?: Theme
+  storageKey?: string
 }
 
 interface ThemeProviderState {
   theme: Theme
-  resolvedTheme: 'dark'
+  setTheme: (theme: Theme) => void
+  resolvedTheme: ResolvedTheme
 }
 
-const initialState: ThemeProviderState = {
-  theme: 'dark',
-  resolvedTheme: 'dark',
+const ThemeProviderContext = createContext<ThemeProviderState | undefined>(undefined)
+
+function getSystemTheme(): ResolvedTheme {
+  if (typeof window === 'undefined') return 'dark'
+  return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
 }
 
-const ThemeProviderContext = createContext<ThemeProviderState>(initialState)
+export function ThemeProvider({
+  children,
+  defaultTheme = 'dark',
+  storageKey = 'theme',
+}: ThemeProviderProps) {
+  const [theme, setThemeState] = useState<Theme>(() => {
+    if (typeof window === 'undefined') return defaultTheme
+    return (localStorage.getItem(storageKey) as Theme) || defaultTheme
+  })
 
-export function ThemeProvider({ children, ...props }: ThemeProviderProps) {
-  // Always force dark mode
+  const [systemTheme, setSystemTheme] = useState<ResolvedTheme>(getSystemTheme)
+  const resolvedTheme: ResolvedTheme = theme === 'system' ? systemTheme : theme
+
   useEffect(() => {
-    const root = window.document.documentElement
-    root.classList.remove('light')
-    root.classList.add('dark')
+    const root = document.documentElement
+    root.classList.remove('light', 'dark')
+    root.classList.add(resolvedTheme)
+    root.style.colorScheme = resolvedTheme
+  }, [resolvedTheme])
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)')
+    const handler = (e: MediaQueryListEvent) => setSystemTheme(e.matches ? 'dark' : 'light')
+    mediaQuery.addEventListener('change', handler)
+    return () => mediaQuery.removeEventListener('change', handler)
   }, [])
 
-  const value: ThemeProviderState = {
-    theme: 'dark',
-    resolvedTheme: 'dark',
+  const setTheme = (newTheme: Theme) => {
+    localStorage.setItem(storageKey, newTheme)
+    setThemeState(newTheme)
   }
 
   return (
-    <ThemeProviderContext.Provider {...props} value={value}>
+    <ThemeProviderContext.Provider value={{ theme, setTheme, resolvedTheme }}>
       {children}
     </ThemeProviderContext.Provider>
   )
@@ -40,9 +63,7 @@ export function ThemeProvider({ children, ...props }: ThemeProviderProps) {
 
 export const useTheme = () => {
   const context = useContext(ThemeProviderContext)
-
   if (context === undefined)
     throw new Error('useTheme must be used within a ThemeProvider')
-
   return context
 }

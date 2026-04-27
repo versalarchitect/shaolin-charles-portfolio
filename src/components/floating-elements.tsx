@@ -68,7 +68,7 @@ export function FloatingShapes() {
             left: shape.x,
             top: shape.y,
             border: '1px solid',
-            borderColor: 'rgba(255,255,255,0.03)',
+            borderColor: 'rgba(var(--effect-rgb),0.03)',
           }}
           animate={{
             y: [0, -30, 0],
@@ -170,7 +170,7 @@ export function FloatingLines() {
         <defs>
           <linearGradient id="line-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
             <stop offset="0%" stopColor="transparent" />
-            <stop offset="50%" stopColor="rgba(255,255,255,0.1)" />
+            <stop offset="50%" stopColor="rgba(var(--effect-rgb),0.1)" />
             <stop offset="100%" stopColor="transparent" />
           </linearGradient>
         </defs>

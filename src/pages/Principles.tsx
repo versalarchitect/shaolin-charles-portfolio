@@ -96,7 +96,7 @@ export default function Principles() {
           '@type': 'ItemList',
           name: '8 Principles of the Agentic SaaS Course',
           description: 'Timeless principles for building software with AI that outlast the next model release.',
-          url: 'https://shaolincharles.dev/principles',
+          url: 'https://charlesjackson.dev/principles',
           numberOfItems: 8,
         }}
       />

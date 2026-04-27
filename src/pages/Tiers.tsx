@@ -141,7 +141,7 @@ export default function Tiers() {
           '@type': 'Offer',
           name: 'The Agentic SaaS Course — Full Access',
           description: '52 hours of interactive instruction from tokens to multi-agent orchestration. 51 lessons, 4 capstones, lifetime access.',
-          url: 'https://shaolincharles.dev/tiers',
+          url: 'https://charlesjackson.dev/tiers',
           price: '4500',
           priceCurrency: 'USD',
           availability: 'https://schema.org/InStock',
@@ -258,7 +258,7 @@ export default function Tiers() {
                   className={isWide ? 'md:col-span-2' : ''}
                 >
                   <TiltCard tiltAmount={3} glareEnabled glareOpacity={0.03} perspective={2000}>
-                    <SpotlightCard spotlightColor="rgba(255,255,255,0.04)" spotlightSize={600}>
+                    <SpotlightCard spotlightColor="rgba(var(--effect-rgb),0.04)" spotlightSize={600}>
                       <div className="relative h-full overflow-hidden rounded-2xl border border-foreground/10 bg-foreground/[0.02] hover:border-foreground/20 transition-all duration-300">
                         {/* Watermark number */}
                         <div className={`absolute -right-4 -top-6 font-bold leading-none text-foreground/[0.02] select-none pointer-events-none ${isWide ? 'text-[220px]' : 'text-[160px]'}`}>

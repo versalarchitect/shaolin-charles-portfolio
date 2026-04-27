@@ -158,7 +158,7 @@ function MarketingCurriculum() {
           '@type': 'Course',
           name: 'The Agentic SaaS Course — Full Curriculum',
           description: '52 hours of interactive instruction across 51 lessons and 4 tiers. From tokens to multi-agent orchestration.',
-          url: 'https://shaolincharles.dev/curriculum',
+          url: 'https://charlesjackson.dev/curriculum',
           provider: { '@type': 'Person', name: 'Charles Jackson' },
           numberOfCredits: '52 hours',
           educationalLevel: 'Intermediate to Advanced',

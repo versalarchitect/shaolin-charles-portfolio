@@ -31,17 +31,17 @@ Next.js, React, TypeScript, Supabase, Claude Code, Vercel, Drizzle ORM, Stripe, 
 
 ## Links
 
-- Website: https://shaolincharles.dev
-- Curriculum: https://shaolincharles.dev/curriculum
-- Principles: https://shaolincharles.dev/principles
-- Tiers & Pricing: https://shaolincharles.dev/tiers
-- Instructor: https://shaolincharles.dev/instructor
-- Projects: https://shaolincharles.dev/projects
-- Blog: https://shaolincharles.dev/blog
-- Contact: https://shaolincharles.dev/contact
+- Website: https://charlesjackson.dev
+- Curriculum: https://charlesjackson.dev/curriculum
+- Principles: https://charlesjackson.dev/principles
+- Tiers & Pricing: https://charlesjackson.dev/tiers
+- Instructor: https://charlesjackson.dev/instructor
+- Projects: https://charlesjackson.dev/projects
+- Blog: https://charlesjackson.dev/blog
+- Contact: https://charlesjackson.dev/contact
 - GitHub: https://github.com/versalarchitect
 - Email: hello@charlesjackson.dev
 
 ## Optional
 
-- [Full details](https://shaolincharles.dev/llms-full.txt)
+- [Full details](https://charlesjackson.dev/llms-full.txt)

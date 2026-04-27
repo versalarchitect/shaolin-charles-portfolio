@@ -4,84 +4,84 @@
 
   <!-- Homepage -->
   <url>
-    <loc>https://shaolincharles.dev/</loc>
-    <xhtml:link rel="alternate" hreflang="en" href="https://shaolincharles.dev/" />
-    <xhtml:link rel="alternate" hreflang="fr" href="https://shaolincharles.dev/?lng=fr" />
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://shaolincharles.dev/" />
+    <loc>https://charlesjackson.dev/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://charlesjackson.dev/" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://charlesjackson.dev/?lng=fr" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://charlesjackson.dev/" />
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
 
   <!-- Course pages -->
   <url>
-    <loc>https://shaolincharles.dev/curriculum</loc>
-    <xhtml:link rel="alternate" hreflang="en" href="https://shaolincharles.dev/curriculum" />
-    <xhtml:link rel="alternate" hreflang="fr" href="https://shaolincharles.dev/curriculum?lng=fr" />
+    <loc>https://charlesjackson.dev/curriculum</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://charlesjackson.dev/curriculum" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://charlesjackson.dev/curriculum?lng=fr" />
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
 
   <url>
-    <loc>https://shaolincharles.dev/principles</loc>
-    <xhtml:link rel="alternate" hreflang="en" href="https://shaolincharles.dev/principles" />
-    <xhtml:link rel="alternate" hreflang="fr" href="https://shaolincharles.dev/principles?lng=fr" />
+    <loc>https://charlesjackson.dev/principles</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://charlesjackson.dev/principles" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://charlesjackson.dev/principles?lng=fr" />
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
 
   <url>
-    <loc>https://shaolincharles.dev/tiers</loc>
-    <xhtml:link rel="alternate" hreflang="en" href="https://shaolincharles.dev/tiers" />
-    <xhtml:link rel="alternate" hreflang="fr" href="https://shaolincharles.dev/tiers?lng=fr" />
+    <loc>https://charlesjackson.dev/tiers</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://charlesjackson.dev/tiers" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://charlesjackson.dev/tiers?lng=fr" />
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
 
   <url>
-    <loc>https://shaolincharles.dev/instructor</loc>
-    <xhtml:link rel="alternate" hreflang="en" href="https://shaolincharles.dev/instructor" />
-    <xhtml:link rel="alternate" hreflang="fr" href="https://shaolincharles.dev/instructor?lng=fr" />
+    <loc>https://charlesjackson.dev/instructor</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://charlesjackson.dev/instructor" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://charlesjackson.dev/instructor?lng=fr" />
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
 
   <!-- Portfolio pages -->
   <url>
-    <loc>https://shaolincharles.dev/about</loc>
-    <xhtml:link rel="alternate" hreflang="en" href="https://shaolincharles.dev/about" />
-    <xhtml:link rel="alternate" hreflang="fr" href="https://shaolincharles.dev/about?lng=fr" />
+    <loc>https://charlesjackson.dev/about</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://charlesjackson.dev/about" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://charlesjackson.dev/about?lng=fr" />
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
 
   <url>
-    <loc>https://shaolincharles.dev/projects</loc>
-    <xhtml:link rel="alternate" hreflang="en" href="https://shaolincharles.dev/projects" />
-    <xhtml:link rel="alternate" hreflang="fr" href="https://shaolincharles.dev/projects?lng=fr" />
+    <loc>https://charlesjackson.dev/projects</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://charlesjackson.dev/projects" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://charlesjackson.dev/projects?lng=fr" />
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
 
   <url>
-    <loc>https://shaolincharles.dev/blog</loc>
-    <xhtml:link rel="alternate" hreflang="en" href="https://shaolincharles.dev/blog" />
-    <xhtml:link rel="alternate" hreflang="fr" href="https://shaolincharles.dev/blog?lng=fr" />
+    <loc>https://charlesjackson.dev/blog</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://charlesjackson.dev/blog" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://charlesjackson.dev/blog?lng=fr" />
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
 
   <url>
-    <loc>https://shaolincharles.dev/art/abstract</loc>
-    <xhtml:link rel="alternate" hreflang="en" href="https://shaolincharles.dev/art/abstract" />
-    <xhtml:link rel="alternate" hreflang="fr" href="https://shaolincharles.dev/art/abstract?lng=fr" />
+    <loc>https://charlesjackson.dev/art/abstract</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://charlesjackson.dev/art/abstract" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://charlesjackson.dev/art/abstract?lng=fr" />
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
 
   <url>
-    <loc>https://shaolincharles.dev/contact</loc>
-    <xhtml:link rel="alternate" hreflang="en" href="https://shaolincharles.dev/contact" />
-    <xhtml:link rel="alternate" hreflang="fr" href="https://shaolincharles.dev/contact?lng=fr" />
+    <loc>https://charlesjackson.dev/contact</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://charlesjackson.dev/contact" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://charlesjackson.dev/contact?lng=fr" />
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>

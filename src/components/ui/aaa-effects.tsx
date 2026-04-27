@@ -90,7 +90,7 @@ export function TiltCard({
           <div
             className="absolute inset-0 pointer-events-none rounded-[inherit] overflow-hidden"
             style={{
-              background: `radial-gradient(circle at 50% 50%, rgba(255,255,255,${glareOpacity}), transparent 60%)`,
+              background: `radial-gradient(circle at 50% 50%, rgba(var(--effect-rgb),${glareOpacity}), transparent 60%)`,
             }}
           />
         )}
@@ -112,7 +112,7 @@ interface SpotlightCardProps {
 export function SpotlightCard({
   children,
   className = '',
-  spotlightColor = 'rgba(255, 255, 255, 0.1)',
+  spotlightColor = 'rgba(var(--effect-rgb),0.1)',
   spotlightSize = 300,
 }: SpotlightCardProps) {
   const ref = useRef<HTMLDivElement>(null)
@@ -493,7 +493,7 @@ interface GlowBorderProps {
 export function GlowBorder({
   children,
   className = '',
-  glowColor = 'rgba(255, 255, 255, 0.15)',
+  glowColor = 'rgba(var(--effect-rgb),0.15)',
   glowSize = 10,
 }: GlowBorderProps) {
   const { shouldAnimate } = useMotionPreference()
@@ -741,7 +741,7 @@ interface ParticleFieldProps {
 export function ParticleField({
   className = '',
   particleCount = 50,
-  particleColor = 'rgba(255, 255, 255, 0.5)',
+  particleColor = 'rgba(var(--effect-rgb),0.5)',
   connectionDistance = 100,
   speed = 0.5,
 }: ParticleFieldProps) {
@@ -841,7 +841,7 @@ interface MorphingBlobProps {
 
 export function MorphingBlob({
   className = '',
-  color = 'rgba(255, 255, 255, 0.1)',
+  color = 'rgba(var(--effect-rgb),0.1)',
   size = 400,
   blur = 40,
 }: MorphingBlobProps) {
@@ -898,7 +898,7 @@ interface HoverCard3DProps {
 export function HoverCard3D({
   children,
   className = '',
-  glowColor = 'rgba(255, 255, 255, 0.1)',
+  glowColor = 'rgba(var(--effect-rgb),0.1)',
   depth = 50,
 }: HoverCard3DProps) {
   const ref = useRef<HTMLDivElement>(null)
@@ -1031,7 +1031,7 @@ export function GridDistortion({
   className = '',
   gridSize = 40,
   distortionStrength = 30,
-  lineColor = 'rgba(255, 255, 255, 0.1)',
+  lineColor = 'rgba(var(--effect-rgb),0.1)',
 }: GridDistortionProps) {
   const svgRef = useRef<SVGSVGElement>(null)
   const { shouldAnimate } = useMotionPreference()
@@ -1325,7 +1325,7 @@ export function GlitchText({
             <motion.span
               className="absolute inset-0 opacity-60"
               style={{
-                color: 'rgba(255, 255, 255, 0.8)',
+                color: 'rgba(var(--effect-rgb),0.8)',
                 clipPath: 'polygon(0 0, 100% 0, 100% 45%, 0 45%)'
               }}
               initial={{ x: 0 }}

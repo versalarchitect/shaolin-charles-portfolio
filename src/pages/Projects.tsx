@@ -363,7 +363,7 @@ export default function Projects() {
             '@type': 'CollectionPage',
             name: 'Projects by Charles Jackson',
             description: 'Portfolio of production systems: Predictive (AI prediction platform), MyUrbanFarm.ai (urban farming), and NxSupabase (Nx plugin).',
-            url: 'https://shaolincharles.dev/projects',
+            url: 'https://charlesjackson.dev/projects',
             mainEntity: {
               '@type': 'ItemList',
               itemListElement: [
@@ -376,8 +376,8 @@ export default function Projects() {
           {
             '@type': 'BreadcrumbList',
             itemListElement: [
-              { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://shaolincharles.dev/' },
-              { '@type': 'ListItem', position: 2, name: 'Projects', item: 'https://shaolincharles.dev/projects' },
+              { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://charlesjackson.dev/' },
+              { '@type': 'ListItem', position: 2, name: 'Projects', item: 'https://charlesjackson.dev/projects' },
             ],
           },
         ]}
@@ -421,7 +421,7 @@ export default function Projects() {
         <SectionSpots variant="default" />
         <div className="container mx-auto px-6 lg:px-8 relative z-10">
           <RevealOnScroll direction="up">
-            <HoverCard3D className="rounded-2xl" glowColor="rgba(255, 255, 255, 0.1)" depth={40}>
+            <HoverCard3D className="rounded-2xl" glowColor="rgba(var(--effect-rgb),0.1)" depth={40}>
               <Card className="overflow-hidden border-foreground/10 bg-gradient-to-br from-background to-foreground/[0.02]">
                 <div className="p-8 md:p-12 space-y-8">
                   {/* Header */}
@@ -602,7 +602,7 @@ export default function Projects() {
         <SectionSpots variant="default" />
         <div className="container mx-auto px-6 lg:px-8 relative z-10">
           <RevealOnScroll direction="left">
-            <HoverCard3D className="rounded-2xl" glowColor="rgba(255, 255, 255, 0.08)" depth={35}>
+            <HoverCard3D className="rounded-2xl" glowColor="rgba(var(--effect-rgb),0.08)" depth={35}>
               <Card className="overflow-hidden border-foreground/10 bg-gradient-to-br from-background to-foreground/[0.02]">
                 <div className="p-8 md:p-12 space-y-8">
                   {/* Header */}
@@ -709,7 +709,7 @@ export default function Projects() {
         <SectionSpots variant="accent" />
         <div className="container mx-auto px-6 lg:px-8 relative z-10">
           <RevealOnScroll direction="right">
-            <HoverCard3D className="rounded-2xl" glowColor="rgba(255, 255, 255, 0.08)" depth={35}>
+            <HoverCard3D className="rounded-2xl" glowColor="rgba(var(--effect-rgb),0.08)" depth={35}>
               <Card className="overflow-hidden border-foreground/10">
                 <div className="p-8 md:p-12 space-y-8">
                   {/* Header */}
@@ -836,7 +836,7 @@ export default function Projects() {
               >
                 <HoverCard3D
                   className="h-full rounded-xl"
-                  glowColor="rgba(255, 255, 255, 0.1)"
+                  glowColor="rgba(var(--effect-rgb),0.1)"
                   depth={25}
                 >
                   <Card className="h-full p-6 bg-background border-foreground/10 hover:border-foreground/20 transition-all">
@@ -870,7 +870,7 @@ export default function Projects() {
                             initial={{ opacity: 0, scale: 0.8 }}
                             animate={{ opacity: 1, scale: 1 }}
                             transition={{ delay: i * 0.05 }}
-                            whileHover={{ scale: 1.1, backgroundColor: 'rgba(255,255,255,0.1)' }}
+                            whileHover={{ scale: 1.1, backgroundColor: 'rgba(var(--effect-rgb),0.1)' }}
                             className="text-xs font-mono bg-foreground/5 px-2 py-1 rounded cursor-default"
                           >
                             {t}

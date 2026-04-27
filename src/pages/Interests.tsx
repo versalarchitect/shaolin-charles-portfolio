@@ -178,7 +178,7 @@ export default function Interests() {
           '@type': 'WebPage',
           name: 'Mathematical Modeling & Machine Learning Interests',
           description: 'Exploring Monte Carlo simulations, transformer architectures, Bayesian inference, and NLP to build better prediction systems.',
-          url: 'https://shaolincharles.dev/interests',
+          url: 'https://charlesjackson.dev/interests',
           author: { '@type': 'Person', name: 'Charles Jackson' },
           about: [
             { '@type': 'Thing', name: 'Monte Carlo Simulation' },

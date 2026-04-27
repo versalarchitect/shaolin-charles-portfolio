@@ -166,8 +166,8 @@ export default function About() {
               name: 'Charles Jackson',
               jobTitle: 'Founder & Principal Developer',
               description: 'Full-stack developer with 20+ years of experience building production systems. Founder of Predictive (Augure), CTO of MyUrbanFarm.ai, and creator of NxSupabase.',
-              url: 'https://shaolincharles.dev/about',
-              image: 'https://shaolincharles.dev/og-about.png',
+              url: 'https://charlesjackson.dev/about',
+              image: 'https://charlesjackson.dev/og-about.png',
               sameAs: ['https://github.com/versalarchitect'],
               address: { '@type': 'PostalAddress', addressLocality: 'Montreal', addressRegion: 'Quebec', addressCountry: 'CA' },
             },
@@ -175,8 +175,8 @@ export default function About() {
           {
             '@type': 'BreadcrumbList',
             itemListElement: [
-              { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://shaolincharles.dev/' },
-              { '@type': 'ListItem', position: 2, name: 'About', item: 'https://shaolincharles.dev/about' },
+              { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://charlesjackson.dev/' },
+              { '@type': 'ListItem', position: 2, name: 'About', item: 'https://charlesjackson.dev/about' },
             ],
           },
         ]}

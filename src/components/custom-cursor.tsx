@@ -108,7 +108,7 @@ export function CustomCursor() {
         <div
           className="relative -translate-x-1/2 -translate-y-1/2 w-32 h-32 rounded-full"
           style={{
-            background: 'radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%)',
+            background: 'radial-gradient(circle, rgba(var(--effect-rgb),0.1) 0%, transparent 70%)',
           }}
         />
       </motion.div>
@@ -133,7 +133,7 @@ export function CursorSpotlight() {
     <div
       className="pointer-events-none fixed inset-0 z-30 transition-opacity duration-300"
       style={{
-        background: `radial-gradient(800px circle at ${position.x}px ${position.y}px, rgba(255,255,255,0.03), transparent 40%)`,
+        background: `radial-gradient(800px circle at ${position.x}px ${position.y}px, rgba(var(--effect-rgb),0.03), transparent 40%)`,
       }}
     />
   )

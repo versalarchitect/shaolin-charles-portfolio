@@ -365,7 +365,7 @@ export default function Art() {
           '@type': 'CollectionPage',
           name: 'Creative Code Experiments',
           description: 'Experiments at the intersection of programming and art. Three.js visualizations, generative graphics, CSS animations, and interactive browser experiences.',
-          url: 'https://shaolincharles.dev/art/abstract',
+          url: 'https://charlesjackson.dev/art/abstract',
           author: { '@type': 'Person', name: 'Charles Jackson' },
         }}
       />

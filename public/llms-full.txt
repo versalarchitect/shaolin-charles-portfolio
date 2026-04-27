@@ -140,7 +140,7 @@ Official Nx Plugin for Supabase. Streamlines Supabase integration within monorep
 
 ## Contact
 
-- Website: https://shaolincharles.dev
+- Website: https://charlesjackson.dev
 - Email: hello@charlesjackson.dev
 - GitHub: https://github.com/versalarchitect
 - Location: Montreal, Quebec, Canada
@@ -152,16 +152,16 @@ Official Nx Plugin for Supabase. Streamlines Supabase integration within monorep
 
 | Page | URL | Description |
 |------|-----|-------------|
-| Home | https://shaolincharles.dev | Course landing page with overview, testimonials, and enrollment |
-| Curriculum | https://shaolincharles.dev/curriculum | Full course syllabus and lesson breakdown |
-| Principles | https://shaolincharles.dev/principles | The 8 timeless principles taught in the course |
-| Tiers & Pricing | https://shaolincharles.dev/tiers | Enrollment — $4,500 for full access, tokens to agent fleets |
-| Instructor | https://shaolincharles.dev/instructor | About Charles Jackson — background and experience |
-| About | https://shaolincharles.dev/about | Career journey, skills, and philosophy |
-| Projects | https://shaolincharles.dev/projects | Portfolio: Predictive, MyUrbanFarm.ai, NxSupabase |
-| Blog | https://shaolincharles.dev/blog | Technical articles on architecture, React, TypeScript |
-| Art | https://shaolincharles.dev/art/abstract | Creative coding experiments with Three.js, WebGL, p5.js |
-| Interests | https://shaolincharles.dev/interests | Mathematical modeling and machine learning explorations |
-| Contact | https://shaolincharles.dev/contact | Get in touch for inquiries, consulting, or enrollment |
+| Home | https://charlesjackson.dev | Course landing page with overview, testimonials, and enrollment |
+| Curriculum | https://charlesjackson.dev/curriculum | Full course syllabus and lesson breakdown |
+| Principles | https://charlesjackson.dev/principles | The 8 timeless principles taught in the course |
+| Tiers & Pricing | https://charlesjackson.dev/tiers | Enrollment — $4,500 for full access, tokens to agent fleets |
+| Instructor | https://charlesjackson.dev/instructor | About Charles Jackson — background and experience |
+| About | https://charlesjackson.dev/about | Career journey, skills, and philosophy |
+| Projects | https://charlesjackson.dev/projects | Portfolio: Predictive, MyUrbanFarm.ai, NxSupabase |
+| Blog | https://charlesjackson.dev/blog | Technical articles on architecture, React, TypeScript |
+| Art | https://charlesjackson.dev/art/abstract | Creative coding experiments with Three.js, WebGL, p5.js |
+| Interests | https://charlesjackson.dev/interests | Mathematical modeling and machine learning explorations |
+| Contact | https://charlesjackson.dev/contact | Get in touch for inquiries, consulting, or enrollment |
 
 Languages: English (default), French

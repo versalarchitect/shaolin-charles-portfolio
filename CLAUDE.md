@@ -6,8 +6,8 @@ Personal portfolio website for Charles Jackson showcasing projects, skills, and 
 
 ### Live URLs
 
-- **Primary**: https://shaolincharles.dev
-- **WWW**: https://www.shaolincharles.dev
+- **Primary**: https://charlesjackson.dev
+- **WWW**: https://www.charlesjackson.dev
 - **Vercel**: https://shaolin-charles.vercel.app
 
 ### Repository

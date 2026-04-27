@@ -3,11 +3,12 @@ import { Link, useLocation } from 'react-router-dom'
 import { motion, AnimatePresence, useReducedMotion } from 'framer-motion'
 import { useTranslation } from 'react-i18next'
 import { Button } from './ui/button'
-import { AlignJustify, X, ArrowUpRight, Github, LogIn, LayoutDashboard, Users, BookOpen } from 'lucide-react'
+import { AlignJustify, X, ArrowUpRight, Github, LogIn, LayoutDashboard, Users, BookOpen, Sun, Moon } from 'lucide-react'
 import { LanguageSwitcher } from './language-switcher'
 import { Logo } from './ui/logo'
 import { UserAvatar } from './user-avatar'
 import { useAuth } from '@/hooks/use-auth'
+import { useTheme } from '@/components/theme-provider'
 import { HEADER_NAV, SOCIAL_LINKS, SITE } from '@/lib/constants'
 
 const APP_NAV = [
@@ -24,6 +25,7 @@ export function Header() {
   const prefersReducedMotion = useReducedMotion()
   const { t } = useTranslation()
   const { isLoggedIn } = useAuth()
+  const { setTheme, resolvedTheme } = useTheme()
 
   const isAppPage = APP_ROUTES.some((r) => location.pathname.startsWith(r))
   const marketingNav = HEADER_NAV.map((item) => ({ name: t(item.nameKey), href: item.href }))
@@ -112,6 +114,13 @@ export function Header() {
               <Github className="h-4 w-4" />
             </a>
           )}
+          <button
+            onClick={() => setTheme(resolvedTheme === 'dark' ? 'light' : 'dark')}
+            className="p-2 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
+            aria-label="Toggle theme"
+          >
+            {resolvedTheme === 'dark' ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
+          </button>
           <LanguageSwitcher />
           <UserAvatar />
           {!isAppPage && (
@@ -137,6 +146,13 @@ export function Header() {
               <Github className="h-4 w-4" />
             </a>
           )}
+          <button
+            onClick={() => setTheme(resolvedTheme === 'dark' ? 'light' : 'dark')}
+            className="p-2 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
+            aria-label="Toggle theme"
+          >
+            {resolvedTheme === 'dark' ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
+          </button>
           <LanguageSwitcher />
           <button
             type="button"

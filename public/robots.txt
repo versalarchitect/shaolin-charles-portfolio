@@ -1,5 +1,5 @@
-# robots.txt — shaolincharles.dev
+# robots.txt — charlesjackson.dev
 User-agent: *
 Allow: /
 
-Sitemap: https://shaolincharles.dev/sitemap.xml
+Sitemap: https://charlesjackson.dev/sitemap.xml

@@ -126,7 +126,7 @@ export default function Contact() {
           '@type': 'ContactPage',
           name: 'Contact Charles Jackson',
           description: 'Get in touch for project inquiries, consulting, or course questions. Based in Montreal, available worldwide.',
-          url: 'https://shaolincharles.dev/contact',
+          url: 'https://charlesjackson.dev/contact',
           mainEntity: {
             '@type': 'Person',
             name: 'Charles Jackson',
@@ -198,7 +198,7 @@ export default function Contact() {
             <RevealOnScroll direction="left">
               <HoverCard3D
                 className="rounded-xl"
-                glowColor="rgba(255, 255, 255, 0.1)"
+                glowColor="rgba(var(--effect-rgb),0.1)"
                 depth={30}
               >
                 <Card className="border-foreground/10">
@@ -324,7 +324,7 @@ export default function Contact() {
                       >
                         <HoverCard3D
                           className="rounded-lg"
-                          glowColor="rgba(255, 255, 255, 0.08)"
+                          glowColor="rgba(var(--effect-rgb),0.08)"
                           depth={20}
                         >
                           <Card className="p-5 bg-background border-foreground/10 hover:border-foreground/20 transition-all group cursor-pointer">
@@ -377,7 +377,7 @@ export default function Contact() {
               <RevealOnScroll direction="up">
                 <HoverCard3D
                   className="rounded-lg"
-                  glowColor="rgba(255, 255, 255, 0.08)"
+                  glowColor="rgba(var(--effect-rgb),0.08)"
                   depth={15}
                 >
                   <Card className="p-6 border-foreground/10">
