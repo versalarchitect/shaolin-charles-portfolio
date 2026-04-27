@@ -2,203 +2,258 @@ import type { LessonContent } from './types'
 
 const content: LessonContent = {
   lessonId: 'p2',
-  blocks: [
+  steps: [
     {
-      type: 'heading',
-      text: 'Deploy first, code second',
+      type: 'info',
+      title: 'Deploy first, code second',
+      body: "Most courses save deployment for the end. We do it first. If you can't deploy, nothing else matters. A feature that works locally but can't ship is a feature that doesn't exist.",
     },
     {
-      type: 'text',
-      text: 'Most courses save deployment for the end. We do it first. Here\'s why: if you can\'t deploy, nothing else matters. A feature that works locally but can\'t ship is a feature that doesn\'t exist.',
+      type: 'multiple-choice',
+      question: 'Why do we deploy before writing any real code?',
+      options: [
+        'Deployment is the easiest part',
+        'To impress our friends with a URL',
+        'If you can\'t deploy, nothing else matters',
+        'Vercel requires it',
+      ],
+      correctIndex: 2,
+      explanation: 'A deploy pipeline is the foundation. Every feature, fix, and experiment needs to reach users — setting this up first means you never get stuck at the end.',
     },
     {
-      type: 'text',
-      text: 'By the end of this lesson you\'ll have a live URL anyone can visit. That\'s the foundation everything else builds on.',
+      type: 'checkpoint',
+      xp: 1,
+      message: 'Philosophy unlocked!',
+    },
+
+    // === VERCEL ACCOUNT ===
+    {
+      type: 'info',
+      title: 'Step 1: Create a Vercel account',
+      body: 'Go to vercel.com and sign up. Use "Continue with GitHub" — this connects your repos automatically and saves a step later.',
     },
     {
-      type: 'heading',
-      text: '1. Create a Vercel account',
+      type: 'multiple-choice',
+      question: 'Why sign up with GitHub instead of email?',
+      options: [
+        'Email signup is broken',
+        'It auto-connects your repos and sets up webhooks',
+        'GitHub accounts are more secure',
+        'Vercel only supports GitHub',
+      ],
+      correctIndex: 1,
+      explanation: 'Signing up with GitHub lets Vercel auto-detect your repos and set up automatic deployments on every push. One less thing to configure.',
     },
     {
-      type: 'steps',
+      type: 'checklist',
+      title: 'Vercel setup:',
       items: [
-        {
-          title: 'Go to vercel.com and sign up',
-          body: 'Use "Continue with GitHub" — this connects your repos automatically and saves a step later.',
-        },
-        {
-          title: 'Choose the Hobby plan',
-          body: 'It\'s free and covers everything we need for the course. You can upgrade later if you want custom domains or more bandwidth.',
-        },
+        'Went to vercel.com',
+        'Signed up with GitHub',
+        'Selected the Hobby (free) plan',
       ],
     },
     {
-      type: 'tip',
-      text: 'Signing up with GitHub is important. It lets Vercel auto-detect your repos and set up webhooks for automatic deployments on every push.',
+      type: 'checkpoint',
+      xp: 2,
+      message: 'Vercel account ready!',
+    },
+
+    // === CREATE PROJECT ===
+    {
+      type: 'info',
+      title: 'Step 2: Create a Next.js project',
+      body: "We'll use Next.js as the framework for the course projects. Let's scaffold one with TypeScript, Tailwind CSS, and the App Router.",
     },
     {
-      type: 'heading',
-      text: '2. Create a Next.js project',
+      type: 'terminal',
+      instruction: 'Create a new Next.js project:',
+      expectedCommand: 'bunx create-next-app@latest my-first-deploy --ts --tailwind --app --src-dir --eslint',
+      hint: 'bunx create-next-app@latest my-first-deploy --ts --tailwind --app --src-dir --eslint',
     },
     {
-      type: 'text',
-      text: 'We\'ll use Next.js as the framework for the course projects. Create a new project with the App Router:',
+      type: 'terminal',
+      instruction: 'Enter the project directory:',
+      expectedCommand: 'cd my-first-deploy',
     },
     {
-      type: 'code',
-      language: 'bash',
-      code: 'bunx create-next-app@latest my-first-deploy --ts --tailwind --app --src-dir --eslint',
+      type: 'terminal',
+      instruction: 'Start the dev server to verify it works:',
+      expectedCommand: 'bun dev',
     },
     {
-      type: 'text',
-      text: 'This scaffolds a TypeScript project with Tailwind CSS, the App Router, a src/ directory, and ESLint. Accept the defaults for any prompts.',
+      type: 'info',
+      title: 'Check it',
+      body: 'Open http://localhost:3000 in your browser. You should see the Next.js welcome page. If you see it — your project works locally.',
     },
     {
-      type: 'text',
-      text: 'Test it locally:',
+      type: 'checkpoint',
+      xp: 2,
+      message: 'Project scaffolded!',
+    },
+
+    // === PUSH TO GITHUB ===
+    {
+      type: 'info',
+      title: 'Step 3: Push to GitHub',
+      body: "Create a new repository on GitHub (github.com/new). Name it my-first-deploy. Don't add a README — the project already has one.",
     },
     {
-      type: 'code',
-      language: 'bash',
-      code: 'cd my-first-deploy\nbun dev',
+      type: 'terminal',
+      instruction: 'Add the GitHub remote:',
+      expectedCommand: 'git remote add origin git@github.com:YOUR_USERNAME/my-first-deploy.git',
+      hint: 'git remote add origin git@github.com:...',
     },
     {
-      type: 'text',
-      text: 'Open http://localhost:3000 — you should see the Next.js welcome page.',
+      type: 'terminal',
+      instruction: 'Push your code to GitHub:',
+      expectedCommand: 'git push -u origin main',
     },
     {
-      type: 'heading',
-      text: '3. Push to GitHub',
+      type: 'multiple-choice',
+      question: 'What does the -u flag do in git push -u origin main?',
+      options: [
+        'Uploads all branches',
+        'Sets the upstream tracking branch so future pushes just need "git push"',
+        'Undoes the previous commit',
+        'Updates the remote URL',
+      ],
+      correctIndex: 1,
+      explanation: 'The -u (--set-upstream) flag links your local branch to the remote one. After this, you can just type "git push" without specifying the remote and branch.',
     },
     {
-      type: 'text',
-      text: 'Create a new repository on GitHub (github.com/new). Name it my-first-deploy. Don\'t add a README — the project already has one.',
+      type: 'checkpoint',
+      xp: 2,
+      message: 'Code on GitHub!',
+    },
+
+    // === DEPLOY ===
+    {
+      type: 'info',
+      title: 'Step 4: Deploy to Vercel',
+      body: 'Go to vercel.com/new. You\'ll see your GitHub repos. Find my-first-deploy, click Import, and hit Deploy. Vercel auto-detects Next.js — leave all settings as defaults.',
     },
     {
-      type: 'code',
-      language: 'bash',
-      code: 'git remote add origin git@github.com:YOUR_USERNAME/my-first-deploy.git\ngit branch -M main\ngit push -u origin main',
-    },
-    {
-      type: 'warning',
-      text: 'Replace YOUR_USERNAME with your actual GitHub username. If the push fails, check that your SSH key is set up correctly (Lesson P1, step 6).',
-    },
-    {
-      type: 'heading',
-      text: '4. Link to Vercel',
-    },
-    {
-      type: 'steps',
+      type: 'checklist',
+      title: 'Deploy checklist:',
       items: [
-        {
-          title: 'Go to vercel.com/new',
-          body: 'You\'ll see a list of your GitHub repos. Find my-first-deploy and click Import.',
-        },
-        {
-          title: 'Configure the project',
-          body: 'Vercel auto-detects Next.js. Leave all settings as defaults — framework, build command, output directory are all correct out of the box.',
-        },
-        {
-          title: 'Click Deploy',
-          body: 'Vercel clones your repo, installs dependencies, runs the build, and gives you a live URL. This takes about 30–60 seconds.',
-        },
+        'Went to vercel.com/new',
+        'Found and imported my-first-deploy',
+        'Left settings as defaults (Next.js auto-detected)',
+        'Clicked Deploy',
+        'Got a live .vercel.app URL',
       ],
     },
     {
-      type: 'text',
-      text: 'When the deploy finishes, you\'ll see a screenshot of your site and a URL like my-first-deploy-abc123.vercel.app. Click it — your site is live.',
+      type: 'checkpoint',
+      xp: 2,
+      message: 'First deploy live!',
+    },
+
+    // === AUTO DEPLOY ===
+    {
+      type: 'info',
+      title: 'Step 5: Auto-deploy on push',
+      body: "The real power: every push to main triggers a new production deploy. Let's test it. Replace the content of src/app/page.tsx:",
     },
     {
-      type: 'heading',
-      text: '5. Make a change and watch it deploy',
-    },
-    {
-      type: 'text',
-      text: 'The real power of this setup is automatic deployments. Every push to main triggers a new production deploy. Let\'s test it.',
-    },
-    {
-      type: 'text',
-      text: 'Open src/app/page.tsx and replace the content:',
-    },
-    {
-      type: 'code',
+      type: 'code-demo',
+      body: 'Replace src/app/page.tsx with:',
       language: 'tsx',
       filename: 'src/app/page.tsx',
       code: 'export default function Home() {\n  return (\n    <main className="flex min-h-screen items-center justify-center">\n      <h1 className="text-4xl font-bold">Hello, Vercel.</h1>\n    </main>\n  )\n}',
     },
     {
-      type: 'text',
-      text: 'Commit and push:',
+      type: 'terminal',
+      instruction: 'Stage all changes:',
+      expectedCommand: 'git add .',
     },
     {
-      type: 'code',
-      language: 'bash',
-      code: 'git add .\ngit commit -m "Replace default page with hello world"\ngit push',
+      type: 'terminal',
+      instruction: 'Commit with a message:',
+      expectedCommand: 'git commit -m "Replace default page with hello world"',
+      hint: 'git commit -m "..."',
     },
     {
-      type: 'text',
-      text: 'Go to your Vercel dashboard — you\'ll see a new deployment building. In under a minute, your live site updates automatically.',
+      type: 'terminal',
+      instruction: 'Push to trigger auto-deploy:',
+      expectedCommand: 'git push',
     },
     {
-      type: 'heading',
-      text: '6. Preview vs. production deployments',
+      type: 'info',
+      title: 'Watch it deploy',
+      body: 'Go to your Vercel dashboard — a new deployment is building. In under a minute, your live site updates automatically. No manual deploy needed, ever.',
     },
     {
-      type: 'text',
-      text: 'Vercel has two types of deployments. Understanding the difference is critical:',
+      type: 'checkpoint',
+      xp: 1,
+      message: 'Auto-deploy works!',
+    },
+
+    // === PREVIEW VS PRODUCTION ===
+    {
+      type: 'info',
+      title: 'Step 6: Preview vs. Production',
+      body: 'Vercel has two deployment types. Understanding this is critical for the rest of the course.',
     },
     {
-      type: 'steps',
-      items: [
-        {
-          title: 'Production deployments',
-          body: 'Triggered by pushes to the main branch. This is the live URL your users see. Only changes you\'re confident about should go here.',
-        },
-        {
-          title: 'Preview deployments',
-          body: 'Triggered by pushes to any other branch, or by opening a pull request. Each gets a unique URL. Use these to test changes before merging to main.',
-        },
+      type: 'multiple-choice',
+      question: 'What triggers a PRODUCTION deployment on Vercel?',
+      options: [
+        'Any git push to any branch',
+        'Pushing to the main branch',
+        'Clicking "Deploy" in the dashboard',
+        'Creating a pull request',
       ],
+      correctIndex: 1,
+      explanation: 'Pushes to main = production. Pushes to any other branch = preview deployment with a unique URL. Your users only see production.',
     },
     {
-      type: 'text',
-      text: 'Let\'s try a preview deployment:',
+      type: 'terminal',
+      instruction: 'Create a test branch for a preview deployment:',
+      expectedCommand: 'git checkout -b test-preview',
     },
     {
-      type: 'code',
-      language: 'bash',
-      code: 'git checkout -b test-preview\n# Make any small change to page.tsx\ngit add .\ngit commit -m "Test preview deployment"\ngit push -u origin test-preview',
+      type: 'code-input',
+      instruction: 'After making a change, what command pushes this branch to create a preview deploy?',
+      placeholder: 'git push -u origin _________',
+      answer: 'git push -u origin test-preview',
+      hint: 'Push the branch name you just created',
     },
     {
-      type: 'text',
-      text: 'Check the Vercel dashboard — you\'ll see a preview deployment with its own unique URL. Your production site is unchanged.',
+      type: 'info',
+      title: 'Preview = safety net',
+      body: 'Preview deployments are your safety net. Test changes on a unique URL before merging to main. Your production site stays untouched. This habit prevents broken deploys.',
     },
     {
-      type: 'tip',
-      text: 'Preview deployments are your safety net. In the course, you\'ll always test on a preview URL before shipping to production. This habit prevents broken deploys.',
+      type: 'checkpoint',
+      xp: 1,
+      message: 'Preview deploys mastered!',
     },
+
+    // === FINAL ===
     {
-      type: 'heading',
-      text: 'Verification checklist',
+      type: 'order',
+      instruction: 'Put the deploy pipeline in the correct order:',
+      items: ['Edit code locally', 'Git commit', 'Git push to main', 'Vercel auto-builds', 'Site is live'],
+      correctOrder: [0, 1, 2, 3, 4],
     },
     {
       type: 'checklist',
+      title: 'Final verification:',
       items: [
-        'Vercel account created and linked to GitHub',
-        'Next.js project scaffolded and runs locally',
-        'Repository pushed to GitHub',
-        'First production deployment live at a .vercel.app URL',
-        'Code change auto-deployed on push to main',
-        'Preview deployment created from a branch',
+        'Vercel account linked to GitHub',
+        'Next.js project runs locally',
+        'Code pushed to GitHub',
+        'Production deployment live',
+        'Auto-deploy works on push',
+        'Preview deployment created from branch',
       ],
     },
     {
-      type: 'heading',
-      text: 'What you just built',
-    },
-    {
-      type: 'text',
-      text: 'You now have a deploy pipeline. Code goes from your editor → Git → GitHub → Vercel → live URL. Every future lesson builds on this pipeline. When we say "ship it," this is how.',
+      type: 'checkpoint',
+      xp: 0,
+      message: 'Deploy pipeline complete! You now have a ship-on-push workflow.',
     },
   ],
 }

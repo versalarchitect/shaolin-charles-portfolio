@@ -8,10 +8,13 @@ import {
   LogOut,
   Menu,
   X,
+  Sun,
+  Moon,
 } from 'lucide-react'
 import { Logo } from '@/components/ui/logo'
 import { LanguageSwitcher } from '@/components/language-switcher'
 import { useAuth } from '@/hooks/use-auth'
+import { useTheme } from '@/components/theme-provider'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { supabase } from '@/lib/supabase'
 
@@ -25,6 +28,7 @@ function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
   const location = useLocation()
   const navigate = useNavigate()
   const { user } = useAuth()
+  const { setTheme, resolvedTheme } = useTheme()
 
   const initials = user?.email
     ? user.email.split('@')[0].slice(0, 2).toUpperCase()
@@ -90,9 +94,16 @@ function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
 
       {/* Bottom section */}
       <div className="px-3 pb-4 space-y-3">
-        {/* Language switcher */}
-        <div className="px-3">
+        {/* Language & theme */}
+        <div className="px-3 flex items-center justify-between">
           <LanguageSwitcher />
+          <button
+            onClick={() => setTheme(resolvedTheme === 'dark' ? 'light' : 'dark')}
+            className="p-2 rounded-lg text-foreground/50 hover:text-foreground/80 hover:bg-foreground/5 transition-colors"
+            aria-label="Toggle theme"
+          >
+            {resolvedTheme === 'dark' ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
+          </button>
         </div>
 
         {/* Separator */}
@@ -128,6 +139,7 @@ function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
 
 export function AppSidebar() {
   const [mobileOpen, setMobileOpen] = useState(false)
+  const { setTheme, resolvedTheme } = useTheme()
 
   return (
     <>
@@ -137,18 +149,27 @@ export function AppSidebar() {
       </aside>
 
       {/* Mobile top bar */}
-      <div className="lg:hidden fixed inset-x-0 top-0 z-40 h-14 border-b border-foreground/[0.08] bg-background/95 backdrop-blur-sm flex items-center px-4">
-        <button
-          type="button"
-          onClick={() => setMobileOpen(true)}
-          className="p-2 -ml-2 rounded-lg text-foreground/60 hover:text-foreground hover:bg-foreground/5 transition-colors"
-          aria-label="Open sidebar"
-        >
-          <Menu className="w-5 h-5" />
-        </button>
-        <div className="ml-3">
-          <Logo size="sm" className="text-foreground" />
+      <div className="lg:hidden fixed inset-x-0 top-0 z-40 h-14 border-b border-foreground/[0.08] bg-background/95 backdrop-blur-sm flex items-center justify-between px-4">
+        <div className="flex items-center">
+          <button
+            type="button"
+            onClick={() => setMobileOpen(true)}
+            className="p-2 -ml-2 rounded-lg text-foreground/60 hover:text-foreground hover:bg-foreground/5 transition-colors"
+            aria-label="Open sidebar"
+          >
+            <Menu className="w-5 h-5" />
+          </button>
+          <div className="ml-3">
+            <Logo size="sm" className="text-foreground" />
+          </div>
         </div>
+        <button
+          onClick={() => setTheme(resolvedTheme === 'dark' ? 'light' : 'dark')}
+          className="p-2 rounded-lg text-foreground/60 hover:text-foreground hover:bg-foreground/5 transition-colors"
+          aria-label="Toggle theme"
+        >
+          {resolvedTheme === 'dark' ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
+        </button>
       </div>
 
       {/* Mobile sidebar overlay */}

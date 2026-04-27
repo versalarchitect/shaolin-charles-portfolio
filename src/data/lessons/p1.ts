@@ -2,225 +2,234 @@ import type { LessonContent } from './types'
 
 const content: LessonContent = {
   lessonId: 'p1',
-  blocks: [
+  steps: [
     {
-      type: 'heading',
-      text: 'Why your environment matters',
+      type: 'info',
+      title: 'Welcome to your first lesson',
+      body: "Every bug you'll chase, every deploy you'll ship, every agent you'll direct — it all runs through your local machine first. A sloppy setup means friction on every task. A clean one means you disappear into the work.",
     },
     {
-      type: 'text',
-      text: "Every bug you'll chase, every deploy you'll ship, every agent you'll direct — it all runs through your local machine first. A sloppy setup means friction on every task. A clean one means you can focus on the work, not the tooling.",
+      type: 'info',
+      title: 'What we\'re installing',
+      body: 'Node.js 22+ (JavaScript runtime), Bun (fast package manager), Git (version control), VS Code (editor), SSH keys (secure GitHub access). Nothing optional — every tool here gets used in the course.',
     },
     {
-      type: 'text',
-      text: 'This lesson sets up the exact environment you\'ll use for the rest of the course. Nothing optional — every tool here gets used.',
+      type: 'checkpoint',
+      xp: 1,
+      message: 'Setup begins!',
+    },
+
+    // === NODE.JS ===
+    {
+      type: 'info',
+      title: 'Step 1: Node.js',
+      body: 'Node.js is the runtime for everything we build. We need version 22 or later — it includes native fetch, a stable test runner, and better ESM support.',
     },
     {
-      type: 'heading',
-      text: '1. Install Node.js 22+',
+      type: 'code-demo',
+      title: 'Use nvm, not a direct install',
+      body: 'nvm (Node Version Manager) lets you switch Node versions per project. Essential when you work on multiple codebases.',
+      language: 'bash',
+      code: 'curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.3/install.sh | bash',
     },
     {
-      type: 'text',
-      text: 'Node.js is the runtime for everything we build. We need version 22 or later — it includes native fetch, a stable test runner, and better ESM support.',
+      type: 'terminal',
+      instruction: 'After restarting your terminal, install Node.js 22. Type the command:',
+      expectedCommand: 'nvm install 22',
+      hint: 'nvm install <version>',
     },
     {
-      type: 'tip',
-      text: 'Use nvm (Node Version Manager) instead of installing Node directly. It lets you switch between versions per project — essential when you work on multiple codebases.',
+      type: 'terminal',
+      instruction: 'Set Node 22 as your default version:',
+      expectedCommand: 'nvm alias default 22',
+      hint: 'nvm alias default <version>',
     },
     {
-      type: 'steps',
-      items: [
-        {
-          title: 'Install nvm',
-          body: 'Run the install script. This adds nvm to your shell profile.',
-          code: 'curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.3/install.sh | bash',
-        },
-        {
-          title: 'Restart your terminal',
-          body: 'Close and reopen your terminal, or source your profile:',
-          code: 'source ~/.zshrc  # or ~/.bashrc',
-        },
-        {
-          title: 'Install Node.js 22',
-          body: 'Install the latest LTS version and set it as default.',
-          code: 'nvm install 22\nnvm alias default 22',
-        },
-        {
-          title: 'Verify',
-          body: 'Confirm you\'re running the right version.',
-          code: 'node --version\n# Should print v22.x.x or higher',
-        },
+      type: 'multiple-choice',
+      question: 'Why do we use nvm instead of installing Node directly?',
+      options: [
+        'nvm is faster than Node',
+        'nvm lets you switch Node versions per project',
+        'nvm is required by Vercel',
+        'nvm replaces npm',
       ],
+      correctIndex: 1,
+      explanation: 'nvm lets you switch between Node versions instantly — essential when different projects need different versions.',
     },
     {
-      type: 'heading',
-      text: '2. Install Bun',
+      type: 'checkpoint',
+      xp: 2,
+      message: 'Node.js ready!',
+    },
+
+    // === BUN ===
+    {
+      type: 'info',
+      title: 'Step 2: Bun',
+      body: "Bun is a fast JavaScript runtime and package manager. We use it for installing dependencies and running scripts — it's significantly faster than npm.",
     },
     {
-      type: 'text',
-      text: 'Bun is a fast JavaScript runtime and package manager. We use it for installing dependencies and running scripts — it\'s significantly faster than npm.',
+      type: 'terminal',
+      instruction: 'Install Bun:',
+      expectedCommand: 'curl -fsSL https://bun.sh/install | bash',
     },
     {
-      type: 'code',
+      type: 'terminal',
+      instruction: 'After restarting your terminal, verify Bun is installed:',
+      expectedCommand: 'bun --version',
+    },
+    {
+      type: 'checkpoint',
+      xp: 2,
+      message: 'Bun installed!',
+    },
+
+    // === GIT ===
+    {
+      type: 'info',
+      title: 'Step 3: Git',
+      body: "Git is version control — it tracks every change you make and lets you undo mistakes, collaborate with others, and deploy code. If you're on macOS, you likely have it via Xcode Command Line Tools.",
+    },
+    {
+      type: 'code-demo',
+      title: 'Install Git if needed',
+      body: 'Most systems have Git already. Run git --version to check. If not:',
       language: 'bash',
-      code: 'curl -fsSL https://bun.sh/install | bash',
+      code: 'xcode-select --install  # macOS\nsudo apt install git     # Ubuntu/Debian\nwinget install Git.Git   # Windows',
     },
     {
-      type: 'text',
-      text: 'Restart your terminal, then verify:',
+      type: 'terminal',
+      instruction: 'Configure your Git name (this shows in every commit):',
+      expectedCommand: 'git config --global user.name "Your Name"',
+      hint: 'git config --global user.name "..."',
     },
     {
-      type: 'code',
-      language: 'bash',
-      code: 'bun --version\n# Should print 1.x.x',
+      type: 'terminal',
+      instruction: 'Configure your Git email (use the same one as GitHub):',
+      expectedCommand: 'git config --global user.email "you@example.com"',
+      hint: 'git config --global user.email "..."',
     },
     {
-      type: 'heading',
-      text: '3. Install and configure Git',
-    },
-    {
-      type: 'text',
-      text: 'Git is version control. If you\'re on macOS, you likely have it already via Xcode Command Line Tools. If not:',
-    },
-    {
-      type: 'code',
-      language: 'bash',
-      code: 'xcode-select --install  # macOS\n# or: sudo apt install git  # Ubuntu/Debian\n# or: winget install Git.Git  # Windows',
-    },
-    {
-      type: 'text',
-      text: 'Set your identity — this shows up in every commit you make:',
-    },
-    {
-      type: 'code',
-      language: 'bash',
-      code: 'git config --global user.name "Your Name"\ngit config --global user.email "you@example.com"',
-    },
-    {
-      type: 'tip',
-      text: 'Use the same email you use on GitHub so your commits are linked to your profile.',
-    },
-    {
-      type: 'heading',
-      text: '4. Install VS Code',
-    },
-    {
-      type: 'text',
-      text: 'Download VS Code from code.visualstudio.com. Once installed, add the recommended extensions for this course:',
-    },
-    {
-      type: 'steps',
-      items: [
-        {
-          title: 'ESLint',
-          body: 'Catches errors and enforces code style as you type.',
-        },
-        {
-          title: 'Tailwind CSS IntelliSense',
-          body: 'Autocomplete for Tailwind classes — essential for the UI work we do.',
-        },
-        {
-          title: 'Prettier',
-          body: 'Auto-formats your code on save. Consistent formatting without thinking about it.',
-        },
-        {
-          title: 'Error Lens',
-          body: 'Shows errors inline instead of only in the problems panel. Makes debugging faster.',
-        },
+      type: 'multiple-choice',
+      question: 'Why should your Git email match your GitHub email?',
+      options: [
+        'Git won\'t work otherwise',
+        'So your commits are linked to your GitHub profile',
+        'GitHub requires email verification for each commit',
+        'It makes Git faster',
       ],
+      correctIndex: 1,
+      explanation: 'GitHub matches commit emails to profiles. If they differ, your commits show as "unknown contributor."',
     },
     {
-      type: 'text',
-      text: 'Enable format on save in VS Code settings:',
+      type: 'checkpoint',
+      xp: 2,
+      message: 'Git configured!',
+    },
+
+    // === VS CODE ===
+    {
+      type: 'info',
+      title: 'Step 4: VS Code',
+      body: 'VS Code is the editor we use throughout the course. Download it from code.visualstudio.com if you haven\'t already.',
     },
     {
-      type: 'code',
+      type: 'order',
+      instruction: 'Install these VS Code extensions in priority order (most important first):',
+      items: ['ESLint', 'Tailwind CSS IntelliSense', 'Prettier', 'Error Lens'],
+      correctOrder: [0, 1, 2, 3],
+    },
+    {
+      type: 'code-demo',
+      title: 'Enable format on save',
+      body: 'Add this to your VS Code settings so code auto-formats every time you save:',
       language: 'json',
       filename: 'settings.json',
       code: '{\n  "editor.formatOnSave": true,\n  "editor.defaultFormatter": "esbenp.prettier-vscode"\n}',
     },
     {
-      type: 'heading',
-      text: '5. Terminal and shell aliases',
+      type: 'checkpoint',
+      xp: 1,
+      message: 'Editor ready!',
+    },
+
+    // === SHELL ALIASES ===
+    {
+      type: 'info',
+      title: 'Step 5: Shell aliases',
+      body: "You'll spend a lot of time in the terminal. A few aliases save hours over the course. These go in your shell config file (~/.zshrc or ~/.bashrc).",
     },
     {
-      type: 'text',
-      text: 'You\'ll spend a lot of time in the terminal. A few aliases save hours over the course:',
-    },
-    {
-      type: 'code',
+      type: 'code-demo',
+      body: 'Add these shortcuts to your shell config:',
       language: 'bash',
       filename: '~/.zshrc',
       code: '# Git shortcuts\nalias gs="git status"\nalias gc="git commit"\nalias gp="git push"\nalias gl="git log --oneline -20"\n\n# Project shortcuts\nalias dev="bun run dev"\nalias build="bun run build"',
     },
     {
-      type: 'text',
-      text: 'After editing, reload your shell:',
+      type: 'code-input',
+      instruction: 'What command reloads your shell config after editing?',
+      placeholder: 'source ~/.______',
+      answer: 'source ~/.zshrc',
+      hint: 'source + the path to your config file',
     },
     {
-      type: 'code',
+      type: 'checkpoint',
+      xp: 1,
+      message: 'Aliases set!',
+    },
+
+    // === SSH KEYS ===
+    {
+      type: 'info',
+      title: 'Step 6: SSH keys',
+      body: 'SSH keys let you push to GitHub without entering your password every time. We use Ed25519 — the modern default.',
+    },
+    {
+      type: 'terminal',
+      instruction: 'Generate an SSH key:',
+      expectedCommand: 'ssh-keygen -t ed25519 -C "you@example.com"',
+      hint: 'ssh-keygen -t ed25519 -C "your email"',
+    },
+    {
+      type: 'code-demo',
+      body: 'Start the SSH agent and add your key:',
       language: 'bash',
-      code: 'source ~/.zshrc',
+      code: 'eval "$(ssh-agent -s)"\nssh-add ~/.ssh/id_ed25519',
     },
     {
-      type: 'heading',
-      text: '6. Generate SSH keys for GitHub',
+      type: 'info',
+      title: 'Add to GitHub',
+      body: 'Copy your public key with: cat ~/.ssh/id_ed25519.pub | pbcopy — then go to GitHub → Settings → SSH and GPG keys → New SSH key. Paste and save.',
     },
     {
-      type: 'text',
-      text: 'SSH keys let you push to GitHub without entering your password every time.',
+      type: 'terminal',
+      instruction: 'Test the GitHub connection:',
+      expectedCommand: 'ssh -T git@github.com',
     },
     {
-      type: 'steps',
-      items: [
-        {
-          title: 'Generate a key',
-          body: 'Use Ed25519 — it\'s the modern default.',
-          code: 'ssh-keygen -t ed25519 -C "you@example.com"',
-        },
-        {
-          title: 'Start the SSH agent and add your key',
-          body: '',
-          code: 'eval "$(ssh-agent -s)"\nssh-add ~/.ssh/id_ed25519',
-        },
-        {
-          title: 'Copy the public key',
-          body: '',
-          code: 'cat ~/.ssh/id_ed25519.pub | pbcopy  # macOS\n# or: cat ~/.ssh/id_ed25519.pub  # then copy manually',
-        },
-        {
-          title: 'Add to GitHub',
-          body: 'Go to GitHub → Settings → SSH and GPG keys → New SSH key. Paste the key and save.',
-        },
-        {
-          title: 'Test the connection',
-          body: '',
-          code: 'ssh -T git@github.com\n# Should print: Hi username! You\'ve successfully authenticated...',
-        },
-      ],
+      type: 'checkpoint',
+      xp: 1,
+      message: 'SSH connected!',
     },
-    {
-      type: 'heading',
-      text: 'Verification checklist',
-    },
-    {
-      type: 'text',
-      text: 'Run each command and confirm the output. If any fail, go back and fix before moving on.',
-    },
+
+    // === VERIFICATION ===
     {
       type: 'checklist',
+      title: 'Final verification — check off each one:',
       items: [
-        'node --version prints v22.x.x or higher',
-        'bun --version prints 1.x.x',
-        'git --version prints 2.x.x',
-        'code --version opens VS Code',
-        'ssh -T git@github.com authenticates successfully',
+        'node --version → v22.x.x or higher',
+        'bun --version → 1.x.x',
+        'git --version → 2.x.x',
+        'VS Code opens with extensions installed',
+        'ssh -T git@github.com authenticates',
         'Shell aliases work (gs shows git status)',
       ],
     },
     {
-      type: 'warning',
-      text: 'Don\'t skip the verification. Every lesson from here assumes this environment works. Debugging a broken setup mid-lesson wastes more time than getting it right now.',
+      type: 'checkpoint',
+      xp: 0,
+      message: 'Environment complete! You\'re ready to deploy.',
     },
   ],
 }

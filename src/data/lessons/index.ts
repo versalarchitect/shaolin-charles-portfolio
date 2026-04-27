@@ -16,4 +16,4 @@ export function hasLessonContent(lessonId: string): boolean {
   return lessonId in modules
 }
 
-export type { ContentBlock, LessonContent } from './types'
+export type { LessonStep, LessonContent } from './types'

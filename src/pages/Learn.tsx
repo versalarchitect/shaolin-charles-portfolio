@@ -14,7 +14,7 @@ import {
 } from 'lucide-react'
 import { SEO } from '@/components/SEO'
 import { Button } from '@/components/ui/button'
-import { LessonContentRenderer } from '@/components/lesson-content'
+import { LessonPlayer } from '@/components/lesson-player'
 import { CURRICULUM, ALL_LESSONS } from '@/data/curriculum'
 import { useProgress, getLessonStatus, completeLesson, startLesson } from '@/stores/progress'
 
@@ -358,8 +358,8 @@ export default function Learn() {
         {/* Separator */}
         <div className="h-px bg-foreground/[0.08] mb-8" />
 
-        {/* Lesson content */}
-        <LessonContentRenderer lessonId={lessonId!} />
+        {/* Interactive lesson player */}
+        <LessonPlayer lessonId={lessonId!} />
 
         {/* Learning objectives */}
         {lesson.objectives.length > 0 && (

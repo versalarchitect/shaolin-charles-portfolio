@@ -22,6 +22,7 @@ const EnrollSuccess = lazy(() => import('./pages/EnrollSuccess'))
 const Dashboard = lazy(() => import('./pages/Dashboard'))
 const Learn = lazy(() => import('./pages/Learn'))
 const Community = lazy(() => import('./pages/Community'))
+const CommunityThread = lazy(() => import('./pages/CommunityThread'))
 const NotFound = lazy(() => import('./pages/NotFound'))
 
 // Create router
@@ -103,6 +104,10 @@ const router = createBrowserRouter([
       {
         path: 'community',
         element: <AuthGuard><Community /></AuthGuard>,
+      },
+      {
+        path: 'community/thread/:threadId',
+        element: <AuthGuard><CommunityThread /></AuthGuard>,
       },
       // 404 catch-all (must be last)
       {

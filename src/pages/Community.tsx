@@ -1,4 +1,5 @@
-import { useState } from 'react'
+import { useState, useEffect, useCallback } from 'react'
+import { Link } from 'react-router-dom'
 import { SEO } from '@/components/SEO'
 import { Button } from '@/components/ui/button'
 import { motion, AnimatePresence } from 'framer-motion'
@@ -18,228 +19,34 @@ import {
   TrendingUp,
   Hash,
   Clock,
-  Zap,
   Send,
+  Plus,
+  X,
+  Loader2,
 } from 'lucide-react'
 import {
   BlurFadeIn,
   AnimatedNumber,
   SpotlightCard,
 } from '@/components/ui/aaa-effects'
-
-// ---------------------------------------------------------------------------
-// Data
-// ---------------------------------------------------------------------------
-
-interface DiscussionThread {
-  id: string
-  title: string
-  author: string
-  authorInitial: string
-  tier: string
-  replies: number
-  lastActivity: string
-  isPinned: boolean
-  category: string
-  preview: string
-}
-
-const threads: DiscussionThread[] = [
-  {
-    id: 'welcome',
-    title: 'Welcome & Introductions',
-    author: 'Charles Jackson',
-    authorInitial: 'CJ',
-    tier: 'Instructor',
-    replies: 34,
-    lastActivity: '2h ago',
-    isPinned: true,
-    category: 'general',
-    preview: 'New here? Drop a quick intro — what you\'re building, what tier you\'re on, and one thing you want to ship this month.',
-  },
-  {
-    id: 'study-group',
-    title: 'Tier 1 Study Group — Weekly Check-ins',
-    author: 'Sarah K.',
-    authorInitial: 'SK',
-    tier: 'Tier 1',
-    replies: 21,
-    lastActivity: '4h ago',
-    isPinned: true,
-    category: 'study-group',
-    preview: 'Every Monday we sync on progress. Post your blockers and wins from the week.',
-  },
-  {
-    id: 'mcp-config',
-    title: 'Struggling with MCP server configuration',
-    author: 'Devin R.',
-    authorInitial: 'DR',
-    tier: 'Tier 1',
-    replies: 12,
-    lastActivity: '6h ago',
-    isPinned: false,
-    category: 'help',
-    preview: 'Getting a connection timeout when trying to register my first MCP tool. Running Node 22 on Mac.',
-  },
-  {
-    id: 'capstone-feedback',
-    title: 'My Tier 2 capstone — feedback wanted',
-    author: 'Amara T.',
-    authorInitial: 'AT',
-    tier: 'Tier 2',
-    replies: 8,
-    lastActivity: '1d ago',
-    isPinned: false,
-    category: 'showcase',
-    preview: 'Built an AI-powered invoice processor. Looking for feedback on my agent orchestration pattern.',
-  },
-  {
-    id: 'parallel-agents',
-    title: 'Best practices for parallel agent workflows',
-    author: 'James L.',
-    authorInitial: 'JL',
-    tier: 'Tier 3',
-    replies: 15,
-    lastActivity: '1d ago',
-    isPinned: false,
-    category: 'discussion',
-    preview: 'When do you parallelize vs. chain agents? I\'ve been experimenting with fan-out patterns.',
-  },
-  {
-    id: 'postmortem',
-    title: 'Postmortem: My first production incident',
-    author: 'Nina W.',
-    authorInitial: 'NW',
-    tier: 'Tier 3',
-    replies: 19,
-    lastActivity: '2d ago',
-    isPinned: false,
-    category: 'showcase',
-    preview: 'An agent went rogue in prod and created 400 duplicate records. Here\'s what I learned.',
-  },
-  {
-    id: 'teardown-tips',
-    title: 'Tier 4 teardown methodology tips',
-    author: 'Marcus B.',
-    authorInitial: 'MB',
-    tier: 'Tier 4',
-    replies: 7,
-    lastActivity: '3d ago',
-    isPinned: false,
-    category: 'discussion',
-    preview: 'Sharing my approach to tearing down complex agent architectures for analysis.',
-  },
-  {
-    id: 'inngest-patterns',
-    title: 'Inngest v3 event-driven patterns — what changed?',
-    author: 'Priya S.',
-    authorInitial: 'PS',
-    tier: 'Tier 3',
-    replies: 11,
-    lastActivity: '4d ago',
-    isPinned: false,
-    category: 'help',
-    preview: 'The new step.ai integration in v3 changes how we handle retries. Anyone migrated yet?',
-  },
-]
-
-interface Announcement {
-  id: string
-  title: string
-  content: string
-  timeAgo: string
-  type: 'update' | 'recording' | 'info'
-}
-
-const announcements: Announcement[] = [
-  {
-    id: 'tier3-update',
-    title: 'Tier 3 content update: New lesson on Inngest v3',
-    content:
-      'Lesson 3.8 has been updated with the latest Inngest v3 patterns including the new step.ai integration. Re-watch if you already completed this section.',
-    timeAgo: '2 days ago',
-    type: 'update',
-  },
-  {
-    id: 'recording',
-    title: 'Office hours recording from April 24 now available',
-    content:
-      'This session covered common Tier 2 capstone blockers, Stripe webhook debugging, and a live teardown of a student project. Link in the course portal.',
-    timeAgo: '5 days ago',
-    type: 'recording',
-  },
-  {
-    id: 'welcome-guidelines',
-    title: 'Welcome to the community! Read the guidelines',
-    content:
-      'New here? Start by introducing yourself in the Welcome thread. Check the pinned guidelines below before posting. We keep signal high and noise low.',
-    timeAgo: '2 weeks ago',
-    type: 'info',
-  },
-]
-
-interface MemberSpotlight {
-  id: string
-  name: string
-  tier: string
-  streak: number
-  xp: number
-  quote: string
-  initial: string
-}
-
-const spotlightMembers: MemberSpotlight[] = [
-  {
-    id: 'james',
-    name: 'James L.',
-    tier: 'Tier 3',
-    streak: 21,
-    xp: 4120,
-    quote: 'Shipping my first production incident postmortem felt like a real milestone.',
-    initial: 'JL',
-  },
-  {
-    id: 'nina',
-    name: 'Nina W.',
-    tier: 'Tier 3',
-    streak: 9,
-    xp: 3580,
-    quote: 'The community feedback on my capstone caught things I never would have seen.',
-    initial: 'NW',
-  },
-  {
-    id: 'sarah',
-    name: 'Sarah K.',
-    tier: 'Tier 2',
-    streak: 14,
-    xp: 2340,
-    quote: 'The principles-first approach changed how I think about every tool I use.',
-    initial: 'SK',
-  },
-]
-
-const guidelines = [
-  'Be respectful. Critique ideas, not people.',
-  'No sharing course content outside the community.',
-  'Help each other — teaching is the best way to learn.',
-  'Use thread topics. Keep discussions focused.',
-  'Share wins and failures. Both are valuable.',
-  'Tag your tier so others can give context-appropriate help.',
-]
-
-const categories: Record<string, { label: string; color: string }> = {
-  general: { label: 'General', color: 'text-foreground/50 bg-foreground/[0.06]' },
-  'study-group': { label: 'Study Group', color: 'text-blue-400/80 bg-blue-500/10' },
-  help: { label: 'Help', color: 'text-amber-400/80 bg-amber-500/10' },
-  showcase: { label: 'Showcase', color: 'text-emerald-400/80 bg-emerald-500/10' },
-  discussion: { label: 'Discussion', color: 'text-purple-400/80 bg-purple-500/10' },
-}
+import {
+  announcements,
+  spotlightMembers,
+  guidelines,
+  categories,
+  MAX_XP,
+} from '@/data/community'
+import { useAuth } from '@/hooks/use-auth'
+import {
+  fetchThreads,
+  createThread,
+  timeAgo,
+  type Thread,
+} from '@/lib/community-api'
 
 // ---------------------------------------------------------------------------
 // Helpers
 // ---------------------------------------------------------------------------
-
-const MAX_XP = 5000
 
 function TierBadge({ tier }: { tier: string }) {
   const isInstructor = tier === 'Instructor'
@@ -283,7 +90,7 @@ function Avatar({ initials, size = 'sm' }: { initials: string; size?: 'sm' | 'md
 // Sub-components
 // ---------------------------------------------------------------------------
 
-function StatsHeader() {
+function StatsHeader({ threadCount, onNewThread }: { threadCount: number; onNewThread: () => void }) {
   return (
     <BlurFadeIn delay={0}>
       <div className="mb-8">
@@ -296,19 +103,24 @@ function StatsHeader() {
               Connect with fellow builders. Get answers. Ship together.
             </p>
           </div>
-          <Button size="lg" className="h-11 px-6 font-mono group sm:flex-shrink-0" asChild>
-            <a
-              href="mailto:hello@charlesjackson.dev?subject=Office%20Hours%20Question"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <Send className="mr-2 h-4 w-4" />
-              Submit Question
-            </a>
-          </Button>
+          <div className="flex gap-2 sm:flex-shrink-0">
+            <Button size="lg" className="h-11 px-5 font-mono group" onClick={onNewThread}>
+              <Plus className="mr-2 h-4 w-4" />
+              New Thread
+            </Button>
+            <Button size="lg" variant="outline" className="h-11 px-5 font-mono group" asChild>
+              <a
+                href="mailto:hello@charlesjackson.dev?subject=Office%20Hours%20Question"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <Send className="mr-2 h-4 w-4" />
+                <span className="hidden sm:inline">Submit Question</span>
+              </a>
+            </Button>
+          </div>
         </div>
 
-        {/* Stats row */}
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
           <div className="rounded-xl border border-foreground/[0.08] bg-foreground/[0.02] p-3.5">
             <div className="flex items-center gap-2 mb-1.5">
@@ -332,7 +144,7 @@ function StatsHeader() {
               <MessageSquare className="w-3.5 h-3.5 text-foreground/40" />
               <span className="text-[10px] font-mono uppercase tracking-wider text-foreground/30">Threads</span>
             </div>
-            <p className="text-xl font-mono font-semibold"><AnimatedNumber value={threads.length} duration={1.2} /></p>
+            <p className="text-xl font-mono font-semibold"><AnimatedNumber value={threadCount} duration={1.2} /></p>
           </div>
           <div className="rounded-xl border border-foreground/[0.08] bg-foreground/[0.02] p-3.5">
             <div className="flex items-center gap-2 mb-1.5">
@@ -347,13 +159,20 @@ function StatsHeader() {
   )
 }
 
-function DiscussionsTab() {
-  const pinnedThreads = threads.filter((t) => t.isPinned)
-  const regularThreads = threads.filter((t) => !t.isPinned)
+function DiscussionsTab({ threads, loading }: { threads: Thread[]; loading: boolean }) {
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center py-16">
+        <Loader2 className="w-5 h-5 animate-spin text-foreground/30" />
+      </div>
+    )
+  }
+
+  const pinnedThreads = threads.filter((t) => t.is_pinned)
+  const regularThreads = threads.filter((t) => !t.is_pinned)
 
   return (
     <div className="space-y-2">
-      {/* Pinned */}
       {pinnedThreads.map((thread, i) => (
         <ThreadCard key={thread.id} thread={thread} index={i} />
       ))}
@@ -362,64 +181,70 @@ function DiscussionsTab() {
         <div className="h-px bg-gradient-to-r from-foreground/[0.06] via-foreground/[0.03] to-transparent my-3" />
       )}
 
-      {/* Regular */}
       {regularThreads.map((thread, i) => (
         <ThreadCard key={thread.id} thread={thread} index={pinnedThreads.length + i} />
       ))}
+
+      {threads.length === 0 && (
+        <div className="text-center py-16 text-foreground/30">
+          <MessageSquare className="w-8 h-8 mx-auto mb-3 text-foreground/15" />
+          <p className="text-sm font-mono">No threads yet. Start a discussion!</p>
+        </div>
+      )}
     </div>
   )
 }
 
-function ThreadCard({ thread, index }: { thread: DiscussionThread; index: number }) {
+function ThreadCard({ thread, index }: { thread: Thread; index: number }) {
   return (
     <motion.div
       initial={{ opacity: 0, y: 8 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: index * 0.04, duration: 0.3 }}
     >
-      <SpotlightCard className="rounded-xl border border-foreground/[0.06] bg-foreground/[0.015] hover:bg-foreground/[0.035] hover:border-foreground/[0.12] transition-all duration-200 cursor-pointer group">
-        <div className="p-4">
-          <div className="flex gap-3">
-            <Avatar initials={thread.authorInitial} />
-            <div className="flex-1 min-w-0">
-              {/* Top row: title + meta */}
-              <div className="flex items-start justify-between gap-3">
-                <div className="min-w-0">
-                  <div className="flex items-center gap-2 mb-1 flex-wrap">
-                    {thread.isPinned && (
-                      <Pin className="w-3 h-3 text-foreground/30 rotate-45 flex-shrink-0" />
-                    )}
-                    <h3 className="font-semibold text-sm text-foreground/90 truncate">
-                      {thread.title}
-                    </h3>
+      <Link to={`/community/thread/${thread.id}`} className="block">
+        <SpotlightCard className="rounded-xl border border-foreground/[0.06] bg-foreground/[0.015] hover:bg-foreground/[0.035] hover:border-foreground/[0.12] transition-all duration-200 cursor-pointer group">
+          <div className="p-4">
+            <div className="flex gap-3">
+              <Avatar initials={thread.author_initial} />
+              <div className="flex-1 min-w-0">
+                <div className="flex items-start justify-between gap-3">
+                  <div className="min-w-0">
+                    <div className="flex items-center gap-2 mb-1 flex-wrap">
+                      {thread.is_pinned && (
+                        <Pin className="w-3 h-3 text-foreground/30 rotate-45 flex-shrink-0" />
+                      )}
+                      <h3 className="font-semibold text-sm text-foreground/90 truncate">
+                        {thread.title}
+                      </h3>
+                    </div>
+                    <p className="text-xs text-foreground/40 line-clamp-1 mb-2">
+                      {thread.preview}
+                    </p>
                   </div>
-                  <p className="text-xs text-foreground/40 line-clamp-1 mb-2">
-                    {thread.preview}
-                  </p>
+                  <ChevronRight className="w-4 h-4 text-foreground/10 group-hover:text-foreground/40 group-hover:translate-x-0.5 transition-all flex-shrink-0 mt-0.5" />
                 </div>
-                <ChevronRight className="w-4 h-4 text-foreground/10 group-hover:text-foreground/40 group-hover:translate-x-0.5 transition-all flex-shrink-0 mt-0.5" />
-              </div>
 
-              {/* Bottom row: meta */}
-              <div className="flex items-center gap-2 flex-wrap">
-                <span className="text-[11px] text-foreground/50 font-medium">{thread.author}</span>
-                <TierBadge tier={thread.tier} />
-                <CategoryTag category={thread.category} />
-                <span className="text-foreground/15 hidden sm:inline">·</span>
-                <div className="hidden sm:flex items-center gap-1 text-[11px] text-foreground/30 font-mono">
-                  <MessageSquare className="w-3 h-3" />
-                  {thread.replies}
-                </div>
-                <span className="text-foreground/15 hidden sm:inline">·</span>
-                <div className="hidden sm:flex items-center gap-1 text-[11px] text-foreground/30 font-mono">
-                  <Clock className="w-3 h-3" />
-                  {thread.lastActivity}
+                <div className="flex items-center gap-2 flex-wrap">
+                  <span className="text-[11px] text-foreground/50 font-medium">{thread.author_name}</span>
+                  <TierBadge tier={thread.author_tier} />
+                  <CategoryTag category={thread.category} />
+                  <span className="text-foreground/15 hidden sm:inline">·</span>
+                  <div className="hidden sm:flex items-center gap-1 text-[11px] text-foreground/30 font-mono">
+                    <MessageSquare className="w-3 h-3" />
+                    {thread.reply_count}
+                  </div>
+                  <span className="text-foreground/15 hidden sm:inline">·</span>
+                  <div className="hidden sm:flex items-center gap-1 text-[11px] text-foreground/30 font-mono">
+                    <Clock className="w-3 h-3" />
+                    {timeAgo(thread.updated_at)}
+                  </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
-      </SpotlightCard>
+        </SpotlightCard>
+      </Link>
     </motion.div>
   )
 }
@@ -435,11 +260,9 @@ function AnnouncementsTab() {
           transition={{ delay: i * 0.06, duration: 0.3 }}
         >
           <div className="relative pl-6">
-            {/* Timeline line */}
             {i < announcements.length - 1 && (
               <div className="absolute left-[7px] top-6 bottom-0 w-px bg-foreground/[0.06]" />
             )}
-            {/* Timeline dot */}
             <div className="absolute left-0 top-1.5 w-[15px] h-[15px] rounded-full border-2 border-foreground/[0.12] bg-background flex items-center justify-center">
               <div className={`w-1.5 h-1.5 rounded-full ${
                 a.type === 'update' ? 'bg-blue-400/70' :
@@ -537,24 +360,20 @@ function LeaderboardCard() {
               key={member.id}
               className="flex items-center gap-3 p-2.5 rounded-lg hover:bg-foreground/[0.03] transition-colors group"
             >
-              {/* Rank */}
               <span className={`w-5 text-center font-mono font-bold text-sm ${
                 i === 0 ? 'text-foreground/60' : 'text-foreground/25'
               }`}>
                 {i + 1}
               </span>
 
-              {/* Avatar */}
               <Avatar initials={member.initial} />
 
-              {/* Info */}
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-1.5 mb-0.5">
                   <span className="text-sm font-medium text-foreground/80 truncate">{member.name}</span>
                   <TierBadge tier={member.tier} />
                 </div>
 
-                {/* XP bar */}
                 <div className="flex items-center gap-2">
                   <div className="flex-1 h-1 rounded-full bg-foreground/[0.06] overflow-hidden">
                     <motion.div
@@ -568,7 +387,6 @@ function LeaderboardCard() {
                 </div>
               </div>
 
-              {/* Streak */}
               <div className="flex items-center gap-1 flex-shrink-0">
                 <Flame className="w-3 h-3 text-foreground/25" />
                 <span className="text-[10px] font-mono text-foreground/30">{member.streak}d</span>
@@ -577,7 +395,6 @@ function LeaderboardCard() {
           ))}
         </div>
 
-        {/* Spotlight quote */}
         <div className="px-4 py-3 border-t border-foreground/[0.06]">
           <div className="flex items-start gap-2">
             <Star className="w-3.5 h-3.5 text-foreground/20 mt-0.5 flex-shrink-0" />
@@ -648,15 +465,163 @@ function GuidelinesCard() {
 }
 
 // ---------------------------------------------------------------------------
+// New Thread Modal
+// ---------------------------------------------------------------------------
+
+function NewThreadModal({
+  open,
+  onClose,
+  onCreated,
+}: {
+  open: boolean
+  onClose: () => void
+  onCreated: (thread: Thread) => void
+}) {
+  const { user } = useAuth()
+  const [title, setTitle] = useState('')
+  const [content, setContent] = useState('')
+  const [category, setCategory] = useState('discussion')
+  const [submitting, setSubmitting] = useState(false)
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault()
+    if (!title.trim() || !content.trim() || !user || submitting) return
+
+    setSubmitting(true)
+    const displayName = user.user_metadata?.display_name || user.email?.split('@')[0] || 'User'
+    const initial = displayName.slice(0, 2).toUpperCase()
+    const tier = user.user_metadata?.tier || 'Tier 1'
+    const preview = content.slice(0, 150).replace(/\n/g, ' ')
+
+    try {
+      const thread = await createThread(
+        { title: title.trim(), content: content.trim(), preview, category },
+        { id: user.id, name: displayName, initial, tier },
+      )
+      onCreated(thread)
+      setTitle('')
+      setContent('')
+      setCategory('discussion')
+      onClose()
+    } catch {
+      // Could add error toast
+    } finally {
+      setSubmitting(false)
+    }
+  }
+
+  return (
+    <AnimatePresence>
+      {open && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          className="fixed inset-0 z-50 flex items-start justify-center pt-[10vh] px-4"
+        >
+          {/* Backdrop */}
+          <div className="absolute inset-0 bg-background/80 backdrop-blur-sm" onClick={onClose} />
+
+          {/* Modal */}
+          <motion.div
+            initial={{ opacity: 0, y: 20, scale: 0.97 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: 20, scale: 0.97 }}
+            transition={{ duration: 0.2 }}
+            className="relative w-full max-w-2xl rounded-xl border border-foreground/[0.1] bg-background shadow-2xl"
+          >
+            <form onSubmit={handleSubmit}>
+              {/* Header */}
+              <div className="flex items-center justify-between px-5 py-4 border-b border-foreground/[0.06]">
+                <h2 className="text-lg font-semibold">New Thread</h2>
+                <button
+                  type="button"
+                  onClick={onClose}
+                  className="p-1.5 rounded-lg hover:bg-foreground/[0.06] transition-colors cursor-pointer"
+                >
+                  <X className="w-4 h-4 text-foreground/40" />
+                </button>
+              </div>
+
+              {/* Body */}
+              <div className="p-5 space-y-4">
+                <div>
+                  <input
+                    type="text"
+                    placeholder="Thread title"
+                    value={title}
+                    onChange={(e) => setTitle(e.target.value)}
+                    className="w-full bg-foreground/[0.03] border border-foreground/[0.08] rounded-lg px-4 py-3 text-sm text-foreground/80 placeholder:text-foreground/20 focus:outline-none focus:border-foreground/[0.15] transition-all font-mono"
+                    autoFocus
+                  />
+                </div>
+
+                <div>
+                  <textarea
+                    placeholder="Write your post... (supports **bold** and `code`)"
+                    value={content}
+                    onChange={(e) => setContent(e.target.value)}
+                    rows={8}
+                    className="w-full bg-foreground/[0.03] border border-foreground/[0.08] rounded-lg px-4 py-3 text-sm text-foreground/80 placeholder:text-foreground/20 focus:outline-none focus:border-foreground/[0.15] transition-all font-mono resize-none"
+                  />
+                </div>
+
+                <div>
+                  <label className="text-[11px] font-mono text-foreground/40 uppercase tracking-wider block mb-2">
+                    Category
+                  </label>
+                  <div className="flex flex-wrap gap-2">
+                    {Object.entries(categories).map(([key, cat]) => (
+                      <button
+                        key={key}
+                        type="button"
+                        onClick={() => setCategory(key)}
+                        className={`inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-mono rounded-full border transition-all cursor-pointer ${
+                          category === key
+                            ? `${cat.color} border-foreground/[0.15]`
+                            : 'text-foreground/30 bg-foreground/[0.02] border-foreground/[0.06] hover:border-foreground/[0.1]'
+                        }`}
+                      >
+                        <Hash className="w-3 h-3" />
+                        {cat.label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              {/* Footer */}
+              <div className="flex items-center justify-end gap-3 px-5 py-4 border-t border-foreground/[0.06]">
+                <Button type="button" variant="ghost" size="sm" onClick={onClose} className="font-mono text-xs">
+                  Cancel
+                </Button>
+                <Button
+                  type="submit"
+                  size="sm"
+                  className="font-mono text-xs px-6"
+                  disabled={!title.trim() || !content.trim() || submitting}
+                >
+                  {submitting ? (
+                    <Loader2 className="w-3.5 h-3.5 animate-spin mr-1.5" />
+                  ) : (
+                    <Send className="w-3.5 h-3.5 mr-1.5" />
+                  )}
+                  {submitting ? 'Posting...' : 'Post Thread'}
+                </Button>
+              </div>
+            </form>
+          </motion.div>
+        </motion.div>
+      )}
+    </AnimatePresence>
+  )
+}
+
+// ---------------------------------------------------------------------------
 // Tab System
 // ---------------------------------------------------------------------------
 
 type Tab = 'discussions' | 'announcements'
-
-const tabs: { id: Tab; label: string; icon: typeof MessageSquare; count?: number }[] = [
-  { id: 'discussions', label: 'Discussions', icon: MessageSquare, count: threads.length },
-  { id: 'announcements', label: 'Announcements', icon: Bell, count: announcements.length },
-]
 
 // ---------------------------------------------------------------------------
 // Main Component
@@ -664,6 +629,33 @@ const tabs: { id: Tab; label: string; icon: typeof MessageSquare; count?: number
 
 export default function Community() {
   const [activeTab, setActiveTab] = useState<Tab>('discussions')
+  const [threads, setThreads] = useState<Thread[]>([])
+  const [loading, setLoading] = useState(true)
+  const [showNewThread, setShowNewThread] = useState(false)
+
+  const loadThreads = useCallback(async () => {
+    try {
+      const data = await fetchThreads()
+      setThreads(data)
+    } catch {
+      // Silently fail — will show empty state
+    } finally {
+      setLoading(false)
+    }
+  }, [])
+
+  useEffect(() => {
+    loadThreads()
+  }, [loadThreads])
+
+  const tabs: { id: Tab; label: string; icon: typeof MessageSquare; count?: number }[] = [
+    { id: 'discussions', label: 'Discussions', icon: MessageSquare, count: threads.length },
+    { id: 'announcements', label: 'Announcements', icon: Bell, count: announcements.length },
+  ]
+
+  function handleThreadCreated(thread: Thread) {
+    setThreads((prev) => [thread, ...prev])
+  }
 
   return (
     <>
@@ -679,12 +671,10 @@ export default function Community() {
 
       <div className="min-h-screen">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8 lg:py-12">
-          <StatsHeader />
+          <StatsHeader threadCount={threads.length} onNewThread={() => setShowNewThread(true)} />
 
           <div className="grid grid-cols-1 lg:grid-cols-[1fr_320px] gap-6 lg:gap-8">
-            {/* ============================================ */}
             {/* Main Column */}
-            {/* ============================================ */}
             <div>
               {/* Tabs */}
               <BlurFadeIn delay={0.1}>
@@ -735,15 +725,13 @@ export default function Community() {
                   exit={{ opacity: 0, y: -6 }}
                   transition={{ duration: 0.2 }}
                 >
-                  {activeTab === 'discussions' && <DiscussionsTab />}
+                  {activeTab === 'discussions' && <DiscussionsTab threads={threads} loading={loading} />}
                   {activeTab === 'announcements' && <AnnouncementsTab />}
                 </motion.div>
               </AnimatePresence>
             </div>
 
-            {/* ============================================ */}
             {/* Sidebar */}
-            {/* ============================================ */}
             <div className="space-y-5">
               <OfficeHoursCard />
               <LeaderboardCard />
@@ -752,6 +740,12 @@ export default function Community() {
           </div>
         </div>
       </div>
+
+      <NewThreadModal
+        open={showNewThread}
+        onClose={() => setShowNewThread(false)}
+        onCreated={handleThreadCreated}
+      />
     </>
   )
 }
