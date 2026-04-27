@@ -23,7 +23,6 @@ import {
   TOTAL_LESSONS,
   XP_LEVELS,
 } from '@/data/curriculum'
-import type { Lesson, LessonStatus } from '@/data/curriculum'
 import {
   useProgress,
   getLessonStatus,
@@ -145,22 +144,23 @@ function StatsBar() {
 }
 
 function NextLesson() {
-  const nextLesson = useMemo(() => {
+  useProgress()
+
+  const nextLesson = (() => {
     for (const tier of CURRICULUM) {
       for (const lesson of tier.lessons) {
         const status = getLessonStatus(lesson.id)
         if (status === 'in_progress' || status === 'available') {
-          return { lesson, tier }
+          return { lesson, tier, status }
         }
       }
     }
     return null
-  }, [])
+  })()
 
   if (!nextLesson) return null
 
-  const { lesson, tier } = nextLesson
-  const status = getLessonStatus(lesson.id)
+  const { lesson, tier, status } = nextLesson
 
   return (
     <Link
@@ -264,23 +264,23 @@ function TierProgress() {
   )
 }
 
+const ACHIEVEMENT_ICONS: Record<string, typeof Target> = {
+  'first-lesson': Target,
+  'streak-3': Flame,
+  'streak-7': Zap,
+  'streak-30': Crown,
+  'prework-done': Check,
+  'tier1-done': Star,
+  'tier2-done': Award,
+  'tier3-done': Trophy,
+  'tier4-done': Crown,
+  'speed-learner': Zap,
+  'half-way': Star,
+  'full-course': Trophy,
+}
+
 function AchievementsGrid() {
   const progress = useProgress()
-
-  const achievementIconMap: Record<string, React.ReactNode> = {
-    'first-lesson': <Target className="w-5 h-5" />,
-    'streak-3': <Flame className="w-5 h-5" />,
-    'streak-7': <Zap className="w-5 h-5" />,
-    'streak-30': <Crown className="w-5 h-5" />,
-    'prework-done': <Check className="w-5 h-5" />,
-    'tier1-done': <Star className="w-5 h-5" />,
-    'tier2-done': <Award className="w-5 h-5" />,
-    'tier3-done': <Trophy className="w-5 h-5" />,
-    'tier4-done': <Crown className="w-5 h-5" />,
-    'speed-learner': <Zap className="w-5 h-5" />,
-    'half-way': <Star className="w-5 h-5" />,
-    'full-course': <Trophy className="w-5 h-5" />,
-  }
 
   return (
     <div className="space-y-3">
@@ -313,7 +313,7 @@ function AchievementsGrid() {
                 `}
               >
                 {isUnlocked ? (
-                  achievementIconMap[achievement.id] || <Trophy className="w-5 h-5" />
+                  (() => { const Icon = ACHIEVEMENT_ICONS[achievement.id] || Trophy; return <Icon className="w-5 h-5" /> })()
                 ) : (
                   <Lock className="w-4 h-4" />
                 )}
@@ -386,15 +386,8 @@ function StreakCalendar() {
         <div className="flex items-center gap-2 mt-3 justify-end">
           <span className="text-[9px] font-mono text-foreground/25">Less</span>
           <div className="flex gap-1">
-            {[0.04, 0.1, 0.18, 0.25].map((opacity, i) => (
-              <div
-                key={i}
-                className="w-[8px] h-[8px] rounded-[2px]"
-                style={{
-                  backgroundColor: `rgba(var(--effect-rgb),${opacity})`,
-                  border: `1px solid rgba(var(--effect-rgb),${opacity + 0.04})`,
-                }}
-              />
+            {['bg-foreground/[0.04]', 'bg-foreground/10', 'bg-foreground/[0.18]', 'bg-foreground/25'].map((cls, i) => (
+              <div key={i} className={`w-[8px] h-[8px] rounded-[2px] ${cls} border border-foreground/[0.08]`} />
             ))}
           </div>
           <span className="text-[9px] font-mono text-foreground/25">More</span>

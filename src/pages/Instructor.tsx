@@ -315,9 +315,7 @@ export default function Instructor() {
               <div className="absolute left-4 top-0 bottom-0 w-px bg-foreground/10" />
 
               <div className="space-y-12">
-                {careerTimeline.map((item, index) => {
-                  const Icon = item.icon
-                  return (
+                {careerTimeline.map((item, index) => (
                     <motion.div
                       key={item.year + item.title}
                       initial={{ opacity: 0, y: 20 }}
@@ -361,7 +359,7 @@ export default function Instructor() {
                       </div>
                     </motion.div>
                   )
-                })}
+                )}
               </div>
             </div>
           </div>
