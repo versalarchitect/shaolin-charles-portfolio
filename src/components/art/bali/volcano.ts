@@ -1,5 +1,5 @@
 import * as THREE from 'three'
-import { BaliMaterials } from './materials'
+import type { BaliMaterials } from './materials'
 
 /**
  * Mount Agung - Sacred Volcano of Bali
@@ -92,7 +92,7 @@ function createVolcanoGeometry(
     const y = t * height
 
     // Radius decreases non-linearly towards top
-    const ringRadius = baseRadius * Math.pow(1 - t, 0.7)
+    const ringRadius = baseRadius * (1 - t) ** 0.7
 
     for (let seg = 0; seg <= segments; seg++) {
       const angle = (seg / segments) * Math.PI * 2

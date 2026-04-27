@@ -1,6 +1,6 @@
 import * as THREE from 'three'
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js'
-import { Materials } from './materials'
+import type { Materials } from './materials'
 
 // Reusable objects to avoid allocations
 const _matrix = new THREE.Matrix4()

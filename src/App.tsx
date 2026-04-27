@@ -25,13 +25,9 @@ export default function App() {
   const location = useLocation()
   const isAppPage = APP_ROUTES.some((r) => location.pathname.startsWith(r))
 
-  // Scroll to top on route change
+  // biome-ignore lint/correctness/useExhaustiveDependencies: pathname is the intentional trigger
   useEffect(() => {
     window.scrollTo(0, 0)
-  }, [location.pathname])
-
-  // Signal to prerenderer that the page is ready
-  useEffect(() => {
     document.dispatchEvent(new Event('prerender-ready'))
   }, [location.pathname])
 

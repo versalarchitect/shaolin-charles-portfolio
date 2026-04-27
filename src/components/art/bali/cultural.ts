@@ -1,5 +1,5 @@
 import * as THREE from 'three'
-import { BaliMaterials, createIncenseShader } from './materials'
+import { type BaliMaterials, createIncenseShader } from './materials'
 
 /**
  * Balinese Cultural Elements

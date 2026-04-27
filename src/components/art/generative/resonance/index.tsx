@@ -26,7 +26,7 @@ export function ResonanceCanvas({ preview = false, mouseX = 0.5, mouseY = 0.5 }:
   const containerRef = useRef<HTMLDivElement>(null)
 
   const sketchFactory: SketchFactory = useCallback((p: p5, getConfig) => {
-    let ripples: Ripple[] = []
+    const ripples: Ripple[] = []
     let lastX = 0.5
     let lastY = 0.5
     let frameCount = 0

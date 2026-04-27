@@ -40,6 +40,10 @@ export function ThemeProvider({
     root.classList.remove('light', 'dark')
     root.classList.add(resolvedTheme)
     root.style.colorScheme = resolvedTheme
+
+    const themeColor = resolvedTheme === 'dark' ? '#09090b' : '#f9f9f9'
+    document.querySelector('meta[name="theme-color"][media="(prefers-color-scheme: dark)"]')?.setAttribute('content', themeColor)
+    document.querySelector('meta[name="theme-color"][media="(prefers-color-scheme: light)"]')?.setAttribute('content', themeColor)
   }, [resolvedTheme])
 
   useEffect(() => {

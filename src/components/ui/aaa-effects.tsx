@@ -166,7 +166,7 @@ export function GradientBorder({
   children,
   className = '',
   borderWidth = 1,
-  gradientColors = ['#fff', '#888', '#fff'],
+  gradientColors = ['rgba(var(--effect-rgb),1)', 'rgba(var(--effect-rgb),0.4)', 'rgba(var(--effect-rgb),1)'],
   duration = 3,
 }: GradientBorderProps) {
   const { shouldAnimate } = useMotionPreference()

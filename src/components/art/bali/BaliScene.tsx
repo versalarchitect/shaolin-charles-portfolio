@@ -587,7 +587,7 @@ export function BaliScene({
     // ============================================
     let currentCameraX = 0
     let currentCameraY = 15
-    let currentCameraZ = 40
+    const currentCameraZ = 40
 
     function animate() {
       sceneRef.current!.animationId = requestAnimationFrame(animate)

@@ -1,5 +1,5 @@
 import * as THREE from 'three'
-import { BaliMaterials } from './materials'
+import type { BaliMaterials } from './materials'
 
 /**
  * Balinese Temple Architecture

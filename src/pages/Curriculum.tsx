@@ -1,5 +1,4 @@
 import { Link } from 'react-router-dom'
-import { useTranslation } from 'react-i18next'
 import { SEO } from '@/components/SEO'
 import { Button } from '@/components/ui/button'
 import { motion } from 'framer-motion'
@@ -10,7 +9,6 @@ import {
   Lightbulb,
   Rocket,
   Wrench,
-  Check,
   Clock,
   GraduationCap,
   Settings,
@@ -23,7 +21,7 @@ import {
   AnimatedNumber,
 } from '@/components/ui/aaa-effects'
 import { SectionSpots, Section } from '@/components/ui/gradient-background'
-import { CURRICULUM, TOTAL_LESSONS } from '@/data/curriculum'
+import { CURRICULUM } from '@/data/curriculum'
 import { useAuth } from '@/hooks/use-auth'
 
 const tierIcons: Record<string, typeof Code2> = {
@@ -48,7 +46,6 @@ const tiers = CURRICULUM.map((tier) => ({
 }))
 
 export default function Curriculum() {
-  const { t } = useTranslation()
   const { isLoggedIn } = useAuth()
 
   if (isLoggedIn) {

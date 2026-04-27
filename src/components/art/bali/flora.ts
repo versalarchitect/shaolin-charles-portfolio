@@ -1,5 +1,5 @@
 import * as THREE from 'three'
-import { BaliMaterials } from './materials'
+import type { BaliMaterials } from './materials'
 
 /**
  * Balinese Flora
@@ -28,7 +28,7 @@ export function createCoconutPalm(
   const trunkSegments = 12
   const segmentHeight = height / trunkSegments
 
-  let currentPos = new THREE.Vector3(0, 0, 0)
+  const currentPos = new THREE.Vector3(0, 0, 0)
   let currentAngle = 0
 
   // Create trunk segments that curve naturally

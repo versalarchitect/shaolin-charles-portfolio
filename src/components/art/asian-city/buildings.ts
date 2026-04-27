@@ -1,6 +1,6 @@
 import * as THREE from 'three'
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js'
-import { Materials, getCachedGeometry } from './materials'
+import { type Materials, getCachedGeometry } from './materials'
 
 // Reusable vector for transforms - avoids allocations
 const _tempVec = new THREE.Vector3()
@@ -19,7 +19,7 @@ function createRoofGeometry(baseWidth: number, height: number, overhang: number)
     for (let i = 0; i <= segments; i++) {
       const t = i / segments
       const x = (t - 0.5) * (baseWidth + overhang * 2)
-      const curve = Math.pow(Math.abs(t - 0.5) * 2, 1.5) * overhang * 0.8
+      const curve = (Math.abs(t - 0.5) * 2) ** 1.5 * overhang * 0.8
       roofPoints.push(new THREE.Vector2(x, -height * 0.3 + curve))
     }
 

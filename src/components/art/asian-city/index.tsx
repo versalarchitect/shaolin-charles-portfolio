@@ -2,7 +2,7 @@ import { useEffect, useRef, useCallback } from 'react'
 import * as THREE from 'three'
 
 import { createMaterials, disposeMaterials, disposeGeometryCache } from './materials'
-import { createPagoda, createHouse, PagodaConfig, HouseConfig } from './buildings'
+import { createPagoda, createHouse, type PagodaConfig, type HouseConfig } from './buildings'
 import {
   createLanternSystem,
   createLotusSystem,
@@ -10,15 +10,15 @@ import {
   createTreeSystem,
   createFireflySystem,
   updateFireflies,
-  LanternData,
-  LotusData,
-  StreetLampData,
-  TreeData,
+  type LanternData,
+  type LotusData,
+  type StreetLampData,
+  type TreeData,
 } from './decorations'
 import { createEnvironment } from './environment'
 import { createSceneLights, addLightsToScene, disposeLights } from './lights'
-import { createControlsState, setupControls, updateControls, requestPointerLock, ControlsState } from './controls'
-import { loadModels, disposeLoader, ASIAN_CITY_MODELS, ModelConfig } from './model-loader'
+import { createControlsState, setupControls, updateControls, requestPointerLock, type ControlsState } from './controls'
+import { loadModels, disposeLoader, ASIAN_CITY_MODELS, type ModelConfig } from './model-loader'
 
 interface AsianCityCanvasProps {
   preview?: boolean

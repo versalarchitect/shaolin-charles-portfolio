@@ -26,7 +26,7 @@ export function EmergenceCanvas({ preview = false, mouseX = 0.5, mouseY = 0.5 }:
   const containerRef = useRef<HTMLDivElement>(null)
 
   const sketchFactory: SketchFactory = useCallback((p: p5, getConfig) => {
-    let dots: Dot[] = []
+    const dots: Dot[] = []
     let time = 0
 
     const getSettings = () => {

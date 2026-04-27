@@ -1,5 +1,5 @@
 import * as THREE from 'three'
-import { BaliMaterials, createPaddyWaterShader } from './materials'
+import { type BaliMaterials, createPaddyWaterShader } from './materials'
 
 /**
  * Rice Terrace Generator

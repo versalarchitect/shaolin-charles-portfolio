@@ -25,7 +25,7 @@ export function CurrentsCanvas({ preview = false, mouseX = 0.5, mouseY = 0.5 }: 
   const containerRef = useRef<HTMLDivElement>(null)
 
   const sketchFactory: SketchFactory = useCallback((p: p5, getConfig) => {
-    let particles: Particle[] = []
+    const particles: Particle[] = []
     let time = 0
 
     const getSettings = () => {

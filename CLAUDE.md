@@ -104,6 +104,28 @@ Restraint is more impressive than excess. A single well-placed animation beats t
 - Use `foreground/5`, `foreground/10`, `foreground/20` for subtle overlays
 - No colors except for occasional green status indicators
 
+### Theme System (Light / Dark)
+
+The site supports both light and dark modes. Default is dark. Users toggle via the Sun/Moon button in the header (persisted to `localStorage` key `"theme"`).
+
+**Architecture:**
+- **CSS variables** in `globals.css`: `:root` defines light mode values, `.dark` overrides for dark mode
+- **ThemeProvider** (`src/components/theme-provider.tsx`): React context providing `theme`, `setTheme`, and `resolvedTheme`. Supports `'light' | 'dark' | 'system'`
+- **FOUC prevention**: Inline `<script>` in `index.html` reads localStorage before first paint to set the correct class on `<html>`
+- **`--effect-rgb`**: CSS variable (`0, 0, 0` in light / `255, 255, 255` in dark) used for all background effects, glows, and gradients via `rgba(var(--effect-rgb), <opacity>)`
+
+**Rules for new components:**
+- Use Tailwind semantic tokens (`bg-background`, `text-foreground`, `border-border`, etc.) — they auto-adapt
+- For inline styles with glow/gradient effects, use `rgba(var(--effect-rgb), <opacity>)` instead of hardcoded `rgba(255,255,255,...)`
+- Never hardcode `bg-white`, `text-white`, `bg-black`, `text-black` for themed surfaces — use `bg-background`, `text-foreground` etc.
+- If a component needs theme info in JS: `const { resolvedTheme } = useTheme()`
+- Sonner toast uses `resolvedTheme` — keep it in sync
+
+**Intentionally dark-only contexts (do not theme):**
+- **Art.tsx fullscreen overlay** (`bg-black`) — 3D/generative art always renders on dark canvas
+- **`palette.ts`** — Canvas-based generative art strokes; CSS vars don't work in canvas
+- **Custom cursor** (`bg-white` + `mix-blend-difference`) — inverts automatically on any background
+
 ### Section Boundary Grid (Primary)
 The signature design element that visually delineates content sections.
 
