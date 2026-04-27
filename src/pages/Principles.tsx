@@ -150,11 +150,6 @@ export default function Principles() {
                   transition={{ duration: 0.5, delay: index * 0.08 }}
                   className="relative pl-0 md:pl-24"
                 >
-                  {/* Large number */}
-                  <div className="hidden md:block absolute -left-4 top-0 text-[100px] font-bold leading-none text-foreground/[0.03] select-none pointer-events-none">
-                    {principle.number}
-                  </div>
-
                   <div className="flex items-start gap-4 mb-3">
                     <div className="flex-shrink-0 p-2.5 rounded-lg bg-foreground/5 border border-foreground/10">
                       <Icon className="w-5 h-5 text-foreground/70" />
@@ -163,7 +158,7 @@ export default function Principles() {
                       <span className="text-xs font-mono text-muted-foreground md:hidden">
                         {principle.number}
                       </span>
-                      <h3 className="text-xl md:text-2xl font-bold">{principle.title}</h3>
+                      <h2 className="text-xl md:text-2xl font-bold">{principle.title}</h2>
                       <p className="text-sm font-mono text-muted-foreground mt-1">
                         {principle.subtitle}
                       </p>

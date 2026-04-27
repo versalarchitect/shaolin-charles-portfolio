@@ -181,7 +181,7 @@ export default function Tiers() {
                 {/* Header */}
                 <div className="mb-6">
                   <span className="text-xs font-mono text-muted-foreground">{tier.tier}</span>
-                  <h3 className="text-2xl font-bold mt-1">{tier.name}</h3>
+                  <h2 className="text-2xl font-bold mt-1">{tier.name}</h2>
                   <p className="text-sm text-muted-foreground mt-2 leading-relaxed">
                     {tier.description}
                   </p>
@@ -266,7 +266,7 @@ export default function Tiers() {
                 <div className="inline-flex p-3 rounded-lg bg-foreground/5 border border-foreground/10 mb-4">
                   <Icon className="w-5 h-5 text-foreground/70" />
                 </div>
-                <h3 className="text-lg font-semibold mb-2">{title}</h3>
+                <h3 className="text-lg font-semibold mb-2" aria-level={3}>{title}</h3>
                 <p className="text-sm text-muted-foreground leading-relaxed">{description}</p>
               </motion.div>
             ))}

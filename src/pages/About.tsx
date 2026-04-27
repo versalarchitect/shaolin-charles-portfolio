@@ -431,11 +431,11 @@ export default function About() {
 
               <div className="grid sm:grid-cols-2 gap-6 mb-8">
                 <div>
-                  <h4 className="text-sm text-muted-foreground mb-1">{t('common.currentlyBuilding')}</h4>
+                  <p className="text-sm text-muted-foreground mb-1">{t('common.currentlyBuilding')}</p>
                   <p className="font-medium">{t('home.featuredProject.title')}</p>
                 </div>
                 <div>
-                  <h4 className="text-sm text-muted-foreground mb-1">{t('common.status')}</h4>
+                  <p className="text-sm text-muted-foreground mb-1">{t('common.status')}</p>
                   <p className="font-medium flex items-center gap-2">
                     <span className="w-1.5 h-1.5 rounded-full bg-green-500" />
                     {t('common.openToCollaboration')}

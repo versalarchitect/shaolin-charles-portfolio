@@ -439,7 +439,7 @@ export default function Blog() {
                   {category.name}
                   <span
                     className={`ml-1.5 text-xs ${
-                      activeCategory === category.name ? 'text-background/60' : 'text-foreground/40'
+                      activeCategory === category.name ? 'text-background/80' : 'text-foreground/60'
                     }`}
                   >
                     {category.count}

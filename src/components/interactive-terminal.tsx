@@ -135,7 +135,7 @@ export function InteractiveTerminal() {
               >
                 {line.type === 'command' && <span className="text-green-500 mr-2">$</span>}
                 {line.type === 'comment' && (
-                  <span className="text-muted-foreground/70">{line.content}</span>
+                  <span className="text-muted-foreground">{line.content}</span>
                 )}
                 {line.type !== 'comment' && line.content}
               </motion.div>

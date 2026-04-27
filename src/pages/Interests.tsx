@@ -350,7 +350,7 @@ export default function Interests() {
 
             {/* Decorative visualization */}
             <BlurFadeIn delay={0.2}>
-              <div className="relative aspect-square max-w-md mx-auto">
+              <div className="relative aspect-square max-w-md mx-auto" aria-hidden="true" role="presentation">
                 {/* Concentric circles representing layers of abstraction */}
                 {[1, 2, 3, 4].map((i) => (
                   <motion.div
@@ -381,38 +381,6 @@ export default function Interests() {
                   </div>
                 </div>
 
-                {/* Floating labels */}
-                {[
-                  { label: 'P(A|B)', angle: 45, distance: 38 },
-                  { label: '∇f', angle: 135, distance: 42 },
-                  { label: 'Σ', angle: 225, distance: 36 },
-                  { label: 'E[X]', angle: 315, distance: 40 },
-                ].map(({ label, angle, distance }) => (
-                  <motion.div
-                    key={label}
-                    className="absolute text-xs font-mono text-foreground/40"
-                    style={{
-                      left: `${50 + distance * Math.cos((angle * Math.PI) / 180)}%`,
-                      top: `${50 + distance * Math.sin((angle * Math.PI) / 180)}%`,
-                      transform: 'translate(-50%, -50%)',
-                    }}
-                    animate={
-                      prefersReducedMotion
-                        ? {}
-                        : {
-                            opacity: [0.3, 0.6, 0.3],
-                          }
-                    }
-                    transition={{
-                      duration: 3,
-                      repeat: Infinity,
-                      ease: 'easeInOut',
-                      delay: angle / 360,
-                    }}
-                  >
-                    {label}
-                  </motion.div>
-                ))}
               </div>
             </BlurFadeIn>
           </div>
