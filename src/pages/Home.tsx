@@ -736,7 +736,7 @@ export default function Home() {
                         { value: 4, label: t('home.featuredProject.components'), suffix: '' },
                         { value: 4, label: t('home.featuredProject.lifeDomains'), suffix: '' },
                         {
-                          value: 997,
+                          value: 4500,
                           label: t('home.featuredProject.domainNodes'),
                           prefix: '$',
                           suffix: '',

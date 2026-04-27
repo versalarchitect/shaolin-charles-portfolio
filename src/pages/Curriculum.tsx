@@ -205,7 +205,7 @@ export default function Curriculum() {
             </p>
           </ScrollFadeIn>
 
-          <div className="max-w-4xl mx-auto space-y-12">
+          <div className="max-w-4xl space-y-12">
             {tiers.map((tier, index) => {
               const Icon = tier.icon
               return (

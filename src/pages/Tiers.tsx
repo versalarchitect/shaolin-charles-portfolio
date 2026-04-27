@@ -119,18 +119,18 @@ export default function Tiers() {
   return (
     <>
       <SEO
-        title="Enroll — The Agentic SaaS Course | $997"
-        description="52 hours from tokens to multi-agent orchestration. One price, full access — learn to direct single agents, coordinate parallel fleets, and architect agent systems. $997 USD, lifetime access."
+        title="Enroll — The Agentic SaaS Course | $4500"
+        description="52 hours from tokens to multi-agent orchestration. One price, full access — learn to direct single agents, coordinate parallel fleets, and architect agent systems. $4500 USD, lifetime access."
         path="/tiers"
         image="/og-image.png"
-        imageAlt="Enroll in The Agentic SaaS Course — $997 USD, lifetime access"
-        keywords="agentic saas course price, ai development course enrollment, $997 coding course, full stack course, lifetime access course, principles-first ai course, charles jackson course"
+        imageAlt="Enroll in The Agentic SaaS Course — $4500 USD, lifetime access"
+        keywords="agentic saas course price, ai development course enrollment, $4500 coding course, full stack course, lifetime access course, principles-first ai course, charles jackson course"
         jsonLd={{
           '@type': 'Offer',
           name: 'The Agentic SaaS Course — Full Access',
           description: '52 hours, 51 lessons, 4 capstones, 8 principles. Complete course from Foundations to Architect with lifetime access.',
           url: 'https://shaolincharles.dev/tiers',
-          price: '997',
+          price: '4500',
           priceCurrency: 'USD',
           availability: 'https://schema.org/InStock',
           seller: { '@type': 'Person', name: 'Charles Jackson' },
@@ -172,7 +172,7 @@ export default function Tiers() {
                 <div className="relative">
                   <div className="text-8xl md:text-9xl font-bold tracking-[-0.06em] leading-none bg-gradient-to-b from-foreground via-foreground/90 to-foreground/50 bg-clip-text text-transparent">
                     <span className="text-6xl md:text-7xl align-top mr-1">$</span>
-                    <AnimatedNumber value={997} duration={1.5} />
+                    <AnimatedNumber value={4500} duration={1.5} />
                   </div>
                   <div className="text-sm text-muted-foreground mt-4 tracking-widest uppercase">
                     One-time payment · Lifetime access
@@ -375,7 +375,7 @@ export default function Tiers() {
               <div className="h-full rounded-2xl border border-foreground/15 bg-foreground/[0.03] p-8 flex flex-col items-center justify-center text-center relative overflow-hidden">
                 <div className="absolute -right-6 -top-6 text-[140px] font-bold leading-none text-foreground/[0.02] select-none pointer-events-none">$</div>
                 <div className="relative">
-                  <div className="text-5xl md:text-6xl font-bold font-mono mb-3 bg-gradient-to-b from-foreground to-foreground/70 bg-clip-text text-transparent">$997</div>
+                  <div className="text-5xl md:text-6xl font-bold font-mono mb-3 bg-gradient-to-b from-foreground to-foreground/70 bg-clip-text text-transparent">$4500</div>
                   <div className="text-sm text-muted-foreground mb-6 font-mono">One-time · Lifetime</div>
                   <div className="h-px w-16 bg-gradient-to-r from-transparent via-foreground/20 to-transparent mx-auto mb-6" />
                   <div className="space-y-2 text-xs text-muted-foreground">
@@ -545,7 +545,7 @@ export default function Tiers() {
               <p className="text-muted-foreground text-lg mb-4 max-w-xl mx-auto leading-relaxed">
                 52 hours. From tokens to agent fleets. 4 products built by agents you direct.
               </p>
-              <p className="text-4xl md:text-5xl font-bold font-mono mb-8">$997</p>
+              <p className="text-4xl md:text-5xl font-bold font-mono mb-8">$4500</p>
             </BlurFadeIn>
 
             <BlurFadeIn delay={0.2}>

@@ -3,6 +3,7 @@ import { Outlet, useLocation } from 'react-router-dom'
 import PageLoading from '@/components/page-loading'
 import { Header } from '@/components/header'
 import { Footer } from '@/components/footer'
+import { Chatbot } from '@/components/chatbot'
 import { Toaster } from '@/components/ui/sonner'
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion'
 import { ThemeProvider } from '@/components/theme-provider'
@@ -94,6 +95,7 @@ export default function App() {
 
             <Footer />
           </div>
+          <Chatbot />
           <Toaster />
         </div>
       </SectionGridProvider>
