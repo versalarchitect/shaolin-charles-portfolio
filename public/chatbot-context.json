@@ -1,0 +1,130 @@
+{
+  "system_prompt": "You are the course assistant for The Agentic SaaS Course by Charles Jackson. You help prospective students understand the course and decide if it's right for them. You are friendly, knowledgeable, and concise.\n\nIMPORTANT RULES:\n- NEVER share actual course content, lessons, exercises, or capstone details beyond what's publicly listed\n- NEVER generate or summarize what specific lessons teach in detail\n- NEVER provide step-by-step tutorials or walkthroughs from the course\n- If someone asks for course content, explain that the material is available to enrolled students and direct them to enroll\n- You CAN share: pricing, course structure, tier overview, what topics are covered at a high level, instructor info, and general FAQ answers\n- Keep responses under 3 sentences when possible\n- If you don't know something, say so and suggest they email hello@charlesjackson.dev",
+
+  "course": {
+    "name": "The Agentic SaaS Course",
+    "tagline": "Learn to orchestrate AI agents from first principles",
+    "price": "$997 USD",
+    "payment": "One-time payment, lifetime access, no subscriptions",
+    "refund": "30-day money-back guarantee. Complete Tier 1 and submit the capstone. If it's not for you, email for a full refund.",
+    "format": "Self-paced, pre-recorded video lessons",
+    "total_hours": 52,
+    "total_lessons": 51,
+    "total_principles": 8,
+    "total_capstones": 4,
+    "support": "Email support for lessons and capstones",
+    "updates": "Lifetime access includes all future content updates"
+  },
+
+  "tiers": [
+    {
+      "number": 1,
+      "name": "Understand the Machine",
+      "hours": 8,
+      "lessons": 10,
+      "summary": "Tokens, context windows, how AI agents process intent, the tool ladder from paste to MCP server",
+      "capstone": "Agent-built tool deployed to production"
+    },
+    {
+      "number": 2,
+      "name": "Direct a Single Agent",
+      "hours": 12,
+      "lessons": 12,
+      "summary": "Spec-driven development, constraining agent output, verification patterns, shipping a full SaaS product via agent direction",
+      "capstone": "Full SaaS product built via agent direction"
+    },
+    {
+      "number": 3,
+      "name": "Orchestrate Multiple Agents",
+      "hours": 15,
+      "lessons": 14,
+      "summary": "Multi-agent task splitting, parallel coordination, cross-agent verification, production monitoring of agent-built systems",
+      "capstone": "Live product built by coordinated agent fleet"
+    },
+    {
+      "number": 4,
+      "name": "Architect Agent Systems",
+      "hours": 15,
+      "lessons": 12,
+      "summary": "Designing architectures for agent-built systems, evaluating AI decisions, when to split/merge/override agent workflows, system-level judgment",
+      "capstone": "System architecture designed for agent workflows"
+    }
+  ],
+
+  "instructor": {
+    "name": "Charles Jackson",
+    "experience": "20+ years building production systems",
+    "location": "Montreal, Canada",
+    "roles": [
+      "Founder & Principal Developer at Predictive (Augure)",
+      "Creator of NxSupabase (official Nx plugin for Supabase)",
+      "Former CTO at MyUrbanFarm.ai"
+    ],
+    "github": "https://github.com/versalarchitect"
+  },
+
+  "prerequisites": {
+    "required": "Basic JavaScript/TypeScript knowledge — you need to read code to verify agent output",
+    "not_required": "This is NOT a learn-to-code course. It's a learn-to-orchestrate-agents course.",
+    "helpful": "Prior experience with any AI coding tool (Claude Code, Cursor, Copilot) is helpful but not required"
+  },
+
+  "faq": [
+    {
+      "q": "What will I learn?",
+      "a": "How to orchestrate AI agents from first principles. You'll go from understanding tokens and context windows to coordinating multiple agents building production software in parallel."
+    },
+    {
+      "q": "Do I need coding experience?",
+      "a": "Yes — basic JavaScript/TypeScript. You need to read and verify code that agents produce. This isn't a learn-to-code course."
+    },
+    {
+      "q": "What if I already use Claude Code / Cursor / Copilot?",
+      "a": "Great — you'll go much deeper. Most developers use a single agent for simple tasks. This course teaches multi-agent coordination, parallel workflows, and system-level orchestration."
+    },
+    {
+      "q": "Is it self-paced?",
+      "a": "Yes. All 51 lessons are pre-recorded video. Work at your own pace with lifetime access."
+    },
+    {
+      "q": "Will these skills work with other AI tools?",
+      "a": "The orchestration patterns are agent-agnostic. We teach with Claude Code, but task splitting, verification, and coordination principles apply to any agent system."
+    },
+    {
+      "q": "What's the refund policy?",
+      "a": "Complete Tier 1 and submit the capstone. If it's not for you, email within 30 days for a full refund. No questions asked."
+    },
+    {
+      "q": "How long does it take to complete?",
+      "a": "52 hours of video instruction total. Most students complete it in 4-8 weeks at their own pace."
+    },
+    {
+      "q": "What do I get for $997?",
+      "a": "All 4 tiers, 52 hours of video, 4 capstone projects, AI-graded feedback, email support, lifetime access to all materials and future updates, and alumni community access."
+    }
+  ],
+
+  "contact": {
+    "email": "hello@charlesjackson.dev",
+    "response_time": "24-48 hours"
+  },
+
+  "links": {
+    "curriculum": "/curriculum",
+    "principles": "/principles",
+    "tiers": "/tiers",
+    "instructor": "/instructor",
+    "contact": "/contact",
+    "enroll": "/contact"
+  },
+
+  "do_not_share": [
+    "Specific lesson content or exercises",
+    "Capstone project requirements or rubrics in detail",
+    "The 8 principles in full (only mention them at a high level)",
+    "Code examples or templates from the course",
+    "Internal course materials, slides, or resources",
+    "Student submissions or grades",
+    "Detailed walkthrough of any lesson"
+  ]
+}

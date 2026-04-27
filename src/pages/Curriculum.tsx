@@ -120,7 +120,7 @@ export default function Curriculum() {
     <>
       <SEO
         title="Curriculum — The Agentic SaaS Course"
-        description="52 hours across 51 lessons and 4 tiers. From tokens and context windows to system teardowns. Learn Next.js, Supabase, Claude Code, Stripe, and Vercel — guided by 8 timeless principles."
+        description="52 hours across 51 lessons and 4 tiers. From tokens and context windows to multi-agent orchestration. Learn to direct single agents, coordinate parallel fleets, and architect agent-built systems."
         path="/curriculum"
         image="/og-image.png"
         imageAlt="Curriculum — The Agentic SaaS Course: 52 hours, 51 lessons, 4 tiers"

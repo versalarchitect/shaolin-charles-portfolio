@@ -96,6 +96,24 @@ The course teaches 8 timeless principles for building software with AI, includin
 
 ---
 
+## Pricing
+
+**$997 USD** — one-time payment for full access to the complete course.
+
+Includes:
+- All 4 tiers: Foundations, Builder, Operator, Architect
+- 52 hours of video instruction across 51 lessons
+- 4 real capstone projects shipped to production
+- 8 timeless principles internalized through practice
+- AI-graded feedback on every capstone
+- Lifetime access to all materials and future updates
+- Direct email support
+- Alumni community access
+
+No upsells, no hidden tiers, no subscriptions.
+
+---
+
 ## Projects
 
 ### Predictive (Augure)

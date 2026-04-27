@@ -50,88 +50,88 @@
   },
   "home": {
     "meta": {
-      "title": "Le cours Agentic SaaS — Charles Jackson",
-      "description": "Un cours axé sur les principes pour construire des logiciels avec l'IA. 52 heures, 4 projets capstone, et des principes qui survivent au prochain modèle."
+      "title": "Maîtrisez l'orchestration multi-agents — Le cours Agentic SaaS",
+      "description": "Apprenez à orchestrer des agents IA depuis les fondamentaux. 52 heures des tokens et fenêtres de contexte à la coordination de flottes d'agents qui construisent des logiciels en production. 997 $ USD, accès à vie."
     },
     "hero": {
       "statusBadge": "Inscriptions ouvertes",
       "name": "Charles Jackson",
       "tagline": "J'enseigne",
       "typewriter": {
-        "intelligentSystems": "le jugement plutôt que les astuces",
-        "beautifulInterfaces": "les principes plutôt que les patterns",
-        "scalablePlatforms": "des créateurs, pas des prompteurs",
-        "shippingReal": "livrer de vrais produits"
+        "intelligentSystems": "l'orchestration multi-agents",
+        "beautifulInterfaces": "la coordination d'agents",
+        "scalablePlatforms": "des tokens aux flottes d'agents",
+        "shippingReal": "livrer avec l'IA, pas juste prompter"
       },
-      "description": "Un cours axé sur les principes pour construire des logiciels avec l'IA. Pas des démos jouets.",
-      "predictive": "52 heures, 4 projets capstone",
-      "aiPlatform": ", et des principes qui survivent au prochain modèle."
+      "description": "Apprenez à orchestrer des agents IA qui construisent des logiciels en production — en partant des fondamentaux des tokens et des fenêtres de contexte.",
+      "predictive": "52 heures depuis votre premier token",
+      "aiPlatform": " jusqu'à la coordination de flottes d'agents qui livrent de vrais produits."
     },
     "terminal": {
       "badge": "Interactif",
       "title": "Découvrez le cours",
-      "welcome": "# Bienvenue au cours Agentic SaaS",
-      "project": "52 heures · 51 leçons · 8 principes · 4 projets capstone",
-      "uptime": "Du premier déploiement au démontage système",
+      "welcome": "# Maîtrisez l'orchestration multi-agents",
+      "project": "52 heures · tokens → agent unique → multi-agents → architecte",
+      "uptime": "De votre première fenêtre de contexte à la coordination de flottes",
       "status": "Inscriptions ouvertes — commencez quand vous voulez",
       "restart": "redémarrer"
     },
     "services": {
       "badge": "Le parcours",
-      "title": "Quatre niveaux, un capstone chacun",
-      "subtitle": "Chaque niveau est plus difficile. Chaque capstone se rapproche du développement professionnel.",
+      "title": "Des tokens aux flottes d'agents",
+      "subtitle": "Quatre niveaux. Chacun vous plonge plus profond dans la façon dont les agents pensent, se coordonnent et livrent.",
       "fullStack": {
-        "title": "Niveau 1 — Fondations",
+        "title": "Niveau 1 — Comprendre la machine",
         "subtitle": "8 heures · 10 leçons",
-        "description": "Apprenez les fondamentaux qui s'appliquent à tout outil IA : tokens, fenêtres de contexte, skills, serveurs MCP et l'échelle d'outils du copier-coller à l'agent. Comprenez les 8 principes et déployez votre premier outil assisté par IA.",
+        "description": "On ne peut pas orchestrer ce qu'on ne comprend pas. Commencez par les tokens, les fenêtres de contexte et comment les agents IA traitent votre intention. Maîtrisez l'échelle d'outils du copier-coller au serveur MCP. À la fin, vous dirigerez un agent unique pour déployer un outil fonctionnel.",
         "highlights": [
-          "Tokens, fenêtres de contexte et comment les outils IA fonctionnent",
+          "Tokens, fenêtres de contexte et comment les agents traitent votre intention",
           "L'échelle d'outils : coller → skill → script → agent → MCP",
-          "Lire avant de générer, rédaction de specs, débogage erreur-first",
-          "Trois premiers principes internalisés par la pratique"
+          "Pourquoi la plupart des gens utilisent le mauvais outil",
+          "Votre premier déploiement construit par un agent — du spec à la production"
         ],
-        "tags": ["Tokens", "Skills", "MCP", "Claude Code"]
+        "tags": ["Tokens", "Fenêtres de contexte", "MCP", "Échelle d'outils"]
       },
       "consulting": {
-        "title": "Niveau 2 — Builder",
+        "title": "Niveau 2 — Diriger un agent unique",
         "subtitle": "12 heures · 12 leçons",
-        "description": "Construisez un SaaS CRUD complet avec auth, base de données et paiements. Apprenez à spécifier avant de générer, tester ce qui compte et livrer à de vrais utilisateurs.",
+        "description": "Dirigez un agent IA pour construire un produit SaaS complet avec authentification, base de données et paiements. Apprenez à rédiger des specs qui contraignent et guident la sortie de l'agent. Vérifiez tout. Votre capstone est un produit fonctionnel — construit en dirigeant un agent.",
         "highlights": [
-          "SaaS full-stack avec Next.js, Supabase et Stripe",
-          "Développement guidé par les specs avec assistance IA",
-          "Conception de base de données avec Drizzle ORM",
-          "Déploiement en production et monitoring"
+          "Développement guidé par les specs : rédigez le spec, laissez l'agent construire",
+          "Contraindre la sortie de l'agent par des limites claires",
+          "Patterns de vérification : faire confiance mais vérifier le code de l'agent",
+          "Livrer un produit SaaS complet en production avec assistance d'agent"
         ],
-        "tags": ["Next.js", "Supabase", "Stripe", "Drizzle"]
+        "tags": ["Rédaction de specs", "Contraintes", "Vérification", "Livraison"]
       },
       "mvp": {
-        "title": "Niveau 3 — Operator",
+        "title": "Niveau 3 — Orchestrer plusieurs agents",
         "subtitle": "15 heures · 14 leçons",
-        "description": "Livrez un produit avec de vrais utilisateurs. Gérez les incidents en production. Rédigez des post-mortems. Apprenez les tâches de fond avec Inngest et les tests end-to-end.",
+        "description": "Coordonnez plusieurs agents travaillant en parallèle sur un système de production. Divisez les tâches complexes entre agents, vérifiez les sorties les unes contre les autres, fusionnez les contributions en logiciel cohérent. Gérez les incidents quand les systèmes construits par agents échouent.",
         "highlights": [
-          "Opérations en production et réponse aux incidents",
-          "Tâches de fond et architecture événementielle",
-          "Tests end-to-end avec Vitest et Playwright",
-          "Rédaction de post-mortems et maturité opérationnelle"
+          "Division multi-agents des tâches et coordination parallèle",
+          "Vérification croisée entre agents et fusion des sorties",
+          "Monitoring en production des systèmes construits par agents",
+          "Réponse aux incidents : quand le code d'agent casse en production"
         ],
-        "tags": ["Inngest", "Vitest", "Playwright", "Opérations"]
+        "tags": ["Multi-agents", "Tâches parallèles", "Coordination", "Production"]
       },
       "codeReview": {
-        "title": "Niveau 4 — Architect",
+        "title": "Niveau 4 — Architecturer des systèmes d'agents",
         "subtitle": "15 heures · 12 leçons",
-        "description": "Démontez un système complexe. Évaluez chaque décision. Rédigez un document de démontage système qui prouve que vous savez penser au niveau architectural.",
+        "description": "Concevez les systèmes que les agents construisent. Évaluez les décisions architecturales prises par l'IA. Sachez quand diviser le travail entre agents, quand consolider et quand surcharger. Votre capstone prouve que vous savez penser au niveau système — la seule chose que les agents ne peuvent pas faire pour vous.",
         "highlights": [
-          "Analyse et documentation d'architecture système",
-          "Évaluation des compromis et cadres de décision",
-          "La méthodologie complète de démontage",
-          "Principe 8 : le goût est le fossé"
+          "Concevoir des architectures pour systèmes construits par agents",
+          "Évaluer et surcharger les décisions d'agents",
+          "Quand diviser, fusionner ou relancer les workflows d'agents",
+          "Jugement système : la compétence que les agents ne peuvent pas répliquer"
         ],
-        "tags": ["Architecture", "Analyse", "Documentation", "Jugement"]
+        "tags": ["Architecture", "Design d'agents", "Pensée système", "Jugement"]
       }
     },
     "skills": {
-      "title": "Ce que vous apprendrez",
-      "subtitle": "Le stack est moderne. Les principes sont intemporels.",
+      "title": "Ce que vous apprendrez vraiment",
+      "subtitle": "Pas comment coder — comment orchestrer des agents IA qui codent pour vous.",
       "items": {
         "frontend": {
           "title": "Next.js + React",
@@ -174,8 +174,8 @@
     "featuredProject": {
       "badge": "Le cours",
       "title": "Le cours Agentic SaaS",
-      "subtitle": "Développement IA axé sur les principes",
-      "description": "52 heures d'instruction sur 4 niveaux. Vous livrez 4 vrais produits, internalisez 8 principes et développez le jugement pour savoir quand l'IA aide et quand elle cache votre manque de compréhension. Les outils changent tous les six mois. Les principes non.",
+      "subtitle": "Orchestration multi-agents",
+      "description": "52 heures depuis la compréhension de votre premier token jusqu'à la coordination de flottes d'agents qui construisent des logiciels en production. Vous progresserez de la direction d'un agent unique à l'orchestration de plusieurs agents en parallèle — et livrerez 4 vrais produits en cours de route.",
       "viewCaseStudy": "Voir le programme complet",
       "lighthouseScore": "Heures de vidéo",
       "p95Response": "Leçons",
@@ -186,29 +186,29 @@
     },
     "timeline": {
       "title": "Votre parcours",
-      "subtitle": "Du premier déploiement au démontage système",
+      "subtitle": "De votre premier token à l'orchestration de flottes d'agents",
       "items": {
         "2024_founder": {
           "title": "Préparation",
           "company": "2 heures · 3 leçons",
-          "description": "Configurez votre environnement local, pipeline de déploiement et outils IA. Préparez-vous à construire."
+          "description": "Configurez votre environnement, installez Claude Code, configurez les serveurs MCP. Faites tourner votre premier agent."
         },
         "2024_urbanfarm": {
-          "title": "Niveau 1 — Fondations",
+          "title": "Comprendre la machine",
           "company": "8 heures · 10 leçons",
-          "description": "Apprenez les fondamentaux. Internalisez vos premiers principes. Livrez un outil déployé en une page comme capstone."
+          "description": "Tokens, fenêtres de contexte, l'échelle d'outils. Comprenez comment les agents pensent pour pouvoir les diriger. Livrez votre premier outil construit par agent."
         },
         "2018_senior": {
-          "title": "Niveau 2 — Builder",
-          "description": "Construisez un SaaS CRUD complet avec auth, base de données et paiements. Livrez-le. Votre capstone est un produit fonctionnel."
+          "title": "Diriger un agent unique",
+          "description": "Rédigez des specs qui guident la sortie de l'agent. Contraignez, vérifiez et livrez un produit SaaS complet construit en dirigeant un agent."
         },
         "2015_lead": {
-          "title": "Niveau 3 — Operator",
-          "description": "Livrez un produit avec de vrais utilisateurs. Gérez la production. Rédigez un post-mortem. Votre capstone inclut un produit en ligne et sa documentation."
+          "title": "Orchestrer plusieurs agents",
+          "description": "Coordonnez des agents parallèles sur un système de production. Divisez les tâches, fusionnez les sorties, gérez les échecs. Livrez avec une flotte."
         },
         "2010_fullstack": {
-          "title": "Niveau 4 — Architect",
-          "description": "Démontez un système complexe. Évaluez chaque décision. Votre capstone est un document de démontage système qui prouve que vous savez penser."
+          "title": "Architecturer des systèmes d'agents",
+          "description": "Concevez les systèmes que les agents construisent. Évaluez les décisions IA au niveau architecture. Votre capstone prouve le jugement système."
         },
         "2005_start": {
           "title": "Alumni",
@@ -229,19 +229,19 @@
       "at": "a complété",
       "items": [
         {
-          "quote": "Ce cours a complètement changé ma façon de penser le développement assisté par IA. Les principes sont restés bien après que les outils ont changé. J'ai livré mon premier vrai produit SaaS au Niveau 2.",
+          "quote": "Je suis passé de coller des prompts dans ChatGPT à faire tourner trois agents Claude Code en parallèle sur différentes parties de mon SaaS. La progression des tokens au multi-agents est la vraie magie de ce cours.",
           "author": "Alex Chen",
           "role": "Ingénieur logiciel",
           "company": "Niveau 3"
         },
         {
-          "quote": "Le système de capstone est génial. Impossible de tricher — il faut vraiment livrer. La correction IA m'a donné des retours honnêtes qui ont amélioré mon code. Chaque dollar en vaut la peine.",
+          "quote": "Le Niveau 1 seul valait le coup — j'ai enfin compris POURQUOI mes agents perdaient le contexte et produisaient n'importe quoi. Au Niveau 3, je coordonnais des agents sur un produit en ligne. Transformation complète.",
           "author": "Sarah Martinez",
           "role": "Développeuse indépendante",
           "company": "Niveau 4"
         },
         {
-          "quote": "Je suis passé de copier les sorties ChatGPT à vraiment comprendre quand utiliser l'IA et quand ne pas le faire. Le principe 'le goût est le fossé' a changé ma carrière.",
+          "quote": "Le saut du Niveau 2 au Niveau 3 est le moment où tout a cliqué. Diriger un agent c'est facile. Orchestrer cinq agents sur le même codebase sans qu'ils se marchent dessus — c'est ça que ce cours enseigne vraiment.",
           "author": "Jordan Osei",
           "role": "Développeur Full-Stack",
           "company": "Niveau 4"
@@ -249,9 +249,9 @@
       ]
     },
     "cta": {
-      "title": "Prêt à construire quelque chose qui",
-      "titleHighlight": "vaut la peine d'être livré ?",
-      "subtitle": "52 heures. 4 produits déployés. Des principes qui survivent au prochain modèle. Commencez à construire avec du jugement, pas juste des prompts.",
+      "title": "Prêt à orchestrer,",
+      "titleHighlight": "pas juste prompter ?",
+      "subtitle": "52 heures. Des tokens aux flottes d'agents. 4 produits déployés construits par des agents que vous dirigez. Apprenez la compétence qui sépare les prompteurs des orchestrateurs.",
       "basedIn": "Basé à Montréal, Canada"
     }
   },
@@ -586,7 +586,7 @@
     }
   },
   "footer": {
-    "description": "Un cours axé sur les principes pour construire des logiciels avec des agents IA. 52 heures du premier déploiement au démontage système.",
+    "description": "Apprenez l'orchestration multi-agents depuis les fondamentaux. 52 heures des tokens à la coordination de flottes d'agents qui livrent des logiciels en production.",
     "letsConnect": "COMMENCER",
     "openTo": "Des questions sur le cours ? Discutons.",
     "getInTouch": "Me contacter",

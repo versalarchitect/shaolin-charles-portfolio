@@ -139,7 +139,7 @@ export default function Principles() {
       <Section id="principles-list" className="py-24 lg:py-32 relative">
         <SectionSpots variant="default" />
         <div className="container mx-auto px-6 lg:px-8 relative z-10">
-          <div className="max-w-4xl mx-auto space-y-16">
+          <div className="max-w-4xl space-y-16">
             {principles.map((principle, index) => {
               const Icon = principle.icon
               return (

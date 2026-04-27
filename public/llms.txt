@@ -1,6 +1,6 @@
 # Charles Jackson — The Agentic SaaS Course
 
-> A principles-first course on building software with AI. 52 hours, 4 capstones, and principles that outlast the next model release.
+> Learn to orchestrate AI agents from first principles. 52 hours from tokens and context windows to coordinating agent fleets that build production software.
 
 ## About
 
@@ -8,14 +8,18 @@ Charles Jackson is a software instructor with 20+ years of experience building p
 
 ## The Course
 
-The Agentic SaaS Course teaches principles-first AI-assisted development across 4 tiers:
+The Agentic SaaS Course teaches multi-agent orchestration from first principles across 4 tiers:
 
-- **Tier 1 — Foundations** (8 hours, 10 lessons): Tokens, context windows, MCP servers, the tool ladder, first 3 principles
-- **Tier 2 — Builder** (12 hours, 12 lessons): Full CRUD SaaS with Next.js, Supabase, Stripe, Drizzle ORM
-- **Tier 3 — Operator** (15 hours, 14 lessons): Production operations, Inngest, Vitest, Playwright, postmortems
-- **Tier 4 — Architect** (15 hours, 12 lessons): System teardowns, architecture analysis, judgment over code
+- **Tier 1 — Understand the Machine** (8 hours, 10 lessons): Tokens, context windows, how agents think, the tool ladder from paste to MCP
+- **Tier 2 — Direct a Single Agent** (12 hours, 12 lessons): Spec-driven development, constraining agent output, verification, shipping a full SaaS
+- **Tier 3 — Orchestrate Multiple Agents** (15 hours, 14 lessons): Multi-agent coordination, parallel task splitting, cross-agent verification, production systems
+- **Tier 4 — Architect Agent Systems** (15 hours, 12 lessons): Designing architectures for agent-built systems, evaluating AI decisions, system-level judgment
 
 Each tier has a real capstone project that must be shipped.
+
+## Pricing
+
+$997 USD — one-time payment, lifetime access to all 4 tiers and future updates. No upsells, no hidden tiers.
 
 ## 8 Principles
 

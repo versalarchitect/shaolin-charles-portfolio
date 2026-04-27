@@ -250,7 +250,7 @@ export default function Home() {
         path=""
         image="/og-image.png"
         imageAlt="The Agentic SaaS Course by Charles Jackson — principles-first AI development"
-        keywords="agentic saas course, ai development course, build software with ai, claude code course, next.js course, react typescript course, supabase course, vercel deployment, charles jackson instructor, principles-first development, ship real products, learn ai coding"
+        keywords="multi-agent orchestration course, ai agent course, orchestrate ai agents, agent coordination, claude code course, mcp servers, agentic development, context windows, tokens, agent fleet, ai agent patterns, charles jackson"
         jsonLd={[
           {
             '@type': 'Course',
@@ -736,7 +736,7 @@ export default function Home() {
                         { value: 4, label: t('home.featuredProject.components'), suffix: '' },
                         { value: 4, label: t('home.featuredProject.lifeDomains'), suffix: '' },
                         {
-                          value: 0,
+                          value: 997,
                           label: t('home.featuredProject.domainNodes'),
                           prefix: '$',
                           suffix: '',

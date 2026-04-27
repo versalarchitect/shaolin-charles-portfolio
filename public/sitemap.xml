@@ -79,14 +79,6 @@
   </url>
 
   <url>
-    <loc>https://shaolincharles.dev/interests</loc>
-    <xhtml:link rel="alternate" hreflang="en" href="https://shaolincharles.dev/interests" />
-    <xhtml:link rel="alternate" hreflang="fr" href="https://shaolincharles.dev/interests?lng=fr" />
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-
-  <url>
     <loc>https://shaolincharles.dev/contact</loc>
     <xhtml:link rel="alternate" hreflang="en" href="https://shaolincharles.dev/contact" />
     <xhtml:link rel="alternate" hreflang="fr" href="https://shaolincharles.dev/contact?lng=fr" />

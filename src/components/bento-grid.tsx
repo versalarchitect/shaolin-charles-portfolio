@@ -1,86 +1,85 @@
 import { motion } from 'framer-motion'
-import { useTranslation } from 'react-i18next'
 import {
-  Code2,
-  Database,
+  Workflow,
   Layers,
-  Zap,
-  GitBranch,
-  Cloud,
-  Palette,
-  Smartphone,
-  Lock,
+  FileText,
+  Eye,
+  Bug,
+  Shield,
+  TestTube,
+  PenTool,
+  Sparkles,
   ArrowUpRight,
+  Bot,
+  GitBranch,
 } from 'lucide-react'
 
 interface BentoItem {
   icon: React.ElementType
-  titleKey: string
-  descriptionKey: string
-  tech: string[]
+  title: string
+  description: string
+  tags: string[]
   className?: string
   featured?: boolean
 }
 
 export function BentoGrid() {
-  const { t } = useTranslation()
-
   const bentoItems: BentoItem[] = [
     {
-      icon: Code2,
-      titleKey: 'home.skills.items.frontend.title',
-      descriptionKey: 'home.skills.items.frontend.description',
-      tech: ['Next.js 16', 'React 19', 'TypeScript', 'Tailwind v4'],
+      icon: Workflow,
+      title: 'Multi-Agent Orchestration',
+      description: 'Coordinate multiple AI agents working in parallel on complex tasks. Learn when to split work, how to verify outputs, and how to merge agent contributions into a coherent whole.',
+      tags: ['Parallel Agents', 'Task Splitting', 'Verification', 'Merging'],
       className: 'md:col-span-2 md:row-span-2',
       featured: true,
     },
     {
-      icon: Database,
-      titleKey: 'home.skills.items.backend.title',
-      descriptionKey: 'home.skills.items.backend.description',
-      tech: ['Supabase', 'PostgreSQL'],
-    },
-    {
-      icon: Cloud,
-      titleKey: 'home.skills.items.cloud.title',
-      descriptionKey: 'home.skills.items.cloud.description',
-      tech: ['Vercel', 'Preview Deploys'],
-    },
-    {
       icon: Layers,
-      titleKey: 'home.skills.items.architecture.title',
-      descriptionKey: 'home.skills.items.architecture.description',
-      tech: ['Drizzle', 'Type Safety'],
+      title: 'The Tool Ladder',
+      description: 'paste → skill → script → agent → MCP',
+      tags: ['Right Tool', 'Right Job'],
     },
     {
-      icon: Zap,
-      titleKey: 'home.skills.items.performance.title',
-      descriptionKey: 'home.skills.items.performance.description',
-      tech: ['Claude Code', 'Skills'],
+      icon: Eye,
+      title: 'Read Before Generate',
+      description: 'Understanding before creation',
+      tags: ['Codebase Audit', 'Context'],
     },
     {
-      icon: GitBranch,
-      titleKey: 'home.skills.items.devops.title',
-      descriptionKey: 'home.skills.items.devops.description',
-      tech: ['Stripe', 'Webhooks'],
+      icon: FileText,
+      title: 'Spec-Driven Development',
+      description: 'Define before you build',
+      tags: ['Specs', 'Constraints'],
     },
     {
-      icon: Palette,
-      titleKey: 'home.skills.items.designSystems.title',
-      descriptionKey: 'home.skills.items.designSystems.description',
-      tech: ['shadcn/ui', 'Tailwind'],
+      icon: Bot,
+      title: 'Agent-First Workflows',
+      description: 'Design work around agents',
+      tags: ['MCP Servers', 'Skills'],
     },
     {
-      icon: Smartphone,
-      titleKey: 'home.skills.items.mobile.title',
-      descriptionKey: 'home.skills.items.mobile.description',
-      tech: ['Inngest', 'Durable Jobs'],
+      icon: Bug,
+      title: 'Error-First Debugging',
+      description: 'Read the error, not the prompt',
+      tags: ['Stack Traces', 'Root Cause'],
     },
     {
-      icon: Lock,
-      titleKey: 'home.skills.items.security.title',
-      descriptionKey: 'home.skills.items.security.description',
-      tech: ['Vitest', 'Playwright'],
+      icon: Shield,
+      title: 'Own Your Constraints',
+      description: 'Limits are design parameters',
+      tags: ['Token Budgets', 'Context'],
+    },
+    {
+      icon: TestTube,
+      title: 'Test What Matters',
+      description: 'Confidence over coverage',
+      tags: ['Critical Paths', 'E2E'],
+    },
+    {
+      icon: PenTool,
+      title: 'Taste Is the Moat',
+      description: 'AI generates. You judge.',
+      tags: ['Judgment', 'Quality'],
     },
   ]
 
@@ -88,16 +87,16 @@ export function BentoGrid() {
     <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4 auto-rows-[120px] md:auto-rows-[140px]">
       {bentoItems.map((item, index) => (
         <motion.div
-          key={item.titleKey}
+          key={item.title}
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4, delay: index * 0.05 }}
           className={item.className}
         >
           {item.featured ? (
-            <FeaturedBentoCard item={item} t={t} />
+            <FeaturedBentoCard item={item} />
           ) : (
-            <BentoCard item={item} t={t} index={index} />
+            <BentoCard item={item} index={index} />
           )}
         </motion.div>
       ))}
@@ -105,7 +104,7 @@ export function BentoGrid() {
   )
 }
 
-function FeaturedBentoCard({ item, t }: { item: BentoItem; t: (key: string) => string }) {
+function FeaturedBentoCard({ item }: { item: BentoItem }) {
   const Icon = item.icon
 
   return (
@@ -115,12 +114,6 @@ function FeaturedBentoCard({ item, t }: { item: BentoItem; t: (key: string) => s
       className="h-full group"
     >
       <div className="relative h-full overflow-hidden rounded-2xl border border-foreground/10 bg-foreground/[0.02] hover:border-foreground/20 hover:bg-foreground/[0.04] transition-all duration-300">
-        {/* Large background number */}
-        <div className="absolute -right-4 -top-4 text-[180px] font-bold leading-none text-foreground/[0.02] select-none pointer-events-none">
-          01
-        </div>
-
-        {/* Decorative corner accent */}
         <div className="absolute top-0 right-0 w-24 h-24">
           <div className="absolute top-6 right-6 w-px h-12 bg-gradient-to-b from-foreground/20 to-transparent" />
           <div className="absolute top-6 right-6 w-12 h-px bg-gradient-to-r from-foreground/20 to-transparent" />
@@ -144,20 +137,20 @@ function FeaturedBentoCard({ item, t }: { item: BentoItem; t: (key: string) => s
           </div>
 
           <h3 className="text-xl md:text-2xl font-semibold tracking-tight mb-2">
-            {t(item.titleKey)}
+            {item.title}
           </h3>
 
           <p className="text-sm md:text-base text-muted-foreground mb-6 flex-1 leading-relaxed">
-            {t(item.descriptionKey)}
+            {item.description}
           </p>
 
           <div className="flex flex-wrap gap-2">
-            {item.tech.map((tech) => (
+            {item.tags.map((tag) => (
               <span
-                key={tech}
+                key={tag}
                 className="text-xs font-mono px-3 py-1.5 bg-foreground/[0.05] rounded-full border border-foreground/10 text-foreground/60 group-hover:border-foreground/15 transition-colors"
               >
-                {tech}
+                {tag}
               </span>
             ))}
           </div>
@@ -169,11 +162,9 @@ function FeaturedBentoCard({ item, t }: { item: BentoItem; t: (key: string) => s
 
 function BentoCard({
   item,
-  t,
   index,
 }: {
   item: BentoItem
-  t: (key: string) => string
   index: number
 }) {
   const Icon = item.icon
@@ -185,11 +176,6 @@ function BentoCard({
       className="h-full group"
     >
       <div className="relative h-full overflow-hidden rounded-xl border border-foreground/[0.08] bg-transparent hover:border-foreground/15 hover:bg-foreground/[0.02] transition-all duration-300">
-        {/* Subtle index number */}
-        <div className="absolute -right-2 -top-2 text-[60px] font-bold leading-none text-foreground/[0.025] select-none pointer-events-none">
-          {String(index + 1).padStart(2, '0')}
-        </div>
-
         <div className="relative h-full p-4 flex flex-col">
           <div className="flex items-start justify-between mb-2">
             <motion.div
@@ -201,15 +187,15 @@ function BentoCard({
             </motion.div>
           </div>
 
-          <h3 className="text-sm font-semibold text-foreground mb-1">{t(item.titleKey)}</h3>
+          <h3 className="text-sm font-semibold text-foreground mb-1">{item.title}</h3>
 
           <div className="flex flex-wrap gap-1.5 mt-auto">
-            {item.tech.slice(0, 2).map((tech) => (
+            {item.tags.slice(0, 2).map((tag) => (
               <span
-                key={tech}
+                key={tag}
                 className="text-[10px] font-mono px-2 py-0.5 bg-foreground/[0.04] rounded text-foreground/50"
               >
-                {tech}
+                {tag}
               </span>
             ))}
           </div>
@@ -220,22 +206,22 @@ function BentoCard({
 }
 
 export function SkillBadges() {
-  const skills = [
-    { name: 'Next.js', tiers: 'T1–T4' },
-    { name: 'TypeScript', tiers: 'T1–T4' },
-    { name: 'Supabase', tiers: 'T2–T3' },
-    { name: 'Claude Code', tiers: 'T1–T4' },
-    { name: 'Stripe', tiers: 'T2' },
-    { name: 'Drizzle ORM', tiers: 'T2–T3' },
-    { name: 'Inngest', tiers: 'T3' },
-    { name: 'Vercel', tiers: 'T1–T4' },
+  const concepts = [
+    { name: 'Agent Orchestration', context: 'Core' },
+    { name: 'Tool Ladder', context: 'T1–T4' },
+    { name: 'Spec Writing', context: 'T1–T4' },
+    { name: 'MCP Servers', context: 'T1–T4' },
+    { name: 'Error-First Debug', context: 'T1–T4' },
+    { name: 'System Teardowns', context: 'T4' },
+    { name: 'Capstone Shipping', context: 'T1–T4' },
+    { name: 'Judgment', context: 'Core' },
   ]
 
   return (
     <div className="flex flex-wrap gap-3 justify-center">
-      {skills.map((skill, index) => (
+      {concepts.map((concept, index) => (
         <motion.div
-          key={skill.name}
+          key={concept.name}
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ delay: index * 0.04 }}
@@ -244,20 +230,12 @@ export function SkillBadges() {
         >
           <div className="px-4 py-2.5 bg-foreground/[0.03] rounded-full border border-foreground/[0.08] hover:border-foreground/15 hover:bg-foreground/[0.05] transition-all duration-300">
             <div className="flex items-center gap-2">
-              <span className="font-mono text-sm text-foreground/80">{skill.name}</span>
+              <span className="font-mono text-sm text-foreground/80">{concept.name}</span>
               <span className="text-[10px] font-mono text-foreground/60 tabular-nums">
-                {skill.tiers}
+                {concept.context}
               </span>
             </div>
           </div>
-
-          <motion.div
-            className="absolute -top-8 left-1/2 -translate-x-1/2 px-2 py-1 bg-foreground text-background text-[10px] font-mono rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap"
-            initial={{ y: 4 }}
-            whileHover={{ y: 0 }}
-          >
-            Used in {skill.tiers}
-          </motion.div>
         </motion.div>
       ))}
     </div>

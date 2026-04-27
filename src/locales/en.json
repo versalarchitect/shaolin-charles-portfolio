@@ -50,88 +50,88 @@
   },
   "home": {
     "meta": {
-      "title": "The Agentic SaaS Course — Charles Jackson",
-      "description": "A principles-first course on building software with AI. 52 hours, 4 capstones, and principles that outlast the next model release."
+      "title": "Master Multi-Agent Orchestration — The Agentic SaaS Course",
+      "description": "Learn to orchestrate AI agents from first principles. 52 hours from tokens and context windows to coordinating agent fleets that build production software. $997, lifetime access."
     },
     "hero": {
       "statusBadge": "Now enrolling",
       "name": "Charles Jackson",
       "tagline": "I teach",
       "typewriter": {
-        "intelligentSystems": "judgment over prompt tricks",
-        "beautifulInterfaces": "principles over patterns",
-        "scalablePlatforms": "builders, not prompters",
-        "shippingReal": "shipping real products"
+        "intelligentSystems": "multi-agent orchestration",
+        "beautifulInterfaces": "agent coordination patterns",
+        "scalablePlatforms": "from tokens to agent fleets",
+        "shippingReal": "shipping with AI, not just prompting"
       },
-      "description": "A principles-first course on building software with AI. Not toy demos.",
-      "predictive": "52 hours, 4 capstones",
-      "aiPlatform": ", and principles that outlast the next model release."
+      "description": "Learn to orchestrate AI agents that build production software — starting from the fundamentals of tokens and context windows.",
+      "predictive": "52 hours from your first token",
+      "aiPlatform": " to coordinating agent fleets that ship real products."
     },
     "terminal": {
       "badge": "Interactive",
       "title": "Get to know the course",
-      "welcome": "# Welcome to the Agentic SaaS Course",
-      "project": "52 hours · 51 lessons · 8 principles · 4 capstones",
-      "uptime": "From first deploy to system teardown",
+      "welcome": "# Master Multi-Agent Orchestration",
+      "project": "52 hours · tokens → single agent → multi-agent → architect",
+      "uptime": "From your first context window to agent fleet coordination",
       "status": "Enrollment open — start anytime",
       "restart": "restart"
     },
     "services": {
       "badge": "The Path",
-      "title": "Four Tiers, One Capstone Each",
-      "subtitle": "Each tier is harder. Each capstone is closer to professional software development.",
+      "title": "Tokens to Agent Fleets",
+      "subtitle": "Four tiers. Each one takes you deeper into how agents think, coordinate, and ship.",
       "fullStack": {
-        "title": "Tier 1 — Foundations",
+        "title": "Tier 1 — Understand the Machine",
         "subtitle": "8 hours · 10 lessons",
-        "description": "Learn the fundamentals that transfer across any AI tool: tokens, context windows, skills, MCP servers, and the tool ladder from paste to agent. Understand the 8 principles and deploy your first AI-assisted tool.",
+        "description": "You can't orchestrate what you don't understand. Start with tokens, context windows, and how AI agents actually think. Learn the tool ladder from paste to MCP server. By the end, you'll direct a single agent to deploy a working tool.",
         "highlights": [
-          "Tokens, context windows, and how AI tools actually work",
+          "Tokens, context windows, and how agents process your intent",
           "The tool ladder: paste → skill → script → agent → MCP",
-          "Reading before generating, spec writing, error-first debugging",
-          "First three principles internalized through real work"
+          "Why most people use the wrong tool for the job",
+          "Your first agent-built deploy — from spec to production"
         ],
-        "tags": ["Tokens", "Skills", "MCP", "Claude Code"]
+        "tags": ["Tokens", "Context Windows", "MCP", "Tool Ladder"]
       },
       "consulting": {
-        "title": "Tier 2 — Builder",
+        "title": "Tier 2 — Direct a Single Agent",
         "subtitle": "12 hours · 12 lessons",
-        "description": "Build a full CRUD SaaS with auth, database, and payments. Learn to spec before you generate, test what matters, and ship to real users. Your capstone is a working product deployed to Vercel.",
+        "description": "Direct an AI agent to build a full SaaS product with auth, database, and payments. Learn to write specs that constrain and guide agent output. Verify everything. Your capstone is a working product — built by you directing an agent.",
         "highlights": [
-          "Full-stack SaaS with Next.js, Supabase, and Stripe",
-          "Spec-driven development with AI assistance",
-          "Database design with Drizzle ORM",
-          "Production deployment and monitoring"
+          "Spec-driven development: write the spec, let the agent build",
+          "Constraining agent output through clear boundaries",
+          "Verification patterns: how to trust but verify agent code",
+          "Ship a full SaaS product to production with agent assistance"
         ],
-        "tags": ["Next.js", "Supabase", "Stripe", "Drizzle"]
+        "tags": ["Spec Writing", "Constraints", "Verification", "Shipping"]
       },
       "mvp": {
-        "title": "Tier 3 — Operator",
+        "title": "Tier 3 — Orchestrate Multiple Agents",
         "subtitle": "15 hours · 14 lessons",
-        "description": "Ship a product with real users. Handle production incidents. Write postmortems. Learn background jobs with Inngest and end-to-end testing. Your capstone includes a live product and documentation.",
+        "description": "Coordinate multiple agents working in parallel on a production system. Split complex tasks, verify agent outputs against each other, and merge contributions into coherent software. Handle production incidents when agent-built systems fail.",
         "highlights": [
-          "Production operations and incident response",
-          "Background jobs and event-driven architecture",
-          "End-to-end testing with Vitest and Playwright",
-          "Postmortem writing and operational maturity"
+          "Multi-agent task splitting and parallel coordination",
+          "Cross-agent verification and output merging",
+          "Production monitoring of agent-built systems",
+          "Incident response: when agent code breaks in production"
         ],
-        "tags": ["Inngest", "Vitest", "Playwright", "Operations"]
+        "tags": ["Multi-Agent", "Parallel Tasks", "Coordination", "Production"]
       },
       "codeReview": {
-        "title": "Tier 4 — Architect",
+        "title": "Tier 4 — Architect Agent Systems",
         "subtitle": "15 hours · 12 lessons",
-        "description": "Tear down a complex system. Evaluate every decision. Write a system teardown document that proves you can think at the architectural level. Your capstone is judgment, not just code.",
+        "description": "Design the systems that agents build. Evaluate architectural decisions made by AI. Know when to split work across agents, when to consolidate, and when to override. Your capstone proves you can think at the system level — the one thing agents can't do for you.",
         "highlights": [
-          "System architecture analysis and documentation",
-          "Trade-off evaluation and decision frameworks",
-          "The complete teardown methodology",
-          "Principle 8: taste is the moat"
+          "Designing architectures for agent-built systems",
+          "Evaluating and overriding agent decisions",
+          "When to split, merge, or restart agent workflows",
+          "System-level judgment: the skill agents can't replicate"
         ],
-        "tags": ["Architecture", "Analysis", "Documentation", "Judgment"]
+        "tags": ["Architecture", "Agent Design", "System Thinking", "Judgment"]
       }
     },
     "skills": {
-      "title": "What You'll Learn",
-      "subtitle": "The stack is modern. The principles are timeless.",
+      "title": "What You'll Actually Learn",
+      "subtitle": "Not how to code — how to orchestrate AI agents that code for you.",
       "items": {
         "frontend": {
           "title": "Next.js + React",
@@ -174,8 +174,8 @@
     "featuredProject": {
       "badge": "The Course",
       "title": "The Agentic SaaS Course",
-      "subtitle": "Principles-First AI Development",
-      "description": "52 hours of instruction across 4 tiers. You ship 4 real products, internalize 8 principles, and build the judgment to know when AI is helping and when it's hiding your lack of understanding. The tools change every six months. The principles do not.",
+      "subtitle": "Multi-Agent Orchestration",
+      "description": "52 hours from understanding your first token to coordinating agent fleets that build production software. You'll progress from directing a single agent to orchestrating multiple agents in parallel — and ship 4 real products along the way.",
       "viewCaseStudy": "See Full Curriculum",
       "lighthouseScore": "Hours of Video",
       "p95Response": "Lessons",
@@ -186,29 +186,29 @@
     },
     "timeline": {
       "title": "Your Journey",
-      "subtitle": "From first deploy to system teardown",
+      "subtitle": "From your first token to orchestrating agent fleets",
       "items": {
         "2024_founder": {
           "title": "Prework",
           "company": "2 hours · 3 lessons",
-          "description": "Set up your local environment, deployment pipeline, and AI tooling. Get ready to build."
+          "description": "Set up your environment, install Claude Code, configure MCP servers. Get your first agent running."
         },
         "2024_urbanfarm": {
-          "title": "Tier 1 — Foundations",
+          "title": "Understand the Machine",
           "company": "8 hours · 10 lessons",
-          "description": "Learn the fundamentals. Internalize your first principles. Ship a deployed single-page tool as your capstone."
+          "description": "Tokens, context windows, the tool ladder. Understand how agents think so you can direct them. Ship your first agent-built tool."
         },
         "2018_senior": {
-          "title": "Tier 2 — Builder",
-          "description": "Build a full CRUD SaaS with auth, database, and payments. Ship it. Your capstone is a working product."
+          "title": "Direct a Single Agent",
+          "description": "Write specs that guide agent output. Constrain, verify, and ship a full SaaS product built by directing an agent."
         },
         "2015_lead": {
-          "title": "Tier 3 — Operator",
-          "description": "Ship a product with real users. Handle production. Write a postmortem. Your capstone includes a live product and documentation."
+          "title": "Orchestrate Multiple Agents",
+          "description": "Coordinate parallel agents on a production system. Split tasks, merge outputs, handle failures. Ship with a fleet."
         },
         "2010_fullstack": {
-          "title": "Tier 4 — Architect",
-          "description": "Tear down a complex system. Evaluate every decision. Your capstone is a system teardown document that proves you can think."
+          "title": "Architect Agent Systems",
+          "description": "Design the systems agents build. Evaluate AI decisions at the architecture level. Your capstone proves system-level judgment."
         },
         "2005_start": {
           "title": "Alumni",
@@ -229,19 +229,19 @@
       "at": "completed",
       "items": [
         {
-          "quote": "This course completely changed how I think about AI-assisted development. The principles stuck with me long after the tools changed. I shipped my first real SaaS product in Tier 2.",
+          "quote": "I went from pasting prompts into ChatGPT to running three Claude Code agents in parallel on different parts of my SaaS. The progression from tokens to multi-agent is the real magic of this course.",
           "author": "Alex Chen",
           "role": "Software Engineer",
           "company": "Tier 3"
         },
         {
-          "quote": "The capstone system is genius. You can't fake your way through—you have to actually ship. The AI grading gave me honest feedback that made my code better. Worth every dollar.",
+          "quote": "Tier 1 alone was worth it — I finally understood WHY my agents were losing context and giving garbage output. By Tier 3, I was coordinating agents on a live product. Completely transformed how I work.",
           "author": "Sarah Martinez",
           "role": "Indie Developer",
           "company": "Tier 4"
         },
         {
-          "quote": "I went from copying ChatGPT outputs to actually understanding when to use AI and when not to. The 'taste is the moat' principle changed my career. Highly recommended for anyone serious about shipping.",
+          "quote": "The jump from Tier 2 to Tier 3 is where everything clicked. Directing one agent is easy. Orchestrating five agents on the same codebase without them stepping on each other — that's what this course actually teaches.",
           "author": "Jordan Osei",
           "role": "Full-Stack Developer",
           "company": "Tier 4"
@@ -249,9 +249,9 @@
       ]
     },
     "cta": {
-      "title": "Ready to build something",
-      "titleHighlight": "worth shipping?",
-      "subtitle": "52 hours. 4 deployed products. Principles that outlast the next model release. Start building with judgment, not just prompts.",
+      "title": "Ready to orchestrate",
+      "titleHighlight": "not just prompt?",
+      "subtitle": "52 hours. From tokens to agent fleets. 4 deployed products built by agents you direct. Learn the skill that separates prompters from orchestrators.",
       "basedIn": "Based in Montreal, Canada"
     }
   },
@@ -586,7 +586,7 @@
     }
   },
   "footer": {
-    "description": "A principles-first course on building software with AI agents. 52 hours from first deploy to system teardown.",
+    "description": "Learn multi-agent orchestration from first principles. 52 hours from tokens to coordinating agent fleets that ship production software.",
     "letsConnect": "GET STARTED",
     "openTo": "Questions about the course? Let's talk.",
     "getInTouch": "Get in touch",
