@@ -5,11 +5,19 @@ import {
   LayoutDashboard,
   BookOpen,
   Users,
+  MessageSquare,
   LogOut,
   Menu,
   X,
   Sun,
   Moon,
+  Flame,
+  Zap,
+  Trophy,
+  Star,
+  Award,
+  Crown,
+  Target,
 } from 'lucide-react'
 import { Logo } from '@/components/ui/logo'
 import { LanguageSwitcher } from '@/components/language-switcher'
@@ -17,12 +25,114 @@ import { useAuth } from '@/hooks/use-auth'
 import { useTheme } from '@/components/theme-provider'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { supabase } from '@/lib/supabase'
+import { useProgress, getLevel, getNextLevel, getOverallProgress } from '@/stores/progress'
+import { TOTAL_LESSONS } from '@/data/curriculum'
 
 const NAV_ITEMS = [
-  { label: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
-  { label: 'Curriculum', href: '/curriculum', icon: BookOpen },
-  { label: 'Community', href: '/community', icon: Users },
+  { label: 'Dashboard', href: '/course/dashboard', icon: LayoutDashboard },
+  { label: 'Curriculum', href: '/course/curriculum', icon: BookOpen },
+  { label: 'Community', href: '/course/community', icon: Users },
+  { label: 'Chat', href: '/course/chat', icon: MessageSquare },
 ]
+
+function LevelIcon({ levelName, className }: { levelName: string; className?: string }) {
+  switch (levelName) {
+    case 'Diamond': return <Crown className={className} />
+    case 'Platinum': return <Award className={className} />
+    case 'Gold': return <Trophy className={className} />
+    case 'Silver': return <Star className={className} />
+    default: return <Target className={className} />
+  }
+}
+
+function SidebarProfile({
+  user,
+  initials,
+  email,
+  onSignOut,
+}: {
+  user: { user_metadata?: Record<string, string>; email?: string }
+  initials: string
+  email: string
+  onSignOut: () => void
+}) {
+  const progress = useProgress()
+  const level = getLevel()
+  const nextLevel = getNextLevel()
+  const overall = getOverallProgress()
+
+  const displayName = user.user_metadata?.display_name
+    || user.email?.split('@')[0]
+    || 'Student'
+
+  const xpIntoLevel = progress.totalXp - level.minXp
+  const xpForLevel = nextLevel ? nextLevel.minXp - level.minXp : 1
+  const levelPercent = nextLevel
+    ? Math.min(100, Math.round((xpIntoLevel / xpForLevel) * 100))
+    : 100
+
+  return (
+    <div className="space-y-2">
+      {/* User identity */}
+      <div className="flex items-center gap-3 px-3 py-2.5">
+        <Avatar size="default">
+          <AvatarFallback className="bg-foreground/10 text-foreground/80 text-xs font-mono font-semibold">
+            {initials}
+          </AvatarFallback>
+        </Avatar>
+        <div className="flex-1 min-w-0">
+          <p className="text-sm font-medium text-foreground/90 truncate">{displayName}</p>
+          <p className="text-[10px] font-mono text-foreground/40 truncate">{email}</p>
+        </div>
+      </div>
+
+      {/* Stats row */}
+      <div className="mx-3 rounded-lg bg-foreground/[0.03] border border-foreground/[0.06] p-2.5">
+        <div className="flex items-center justify-between mb-2">
+          <div className="flex items-center gap-1.5">
+            <LevelIcon levelName={level.name} className="w-3.5 h-3.5 text-foreground/50" />
+            <span className="text-[11px] font-mono font-semibold text-foreground/70">{level.name}</span>
+          </div>
+          <div className="flex items-center gap-1">
+            <Zap className="w-3 h-3 text-foreground/30" />
+            <span className="text-[10px] font-mono text-foreground/40">{progress.totalXp} XP</span>
+          </div>
+        </div>
+
+        {/* XP progress bar */}
+        <div className="relative h-1 rounded-full bg-foreground/[0.06] overflow-hidden mb-2">
+          <motion.div
+            className="absolute inset-y-0 left-0 rounded-full bg-foreground/20"
+            initial={{ width: 0 }}
+            animate={{ width: `${levelPercent}%` }}
+            transition={{ duration: 0.6, ease: [0.33, 1, 0.68, 1] }}
+          />
+        </div>
+
+        {/* Bottom stats */}
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-1">
+            <Flame className="w-3 h-3 text-foreground/30" />
+            <span className="text-[10px] font-mono text-foreground/40">{progress.currentStreak}d streak</span>
+          </div>
+          <span className="text-[10px] font-mono text-foreground/30">
+            {overall.completed}/{TOTAL_LESSONS} lessons
+          </span>
+        </div>
+      </div>
+
+      {/* Sign out */}
+      <button
+        type="button"
+        onClick={onSignOut}
+        className="flex items-center gap-3 w-full px-3 py-2 rounded-lg text-sm font-medium font-mono text-foreground/40 hover:text-foreground/70 hover:bg-foreground/5 transition-colors"
+      >
+        <LogOut className="w-4 h-4 shrink-0" />
+        Sign Out
+      </button>
+    </div>
+  )
+}
 
 function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
   const location = useLocation()
@@ -50,7 +160,7 @@ function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
       {/* Logo */}
       <div className="px-4 py-5">
         <Link
-          to="/dashboard"
+          to="/course/dashboard"
           className="flex items-center gap-2.5"
           onClick={onNavigate}
         >
@@ -93,7 +203,7 @@ function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
       <div className="flex-1" />
 
       {/* Bottom section */}
-      <div className="px-3 pb-4 space-y-3">
+      <div className="px-3 pb-4 space-y-2">
         {/* Language & theme */}
         <div className="px-3 flex items-center justify-between">
           <LanguageSwitcher />
@@ -109,29 +219,8 @@ function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
         {/* Separator */}
         <div className="h-px bg-foreground/[0.08]" />
 
-        {/* User info */}
-        {user && (
-          <div className="flex items-center gap-3 px-3 py-2">
-            <Avatar size="sm">
-              <AvatarFallback className="bg-foreground/10 text-foreground/80 text-[10px] font-mono font-semibold">
-                {initials}
-              </AvatarFallback>
-            </Avatar>
-            <span className="flex-1 text-xs font-mono text-foreground/50 truncate">
-              {truncatedEmail}
-            </span>
-          </div>
-        )}
-
-        {/* Sign out */}
-        <button
-          type="button"
-          onClick={handleSignOut}
-          className="flex items-center gap-3 w-full px-3 py-2 rounded-lg text-sm font-medium font-mono text-foreground/50 hover:text-foreground/80 hover:bg-foreground/5 transition-colors"
-        >
-          <LogOut className="w-4 h-4 shrink-0" />
-          Sign Out
-        </button>
+        {/* Profile card */}
+        {user && <SidebarProfile user={user} initials={initials} email={truncatedEmail} onSignOut={handleSignOut} />}
       </div>
     </div>
   )
