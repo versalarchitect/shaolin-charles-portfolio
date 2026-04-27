@@ -1,0 +1,190 @@
+{
+  "system_prompt": "Tu es l'assistant du cours The Agentic SaaS Course par Charles Jackson. Tu aides les futurs étudiants à comprendre le cours et à décider s'il leur convient. Tu es amical, compétent et concis.\n\nRÈGLES IMPORTANTES :\n- NE JAMAIS partager le contenu réel du cours, les leçons, exercices ou détails des capstones au-delà de ce qui est publiquement listé\n- NE JAMAIS générer ou résumer ce que les leçons spécifiques enseignent en détail\n- Si quelqu'un demande le contenu du cours, explique que le matériel est disponible aux étudiants inscrits et dirige-les vers l'inscription\n- Tu PEUX partager : prix, structure du cours, aperçu des niveaux, sujets couverts à haut niveau, info sur l'instructeur, et réponses FAQ générales\n- Garde les réponses sous 3 phrases quand possible",
+
+  "course": {
+    "name": "The Agentic SaaS Course",
+    "price": "4 500 $ USD",
+    "payment": "Paiement unique, accès à vie, pas d'abonnement",
+    "refund": "Garantie de remboursement de 30 jours. Complétez le Niveau 1 et soumettez le capstone. Si ce n'est pas pour vous, envoyez un courriel pour un remboursement complet.",
+    "format": "Vidéos préenregistrées à votre rythme",
+    "total_hours": 52,
+    "total_lessons": 51,
+    "total_principles": 8,
+    "total_capstones": 4
+  },
+
+  "tiers": [
+    {
+      "number": 1,
+      "name": "Comprendre la machine",
+      "hours": 8,
+      "lessons": 10,
+      "summary": "Tokens, fenêtres de contexte, comment les agents IA traitent votre intention, l'échelle d'outils du copier-coller au serveur MCP",
+      "capstone": "Outil construit par agent déployé en production"
+    },
+    {
+      "number": 2,
+      "name": "Diriger un agent unique",
+      "hours": 12,
+      "lessons": 12,
+      "summary": "Développement guidé par les specs, contraindre la sortie de l'agent, patterns de vérification, livrer un produit SaaS complet via direction d'agent",
+      "capstone": "Produit SaaS complet construit via direction d'agent"
+    },
+    {
+      "number": 3,
+      "name": "Orchestrer plusieurs agents",
+      "hours": 15,
+      "lessons": 14,
+      "summary": "Division multi-agents des tâches, coordination parallèle, vérification croisée entre agents, monitoring en production de systèmes construits par agents",
+      "capstone": "Produit en ligne construit par une flotte d'agents coordonnés"
+    },
+    {
+      "number": 4,
+      "name": "Architecturer des systèmes d'agents",
+      "hours": 15,
+      "lessons": 12,
+      "summary": "Concevoir des architectures pour systèmes construits par agents, évaluer les décisions IA, quand diviser/fusionner/surcharger les workflows d'agents, jugement système",
+      "capstone": "Architecture système conçue pour workflows d'agents"
+    }
+  ],
+
+  "faq": [
+    {
+      "q": "Qu'est-ce que je vais apprendre ?",
+      "a": "Comment orchestrer des agents IA depuis les fondamentaux. Vous passerez de la compréhension des tokens et fenêtres de contexte à la coordination de plusieurs agents construisant des logiciels en production en parallèle."
+    },
+    {
+      "q": "Ai-je besoin d'expérience en programmation ?",
+      "a": "Oui — JavaScript/TypeScript de base. Vous devez pouvoir lire et vérifier le code que les agents produisent. Ce n'est pas un cours pour apprendre à coder."
+    },
+    {
+      "q": "Et si j'utilise déjà Claude Code / Cursor / Copilot ?",
+      "a": "Parfait — vous irez beaucoup plus loin. La plupart des développeurs utilisent un seul agent pour des tâches simples. Ce cours enseigne la coordination multi-agents, les workflows parallèles et l'orchestration au niveau système."
+    },
+    {
+      "q": "C'est à mon rythme ?",
+      "a": "Oui. Les 51 leçons sont des vidéos préenregistrées. Travaillez à votre rythme avec accès à vie."
+    },
+    {
+      "q": "Ces compétences fonctionnent avec d'autres outils IA ?",
+      "a": "Les patterns d'orchestration sont agnostiques. Nous enseignons avec Claude Code, mais les principes de division de tâches, vérification et coordination s'appliquent à tout système d'agents."
+    },
+    {
+      "q": "Quelle est la politique de remboursement ?",
+      "a": "Complétez le Niveau 1 et soumettez le capstone. Si le cours ne vous convient pas, envoyez un courriel dans les 30 jours pour un remboursement complet. Sans questions."
+    },
+    {
+      "q": "Combien de temps pour compléter le cours ?",
+      "a": "52 heures d'instruction vidéo au total. La plupart des étudiants le complètent en 4 à 8 semaines à leur rythme."
+    },
+    {
+      "q": "Qu'est-ce que j'obtiens pour 4 500 $ ?",
+      "a": "Les 4 niveaux, 52 heures de vidéo, 4 projets capstone, correction IA, support par courriel, accès à vie à tous les matériaux et mises à jour futures, et accès à la communauté alumni."
+    },
+    {
+      "q": "C'est quoi l'orchestration multi-agents ?",
+      "a": "C'est la compétence de coordonner plusieurs agents IA travaillant en parallèle sur le même projet — diviser les tâches, vérifier les sorties entre agents, fusionner les contributions et gérer les échecs. C'est la différence entre prompter un chatbot et diriger une flotte qui construit de vrais logiciels."
+    },
+    {
+      "q": "C'est quoi l'échelle d'outils ?",
+      "a": "L'échelle d'outils est un cadre enseigné au Niveau 1 : coller → skill → script → agent → MCP. Elle vous aide à choisir le bon niveau d'outil IA pour chaque tâche."
+    },
+    {
+      "q": "C'est quoi un projet capstone ?",
+      "a": "Chaque niveau se termine par un capstone — un vrai projet que vous déployez en production. Ce n'est pas un quiz. Niveau 1 : outil déployé, Niveau 2 : SaaS complet, Niveau 3 : produit avec utilisateurs, Niveau 4 : document d'architecture système."
+    },
+    {
+      "q": "Est-ce que ça vaut 4 500 $ ?",
+      "a": "Le cours enseigne une compétence que la plupart des développeurs n'apprennent jamais — l'orchestration multi-agents. Si vous êtes sérieux dans la construction avec l'IA au niveau professionnel, le retour vient de la capacité à livrer plus vite et construire des systèmes plus complexes. Et il y a une garantie de 30 jours."
+    },
+    {
+      "q": "Peut-on payer en plusieurs fois ?",
+      "a": "Actuellement c'est un paiement unique de 4 500 $. Pour des questions de paiement, contactez hello@charlesjackson.dev."
+    },
+    {
+      "q": "Quelles technologies vais-je utiliser ?",
+      "a": "Le cours utilise Claude Code, Next.js, TypeScript, Supabase, Vercel, Stripe, Drizzle ORM, Inngest, Vitest et Playwright — mais le vrai focus est sur les patterns d'orchestration qui fonctionnent avec n'importe quel stack."
+    },
+    {
+      "q": "Y a-t-il une communauté ?",
+      "a": "Oui — les étudiants inscrits obtiennent l'accès à la communauté alumni où vous pouvez connecter avec d'autres étudiants."
+    },
+    {
+      "q": "En quoi c'est différent des autres cours IA ?",
+      "a": "La plupart des cours IA enseignent à prompter un seul chatbot. Ce cours enseigne l'orchestration multi-agents — coordonner des agents parallèles sur des systèmes en production. Vous livrez 4 vrais produits, pas des démos jouets."
+    },
+    {
+      "q": "Et si les outils IA changent après le cours ?",
+      "a": "C'est exactement pourquoi on enseigne des patterns d'orchestration, pas des astuces spécifiques à un outil. Les principes de division de tâches, vérification et coordination s'appliquent quel que soit le modèle IA. Et vous avez accès à vie aux mises à jour."
+    },
+    {
+      "q": "Où est basé l'instructeur ?",
+      "a": "Charles Jackson est basé à Montréal, Québec, Canada. Le cours est disponible mondialement."
+    },
+    {
+      "q": "Est-ce que j'obtiens un certificat ?",
+      "a": "Le vrai credential, ce sont les 4 projets capstone que vous déployez en production. Ce sont des pièces portfolio qui prouvent que vous savez construire avec l'IA au niveau professionnel."
+    },
+    {
+      "q": "C'est quoi un agent IA ?",
+      "a": "Un agent IA est un système qui peut agir de manière autonome — pas juste répondre à des questions, mais lire des fichiers, écrire du code, exécuter des commandes et modifier votre projet. Claude Code, Cursor et Copilot en sont des exemples. Le cours vous apprend à les diriger et les coordonner."
+    },
+    {
+      "q": "Quelle est la différence entre un agent et un chatbot ?",
+      "a": "Un chatbot répond à des messages. Un agent prend des actions — il peut lire votre codebase, écrire du code, lancer des tests et déployer. Le cours vous apprend à passer de la direction d'un seul agent à l'orchestration de plusieurs."
+    },
+    {
+      "q": "C'est quoi les tokens et les fenêtres de contexte ?",
+      "a": "Les tokens sont les unités que les modèles IA utilisent pour traiter le texte — environ 3/4 d'un mot. Une fenêtre de contexte est le total de tokens qu'un agent peut 'voir' en même temps. Comprendre ça est fondamental pour diriger efficacement les agents. Le Niveau 1 couvre ça en profondeur."
+    },
+    {
+      "q": "Ça veut dire quoi agentic ?",
+      "a": "Agentic fait référence aux systèmes IA qui peuvent agir de manière autonome — lire, écrire et exécuter du code plutôt que juste générer du texte. Un workflow agentic est un workflow où les agents IA construisent pendant que vous dirigez et vérifiez."
+    },
+    {
+      "q": "C'est quoi Claude Code ?",
+      "a": "Claude Code est l'agent de codage IA d'Anthropic qui tourne dans votre terminal. Il peut lire votre codebase, écrire du code, exécuter des commandes et itérer sur les retours. C'est l'outil principal utilisé dans le cours, bien que les patterns d'orchestration soient transférables."
+    },
+    {
+      "q": "Comment fonctionne la coordination multi-agents ?",
+      "a": "Vous divisez une tâche complexe en sous-tâches indépendantes, assignez chacune à une instance d'agent séparée, vérifiez les sorties les unes contre les autres et fusionnez les résultats. C'est comme être tech lead d'une équipe — sauf que l'équipe est l'IA. Le Niveau 3 couvre ça en profondeur."
+    },
+    {
+      "q": "C'est quoi le développement guidé par les specs ?",
+      "a": "Au lieu de prompter un agent avec des instructions vagues, vous écrivez une spécification précise — entrées, sorties, contraintes, cas limites. Le spec devient le contrat entre vous et l'agent. Le Niveau 2 enseigne ça comme fondation du développement dirigé par agent."
+    },
+    {
+      "q": "Quelle est la différence entre prompter et orchestrer ?",
+      "a": "Prompter c'est demander à une seule IA de faire une chose. Orchestrer c'est concevoir des workflows où plusieurs agents se coordonnent sur des systèmes complexes — avec vérification, division de tâches et gestion des échecs."
+    },
+    {
+      "q": "Les agents peuvent-ils vraiment construire des logiciels en production ?",
+      "a": "Oui — mais seulement si vous savez comment les diriger. Les agents bruts produisent du code qui compile mais qui n'appartient pas. Le cours enseigne les patterns de spec, vérification et orchestration qui transforment la sortie d'agent en logiciel de qualité production."
+    },
+    {
+      "q": "Et si les agents font des erreurs ?",
+      "a": "Ils en feront — constamment. C'est attendu. Le cours enseigne les patterns de vérification (Niveau 2), la vérification croisée entre agents (Niveau 3) et le jugement de surcharge (Niveau 4). La compétence n'est pas d'éviter les erreurs, c'est de les attraper vite."
+    },
+    {
+      "q": "C'est du prompt engineering ?",
+      "a": "Non. Le prompt engineering c'est rédiger de meilleures entrées pour un chatbot. Ce cours enseigne l'orchestration d'agents autonomes qui lisent, écrivent, testent et déploient du code. Le prompt engineering est un petit outil dans une boîte beaucoup plus grande."
+    },
+    {
+      "q": "Quels langages ou frameworks dois-je connaître ?",
+      "a": "JavaScript/TypeScript de base au minimum. Le cours utilise Next.js, Supabase et Vercel, mais vous n'avez pas besoin d'expérience préalable — les agents aident à construire avec. Vous devez pouvoir lire le code, pas tout écrire de zéro."
+    },
+    {
+      "q": "Quelle est la différence entre le Niveau 2 et le Niveau 3 ?",
+      "a": "Le Niveau 2 enseigne à diriger un agent pour construire un produit. Le Niveau 3 enseigne à coordonner plusieurs agents en parallèle sur un système de production — diviser les tâches, vérifier les sorties croisées et gérer les échecs quand les systèmes construits par agents cassent."
+    },
+    {
+      "q": "Que se passe-t-il au Niveau 4 ?",
+      "a": "Le Niveau 4 porte sur le jugement au niveau système — concevoir des architectures pour systèmes construits par agents, évaluer les décisions IA, savoir quand surcharger. Votre capstone prouve que vous pouvez penser au niveau architecture, la seule chose que les agents ne peuvent pas faire pour vous."
+    }
+  ],
+
+  "contact": {
+    "email": "hello@charlesjackson.dev",
+    "response_time": "24-48 heures"
+  }
+}

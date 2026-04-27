@@ -135,11 +135,11 @@ export default function Principles() {
         </div>
       </Section>
 
-      {/* Principles List */}
+      {/* Principles Grid */}
       <Section id="principles-list" className="py-24 lg:py-32 relative">
         <SectionSpots variant="default" />
         <div className="container mx-auto px-6 lg:px-8 relative z-10">
-          <div className="max-w-4xl space-y-16">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-5">
             {principles.map((principle, index) => {
               const Icon = principle.icon
               return (
@@ -148,30 +148,31 @@ export default function Principles() {
                   initial={{ opacity: 0, y: 30 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.5, delay: index * 0.08 }}
-                  className="relative pl-0 md:pl-24"
+                  className="relative"
                 >
-                  <div className="flex items-start gap-4 mb-3">
-                    <div className="flex-shrink-0 p-2.5 rounded-lg bg-foreground/5 border border-foreground/10">
-                      <Icon className="w-5 h-5 text-foreground/70" />
+                  <div className="h-full p-6 md:p-8 rounded-xl border border-foreground/10 bg-foreground/[0.02] hover:bg-foreground/[0.03] hover:border-foreground/15 transition-all duration-300 relative overflow-hidden">
+                    <div className="absolute -right-3 -top-4 text-[120px] font-bold leading-none text-foreground/[0.02] select-none pointer-events-none">
+                      {principle.number}
                     </div>
-                    <div>
-                      <span className="text-xs font-mono text-muted-foreground md:hidden">
-                        {principle.number}
-                      </span>
-                      <h2 className="text-xl md:text-2xl font-bold">{principle.title}</h2>
-                      <p className="text-sm font-mono text-muted-foreground mt-1">
-                        {principle.subtitle}
+
+                    <div className="relative">
+                      <div className="flex items-start gap-4 mb-4">
+                        <div className="flex-shrink-0 p-2.5 rounded-lg bg-foreground/5 border border-foreground/10">
+                          <Icon className="w-5 h-5 text-foreground/70" />
+                        </div>
+                        <div>
+                          <h2 className="text-lg md:text-xl font-bold">{principle.title}</h2>
+                          <p className="text-xs font-mono text-muted-foreground mt-1">
+                            {principle.subtitle}
+                          </p>
+                        </div>
+                      </div>
+
+                      <p className="text-sm text-muted-foreground leading-relaxed">
+                        {principle.description}
                       </p>
                     </div>
                   </div>
-
-                  <p className="text-muted-foreground leading-relaxed md:pl-14">
-                    {principle.description}
-                  </p>
-
-                  {index < principles.length - 1 && (
-                    <div className="mt-16 h-px bg-gradient-to-r from-foreground/10 via-foreground/5 to-transparent" />
-                  )}
                 </motion.div>
               )
             })}

@@ -225,17 +225,17 @@ export default function Tiers() {
       <Section id="tiers-breakdown" className="py-24 lg:py-32 relative">
         <SectionSpots variant="default" />
         <div className="container mx-auto px-6 lg:px-8 relative z-10">
-          <ScrollFadeIn className="text-center mb-16">
+          <ScrollFadeIn className="mb-16">
             <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight mb-4">
               From tokens to agent fleets
             </h2>
-            <p className="text-muted-foreground max-w-2xl mx-auto text-lg">
+            <p className="text-muted-foreground max-w-2xl text-lg">
               Each tier takes you deeper into how agents think, coordinate, and ship. All four are included.
             </p>
           </ScrollFadeIn>
 
           {/* Bento grid: T1 wide, T2+T3 side-by-side, T4 wide */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-5 max-w-5xl mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-5">
             {tiers.map((tier, index) => {
               const Icon = tier.icon
               const isWide = index === 0 || index === 3
@@ -355,16 +355,16 @@ export default function Tiers() {
       <Section id="tiers-included" className="py-24 lg:py-32 relative">
         <SectionSpots variant="accent" />
         <div className="container mx-auto px-6 lg:px-8 relative z-10">
-          <ScrollFadeIn className="text-center mb-16">
+          <ScrollFadeIn className="mb-16">
             <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight mb-4">
               Everything included
             </h2>
-            <p className="text-muted-foreground max-w-2xl mx-auto text-lg">
+            <p className="text-muted-foreground max-w-2xl text-lg">
               No tiers to choose between. No features locked behind paywalls. One price, full access.
             </p>
           </ScrollFadeIn>
 
-          <div className="grid md:grid-cols-3 gap-5 max-w-5xl mx-auto">
+          <div className="grid md:grid-cols-3 gap-5">
             {/* Price feature card — spans 1 col, 2 rows */}
             <motion.div
               initial={{ opacity: 0, scale: 0.95 }}
@@ -419,7 +419,7 @@ export default function Tiers() {
       {/* Social Proof Strip */}
       <Section id="tiers-proof" className="py-16 relative">
         <div className="container mx-auto px-6 lg:px-8 relative z-10">
-          <div className="grid md:grid-cols-3 gap-6 max-w-4xl mx-auto">
+          <div className="grid md:grid-cols-3 gap-6">
             {[
               { quote: 'By Tier 3 I was running three agents in parallel on different parts of my SaaS. That progression is the real magic.', author: 'Alex Chen', tier: 'Tier 3' },
               { quote: 'Tier 1 alone was worth it — I finally understood why my agents kept losing context. By Tier 3, everything clicked.', author: 'Sarah Martinez', tier: 'Tier 4' },
@@ -448,7 +448,7 @@ export default function Tiers() {
       <Section id="tiers-faq" className="py-24 lg:py-32 relative">
         <SectionSpots variant="default" />
         <div className="container mx-auto px-6 lg:px-8 relative z-10">
-          <div className="grid lg:grid-cols-[1fr,1.5fr] gap-8 md:gap-12 max-w-5xl mx-auto">
+          <div className="grid lg:grid-cols-[1fr,1.5fr] gap-8 md:gap-12">
             {/* Guarantee — sticky sidebar */}
             <ScrollFadeIn>
               <div className="lg:sticky lg:top-32">

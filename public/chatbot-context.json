@@ -101,6 +101,122 @@
     {
       "q": "What do I get for $4,500?",
       "a": "All 4 tiers, 52 hours of video, 4 capstone projects, AI-graded feedback, email support, lifetime access to all materials and future updates, and alumni community access."
+    },
+    {
+      "q": "What is multi-agent orchestration?",
+      "a": "It's the skill of coordinating multiple AI agents working in parallel on the same project — splitting tasks, verifying outputs across agents, merging contributions, and handling failures. It's the difference between prompting one chatbot and running a fleet that builds real software."
+    },
+    {
+      "q": "What is the tool ladder?",
+      "a": "The tool ladder is a framework taught in Tier 1: paste → skill → script → agent → MCP. It helps you match the right level of AI tooling to each task — not everything needs a full agent."
+    },
+    {
+      "q": "What are MCP servers?",
+      "a": "MCP (Model Context Protocol) servers extend what AI agents can do by connecting them to external tools, databases, and APIs. You learn to configure and use them in Tier 1."
+    },
+    {
+      "q": "What's a capstone project?",
+      "a": "Each tier ends with a capstone — a real project you ship to production. It's not a quiz. Tier 1 is a deployed tool, Tier 2 is a full SaaS, Tier 3 is a live product with users, Tier 4 is a system architecture document."
+    },
+    {
+      "q": "Is this course worth $4,500?",
+      "a": "The course teaches a skill set most developers never learn — multi-agent orchestration. If you're serious about building with AI at a professional level, the ROI comes from shipping faster and building more complex systems than you could alone. Plus there's a 30-day guarantee."
+    },
+    {
+      "q": "Can I pay in installments?",
+      "a": "Currently it's a one-time payment of $4,500. For questions about payment options, email hello@charlesjackson.dev."
+    },
+    {
+      "q": "What technologies will I use?",
+      "a": "The course uses Claude Code, Next.js, TypeScript, Supabase, Vercel, Stripe, Drizzle ORM, Inngest, Vitest, and Playwright — but the real focus is on orchestration patterns that work with any stack."
+    },
+    {
+      "q": "Is there a community or Discord?",
+      "a": "Yes — enrolled students get access to the alumni community where you can connect with other students and get peer support."
+    },
+    {
+      "q": "How is this different from other AI courses?",
+      "a": "Most AI courses teach you to prompt a single chatbot. This course teaches multi-agent orchestration — coordinating parallel agents on production systems. You ship 4 real products, not toy demos."
+    },
+    {
+      "q": "What if the AI tools change after I take the course?",
+      "a": "That's exactly why we teach orchestration patterns, not tool-specific tricks. The principles of task splitting, verification, and coordination apply regardless of which AI model you use. Plus you get lifetime access to future updates."
+    },
+    {
+      "q": "Can I see a preview or sample lesson?",
+      "a": "Check the /curriculum page for a full breakdown of all 51 lessons and what each tier covers. For a sample lesson, email hello@charlesjackson.dev."
+    },
+    {
+      "q": "Where is the instructor based?",
+      "a": "Charles Jackson is based in Montreal, Quebec, Canada. The course is available worldwide."
+    },
+    {
+      "q": "Do I get a certificate?",
+      "a": "The real credential is the 4 capstone projects you ship to production. They're portfolio pieces that prove you can build with AI at a professional level."
+    },
+    {
+      "q": "What is an AI agent?",
+      "a": "An AI agent is a system that can take actions autonomously — not just answer questions, but read files, write code, run commands, and modify your project. Claude Code, Cursor, and Copilot are examples. The course teaches you to direct and coordinate them."
+    },
+    {
+      "q": "What's the difference between an agent and a chatbot?",
+      "a": "A chatbot responds to messages. An agent takes actions — it can read your codebase, write code, run tests, deploy, and iterate. The course teaches you to go from directing one agent to orchestrating many."
+    },
+    {
+      "q": "What are tokens and context windows?",
+      "a": "Tokens are the units AI models use to process text — roughly 3/4 of a word. A context window is the total amount of tokens an agent can 'see' at once. Understanding these is foundational to directing agents effectively. Tier 1 covers this in depth."
+    },
+    {
+      "q": "What is a context window?",
+      "a": "A context window is the total amount of information an AI agent can process at once — measured in tokens. When you exceed it, the agent loses earlier context. Tier 1 teaches you how to manage context strategically so your agents don't lose track of what they're building."
+    },
+    {
+      "q": "What does agentic mean?",
+      "a": "Agentic refers to AI systems that can act autonomously — reading, writing, and executing code rather than just generating text. An agentic workflow is one where AI agents do the building while you direct and verify. That's what this course teaches."
+    },
+    {
+      "q": "What is Claude Code?",
+      "a": "Claude Code is Anthropic's AI coding agent that runs in your terminal. It can read your codebase, write code, run commands, and iterate on feedback. It's the primary tool used throughout the course, though the orchestration patterns transfer to any agent."
+    },
+    {
+      "q": "What is an MCP server?",
+      "a": "MCP stands for Model Context Protocol. MCP servers are plugins that extend what an AI agent can do — connecting it to databases, APIs, file systems, and other tools. Tier 1 teaches you to configure and use them to give your agents superpowers."
+    },
+    {
+      "q": "How does multi-agent coordination work?",
+      "a": "You split a complex task into independent subtasks, assign each to a separate agent instance, verify their outputs against each other, and merge the results. It's like being a tech lead managing a team — except the team is AI. Tier 3 covers this in depth."
+    },
+    {
+      "q": "What is spec-driven development?",
+      "a": "Instead of prompting an agent with vague instructions, you write a precise specification — inputs, outputs, constraints, edge cases. The spec becomes the contract between you and the agent. Tier 2 teaches this as the foundation of reliable agent-directed development."
+    },
+    {
+      "q": "What is the difference between prompting and orchestrating?",
+      "a": "Prompting is asking a single AI to do one thing. Orchestrating is designing workflows where multiple agents coordinate on complex systems — with verification, task splitting, and failure handling. It's the jump from using AI to directing AI at scale."
+    },
+    {
+      "q": "Can agents really build production software?",
+      "a": "Yes — but only if you know how to direct them. Raw agents produce code that compiles but doesn't belong. The course teaches the spec, verification, and orchestration patterns that turn agent output into production-quality software."
+    },
+    {
+      "q": "What if agents make mistakes?",
+      "a": "They will — constantly. That's expected. The course teaches verification patterns (Tier 2), cross-agent checking (Tier 3), and override judgment (Tier 4) so you catch errors before they ship. The skill isn't avoiding mistakes, it's catching them fast."
+    },
+    {
+      "q": "Is this about prompt engineering?",
+      "a": "No. Prompt engineering is about crafting better inputs for a chatbot. This course is about orchestrating autonomous agents that read, write, test, and deploy code. Prompt engineering is one small tool in a much larger toolkit."
+    },
+    {
+      "q": "What languages or frameworks do I need to know?",
+      "a": "Basic JavaScript/TypeScript is the minimum. The course uses Next.js, Supabase, and Vercel, but you don't need prior experience with these — agents help build with them. You need to read code, not write everything from scratch."
+    },
+    {
+      "q": "How is Tier 3 different from Tier 2?",
+      "a": "Tier 2 teaches you to direct one agent to build a product. Tier 3 teaches you to coordinate multiple agents working in parallel on a production system — splitting tasks, cross-verifying outputs, and handling failures when agent-built systems break."
+    },
+    {
+      "q": "What happens in Tier 4?",
+      "a": "Tier 4 is about system-level judgment — designing architectures for agent-built systems, evaluating AI decisions, knowing when to override. Your capstone proves you can think at the architecture level, which is the one thing agents can't do for you."
     }
   ],
 
