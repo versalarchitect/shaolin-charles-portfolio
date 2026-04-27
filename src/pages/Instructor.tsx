@@ -141,6 +141,8 @@ export default function Instructor() {
         title="Meet the Instructor — Charles Jackson"
         description="20+ years building production systems. Founder of Predictive (Augure), creator of NxSupabase, and instructor of the Agentic SaaS Course. Based in Montreal, Canada."
         path="/instructor"
+        image="/og-image.png"
+        imageAlt="Meet the Instructor — Charles Jackson: 20+ years building production systems"
         type="profile"
         keywords="charles jackson developer, software instructor montreal, full stack developer, ai development teacher, predictive augure founder, nxsupabase creator, 20 years experience"
         jsonLd={{

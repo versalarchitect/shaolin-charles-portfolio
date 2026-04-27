@@ -33,7 +33,6 @@ import { BentoGrid, SkillBadges } from '@/components/bento-grid'
 import { Timeline } from '@/components/timeline'
 import { Testimonials } from '@/components/testimonials'
 import {
-  TiltCard,
   SpotlightCard,
   ScrollFadeIn,
   BlurFadeIn,
@@ -252,6 +251,24 @@ export default function Home() {
         image="/og-image.png"
         imageAlt="The Agentic SaaS Course by Charles Jackson — principles-first AI development"
         keywords="agentic saas course, ai development course, build software with ai, claude code course, next.js course, react typescript course, supabase course, vercel deployment, charles jackson instructor, principles-first development, ship real products, learn ai coding"
+        jsonLd={[
+          {
+            '@type': 'Course',
+            name: 'The Agentic SaaS Course',
+            description: 'A principles-first course on building software with AI. 52 hours, 4 capstones, and principles that outlast the next model release.',
+            url: 'https://shaolincharles.dev',
+            provider: { '@type': 'Person', name: 'Charles Jackson', url: 'https://shaolincharles.dev/instructor' },
+            educationalLevel: 'Intermediate to Advanced',
+            numberOfCredits: '52 hours',
+            teaches: ['AI-Assisted Development', 'Next.js', 'React', 'TypeScript', 'Supabase', 'Claude Code', 'Vercel'],
+          },
+          {
+            '@type': 'BreadcrumbList',
+            itemListElement: [
+              { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://shaolincharles.dev/' },
+            ],
+          },
+        ]}
       />
 
       {/* Hero Section */}
@@ -646,110 +663,103 @@ export default function Home() {
           </ScrollFadeIn>
 
           <BlurFadeIn delay={0.2}>
-            <TiltCard tiltAmount={5} glareEnabled={true} glareOpacity={0.05} perspective={2000}>
-              <SpotlightCard spotlightColor="rgba(255,255,255,0.05)" spotlightSize={500}>
-                <Card className="overflow-hidden border-foreground/10 bg-gradient-to-br from-background to-foreground/[0.02]">
-                  <div className="p-8 md:p-12">
-                    <div className="grid md:grid-cols-2 gap-12 items-center">
-                      <div className="space-y-6">
-                        <div className="flex items-center gap-3">
-                          <span className="px-2 py-0.5 bg-green-500/20 text-green-500 text-xs font-mono rounded flex items-center gap-1.5">
-                            <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
-                            {t('common.live')}
-                          </span>
-                          <span className="text-xs font-mono text-muted-foreground">
-                            2026 - {t('common.present')}
-                          </span>
-                        </div>
-
-                        <h3 className="text-2xl md:text-3xl font-bold">
-                          {t('home.featuredProject.subtitle')}
-                        </h3>
-
-                        <p className="text-muted-foreground leading-relaxed">
-                          {t('home.featuredProject.description')}
-                        </p>
-
-                        <div className="flex flex-wrap gap-2">
-                          {['Next.js 16', 'TypeScript', 'Supabase', 'Claude Code', 'Vercel'].map(
-                            (tech) => (
-                              <motion.span
-                                key={tech}
-                                whileHover={{ scale: 1.05, y: -2 }}
-                                className="px-3 py-1 bg-foreground/5 text-xs font-mono rounded-full border border-foreground/10 hover:border-foreground/20 transition-colors cursor-default"
-                              >
-                                {tech}
-                              </motion.span>
-                            )
-                          )}
-                        </div>
-
-                        <div className="flex items-center gap-4 pt-4">
-                          <Magnetic strength={0.2}>
-                            <Button className="gap-2 font-mono group" asChild>
-                              <Link to="/tiers">
-                                {t('home.featuredProject.viewCaseStudy')}
-                                <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
-                              </Link>
-                            </Button>
-                          </Magnetic>
-                          <Magnetic strength={0.2}>
-                            <Button variant="outline" className="gap-2 font-mono group" asChild>
-                              <Link to="/curriculum">
-                                Course Preview
-                                <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
-                              </Link>
-                            </Button>
-                          </Magnetic>
-                        </div>
+            <SpotlightCard spotlightColor="rgba(255,255,255,0.04)" spotlightSize={600}>
+              <Card className="overflow-hidden border-foreground/10 bg-gradient-to-br from-background to-foreground/[0.02] hover:border-foreground/15 transition-colors duration-500">
+                <div className="p-8 md:p-12">
+                  <div className="grid md:grid-cols-2 gap-12 items-center">
+                    <div className="space-y-6">
+                      <div className="flex items-center gap-3">
+                        <span className="px-2 py-0.5 bg-green-500/20 text-green-500 text-xs font-mono rounded flex items-center gap-1.5">
+                          <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
+                          {t('common.live')}
+                        </span>
+                        <span className="text-xs font-mono text-muted-foreground">
+                          2026 - {t('common.present')}
+                        </span>
                       </div>
 
-                      {/* Stats grid with staggered animation */}
-                      <StaggerContainer className="grid grid-cols-2 gap-4" staggerDelay={0.08}>
-                        {[
-                          {
-                            value: 52,
-                            label: t('home.featuredProject.lighthouseScore'),
-                            suffix: 'h',
-                          },
-                          {
-                            value: 51,
-                            label: t('home.featuredProject.p95Response'),
-                            suffix: '',
-                          },
-                          {
-                            value: 8,
-                            label: t('home.featuredProject.initialBundle'),
-                            suffix: '',
-                          },
-                          { value: 4, label: t('home.featuredProject.components'), suffix: '' },
-                          { value: 4, label: t('home.featuredProject.lifeDomains'), suffix: '' },
-                          {
-                            value: 0,
-                            label: t('home.featuredProject.domainNodes'),
-                            prefix: '$',
-                            suffix: '',
-                          },
-                        ].map(({ value, label, prefix = '', suffix }) => (
-                          <motion.div
-                            key={label}
-                            variants={staggerItemVariants}
-                            whileHover={{ y: -4, scale: 1.02 }}
-                            className="p-4 bg-foreground/[0.02] rounded-lg border border-foreground/10 hover:border-foreground/20 transition-all cursor-default group"
-                          >
-                            <div className="text-2xl font-bold font-mono group-hover:text-foreground transition-colors">
-                              {prefix}
-                              <AnimatedNumber value={value} suffix={suffix} duration={1.5} />
-                            </div>
-                            <div className="text-xs text-muted-foreground">{label}</div>
-                          </motion.div>
-                        ))}
-                      </StaggerContainer>
+                      <h3 className="text-2xl md:text-3xl font-bold">
+                        {t('home.featuredProject.subtitle')}
+                      </h3>
+
+                      <p className="text-muted-foreground leading-relaxed">
+                        {t('home.featuredProject.description')}
+                      </p>
+
+                      <div className="flex flex-wrap gap-2">
+                        {['Next.js 16', 'TypeScript', 'Supabase', 'Claude Code', 'Vercel'].map(
+                          (tech) => (
+                            <span
+                              key={tech}
+                              className="px-3 py-1 bg-foreground/5 text-xs font-mono rounded-full border border-foreground/10 text-foreground/60"
+                            >
+                              {tech}
+                            </span>
+                          )
+                        )}
+                      </div>
+
+                      <div className="flex items-center gap-4 pt-4">
+                        <Button className="gap-2 font-mono group" asChild>
+                          <Link to="/tiers">
+                            {t('home.featuredProject.viewCaseStudy')}
+                            <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
+                          </Link>
+                        </Button>
+                        <Button variant="outline" className="gap-2 font-mono group" asChild>
+                          <Link to="/curriculum">
+                            Course Preview
+                            <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
+                          </Link>
+                        </Button>
+                      </div>
                     </div>
+
+                    {/* Stats grid with staggered animation */}
+                    <StaggerContainer className="grid grid-cols-2 gap-4" staggerDelay={0.08}>
+                      {[
+                        {
+                          value: 52,
+                          label: t('home.featuredProject.lighthouseScore'),
+                          suffix: 'h',
+                        },
+                        {
+                          value: 51,
+                          label: t('home.featuredProject.p95Response'),
+                          suffix: '',
+                        },
+                        {
+                          value: 8,
+                          label: t('home.featuredProject.initialBundle'),
+                          suffix: '',
+                        },
+                        { value: 4, label: t('home.featuredProject.components'), suffix: '' },
+                        { value: 4, label: t('home.featuredProject.lifeDomains'), suffix: '' },
+                        {
+                          value: 0,
+                          label: t('home.featuredProject.domainNodes'),
+                          prefix: '$',
+                          suffix: '',
+                        },
+                      ].map(({ value, label, prefix = '', suffix }) => (
+                        <motion.div
+                          key={label}
+                          variants={staggerItemVariants}
+                          whileHover={{ y: -4, scale: 1.02 }}
+                          className="p-4 bg-foreground/[0.02] rounded-lg border border-foreground/10 hover:border-foreground/20 transition-all cursor-default group"
+                        >
+                          <div className="text-2xl font-bold font-mono group-hover:text-foreground transition-colors">
+                            {prefix}
+                            <AnimatedNumber value={value} suffix={suffix} duration={1.5} />
+                          </div>
+                          <div className="text-xs text-muted-foreground">{label}</div>
+                        </motion.div>
+                      ))}
+                    </StaggerContainer>
                   </div>
-                </Card>
-              </SpotlightCard>
-            </TiltCard>
+                </div>
+              </Card>
+            </SpotlightCard>
           </BlurFadeIn>
         </div>
       </Section>

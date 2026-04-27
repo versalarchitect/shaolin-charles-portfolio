@@ -1,0 +1,26 @@
+{
+  "name": "The Agentic SaaS Course — Charles Jackson",
+  "short_name": "Agentic SaaS",
+  "description": "A principles-first course on building software with AI. 52 hours, 4 capstones, and principles that outlast the next model release.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#09090b",
+  "theme_color": "#09090b",
+  "icons": [
+    {
+      "src": "/favicon-16x16.png",
+      "sizes": "16x16",
+      "type": "image/png"
+    },
+    {
+      "src": "/favicon-32x32.png",
+      "sizes": "32x32",
+      "type": "image/png"
+    },
+    {
+      "src": "/apple-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png"
+    }
+  ]
+}

@@ -3,7 +3,7 @@ import { Link, useLocation } from 'react-router-dom'
 import { motion, AnimatePresence, useReducedMotion } from 'framer-motion'
 import { useTranslation } from 'react-i18next'
 import { Button } from './ui/button'
-import { AlignJustify, X, ArrowUpRight, Github } from 'lucide-react'
+import { AlignJustify, X, ArrowUpRight, Github, LogIn } from 'lucide-react'
 import { LanguageSwitcher } from './language-switcher'
 import { Logo } from './ui/logo'
 import { HEADER_NAV, SOCIAL_LINKS, SITE } from '@/lib/constants'
@@ -110,10 +110,17 @@ export function Header() {
             target="_blank"
             rel="noopener noreferrer"
             className="p-2 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
+            aria-label="GitHub"
           >
             <Github className="h-4 w-4" />
           </a>
           <LanguageSwitcher />
+          <Button size="sm" variant="outline" className="font-mono gap-1.5" asChild>
+            <Link to="/login">
+              <LogIn className="h-3.5 w-3.5" />
+              Log In
+            </Link>
+          </Button>
           <Button size="sm" className="font-mono gap-1.5 group" asChild>
             <Link to="/contact">
               {t('nav.getInTouch')}
@@ -129,6 +136,7 @@ export function Header() {
             target="_blank"
             rel="noopener noreferrer"
             className="p-2 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
+            aria-label="GitHub"
           >
             <Github className="h-4 w-4" />
           </a>
@@ -228,15 +236,27 @@ export function Header() {
                   transition={{ delay: 0.3 }}
                   className="p-4 border-t border-border"
                 >
-                  <Button
-                    className="w-full h-12 text-base font-mono gap-2"
-                    asChild
-                  >
-                    <Link to="/contact" onClick={() => setMobileMenuOpen(false)}>
-                      {t('nav.getInTouch')}
-                      <ArrowUpRight className="h-4 w-4" />
-                    </Link>
-                  </Button>
+                  <div className="flex gap-2">
+                    <Button
+                      variant="outline"
+                      className="flex-1 h-12 text-base font-mono gap-2"
+                      asChild
+                    >
+                      <Link to="/login" onClick={() => setMobileMenuOpen(false)}>
+                        <LogIn className="h-4 w-4" />
+                        Log In
+                      </Link>
+                    </Button>
+                    <Button
+                      className="flex-1 h-12 text-base font-mono gap-2"
+                      asChild
+                    >
+                      <Link to="/contact" onClick={() => setMobileMenuOpen(false)}>
+                        {t('nav.getInTouch')}
+                        <ArrowUpRight className="h-4 w-4" />
+                      </Link>
+                    </Button>
+                  </div>
 
                   <div className="mt-4 flex items-center justify-center gap-4">
                     {SOCIAL_LINKS.map((link, index) => (

@@ -245,7 +245,7 @@ export function SkillBadges() {
           <div className="px-4 py-2.5 bg-foreground/[0.03] rounded-full border border-foreground/[0.08] hover:border-foreground/15 hover:bg-foreground/[0.05] transition-all duration-300">
             <div className="flex items-center gap-2">
               <span className="font-mono text-sm text-foreground/80">{skill.name}</span>
-              <span className="text-[10px] font-mono text-foreground/40 tabular-nums">
+              <span className="text-[10px] font-mono text-foreground/60 tabular-nums">
                 {skill.tiers}
               </span>
             </div>

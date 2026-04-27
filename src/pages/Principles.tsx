@@ -89,6 +89,8 @@ export default function Principles() {
         title="8 Principles — The Agentic SaaS Course"
         description="The 8 timeless principles behind building software with AI. Judgment over prompt tricks, principles over patterns, builders not prompters. These outlast the next model release."
         path="/principles"
+        image="/og-image.png"
+        imageAlt="8 Principles — The Agentic SaaS Course: timeless principles for building with AI"
         keywords="ai development principles, software engineering principles, building with ai guidelines, judgment over prompts, principles-first development, agentic development philosophy"
         jsonLd={{
           '@type': 'ItemList',

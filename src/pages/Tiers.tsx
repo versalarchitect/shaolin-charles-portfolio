@@ -108,6 +108,8 @@ export default function Tiers() {
         title="Pricing & Tiers — The Agentic SaaS Course"
         description="4 tiers from Foundations to Architect. Each tier is harder, each capstone closer to professional software. Choose the path that matches your ambition."
         path="/tiers"
+        image="/og-image.png"
+        imageAlt="Pricing & Tiers — The Agentic SaaS Course: Free, $199, $399, $599"
         keywords="agentic saas course pricing, ai course tiers, coding course enrollment, foundations tier, builder tier, operator tier, architect tier, course pricing plans"
         jsonLd={{
           '@type': 'OfferCatalog',

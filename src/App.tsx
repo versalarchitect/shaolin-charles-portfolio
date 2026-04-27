@@ -86,11 +86,11 @@ export default function App() {
           {/* Content wrapper with proper z-index above background effects */}
           <div className="relative z-10">
             {/* Add top padding for fixed header */}
-            <div className="pt-16">
+            <main className="pt-16">
               <Suspense fallback={<PageLoading />}>
                 <Outlet />
               </Suspense>
-            </div>
+            </main>
 
             <Footer />
           </div>

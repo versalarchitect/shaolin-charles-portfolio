@@ -122,6 +122,8 @@ export default function Curriculum() {
         title="Curriculum — The Agentic SaaS Course"
         description="52 hours across 51 lessons and 4 tiers. From tokens and context windows to system teardowns. Learn Next.js, Supabase, Claude Code, Stripe, and Vercel — guided by 8 timeless principles."
         path="/curriculum"
+        image="/og-image.png"
+        imageAlt="Curriculum — The Agentic SaaS Course: 52 hours, 51 lessons, 4 tiers"
         keywords="agentic saas curriculum, ai development lessons, course syllabus, next.js lessons, supabase tutorial, claude code training, full stack course outline, 52 hour coding course"
         jsonLd={{
           '@type': 'Course',

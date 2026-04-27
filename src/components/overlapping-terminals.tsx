@@ -62,7 +62,7 @@ function TerminalWindow({ content, style }: TerminalWindowProps) {
               }`}
             >
               {line.type === 'command' && <span className="text-green-500/80 mr-1.5">$</span>}
-              {line.type === 'comment' && <span className="text-foreground/40"># </span>}
+              {line.type === 'comment' && <span className="text-foreground/60"># </span>}
               <span>{line.content}</span>
             </div>
           ))}

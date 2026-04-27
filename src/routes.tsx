@@ -17,6 +17,7 @@ const BlogPost = lazy(() => import('./pages/BlogPost'))
 const Art = lazy(() => import('./pages/Art'))
 const Interests = lazy(() => import('./pages/Interests'))
 const Contact = lazy(() => import('./pages/Contact'))
+const Login = lazy(() => import('./pages/Login'))
 const NotFound = lazy(() => import('./pages/NotFound'))
 
 // Create router
@@ -78,6 +79,10 @@ const router = createBrowserRouter([
       {
         path: 'contact',
         element: <Contact />,
+      },
+      {
+        path: 'login',
+        element: <Login />,
       },
       // 404 catch-all (must be last)
       {

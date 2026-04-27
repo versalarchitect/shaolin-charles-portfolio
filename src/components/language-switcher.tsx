@@ -39,7 +39,7 @@ export function LanguageSwitcher() {
         whileTap={{ scale: 0.95 }}
         onClick={() => setIsOpen(!isOpen)}
         className="flex items-center gap-1.5 px-2.5 py-2 rounded-lg bg-background border border-border text-muted-foreground hover:text-foreground hover:border-foreground/30 transition-colors"
-        aria-label="Change language"
+        aria-label={`Change language, current: ${currentLang.name}`}
       >
         <Globe className="h-4 w-4" />
         <span className="text-xs font-mono uppercase">{currentLang.code}</span>
