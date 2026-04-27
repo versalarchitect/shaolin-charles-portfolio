@@ -276,61 +276,48 @@ function BlogPostCard({ post }: { post: BlogPost }) {
   return (
     <motion.div variants={staggerItemVariants}>
       <Link to={`/blog/${post.slug}`} className="block h-full">
-        <TiltCard tiltAmount={8} glareEnabled={true} glareOpacity={0.08} className="h-full">
-          <SpotlightCard
-            className="h-full"
-            spotlightColor="rgba(255,255,255,0.08)"
-            spotlightSize={250}
-          >
-            <Card className="h-full p-6 bg-background border-foreground/10 hover:border-foreground/20 transition-all group cursor-pointer">
-              <div className="flex flex-col h-full">
-                {/* Category & Date */}
-                <div className="flex items-center justify-between mb-4">
-                  <span className="text-xs font-mono text-muted-foreground px-2 py-1 rounded border border-foreground/10 group-hover:border-foreground/20 transition-colors">
-                    {post.category}
-                  </span>
-                  <span className="text-xs text-muted-foreground flex items-center gap-1">
-                    <Clock className="h-3 w-3" />
-                    {post.readTime}m
-                  </span>
-                </div>
+        <Card className="h-full p-6 bg-background border-foreground/10 hover:border-foreground/20 transition-all group cursor-pointer">
+          <div className="flex flex-col h-full">
+            <div className="flex items-center justify-between mb-4">
+              <span className="text-xs font-mono text-muted-foreground px-2 py-1 rounded border border-foreground/10 group-hover:border-foreground/20 transition-colors">
+                {post.category}
+              </span>
+              <span className="text-xs text-muted-foreground flex items-center gap-1">
+                <Clock className="h-3 w-3" />
+                {post.readTime}m
+              </span>
+            </div>
 
-                {/* Title */}
-                <h3 className="text-lg font-bold mb-3 group-hover:text-foreground transition-colors line-clamp-2">
-                  {post.title}
-                </h3>
+            <h3 className="text-lg font-bold mb-3 group-hover:text-foreground transition-colors line-clamp-2">
+              {post.title}
+            </h3>
 
-                {/* Excerpt */}
-                <p className="text-sm text-muted-foreground leading-relaxed mb-4 flex-grow line-clamp-3">
-                  {post.excerpt}
-                </p>
+            <p className="text-sm text-muted-foreground leading-relaxed mb-4 flex-grow line-clamp-3">
+              {post.excerpt}
+            </p>
 
-                {/* Tags */}
-                <div className="flex flex-wrap gap-1.5 mb-4">
-                  {post.tags.slice(0, 3).map((tag) => (
-                    <span
-                      key={tag}
-                      className="text-xs font-mono bg-foreground/5 px-2 py-1 rounded"
-                    >
-                      {tag}
-                    </span>
-                  ))}
-                </div>
+            <div className="flex flex-wrap gap-1.5 mb-4">
+              {post.tags.slice(0, 3).map((tag) => (
+                <span
+                  key={tag}
+                  className="text-xs font-mono bg-foreground/5 px-2 py-1 rounded"
+                >
+                  {tag}
+                </span>
+              ))}
+            </div>
 
-                {/* Footer */}
-                <div className="flex items-center justify-between pt-4 border-t border-foreground/10">
-                  <span className="text-xs text-muted-foreground">
-                    {formatDate(post.publishedAt)}
-                  </span>
-                  <span className="text-xs font-mono text-foreground/60 group-hover:text-foreground flex items-center gap-1 transition-colors">
-                    Read
-                    <ChevronRight className="h-3 w-3 group-hover:translate-x-0.5 transition-transform" />
-                  </span>
-                </div>
-              </div>
-            </Card>
-          </SpotlightCard>
-        </TiltCard>
+            <div className="flex items-center justify-between pt-4 border-t border-foreground/10">
+              <span className="text-xs text-muted-foreground">
+                {formatDate(post.publishedAt)}
+              </span>
+              <span className="text-xs font-mono text-foreground/60 group-hover:text-foreground flex items-center gap-1 transition-colors">
+                Read
+                <ChevronRight className="h-3 w-3 group-hover:translate-x-0.5 transition-transform" />
+              </span>
+            </div>
+          </div>
+        </Card>
       </Link>
     </motion.div>
   )

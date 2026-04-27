@@ -102,12 +102,7 @@ export default function Login() {
             ))}
           </div>
 
-          <div className="relative z-10">
-            <Link to="/" className="flex items-center gap-3 group">
-              <Logo size="sm" className="text-foreground" />
-              <span className="text-xl font-bold">Charles</span>
-            </Link>
-          </div>
+          <div className="relative z-10" />
 
           <div className="relative z-10 max-w-md">
             <h1 className="text-4xl font-bold tracking-tight mb-6 leading-[1.1]">
