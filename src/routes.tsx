@@ -74,7 +74,7 @@ const router = createBrowserRouter([
       },
       {
         path: 'interests',
-        element: <Interests />,
+        loader: () => redirect('/instructor'),
       },
       {
         path: 'contact',

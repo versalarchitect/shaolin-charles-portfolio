@@ -21,6 +21,12 @@ import {
   Sparkles,
   Gauge,
   ShieldCheck,
+  LineChart,
+  Network,
+  Brain,
+  MessageSquareText,
+  TrendingUp,
+  Sigma,
 } from 'lucide-react'
 import {
   BlurFadeIn,
@@ -129,6 +135,45 @@ const philosophyItems = [
     icon: ShieldCheck,
     title: 'Type Safety',
     desc: 'Leverage TypeScript\'s strict mode for catching errors at compile time and improving developer experience.',
+  },
+]
+
+const mathInterests = [
+  {
+    icon: LineChart,
+    title: 'Monte Carlo Simulations',
+    description: 'Probabilistic modeling through repeated random sampling',
+    formula: 'E[f(X)] ≈ (1/N) Σ f(xᵢ)',
+  },
+  {
+    icon: Network,
+    title: 'Transformer Models',
+    description: 'Attention-based architectures for sequence modeling',
+    formula: 'Attention(Q,K,V) = softmax(QKᵀ/√d)V',
+  },
+  {
+    icon: Brain,
+    title: 'Deep Neural Networks',
+    description: 'Multi-layer architectures for learning complex patterns',
+    formula: 'y = σ(Wx + b)',
+  },
+  {
+    icon: MessageSquareText,
+    title: 'Natural Language Processing',
+    description: 'Extracting structure and meaning from text',
+    formula: 'P(w|context) = softmax(h · W)',
+  },
+  {
+    icon: TrendingUp,
+    title: 'Sentiment Analysis',
+    description: 'Quantifying opinion and emotion from text',
+    formula: 'sentiment ∈ [-1, 1]',
+  },
+  {
+    icon: Sigma,
+    title: 'Bayesian Inference',
+    description: 'Updating beliefs with evidence',
+    formula: 'P(H|E) = P(E|H)P(H) / P(E)',
   },
 ]
 
@@ -370,6 +415,63 @@ export default function Instructor() {
               </motion.div>
             ))}
           </div>
+        </div>
+      </Section>
+
+      {/* Mathematical Interests */}
+      <Section id="instructor-interests" className="py-24 lg:py-32 relative">
+        <SectionSpots variant="accent" />
+        <div className="container mx-auto px-6 lg:px-8 relative z-10">
+          <ScrollFadeIn className="mb-16">
+            <div className="inline-flex items-center gap-2 px-3 py-1 bg-foreground/5 border border-foreground/10 rounded-full text-xs font-mono text-muted-foreground mb-4">
+              <Brain className="w-3 h-3" />
+              Research Interests
+            </div>
+            <h2 className="text-3xl md:text-4xl font-bold tracking-tight mb-4">
+              What Drives the Teaching
+            </h2>
+            <p className="text-muted-foreground max-w-2xl">
+              The mathematical foundations and machine learning techniques behind the course's prediction systems and AI-first approach.
+            </p>
+          </ScrollFadeIn>
+
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-16">
+            {mathInterests.map(({ icon: Icon, title, description, formula }, index) => (
+              <motion.div
+                key={title}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: index * 0.1 }}
+                className="group"
+              >
+                <div className="h-full p-6 rounded-xl border border-foreground/10 bg-foreground/[0.02] hover:bg-foreground/[0.04] hover:border-foreground/20 transition-all duration-300">
+                  <div className="flex items-start gap-4 mb-4">
+                    <div className="flex-shrink-0 p-2.5 rounded-lg bg-foreground/5 border border-foreground/10 group-hover:border-foreground/20 transition-colors">
+                      <Icon className="w-5 h-5 text-foreground/70" />
+                    </div>
+                    <div>
+                      <h3 className="text-lg font-semibold mb-1">{title}</h3>
+                      <p className="text-sm text-muted-foreground">{description}</p>
+                    </div>
+                  </div>
+                  <div className="p-3 rounded-lg bg-foreground/[0.03] border border-foreground/5">
+                    <span className="font-mono text-foreground/60 text-sm">{formula}</span>
+                  </div>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+
+          <ScrollFadeIn>
+            <div className="max-w-3xl">
+              <p className="text-muted-foreground leading-relaxed mb-4">
+                Mathematics is the language of patterns. In a world drowning in data, mathematical models help us find signal in noise, structure in chaos, and insights in complexity.
+              </p>
+              <p className="text-muted-foreground leading-relaxed">
+                The goal isn't prediction for its own sake. It's about making better decisions under uncertainty — and teaching students to think the same way about the code they write with AI.
+              </p>
+            </div>
+          </ScrollFadeIn>
         </div>
       </Section>
 
