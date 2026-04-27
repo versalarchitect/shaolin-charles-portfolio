@@ -1,5 +1,6 @@
 import { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, Navigate, useSearchParams } from 'react-router-dom'
+import { useAuth } from '@/hooks/use-auth'
 import { SEO } from '@/components/SEO'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -10,11 +11,17 @@ import { supabase } from '@/lib/supabase'
 import { toast } from 'sonner'
 
 export default function Login() {
+  const { isLoggedIn } = useAuth()
+  const [searchParams] = useSearchParams()
+  const redirect = searchParams.get('redirect') || '/dashboard'
+
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
   const [loading, setLoading] = useState(false)
   const [mode, setMode] = useState<'signin' | 'signup' | 'forgot'>('signin')
+
+  if (isLoggedIn) return <Navigate to={redirect} replace />
 
   const handleSignIn = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -25,7 +32,7 @@ export default function Login() {
       toast.error(error.message)
     } else {
       toast.success('Signed in successfully')
-      window.location.href = '/'
+      window.location.href = redirect
     }
   }
 

@@ -1,6 +1,6 @@
 # Charles Jackson — The Agentic SaaS Course
 
-> A principles-first course on building software with AI. 52 hours, 4 capstones, and principles that outlast the next model release.
+> Learn to orchestrate AI agents from first principles. 52 hours from tokens and context windows to coordinating agent fleets that build production software.
 
 ---
 
@@ -10,7 +10,7 @@
 
 ### Current Roles
 - **Predictive (Augure)**: Founder & Principal Developer — AI-powered prediction platform with Monte Carlo simulations, 17 interconnected life domains, and 230+ field user profiles
-- **The Agentic SaaS Course**: Creator & Instructor — 52-hour principles-first AI development course
+- **The Agentic SaaS Course**: Creator & Instructor — 52-hour multi-agent orchestration course
 - **NxSupabase**: Creator & Maintainer — Official Nx plugin for Supabase integration in monorepos
 
 ### Previous Roles
@@ -33,66 +33,59 @@ Payments: Stripe
 ## The Agentic SaaS Course
 
 ### Overview
-A 52-hour, principles-first course on building software with AI. Not toy demos — students ship 4 real products across 4 tiers, internalize 8 timeless principles, and build the judgment to know when AI is helping and when it's hiding a lack of understanding.
-
-The tools change every six months. The principles do not.
+A 52-hour interactive course on multi-agent orchestration from first principles. Students progress from understanding tokens and context windows to coordinating agent fleets that build production software. 4 tiers, 4 shipped capstones, 8 principles.
 
 ### Course Structure
 
 **Prework** (2 hours, 3 lessons)
-Set up local environment, deployment pipeline, and AI tooling.
+Set up environment, install Claude Code, configure MCP servers. Get your first agent running.
 
-**Tier 1 — Foundations** (8 hours, 10 lessons)
-Learn the fundamentals that transfer across any AI tool: tokens, context windows, skills, MCP servers, and the tool ladder from paste to agent. Understand the 8 principles and deploy your first AI-assisted tool.
-- Tokens, context windows, and how AI tools actually work
+**Tier 1 — Understand the Machine** (8 hours, 10 lessons)
+You can't orchestrate what you don't understand. Start with tokens, context windows, and how AI agents actually process your intent. Master the tool ladder from paste to MCP server.
+- Tokens, context windows, and how agents process intent
 - The tool ladder: paste → skill → script → agent → MCP
-- Reading before generating, spec writing, error-first debugging
-- First three principles internalized through real work
-- **Capstone**: Deployed single-page tool
-- **Technologies**: Tokens, Skills, MCP, Claude Code
+- Why most people use the wrong tool for the job
+- **Capstone**: Agent-built tool deployed to production
 
-**Tier 2 — Builder** (12 hours, 12 lessons)
-Build a full CRUD SaaS with auth, database, and payments. Learn to spec before you generate, test what matters, and ship to real users.
-- Full-stack SaaS with Next.js, Supabase, and Stripe
-- Spec-driven development with AI assistance
-- Database design with Drizzle ORM
-- Production deployment and monitoring
-- **Capstone**: Working SaaS product deployed to Vercel
-- **Technologies**: Next.js, Supabase, Stripe, Drizzle
+**Tier 2 — Direct a Single Agent** (12 hours, 12 lessons)
+Direct an AI agent to build a full SaaS product. Write specs that constrain and guide agent output. Verify everything.
+- Spec-driven development: write the spec, let the agent build
+- Constraining agent output through clear boundaries
+- Verification patterns: trust but verify agent code
+- **Capstone**: Full SaaS product built via agent direction
 
-**Tier 3 — Operator** (15 hours, 14 lessons)
-Ship a product with real users. Handle production incidents. Write postmortems. Learn background jobs with Inngest and end-to-end testing.
-- Production operations and incident response
-- Background jobs and event-driven architecture
-- End-to-end testing with Vitest and Playwright
-- Postmortem writing and operational maturity
-- **Capstone**: Live product with users and documentation
-- **Technologies**: Inngest, Vitest, Playwright, Operations
+**Tier 3 — Orchestrate Multiple Agents** (15 hours, 14 lessons)
+Coordinate multiple agents working in parallel on a production system. Split tasks, verify outputs, merge contributions.
+- Multi-agent task splitting and parallel coordination
+- Cross-agent verification and output merging
+- Production monitoring of agent-built systems
+- **Capstone**: Live product built by coordinated agent fleet
 
-**Tier 4 — Architect** (15 hours, 12 lessons)
-Tear down a complex system. Evaluate every decision. Write a system teardown document that proves you can think at the architectural level.
-- System architecture analysis and documentation
-- Trade-off evaluation and decision frameworks
-- The complete teardown methodology
-- Principle 8: taste is the moat
-- **Capstone**: System teardown document proving architectural judgment
-- **Technologies**: Architecture, Analysis, Documentation, Judgment
+**Tier 4 — Architect Agent Systems** (15 hours, 12 lessons)
+Design the systems that agents build. Evaluate AI-generated architecture decisions. Know when to override.
+- Designing architectures for agent-built systems
+- Evaluating and overriding agent decisions
+- System-level judgment: the skill agents can't replicate
+- **Capstone**: System architecture designed for agent workflows
 
 ### 8 Principles
-The course teaches 8 timeless principles for building software with AI, including:
-- Judgment over prompt tricks
-- Principles over patterns
-- Builders, not prompters
-- Shipping real products
-- Taste is the moat
+The course teaches 8 principles that guide multi-agent orchestration:
+- Read Before You Generate
+- Spec Before You Build
+- Error-First Debugging
+- The Tool Ladder
+- Own Your Constraints
+- Test What Matters
+- Ship to Learn
+- Taste Is the Moat
 
 ### Student Testimonials
 
-"This course completely changed how I think about AI-assisted development. The principles stuck with me long after the tools changed. I shipped my first real SaaS product in Tier 2." — Alex Chen, Software Engineer
+"I went from pasting prompts into ChatGPT to running three Claude Code agents in parallel on different parts of my SaaS. The progression from tokens to multi-agent is the real magic." — Alex Chen, Software Engineer
 
-"The capstone system is genius. You can't fake your way through—you have to actually ship. The AI grading gave me honest feedback that made my code better. Worth every dollar." — Sarah Martinez, Indie Developer
+"Tier 1 alone was worth it — I finally understood WHY my agents were losing context. By Tier 3, I was coordinating agents on a live product. Completely transformed how I work." — Sarah Martinez, Indie Developer
 
-"I went from copying ChatGPT outputs to actually understanding when to use AI and when not to. The 'taste is the moat' principle changed my career. Highly recommended for anyone serious about shipping." — Jordan Osei, Full-Stack Developer
+"Directing one agent is easy. Orchestrating five on the same codebase without them stepping on each other — that's what this course actually teaches." — Jordan Osei, Full-Stack Developer
 
 ---
 
@@ -101,8 +94,8 @@ The course teaches 8 timeless principles for building software with AI, includin
 **$4,500 USD** — one-time payment for full access to the complete course.
 
 Includes:
-- All 4 tiers: Foundations, Builder, Operator, Architect
-- 52 hours of video instruction across 51 lessons
+- All 4 tiers: Understand the Machine, Direct a Single Agent, Orchestrate Multiple Agents, Architect Agent Systems
+- 52 hours of interactive instruction across 51 lessons
 - 4 real capstone projects shipped to production
 - 8 timeless principles internalized through practice
 - AI-graded feedback on every capstone
@@ -162,7 +155,7 @@ Official Nx Plugin for Supabase. Streamlines Supabase integration within monorep
 | Home | https://shaolincharles.dev | Course landing page with overview, testimonials, and enrollment |
 | Curriculum | https://shaolincharles.dev/curriculum | Full course syllabus and lesson breakdown |
 | Principles | https://shaolincharles.dev/principles | The 8 timeless principles taught in the course |
-| Tiers & Pricing | https://shaolincharles.dev/tiers | Enrollment tiers from Foundations to Architect |
+| Tiers & Pricing | https://shaolincharles.dev/tiers | Enrollment — $4,500 for full access, tokens to agent fleets |
 | Instructor | https://shaolincharles.dev/instructor | About Charles Jackson — background and experience |
 | About | https://shaolincharles.dev/about | Career journey, skills, and philosophy |
 | Projects | https://shaolincharles.dev/projects | Portfolio: Predictive, MyUrbanFarm.ai, NxSupabase |

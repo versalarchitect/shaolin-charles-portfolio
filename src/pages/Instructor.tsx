@@ -37,58 +37,73 @@ import { SectionSpots, Section } from '@/components/ui/gradient-background'
 
 const careerTimeline = [
   {
-    year: '2024–now',
-    title: 'Founder & Principal Developer',
-    company: 'Predictive (Augure)',
-    description: 'Building an AI-powered prediction platform with Monte Carlo simulations, 17 interconnected life domains, and 230+ field user profiles. Full-stack architecture from database design to deployment.',
+    year: '2026–now',
+    title: 'Founder',
+    company: 'Cursuum',
+    description: 'Building the industry-adaptive scheduling engine that learns you, predicts availability, and never lets relationships go cold. 12 vertical configurations with energy-aware scheduling and AI-powered detection.',
     icon: Rocket,
     type: 'current' as const,
-    technologies: ['React 19', 'TypeScript', 'Supabase', 'Python', 'Nx Monorepo'],
+    technologies: ['AI', 'Scheduling', 'SaaS'],
   },
   {
-    year: '2024',
-    title: 'CTO & Principal Software Developer',
-    company: 'MyUrbanFarm.ai',
-    description: 'Developed a comprehensive platform for urban farmers and corporate sponsors to manage rooftop farming initiatives with real-time analytics, role-based access, and interactive mapping.',
+    year: '2016–now',
+    title: 'CTO & CAIO',
+    company: 'MicroHabitat',
+    description: '9+ years leading technology and AI strategy for MicroHabitat — the world\'s largest urban farming network. 250+ rooftop farms across 22+ cities, B Corp certified. Overseeing technology management, UX, and the full product lifecycle.',
     icon: Globe,
-    type: 'project' as const,
-    technologies: ['Next.js', 'React', 'PostgreSQL', 'Maps API'],
+    type: 'current' as const,
+    technologies: ['Technology Management', 'UX', 'AI Strategy'],
+    highlight: '250+ farms · 22+ cities',
   },
   {
-    year: '2018–2023',
-    title: 'Senior Full-Stack Developer',
-    company: 'Various Clients & Companies',
-    description: 'Architected and delivered enterprise-scale applications across fintech, healthcare, and SaaS industries. Led teams, defined technical standards, and mentored junior developers.',
-    icon: Star,
-    type: 'work' as const,
-    technologies: ['React', 'Node.js', 'AWS', 'PostgreSQL', 'Docker'],
-  },
-  {
-    year: '2015–2018',
-    title: 'Tech Lead & Architect',
-    company: 'Multiple Startups',
-    description: 'Led development teams from 3-8 engineers. Established CI/CD pipelines, code review processes, and scalable architecture patterns. Shipped products used by millions.',
-    icon: Zap,
-    type: 'work' as const,
-    technologies: ['React', 'Angular', 'Ruby on Rails', 'AWS'],
-  },
-  {
-    year: '2010–2015',
-    title: 'Full-Stack Developer',
-    company: 'Agencies & Product Companies',
-    description: 'Transitioned to full-stack development, building end-to-end solutions for various clients. Developed expertise in both frontend and backend systems.',
+    year: '2021',
+    title: 'Software Developer',
+    company: 'Cook it',
+    description: 'Built the Starterweek feature where consumers customize their first meal kit. Cook it — Canada\'s first meal kit company — raised $17M+, scaled to 500+ employees, and was acquired by Fresh Prep in 2024.',
     icon: Code2,
     type: 'work' as const,
-    technologies: ['JavaScript', 'PHP', 'MySQL', 'jQuery', 'Node.js'],
+    technologies: ['React', 'Redux', 'Styled Components', 'Node.js'],
+    highlight: '$17M raised · Acquired 2024',
   },
   {
-    year: '2005–2010',
-    title: 'Web Developer',
-    company: 'Freelance & Early Career',
-    description: 'Started professional journey at 16. Built websites, learned server administration, and developed foundational skills that would shape a 20-year career.',
+    year: '2017',
+    title: 'Software Developer',
+    company: 'nesto',
+    description: 'Developed a custom theme for the company prior to its fundraising. nesto has since raised $165M+ CAD, grown to 1,100+ employees, serves 450,000+ Canadians, and administers $63B+ in mortgage assets. Now Canada\'s largest tech-enabled mortgage lender.',
+    icon: TrendingUp,
+    type: 'work' as const,
+    technologies: ['JavaScript', 'WordPress'],
+    highlight: '$165M+ raised · 1,100 employees',
+  },
+  {
+    year: '2017',
+    title: 'Software Developer',
+    company: 'Crew Collective & Café',
+    description: 'Worked with Harris Kalash on one of the company\'s pages. Crew — the freelancer marketplace that also spawned Unsplash — was acquired by Dribbble in 2017. Clients included Dropbox, Medium, and Tinder.',
+    icon: Star,
+    type: 'work' as const,
+    technologies: ['React.js'],
+    highlight: 'Acquired by Dribbble · Spawned Unsplash',
+  },
+  {
+    year: '2016',
+    title: 'Software Developer',
+    company: 'Dialogue',
+    description: 'Developed the company\'s presentational website in its early beginnings. Dialogue went on to raise $200M+ CAD, IPO\'d on the TSX, and was acquired by Sun Life Financial for $277M CAD. Now Canada\'s leading virtual healthcare platform.',
+    icon: Zap,
+    type: 'work' as const,
+    technologies: ['Frontend Development'],
+    highlight: '$277M exit to Sun Life',
+  },
+  {
+    year: '2015',
+    title: 'Software Developer',
+    company: 'Bus.com',
+    description: 'Participated in FounderFuel\'s 2015 cohort. Bus.com won the competition, went through Y Combinator, and has raised $27M+ CAD. Now a leading North American charter bus marketplace.',
     icon: GraduationCap,
-    type: 'start' as const,
-    technologies: ['HTML', 'CSS', 'JavaScript', 'PHP', 'MySQL'],
+    type: 'work' as const,
+    technologies: ['jQuery', 'JavaScript', 'HTML5', 'CSS3'],
+    highlight: '$27M raised · FounderFuel + YC',
   },
 ]
 
@@ -184,19 +199,19 @@ export default function Instructor() {
     <>
       <SEO
         title="Meet the Instructor — Charles Jackson"
-        description="20+ years building production systems. Founder of Predictive (Augure), creator of NxSupabase, and instructor of the Agentic SaaS Course. Based in Montreal, Canada."
+        description="10+ years building production software. CTO & CAIO at MicroHabitat, Founder of Cursuum. Built products for startups that raised $400M+ combined, including a $277M exit. Based in Montreal, Canada."
         path="/instructor"
         image="/og-image.png"
         imageAlt="Meet the Instructor — Charles Jackson: 20+ years building production systems"
         type="profile"
-        keywords="charles jackson developer, software instructor montreal, full stack developer, ai development teacher, predictive augure founder, nxsupabase creator, 20 years experience"
+        keywords="charles jackson developer, software instructor montreal, full stack developer, ai development teacher, cursuum founder, microhabitat cto, nesto dialogue bus.com startups"
         jsonLd={{
           '@type': 'ProfilePage',
           mainEntity: {
             '@type': 'Person',
             name: 'Charles Jackson',
             jobTitle: 'Software Instructor',
-            description: '20+ years building production systems, now teaching the principles that matter.',
+            description: '10+ years building production software. Built products for startups that raised $400M+ combined, including a $277M exit.',
             url: 'https://shaolincharles.dev/instructor',
             image: 'https://shaolincharles.dev/og-image.png',
             sameAs: ['https://github.com/versalarchitect'],
@@ -215,7 +230,7 @@ export default function Instructor() {
               <div className="flex items-center gap-4 text-sm text-muted-foreground mb-10">
                 <span className="flex items-center gap-2">
                   <Calendar className="w-4 h-4" />
-                  20+ Years Experience
+                  10+ Years Experience
                 </span>
               </div>
             </BlurFadeIn>
@@ -223,17 +238,17 @@ export default function Instructor() {
             <BlurFadeIn delay={0.1} immediate>
               <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight mb-8 leading-[1.1]">
                 Building software since{' '}
-                <span className="text-muted-foreground">2005</span>
+                <span className="text-muted-foreground">2015</span>
               </h1>
             </BlurFadeIn>
 
             <BlurFadeIn delay={0.2} immediate>
               <div className="space-y-6 text-lg text-muted-foreground leading-relaxed mb-10">
                 <p>
-                  I started coding at 16 and never stopped. Two decades later, I've shipped products used by millions, led engineering teams, and built platforms from the ground up.
+                  I build products for companies that go on to do big things. The startups I've worked with have collectively raised over $400M and generated a $277M exit. nesto became Canada's largest tech-enabled mortgage lender. Dialogue IPO'd and was acquired by Sun Life. Bus.com won FounderFuel and Y Combinator. Crew was acquired by Dribbble.
                 </p>
                 <p>
-                  Now I teach the principles I wish someone had taught me — not the syntax that goes stale, but the judgment that compounds.
+                  For 9+ years I've served as CTO & CAIO at MicroHabitat — the world's largest urban farming network. Now I'm building Cursuum, an AI scheduling engine, and teaching the principles I wish someone had taught me.
                 </p>
               </div>
             </BlurFadeIn>
@@ -260,10 +275,10 @@ export default function Instructor() {
         <div className="container mx-auto px-6 lg:px-8 relative z-10">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-12">
             {[
-              { value: 20, suffix: '+', label: 'Years Experience' },
-              { value: 50, suffix: '+', label: 'Projects Shipped' },
-              { value: 8, suffix: '+', label: 'Teams Led' },
-              { value: 1, suffix: 'M+', label: 'Users Impacted' },
+              { value: 10, suffix: '+', label: 'Years Experience' },
+              { value: 400, suffix: 'M+', label: 'Raised by Clients' },
+              { value: 277, suffix: 'M', label: 'Largest Exit' },
+              { value: 7, suffix: '', label: 'Startups Built With' },
             ].map(({ value, suffix, label }, index) => (
               <motion.div
                 key={label}
@@ -288,10 +303,10 @@ export default function Instructor() {
         <div className="container mx-auto px-6 lg:px-8 relative z-10">
           <ScrollFadeIn className="mb-16">
             <h2 className="text-3xl md:text-4xl font-bold tracking-tight mb-4">
-              20 Years of Building
+              Built With Startups That Raised $400M+
             </h2>
             <p className="text-muted-foreground max-w-2xl">
-              From writing my first lines of code at 16 to leading engineering teams and founding startups
+              From early-stage startups to established companies — building the products that attract funding, users, and acquisitions
             </p>
           </ScrollFadeIn>
 
@@ -331,7 +346,12 @@ export default function Instructor() {
                         <p className="text-sm text-muted-foreground mb-3">{item.company}</p>
                         <p className="text-muted-foreground leading-relaxed mb-4">{item.description}</p>
 
-                        <div className="flex flex-wrap gap-2">
+                        <div className="flex flex-wrap items-center gap-2">
+                          {'highlight' in item && item.highlight && (
+                            <span className="px-2.5 py-1 text-xs font-mono rounded-full bg-foreground/10 border border-foreground/15 text-foreground/80">
+                              {item.highlight}
+                            </span>
+                          )}
                           {item.technologies.map((tech) => (
                             <span key={tech} className="text-xs font-mono text-muted-foreground">
                               {tech}
@@ -357,7 +377,7 @@ export default function Instructor() {
               Skills & Technologies
             </h2>
             <p className="text-muted-foreground max-w-2xl">
-              Two decades of accumulated expertise across the full stack
+              A decade of accumulated expertise across the full stack
             </p>
           </ScrollFadeIn>
 

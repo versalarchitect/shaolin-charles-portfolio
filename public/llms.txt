@@ -23,7 +23,7 @@ $4,500 USD — one-time payment, lifetime access to all 4 tiers and future updat
 
 ## 8 Principles
 
-The course teaches 8 timeless principles including: judgment over prompt tricks, principles over patterns, builders not prompters, and shipping real products.
+The course teaches 8 principles that guide multi-agent orchestration: Read Before You Generate, Spec Before You Build, Error-First Debugging, The Tool Ladder, Own Your Constraints, Test What Matters, Ship to Learn, and Taste Is the Moat.
 
 ## Tech Stack
 

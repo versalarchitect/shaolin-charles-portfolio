@@ -18,11 +18,9 @@ import {
   BlurFadeIn,
   ScrollFadeIn,
   Magnetic,
-  HoverCard3D,
   RevealOnScroll,
   StaggerContainer,
   staggerItemVariants,
-  TiltCard,
   SpotlightCard,
 } from '@/components/ui/aaa-effects'
 import { SectionSpots, Section } from '@/components/ui/gradient-background'
@@ -140,8 +138,7 @@ function FeaturedPost({ post }: { post: BlogPost }) {
 
   return (
     <RevealOnScroll direction="up">
-      <HoverCard3D className="rounded-2xl" glowColor="rgba(255, 255, 255, 0.1)" depth={40}>
-        <Card className="overflow-hidden border-foreground/10 bg-gradient-to-br from-background to-foreground/[0.02]">
+        <Card className="overflow-hidden border-foreground/10 bg-gradient-to-br from-background to-foreground/[0.02] hover:border-foreground/15 transition-colors duration-500">
           <div className="p-8 md:p-12">
             <div className="grid md:grid-cols-2 gap-8 items-center">
               {/* Content */}
@@ -266,7 +263,6 @@ function FeaturedPost({ post }: { post: BlogPost }) {
             </div>
           </div>
         </Card>
-      </HoverCard3D>
     </RevealOnScroll>
   )
 }

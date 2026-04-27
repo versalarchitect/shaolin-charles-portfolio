@@ -6,7 +6,7 @@
     "price": "4 500 $ USD",
     "payment": "Paiement unique, accès à vie, pas d'abonnement",
     "refund": "Garantie de remboursement de 30 jours. Complétez le Niveau 1 et soumettez le capstone. Si ce n'est pas pour vous, envoyez un courriel pour un remboursement complet.",
-    "format": "Vidéos préenregistrées à votre rythme",
+    "format": "Leçons interactives à votre rythme avec exercices pratiques",
     "total_hours": 52,
     "total_lessons": 51,
     "total_principles": 8,
@@ -63,7 +63,7 @@
     },
     {
       "q": "C'est à mon rythme ?",
-      "a": "Oui. Les 51 leçons sont des vidéos préenregistrées. Travaillez à votre rythme avec accès à vie."
+      "a": "Oui. Les 51 leçons sont interactives et à votre rythme. Travaillez selon votre emploi du temps avec accès à vie."
     },
     {
       "q": "Ces compétences fonctionnent avec d'autres outils IA ?",

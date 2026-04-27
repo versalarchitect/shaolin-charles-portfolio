@@ -1,6 +1,7 @@
 import { createBrowserRouter, redirect } from 'react-router-dom'
 import { lazy } from 'react'
 import App from './App'
+import { AuthGuard } from './components/auth-guard'
 
 // Homepage (load eagerly for fastest initial render)
 import Home from './pages/Home'
@@ -19,6 +20,9 @@ const Interests = lazy(() => import('./pages/Interests'))
 const Contact = lazy(() => import('./pages/Contact'))
 const Login = lazy(() => import('./pages/Login'))
 const EnrollSuccess = lazy(() => import('./pages/EnrollSuccess'))
+const Dashboard = lazy(() => import('./pages/Dashboard'))
+const Learn = lazy(() => import('./pages/Learn'))
+const Community = lazy(() => import('./pages/Community'))
 const NotFound = lazy(() => import('./pages/NotFound'))
 
 // Create router
@@ -88,6 +92,18 @@ const router = createBrowserRouter([
       {
         path: 'enroll/success',
         element: <EnrollSuccess />,
+      },
+      {
+        path: 'dashboard',
+        element: <AuthGuard><Dashboard /></AuthGuard>,
+      },
+      {
+        path: 'learn/:lessonId',
+        element: <AuthGuard><Learn /></AuthGuard>,
+      },
+      {
+        path: 'community',
+        element: <AuthGuard><Community /></AuthGuard>,
       },
       // 404 catch-all (must be last)
       {

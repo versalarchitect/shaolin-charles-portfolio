@@ -1,0 +1,65 @@
+import { Link, useNavigate } from 'react-router-dom'
+import { supabase } from '@/lib/supabase'
+import { Avatar, AvatarFallback } from './ui/avatar'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from './ui/dropdown-menu'
+import { LayoutDashboard, Users, LogOut } from 'lucide-react'
+import { useAuth } from '@/hooks/use-auth'
+
+export function UserAvatar() {
+  const { user } = useAuth()
+  const navigate = useNavigate()
+
+  if (!user) return null
+
+  const initials = user.email
+    ? user.email.split('@')[0].slice(0, 2).toUpperCase()
+    : '?'
+
+  const handleSignOut = async () => {
+    await supabase.auth.signOut()
+    navigate('/')
+  }
+
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <button type="button" className="rounded-full ring-2 ring-transparent hover:ring-foreground/20 transition-all focus-visible:outline-none focus-visible:ring-foreground/30">
+          <Avatar size="default">
+            <AvatarFallback className="bg-foreground/10 text-foreground/80 text-xs font-mono font-semibold">
+              {initials}
+            </AvatarFallback>
+          </Avatar>
+        </button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="end" className="w-48">
+        <div className="px-2 py-1.5">
+          <p className="text-xs font-mono text-muted-foreground truncate">{user.email}</p>
+        </div>
+        <DropdownMenuSeparator />
+        <DropdownMenuItem asChild>
+          <Link to="/dashboard" className="cursor-pointer">
+            <LayoutDashboard className="mr-2 h-4 w-4" />
+            Dashboard
+          </Link>
+        </DropdownMenuItem>
+        <DropdownMenuItem asChild>
+          <Link to="/community" className="cursor-pointer">
+            <Users className="mr-2 h-4 w-4" />
+            Community
+          </Link>
+        </DropdownMenuItem>
+        <DropdownMenuSeparator />
+        <DropdownMenuItem onClick={handleSignOut} className="cursor-pointer text-muted-foreground">
+          <LogOut className="mr-2 h-4 w-4" />
+          Sign Out
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
+  )
+}

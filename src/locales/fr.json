@@ -11,6 +11,8 @@
     "projects": "Projets",
     "interests": "Intérêts",
     "art": "Art",
+    "dashboard": "Tableau de bord",
+    "community": "Communauté",
     "getInTouch": "S'inscrire",
     "navigation": "Navigation"
   },
@@ -83,48 +85,48 @@
       "fullStack": {
         "title": "Niveau 1 — Comprendre la machine",
         "subtitle": "8 heures · 10 leçons",
-        "description": "On ne peut pas orchestrer ce qu'on ne comprend pas. Commencez par les tokens, les fenêtres de contexte et comment les agents IA traitent votre intention. Maîtrisez l'échelle d'outils du copier-coller au serveur MCP. À la fin, vous dirigerez un agent unique pour déployer un outil fonctionnel.",
+        "description": "Comment les agents traitent votre intention. Tokens, fenêtres de contexte et l'échelle d'outils du copier-coller au MCP. Vous apprenez les mécanismes pour diriger les agents, pas juste les prompter.",
         "highlights": [
-          "Tokens, fenêtres de contexte et comment les agents traitent votre intention",
-          "L'échelle d'outils : coller → skill → script → agent → MCP",
-          "Pourquoi la plupart des gens utilisent le mauvais outil",
-          "Votre premier déploiement construit par un agent — du spec à la production"
+          "Comment les tokens et fenêtres de contexte façonnent chaque interaction agent",
+          "L'échelle d'outils : coller → skill → script → agent → serveur MCP",
+          "Lire le comportement de l'agent — pourquoi il dérive et comment le détecter tôt",
+          "Diriger un agent pour déployer un outil fonctionnel à partir d'un spec écrit"
         ],
         "tags": ["Tokens", "Fenêtres de contexte", "MCP", "Échelle d'outils"]
       },
       "consulting": {
         "title": "Niveau 2 — Diriger un agent unique",
         "subtitle": "12 heures · 12 leçons",
-        "description": "Dirigez un agent IA pour construire un produit SaaS complet avec authentification, base de données et paiements. Apprenez à rédiger des specs qui contraignent et guident la sortie de l'agent. Vérifiez tout. Votre capstone est un produit fonctionnel — construit en dirigeant un agent.",
+        "description": "Maîtrisez la contrainte et la vérification de la sortie d'un agent. Rédigez des specs qui empêchent la dérive de périmètre. Construisez un SaaS complet en dirigeant un agent unique à travers l'auth, la base de données et les paiements — en apprenant à itérer quand l'agent s'écarte du spec.",
         "highlights": [
-          "Développement guidé par les specs : rédigez le spec, laissez l'agent construire",
-          "Contraindre la sortie de l'agent par des limites claires",
-          "Patterns de vérification : faire confiance mais vérifier le code de l'agent",
-          "Livrer un produit SaaS complet en production avec assistance d'agent"
+          "Rédiger des specs qui contraignent le périmètre de l'agent et empêchent la dérive",
+          "Boucles de vérification — détecter quand l'agent s'écarte du spec",
+          "Itérer à travers auth, base de données et paiements avec un seul agent",
+          "Livrer un produit SaaS complet que vous avez dirigé, pas codé"
         ],
         "tags": ["Rédaction de specs", "Contraintes", "Vérification", "Livraison"]
       },
       "mvp": {
         "title": "Niveau 3 — Orchestrer plusieurs agents",
         "subtitle": "15 heures · 14 leçons",
-        "description": "Coordonnez plusieurs agents travaillant en parallèle sur un système de production. Divisez les tâches complexes entre agents, vérifiez les sorties les unes contre les autres, fusionnez les contributions en logiciel cohérent. Gérez les incidents quand les systèmes construits par agents échouent.",
+        "description": "Le vrai différenciateur. Faites tourner 3 à 5 agents en parallèle sur le même codebase avec des git worktrees. Rédigez des fichiers CLAUDE.md comme contexte de coordination partagé. Décomposez les fonctionnalités complexes en tâches à la taille d'un agent. Résolvez les conflits quand les agents touchent du code connexe.",
         "highlights": [
-          "Division multi-agents des tâches et coordination parallèle",
-          "Vérification croisée entre agents et fusion des sorties",
-          "Monitoring en production des systèmes construits par agents",
-          "Réponse aux incidents : quand le code d'agent casse en production"
+          "Faire tourner 3 à 5 agents parallèles sur un codebase avec git worktrees",
+          "Rédiger des fichiers CLAUDE.md comme contexte de coordination partagé",
+          "Décomposer les fonctionnalités en tâches agent-sized qui ne se chevauchent pas",
+          "Vérification inter-agents et résolution de conflits entre branches"
         ],
         "tags": ["Multi-agents", "Tâches parallèles", "Coordination", "Production"]
       },
       "codeReview": {
         "title": "Niveau 4 — Architecturer des systèmes d'agents",
         "subtitle": "15 heures · 12 leçons",
-        "description": "Concevez les systèmes que les agents construisent. Évaluez les décisions architecturales prises par l'IA. Sachez quand diviser le travail entre agents, quand consolider et quand surcharger. Votre capstone prouve que vous savez penser au niveau système — la seule chose que les agents ne peuvent pas faire pour vous.",
+        "description": "Concevez des codebases que les agents parallèles peuvent naviguer efficacement. Rédigez des protocoles de coordination d'agents. Évaluez les décisions d'architecture IA et sachez quand les surcharger. Prouvez un jugement au niveau système que les agents ne peuvent pas répliquer.",
         "highlights": [
-          "Concevoir des architectures pour systèmes construits par agents",
-          "Évaluer et surcharger les décisions d'agents",
-          "Quand diviser, fusionner ou relancer les workflows d'agents",
-          "Jugement système : la compétence que les agents ne peuvent pas répliquer"
+          "Concevoir des codebases optimisés pour la navigation par agents parallèles",
+          "Rédiger des protocoles de coordination d'agents et des hiérarchies CLAUDE.md",
+          "Évaluer les décisions d'architecture IA et savoir quand les surcharger",
+          "Prouver le jugement système — la compétence que les agents ne peuvent pas répliquer"
         ],
         "tags": ["Architecture", "Design d'agents", "Pensée système", "Jugement"]
       }
@@ -177,7 +179,7 @@
       "subtitle": "Orchestration multi-agents",
       "description": "52 heures depuis la compréhension de votre premier token jusqu'à la coordination de flottes d'agents qui construisent des logiciels en production. Vous progresserez de la direction d'un agent unique à l'orchestration de plusieurs agents en parallèle — et livrerez 4 vrais produits en cours de route.",
       "viewCaseStudy": "Voir le programme complet",
-      "lighthouseScore": "Heures de vidéo",
+      "lighthouseScore": "Heures d'apprentissage",
       "p95Response": "Leçons",
       "initialBundle": "Principes",
       "components": "Capstones",

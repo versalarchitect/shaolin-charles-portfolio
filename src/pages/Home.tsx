@@ -249,13 +249,13 @@ export default function Home() {
         description={t('home.meta.description')}
         path=""
         image="/og-image.png"
-        imageAlt="The Agentic SaaS Course by Charles Jackson — principles-first AI development"
+        imageAlt="The Agentic SaaS Course — Master multi-agent orchestration from first principles"
         keywords="multi-agent orchestration course, ai agent course, orchestrate ai agents, agent coordination, claude code course, mcp servers, agentic development, context windows, tokens, agent fleet, ai agent patterns, charles jackson"
         jsonLd={[
           {
             '@type': 'Course',
             name: 'The Agentic SaaS Course',
-            description: 'A principles-first course on building software with AI. 52 hours, 4 capstones, and principles that outlast the next model release.',
+            description: 'Learn to orchestrate AI agents from first principles. 52 hours from tokens to coordinating agent fleets that build production software.',
             url: 'https://shaolincharles.dev',
             provider: { '@type': 'Person', name: 'Charles Jackson', url: 'https://shaolincharles.dev/instructor' },
             educationalLevel: 'Intermediate to Advanced',

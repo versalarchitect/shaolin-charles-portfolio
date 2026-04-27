@@ -14,6 +14,8 @@ import {
   Clock,
   GraduationCap,
   Settings,
+  Star,
+  Play,
 } from 'lucide-react'
 import {
   BlurFadeIn,
@@ -21,101 +23,128 @@ import {
   AnimatedNumber,
 } from '@/components/ui/aaa-effects'
 import { SectionSpots, Section } from '@/components/ui/gradient-background'
+import { CURRICULUM, TOTAL_LESSONS } from '@/data/curriculum'
+import { useAuth } from '@/hooks/use-auth'
 
-const tiers = [
-  {
-    id: 'prework',
-    icon: Settings,
-    title: 'Prework',
-    hours: '2 hours',
-    lessons: '3 lessons',
-    description: 'Set up your local environment, deployment pipeline, and AI tooling. Get ready to build.',
-    topics: [
-      'Local development environment setup',
-      'Vercel deployment pipeline',
-      'Claude Code installation and configuration',
-      'Git workflow and project scaffolding',
-    ],
-    tags: ['VS Code', 'Git', 'Node.js', 'Claude Code'],
-    capstone: null,
-  },
-  {
-    id: 'foundations',
-    icon: Code2,
-    title: 'Tier 1 — Foundations',
-    hours: '8 hours',
-    lessons: '10 lessons',
-    description: 'Learn the fundamentals that transfer across any AI tool: tokens, context windows, skills, MCP servers, and the tool ladder from paste to agent.',
-    topics: [
-      'Tokens, context windows, and how AI tools actually work',
-      'The tool ladder: paste → skill → script → agent → MCP',
-      'Reading before generating — understanding codebases first',
-      'Spec writing and error-first debugging',
-      'MCP servers and skill configuration',
-      'First three principles internalized through real work',
-    ],
-    tags: ['Tokens', 'Skills', 'MCP', 'Claude Code'],
-    capstone: 'Deployed single-page tool built with AI assistance',
-  },
-  {
-    id: 'builder',
-    icon: Lightbulb,
-    title: 'Tier 2 — Builder',
-    hours: '12 hours',
-    lessons: '12 lessons',
-    description: 'Build a full CRUD SaaS with auth, database, and payments. Learn to spec before you generate, test what matters, and ship to real users.',
-    topics: [
-      'Full-stack SaaS architecture with Next.js App Router',
-      'Supabase: PostgreSQL, auth, and real-time subscriptions',
-      'Database design with Drizzle ORM and migrations',
-      'Stripe integration: payments, webhooks, and subscriptions',
-      'Spec-driven development with AI assistance',
-      'Production deployment and environment management',
-    ],
-    tags: ['Next.js', 'Supabase', 'Stripe', 'Drizzle'],
-    capstone: 'Working SaaS product with auth, payments, deployed to Vercel',
-  },
-  {
-    id: 'operator',
-    icon: Rocket,
-    title: 'Tier 3 — Operator',
-    hours: '15 hours',
-    lessons: '14 lessons',
-    description: 'Ship a product with real users. Handle production incidents. Write postmortems. Learn background jobs with Inngest and end-to-end testing.',
-    topics: [
-      'Production operations and incident response',
-      'Background jobs and event-driven architecture with Inngest',
-      'End-to-end testing with Vitest and Playwright',
-      'Monitoring, logging, and observability',
-      'Postmortem writing and operational maturity',
-      'Performance optimization and caching strategies',
-    ],
-    tags: ['Inngest', 'Vitest', 'Playwright', 'Operations'],
-    capstone: 'Live product with real users, monitoring, and documentation',
-  },
-  {
-    id: 'architect',
-    icon: Wrench,
-    title: 'Tier 4 — Architect',
-    hours: '15 hours',
-    lessons: '12 lessons',
-    description: 'Tear down a complex system. Evaluate every decision. Write a system teardown document that proves you can think at the architectural level.',
-    topics: [
-      'System architecture analysis and documentation',
-      'Trade-off evaluation and decision frameworks',
-      'The complete teardown methodology',
-      'Evaluating AI-generated architecture decisions',
-      'When to refactor vs. when to rewrite',
-      'Principle 8: taste is the moat',
-    ],
-    tags: ['Architecture', 'Analysis', 'Documentation', 'Judgment'],
-    capstone: 'System teardown document proving architectural judgment',
-  },
-]
+const tierIcons: Record<string, typeof Code2> = {
+  prework: Settings,
+  tier1: Code2,
+  tier2: Lightbulb,
+  tier3: Rocket,
+  tier4: Wrench,
+}
+
+const tiers = CURRICULUM.map((tier) => ({
+  id: tier.id,
+  icon: tierIcons[tier.id] || Code2,
+  title: tier.id === 'prework' ? 'Prework' : `Tier ${tier.number} — ${tier.subtitle}`,
+  hours: `${tier.hours} hours`,
+  lessons: `${tier.lessonCount} lessons`,
+  description: tier.description,
+  topics: tier.lessons.map((l) => l.title),
+  tags: [...new Set(tier.lessons.flatMap((l) => l.tools))].slice(0, 4),
+  capstone: tier.lessons.find((l) => l.isCapstone)?.title || null,
+  lessonDetails: tier.lessons,
+}))
 
 export default function Curriculum() {
   const { t } = useTranslation()
+  const { isLoggedIn } = useAuth()
 
+  if (isLoggedIn) {
+    return <AppCurriculum />
+  }
+
+  return <MarketingCurriculum />
+}
+
+function AppCurriculum() {
+  return (
+    <div className="p-6 lg:p-8 max-w-4xl">
+      <div className="mb-8">
+        <h1 className="text-2xl font-bold tracking-tight mb-2">Curriculum</h1>
+        <p className="text-sm text-muted-foreground">
+          Each tier builds on the last. The capstone from each tier proves you're ready for the next.
+        </p>
+      </div>
+
+      <div className="space-y-8">
+        {tiers.map((tier) => {
+          const Icon = tier.icon
+          return (
+            <div
+              key={tier.id}
+              className="rounded-xl border border-foreground/10 bg-foreground/[0.02]"
+            >
+              <div className="p-5 border-b border-foreground/[0.06]">
+                <div className="flex items-center gap-3 mb-2">
+                  <div className="p-2 rounded-lg bg-foreground/5 border border-foreground/10">
+                    <Icon className="w-4 h-4 text-foreground/70" />
+                  </div>
+                  <div>
+                    <h2 className="text-lg font-bold">{tier.title}</h2>
+                    <div className="flex items-center gap-3 text-xs text-muted-foreground">
+                      <span className="flex items-center gap-1">
+                        <Clock className="w-3 h-3" />
+                        {tier.hours}
+                      </span>
+                      <span className="flex items-center gap-1">
+                        <BookOpen className="w-3 h-3" />
+                        {tier.lessons}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="divide-y divide-foreground/[0.04]">
+                {tier.lessonDetails.map((lesson) => (
+                  <Link
+                    key={lesson.id}
+                    to={`/learn/${lesson.id}`}
+                    className="flex items-center gap-3 px-5 py-3 hover:bg-foreground/[0.03] transition-colors group"
+                  >
+                    <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-foreground/10 group-hover:bg-foreground/15 transition-colors">
+                      {lesson.isCapstone ? (
+                        <Star className="h-3 w-3 text-foreground/70" />
+                      ) : (
+                        <Play className="h-2.5 w-2.5 text-foreground/60 ml-0.5" />
+                      )}
+                    </span>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2">
+                        <span className="text-[10px] font-mono text-foreground/40">{lesson.number}</span>
+                        <span className={`text-sm ${lesson.isCapstone ? 'font-semibold' : ''} text-foreground/80 group-hover:text-foreground transition-colors truncate`}>
+                          {lesson.title}
+                        </span>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-3 text-xs text-foreground/40 shrink-0">
+                      <span className="font-mono">{lesson.duration}m</span>
+                      <span className="font-mono text-foreground/30">+{lesson.xp} XP</span>
+                    </div>
+                  </Link>
+                ))}
+              </div>
+
+              {tier.capstone && (
+                <div className="px-5 py-3 border-t border-foreground/[0.06] bg-foreground/[0.02]">
+                  <div className="flex items-center gap-2">
+                    <GraduationCap className="w-3.5 h-3.5 text-foreground/60" />
+                    <span className="text-xs font-mono text-foreground/60">Capstone:</span>
+                    <span className="text-xs text-foreground/80">{tier.capstone}</span>
+                  </div>
+                </div>
+              )}
+            </div>
+          )
+        })}
+      </div>
+    </div>
+  )
+}
+
+function MarketingCurriculum() {
   return (
     <>
       <SEO
@@ -128,12 +157,12 @@ export default function Curriculum() {
         jsonLd={{
           '@type': 'Course',
           name: 'The Agentic SaaS Course — Full Curriculum',
-          description: '52 hours of principles-first instruction across 51 lessons and 4 tiers, from first deploy to system teardown.',
+          description: '52 hours of interactive instruction across 51 lessons and 4 tiers. From tokens to multi-agent orchestration.',
           url: 'https://shaolincharles.dev/curriculum',
           provider: { '@type': 'Person', name: 'Charles Jackson' },
           numberOfCredits: '52 hours',
           educationalLevel: 'Intermediate to Advanced',
-          teaches: ['AI-Assisted Development', 'Next.js', 'React', 'TypeScript', 'Supabase', 'Claude Code', 'Vercel', 'Drizzle ORM', 'Stripe', 'Production Operations'],
+          teaches: ['Multi-Agent Orchestration', 'AI Agent Coordination', 'Context Windows', 'Token Management', 'MCP Servers', 'Spec-Driven Development', 'Agent Verification', 'Production Agent Systems'],
         }}
       />
 
@@ -151,14 +180,14 @@ export default function Curriculum() {
 
             <BlurFadeIn delay={0.1} immediate>
               <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight mb-8 leading-[1.1]">
-                From first deploy to{' '}
-                <span className="text-muted-foreground">system teardown.</span>
+                From tokens to{' '}
+                <span className="text-muted-foreground">agent fleets.</span>
               </h1>
             </BlurFadeIn>
 
             <BlurFadeIn delay={0.2} immediate>
               <p className="text-lg md:text-xl text-muted-foreground leading-relaxed max-w-2xl">
-                52 hours of instruction across 51 lessons. Each tier is harder. Each capstone is closer to professional software. You don't move up until you ship.
+                52 hours across 51 interactive lessons. Each tier takes you deeper into how agents think, coordinate, and ship. You don't move up until you ship.
               </p>
             </BlurFadeIn>
           </div>
@@ -241,21 +270,40 @@ export default function Curriculum() {
                       {tier.description}
                     </p>
 
-                    {/* Topics */}
+                    {/* Lessons */}
                     <div className="mb-6">
                       <h4 className="text-sm font-mono text-muted-foreground mb-3 uppercase tracking-wide">
-                        What you'll learn
+                        Lessons
                       </h4>
-                      <ul className="grid md:grid-cols-2 gap-2">
-                        {tier.topics.map((topic) => (
-                          <li key={topic} className="flex items-start gap-2.5 text-sm">
-                            <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-foreground/10 mt-0.5">
-                              <Check className="h-3 w-3 text-foreground/70" />
+                      <div className="space-y-1.5">
+                        {tier.lessonDetails.map((lesson) => (
+                          <Link
+                            key={lesson.id}
+                            to={`/learn/${lesson.id}`}
+                            className="flex items-center gap-3 p-2.5 rounded-lg hover:bg-foreground/[0.03] transition-colors group"
+                          >
+                            <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-foreground/10 group-hover:bg-foreground/15 transition-colors">
+                              {lesson.isCapstone ? (
+                                <Star className="h-3.5 w-3.5 text-foreground/70" />
+                              ) : (
+                                <Play className="h-3 w-3 text-foreground/60 ml-0.5" />
+                              )}
                             </span>
-                            <span className="text-foreground/80">{topic}</span>
-                          </li>
+                            <div className="flex-1 min-w-0">
+                              <div className="flex items-center gap-2">
+                                <span className="text-[10px] font-mono text-foreground/40">{lesson.number}</span>
+                                <span className={`text-sm ${lesson.isCapstone ? 'font-semibold' : ''} text-foreground/80 group-hover:text-foreground transition-colors truncate`}>
+                                  {lesson.title}
+                                </span>
+                              </div>
+                            </div>
+                            <div className="flex items-center gap-3 text-xs text-foreground/40 shrink-0">
+                              <span className="font-mono">{lesson.duration}m</span>
+                              <span className="font-mono text-foreground/30">+{lesson.xp} XP</span>
+                            </div>
+                          </Link>
                         ))}
-                      </ul>
+                      </div>
                     </div>
 
                     {/* Capstone */}
@@ -301,13 +349,16 @@ export default function Curriculum() {
             </p>
             <div className="flex flex-wrap justify-center gap-4">
               <Button size="lg" className="font-mono group" asChild>
+                <Link to="/dashboard">
+                  Start Learning
+                  <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
+                </Link>
+              </Button>
+              <Button size="lg" variant="outline" className="font-mono group" asChild>
                 <Link to="/tiers">
                   View Pricing
                   <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
                 </Link>
-              </Button>
-              <Button size="lg" variant="outline" className="font-mono" asChild>
-                <Link to="/principles">Read the Principles</Link>
               </Button>
             </div>
           </ScrollFadeIn>

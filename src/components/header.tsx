@@ -3,22 +3,31 @@ import { Link, useLocation } from 'react-router-dom'
 import { motion, AnimatePresence, useReducedMotion } from 'framer-motion'
 import { useTranslation } from 'react-i18next'
 import { Button } from './ui/button'
-import { AlignJustify, X, ArrowUpRight, Github, LogIn } from 'lucide-react'
+import { AlignJustify, X, ArrowUpRight, Github, LogIn, LayoutDashboard, Users, BookOpen } from 'lucide-react'
 import { LanguageSwitcher } from './language-switcher'
 import { Logo } from './ui/logo'
+import { UserAvatar } from './user-avatar'
+import { useAuth } from '@/hooks/use-auth'
 import { HEADER_NAV, SOCIAL_LINKS, SITE } from '@/lib/constants'
+
+const APP_NAV = [
+  { name: 'Dashboard', href: '/dashboard' },
+  { name: 'Curriculum', href: '/curriculum' },
+  { name: 'Community', href: '/community' },
+]
+
+const APP_ROUTES = ['/dashboard', '/learn/', '/community']
 
 export function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const location = useLocation()
   const prefersReducedMotion = useReducedMotion()
   const { t } = useTranslation()
+  const { isLoggedIn } = useAuth()
 
-  // Map nav items to translated names
-  const navigation = HEADER_NAV.map((item) => ({
-    name: t(item.nameKey),
-    href: item.href,
-  }))
+  const isAppPage = APP_ROUTES.some((r) => location.pathname.startsWith(r))
+  const marketingNav = HEADER_NAV.map((item) => ({ name: t(item.nameKey), href: item.href }))
+  const navigation = isAppPage ? APP_NAV : marketingNav
 
   return (
     <header className="fixed inset-x-0 top-0 z-50">
@@ -36,30 +45,17 @@ export function Header() {
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.5 }}
         >
-          <Link to="/" className="group flex items-center gap-2">
+          <Link to="/" className="group flex items-center">
             <motion.div
               whileHover={prefersReducedMotion ? undefined : { scale: 1.05 }}
               whileTap={prefersReducedMotion ? undefined : { scale: 0.95 }}
               className="relative"
             >
               <Logo size="sm" className="text-foreground" />
-              {/* Glow effect on hover */}
               <motion.div
                 className="absolute inset-0 rounded-lg bg-foreground/30 blur-md -z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
               />
             </motion.div>
-            <motion.span
-              className="text-lg font-bold text-foreground hidden sm:block relative"
-              whileHover={prefersReducedMotion ? undefined : 'hover'}
-            >
-              Charles
-              <motion.span
-                className="absolute -bottom-0.5 left-0 h-[2px] bg-foreground/50"
-                initial={{ width: 0 }}
-                variants={{ hover: { width: '100%' } }}
-                transition={{ duration: 0.2 }}
-              />
-            </motion.span>
           </Link>
         </motion.div>
 
@@ -105,41 +101,42 @@ export function Header() {
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.5 }}
         >
-          <a
-            href="https://github.com/versalarchitect"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="p-2 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
-            aria-label="GitHub"
-          >
-            <Github className="h-4 w-4" />
-          </a>
+          {!isAppPage && (
+            <a
+              href="https://github.com/versalarchitect"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="p-2 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
+              aria-label="GitHub"
+            >
+              <Github className="h-4 w-4" />
+            </a>
+          )}
           <LanguageSwitcher />
-          <Button size="sm" variant="outline" className="font-mono gap-1.5" asChild>
-            <Link to="/login">
-              <LogIn className="h-3.5 w-3.5" />
-              Log In
-            </Link>
-          </Button>
-          <Button size="sm" className="font-mono gap-1.5 group" asChild>
-            <Link to="/contact">
-              {t('nav.getInTouch')}
-              <ArrowUpRight className="h-3.5 w-3.5 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
-            </Link>
-          </Button>
+          <UserAvatar />
+          {!isAppPage && (
+            <Button size="sm" className="font-mono gap-1.5 group" asChild>
+              <Link to="/contact">
+                {t('nav.getInTouch')}
+                <ArrowUpRight className="h-3.5 w-3.5 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
+              </Link>
+            </Button>
+          )}
         </motion.div>
 
         {/* Mobile menu button */}
         <div className="flex items-center gap-2 lg:hidden">
-          <a
-            href="https://github.com/versalarchitect"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="p-2 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
-            aria-label="GitHub"
-          >
-            <Github className="h-4 w-4" />
-          </a>
+          {!isAppPage && (
+            <a
+              href="https://github.com/versalarchitect"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="p-2 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
+              aria-label="GitHub"
+            >
+              <Github className="h-4 w-4" />
+            </a>
+          )}
           <LanguageSwitcher />
           <button
             type="button"
@@ -178,11 +175,10 @@ export function Header() {
                 <div className="flex items-center justify-between p-4 border-b border-border">
                   <Link
                     to="/"
-                    className="flex items-center gap-2"
+                    className="flex items-center"
                     onClick={() => setMobileMenuOpen(false)}
                   >
                     <Logo size="sm" className="text-foreground" />
-                    <span className="text-lg font-bold text-foreground">Charles</span>
                   </Link>
                   <button
                     type="button"
@@ -237,44 +233,48 @@ export function Header() {
                   className="p-4 border-t border-border"
                 >
                   <div className="flex gap-2">
-                    <Button
-                      variant="outline"
-                      className="flex-1 h-12 text-base font-mono gap-2"
-                      asChild
-                    >
-                      <Link to="/login" onClick={() => setMobileMenuOpen(false)}>
-                        <LogIn className="h-4 w-4" />
-                        Log In
-                      </Link>
-                    </Button>
-                    <Button
-                      className="flex-1 h-12 text-base font-mono gap-2"
-                      asChild
-                    >
-                      <Link to="/contact" onClick={() => setMobileMenuOpen(false)}>
-                        {t('nav.getInTouch')}
-                        <ArrowUpRight className="h-4 w-4" />
-                      </Link>
-                    </Button>
+                    {isAppPage ? (
+                      <Button
+                        className="flex-1 h-12 text-base font-mono gap-2"
+                        asChild
+                      >
+                        <Link to="/dashboard" onClick={() => setMobileMenuOpen(false)}>
+                          <LayoutDashboard className="h-4 w-4" />
+                          Dashboard
+                        </Link>
+                      </Button>
+                    ) : (
+                      <Button
+                        className="flex-1 h-12 text-base font-mono gap-2"
+                        asChild
+                      >
+                        <Link to="/contact" onClick={() => setMobileMenuOpen(false)}>
+                          {t('nav.getInTouch')}
+                          <ArrowUpRight className="h-4 w-4" />
+                        </Link>
+                      </Button>
+                    )}
                   </div>
 
-                  <div className="mt-4 flex items-center justify-center gap-4">
-                    {SOCIAL_LINKS.map((link, index) => (
-                      <span key={link.name} className="flex items-center gap-4">
-                        <a
-                          href={link.href}
-                          target={link.href.startsWith('mailto') ? undefined : '_blank'}
-                          rel={link.href.startsWith('mailto') ? undefined : 'noopener noreferrer'}
-                          className="text-xs font-mono text-muted-foreground hover:text-foreground transition-colors"
-                        >
-                          {link.name}
-                        </a>
-                        {index < SOCIAL_LINKS.length - 1 && (
-                          <span className="text-muted-foreground">·</span>
-                        )}
-                      </span>
-                    ))}
-                  </div>
+                  {!isAppPage && (
+                    <div className="mt-4 flex items-center justify-center gap-4">
+                      {SOCIAL_LINKS.map((link, index) => (
+                        <span key={link.name} className="flex items-center gap-4">
+                          <a
+                            href={link.href}
+                            target={link.href.startsWith('mailto') ? undefined : '_blank'}
+                            rel={link.href.startsWith('mailto') ? undefined : 'noopener noreferrer'}
+                            className="text-xs font-mono text-muted-foreground hover:text-foreground transition-colors"
+                          >
+                            {link.name}
+                          </a>
+                          {index < SOCIAL_LINKS.length - 1 && (
+                            <span className="text-muted-foreground">·</span>
+                          )}
+                        </span>
+                      ))}
+                    </div>
+                  )}
                 </motion.div>
               </div>
             </motion.div>

@@ -1,13 +1,13 @@
 {
-  "system_prompt": "You are the course assistant for The Agentic SaaS Course by Charles Jackson. You help prospective students understand the course and decide if it's right for them. You are friendly, knowledgeable, and concise.\n\nIMPORTANT RULES:\n- NEVER share actual course content, lessons, exercises, or capstone details beyond what's publicly listed\n- NEVER generate or summarize what specific lessons teach in detail\n- NEVER provide step-by-step tutorials or walkthroughs from the course\n- If someone asks for course content, explain that the material is available to enrolled students and direct them to enroll\n- You CAN share: pricing, course structure, tier overview, what topics are covered at a high level, instructor info, and general FAQ answers\n- Keep responses under 3 sentences when possible\n- If you don't know something, say so and suggest they email hello@charlesjackson.dev",
+  "system_prompt": "You are the course assistant for The Agentic SaaS Course by Charles Jackson. This course teaches multi-agent orchestration from first principles — how AI agents work, how to direct a single agent, how to orchestrate parallel agents on a shared codebase, and how to architect systems that agent fleets can build. You help prospective students understand the course and decide if it's right for them. You are friendly, knowledgeable, and concise.\n\nIMPORTANT RULES:\n- NEVER share actual course content, lessons, exercises, or capstone details beyond what's publicly listed\n- NEVER generate or summarize what specific lessons teach in detail\n- NEVER provide step-by-step tutorials or walkthroughs from the course\n- If someone asks for course content, explain that the material is available to enrolled students and direct them to enroll\n- You CAN share: pricing, course structure, tier overview, what topics are covered at a high level, instructor info, and general FAQ answers\n- Keep responses under 3 sentences when possible\n- If you don't know something, say so and suggest they email hello@charlesjackson.dev\n- This is NOT a generic coding bootcamp — always frame the course around multi-agent orchestration, parallel agents, shared codebase context, and agent coordination",
 
   "course": {
     "name": "The Agentic SaaS Course",
-    "tagline": "Learn to orchestrate AI agents from first principles",
+    "tagline": "Learn multi-agent orchestration from first principles — from tokens to parallel agent fleets on a shared codebase",
     "price": "$4,500 USD",
     "payment": "One-time payment, lifetime access, no subscriptions",
     "refund": "30-day money-back guarantee. Complete Tier 1 and submit the capstone. If it's not for you, email for a full refund.",
-    "format": "Self-paced, pre-recorded video lessons",
+    "format": "Interactive, self-paced lessons with hands-on multi-agent orchestration exercises",
     "total_hours": 52,
     "total_lessons": 51,
     "total_principles": 8,
@@ -22,7 +22,7 @@
       "name": "Understand the Machine",
       "hours": 8,
       "lessons": 10,
-      "summary": "Tokens, context windows, how AI agents process intent, the tool ladder from paste to MCP server",
+      "summary": "How AI agents work from first principles — tokens, context windows, how agents process intent, the tool ladder from paste to MCP server, and the foundational mental models for multi-agent orchestration",
       "capstone": "Agent-built tool deployed to production"
     },
     {
@@ -30,7 +30,7 @@
       "name": "Direct a Single Agent",
       "hours": 12,
       "lessons": 12,
-      "summary": "Spec-driven development, constraining agent output, verification patterns, shipping a full SaaS product via agent direction",
+      "summary": "Directing a single agent through specs, constraints, and verification — spec-driven development, constraining agent output, cross-agent verification patterns, and shipping a full SaaS product via precise agent direction",
       "capstone": "Full SaaS product built via agent direction"
     },
     {
@@ -38,7 +38,7 @@
       "name": "Orchestrate Multiple Agents",
       "hours": 15,
       "lessons": 14,
-      "summary": "Multi-agent task splitting, parallel coordination, cross-agent verification, production monitoring of agent-built systems",
+      "summary": "Multi-agent orchestration with parallel agents on a shared codebase — task decomposition, git worktrees, shared codebase context via CLAUDE.md, agent coordination, cross-agent verification, conflict resolution, and production monitoring of agent-built systems",
       "capstone": "Live product built by coordinated agent fleet"
     },
     {
@@ -46,7 +46,7 @@
       "name": "Architect Agent Systems",
       "hours": 15,
       "lessons": 12,
-      "summary": "Designing architectures for agent-built systems, evaluating AI decisions, when to split/merge/override agent workflows, system-level judgment",
+      "summary": "Architecting systems that agent fleets can build — designing architectures for multi-agent orchestration, evaluating AI decisions, task decomposition at the system level, when to split/merge/override agent workflows, and system-level judgment",
       "capstone": "System architecture designed for agent workflows"
     }
   ],
@@ -65,14 +65,14 @@
 
   "prerequisites": {
     "required": "Basic JavaScript/TypeScript knowledge — you need to read code to verify agent output",
-    "not_required": "This is NOT a learn-to-code course. It's a learn-to-orchestrate-agents course.",
+    "not_required": "This is NOT a coding bootcamp. It's a course on multi-agent orchestration from first principles — how agents work, how to direct them, and how to coordinate parallel agents on a shared codebase.",
     "helpful": "Prior experience with any AI coding tool (Claude Code, Cursor, Copilot) is helpful but not required"
   },
 
   "faq": [
     {
       "q": "What will I learn?",
-      "a": "How to orchestrate AI agents from first principles. You'll go from understanding tokens and context windows to coordinating multiple agents building production software in parallel."
+      "a": "Multi-agent orchestration from first principles. You'll go from understanding how AI agents work (tokens, context, tools) to directing a single agent through specs and constraints, to orchestrating parallel agents working on a shared codebase using git worktrees, CLAUDE.md shared context, task decomposition, and cross-agent verification."
     },
     {
       "q": "Do I need coding experience?",
@@ -80,15 +80,15 @@
     },
     {
       "q": "What if I already use Claude Code / Cursor / Copilot?",
-      "a": "Great — you'll go much deeper. Most developers use a single agent for simple tasks. This course teaches multi-agent coordination, parallel workflows, and system-level orchestration."
+      "a": "Great — you'll go much deeper. Most developers use a single agent for simple tasks. This course teaches multi-agent orchestration — parallel agents on a shared codebase, git worktrees for isolation, shared context via CLAUDE.md, task decomposition, conflict resolution, and cross-agent verification."
     },
     {
       "q": "Is it self-paced?",
-      "a": "Yes. All 51 lessons are pre-recorded video. Work at your own pace with lifetime access."
+      "a": "Yes. All 51 lessons are interactive and self-paced. Work through them on your own schedule with lifetime access."
     },
     {
       "q": "Will these skills work with other AI tools?",
-      "a": "The orchestration patterns are agent-agnostic. We teach with Claude Code, but task splitting, verification, and coordination principles apply to any agent system."
+      "a": "The multi-agent orchestration patterns are agent-agnostic. We teach with Claude Code, but task decomposition, cross-agent verification, shared codebase context, and agent coordination principles apply to any agent system."
     },
     {
       "q": "What's the refund policy?",
@@ -96,15 +96,15 @@
     },
     {
       "q": "How long does it take to complete?",
-      "a": "52 hours of video instruction total. Most students complete it in 4-8 weeks at their own pace."
+      "a": "52 hours of interactive instruction total. Most students complete it in 4-8 weeks at their own pace."
     },
     {
       "q": "What do I get for $4,500?",
-      "a": "All 4 tiers, 52 hours of video, 4 capstone projects, AI-graded feedback, email support, lifetime access to all materials and future updates, and alumni community access."
+      "a": "All 4 tiers, 52 hours of interactive lessons, 4 capstone projects, AI-graded feedback, email support, lifetime access to all materials and future updates, and alumni community access."
     },
     {
       "q": "What is multi-agent orchestration?",
-      "a": "It's the skill of coordinating multiple AI agents working in parallel on the same project — splitting tasks, verifying outputs across agents, merging contributions, and handling failures. It's the difference between prompting one chatbot and running a fleet that builds real software."
+      "a": "It's the skill of coordinating parallel agents working on a shared codebase — task decomposition into independent subtasks, git worktrees for agent isolation, CLAUDE.md for shared codebase context, cross-agent verification of outputs, conflict resolution when merging contributions, and handling failures. It's the difference between prompting one chatbot and running an agent fleet that builds real software."
     },
     {
       "q": "What is the tool ladder?",
@@ -120,7 +120,7 @@
     },
     {
       "q": "Is this course worth $4,500?",
-      "a": "The course teaches a skill set most developers never learn — multi-agent orchestration. If you're serious about building with AI at a professional level, the ROI comes from shipping faster and building more complex systems than you could alone. Plus there's a 30-day guarantee."
+      "a": "The course teaches a skill set most developers never learn — multi-agent orchestration from first principles. You'll learn to coordinate parallel agents on a shared codebase, using git worktrees, task decomposition, and cross-agent verification. If you're serious about building with AI at a professional level, the ROI comes from shipping faster and building more complex systems than you could alone. Plus there's a 30-day guarantee."
     },
     {
       "q": "Can I pay in installments?",
@@ -136,11 +136,11 @@
     },
     {
       "q": "How is this different from other AI courses?",
-      "a": "Most AI courses teach you to prompt a single chatbot. This course teaches multi-agent orchestration — coordinating parallel agents on production systems. You ship 4 real products, not toy demos."
+      "a": "Most AI courses teach you to prompt a single chatbot. This course teaches multi-agent orchestration from first principles — from how agents work (tokens, context, tools) to coordinating parallel agents on a shared codebase using git worktrees, shared context, task decomposition, and cross-agent verification. You ship 4 real products, not toy demos."
     },
     {
       "q": "What if the AI tools change after I take the course?",
-      "a": "That's exactly why we teach orchestration patterns, not tool-specific tricks. The principles of task splitting, verification, and coordination apply regardless of which AI model you use. Plus you get lifetime access to future updates."
+      "a": "That's exactly why we teach multi-agent orchestration patterns from first principles, not tool-specific tricks. The principles of task decomposition, cross-agent verification, shared codebase context, and agent coordination apply regardless of which AI model you use. Plus you get lifetime access to future updates."
     },
     {
       "q": "Can I see a preview or sample lesson?",
@@ -160,7 +160,7 @@
     },
     {
       "q": "What's the difference between an agent and a chatbot?",
-      "a": "A chatbot responds to messages. An agent takes actions — it can read your codebase, write code, run tests, deploy, and iterate. The course teaches you to go from directing one agent to orchestrating many."
+      "a": "A chatbot responds to messages. An agent takes actions — it can read your codebase, write code, run tests, deploy, and iterate. The course teaches you to go from understanding how a single agent works to orchestrating parallel agents coordinating on a shared codebase."
     },
     {
       "q": "What are tokens and context windows?",
@@ -172,11 +172,11 @@
     },
     {
       "q": "What does agentic mean?",
-      "a": "Agentic refers to AI systems that can act autonomously — reading, writing, and executing code rather than just generating text. An agentic workflow is one where AI agents do the building while you direct and verify. That's what this course teaches."
+      "a": "Agentic refers to AI systems that can act autonomously — reading, writing, and executing code rather than just generating text. An agentic workflow is one where AI agents do the building while you direct and verify. This course teaches multi-agent orchestration — coordinating parallel agents on a shared codebase through task decomposition, git worktrees, and cross-agent verification."
     },
     {
       "q": "What is Claude Code?",
-      "a": "Claude Code is Anthropic's AI coding agent that runs in your terminal. It can read your codebase, write code, run commands, and iterate on feedback. It's the primary tool used throughout the course, though the orchestration patterns transfer to any agent."
+      "a": "Claude Code is Anthropic's AI coding agent that runs in your terminal. It can read your codebase, write code, run commands, and iterate on feedback. It's the primary tool used throughout the course — you'll learn to run multiple Claude Code instances in parallel via git worktrees with shared context via CLAUDE.md. The multi-agent orchestration patterns transfer to any agent system."
     },
     {
       "q": "What is an MCP server?",
@@ -184,7 +184,7 @@
     },
     {
       "q": "How does multi-agent coordination work?",
-      "a": "You split a complex task into independent subtasks, assign each to a separate agent instance, verify their outputs against each other, and merge the results. It's like being a tech lead managing a team — except the team is AI. Tier 3 covers this in depth."
+      "a": "You decompose a complex task into independent subtasks, spin up parallel agents in isolated git worktrees on the same codebase, share context between them via CLAUDE.md, verify their outputs with cross-agent verification, resolve conflicts, and merge the results. It's like being a tech lead managing a team — except the team is AI. Tier 3 covers this in depth."
     },
     {
       "q": "What is spec-driven development?",
@@ -192,19 +192,19 @@
     },
     {
       "q": "What is the difference between prompting and orchestrating?",
-      "a": "Prompting is asking a single AI to do one thing. Orchestrating is designing workflows where multiple agents coordinate on complex systems — with verification, task splitting, and failure handling. It's the jump from using AI to directing AI at scale."
+      "a": "Prompting is asking a single AI to do one thing. Orchestrating is designing workflows where parallel agents coordinate on a shared codebase — with cross-agent verification, task decomposition, git worktrees for isolation, shared context, conflict resolution, and failure handling. It's the jump from using AI to directing AI at scale."
     },
     {
       "q": "Can agents really build production software?",
-      "a": "Yes — but only if you know how to direct them. Raw agents produce code that compiles but doesn't belong. The course teaches the spec, verification, and orchestration patterns that turn agent output into production-quality software."
+      "a": "Yes — but only if you know how to direct and coordinate them. Raw agents produce code that compiles but doesn't belong. The course teaches spec-driven development, cross-agent verification, and multi-agent orchestration patterns that turn agent output into production-quality software."
     },
     {
       "q": "What if agents make mistakes?",
-      "a": "They will — constantly. That's expected. The course teaches verification patterns (Tier 2), cross-agent checking (Tier 3), and override judgment (Tier 4) so you catch errors before they ship. The skill isn't avoiding mistakes, it's catching them fast."
+      "a": "They will — constantly. That's expected. The course teaches verification patterns (Tier 2), cross-agent verification and conflict resolution across parallel agents (Tier 3), and override judgment at the architecture level (Tier 4) so you catch errors before they ship. The skill isn't avoiding mistakes, it's catching them fast."
     },
     {
       "q": "Is this about prompt engineering?",
-      "a": "No. Prompt engineering is about crafting better inputs for a chatbot. This course is about orchestrating autonomous agents that read, write, test, and deploy code. Prompt engineering is one small tool in a much larger toolkit."
+      "a": "No. Prompt engineering is about crafting better inputs for a chatbot. This course is about multi-agent orchestration from first principles — coordinating parallel agents on a shared codebase through task decomposition, git worktrees, shared context, and cross-agent verification. Prompt engineering is one small tool in a much larger toolkit."
     },
     {
       "q": "What languages or frameworks do I need to know?",
@@ -212,11 +212,11 @@
     },
     {
       "q": "How is Tier 3 different from Tier 2?",
-      "a": "Tier 2 teaches you to direct one agent to build a product. Tier 3 teaches you to coordinate multiple agents working in parallel on a production system — splitting tasks, cross-verifying outputs, and handling failures when agent-built systems break."
+      "a": "Tier 2 teaches you to direct a single agent through specs, constraints, and verification. Tier 3 teaches multi-agent orchestration — coordinating parallel agents on a shared codebase using git worktrees, task decomposition, shared codebase context via CLAUDE.md, cross-agent verification, conflict resolution, and handling failures when agent-built systems break."
     },
     {
       "q": "What happens in Tier 4?",
-      "a": "Tier 4 is about system-level judgment — designing architectures for agent-built systems, evaluating AI decisions, knowing when to override. Your capstone proves you can think at the architecture level, which is the one thing agents can't do for you."
+      "a": "Tier 4 is about system-level judgment — architecting systems that agent fleets can build, task decomposition at the architecture level, evaluating AI decisions, knowing when to split/merge/override agent workflows. Your capstone proves you can think at the architecture level, which is the one thing agents can't do for you."
     }
   ],
 

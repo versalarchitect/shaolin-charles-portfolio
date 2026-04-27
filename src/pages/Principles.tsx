@@ -87,11 +87,11 @@ export default function Principles() {
     <>
       <SEO
         title="8 Principles — The Agentic SaaS Course"
-        description="The 8 timeless principles behind building software with AI. Judgment over prompt tricks, principles over patterns, builders not prompters. These outlast the next model release."
+        description="The 8 principles that guide multi-agent orchestration. From reading before generating to taste as the moat — these apply whether you're directing one agent or coordinating a fleet."
         path="/principles"
         image="/og-image.png"
-        imageAlt="8 Principles — The Agentic SaaS Course: timeless principles for building with AI"
-        keywords="ai development principles, software engineering principles, building with ai guidelines, judgment over prompts, principles-first development, agentic development philosophy"
+        imageAlt="8 Principles — The Agentic SaaS Course: principles for multi-agent orchestration"
+        keywords="agent orchestration principles, ai agent guidelines, multi-agent coordination principles, context window management, spec-driven development, agent verification patterns"
         jsonLd={{
           '@type': 'ItemList',
           name: '8 Principles of the Agentic SaaS Course',

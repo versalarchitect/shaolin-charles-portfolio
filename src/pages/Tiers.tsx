@@ -44,9 +44,9 @@ const tiers = [
     name: 'Understand the Machine',
     hours: 8,
     lessons: 10,
-    description: 'You can\'t orchestrate what you don\'t understand. Start with tokens, context windows, and how AI agents actually process your intent. Master the tool ladder from paste to MCP server.',
-    capstone: 'Agent-built tool deployed to production',
-    skills: ['Tokens', 'Context Windows', 'Tool Ladder', 'MCP Servers'],
+    description: 'You can\'t direct what you don\'t understand. Learn how agents process intent — tokens, context windows, the tool ladder. Understand why agents lose track, hallucinate tool calls, and misread your constraints before you ever try to orchestrate them.',
+    capstone: 'Context-window stress test with documented failure modes',
+    skills: ['Token Economics', 'Context Windows', 'Tool Ladder', 'Intent Parsing', 'Failure Modes'],
   },
   {
     number: '02',
@@ -54,9 +54,9 @@ const tiers = [
     name: 'Direct a Single Agent',
     hours: 12,
     lessons: 12,
-    description: 'Write specs that constrain and guide agent output. Verify everything the agent produces. Ship a full SaaS product built by directing a single agent through the entire stack.',
-    capstone: 'Full SaaS product built via agent direction',
-    skills: ['Spec Writing', 'Constraints', 'Verification', 'Shipping'],
+    description: 'Master the art of constraining, verifying, and iterating on a single agent\'s output. Write specs that eliminate ambiguity. Build feedback loops that catch drift. Ship a full SaaS by directing one agent through every layer — auth, API, UI, deploy.',
+    capstone: 'Full SaaS shipped by directing one agent end-to-end',
+    skills: ['Spec Constraints', 'Output Verification', 'Iteration Loops', 'Drift Detection', 'Single-Agent Orchestration'],
   },
   {
     number: '03',
@@ -64,9 +64,9 @@ const tiers = [
     name: 'Orchestrate Multiple Agents',
     hours: 15,
     lessons: 14,
-    description: 'Coordinate multiple agents working in parallel on a production system. Split complex tasks across agents, verify outputs against each other, merge contributions, and handle failures at scale.',
-    capstone: 'Live product built by coordinated agent fleet',
-    skills: ['Multi-Agent', 'Task Splitting', 'Cross-Verification', 'Production'],
+    description: 'Run 3-5 agents in parallel on the same codebase. Use git worktrees for isolation, CLAUDE.md for shared context, and task decomposition to keep agents from colliding. Resolve merge conflicts, cross-verify agent outputs, and ship faster than any solo workflow.',
+    capstone: 'Production app built by 3+ parallel agents on shared codebase',
+    skills: ['Git Worktrees', 'Shared Context (CLAUDE.md)', 'Task Decomposition', 'Conflict Resolution', 'Cross-Agent Verification'],
   },
   {
     number: '04',
@@ -74,15 +74,15 @@ const tiers = [
     name: 'Architect Agent Systems',
     hours: 15,
     lessons: 12,
-    description: 'Design the systems that agents build. Evaluate AI-generated architecture decisions. Know when to split work, when to consolidate, and when to override. Prove system-level judgment.',
-    capstone: 'System architecture designed for agent workflows',
-    skills: ['Agent Patterns', 'System Design', 'Override Judgment', 'Evaluation'],
+    description: 'Design codebases that agent fleets can navigate. Write coordination protocols that scale beyond your direct supervision. Know when to split tasks, merge branches, or override an agent\'s judgment. Prove system-level thinking across a multi-agent architecture.',
+    capstone: 'Coordination protocol powering an unsupervised agent fleet',
+    skills: ['Codebase Design for Agents', 'Coordination Protocols', 'Split/Merge Strategy', 'Override Judgment', 'System-Level Verification'],
   },
 ]
 
 const included = [
-  { text: 'All 4 tiers — Foundations through Architect', icon: BookOpen },
-  { text: '52 hours of video instruction across 51 lessons', icon: Clock },
+  { text: 'All 4 tiers — from tokens to agent system design', icon: BookOpen },
+  { text: '52 hours of interactive instruction across 51 lessons', icon: Clock },
   { text: '4 real capstone projects you ship to production', icon: Rocket },
   { text: '8 timeless principles internalized through practice', icon: Sparkles },
   { text: 'AI-graded feedback on every capstone submission', icon: Zap },
@@ -102,7 +102,7 @@ const faq = [
   },
   {
     q: 'Is the content self-paced?',
-    a: 'Completely. All 51 lessons are pre-recorded video. Work through them at your own pace. Lifetime access means no rush.',
+    a: 'Completely. All 51 lessons are interactive and self-paced. Work through them on your own schedule. Lifetime access means no rush.',
   },
   {
     q: 'Will these skills transfer beyond Claude Code?',
@@ -136,11 +136,11 @@ export default function Tiers() {
         path="/tiers"
         image="/og-image.png"
         imageAlt="Enroll in The Agentic SaaS Course — $4500 USD, lifetime access"
-        keywords="agentic saas course price, ai development course enrollment, $4500 coding course, full stack course, lifetime access course, principles-first ai course, charles jackson course"
+        keywords="agentic saas course price, multi-agent orchestration course, $4500 ai course, agent coordination course, lifetime access, charles jackson course"
         jsonLd={{
           '@type': 'Offer',
           name: 'The Agentic SaaS Course — Full Access',
-          description: '52 hours, 51 lessons, 4 capstones, 8 principles. Complete course from Foundations to Architect with lifetime access.',
+          description: '52 hours of interactive instruction from tokens to multi-agent orchestration. 51 lessons, 4 capstones, lifetime access.',
           url: 'https://shaolincharles.dev/tiers',
           price: '4500',
           priceCurrency: 'USD',

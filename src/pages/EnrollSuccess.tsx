@@ -64,13 +64,13 @@ export default function EnrollSuccess() {
             <BlurFadeIn delay={0.4} immediate>
               <div className="flex flex-wrap justify-center gap-4">
                 <Button size="lg" className="font-mono group" asChild>
-                  <Link to="/login">
-                    Log In to Course
+                  <Link to="/dashboard">
+                    Go to Dashboard
                     <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
                   </Link>
                 </Button>
                 <Button size="lg" variant="outline" className="font-mono" asChild>
-                  <Link to="/curriculum">View Curriculum</Link>
+                  <Link to="/community">Join the Community</Link>
                 </Button>
               </div>
             </BlurFadeIn>
