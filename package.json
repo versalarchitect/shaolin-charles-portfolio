@@ -5,7 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build && node scripts/prerender.mjs",
+    "build": "vite build",
+    "build:prerender": "vite build && node scripts/prerender.mjs",
     "build:fast": "vite build",
     "preview": "vite preview",
     "lint": "biome lint ./src",
