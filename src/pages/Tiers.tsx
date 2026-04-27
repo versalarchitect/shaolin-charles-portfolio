@@ -1,8 +1,10 @@
+import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { SEO } from '@/components/SEO'
 import { Button } from '@/components/ui/button'
 import { motion, useReducedMotion } from 'framer-motion'
+import { initiateCheckout } from '@/lib/checkout'
 import {
   ArrowRight,
   Check,
@@ -115,6 +117,16 @@ const faq = [
 export default function Tiers() {
   const { t } = useTranslation()
   const prefersReducedMotion = useReducedMotion()
+  const [enrolling, setEnrolling] = useState(false)
+
+  const handleEnroll = async () => {
+    setEnrolling(true)
+    try {
+      await initiateCheckout()
+    } catch {
+      setEnrolling(false)
+    }
+  }
 
   return (
     <>
@@ -184,11 +196,9 @@ export default function Tiers() {
             <BlurFadeIn delay={0.35} immediate>
               <div className="flex flex-wrap justify-center gap-4 mb-12">
                 <Magnetic strength={0.15}>
-                  <Button size="lg" className="h-14 px-10 font-mono group" asChild>
-                    <Link to="/contact">
-                      Enroll Now
-                      <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
-                    </Link>
+                  <Button size="lg" className="h-14 px-10 font-mono group" onClick={handleEnroll} disabled={enrolling}>
+                    {enrolling ? 'Redirecting...' : 'Enroll Now'}
+                    <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
                   </Button>
                 </Magnetic>
                 <Magnetic strength={0.15}>
@@ -384,11 +394,9 @@ export default function Tiers() {
                     <p>30-day guarantee</p>
                   </div>
                   <Magnetic strength={0.15}>
-                    <Button size="lg" className="mt-8 font-mono group w-full" asChild>
-                      <Link to="/contact">
-                        Enroll Now
-                        <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
-                      </Link>
+                    <Button size="lg" className="mt-8 font-mono group w-full" onClick={handleEnroll} disabled={enrolling}>
+                      {enrolling ? 'Redirecting...' : 'Enroll Now'}
+                      <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
                     </Button>
                   </Magnetic>
                 </div>
@@ -551,11 +559,9 @@ export default function Tiers() {
             <BlurFadeIn delay={0.2}>
               <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-6">
                 <Magnetic strength={0.15}>
-                  <Button size="lg" className="h-14 px-10 font-mono group text-base" asChild>
-                    <Link to="/contact">
-                      Enroll Now
-                      <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
-                    </Link>
+                  <Button size="lg" className="h-14 px-10 font-mono group text-base" onClick={handleEnroll} disabled={enrolling}>
+                    {enrolling ? 'Redirecting...' : 'Enroll Now'}
+                    <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
                   </Button>
                 </Magnetic>
                 <Magnetic strength={0.15}>

@@ -2,8 +2,11 @@ import React, { Suspense } from 'react'
 import ReactDOM from 'react-dom/client'
 import { RouterProvider } from 'react-router-dom'
 import { HelmetProvider } from 'react-helmet-async'
+import { inject as injectAnalytics } from '@vercel/analytics'
 import router from './routes'
 import PageLoading from './components/page-loading'
+
+injectAnalytics()
 
 // Initialize i18n (must be imported before components)
 import '@/lib/i18n'

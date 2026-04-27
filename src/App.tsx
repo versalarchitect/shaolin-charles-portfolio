@@ -55,6 +55,11 @@ export default function App() {
     window.scrollTo(0, 0)
   }, [location.pathname])
 
+  // Signal to prerenderer that the page is ready
+  useEffect(() => {
+    document.dispatchEvent(new Event('prerender-ready'))
+  }, [location.pathname])
+
   return (
     <ThemeProvider>
       <SectionGridProvider containerPadding={24}>
