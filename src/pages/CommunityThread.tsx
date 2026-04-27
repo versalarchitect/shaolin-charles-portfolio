@@ -28,11 +28,13 @@ import {
   toggleLike,
   toggleBookmark,
   isBookmarked as checkBookmark,
+  isThreadLiked as checkThreadLiked,
   subscribeToReplies,
   timeAgo,
   type Thread,
   type Reply,
 } from '@/lib/community-api'
+import { toast } from 'sonner'
 
 function renderMarkdown(text: string) {
   const blocks = text.split(/(```[\s\S]*?```)/g)
@@ -250,10 +252,11 @@ export default function CommunityThread() {
     loadData()
   }, [loadData])
 
-  // Check bookmark status
+  // Check bookmark + like status
   useEffect(() => {
     if (user && threadId) {
       checkBookmark(user.id, threadId).then(setBookmarked)
+      checkThreadLiked(user.id, threadId).then(setLiked)
     }
   }, [user, threadId])
 
@@ -275,7 +278,9 @@ export default function CommunityThread() {
     }
   }, [replyText])
 
-  if (notFound) return <Navigate to="/community" replace />
+  if (notFound) {
+    return <Navigate to="/course/community" replace />
+  }
 
   if (loading || !thread) {
     return (
@@ -304,30 +309,43 @@ export default function CommunityThread() {
 
   async function handleBookmark() {
     if (!user || !threadId) return
-    const result = await toggleBookmark(user.id, threadId)
-    setBookmarked(result)
+    try {
+      const result = await toggleBookmark(user.id, threadId)
+      setBookmarked(result)
+      toast.success(result ? 'Thread saved' : 'Bookmark removed')
+    } catch {
+      toast.error('Failed to update bookmark')
+    }
   }
 
   async function handleThreadLike() {
     if (!user || !threadId) return
-    const result = await toggleLike(user.id, { threadId })
-    setLiked(result)
+    try {
+      const result = await toggleLike(user.id, { threadId })
+      setLiked(result)
+    } catch {
+      toast.error('Failed to update like')
+    }
   }
 
   async function handleReplyLike(replyId: string) {
     if (!user) return
-    const nowLiked = await toggleLike(user.id, { replyId })
-    setReplies((prev) =>
-      prev.map((r) =>
-        r.id === replyId
-          ? {
-              ...r,
-              liked_by_me: nowLiked,
-              like_count: r.like_count + (nowLiked ? 1 : -1),
-            }
-          : r,
-      ),
-    )
+    try {
+      const nowLiked = await toggleLike(user.id, { replyId })
+      setReplies((prev) =>
+        prev.map((r) =>
+          r.id === replyId
+            ? {
+                ...r,
+                liked_by_me: nowLiked,
+                like_count: r.like_count + (nowLiked ? 1 : -1),
+              }
+            : r,
+        ),
+      )
+    } catch {
+      toast.error('Failed to update like')
+    }
   }
 
   async function handleSubmitReply() {
@@ -354,7 +372,7 @@ export default function CommunityThread() {
           ?.scrollIntoView({ behavior: 'smooth', block: 'center' })
       }, 100)
     } catch {
-      // Could add toast here
+      toast.error('Failed to post reply')
     } finally {
       setPosting(false)
     }
@@ -383,7 +401,7 @@ export default function CommunityThread() {
           {/* Back nav */}
           <BlurFadeIn delay={0}>
             <Link
-              to="/community"
+              to="/course/community"
               className="inline-flex items-center gap-2 text-sm text-foreground/40 hover:text-foreground/70 transition-colors mb-6 group font-mono"
             >
               <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
@@ -535,7 +553,7 @@ export default function CommunityThread() {
         </div>
 
         {/* Sticky reply composer */}
-        <div className="fixed bottom-0 left-0 right-0 z-40">
+        <div className="fixed bottom-0 left-0 right-0 lg:left-64 z-40">
           <div className="bg-background/80 backdrop-blur-xl border-t border-foreground/[0.08]">
             <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-4xl py-3">
               <div className="flex gap-3 items-end">

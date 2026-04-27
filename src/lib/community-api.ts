@@ -228,6 +228,17 @@ export async function toggleBookmark(userId: string, threadId: string): Promise<
   }
 }
 
+export async function isThreadLiked(userId: string, threadId: string): Promise<boolean> {
+  const { data } = await supabase
+    .from('community_likes')
+    .select('id')
+    .eq('user_id', userId)
+    .eq('thread_id', threadId)
+    .maybeSingle()
+
+  return !!data
+}
+
 export async function createThread(
   thread: {
     title: string
@@ -237,11 +248,13 @@ export async function createThread(
   },
   user: { id: string; name: string; initial: string; tier: string },
 ): Promise<Thread> {
-  const id = thread.title
+  const slug = thread.title
     .toLowerCase()
     .replace(/[^a-z0-9]+/g, '-')
     .replace(/^-|-$/g, '')
-    .slice(0, 60)
+    .slice(0, 50)
+  const suffix = Math.random().toString(36).slice(2, 8)
+  const id = `${slug}-${suffix}`
 
   const { data, error } = await supabase
     .from('community_threads')
