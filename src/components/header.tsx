@@ -122,7 +122,16 @@ export function Header() {
             {resolvedTheme === 'dark' ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
           </button>
           <LanguageSwitcher />
-          <UserAvatar />
+          {isLoggedIn ? (
+            <UserAvatar />
+          ) : (
+            <Button variant="ghost" size="sm" className="font-mono gap-1.5" asChild>
+              <Link to="/login">
+                <LogIn className="h-3.5 w-3.5" />
+                Log In
+              </Link>
+            </Button>
+          )}
           {!isAppPage && (
             <Button size="sm" className="font-mono gap-1.5 group" asChild>
               <Link to="/contact">
