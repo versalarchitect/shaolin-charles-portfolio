@@ -14,6 +14,27 @@ const content: LessonContent = {
       body: 'Node.js 22+ (JavaScript runtime), Bun (fast package manager), Git (version control), VS Code (editor), SSH keys (secure GitHub access). Nothing optional — every tool here gets used in the course.',
     },
     {
+      type: 'diagram',
+      title: 'Your Setup Roadmap',
+      body: 'We install each tool in order. Each one builds on the last.',
+      diagram: {
+        direction: 'LR',
+        nodes: [
+          { id: 'rt', label: 'Runtimes', sublabel: 'Node + Bun' },
+          { id: 'git', label: 'Git', sublabel: 'Version Control' },
+          { id: 'ed', label: 'VS Code', sublabel: 'Editor' },
+          { id: 'cfg', label: 'Config', sublabel: 'Shell + SSH' },
+          { id: 'done', label: 'Ready', shape: 'pill', highlight: true },
+        ],
+        edges: [
+          { from: 'rt', to: 'git' },
+          { from: 'git', to: 'ed' },
+          { from: 'ed', to: 'cfg' },
+          { from: 'cfg', to: 'done' },
+        ],
+      },
+    },
+    {
       type: 'checkpoint',
       xp: 1,
       message: 'Setup begins!',
@@ -60,6 +81,32 @@ const content: LessonContent = {
       type: 'checkpoint',
       xp: 2,
       message: 'Node.js ready!',
+    },
+
+    {
+      type: 'diagram',
+      title: 'nvm in Action',
+      body: 'Each project can use a different Node version. nvm switches instantly.',
+      diagram: {
+        direction: 'TB',
+        nodes: [
+          { id: 'nvm', label: 'nvm', shape: 'rounded', highlight: true },
+          { id: 'pa', label: 'Project A' },
+          { id: 'pb', label: 'Project B' },
+          { id: 'pc', label: 'Project C' },
+          { id: 'v18', label: 'Node 18', shape: 'pill' },
+          { id: 'v22', label: 'Node 22', shape: 'pill', highlight: true },
+          { id: 'v20', label: 'Node 20', shape: 'pill' },
+        ],
+        edges: [
+          { from: 'nvm', to: 'pa' },
+          { from: 'nvm', to: 'pb' },
+          { from: 'nvm', to: 'pc' },
+          { from: 'pa', to: 'v18' },
+          { from: 'pb', to: 'v22' },
+          { from: 'pc', to: 'v20' },
+        ],
+      },
     },
 
     // === BUN ===

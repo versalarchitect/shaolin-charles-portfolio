@@ -1,3 +1,20 @@
+export interface DiagramData {
+  nodes: Array<{
+    id: string
+    label: string
+    sublabel?: string
+    shape?: 'rect' | 'diamond' | 'rounded' | 'pill'
+    highlight?: boolean
+  }>
+  edges: Array<{
+    from: string
+    to: string
+    label?: string
+    dashed?: boolean
+  }>
+  direction?: 'TB' | 'LR'
+}
+
 export type LessonStep =
   | { type: 'info'; title: string; body: string }
   | { type: 'code-demo'; title?: string; body: string; code: string; language: string; filename?: string }
@@ -7,6 +24,7 @@ export type LessonStep =
   | { type: 'order'; instruction: string; items: string[]; correctOrder: number[] }
   | { type: 'checklist'; title: string; items: string[] }
   | { type: 'checkpoint'; xp: number; message: string }
+  | { type: 'diagram'; title: string; body?: string; diagram: DiagramData }
 
 export interface LessonContent {
   lessonId: string

@@ -37,85 +37,262 @@ import {
 } from '@/components/ui/aaa-effects'
 import { SectionSpots, Section } from '@/components/ui/gradient-background'
 
-const tiers = [
-  {
-    number: '01',
-    icon: Code2,
-    name: 'Understand the Machine',
-    hours: 8,
-    lessons: 10,
-    description: 'You can\'t direct what you don\'t understand. Learn how agents process intent — tokens, context windows, the tool ladder. Understand why agents lose track, hallucinate tool calls, and misread your constraints before you ever try to orchestrate them.',
-    capstone: 'Context-window stress test with documented failure modes',
-    skills: ['Token Economics', 'Context Windows', 'Tool Ladder', 'Intent Parsing', 'Failure Modes'],
+const content = {
+  en: {
+    seo: {
+      title: 'Enroll — The Agentic SaaS Course | $4500',
+      description: '52 hours from tokens to multi-agent orchestration. One price, full access — learn to direct single agents, coordinate parallel fleets, and architect agent systems. $4500 USD, lifetime access.',
+      imageAlt: 'Enroll in The Agentic SaaS Course — $4500 USD, lifetime access',
+    },
+    hero: {
+      badge: 'Enrollment Open',
+      heading: 'One course. Everything you need.',
+      subheading: '52 hours from understanding your first token to orchestrating agent fleets that build production software.',
+      payment: 'One-time payment · Lifetime access',
+      enrolling: 'Redirecting...',
+      enroll: 'Enroll Now',
+      curriculum: 'See Full Curriculum',
+    },
+    stats: {
+      instruction: 'Instruction',
+      lessons: 'Lessons',
+      principles: 'Principles',
+      capstones: 'Capstones',
+    },
+    tiersSection: {
+      heading: 'From tokens to agent fleets',
+      subheading: 'Each tier takes you deeper into how agents think, coordinate, and ship. All four are included.',
+      tierLabel: 'Tier',
+      lessonsLabel: 'lessons',
+      capstoneLabel: 'Capstone',
+    },
+    tiers: [
+      {
+        name: 'Understand the Machine',
+        description: 'You can\'t direct what you don\'t understand. Learn how agents process intent — tokens, context windows, the tool ladder. Understand why agents lose track, hallucinate tool calls, and misread your constraints before you ever try to orchestrate them.',
+        capstone: 'Context-window stress test with documented failure modes',
+        skills: ['Token Economics', 'Context Windows', 'Tool Ladder', 'Intent Parsing', 'Failure Modes'],
+      },
+      {
+        name: 'Direct a Single Agent',
+        description: 'Master the art of constraining, verifying, and iterating on a single agent\'s output. Write specs that eliminate ambiguity. Build feedback loops that catch drift. Ship a full SaaS by directing one agent through every layer — auth, API, UI, deploy.',
+        capstone: 'Full SaaS shipped by directing one agent end-to-end',
+        skills: ['Spec Constraints', 'Output Verification', 'Iteration Loops', 'Drift Detection', 'Single-Agent Orchestration'],
+      },
+      {
+        name: 'Orchestrate Multiple Agents',
+        description: 'Run 3-5 agents in parallel on the same codebase. Use git worktrees for isolation, CLAUDE.md for shared context, and task decomposition to keep agents from colliding. Resolve merge conflicts, cross-verify agent outputs, and ship faster than any solo workflow.',
+        capstone: 'Production app built by 3+ parallel agents on shared codebase',
+        skills: ['Git Worktrees', 'Shared Context (CLAUDE.md)', 'Task Decomposition', 'Conflict Resolution', 'Cross-Agent Verification'],
+      },
+      {
+        name: 'Architect Agent Systems',
+        description: 'Design codebases that agent fleets can navigate. Write coordination protocols that scale beyond your direct supervision. Know when to split tasks, merge branches, or override an agent\'s judgment. Prove system-level thinking across a multi-agent architecture.',
+        capstone: 'Coordination protocol powering an unsupervised agent fleet',
+        skills: ['Codebase Design for Agents', 'Coordination Protocols', 'Split/Merge Strategy', 'Override Judgment', 'System-Level Verification'],
+      },
+    ],
+    included: {
+      heading: 'Everything included',
+      subheading: 'No tiers to choose between. No features locked behind paywalls. One price, full access.',
+      priceLabel: 'One-time · Lifetime',
+      noSubscriptions: 'No subscriptions',
+      noHiddenFees: 'No hidden fees',
+      guarantee: '30-day guarantee',
+      items: [
+        'All 4 tiers — from tokens to agent system design',
+        '52 hours of interactive instruction across 51 lessons',
+        '4 real capstone projects you ship to production',
+        '8 timeless principles internalized through practice',
+        'Private AI tutor — runs in your browser, trained on every lesson. Practice exercises, Q&A, zero data shared',
+        'AI-graded feedback on every capstone submission',
+        'Lifetime access to all materials and future updates',
+        'Direct email support for lessons and capstones',
+        'Alumni community access',
+      ],
+    },
+    testimonials: [
+      { quote: 'By Tier 3 I was running three agents in parallel on different parts of my SaaS. That progression is the real magic.', author: 'Alex Chen', tier: 'Tier 3' },
+      { quote: 'Tier 1 alone was worth it — I finally understood why my agents kept losing context. By Tier 3, everything clicked.', author: 'Sarah Martinez', tier: 'Tier 4' },
+      { quote: 'Directing one agent is easy. Orchestrating five on the same codebase without them stepping on each other — that\'s what this teaches.', author: 'Jordan Osei', tier: 'Tier 4' },
+    ],
+    guaranteeSection: {
+      heading: '30-day guarantee',
+      description: 'Complete Tier 1 and submit the capstone. If the course isn\'t for you, email within 30 days for a full refund.',
+      keepMaterials: 'No questions asked. You keep the Tier 1 materials either way.',
+      riskFree: 'Risk-free enrollment',
+      fullRefund: 'Full refund if not satisfied',
+      keepTier1: 'Keep Tier 1 materials',
+    },
+    faq: {
+      heading: 'Common questions',
+      items: [
+        {
+          q: 'Do I need prior coding experience?',
+          a: 'Yes — basic JavaScript/TypeScript. This isn\'t a learn-to-code course. It\'s a learn-to-orchestrate-agents course. You need to read code to verify what agents produce.',
+        },
+        {
+          q: 'What if I already use Claude Code / Cursor / Copilot?',
+          a: 'Good — you\'ll go deeper. Most people use a single agent for simple tasks. This course teaches multi-agent coordination, parallel workflows, and system-level orchestration patterns that most developers never learn.',
+        },
+        {
+          q: 'Is the content self-paced?',
+          a: 'Completely. All 51 lessons are interactive and self-paced. Work through them on your own schedule. Lifetime access means no rush.',
+        },
+        {
+          q: 'Will these skills transfer beyond Claude Code?',
+          a: 'The orchestration patterns are agent-agnostic. We teach with Claude Code because it\'s the best tool right now, but the principles of task splitting, verification, and coordination apply to any agent system.',
+        },
+        {
+          q: 'What\'s the refund policy?',
+          a: 'Complete Tier 1 and submit the capstone. If the course isn\'t for you, email within 30 days for a full refund. No questions asked.',
+        },
+      ],
+    },
+    cta: {
+      badge: 'Now enrolling',
+      heading: 'Ready to orchestrate,',
+      headingHighlight: 'not just prompt?',
+      subheading: '52 hours. From tokens to agent fleets. 4 products built by agents you direct.',
+      questionsLink: 'Questions? Let\'s talk',
+      footer: '30-day guarantee · Lifetime access · No recurring fees',
+    },
   },
-  {
-    number: '02',
-    icon: Lightbulb,
-    name: 'Direct a Single Agent',
-    hours: 12,
-    lessons: 12,
-    description: 'Master the art of constraining, verifying, and iterating on a single agent\'s output. Write specs that eliminate ambiguity. Build feedback loops that catch drift. Ship a full SaaS by directing one agent through every layer — auth, API, UI, deploy.',
-    capstone: 'Full SaaS shipped by directing one agent end-to-end',
-    skills: ['Spec Constraints', 'Output Verification', 'Iteration Loops', 'Drift Detection', 'Single-Agent Orchestration'],
+  fr: {
+    seo: {
+      title: 'Inscription — Le cours Agentic SaaS | 4 500 $',
+      description: '52 heures, des tokens à l’orchestration multi-agents. Un seul prix, accès complet — apprenez à diriger des agents, coordonner des flottes parallèles et concevoir des systèmes d’agents. 4 500 $ USD, accès à vie.',
+      imageAlt: 'Inscrivez-vous au cours Agentic SaaS — 4 500 $ USD, accès à vie',
+    },
+    hero: {
+      badge: 'Inscriptions ouvertes',
+      heading: 'Un seul cours. Tout ce qu’il faut.',
+      subheading: '52 heures, de la compréhension de votre premier token à l’orchestration de flottes d’agents qui construisent des logiciels en production.',
+      payment: 'Paiement unique · Accès à vie',
+      enrolling: 'Redirection...',
+      enroll: 'S’inscrire',
+      curriculum: 'Voir le programme complet',
+    },
+    stats: {
+      instruction: 'Instruction',
+      lessons: 'Leçons',
+      principles: 'Principes',
+      capstones: 'Projets finaux',
+    },
+    tiersSection: {
+      heading: 'Des tokens aux flottes d’agents',
+      subheading: 'Chaque palier vous plonge plus profondément dans la façon dont les agents pensent, se coordonnent et livrent. Les quatre sont inclus.',
+      tierLabel: 'Palier',
+      lessonsLabel: 'leçons',
+      capstoneLabel: 'Projet final',
+    },
+    tiers: [
+      {
+        name: 'Comprendre la machine',
+        description: 'On ne peut pas diriger ce qu’on ne comprend pas. Apprenez comment les agents traitent l’intention — tokens, fenêtres de contexte, échelle d’outils. Comprenez pourquoi les agents perdent le fil, hallucinent des appels d’outils et mal interprètent vos contraintes avant même d’essayer de les orchestrer.',
+        capstone: 'Test de stress de fenêtre de contexte avec modes de défaillance documentés',
+        skills: ['Économie des tokens', 'Fenêtres de contexte', 'Échelle d’outils', 'Analyse d’intention', 'Modes de défaillance'],
+      },
+      {
+        name: 'Diriger un agent unique',
+        description: 'Maîtrisez l’art de contraindre, vérifier et itérer sur la sortie d’un agent unique. Rédigez des spécifications qui éliminent l’ambiguïté. Construisez des boucles de rétroaction qui détectent la dérive. Livrez un SaaS complet en dirigeant un agent à travers chaque couche — auth, API, UI, déploiement.',
+        capstone: 'SaaS complet livré en dirigeant un agent de bout en bout',
+        skills: ['Contraintes de specs', 'Vérification de sortie', 'Boucles d’itération', 'Détection de dérive', 'Orchestration mono-agent'],
+      },
+      {
+        name: 'Orchestrer plusieurs agents',
+        description: 'Exécutez 3 à 5 agents en parallèle sur le même codebase. Utilisez les worktrees git pour l’isolation, CLAUDE.md pour le contexte partagé, et la décomposition de tâches pour éviter les collisions entre agents. Résolvez les conflits de fusion, vérifiez les sorties croisées et livrez plus vite que tout workflow solo.',
+        capstone: 'Application de production construite par 3+ agents parallèles sur un codebase partagé',
+        skills: ['Git Worktrees', 'Contexte partagé (CLAUDE.md)', 'Décomposition de tâches', 'Résolution de conflits', 'Vérification inter-agents'],
+      },
+      {
+        name: 'Concevoir des systèmes d’agents',
+        description: 'Concevez des codebases navigables par des flottes d’agents. Écrivez des protocoles de coordination qui évoluent au-delà de votre supervision directe. Sachez quand diviser les tâches, fusionner les branches ou annuler le jugement d’un agent. Prouvez une pensée systémique à travers une architecture multi-agents.',
+        capstone: 'Protocole de coordination alimentant une flotte d’agents autonome',
+        skills: ['Conception de codebase pour agents', 'Protocoles de coordination', 'Stratégie de division/fusion', 'Jugement de dérogation', 'Vérification au niveau système'],
+      },
+    ],
+    included: {
+      heading: 'Tout est inclus',
+      subheading: 'Pas de paliers à choisir. Pas de fonctionnalités bloquées derrière un paywall. Un prix, accès complet.',
+      priceLabel: 'Unique · À vie',
+      noSubscriptions: 'Pas d’abonnement',
+      noHiddenFees: 'Pas de frais cachés',
+      guarantee: 'Garantie 30 jours',
+      items: [
+        'Les 4 paliers — des tokens à la conception de systèmes d’agents',
+        '52 heures d’instruction interactive à travers 51 leçons',
+        '4 vrais projets finaux que vous livrez en production',
+        '8 principes intemporels intériorisés par la pratique',
+        'Tuteur IA privé — fonctionne dans votre navigateur, formé sur chaque leçon. Exercices pratiques, Q&R, aucune donnée partagée',
+        'Retours notés par IA sur chaque soumission de projet final',
+        'Accès à vie à tous les matériaux et mises à jour futures',
+        'Support par email direct pour les leçons et projets finaux',
+        'Accès à la communauté des anciens',
+      ],
+    },
+    testimonials: [
+      { quote: 'Au Palier 3, je faisais tourner trois agents en parallèle sur différentes parties de mon SaaS. Cette progression, c’est la vraie magie.', author: 'Alex Chen', tier: 'Palier 3' },
+      { quote: 'Le Palier 1 seul valait le coup — j’ai enfin compris pourquoi mes agents perdaient le contexte. Au Palier 3, tout s’est assemblé.', author: 'Sarah Martinez', tier: 'Palier 4' },
+      { quote: 'Diriger un agent, c’est facile. En orchestrer cinq sur le même codebase sans qu’ils se marchent dessus — c’est ça que ce cours enseigne.', author: 'Jordan Osei', tier: 'Palier 4' },
+    ],
+    guaranteeSection: {
+      heading: 'Garantie 30 jours',
+      description: 'Complétez le Palier 1 et soumettez le projet final. Si le cours ne vous convient pas, envoyez un email dans les 30 jours pour un remboursement intégral.',
+      keepMaterials: 'Sans conditions. Vous gardez les matériaux du Palier 1 dans tous les cas.',
+      riskFree: 'Inscription sans risque',
+      fullRefund: 'Remboursement intégral si insatisfait',
+      keepTier1: 'Gardez les matériaux du Palier 1',
+    },
+    faq: {
+      heading: 'Questions fréquentes',
+      items: [
+        {
+          q: 'Ai-je besoin d’une expérience préalable en programmation ?',
+          a: 'Oui — JavaScript/TypeScript de base. Ce n’est pas un cours pour apprendre à coder. C’est un cours pour apprendre à orchestrer des agents. Vous devez pouvoir lire du code pour vérifier ce que les agents produisent.',
+        },
+        {
+          q: 'Et si j’utilise déjà Claude Code / Cursor / Copilot ?',
+          a: 'Tant mieux — vous irez plus loin. La plupart des gens utilisent un agent unique pour des tâches simples. Ce cours enseigne la coordination multi-agents, les workflows parallèles et les schémas d’orchestration au niveau système que la plupart des développeurs n’apprennent jamais.',
+        },
+        {
+          q: 'Le contenu est-il à son propre rythme ?',
+          a: 'Entièrement. Les 51 leçons sont interactives et à votre rythme. Travaillez selon votre emploi du temps. L’accès à vie signifie aucune urgence.',
+        },
+        {
+          q: 'Ces compétences sont-elles transférables au-delà de Claude Code ?',
+          a: 'Les schémas d’orchestration sont indépendants de l’agent. Nous enseignons avec Claude Code parce que c’est le meilleur outil actuellement, mais les principes de découpage de tâches, de vérification et de coordination s’appliquent à tout système d’agents.',
+        },
+        {
+          q: 'Quelle est la politique de remboursement ?',
+          a: 'Complétez le Palier 1 et soumettez le projet final. Si le cours ne vous convient pas, envoyez un email dans les 30 jours pour un remboursement intégral. Sans conditions.',
+        },
+      ],
+    },
+    cta: {
+      badge: 'Inscriptions en cours',
+      heading: 'Prêt à orchestrer,',
+      headingHighlight: 'pas seulement prompter ?',
+      subheading: '52 heures. Des tokens aux flottes d’agents. 4 produits construits par des agents que vous dirigez.',
+      questionsLink: 'Des questions ? Parlons-en',
+      footer: 'Garantie 30 jours · Accès à vie · Aucun frais récurrent',
+    },
   },
-  {
-    number: '03',
-    icon: Rocket,
-    name: 'Orchestrate Multiple Agents',
-    hours: 15,
-    lessons: 14,
-    description: 'Run 3-5 agents in parallel on the same codebase. Use git worktrees for isolation, CLAUDE.md for shared context, and task decomposition to keep agents from colliding. Resolve merge conflicts, cross-verify agent outputs, and ship faster than any solo workflow.',
-    capstone: 'Production app built by 3+ parallel agents on shared codebase',
-    skills: ['Git Worktrees', 'Shared Context (CLAUDE.md)', 'Task Decomposition', 'Conflict Resolution', 'Cross-Agent Verification'],
-  },
-  {
-    number: '04',
-    icon: Wrench,
-    name: 'Architect Agent Systems',
-    hours: 15,
-    lessons: 12,
-    description: 'Design codebases that agent fleets can navigate. Write coordination protocols that scale beyond your direct supervision. Know when to split tasks, merge branches, or override an agent\'s judgment. Prove system-level thinking across a multi-agent architecture.',
-    capstone: 'Coordination protocol powering an unsupervised agent fleet',
-    skills: ['Codebase Design for Agents', 'Coordination Protocols', 'Split/Merge Strategy', 'Override Judgment', 'System-Level Verification'],
-  },
+} as const
+
+const tierMeta = [
+  { number: '01', icon: Code2, hours: 8, lessons: 10 },
+  { number: '02', icon: Lightbulb, hours: 12, lessons: 12 },
+  { number: '03', icon: Rocket, hours: 15, lessons: 14 },
+  { number: '04', icon: Wrench, hours: 15, lessons: 12 },
 ]
 
-const included = [
-  { text: 'All 4 tiers — from tokens to agent system design', icon: BookOpen },
-  { text: '52 hours of interactive instruction across 51 lessons', icon: Clock },
-  { text: '4 real capstone projects you ship to production', icon: Rocket },
-  { text: '8 timeless principles internalized through practice', icon: Sparkles },
-  { text: 'AI-graded feedback on every capstone submission', icon: Zap },
-  { text: 'Lifetime access to all materials and future updates', icon: RefreshCw },
-  { text: 'Direct email support for lessons and capstones', icon: Mail },
-  { text: 'Alumni community access', icon: Users },
-]
-
-const faq = [
-  {
-    q: 'Do I need prior coding experience?',
-    a: 'Yes — basic JavaScript/TypeScript. This isn\'t a learn-to-code course. It\'s a learn-to-orchestrate-agents course. You need to read code to verify what agents produce.',
-  },
-  {
-    q: 'What if I already use Claude Code / Cursor / Copilot?',
-    a: 'Good — you\'ll go deeper. Most people use a single agent for simple tasks. This course teaches multi-agent coordination, parallel workflows, and system-level orchestration patterns that most developers never learn.',
-  },
-  {
-    q: 'Is the content self-paced?',
-    a: 'Completely. All 51 lessons are interactive and self-paced. Work through them on your own schedule. Lifetime access means no rush.',
-  },
-  {
-    q: 'Will these skills transfer beyond Claude Code?',
-    a: 'The orchestration patterns are agent-agnostic. We teach with Claude Code because it\'s the best tool right now, but the principles of task splitting, verification, and coordination apply to any agent system.',
-  },
-  {
-    q: 'What\'s the refund policy?',
-    a: 'Complete Tier 1 and submit the capstone. If the course isn\'t for you, email within 30 days for a full refund. No questions asked.',
-  },
-]
+const includedIcons = [BookOpen, Clock, Rocket, Sparkles, GraduationCap, Zap, RefreshCw, Mail, Users]
 
 export default function Tiers() {
-  const { t } = useTranslation()
+  const { i18n } = useTranslation()
+  const lang = i18n.language?.startsWith('fr') ? 'fr' : 'en'
+  const c = content[lang]
   const prefersReducedMotion = useReducedMotion()
   const [enrolling, setEnrolling] = useState(false)
 
@@ -131,11 +308,11 @@ export default function Tiers() {
   return (
     <>
       <SEO
-        title="Enroll — The Agentic SaaS Course | $4500"
-        description="52 hours from tokens to multi-agent orchestration. One price, full access — learn to direct single agents, coordinate parallel fleets, and architect agent systems. $4500 USD, lifetime access."
+        title={c.seo.title}
+        description={c.seo.description}
         path="/tiers"
         image="/og-image.png"
-        imageAlt="Enroll in The Agentic SaaS Course — $4500 USD, lifetime access"
+        imageAlt={c.seo.imageAlt}
         keywords="agentic saas course price, multi-agent orchestration course, $4500 ai course, agent coordination course, lifetime access, charles jackson course"
         jsonLd={{
           '@type': 'Offer',
@@ -162,19 +339,19 @@ export default function Tiers() {
                   transition={{ duration: 2, repeat: Infinity }}
                   className="w-2 h-2 rounded-full bg-green-500"
                 />
-                <span className="text-xs font-mono text-foreground/60">Enrollment Open</span>
+                <span className="text-xs font-mono text-foreground/60">{c.hero.badge}</span>
               </div>
             </BlurFadeIn>
 
             <BlurFadeIn delay={0.1} immediate>
               <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight mb-6">
-                One course. Everything you need.
+                {c.hero.heading}
               </h1>
             </BlurFadeIn>
 
             <BlurFadeIn delay={0.2} immediate>
               <p className="text-lg text-muted-foreground leading-relaxed max-w-xl mx-auto mb-12">
-                52 hours from understanding your first token to orchestrating agent fleets that build production software.
+                {c.hero.subheading}
               </p>
             </BlurFadeIn>
 
@@ -187,7 +364,7 @@ export default function Tiers() {
                     <AnimatedNumber value={4500} duration={1.5} />
                   </div>
                   <div className="text-sm text-muted-foreground mt-4 tracking-widest uppercase">
-                    One-time payment · Lifetime access
+                    {c.hero.payment}
                   </div>
                 </div>
               </div>
@@ -197,13 +374,13 @@ export default function Tiers() {
               <div className="flex flex-wrap justify-center gap-4 mb-12">
                 <Magnetic strength={0.15}>
                   <Button size="lg" className="h-14 px-10 font-mono group" onClick={handleEnroll} disabled={enrolling}>
-                    {enrolling ? 'Redirecting...' : 'Enroll Now'}
+                    {enrolling ? c.hero.enrolling : c.hero.enroll}
                     <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
                   </Button>
                 </Magnetic>
                 <Magnetic strength={0.15}>
                   <Button size="lg" variant="outline" className="h-14 px-10 font-mono" asChild>
-                    <Link to="/curriculum">See Full Curriculum</Link>
+                    <Link to="/curriculum">{c.hero.curriculum}</Link>
                   </Button>
                 </Magnetic>
               </div>
@@ -213,10 +390,10 @@ export default function Tiers() {
             <BlurFadeIn delay={0.4} immediate>
               <div className="grid grid-cols-4 gap-px rounded-xl overflow-hidden border border-foreground/10 max-w-2xl mx-auto">
                 {[
-                  { value: 52, suffix: 'h', label: 'Instruction' },
-                  { value: 51, suffix: '', label: 'Lessons' },
-                  { value: 8, suffix: '', label: 'Principles' },
-                  { value: 4, suffix: '', label: 'Capstones' },
+                  { value: 52, suffix: 'h', label: c.stats.instruction },
+                  { value: 51, suffix: '', label: c.stats.lessons },
+                  { value: 8, suffix: '', label: c.stats.principles },
+                  { value: 4, suffix: '', label: c.stats.capstones },
                 ].map(({ value, suffix, label }) => (
                   <div key={label} className="bg-foreground/[0.03] p-5 md:p-6 text-center">
                     <div className="text-2xl md:text-3xl font-bold font-mono mb-1">
@@ -237,21 +414,22 @@ export default function Tiers() {
         <div className="container mx-auto px-6 lg:px-8 relative z-10">
           <ScrollFadeIn className="mb-16">
             <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight mb-4">
-              From tokens to agent fleets
+              {c.tiersSection.heading}
             </h2>
             <p className="text-muted-foreground max-w-2xl text-lg">
-              Each tier takes you deeper into how agents think, coordinate, and ship. All four are included.
+              {c.tiersSection.subheading}
             </p>
           </ScrollFadeIn>
 
           {/* Bento grid: T1 wide, T2+T3 side-by-side, T4 wide */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-5">
-            {tiers.map((tier, index) => {
-              const Icon = tier.icon
+            {tierMeta.map((meta, index) => {
+              const tier = c.tiers[index]
+              const Icon = meta.icon
               const isWide = index === 0 || index === 3
               return (
                 <motion.div
-                  key={tier.name}
+                  key={meta.number}
                   initial={{ opacity: 0, y: 30 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.6, delay: index * 0.12 }}
@@ -262,7 +440,7 @@ export default function Tiers() {
                       <div className="relative h-full overflow-hidden rounded-2xl border border-foreground/10 bg-foreground/[0.02] hover:border-foreground/20 transition-all duration-300">
                         {/* Watermark number */}
                         <div className={`absolute -right-4 -top-6 font-bold leading-none text-foreground/[0.02] select-none pointer-events-none ${isWide ? 'text-[220px]' : 'text-[160px]'}`}>
-                          {tier.number}
+                          {meta.number}
                         </div>
 
                         {/* Corner accent */}
@@ -281,14 +459,14 @@ export default function Tiers() {
                                     <Icon className="w-6 h-6 text-foreground/70" />
                                   </div>
                                   <div>
-                                    <span className="text-xs font-mono text-muted-foreground block">Tier {tier.number}</span>
+                                    <span className="text-xs font-mono text-muted-foreground block">{c.tiersSection.tierLabel} {meta.number}</span>
                                     <h3 className="text-2xl md:text-3xl font-bold">{tier.name}</h3>
                                   </div>
                                 </div>
                                 <div className="flex gap-6 text-right">
                                   <div>
-                                    <div className="text-3xl font-bold font-mono">{tier.hours}<span className="text-sm font-normal text-muted-foreground">h</span></div>
-                                    <div className="text-[10px] text-muted-foreground">{tier.lessons} lessons</div>
+                                    <div className="text-3xl font-bold font-mono">{meta.hours}<span className="text-sm font-normal text-muted-foreground">h</span></div>
+                                    <div className="text-[10px] text-muted-foreground">{meta.lessons} {c.tiersSection.lessonsLabel}</div>
                                   </div>
                                 </div>
                               </div>
@@ -308,7 +486,7 @@ export default function Tiers() {
                               <div className="p-4 rounded-xl bg-foreground/[0.03] border border-foreground/5 inline-flex items-start gap-3">
                                 <GraduationCap className="w-4 h-4 text-foreground/50 mt-0.5 flex-shrink-0" />
                                 <div>
-                                  <span className="text-xs font-mono text-foreground/40 block">Capstone</span>
+                                  <span className="text-xs font-mono text-foreground/40 block">{c.tiersSection.capstoneLabel}</span>
                                   <span className="text-sm text-foreground/80">{tier.capstone}</span>
                                 </div>
                               </div>
@@ -322,13 +500,13 @@ export default function Tiers() {
                                     <Icon className="w-5 h-5 text-foreground/70" />
                                   </div>
                                   <div>
-                                    <span className="text-[10px] font-mono text-muted-foreground block">Tier {tier.number}</span>
+                                    <span className="text-[10px] font-mono text-muted-foreground block">{c.tiersSection.tierLabel} {meta.number}</span>
                                     <h3 className="text-xl font-bold">{tier.name}</h3>
                                   </div>
                                 </div>
                                 <div className="text-right">
-                                  <div className="text-2xl font-bold font-mono">{tier.hours}<span className="text-sm font-normal text-muted-foreground">h</span></div>
-                                  <div className="text-[10px] text-muted-foreground">{tier.lessons} lessons</div>
+                                  <div className="text-2xl font-bold font-mono">{meta.hours}<span className="text-sm font-normal text-muted-foreground">h</span></div>
+                                  <div className="text-[10px] text-muted-foreground">{meta.lessons} {c.tiersSection.lessonsLabel}</div>
                                 </div>
                               </div>
 
@@ -367,10 +545,10 @@ export default function Tiers() {
         <div className="container mx-auto px-6 lg:px-8 relative z-10">
           <ScrollFadeIn className="mb-16">
             <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight mb-4">
-              Everything included
+              {c.included.heading}
             </h2>
             <p className="text-muted-foreground max-w-2xl text-lg">
-              No tiers to choose between. No features locked behind paywalls. One price, full access.
+              {c.included.subheading}
             </p>
           </ScrollFadeIn>
 
@@ -386,16 +564,16 @@ export default function Tiers() {
                 <div className="absolute -right-6 -top-6 text-[140px] font-bold leading-none text-foreground/[0.02] select-none pointer-events-none">$</div>
                 <div className="relative">
                   <div className="text-5xl md:text-6xl font-bold font-mono mb-3 bg-gradient-to-b from-foreground to-foreground/70 bg-clip-text text-transparent">$4500</div>
-                  <div className="text-sm text-muted-foreground mb-6 font-mono">One-time · Lifetime</div>
+                  <div className="text-sm text-muted-foreground mb-6 font-mono">{c.included.priceLabel}</div>
                   <div className="h-px w-16 bg-gradient-to-r from-transparent via-foreground/20 to-transparent mx-auto mb-6" />
                   <div className="space-y-2 text-xs text-muted-foreground">
-                    <p>No subscriptions</p>
-                    <p>No hidden fees</p>
-                    <p>30-day guarantee</p>
+                    <p>{c.included.noSubscriptions}</p>
+                    <p>{c.included.noHiddenFees}</p>
+                    <p>{c.included.guarantee}</p>
                   </div>
                   <Magnetic strength={0.15}>
                     <Button size="lg" className="mt-8 font-mono group w-full" onClick={handleEnroll} disabled={enrolling}>
-                      {enrolling ? 'Redirecting...' : 'Enroll Now'}
+                      {enrolling ? c.hero.enrolling : c.hero.enroll}
                       <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
                     </Button>
                   </Magnetic>
@@ -404,22 +582,25 @@ export default function Tiers() {
             </motion.div>
 
             {/* Included items — 2x2 grid filling the remaining space */}
-            {included.map(({ text, icon: Icon }, index) => (
-              <motion.div
-                key={text}
-                initial={{ opacity: 0, y: 15 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.4, delay: 0.1 + index * 0.05 }}
-                className="group"
-              >
-                <div className="h-full flex items-start gap-3 p-5 rounded-xl border border-foreground/[0.06] hover:border-foreground/15 hover:bg-foreground/[0.02] transition-all duration-300">
-                  <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-foreground/[0.05] border border-foreground/[0.08] group-hover:bg-foreground/[0.08] transition-colors">
-                    <Icon className="h-4 w-4 text-foreground/60" />
+            {c.included.items.map((text, index) => {
+              const Icon = includedIcons[index]
+              return (
+                <motion.div
+                  key={text}
+                  initial={{ opacity: 0, y: 15 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.4, delay: 0.1 + index * 0.05 }}
+                  className="group"
+                >
+                  <div className="h-full flex items-start gap-3 p-5 rounded-xl border border-foreground/[0.06] hover:border-foreground/15 hover:bg-foreground/[0.02] transition-all duration-300">
+                    <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-foreground/[0.05] border border-foreground/[0.08] group-hover:bg-foreground/[0.08] transition-colors">
+                      <Icon className="h-4 w-4 text-foreground/60" />
+                    </div>
+                    <span className="text-foreground/80 text-sm leading-relaxed pt-1.5">{text}</span>
                   </div>
-                  <span className="text-foreground/80 text-sm leading-relaxed pt-1.5">{text}</span>
-                </div>
-              </motion.div>
-            ))}
+                </motion.div>
+              )
+            })}
           </div>
         </div>
       </Section>
@@ -428,11 +609,7 @@ export default function Tiers() {
       <Section id="tiers-proof" className="py-16 relative">
         <div className="container mx-auto px-6 lg:px-8 relative z-10">
           <div className="grid md:grid-cols-3 gap-6">
-            {[
-              { quote: 'By Tier 3 I was running three agents in parallel on different parts of my SaaS. That progression is the real magic.', author: 'Alex Chen', tier: 'Tier 3' },
-              { quote: 'Tier 1 alone was worth it — I finally understood why my agents kept losing context. By Tier 3, everything clicked.', author: 'Sarah Martinez', tier: 'Tier 4' },
-              { quote: 'Directing one agent is easy. Orchestrating five on the same codebase without them stepping on each other — that\'s what this teaches.', author: 'Jordan Osei', tier: 'Tier 4' },
-            ].map(({ quote, author, tier }, index) => (
+            {c.testimonials.map(({ quote, author, tier }, index) => (
               <motion.div
                 key={author}
                 initial={{ opacity: 0, y: 20 }}
@@ -465,27 +642,27 @@ export default function Tiers() {
                     <div className="p-2.5 rounded-xl bg-foreground/[0.05] border border-foreground/10">
                       <Shield className="w-6 h-6 text-foreground/50" />
                     </div>
-                    <h2 className="text-xl font-bold">30-day guarantee</h2>
+                    <h2 className="text-xl font-bold">{c.guaranteeSection.heading}</h2>
                   </div>
                   <p className="text-muted-foreground leading-relaxed mb-4">
-                    Complete Tier 1 and submit the capstone. If the course isn't for you, email within 30 days for a full refund.
+                    {c.guaranteeSection.description}
                   </p>
                   <p className="text-sm text-muted-foreground/60 mb-6">
-                    No questions asked. You keep the Tier 1 materials either way.
+                    {c.guaranteeSection.keepMaterials}
                   </p>
                   <div className="h-px bg-gradient-to-r from-foreground/10 via-foreground/5 to-transparent mb-6" />
                   <div className="space-y-3 text-sm text-muted-foreground">
                     <div className="flex items-center gap-2">
                       <Check className="w-3.5 h-3.5 text-foreground/50" />
-                      <span>Risk-free enrollment</span>
+                      <span>{c.guaranteeSection.riskFree}</span>
                     </div>
                     <div className="flex items-center gap-2">
                       <Check className="w-3.5 h-3.5 text-foreground/50" />
-                      <span>Full refund if not satisfied</span>
+                      <span>{c.guaranteeSection.fullRefund}</span>
                     </div>
                     <div className="flex items-center gap-2">
                       <Check className="w-3.5 h-3.5 text-foreground/50" />
-                      <span>Keep Tier 1 materials</span>
+                      <span>{c.guaranteeSection.keepTier1}</span>
                     </div>
                   </div>
                 </div>
@@ -496,12 +673,12 @@ export default function Tiers() {
             <div>
               <ScrollFadeIn className="mb-8">
                 <h2 className="text-3xl md:text-4xl font-bold tracking-tight">
-                  Common questions
+                  {c.faq.heading}
                 </h2>
               </ScrollFadeIn>
 
               <div className="space-y-3">
-                {faq.map(({ q, a }, index) => (
+                {c.faq.items.map(({ q, a }, index) => (
                   <motion.details
                     key={q}
                     initial={{ opacity: 0, y: 10 }}
@@ -536,22 +713,22 @@ export default function Tiers() {
                   transition={{ duration: 2, repeat: Infinity }}
                   className="w-2 h-2 rounded-full bg-green-500"
                 />
-                <span className="text-xs font-mono text-muted-foreground">Now enrolling</span>
+                <span className="text-xs font-mono text-muted-foreground">{c.cta.badge}</span>
               </div>
             </ScrollFadeIn>
 
             <ScrollFadeIn>
               <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight mb-6">
-                Ready to orchestrate,{' '}
+                {c.cta.heading}{' '}
                 <span className="bg-gradient-to-r from-foreground via-foreground/80 to-foreground/60 bg-clip-text text-transparent">
-                  not just prompt?
+                  {c.cta.headingHighlight}
                 </span>
               </h2>
             </ScrollFadeIn>
 
             <BlurFadeIn delay={0.1}>
               <p className="text-muted-foreground text-lg mb-4 max-w-xl mx-auto leading-relaxed">
-                52 hours. From tokens to agent fleets. 4 products built by agents you direct.
+                {c.cta.subheading}
               </p>
               <p className="text-4xl md:text-5xl font-bold font-mono mb-8">$4500</p>
             </BlurFadeIn>
@@ -560,7 +737,7 @@ export default function Tiers() {
               <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-6">
                 <Magnetic strength={0.15}>
                   <Button size="lg" className="h-14 px-10 font-mono group text-base" onClick={handleEnroll} disabled={enrolling}>
-                    {enrolling ? 'Redirecting...' : 'Enroll Now'}
+                    {enrolling ? c.hero.enrolling : c.hero.enroll}
                     <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
                   </Button>
                 </Magnetic>
@@ -568,13 +745,13 @@ export default function Tiers() {
                   <Button size="lg" variant="outline" className="h-14 px-10 font-mono" asChild>
                     <a href="mailto:hello@charlesjackson.dev">
                       <Mail className="mr-2 h-4 w-4" />
-                      Questions? Let's talk
+                      {c.cta.questionsLink}
                     </a>
                   </Button>
                 </Magnetic>
               </div>
               <p className="text-xs text-muted-foreground/50">
-                30-day guarantee · Lifetime access · No recurring fees
+                {c.cta.footer}
               </p>
             </BlurFadeIn>
           </div>

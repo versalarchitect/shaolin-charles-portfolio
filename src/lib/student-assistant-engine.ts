@@ -79,6 +79,36 @@ async function detectDevice(): Promise<'webgpu' | 'wasm'> {
 }
 
 // ============================================================================
+// Degenerate output detection — prevent repetitive garbage from the model
+// ============================================================================
+
+const DEGENERATE_FALLBACK = "I couldn't generate a clear response. Please try rephrasing your question."
+
+function isDegenerate(text: string): boolean {
+  if (text.length < 30) return false
+  const stripped = text.replace(/\s+/g, '')
+  if (stripped.length === 0) return true
+  const uniqueChars = new Set(stripped).size
+  if (uniqueChars <= 3 && stripped.length > 20) return true
+  const tail = stripped.slice(-40)
+  for (let n = 1; n <= 4; n++) {
+    const pattern = tail.slice(0, n)
+    if (pattern.length > 0 && tail === pattern.repeat(Math.ceil(tail.length / n)).slice(0, tail.length)) {
+      return true
+    }
+  }
+  return false
+}
+
+function cleanDegenerate(text: string): string {
+  const match = text.match(/(.{1,4}?)\1{8,}/)
+  if (match?.index !== undefined) {
+    return text.slice(0, match.index).trim()
+  }
+  return text.trim()
+}
+
+// ============================================================================
 // Knowledge base — every piece of course content
 // ============================================================================
 
@@ -387,22 +417,38 @@ export async function askAssistant(
   // Try streaming first
   if (onToken && generator.tokenizer) {
     try {
+      let streamedText = ''
+      let halted = false
+
+      const wrappedCallback = (token: string) => {
+        if (halted) return
+        streamedText += token
+        if (streamedText.length > 80 && isDegenerate(streamedText.slice(-80))) {
+          halted = true
+          return
+        }
+        onToken(token)
+      }
+
       const { TextStreamer } = await import('@huggingface/transformers')
       const streamer = new TextStreamer(generator.tokenizer, {
         skip_prompt: true,
         skip_special_tokens: true,
-        callback_function: onToken,
+        callback_function: wrappedCallback,
       })
 
       const output = await generator(messages, {
         max_new_tokens: MAX_TOKENS,
         temperature: 0.7,
         top_p: 0.9,
-        repetition_penalty: 1.1,
+        repetition_penalty: 1.3,
         do_sample: true,
         streamer,
       })
 
+      if (halted) {
+        return cleanDegenerate(streamedText) || DEGENERATE_FALLBACK
+      }
       return extractResponse(output)
     } catch {
       // Streaming unavailable, fall through
@@ -413,11 +459,15 @@ export async function askAssistant(
     max_new_tokens: MAX_TOKENS,
     temperature: 0.7,
     top_p: 0.9,
-    repetition_penalty: 1.1,
+    repetition_penalty: 1.3,
     do_sample: true,
   })
 
-  return extractResponse(output)
+  const response = extractResponse(output)
+  if (isDegenerate(response)) {
+    return cleanDegenerate(response) || DEGENERATE_FALLBACK
+  }
+  return response
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any

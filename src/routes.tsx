@@ -23,6 +23,8 @@ const Dashboard = lazy(() => import('./pages/Dashboard'))
 const Learn = lazy(() => import('./pages/Learn'))
 const Community = lazy(() => import('./pages/Community'))
 const CommunityThread = lazy(() => import('./pages/CommunityThread'))
+const Chat = lazy(() => import('./pages/Chat'))
+const Profile = lazy(() => import('./pages/Profile'))
 const NotFound = lazy(() => import('./pages/NotFound'))
 
 // Create router
@@ -93,21 +95,51 @@ const router = createBrowserRouter([
         path: 'enroll/success',
         element: <EnrollSuccess />,
       },
+      // Course (protected) routes
       {
-        path: 'dashboard',
+        path: 'course/dashboard',
         element: <AuthGuard><Dashboard /></AuthGuard>,
       },
       {
-        path: 'learn/:lessonId',
+        path: 'course/curriculum',
+        element: <AuthGuard><Curriculum /></AuthGuard>,
+      },
+      {
+        path: 'course/learn/:lessonId',
         element: <AuthGuard><Learn /></AuthGuard>,
       },
       {
-        path: 'community',
+        path: 'course/community',
         element: <AuthGuard><Community /></AuthGuard>,
       },
       {
-        path: 'community/thread/:threadId',
+        path: 'course/community/thread/:threadId',
         element: <AuthGuard><CommunityThread /></AuthGuard>,
+      },
+      {
+        path: 'course/chat',
+        element: <AuthGuard><Chat /></AuthGuard>,
+      },
+      {
+        path: 'course/profile',
+        element: <AuthGuard><Profile /></AuthGuard>,
+      },
+      // Redirects from old paths
+      {
+        path: 'dashboard',
+        loader: () => redirect('/course/dashboard'),
+      },
+      {
+        path: 'learn/:lessonId',
+        loader: ({ params }) => redirect(`/course/learn/${params.lessonId}`),
+      },
+      {
+        path: 'community',
+        loader: () => redirect('/course/community'),
+      },
+      {
+        path: 'community/thread/:threadId',
+        loader: ({ params }) => redirect(`/course/community/thread/${params.threadId}`),
       },
       // 404 catch-all (must be last)
       {

@@ -1,6 +1,6 @@
 import { Link, useNavigate } from 'react-router-dom'
 import { supabase } from '@/lib/supabase'
-import { Avatar, AvatarFallback } from './ui/avatar'
+import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -8,7 +8,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from './ui/dropdown-menu'
-import { LayoutDashboard, Users, LogOut } from 'lucide-react'
+import { LayoutDashboard, Users, Settings, LogOut } from 'lucide-react'
 import { useAuth } from '@/hooks/use-auth'
 
 export function UserAvatar() {
@@ -31,6 +31,9 @@ export function UserAvatar() {
       <DropdownMenuTrigger asChild>
         <button type="button" className="rounded-full ring-2 ring-transparent hover:ring-foreground/20 transition-all focus-visible:outline-none focus-visible:ring-foreground/30">
           <Avatar size="default">
+            {user.user_metadata?.avatar_url && (
+              <AvatarImage src={user.user_metadata.avatar_url} alt="Profile" />
+            )}
             <AvatarFallback className="bg-foreground/10 text-foreground/80 text-xs font-mono font-semibold">
               {initials}
             </AvatarFallback>
@@ -43,15 +46,21 @@ export function UserAvatar() {
         </div>
         <DropdownMenuSeparator />
         <DropdownMenuItem asChild>
-          <Link to="/dashboard" className="cursor-pointer">
+          <Link to="/course/dashboard" className="cursor-pointer">
             <LayoutDashboard className="mr-2 h-4 w-4" />
             Dashboard
           </Link>
         </DropdownMenuItem>
         <DropdownMenuItem asChild>
-          <Link to="/community" className="cursor-pointer">
+          <Link to="/course/community" className="cursor-pointer">
             <Users className="mr-2 h-4 w-4" />
             Community
+          </Link>
+        </DropdownMenuItem>
+        <DropdownMenuItem asChild>
+          <Link to="/course/profile" className="cursor-pointer">
+            <Settings className="mr-2 h-4 w-4" />
+            Settings
           </Link>
         </DropdownMenuItem>
         <DropdownMenuSeparator />

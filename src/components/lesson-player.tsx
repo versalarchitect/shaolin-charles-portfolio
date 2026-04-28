@@ -13,6 +13,7 @@ import {
 import { Button } from '@/components/ui/button'
 import type { LessonStep, LessonContent } from '@/data/lessons/types'
 import { loadLessonContent } from '@/data/lessons'
+import { FlowDiagram } from '@/components/ui/flow-diagram'
 
 // ============================================================================
 // Step components
@@ -544,6 +545,22 @@ function CheckpointStep({ step }: { step: Extract<LessonStep, { type: 'checkpoin
   )
 }
 
+function DiagramStep({ step }: { step: Extract<LessonStep, { type: 'diagram' }> }) {
+  return (
+    <div className="space-y-4">
+      <h2 className="text-xl font-bold tracking-tight">{step.title}</h2>
+      {step.body && <p className="text-foreground/70 leading-relaxed">{step.body}</p>}
+      <div className="rounded-xl border border-foreground/[0.08] bg-foreground/[0.02] p-4">
+        <FlowDiagram
+          nodes={step.diagram.nodes}
+          edges={step.diagram.edges}
+          direction={step.diagram.direction}
+        />
+      </div>
+    </div>
+  )
+}
+
 // ============================================================================
 // Step renderer
 // ============================================================================
@@ -572,6 +589,8 @@ function StepRenderer({
       return <ChecklistStep step={step} onComplete={onComplete} />
     case 'checkpoint':
       return <CheckpointStep step={step} />
+    case 'diagram':
+      return <DiagramStep step={step} />
     default:
       return null
   }
@@ -581,7 +600,7 @@ function StepRenderer({
 // Main player
 // ============================================================================
 
-const PASSIVE_STEPS = new Set(['info', 'code-demo', 'checkpoint'])
+const PASSIVE_STEPS = new Set(['info', 'code-demo', 'checkpoint', 'diagram'])
 
 export function LessonPlayer({ lessonId }: { lessonId: string }) {
   const [content, setContent] = useState<LessonContent | null>(null)

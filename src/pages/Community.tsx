@@ -43,6 +43,18 @@ import {
   timeAgo,
   type Thread,
 } from '@/lib/community-api'
+import { toast } from 'sonner'
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+} from '@/components/ui/dialog'
+import { Label } from '@/components/ui/label'
+import { Input } from '@/components/ui/input'
+import { Textarea } from '@/components/ui/textarea'
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -90,7 +102,7 @@ function Avatar({ initials, size = 'sm' }: { initials: string; size?: 'sm' | 'md
 // Sub-components
 // ---------------------------------------------------------------------------
 
-function StatsHeader({ threadCount, onNewThread }: { threadCount: number; onNewThread: () => void }) {
+function StatsHeader({ threadCount, onNewThread, onSubmitQuestion }: { threadCount: number; onNewThread: () => void; onSubmitQuestion: () => void }) {
   return (
     <BlurFadeIn delay={0}>
       <div className="mb-8">
@@ -108,15 +120,9 @@ function StatsHeader({ threadCount, onNewThread }: { threadCount: number; onNewT
               <Plus className="mr-2 h-4 w-4" />
               New Thread
             </Button>
-            <Button size="lg" variant="outline" className="h-11 px-5 font-mono group" asChild>
-              <a
-                href="mailto:hello@charlesjackson.dev?subject=Office%20Hours%20Question"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <Send className="mr-2 h-4 w-4" />
-                <span className="hidden sm:inline">Submit Question</span>
-              </a>
+            <Button size="lg" variant="outline" className="h-11 px-5 font-mono group" onClick={onSubmitQuestion}>
+              <Send className="mr-2 h-4 w-4" />
+              <span className="hidden sm:inline">Submit Question</span>
             </Button>
           </div>
         </div>
@@ -202,7 +208,7 @@ function ThreadCard({ thread, index }: { thread: Thread; index: number }) {
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: index * 0.04, duration: 0.3 }}
     >
-      <Link to={`/community/thread/${thread.id}`} className="block">
+      <Link to={`/course/community/thread/${thread.id}`} className="block">
         <SpotlightCard className="rounded-xl border border-foreground/[0.06] bg-foreground/[0.015] hover:bg-foreground/[0.035] hover:border-foreground/[0.12] transition-all duration-200 cursor-pointer group">
           <div className="p-4">
             <div className="flex gap-3">
@@ -289,7 +295,7 @@ function AnnouncementsTab() {
   )
 }
 
-function OfficeHoursCard() {
+function OfficeHoursCard({ onSubmitQuestion }: { onSubmitQuestion: () => void }) {
   return (
     <BlurFadeIn delay={0.15}>
       <SpotlightCard className="rounded-xl border border-foreground/[0.08] bg-foreground/[0.02] overflow-hidden">
@@ -326,15 +332,9 @@ function OfficeHoursCard() {
             Submit questions before each session. Priority goes to capstone students.
           </p>
 
-          <Button size="sm" className="w-full h-9 font-mono text-xs group" asChild>
-            <a
-              href="mailto:hello@charlesjackson.dev?subject=Office%20Hours%20Question"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Submit a Question
-              <MessageSquare className="ml-1.5 h-3.5 w-3.5 group-hover:translate-x-0.5 transition-transform" />
-            </a>
+          <Button size="sm" className="w-full h-9 font-mono text-xs group" onClick={onSubmitQuestion}>
+            Submit a Question
+            <MessageSquare className="ml-1.5 h-3.5 w-3.5 group-hover:translate-x-0.5 transition-transform" />
           </Button>
         </div>
       </SpotlightCard>
@@ -503,8 +503,9 @@ function NewThreadModal({
       setContent('')
       setCategory('discussion')
       onClose()
+      toast.success('Thread created')
     } catch {
-      // Could add error toast
+      toast.error('Failed to create thread')
     } finally {
       setSubmitting(false)
     }
@@ -618,6 +619,117 @@ function NewThreadModal({
 }
 
 // ---------------------------------------------------------------------------
+// Submit Question Modal
+// ---------------------------------------------------------------------------
+
+function SubmitQuestionModal({
+  open,
+  onOpenChange,
+}: {
+  open: boolean
+  onOpenChange: (open: boolean) => void
+}) {
+  const { user } = useAuth()
+  const [question, setQuestion] = useState('')
+  const [context, setContext] = useState('')
+  const [submitting, setSubmitting] = useState(false)
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault()
+    if (!question.trim() || !user || submitting) return
+
+    setSubmitting(true)
+    const displayName = user.user_metadata?.display_name || user.email?.split('@')[0] || 'User'
+
+    try {
+      const subject = encodeURIComponent(`Office Hours Question from ${displayName}`)
+      const body = encodeURIComponent(
+        `Question:\n${question.trim()}\n\n${context.trim() ? `Context:\n${context.trim()}` : ''}`,
+      )
+      window.open(`mailto:hello@charlesjackson.dev?subject=${subject}&body=${body}`, '_blank')
+      toast.success('Question submitted — check your email client')
+      setQuestion('')
+      setContext('')
+      onOpenChange(false)
+    } catch {
+      toast.error('Failed to submit question')
+    } finally {
+      setSubmitting(false)
+    }
+  }
+
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="sm:max-w-lg">
+        <form onSubmit={handleSubmit}>
+          <DialogHeader>
+            <DialogTitle className="font-mono">Submit a Question</DialogTitle>
+            <DialogDescription>
+              Ask a question for the next Office Hours session. Priority goes to capstone students.
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="space-y-4 py-4">
+            <div className="space-y-2">
+              <Label htmlFor="question" className="text-xs font-mono uppercase tracking-wider text-foreground/50">
+                Your Question
+              </Label>
+              <Input
+                id="question"
+                placeholder="What would you like to ask?"
+                value={question}
+                onChange={(e) => setQuestion(e.target.value)}
+                className="font-mono text-sm"
+                autoFocus
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="context" className="text-xs font-mono uppercase tracking-wider text-foreground/50">
+                Context <span className="text-foreground/25">(optional)</span>
+              </Label>
+              <Textarea
+                id="context"
+                placeholder="Any relevant context — what you've tried, error messages, links to your code..."
+                value={context}
+                onChange={(e) => setContext(e.target.value)}
+                rows={4}
+                className="font-mono text-sm resize-none"
+              />
+            </div>
+          </div>
+
+          <DialogFooter>
+            <Button
+              type="button"
+              variant="ghost"
+              size="sm"
+              className="font-mono text-xs"
+              onClick={() => onOpenChange(false)}
+            >
+              Cancel
+            </Button>
+            <Button
+              type="submit"
+              size="sm"
+              className="font-mono text-xs px-6"
+              disabled={!question.trim() || submitting}
+            >
+              {submitting ? (
+                <Loader2 className="w-3.5 h-3.5 animate-spin mr-1.5" />
+              ) : (
+                <Send className="w-3.5 h-3.5 mr-1.5" />
+              )}
+              {submitting ? 'Submitting...' : 'Submit Question'}
+            </Button>
+          </DialogFooter>
+        </form>
+      </DialogContent>
+    </Dialog>
+  )
+}
+
+// ---------------------------------------------------------------------------
 // Tab System
 // ---------------------------------------------------------------------------
 
@@ -632,13 +744,14 @@ export default function Community() {
   const [threads, setThreads] = useState<Thread[]>([])
   const [loading, setLoading] = useState(true)
   const [showNewThread, setShowNewThread] = useState(false)
+  const [showSubmitQuestion, setShowSubmitQuestion] = useState(false)
 
   const loadThreads = useCallback(async () => {
     try {
       const data = await fetchThreads()
       setThreads(data)
     } catch {
-      // Silently fail — will show empty state
+      toast.error('Failed to load threads')
     } finally {
       setLoading(false)
     }
@@ -662,7 +775,7 @@ export default function Community() {
       <SEO
         title="Community — The Agentic SaaS Course"
         description="Connect with fellow builders. Weekly office hours, discussion threads, and member spotlights for paid members of The Agentic SaaS Course."
-        path="/community"
+        path="/course/community"
         image="/og-image.png"
         imageAlt="Community — The Agentic SaaS Course"
         keywords="agentic saas community, course community, developer community, office hours, peer feedback, claude code students"
@@ -671,7 +784,7 @@ export default function Community() {
 
       <div className="min-h-screen">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8 lg:py-12">
-          <StatsHeader threadCount={threads.length} onNewThread={() => setShowNewThread(true)} />
+          <StatsHeader threadCount={threads.length} onNewThread={() => setShowNewThread(true)} onSubmitQuestion={() => setShowSubmitQuestion(true)} />
 
           <div className="grid grid-cols-1 lg:grid-cols-[1fr_320px] gap-6 lg:gap-8">
             {/* Main Column */}
@@ -733,7 +846,7 @@ export default function Community() {
 
             {/* Sidebar */}
             <div className="space-y-5">
-              <OfficeHoursCard />
+              <OfficeHoursCard onSubmitQuestion={() => setShowSubmitQuestion(true)} />
               <LeaderboardCard />
               <GuidelinesCard />
             </div>
@@ -745,6 +858,11 @@ export default function Community() {
         open={showNewThread}
         onClose={() => setShowNewThread(false)}
         onCreated={handleThreadCreated}
+      />
+
+      <SubmitQuestionModal
+        open={showSubmitQuestion}
+        onOpenChange={setShowSubmitQuestion}
       />
     </>
   )

@@ -26,6 +26,30 @@ const content: LessonContent = {
       message: 'Philosophy unlocked!',
     },
 
+    {
+      type: 'diagram',
+      title: 'The Deployment Pipeline',
+      body: 'Every change follows this path from your machine to the world.',
+      diagram: {
+        direction: 'LR',
+        nodes: [
+          { id: 'edit', label: 'Edit Code' },
+          { id: 'commit', label: 'Commit' },
+          { id: 'push', label: 'Push' },
+          { id: 'gh', label: 'GitHub' },
+          { id: 'vc', label: 'Vercel', sublabel: 'Auto-build' },
+          { id: 'live', label: 'Live', shape: 'pill', highlight: true },
+        ],
+        edges: [
+          { from: 'edit', to: 'commit' },
+          { from: 'commit', to: 'push' },
+          { from: 'push', to: 'gh' },
+          { from: 'gh', to: 'vc', label: 'webhook' },
+          { from: 'vc', to: 'live' },
+        ],
+      },
+    },
+
     // === VERCEL ACCOUNT ===
     {
       type: 'info',
@@ -191,6 +215,29 @@ const content: LessonContent = {
     },
 
     // === PREVIEW VS PRODUCTION ===
+    {
+      type: 'diagram',
+      title: 'Preview vs Production',
+      body: 'The branch you push to determines the deployment type.',
+      diagram: {
+        direction: 'TB',
+        nodes: [
+          { id: 'push', label: 'git push', shape: 'rounded', highlight: true },
+          { id: 'branch', label: 'Branch?', shape: 'diamond' },
+          { id: 'main', label: 'main' },
+          { id: 'feature', label: 'feature-*' },
+          { id: 'prod', label: 'Production', shape: 'pill', highlight: true },
+          { id: 'prev', label: 'Preview', shape: 'pill' },
+        ],
+        edges: [
+          { from: 'push', to: 'branch' },
+          { from: 'branch', to: 'main', label: 'main' },
+          { from: 'branch', to: 'feature', label: 'other' },
+          { from: 'main', to: 'prod' },
+          { from: 'feature', to: 'prev' },
+        ],
+      },
+    },
     {
       type: 'info',
       title: 'Step 6: Preview vs. Production',

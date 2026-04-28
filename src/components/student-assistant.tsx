@@ -1,6 +1,7 @@
-import { useState, useRef, useEffect, useCallback } from 'react'
+import { useState, useRef, useEffect, useCallback, useMemo } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useLocation } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import {
   Bot,
   X,
@@ -14,7 +15,11 @@ import {
   Lightbulb,
   ChevronRight,
   GraduationCap,
-  MessageSquareText,
+  Dumbbell,
+  Cpu,
+  Zap,
+  Terminal,
+  ArrowRight,
 } from 'lucide-react'
 import { Button } from './ui/button'
 import {
@@ -22,13 +27,107 @@ import {
   askAssistant,
   isAssistantReady,
   isAssistantLoading,
+  getDeviceType,
+  getKnowledgeBaseSize,
+  getPracticeExercise,
+  getPracticeCount,
   type AssistantMessage,
   type ProgressStage,
+  type PracticeExercise,
 } from '@/lib/student-assistant-engine'
 import { ALL_LESSONS } from '@/data/curriculum'
+import type { LessonStep } from '@/data/lessons/types'
 
 // ============================================================================
-// Block parsing — turns model output into renderable blocks
+// Bilingual strings (EN / FR)
+// ============================================================================
+
+function useLang(): 'en' | 'fr' {
+  const { i18n } = useTranslation()
+  return i18n.language?.startsWith('fr') ? 'fr' : 'en'
+}
+
+const S = {
+  en: {
+    title: 'Course Tutor',
+    open: 'Open course tutor',
+    newConv: 'New conversation',
+    clear: 'Clear',
+    offline: 'Offline',
+    error: 'Error',
+    stageEmbed: 'Loading search model',
+    stageGen: 'Loading AI model',
+    stageIndex: 'Indexing course content',
+    stageInit: 'Initializing',
+    loadNote: 'First load downloads ~400 MB · Cached after · All processing local',
+    footer: 'Runs locally · No data sent to servers',
+    placeholder: 'Ask anything about the course...',
+    placeholderLoading: 'Loading AI...',
+    practice: 'Practice mode',
+    errMsg: 'Something went wrong. Try asking again.',
+    retry: 'Retry',
+    check: 'Check',
+    run: 'Run',
+    tryAgain: 'Try again',
+    hint: 'Show hint',
+    checkOrder: 'Check order',
+    nextEx: 'Next exercise',
+    terminal: 'Terminal',
+    typeCmd: 'Type the command...',
+    typeAns: 'Type your answer...',
+    notQuite: 'Not quite. ',
+    accel: 'accelerated',
+    suggestions: ['What will I learn?', 'Quiz me', 'Explain multi-agent orchestration'],
+    sugLesson: (n: string) => [`What is Lesson ${n} about?`, 'Quiz me', 'What tools do I need?'],
+    welLesson: (n: string, t: string, kb: number, p: number) =>
+      `Ready — **Lesson ${n}: ${t}**. I have ${kb} knowledge chunks indexed and ${p} practice exercises for this area.`,
+    welGeneral: (kb: number) =>
+      `Ready — ${kb} knowledge chunks indexed across all 51 lessons. Ask me anything about the curriculum or say "quiz me" for practice.`,
+    welDevice: (d: string) =>
+      `\n\nRunning on **${d}** — all processing happens locally in your browser.`,
+  },
+  fr: {
+    title: 'Tuteur IA',
+    open: 'Ouvrir le tuteur IA',
+    newConv: 'Nouvelle conversation',
+    clear: 'Effacer',
+    offline: 'Hors ligne',
+    error: 'Erreur',
+    stageEmbed: 'Chargement du modèle de recherche',
+    stageGen: 'Chargement du modèle IA',
+    stageIndex: 'Indexation du contenu du cours',
+    stageInit: 'Initialisation',
+    loadNote: 'Premier chargement ~400 Mo · En cache ensuite · Traitement local',
+    footer: 'Exécution locale · Aucune donnée envoyée',
+    placeholder: 'Posez une question sur le cours...',
+    placeholderLoading: "Chargement de l'IA...",
+    practice: 'Mode pratique',
+    errMsg: 'Une erreur est survenue. Réessayez.',
+    retry: 'Réessayer',
+    check: 'Vérifier',
+    run: 'Exécuter',
+    tryAgain: 'Réessayer',
+    hint: "Voir l'indice",
+    checkOrder: "Vérifier l'ordre",
+    nextEx: 'Exercice suivant',
+    terminal: 'Terminal',
+    typeCmd: 'Tapez la commande...',
+    typeAns: 'Tapez votre réponse...',
+    notQuite: 'Pas tout à fait. ',
+    accel: 'accéléré',
+    suggestions: ["Qu'est-ce que je vais apprendre ?", 'Testez-moi', "Expliquez l'orchestration multi-agents"],
+    sugLesson: (n: string) => [`De quoi parle la leçon ${n} ?`, 'Testez-moi', 'Quels outils ai-je besoin ?'],
+    welLesson: (n: string, t: string, kb: number, p: number) =>
+      `Prêt — **Leçon ${n} : ${t}**. ${kb} blocs de connaissances indexés et ${p} exercices pratiques pour cette section.`,
+    welGeneral: (kb: number) =>
+      `Prêt — ${kb} blocs de connaissances indexés sur les 51 leçons. Posez-moi une question ou dites « testez-moi » pour pratiquer.`,
+    welDevice: (d: string) =>
+      `\n\nFonctionne sur **${d}** — tout le traitement se fait localement dans votre navigateur.`,
+  },
+} as const
+
+// ============================================================================
+// Block parsing — model output → renderable blocks
 // ============================================================================
 
 type MessageBlock =
@@ -36,22 +135,20 @@ type MessageBlock =
   | { type: 'code'; language: string; code: string }
   | { type: 'quiz'; question: string; options: string[]; correct: number; explanation: string }
   | { type: 'code-challenge'; instruction: string; answer: string; hint?: string }
+  | { type: 'terminal-exercise'; instruction: string; command: string; hint?: string }
+  | { type: 'practice'; exercise: PracticeExercise }
 
 function parseBlocks(text: string): MessageBlock[] {
   const blocks: MessageBlock[] = []
   let remaining = text
 
   while (remaining.length > 0) {
-    // Check for :::quiz block
-    const quizStart = remaining.indexOf(':::quiz')
-    const codeStart = remaining.indexOf(':::code-challenge')
-    const fenceStart = remaining.indexOf('```')
-
     const candidates = [
-      quizStart >= 0 ? { idx: quizStart, type: 'quiz' as const } : null,
-      codeStart >= 0 ? { idx: codeStart, type: 'code-challenge' as const } : null,
-      fenceStart >= 0 ? { idx: fenceStart, type: 'fence' as const } : null,
-    ].filter(Boolean) as { idx: number; type: string }[]
+      { idx: remaining.indexOf(':::quiz'), len: 7, type: 'quiz' as const },
+      { idx: remaining.indexOf(':::code-challenge'), len: 17, type: 'code-challenge' as const },
+      { idx: remaining.indexOf(':::terminal'), len: 11, type: 'terminal' as const },
+      { idx: remaining.indexOf('```'), len: 3, type: 'fence' as const },
+    ].filter((c) => c.idx >= 0)
 
     if (candidates.length === 0) {
       const trimmed = remaining.trim()
@@ -62,34 +159,10 @@ function parseBlocks(text: string): MessageBlock[] {
     candidates.sort((a, b) => a.idx - b.idx)
     const first = candidates[0]
 
-    // Text before the block
     const before = remaining.slice(0, first.idx).trim()
     if (before) blocks.push({ type: 'text', content: before })
 
-    if (first.type === 'quiz') {
-      const end = remaining.indexOf(':::', first.idx + 7)
-      if (end === -1) {
-        blocks.push({ type: 'text', content: remaining.slice(first.idx).trim() })
-        break
-      }
-      const body = remaining.slice(first.idx + 7, end).trim()
-      const quiz = parseQuizBlock(body)
-      if (quiz) blocks.push(quiz)
-      else blocks.push({ type: 'text', content: body })
-      remaining = remaining.slice(end + 3)
-    } else if (first.type === 'code-challenge') {
-      const end = remaining.indexOf(':::', first.idx + 17)
-      if (end === -1) {
-        blocks.push({ type: 'text', content: remaining.slice(first.idx).trim() })
-        break
-      }
-      const body = remaining.slice(first.idx + 17, end).trim()
-      const challenge = parseCodeChallengeBlock(body)
-      if (challenge) blocks.push(challenge)
-      else blocks.push({ type: 'text', content: body })
-      remaining = remaining.slice(end + 3)
-    } else {
-      // Fenced code block
+    if (first.type === 'fence') {
       const langEnd = remaining.indexOf('\n', first.idx)
       const lang = remaining.slice(first.idx + 3, langEnd).trim() || 'text'
       const closeIdx = remaining.indexOf('```', langEnd + 1)
@@ -97,56 +170,69 @@ function parseBlocks(text: string): MessageBlock[] {
         blocks.push({ type: 'text', content: remaining.slice(first.idx).trim() })
         break
       }
-      const code = remaining.slice(langEnd + 1, closeIdx).trim()
-      blocks.push({ type: 'code', language: lang, code })
+      blocks.push({ type: 'code', language: lang, code: remaining.slice(langEnd + 1, closeIdx).trim() })
       remaining = remaining.slice(closeIdx + 3)
+      continue
     }
+
+    const end = remaining.indexOf(':::', first.idx + first.len)
+    if (end === -1) {
+      blocks.push({ type: 'text', content: remaining.slice(first.idx).trim() })
+      break
+    }
+
+    const body = remaining.slice(first.idx + first.len, end).trim()
+    remaining = remaining.slice(end + 3)
+
+    if (first.type === 'quiz') {
+      const parsed = parseQuizBody(body)
+      if (parsed) { blocks.push(parsed); continue }
+    } else if (first.type === 'code-challenge') {
+      const parsed = parseCodeChallengeBody(body)
+      if (parsed) { blocks.push(parsed); continue }
+    } else if (first.type === 'terminal') {
+      const parsed = parseTerminalBody(body)
+      if (parsed) { blocks.push(parsed); continue }
+    }
+    blocks.push({ type: 'text', content: body })
   }
 
   return blocks.length > 0 ? blocks : [{ type: 'text', content: text }]
 }
 
-function parseQuizBlock(body: string): MessageBlock | null {
-  try {
-    const qMatch = body.match(/question:\s*(.+)/i)
-    const oMatch = body.match(/options:\s*\[([^\]]+)\]/i)
-    const cMatch = body.match(/correct:\s*(\d+)/i)
-    const eMatch = body.match(/explanation:\s*(.+)/i)
-    if (!qMatch || !oMatch || !cMatch) return null
-
-    const options = oMatch[1].split(/",\s*"/).map((o) => o.replace(/^["']|["']$/g, '').trim())
-    return {
-      type: 'quiz',
-      question: qMatch[1].trim(),
-      options,
-      correct: parseInt(cMatch[1]),
-      explanation: eMatch?.[1]?.trim() ?? '',
-    }
-  } catch {
-    return null
+function parseQuizBody(body: string): MessageBlock | null {
+  const q = body.match(/question:\s*(.+)/i)
+  const o = body.match(/options:\s*\[([^\]]+)\]/i)
+  const c = body.match(/correct:\s*(\d+)/i)
+  const e = body.match(/explanation:\s*(.+)/i)
+  if (!q || !o || !c) return null
+  return {
+    type: 'quiz',
+    question: q[1].trim(),
+    options: o[1].split(/",\s*"/).map((s) => s.replace(/^["']|["']$/g, '').trim()),
+    correct: parseInt(c[1]),
+    explanation: e?.[1]?.trim() ?? '',
   }
 }
 
-function parseCodeChallengeBlock(body: string): MessageBlock | null {
-  try {
-    const iMatch = body.match(/instruction:\s*(.+)/i)
-    const aMatch = body.match(/answer:\s*(.+)/i)
-    const hMatch = body.match(/hint:\s*(.+)/i)
-    if (!iMatch || !aMatch) return null
+function parseCodeChallengeBody(body: string): MessageBlock | null {
+  const i = body.match(/instruction:\s*(.+)/i)
+  const a = body.match(/answer:\s*(.+)/i)
+  const h = body.match(/hint:\s*(.+)/i)
+  if (!i || !a) return null
+  return { type: 'code-challenge', instruction: i[1].trim(), answer: a[1].trim(), hint: h?.[1]?.trim() }
+}
 
-    return {
-      type: 'code-challenge',
-      instruction: iMatch[1].trim(),
-      answer: aMatch[1].trim(),
-      hint: hMatch?.[1]?.trim(),
-    }
-  } catch {
-    return null
-  }
+function parseTerminalBody(body: string): MessageBlock | null {
+  const i = body.match(/instruction:\s*(.+)/i)
+  const c = body.match(/command:\s*(.+)/i)
+  const h = body.match(/hint:\s*(.+)/i)
+  if (!i || !c) return null
+  return { type: 'terminal-exercise', instruction: i[1].trim(), command: c[1].trim(), hint: h?.[1]?.trim() }
 }
 
 // ============================================================================
-// Inline interactive components for chat messages
+// Inline interactive components
 // ============================================================================
 
 function InlineQuiz({ block }: { block: Extract<MessageBlock, { type: 'quiz' }> }) {
@@ -167,17 +253,12 @@ function InlineQuiz({ block }: { block: Extract<MessageBlock, { type: 'quiz' }> 
               key={i}
               type="button"
               onClick={() => !submitted && setSelected(i)}
-              className={`
-                w-full text-left px-3 py-2 rounded-lg border text-xs transition-all
-                ${isRight
-                  ? 'border-green-500/40 bg-green-500/10 text-foreground'
-                  : isWrong
-                    ? 'border-red-500/40 bg-red-500/10 text-foreground/70'
-                    : isSelected
-                      ? 'border-foreground/25 bg-foreground/[0.06] text-foreground'
-                      : 'border-foreground/[0.08] bg-foreground/[0.02] text-foreground/70 hover:border-foreground/15'
-                }
-              `}
+              className={`w-full text-left px-3 py-2 rounded-lg border text-xs transition-all ${
+                isRight ? 'border-green-500/40 bg-green-500/10 text-foreground'
+                : isWrong ? 'border-red-500/40 bg-red-500/10 text-foreground/70'
+                : isSelected ? 'border-foreground/25 bg-foreground/[0.06] text-foreground'
+                : 'border-foreground/[0.08] bg-foreground/[0.02] text-foreground/70 hover:border-foreground/15'
+              }`}
             >
               <span className="font-mono text-foreground/40 mr-2">{String.fromCharCode(65 + i)}</span>
               {option}
@@ -187,12 +268,8 @@ function InlineQuiz({ block }: { block: Extract<MessageBlock, { type: 'quiz' }> 
         })}
       </div>
       {!submitted && selected !== null && (
-        <Button
-          size="sm"
-          onClick={() => setSubmitted(true)}
-          className="font-mono text-xs h-7 px-3"
-        >
-          Check <ChevronRight className="w-3 h-3 ml-1" />
+        <Button size="sm" onClick={() => setSubmitted(true)} className="font-mono text-xs h-7 px-3">
+          {S[useLang()].check} <ChevronRight className="w-3 h-3 ml-1" />
         </Button>
       )}
       {submitted && (
@@ -201,16 +278,72 @@ function InlineQuiz({ block }: { block: Extract<MessageBlock, { type: 'quiz' }> 
           animate={{ opacity: 1, y: 0 }}
           className={`text-xs px-3 py-2 rounded-lg ${isCorrect ? 'bg-green-500/10 text-green-300/80' : 'bg-red-500/10 text-red-300/80'}`}
         >
-          {isCorrect ? '' : 'Not quite. '}{block.explanation}
+          {isCorrect ? '' : S[useLang()].notQuite}{block.explanation}
         </motion.div>
       )}
       {submitted && !isCorrect && (
-        <button
-          type="button"
-          onClick={() => { setSelected(null); setSubmitted(false) }}
-          className="text-[10px] font-mono text-foreground/40 hover:text-foreground/60 flex items-center gap-1"
-        >
-          <RotateCcw className="w-2.5 h-2.5" /> Try again
+        <button type="button" onClick={() => { setSelected(null); setSubmitted(false) }} className="text-[10px] font-mono text-foreground/40 hover:text-foreground/60 flex items-center gap-1">
+          <RotateCcw className="w-2.5 h-2.5" /> {S[useLang()].tryAgain}
+        </button>
+      )}
+    </div>
+  )
+}
+
+function InlineTerminal({ block }: { block: Extract<MessageBlock, { type: 'terminal-exercise' }> }) {
+  const [input, setInput] = useState('')
+  const [status, setStatus] = useState<'idle' | 'correct' | 'wrong'>('idle')
+  const [showHint, setShowHint] = useState(false)
+  const inputRef = useRef<HTMLInputElement>(null)
+
+  useEffect(() => { inputRef.current?.focus() }, [])
+
+  const handleSubmit = () => {
+    const normalize = (s: string) => s.replace(/["']/g, '').replace(/\s+/g, ' ').trim().toLowerCase()
+    const base = normalize(block.command).split('"')[0].split("'")[0].trim()
+    if (normalize(input).startsWith(base) || normalize(input) === normalize(block.command)) {
+      setStatus('correct')
+    } else {
+      setStatus('wrong')
+      setTimeout(() => setStatus('idle'), 600)
+    }
+  }
+
+  return (
+    <div className="space-y-2 my-2">
+      <p className="text-xs text-foreground/80">{block.instruction}</p>
+      <div className="rounded-lg border border-foreground/[0.08] bg-foreground/[0.03] overflow-hidden">
+        <div className="flex items-center gap-1.5 px-3 py-1 border-b border-foreground/[0.06]">
+          <Terminal className="w-3 h-3 text-foreground/30" />
+          <span className="text-[9px] font-mono text-foreground/30">{S[useLang()].terminal}</span>
+        </div>
+        <div className="flex items-center gap-2 px-3 py-2">
+          <span className="text-foreground/30 font-mono text-xs select-none">$</span>
+          <input
+            ref={inputRef}
+            type="text"
+            value={input}
+            onChange={(e) => { setInput(e.target.value); setStatus('idle') }}
+            onKeyDown={(e) => e.key === 'Enter' && handleSubmit()}
+            className={`flex-1 bg-transparent font-mono text-xs outline-none ${
+              status === 'correct' ? 'text-green-400' : status === 'wrong' ? 'text-red-400' : 'text-foreground/80'
+            }`}
+            placeholder={S[useLang()].typeCmd}
+            spellCheck={false}
+          />
+          {status === 'correct' ? (
+            <Check className="w-3.5 h-3.5 text-green-400 shrink-0" />
+          ) : (
+            <Button size="sm" onClick={handleSubmit} disabled={!input.trim()} className="h-6 px-2 text-[10px] font-mono">
+              {S[useLang()].run}
+            </Button>
+          )}
+        </div>
+      </div>
+      {block.hint && (
+        <button type="button" onClick={() => setShowHint(!showHint)} className="text-[10px] text-foreground/40 hover:text-foreground/60 flex items-center gap-1">
+          <Lightbulb className="w-2.5 h-2.5" />
+          {showHint ? block.hint : S[useLang()].hint}
         </button>
       )}
     </div>
@@ -245,29 +378,26 @@ function InlineCodeChallenge({ block }: { block: Extract<MessageBlock, { type: '
           value={input}
           onChange={(e) => { setInput(e.target.value); setStatus('idle') }}
           onKeyDown={(e) => e.key === 'Enter' && handleSubmit()}
-          className={`
-            flex-1 bg-foreground/[0.04] border border-foreground/10 rounded-md px-2.5 py-1.5 font-mono text-xs outline-none transition-colors
-            ${status === 'correct' ? 'text-green-400 border-green-500/30' : status === 'wrong' ? 'text-red-400 border-red-500/30' : 'text-foreground/80 focus:border-foreground/20'}
-          `}
-          placeholder="Type your answer..."
+          className={`flex-1 bg-foreground/[0.04] border border-foreground/10 rounded-md px-2.5 py-1.5 font-mono text-xs outline-none transition-colors ${
+            status === 'correct' ? 'text-green-400 border-green-500/30'
+            : status === 'wrong' ? 'text-red-400 border-red-500/30'
+            : 'text-foreground/80 focus:border-foreground/20'
+          }`}
+          placeholder={S[useLang()].typeAns}
           spellCheck={false}
         />
         {status === 'correct' ? (
           <Check className="w-4 h-4 text-green-400 shrink-0" />
         ) : (
           <Button size="sm" onClick={handleSubmit} disabled={!input.trim()} className="h-7 px-2 text-xs font-mono">
-            Run
+            {S[useLang()].check}
           </Button>
         )}
       </div>
       {block.hint && (
-        <button
-          type="button"
-          onClick={() => setShowHint(!showHint)}
-          className="text-[10px] text-foreground/40 hover:text-foreground/60 flex items-center gap-1"
-        >
+        <button type="button" onClick={() => setShowHint(!showHint)} className="text-[10px] text-foreground/40 hover:text-foreground/60 flex items-center gap-1">
           <Lightbulb className="w-2.5 h-2.5" />
-          {showHint ? block.hint : 'Show hint'}
+          {showHint ? block.hint : S[useLang()].hint}
         </button>
       )}
     </div>
@@ -296,10 +426,142 @@ function InlineCode({ block }: { block: Extract<MessageBlock, { type: 'code' }> 
 }
 
 // ============================================================================
+// Practice exercise renderer — renders actual LessonStep types from bank
+// ============================================================================
+
+function PracticeExerciseRenderer({ exercise, onNext }: { exercise: PracticeExercise; onNext: () => void }) {
+  const step = exercise.step
+
+  return (
+    <div className="space-y-3 my-2">
+      <div className="flex items-center gap-2 mb-1">
+        <span className="text-[10px] font-mono px-2 py-0.5 bg-foreground/[0.06] rounded text-foreground/50">
+          {exercise.lessonNumber} — {exercise.lessonTitle}
+        </span>
+      </div>
+
+      {step.type === 'multiple-choice' && (
+        <InlineQuiz
+          block={{
+            type: 'quiz',
+            question: step.question,
+            options: step.options,
+            correct: step.correctIndex,
+            explanation: step.explanation,
+          }}
+        />
+      )}
+
+      {step.type === 'terminal' && (
+        <InlineTerminal
+          block={{
+            type: 'terminal-exercise',
+            instruction: step.instruction,
+            command: step.expectedCommand,
+            hint: step.hint,
+          }}
+        />
+      )}
+
+      {step.type === 'code-input' && (
+        <InlineCodeChallenge
+          block={{
+            type: 'code-challenge',
+            instruction: step.instruction,
+            answer: step.answer,
+            hint: step.hint,
+          }}
+        />
+      )}
+
+      {step.type === 'order' && (
+        <OrderExercise step={step} />
+      )}
+
+      <button
+        type="button"
+        onClick={onNext}
+        className="text-[10px] font-mono text-foreground/40 hover:text-foreground/60 flex items-center gap-1 mt-2"
+      >
+        {S[useLang()].nextEx} <ArrowRight className="w-2.5 h-2.5" />
+      </button>
+    </div>
+  )
+}
+
+function OrderExercise({ step }: { step: Extract<LessonStep, { type: 'order' }> }) {
+  const shuffled = useMemo(() => {
+    const indices = step.items.map((_, i) => i)
+    for (let i = indices.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [indices[i], indices[j]] = [indices[j], indices[i]]
+    }
+    if (indices.every((v, i) => v === step.correctOrder[i])) {
+      [indices[0], indices[1]] = [indices[1], indices[0]]
+    }
+    return indices
+  }, [step.items, step.correctOrder])
+
+  const [order, setOrder] = useState(shuffled)
+  const [status, setStatus] = useState<'idle' | 'correct' | 'wrong'>('idle')
+
+  const move = (from: number, to: number) => {
+    const next = [...order]
+    const [item] = next.splice(from, 1)
+    next.splice(to, 0, item)
+    setOrder(next)
+    setStatus('idle')
+  }
+
+  const check = () => {
+    if (order.every((v, i) => v === step.correctOrder[i])) {
+      setStatus('correct')
+    } else {
+      setStatus('wrong')
+      setTimeout(() => setStatus('idle'), 800)
+    }
+  }
+
+  return (
+    <div className="space-y-2 my-2">
+      <p className="text-xs text-foreground/80">{step.instruction}</p>
+      <div className="space-y-1">
+        {order.map((itemIdx, pos) => (
+          <div
+            key={itemIdx}
+            className={`flex items-center gap-2 px-2.5 py-1.5 rounded-lg border text-xs transition-colors ${
+              status === 'correct' ? 'border-green-500/30 bg-green-500/5'
+              : status === 'wrong' ? 'border-red-500/30 bg-red-500/5'
+              : 'border-foreground/[0.08] bg-foreground/[0.02]'
+            }`}
+          >
+            <div className="flex gap-0.5">
+              <button type="button" onClick={() => pos > 0 && move(pos, pos - 1)} disabled={pos === 0} className="p-0.5 text-foreground/30 hover:text-foreground/60 disabled:opacity-20">
+                <svg width="10" height="10" viewBox="0 0 12 12"><path d="M6 2 L10 8 L2 8 Z" fill="currentColor" /></svg>
+              </button>
+              <button type="button" onClick={() => pos < order.length - 1 && move(pos, pos + 1)} disabled={pos === order.length - 1} className="p-0.5 text-foreground/30 hover:text-foreground/60 disabled:opacity-20">
+                <svg width="10" height="10" viewBox="0 0 12 12"><path d="M6 10 L10 4 L2 4 Z" fill="currentColor" /></svg>
+              </button>
+            </div>
+            <span className="font-mono text-foreground/40 text-[10px]">{pos + 1}</span>
+            <span className="text-foreground/70">{step.items[itemIdx]}</span>
+          </div>
+        ))}
+      </div>
+      {status !== 'correct' && (
+        <Button size="sm" onClick={check} className="font-mono text-xs h-7 px-3">
+          {S[useLang()].checkOrder} <ChevronRight className="w-3 h-3 ml-1" />
+        </Button>
+      )}
+    </div>
+  )
+}
+
+// ============================================================================
 // Message rendering
 // ============================================================================
 
-function RenderBlocks({ blocks }: { blocks: MessageBlock[] }) {
+function RenderBlocks({ blocks, onPracticeNext }: { blocks: MessageBlock[]; onPracticeNext?: () => void }) {
   return (
     <>
       {blocks.map((block, i) => {
@@ -308,7 +570,9 @@ function RenderBlocks({ blocks }: { blocks: MessageBlock[] }) {
             return (
               <p key={i} className="text-sm leading-relaxed text-foreground/80">
                 {block.content.split('**').map((part, j) =>
-                  j % 2 === 1 ? <strong key={j} className="font-semibold text-foreground/90">{part}</strong> : part
+                  j % 2 === 1
+                    ? <strong key={j} className="font-semibold text-foreground/90">{part}</strong>
+                    : part
                 )}
               </p>
             )
@@ -318,6 +582,10 @@ function RenderBlocks({ blocks }: { blocks: MessageBlock[] }) {
             return <InlineQuiz key={i} block={block} />
           case 'code-challenge':
             return <InlineCodeChallenge key={i} block={block} />
+          case 'terminal-exercise':
+            return <InlineTerminal key={i} block={block} />
+          case 'practice':
+            return <PracticeExerciseRenderer key={i} exercise={block.exercise} onNext={onPracticeNext ?? (() => {})} />
         }
       })}
     </>
@@ -337,11 +605,6 @@ interface Message {
 }
 
 const STORAGE_KEY = 'student-assistant-messages'
-const SUGGESTIONS = [
-  'Explain this lesson to me',
-  'Quiz me on this topic',
-  'What tools will I use here?',
-]
 
 function loadMessages(): Message[] {
   try {
@@ -369,12 +632,12 @@ function saveMessages(msgs: Message[]) {
 }
 
 export function StudentAssistant() {
+  const lang = useLang()
+  const s = S[lang]
   const location = useLocation()
   const lessonMatch = location.pathname.match(/^\/learn\/(.+)$/)
   const currentLessonId = lessonMatch?.[1]
-  const currentLesson = currentLessonId
-    ? ALL_LESSONS.find((l) => l.id === currentLessonId)
-    : null
+  const currentLesson = currentLessonId ? ALL_LESSONS.find((l) => l.id === currentLessonId) : null
 
   const [isOpen, setIsOpen] = useState(false)
   const [messages, setMessages] = useState<Message[]>([])
@@ -397,7 +660,6 @@ export function StudentAssistant() {
     if (messages.length > 0) saveMessages(messages)
   }, [messages])
 
-  // Load model when panel opens
   useEffect(() => {
     if (!isOpen || modelReady || modelLoading) return
 
@@ -435,17 +697,25 @@ export function StudentAssistant() {
     if (isOpen) setTimeout(() => inputRef.current?.focus(), 300)
   }, [isOpen])
 
-  function addWelcome() {
-    const content = currentLesson
-      ? `Hey! I'm your course tutor. You're on **Lesson ${currentLesson.number} — ${currentLesson.title}**. Ask me anything about it, or say "quiz me" for practice.`
-      : "Hey! I'm your course tutor. Ask me anything about the curriculum, lessons, or say \"quiz me\" for practice."
+  const addWelcome = useCallback(() => {
+    const device = getDeviceType()
+    const kb = getKnowledgeBaseSize()
+    const practice = getPracticeCount(currentLessonId)
+    const sl = S[lang]
+
+    let content = currentLesson
+      ? sl.welLesson(currentLesson.number, currentLesson.title, kb, practice)
+      : sl.welGeneral(kb)
+
+    content += sl.welDevice(device === 'webgpu' ? 'WebGPU' : 'WebAssembly')
+
     setMessages([{
       role: 'assistant',
       content,
       blocks: parseBlocks(content),
       timestamp: Date.now(),
     }])
-  }
+  }, [currentLesson, currentLessonId, lang])
 
   const handleSend = useCallback(async (text?: string) => {
     const trimmed = (text ?? input).trim()
@@ -466,16 +736,12 @@ export function StudentAssistant() {
     setMessages((prev) => [...prev, streamingMsg])
 
     try {
-      const history: AssistantMessage[] = messages.map((m) => ({
-        role: m.role,
-        content: m.content,
-      }))
-      history.push({ role: 'user', content: trimmed })
+      const history: AssistantMessage[] = messages.map((m) => ({ role: m.role, content: m.content }))
 
       let accumulated = ''
       const response = await askAssistant(
         trimmed,
-        history.slice(0, -1),
+        history,
         currentLessonId,
         (token) => {
           accumulated += token
@@ -483,30 +749,19 @@ export function StudentAssistant() {
             const updated = [...prev]
             const last = updated[updated.length - 1]
             if (last?.streaming) {
-              updated[updated.length - 1] = {
-                ...last,
-                content: accumulated,
-                blocks: parseBlocks(accumulated),
-              }
+              updated[updated.length - 1] = { ...last, content: accumulated, blocks: parseBlocks(accumulated) }
             }
             return updated
           })
         },
       )
 
-      const finalContent = accumulated || response
-      const finalBlocks = parseBlocks(finalContent)
-
+      const finalContent = response || accumulated
       setMessages((prev) => {
         const updated = [...prev]
         const last = updated[updated.length - 1]
         if (last?.streaming) {
-          updated[updated.length - 1] = {
-            ...last,
-            content: finalContent,
-            blocks: finalBlocks,
-            streaming: false,
-          }
+          updated[updated.length - 1] = { ...last, content: finalContent, blocks: parseBlocks(finalContent), streaming: false }
         }
         return updated
       })
@@ -515,13 +770,8 @@ export function StudentAssistant() {
         const updated = [...prev]
         const last = updated[updated.length - 1]
         if (last?.streaming) {
-          const errContent = 'Something went wrong. Try asking again.'
-          updated[updated.length - 1] = {
-            ...last,
-            content: errContent,
-            blocks: [{ type: 'text', content: errContent }],
-            streaming: false,
-          }
+          const errContent = s.errMsg
+          updated[updated.length - 1] = { ...last, content: errContent, blocks: [{ type: 'text', content: errContent }], streaming: false }
         }
         return updated
       })
@@ -530,30 +780,62 @@ export function StudentAssistant() {
     }
   }, [input, sending, modelReady, messages, currentLessonId])
 
+  const handlePractice = useCallback(() => {
+    if (!modelReady) return
+
+    const exercise = getPracticeExercise(currentLessonId)
+    if (!exercise) {
+      handleSend('Quiz me on the current topic')
+      return
+    }
+
+    const content = `Here's a practice exercise from **Lesson ${exercise.lessonNumber}**:`
+    const practiceBlock: MessageBlock = { type: 'practice', exercise }
+
+    setMessages((prev) => [
+      ...prev,
+      { role: 'user' as const, content: 'Practice exercise', timestamp: Date.now() },
+      {
+        role: 'assistant' as const,
+        content,
+        blocks: [{ type: 'text', content }, practiceBlock],
+        timestamp: Date.now(),
+      },
+    ])
+  }, [modelReady, currentLessonId, handleSend])
+
+  const handlePracticeNext = useCallback(() => {
+    handlePractice()
+  }, [handlePractice])
+
   const handleReset = () => {
     sessionStorage.removeItem(STORAGE_KEY)
     addWelcome()
   }
 
-  const stageName = (s: ProgressStage | null) => {
-    switch (s) {
-      case 'embedding-model': return 'Loading search model'
-      case 'generation-model': return 'Loading AI model'
-      case 'indexing': return 'Indexing curriculum'
-      default: return 'Initializing'
+  const stageName = (st: ProgressStage | null) => {
+    switch (st) {
+      case 'embedding-model': return s.stageEmbed
+      case 'generation-model': return s.stageGen
+      case 'indexing': return s.stageIndex
+      default: return s.stageInit
     }
   }
 
   const totalProgress = (() => {
     if (!progressStage) return 0
     const weights: Record<ProgressStage, [number, number]> = {
-      'embedding-model': [0, 20],
-      'generation-model': [20, 80],
+      'embedding-model': [0, 15],
+      'generation-model': [15, 80],
       'indexing': [80, 100],
     }
     const [base, max] = weights[progressStage]
     return base + (progressPercent / 100) * (max - base)
   })()
+
+  const suggestions = currentLesson
+    ? s.sugLesson(currentLesson.number)
+    : s.suggestions
 
   const showSuggestions = modelReady && messages.length <= 2 && !sending
 
@@ -572,7 +854,7 @@ export function StudentAssistant() {
               type="button"
               onClick={() => setIsOpen(true)}
               className="group relative flex items-center justify-center w-14 h-14 rounded-full bg-foreground text-background shadow-lg hover:scale-105 active:scale-95 transition-transform"
-              aria-label="Open course tutor"
+              aria-label={s.open}
             >
               <GraduationCap className="w-6 h-6" />
               <motion.div
@@ -602,38 +884,28 @@ export function StudentAssistant() {
                   <Sparkles className="w-4 h-4 text-foreground/70" />
                 </div>
                 <div>
-                  <h3 className="text-sm font-semibold">Course Tutor</h3>
-                  <p className="text-[10px] text-muted-foreground font-mono">
-                    {modelReady
-                      ? currentLesson
-                        ? `Lesson ${currentLesson.number}`
-                        : 'AI-powered · Private'
-                      : modelLoading
-                        ? stageName(progressStage)
-                        : error
-                          ? 'Error'
-                          : 'Offline'}
+                  <h3 className="text-sm font-semibold">{s.title}</h3>
+                  <p className="text-[10px] text-muted-foreground font-mono flex items-center gap-1">
+                    {modelReady ? (
+                      <>
+                        <Cpu className="w-2.5 h-2.5" />
+                        {getDeviceType() === 'webgpu' ? 'WebGPU' : 'WASM'} · {getKnowledgeBaseSize()} chunks
+                        {currentLesson && ` · L${currentLesson.number}`}
+                      </>
+                    ) : modelLoading ? (
+                      stageName(progressStage)
+                    ) : error ? s.error : s.offline}
                   </p>
                 </div>
               </div>
               <div className="flex items-center gap-0.5">
                 {modelReady && (
-                  <button
-                    type="button"
-                    onClick={handleReset}
-                    className="p-1.5 rounded-lg text-muted-foreground hover:text-foreground hover:bg-foreground/10 transition-colors"
-                    aria-label="New conversation"
-                    title="New conversation"
-                  >
-                    <RotateCcw className="w-3.5 h-3.5" />
+                  <button type="button" onClick={handleReset} className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[11px] font-mono text-muted-foreground hover:text-foreground hover:bg-foreground/10 transition-colors" title={s.newConv}>
+                    <RotateCcw className="w-3 h-3" />
+                    {s.clear}
                   </button>
                 )}
-                <button
-                  type="button"
-                  onClick={() => setIsOpen(false)}
-                  className="p-1.5 rounded-lg text-muted-foreground hover:text-foreground hover:bg-foreground/10 transition-colors"
-                  aria-label="Close"
-                >
+                <button type="button" onClick={() => setIsOpen(false)} className="p-1.5 rounded-lg text-muted-foreground hover:text-foreground hover:bg-foreground/10 transition-colors">
                   <X className="w-4 h-4" />
                 </button>
               </div>
@@ -649,45 +921,29 @@ export function StudentAssistant() {
                   </span>
                 </div>
                 <div className="h-1 rounded-full bg-foreground/10 overflow-hidden">
-                  <motion.div
-                    className="h-full bg-foreground/30 rounded-full"
-                    animate={{ width: `${totalProgress}%` }}
-                    transition={{ duration: 0.3 }}
-                  />
+                  <motion.div className="h-full bg-foreground/30 rounded-full" animate={{ width: `${totalProgress}%` }} transition={{ duration: 0.3 }} />
                 </div>
                 <p className="text-[9px] text-muted-foreground/40 mt-2 font-mono">
-                  First load downloads ~400 MB · Cached after
+                  {s.loadNote}
                 </p>
               </div>
             )}
 
-            {/* Error state */}
+            {/* Error */}
             {error && !modelLoading && !modelReady && (
               <div className="px-5 py-4 border-b border-red-500/10">
                 <p className="text-xs text-red-400/80 mb-2">{error}</p>
                 <Button
-                  size="sm"
-                  variant="outline"
-                  className="text-xs font-mono h-7"
+                  size="sm" variant="outline" className="text-xs font-mono h-7"
                   onClick={() => {
                     setError(null)
                     setModelLoading(true)
-                    initAssistant((stage, percent) => {
-                      setProgressStage(stage)
-                      setProgressPercent(percent)
-                    })
-                      .then(() => {
-                        setModelReady(true)
-                        setModelLoading(false)
-                        addWelcome()
-                      })
-                      .catch((err) => {
-                        setModelLoading(false)
-                        setError(err?.message ?? 'Failed to load.')
-                      })
+                    initAssistant((stage, percent) => { setProgressStage(stage); setProgressPercent(percent) })
+                      .then(() => { setModelReady(true); setModelLoading(false); addWelcome() })
+                      .catch((e) => { setModelLoading(false); setError(e?.message ?? 'Failed to load.') })
                   }}
                 >
-                  <RotateCcw className="w-3 h-3 mr-1" /> Retry
+                  <RotateCcw className="w-3 h-3 mr-1" /> {s.retry}
                 </Button>
               </div>
             )}
@@ -702,14 +958,8 @@ export function StudentAssistant() {
                   transition={{ duration: 0.15 }}
                   className={`flex gap-2.5 ${msg.role === 'user' ? 'flex-row-reverse' : ''}`}
                 >
-                  <div className={`flex-shrink-0 w-6 h-6 rounded-md flex items-center justify-center mt-0.5 ${
-                    msg.role === 'assistant' ? 'bg-foreground/10' : 'bg-foreground/5'
-                  }`}>
-                    {msg.role === 'assistant' ? (
-                      <Bot className="w-3.5 h-3.5 text-foreground/60" />
-                    ) : (
-                      <User className="w-3.5 h-3.5 text-foreground/60" />
-                    )}
+                  <div className={`flex-shrink-0 w-6 h-6 rounded-md flex items-center justify-center mt-0.5 ${msg.role === 'assistant' ? 'bg-foreground/10' : 'bg-foreground/5'}`}>
+                    {msg.role === 'assistant' ? <Bot className="w-3.5 h-3.5 text-foreground/60" /> : <User className="w-3.5 h-3.5 text-foreground/60" />}
                   </div>
                   <div className="max-w-[85%] space-y-1">
                     {msg.role === 'user' ? (
@@ -718,24 +968,16 @@ export function StudentAssistant() {
                       </div>
                     ) : msg.blocks && msg.blocks.length > 0 ? (
                       <div className="rounded-xl px-3.5 py-2.5 bg-foreground/[0.06] space-y-2">
-                        <RenderBlocks blocks={msg.blocks} />
+                        <RenderBlocks blocks={msg.blocks} onPracticeNext={handlePracticeNext} />
                         {msg.streaming && (
-                          <motion.span
-                            animate={{ opacity: [1, 0] }}
-                            transition={{ duration: 0.4, repeat: Infinity }}
-                            className="inline-block w-0.5 h-[1em] bg-foreground/50 ml-0.5 align-middle"
-                          />
+                          <motion.span animate={{ opacity: [1, 0] }} transition={{ duration: 0.4, repeat: Infinity }} className="inline-block w-0.5 h-[1em] bg-foreground/50 ml-0.5 align-middle" />
                         )}
                       </div>
                     ) : (
                       <div className="rounded-xl px-3.5 py-2.5 text-sm leading-relaxed bg-foreground/[0.06] text-foreground/80">
                         {msg.content}
                         {msg.streaming && (
-                          <motion.span
-                            animate={{ opacity: [1, 0] }}
-                            transition={{ duration: 0.4, repeat: Infinity }}
-                            className="inline-block w-0.5 h-[1em] bg-foreground/50 ml-0.5 align-middle"
-                          />
+                          <motion.span animate={{ opacity: [1, 0] }} transition={{ duration: 0.4, repeat: Infinity }} className="inline-block w-0.5 h-[1em] bg-foreground/50 ml-0.5 align-middle" />
                         )}
                       </div>
                     )}
@@ -743,7 +985,7 @@ export function StudentAssistant() {
                 </motion.div>
               ))}
 
-              {/* Typing indicator when waiting (before first token) */}
+              {/* Typing indicator */}
               {sending && messages[messages.length - 1]?.streaming && messages[messages.length - 1]?.content === '' && (
                 <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex gap-2.5">
                   <div className="flex-shrink-0 w-6 h-6 rounded-md flex items-center justify-center mt-0.5 bg-foreground/10">
@@ -752,12 +994,7 @@ export function StudentAssistant() {
                   <div className="bg-foreground/[0.06] rounded-xl px-3.5 py-2.5">
                     <div className="flex gap-1">
                       {[0, 1, 2].map((j) => (
-                        <motion.div
-                          key={j}
-                          className="w-1.5 h-1.5 rounded-full bg-foreground/30"
-                          animate={{ opacity: [0.3, 1, 0.3] }}
-                          transition={{ duration: 1, repeat: Infinity, delay: j * 0.2 }}
-                        />
+                        <motion.div key={j} className="w-1.5 h-1.5 rounded-full bg-foreground/30" animate={{ opacity: [0.3, 1, 0.3] }} transition={{ duration: 1, repeat: Infinity, delay: j * 0.2 }} />
                       ))}
                     </div>
                   </div>
@@ -766,17 +1003,12 @@ export function StudentAssistant() {
 
               {/* Suggestions */}
               {showSuggestions && (
-                <motion.div
-                  initial={{ opacity: 0, y: 6 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.2 }}
-                  className="flex flex-wrap gap-2"
-                >
-                  {SUGGESTIONS.map((q) => (
+                <motion.div initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} className="flex flex-wrap gap-2">
+                  {suggestions.map((q) => (
                     <button
                       key={q}
                       type="button"
-                      onClick={() => handleSend(q)}
+                      onClick={() => q === 'Quiz me' ? handlePractice() : handleSend(q)}
                       className="text-xs px-3 py-1.5 rounded-full border border-foreground/10 bg-foreground/[0.03] text-foreground/60 hover:text-foreground hover:border-foreground/20 hover:bg-foreground/[0.06] transition-all"
                     >
                       {q}
@@ -793,44 +1025,30 @@ export function StudentAssistant() {
               <div className="flex items-center gap-2">
                 <button
                   type="button"
-                  onClick={() => handleSend('Quiz me on the current topic')}
+                  onClick={handlePractice}
                   disabled={!modelReady || sending}
                   className="p-2.5 rounded-lg border border-foreground/10 bg-foreground/[0.03] text-foreground/40 hover:text-foreground/70 hover:border-foreground/20 hover:bg-foreground/[0.06] disabled:opacity-30 transition-all shrink-0"
-                  title="Practice mode"
-                  aria-label="Practice mode"
+                  title={s.practice}
+                  aria-label={s.practice}
                 >
-                  <MessageSquareText className="w-4 h-4" />
+                  <Dumbbell className="w-4 h-4" />
                 </button>
                 <input
                   ref={inputRef}
                   type="text"
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
-                  onKeyDown={(e) => {
-                    if (e.key === 'Enter' && !e.shiftKey) {
-                      e.preventDefault()
-                      handleSend()
-                    }
-                  }}
-                  placeholder={modelReady ? 'Ask anything about the course...' : 'Loading AI...'}
+                  onKeyDown={(e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleSend() } }}
+                  placeholder={modelReady ? s.placeholder : s.placeholderLoading}
                   disabled={!modelReady || sending}
                   className="flex-1 bg-foreground/[0.04] border border-foreground/10 rounded-lg px-3 py-2.5 text-sm text-foreground placeholder:text-muted-foreground/50 focus:outline-none focus:border-foreground/20 disabled:opacity-50 transition-colors"
                 />
-                <Button
-                  size="icon"
-                  onClick={() => handleSend()}
-                  disabled={!input.trim() || !modelReady || sending}
-                  className="h-10 w-10 rounded-lg shrink-0"
-                >
-                  {sending ? (
-                    <Loader2 className="w-4 h-4 animate-spin" />
-                  ) : (
-                    <Send className="w-4 h-4" />
-                  )}
+                <Button size="icon" onClick={() => handleSend()} disabled={!input.trim() || !modelReady || sending} className="h-10 w-10 rounded-lg shrink-0">
+                  {sending ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
                 </Button>
               </div>
               <p className="text-[9px] text-muted-foreground/40 text-center mt-2 font-mono">
-                Runs locally · No data sent to servers
+                {s.footer}{modelReady ? ` · ${getDeviceType().toUpperCase()} ${s.accel}` : ''}
               </p>
             </div>
           </motion.div>

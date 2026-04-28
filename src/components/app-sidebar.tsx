@@ -6,6 +6,7 @@ import {
   BookOpen,
   Users,
   MessageSquare,
+  Settings,
   LogOut,
   Menu,
   X,
@@ -23,7 +24,7 @@ import { Logo } from '@/components/ui/logo'
 import { LanguageSwitcher } from '@/components/language-switcher'
 import { useAuth } from '@/hooks/use-auth'
 import { useTheme } from '@/components/theme-provider'
-import { Avatar, AvatarFallback } from '@/components/ui/avatar'
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { supabase } from '@/lib/supabase'
 import { useProgress, getLevel, getNextLevel, getOverallProgress } from '@/stores/progress'
 import { TOTAL_LESSONS } from '@/data/curriculum'
@@ -33,6 +34,7 @@ const NAV_ITEMS = [
   { label: 'Curriculum', href: '/course/curriculum', icon: BookOpen },
   { label: 'Community', href: '/course/community', icon: Users },
   { label: 'Chat', href: '/course/chat', icon: MessageSquare },
+  { label: 'Settings', href: '/course/profile', icon: Settings },
 ]
 
 function LevelIcon({ levelName, className }: { levelName: string; className?: string }) {
@@ -76,6 +78,9 @@ function SidebarProfile({
       {/* User identity */}
       <div className="flex items-center gap-3 px-3 py-2.5">
         <Avatar size="default">
+          {user.user_metadata?.avatar_url && (
+            <AvatarImage src={user.user_metadata.avatar_url} alt={displayName} />
+          )}
           <AvatarFallback className="bg-foreground/10 text-foreground/80 text-xs font-mono font-semibold">
             {initials}
           </AvatarFallback>

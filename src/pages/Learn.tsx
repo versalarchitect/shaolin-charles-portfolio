@@ -128,7 +128,7 @@ function LockedState({ lessonTitle }: { lessonTitle: string }) {
           Complete the previous lessons to unlock{' '}
           <span className="text-foreground/80 font-medium">"{lessonTitle}"</span>.
         </p>
-        <Link to="/dashboard">
+        <Link to="/course/dashboard">
           <Button variant="outline" className="gap-2 font-mono">
             <ArrowLeft className="w-4 h-4" />
             Back to Dashboard
@@ -146,7 +146,7 @@ function LessonNotFound() {
         <h1 className="text-6xl font-bold text-foreground/10">404</h1>
         <h2 className="text-2xl font-bold">Lesson Not Found</h2>
         <p className="text-foreground/60">This lesson doesn't exist or may have been moved.</p>
-        <Link to="/dashboard">
+        <Link to="/course/dashboard">
           <Button className="gap-2 font-mono">
             <ArrowLeft className="w-4 h-4" />
             Back to Dashboard
@@ -299,7 +299,7 @@ export default function Learn() {
         <div className="flex items-center justify-between gap-4 mb-6">
           <div className="flex items-center gap-2 text-sm text-foreground/50 min-w-0">
             <Link
-              to="/dashboard"
+              to="/course/dashboard"
               className="flex items-center gap-1.5 hover:text-foreground transition-colors shrink-0"
             >
               <ArrowLeft className="w-4 h-4" />

@@ -14,6 +14,9 @@ import {
   Settings,
   Star,
   Play,
+  Trophy,
+  Layers,
+  Zap,
 } from 'lucide-react'
 import {
   BlurFadeIn,
@@ -21,7 +24,7 @@ import {
   AnimatedNumber,
 } from '@/components/ui/aaa-effects'
 import { SectionSpots, Section } from '@/components/ui/gradient-background'
-import { CURRICULUM } from '@/data/curriculum'
+import { CURRICULUM, TOTAL_XP, TOTAL_LESSONS } from '@/data/curriculum'
 import { useAuth } from '@/hooks/use-auth'
 
 const tierIcons: Record<string, typeof Code2> = {
@@ -56,86 +59,187 @@ export default function Curriculum() {
 }
 
 function AppCurriculum() {
+  const totalHours = CURRICULUM.reduce((sum, t) => sum + t.hours, 0)
+
   return (
-    <div className="p-6 lg:p-8 max-w-4xl">
-      <div className="mb-8">
-        <h1 className="text-2xl font-bold tracking-tight mb-2">Curriculum</h1>
-        <p className="text-sm text-muted-foreground">
-          Each tier builds on the last. The capstone from each tier proves you're ready for the next.
-        </p>
-      </div>
+    <div className="p-6 lg:p-8">
+      <div className="flex gap-8">
+        {/* Main content */}
+        <div className="flex-1 max-w-4xl">
+          <div className="mb-8">
+            <h1 className="text-2xl font-bold tracking-tight mb-2">Curriculum</h1>
+            <p className="text-sm text-muted-foreground">
+              Each tier builds on the last. The capstone from each tier proves you're ready for the next.
+            </p>
+          </div>
 
-      <div className="space-y-8">
-        {tiers.map((tier) => {
-          const Icon = tier.icon
-          return (
-            <div
-              key={tier.id}
-              className="rounded-xl border border-foreground/10 bg-foreground/[0.02]"
-            >
-              <div className="p-5 border-b border-foreground/[0.06]">
-                <div className="flex items-center gap-3 mb-2">
-                  <div className="p-2 rounded-lg bg-foreground/5 border border-foreground/10">
-                    <Icon className="w-4 h-4 text-foreground/70" />
-                  </div>
-                  <div>
-                    <h2 className="text-lg font-bold">{tier.title}</h2>
-                    <div className="flex items-center gap-3 text-xs text-muted-foreground">
-                      <span className="flex items-center gap-1">
-                        <Clock className="w-3 h-3" />
-                        {tier.hours}
-                      </span>
-                      <span className="flex items-center gap-1">
-                        <BookOpen className="w-3 h-3" />
-                        {tier.lessons}
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <div className="divide-y divide-foreground/[0.04]">
-                {tier.lessonDetails.map((lesson) => (
-                  <Link
-                    key={lesson.id}
-                    to={`/learn/${lesson.id}`}
-                    className="flex items-center gap-3 px-5 py-3 hover:bg-foreground/[0.03] transition-colors group"
-                  >
-                    <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-foreground/10 group-hover:bg-foreground/15 transition-colors">
-                      {lesson.isCapstone ? (
-                        <Star className="h-3 w-3 text-foreground/70" />
-                      ) : (
-                        <Play className="h-2.5 w-2.5 text-foreground/60 ml-0.5" />
-                      )}
-                    </span>
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-2">
-                        <span className="text-[10px] font-mono text-foreground/40">{lesson.number}</span>
-                        <span className={`text-sm ${lesson.isCapstone ? 'font-semibold' : ''} text-foreground/80 group-hover:text-foreground transition-colors truncate`}>
-                          {lesson.title}
-                        </span>
+          <div className="space-y-8">
+            {tiers.map((tier) => {
+              const Icon = tier.icon
+              return (
+                <div
+                  key={tier.id}
+                  id={`tier-${tier.id}`}
+                  className="rounded-xl border border-foreground/10 bg-foreground/[0.02]"
+                >
+                  <div className="p-5 border-b border-foreground/[0.06]">
+                    <div className="flex items-center gap-3 mb-2">
+                      <div className="p-2 rounded-lg bg-foreground/5 border border-foreground/10">
+                        <Icon className="w-4 h-4 text-foreground/70" />
+                      </div>
+                      <div>
+                        <h2 className="text-lg font-bold">{tier.title}</h2>
+                        <div className="flex items-center gap-3 text-xs text-muted-foreground">
+                          <span className="flex items-center gap-1">
+                            <Clock className="w-3 h-3" />
+                            {tier.hours}
+                          </span>
+                          <span className="flex items-center gap-1">
+                            <BookOpen className="w-3 h-3" />
+                            {tier.lessons}
+                          </span>
+                        </div>
                       </div>
                     </div>
-                    <div className="flex items-center gap-3 text-xs text-foreground/40 shrink-0">
-                      <span className="font-mono">{lesson.duration}m</span>
-                      <span className="font-mono text-foreground/30">+{lesson.xp} XP</span>
+                  </div>
+
+                  <div className="divide-y divide-foreground/[0.04]">
+                    {tier.lessonDetails.map((lesson) => (
+                      <Link
+                        key={lesson.id}
+                        to={`/learn/${lesson.id}`}
+                        className="flex items-center gap-3 px-5 py-3 hover:bg-foreground/[0.03] transition-colors group"
+                      >
+                        <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-foreground/10 group-hover:bg-foreground/15 transition-colors">
+                          {lesson.isCapstone ? (
+                            <Star className="h-3 w-3 text-foreground/70" />
+                          ) : (
+                            <Play className="h-2.5 w-2.5 text-foreground/60 ml-0.5" />
+                          )}
+                        </span>
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center gap-2">
+                            <span className="text-[10px] font-mono text-foreground/40">{lesson.number}</span>
+                            <span className={`text-sm ${lesson.isCapstone ? 'font-semibold' : ''} text-foreground/80 group-hover:text-foreground transition-colors truncate`}>
+                              {lesson.title}
+                            </span>
+                          </div>
+                        </div>
+                        <div className="flex items-center gap-3 text-xs text-foreground/40 shrink-0">
+                          <span className="font-mono">{lesson.duration}m</span>
+                          <span className="font-mono text-foreground/30">+{lesson.xp} XP</span>
+                        </div>
+                      </Link>
+                    ))}
+                  </div>
+
+                  {tier.capstone && (
+                    <div className="px-5 py-3 border-t border-foreground/[0.06] bg-foreground/[0.02]">
+                      <div className="flex items-center gap-2">
+                        <GraduationCap className="w-3.5 h-3.5 text-foreground/60" />
+                        <span className="text-xs font-mono text-foreground/60">Capstone:</span>
+                        <span className="text-xs text-foreground/80">{tier.capstone}</span>
+                      </div>
                     </div>
-                  </Link>
+                  )}
+                </div>
+              )
+            })}
+          </div>
+        </div>
+
+        {/* Right sidebar */}
+        <aside className="hidden xl:block w-72 shrink-0">
+          <div className="sticky top-8 space-y-6">
+            {/* Course Overview */}
+            <div className="rounded-xl border border-foreground/10 bg-foreground/[0.02] p-5">
+              <h3 className="text-xs font-mono uppercase tracking-wide text-foreground/40 mb-4">Course Overview</h3>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <div className="flex items-center gap-1.5 mb-1">
+                    <Clock className="w-3 h-3 text-foreground/40" />
+                    <span className="text-xs text-foreground/40">Hours</span>
+                  </div>
+                  <span className="text-2xl font-bold font-mono">{totalHours}</span>
+                </div>
+                <div>
+                  <div className="flex items-center gap-1.5 mb-1">
+                    <BookOpen className="w-3 h-3 text-foreground/40" />
+                    <span className="text-xs text-foreground/40">Lessons</span>
+                  </div>
+                  <span className="text-2xl font-bold font-mono">{TOTAL_LESSONS}</span>
+                </div>
+                <div>
+                  <div className="flex items-center gap-1.5 mb-1">
+                    <Layers className="w-3 h-3 text-foreground/40" />
+                    <span className="text-xs text-foreground/40">Tiers</span>
+                  </div>
+                  <span className="text-2xl font-bold font-mono">4</span>
+                </div>
+                <div>
+                  <div className="flex items-center gap-1.5 mb-1">
+                    <Zap className="w-3 h-3 text-foreground/40" />
+                    <span className="text-xs text-foreground/40">Total XP</span>
+                  </div>
+                  <span className="text-2xl font-bold font-mono">{TOTAL_XP.toLocaleString()}</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Tier Navigation */}
+            <div className="rounded-xl border border-foreground/10 bg-foreground/[0.02] p-5">
+              <h3 className="text-xs font-mono uppercase tracking-wide text-foreground/40 mb-4">Jump to Tier</h3>
+              <nav className="space-y-1">
+                {tiers.map((tier) => {
+                  const Icon = tier.icon
+                  const tierXp = tier.lessonDetails.reduce((sum, l) => sum + l.xp, 0)
+                  return (
+                    <a
+                      key={tier.id}
+                      href={`#tier-${tier.id}`}
+                      className="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-foreground/[0.05] transition-colors group"
+                    >
+                      <div className="p-1.5 rounded-md bg-foreground/5 border border-foreground/10 group-hover:border-foreground/15 transition-colors">
+                        <Icon className="w-3 h-3 text-foreground/60" />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <span className="text-sm text-foreground/70 group-hover:text-foreground transition-colors block truncate">
+                          {tier.id === 'prework' ? 'Prework' : `Tier ${CURRICULUM.find(t => t.id === tier.id)?.number}`}
+                        </span>
+                        <span className="text-[10px] font-mono text-foreground/30">
+                          {tier.lessonDetails.length} lessons · {tierXp} XP
+                        </span>
+                      </div>
+                    </a>
+                  )
+                })}
+              </nav>
+            </div>
+
+            {/* Capstones */}
+            <div className="rounded-xl border border-foreground/10 bg-foreground/[0.02] p-5">
+              <h3 className="text-xs font-mono uppercase tracking-wide text-foreground/40 mb-4">
+                <Trophy className="w-3 h-3 inline-block mr-1.5 -mt-0.5" />
+                Capstones
+              </h3>
+              <div className="space-y-3">
+                {tiers.filter(t => t.capstone).map((tier) => (
+                  <div key={tier.id} className="flex items-start gap-2">
+                    <GraduationCap className="w-3.5 h-3.5 text-foreground/30 mt-0.5 shrink-0" />
+                    <div>
+                      <span className="text-[10px] font-mono text-foreground/30 block">
+                        {tier.id === 'prework' ? 'Prework' : `Tier ${CURRICULUM.find(t => t.id === tier.id)?.number}`}
+                      </span>
+                      <span className="text-xs text-foreground/60 leading-relaxed">
+                        {tier.capstone}
+                      </span>
+                    </div>
+                  </div>
                 ))}
               </div>
-
-              {tier.capstone && (
-                <div className="px-5 py-3 border-t border-foreground/[0.06] bg-foreground/[0.02]">
-                  <div className="flex items-center gap-2">
-                    <GraduationCap className="w-3.5 h-3.5 text-foreground/60" />
-                    <span className="text-xs font-mono text-foreground/60">Capstone:</span>
-                    <span className="text-xs text-foreground/80">{tier.capstone}</span>
-                  </div>
-                </div>
-              )}
             </div>
-          )
-        })}
+          </div>
+        </aside>
       </div>
     </div>
   )
@@ -346,7 +450,7 @@ function MarketingCurriculum() {
             </p>
             <div className="flex flex-wrap justify-center gap-4">
               <Button size="lg" className="font-mono group" asChild>
-                <Link to="/dashboard">
+                <Link to="/course/dashboard">
                   Start Learning
                   <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
                 </Link>

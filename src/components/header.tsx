@@ -12,12 +12,12 @@ import { useTheme } from '@/components/theme-provider'
 import { HEADER_NAV, SOCIAL_LINKS, SITE } from '@/lib/constants'
 
 const APP_NAV = [
-  { name: 'Dashboard', href: '/dashboard' },
-  { name: 'Curriculum', href: '/curriculum' },
-  { name: 'Community', href: '/community' },
+  { name: 'Dashboard', href: '/course/dashboard' },
+  { name: 'Curriculum', href: '/course/curriculum' },
+  { name: 'Community', href: '/course/community' },
 ]
 
-const APP_ROUTES = ['/dashboard', '/learn/', '/community']
+const APP_ROUTES = ['/course/']
 
 export function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
@@ -132,7 +132,7 @@ export function Header() {
               </Link>
             </Button>
           )}
-          {!isAppPage && (
+          {!isAppPage && !isLoggedIn && (
             <Button size="sm" className="font-mono gap-1.5 group" asChild>
               <Link to="/contact">
                 {t('nav.getInTouch')}
@@ -263,12 +263,12 @@ export function Header() {
                         className="flex-1 h-12 text-base font-mono gap-2"
                         asChild
                       >
-                        <Link to="/dashboard" onClick={() => setMobileMenuOpen(false)}>
+                        <Link to="/course/dashboard" onClick={() => setMobileMenuOpen(false)}>
                           <LayoutDashboard className="h-4 w-4" />
                           Dashboard
                         </Link>
                       </Button>
-                    ) : (
+                    ) : !isLoggedIn ? (
                       <Button
                         className="flex-1 h-12 text-base font-mono gap-2"
                         asChild
@@ -278,7 +278,7 @@ export function Header() {
                           <ArrowUpRight className="h-4 w-4" />
                         </Link>
                       </Button>
-                    )}
+                    ) : null}
                   </div>
 
                   {!isAppPage && (

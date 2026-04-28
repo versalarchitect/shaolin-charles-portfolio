@@ -19,7 +19,7 @@ import {
   SectionBoundaryGrid,
 } from '@/components/ui/gradient-background'
 
-const APP_ROUTES = ['/dashboard', '/learn/', '/community', '/curriculum']
+const APP_ROUTES = ['/course/']
 
 export default function App() {
   const location = useLocation()
