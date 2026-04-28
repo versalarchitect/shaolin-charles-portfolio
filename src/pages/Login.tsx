@@ -19,7 +19,7 @@ export default function Login() {
   const [password, setPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
   const [loading, setLoading] = useState(false)
-  const [mode, setMode] = useState<'signin' | 'signup' | 'forgot'>('signin')
+  const [mode, setMode] = useState<'signin' | 'signup' | 'forgot' | 'magic'>('signin')
 
   if (isLoggedIn) return <Navigate to={redirect} replace />
 
@@ -61,6 +61,21 @@ export default function Login() {
     } else {
       toast.success('Password reset link sent to your email')
       setMode('signin')
+    }
+  }
+
+  const handleMagicLink = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setLoading(true)
+    const { error } = await supabase.auth.signInWithOtp({
+      email,
+      options: { emailRedirectTo: `${window.location.origin}${redirect}` },
+    })
+    setLoading(false)
+    if (error) {
+      toast.error(error.message)
+    } else {
+      toast.success('Magic link sent — check your email')
     }
   }
 
@@ -162,11 +177,13 @@ export default function Login() {
                 {mode === 'signin' && 'Welcome back'}
                 {mode === 'signup' && 'Create your account'}
                 {mode === 'forgot' && 'Reset your password'}
+                {mode === 'magic' && 'Sign in with magic link'}
               </h2>
               <p className="text-sm text-muted-foreground">
                 {mode === 'signin' && 'Sign in to access your course materials'}
                 {mode === 'signup' && 'Get started with the Agentic SaaS Course'}
                 {mode === 'forgot' && 'Enter your email and we\'ll send you a reset link'}
+                {mode === 'magic' && 'Enter your email and we\'ll send you a sign-in link'}
               </p>
             </motion.div>
 
@@ -180,7 +197,9 @@ export default function Login() {
                   ? handleSignIn
                   : mode === 'signup'
                     ? handleSignUp
-                    : handleForgotPassword
+                    : mode === 'magic'
+                      ? handleMagicLink
+                      : handleForgotPassword
               }
               className="space-y-4"
             >
@@ -202,7 +221,7 @@ export default function Login() {
                 </div>
               </div>
 
-              {mode !== 'forgot' && (
+              {mode !== 'forgot' && mode !== 'magic' && (
                 <div>
                   <label htmlFor="password" className="block text-sm font-medium mb-2">
                     Password
@@ -231,7 +250,14 @@ export default function Login() {
               )}
 
               {mode === 'signin' && (
-                <div className="flex justify-end">
+                <div className="flex justify-between">
+                  <button
+                    type="button"
+                    onClick={() => setMode('magic')}
+                    className="text-xs text-muted-foreground hover:text-foreground transition-colors"
+                  >
+                    Use magic link instead
+                  </button>
                   <button
                     type="button"
                     onClick={() => setMode('forgot')}
@@ -247,6 +273,7 @@ export default function Login() {
                 {mode === 'signin' && 'Sign In'}
                 {mode === 'signup' && 'Create Account'}
                 {mode === 'forgot' && 'Send Reset Link'}
+                {mode === 'magic' && 'Send Magic Link'}
               </Button>
             </motion.form>
 
@@ -284,6 +311,18 @@ export default function Login() {
               {mode === 'forgot' && (
                 <>
                   Remember your password?{' '}
+                  <button
+                    type="button"
+                    onClick={() => setMode('signin')}
+                    className="text-foreground hover:underline font-medium"
+                  >
+                    Sign in
+                  </button>
+                </>
+              )}
+              {mode === 'magic' && (
+                <>
+                  Prefer to use a password?{' '}
                   <button
                     type="button"
                     onClick={() => setMode('signin')}
