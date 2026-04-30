@@ -6,6 +6,7 @@
     ".": "./src/index.ts"
   },
   "dependencies": {
-    "@course-engine/core": "workspace:*"
+    "@course-engine/core": "workspace:*",
+    "@supabase/supabase-js": "^2.49.0"
   }
 }

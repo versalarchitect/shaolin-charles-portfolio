@@ -6,6 +6,7 @@
     ".": "./src/index.ts"
   },
   "dependencies": {
-    "@course-engine/core": "workspace:*"
+    "@course-engine/core": "workspace:*",
+    "zod": "^3.24.0"
   }
 }

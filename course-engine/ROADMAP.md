@@ -32,13 +32,13 @@ Core infrastructure: data pipeline skeleton, source monitors, and knowledge extr
 
 Connect the knowledge graph to actual course content so staleness is detectable.
 
-- [ ] Seed course structure: 3 modules, 9 lessons, ~30 content blocks
+- [x] Seed course structure: 3 modules, 9 lessons, 30 content blocks
   - Module 1: Foundations of Agentic Engineering
   - Module 2: Building with LLM APIs
   - Module 3: Production Patterns & Tooling
-- [ ] Tag each `content_blocks` row with its `depends_on_facts` UUID array
-- [ ] Build the "staleness detector" -- when `trg_fact_supersession` fires, verify dependent blocks transition from `current` to `at_risk`
-- [ ] Admin CLI: `bun run pipeline --status` shows fact count, stale blocks, recent source events
+- [x] Tag each `content_blocks` row with its `depends_on_facts` UUID array
+- [x] Build the "staleness detector" -- `trg_fact_supersession` trigger auto-flags dependent blocks
+- [x] Admin CLI: `bun run status` shows fact count, stale blocks, recent pipeline runs
 - [ ] Content block status dashboard (terminal table or minimal web page listing block statuses)
 
 **Dependencies:** Phase 1 pipeline must produce real facts in `knowledge_facts` before content blocks can be linked.
@@ -49,11 +49,11 @@ Connect the knowledge graph to actual course content so staleness is detectable.
 
 The core value proposition: automatically propose updated content when facts change.
 
-- [ ] Regeneration agent: takes stale block + old/new facts, produces updated markdown via Opus 4.7
+- [x] Regeneration agent: takes stale block + old/new facts, produces updated markdown via LLM (smart tier)
+- [x] Quality checks: factual consistency, length sanity (no 3x expansion or 80% shrinkage), hallucination detection
+- [x] Confidence thresholds: quality gate before proposal creation
+- [x] Regeneration proposal storage in `regeneration_proposals` table with `pending` -> `approved`/`rejected` -> `applied` workflow
 - [ ] Diff viewer: side-by-side comparison of `old_markdown` vs `new_markdown` in `regeneration_proposals`
-- [ ] Quality checks: factual consistency against source material, tone match with existing content, length sanity (no 10x expansion)
-- [ ] Confidence thresholds: auto-apply patches with confidence > 0.9, require manual review for rewrites below 0.9
-- [ ] Regeneration proposal storage in `regeneration_proposals` table with `pending` -> `approved`/`rejected` -> `applied` workflow
 
 **Dependencies:** Phase 2 must have content blocks with fact dependencies seeded. Regeneration uses Opus 4.7 (ADR-003) -- cost tracking must be active.
 
@@ -63,13 +63,12 @@ The core value proposition: automatically propose updated content when facts cha
 
 Keep the course author informed without requiring dashboard visits.
 
-- [ ] Morning briefing generator (7:00 AM EST cron via Supabase Edge Function or external scheduler)
-- [ ] Email template using Resend integration (already in Supabase ecosystem)
-- [ ] TLDR format:
-  - New source events since last briefing
-  - Content blocks newly at-risk or stale
-  - Auto-healed blocks (patches applied with confidence > 0.9)
-  - Urgent items requiring manual review
+- [x] Briefing generator: `bun run briefing` produces terminal/markdown summary of pipeline activity
+  - Pipeline runs, new sources, fact changes, content health, regeneration activity, alerts
+  - Configurable time window (`--24h` flag)
+  - Text and markdown output formats
+- [ ] Morning briefing cron (7:00 AM EST via Supabase Edge Function or external scheduler)
+- [ ] Email template using Resend integration
 - [ ] Optional Slack webhook integration for real-time alerts
 
 **Dependencies:** Resend API key. Phase 3 must be operational for the "auto-healed" section to have content.
@@ -99,11 +98,11 @@ Visual management interface for non-CLI workflows.
 Broaden the knowledge intake beyond Anthropic's ecosystem.
 
 - [ ] OpenAI changelog monitor (platform.openai.com/docs/changelog)
-- [ ] GitHub release monitor:
-  - `anthropics/claude-code`
-  - `openai/openai-python`
-  - `vercel/ai` (AI SDK)
-  - `langchain-ai/langchainjs`
+- [x] GitHub release monitor (7 repos):
+  - `anthropics/anthropic-sdk-python`, `anthropics/anthropic-sdk-typescript`, `anthropics/claude-code`
+  - `openai/openai-python`, `openai/openai-node`
+  - `vercel/ai` (AI SDK), `langchain-ai/langchainjs`
+  - 32 releases fetched on first run
 - [ ] arXiv monitor (`cs.AI`, `cs.CL` categories filtered by course-relevant keywords: agent, tool use, RAG, function calling, etc.)
 - [ ] Dev signal aggregator (Hacker News front page, curated RSS feeds from AI-focused blogs)
 - [ ] Pricing/model card scraper (detect pricing changes, new model releases, context window updates)

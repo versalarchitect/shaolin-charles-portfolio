@@ -5,6 +5,8 @@
   "scripts": {
     "pipeline": "bun run scripts/run-pipeline.ts",
     "backfill": "bun run scripts/backfill-extraction.ts",
+    "status": "bun run scripts/status.ts",
+    "briefing": "bun run scripts/briefing.ts",
     "test": "bun test",
     "typecheck": "tsc --build"
   }

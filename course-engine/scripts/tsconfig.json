@@ -6,13 +6,17 @@
     "paths": {
       "@course-engine/core": ["../packages/core/src/index.ts"],
       "@course-engine/monitors": ["../packages/monitors/src/index.ts"],
-      "@course-engine/extraction": ["../packages/extraction/src/index.ts"]
+      "@course-engine/extraction": ["../packages/extraction/src/index.ts"],
+      "@course-engine/regeneration": ["../packages/regeneration/src/index.ts"],
+      "@course-engine/briefing": ["../packages/briefing/src/index.ts"]
     }
   },
   "include": ["."],
   "references": [
     { "path": "../packages/core" },
     { "path": "../packages/monitors" },
-    { "path": "../packages/extraction" }
+    { "path": "../packages/extraction" },
+    { "path": "../packages/regeneration" },
+    { "path": "../packages/briefing" }
   ]
 }
