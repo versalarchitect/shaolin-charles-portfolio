@@ -4,8 +4,10 @@ import PageLoading from '@/components/page-loading'
 import { Header } from '@/components/header'
 import { Footer } from '@/components/footer'
 import { Chatbot } from '@/components/chatbot'
+import { VoiceTutor } from '@/components/voice-tutor'
 import { Toaster } from '@/components/ui/sonner'
 import { ThemeProvider } from '@/components/theme-provider'
+import { CommandMenuProvider } from '@/components/command-menu'
 import { ScrollProgress } from '@/components/ui/aaa-effects'
 import { AppLayout } from '@/components/app-layout'
 import {
@@ -33,6 +35,7 @@ export default function App() {
 
   return (
     <ThemeProvider>
+      <CommandMenuProvider>
       <SectionGridProvider containerPadding={24}>
         <div className="antialiased font-sans min-h-screen text-foreground relative">
           {isAppPage ? (
@@ -81,11 +84,13 @@ export default function App() {
                 <Footer />
               </div>
               <Chatbot />
+              <VoiceTutor context="marketing" offsetBottom />
             </>
           )}
           <Toaster />
         </div>
       </SectionGridProvider>
+      </CommandMenuProvider>
     </ThemeProvider>
   )
 }

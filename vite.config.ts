@@ -54,6 +54,7 @@ export default defineConfig({
           'react-vendor': ['react', 'react-dom', 'react-router-dom'],
           'animation-vendor': ['framer-motion'],
           'ui-vendor': ['lucide-react', '@radix-ui/react-slot'],
+          'livekit-vendor': ['livekit-client', '@livekit/components-react'],
         },
         assetFileNames: (assetInfo) => {
           const fileName = assetInfo.names?.[0] || ''

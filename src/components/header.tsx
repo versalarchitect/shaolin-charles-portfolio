@@ -9,6 +9,7 @@ import { Logo } from './ui/logo'
 import { UserAvatar } from './user-avatar'
 import { useAuth } from '@/hooks/use-auth'
 import { useTheme } from '@/components/theme-provider'
+import { useCommandMenu } from '@/components/command-menu'
 import { HEADER_NAV, SOCIAL_LINKS, SITE } from '@/lib/constants'
 
 const APP_NAV = [
@@ -26,6 +27,7 @@ export function Header() {
   const { t } = useTranslation()
   const { isLoggedIn } = useAuth()
   const { setTheme, resolvedTheme } = useTheme()
+  const { setOpen: openCommandMenu } = useCommandMenu()
 
   const isAppPage = APP_ROUTES.some((r) => location.pathname.startsWith(r))
   const marketingNav = HEADER_NAV.map((item) => ({ name: t(item.nameKey), href: item.href }))
@@ -47,7 +49,12 @@ export function Header() {
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.5 }}
         >
-          <Link to="/" className="group flex items-center">
+          <button
+            onClick={() => openCommandMenu(true)}
+            className="group flex items-center relative"
+            aria-label="Open command menu"
+            title="Discover more about Charles"
+          >
             <motion.div
               whileHover={prefersReducedMotion ? undefined : { scale: 1.05 }}
               whileTap={prefersReducedMotion ? undefined : { scale: 0.95 }}
@@ -58,7 +65,7 @@ export function Header() {
                 className="absolute inset-0 rounded-lg bg-foreground/30 blur-md -z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
               />
             </motion.div>
-          </Link>
+          </button>
         </motion.div>
 
         {/* Desktop navigation */}
@@ -198,13 +205,13 @@ export function Header() {
               <div className="flex h-full flex-col">
                 {/* Header */}
                 <div className="flex items-center justify-between p-4 border-b border-border">
-                  <Link
-                    to="/"
+                  <button
                     className="flex items-center"
-                    onClick={() => setMobileMenuOpen(false)}
+                    onClick={() => { setMobileMenuOpen(false); openCommandMenu(true) }}
+                    aria-label="Open command menu"
                   >
                     <Logo size="sm" className="text-foreground" />
-                  </Link>
+                  </button>
                   <button
                     type="button"
                     className="p-2 rounded-lg text-foreground hover:bg-muted transition-colors"

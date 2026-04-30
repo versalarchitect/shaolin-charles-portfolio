@@ -15,6 +15,7 @@ import {
   ChevronRight,
 } from 'lucide-react'
 import { SEO } from '@/components/SEO'
+import { VoiceTutorCard } from '@/components/voice-tutor-card'
 import { AnimatedNumber } from '@/components/ui/aaa-effects'
 import {
   CURRICULUM,
@@ -299,7 +300,7 @@ function AchievementsGrid() {
                 rounded-xl border p-3 text-center transition-all
                 ${isUnlocked
                   ? 'border-foreground/10 bg-foreground/[0.03]'
-                  : 'border-foreground/[0.05] bg-foreground/[0.01] opacity-40'
+                  : 'border-foreground/[0.08] bg-foreground/[0.02]'
                 }
               `}
             >
@@ -308,7 +309,7 @@ function AchievementsGrid() {
                   mx-auto w-9 h-9 rounded-lg flex items-center justify-center mb-2
                   ${isUnlocked
                     ? 'bg-foreground/10 text-foreground/70'
-                    : 'bg-foreground/[0.04] text-foreground/20'
+                    : 'bg-foreground/[0.06] text-foreground/40'
                   }
                 `}
               >
@@ -318,13 +319,13 @@ function AchievementsGrid() {
                   <Lock className="w-4 h-4" />
                 )}
               </div>
-              <p className={`text-xs font-medium ${isUnlocked ? 'text-foreground/80' : 'text-foreground/25'}`}>
+              <p className={`text-xs font-medium ${isUnlocked ? 'text-foreground/80' : 'text-foreground/50'}`}>
                 {isUnlocked ? achievement.name : '???'}
               </p>
               {isUnlocked && (
                 <p className="text-[10px] text-foreground/40 mt-0.5">{achievement.description}</p>
               )}
-              <div className={`mt-1.5 inline-flex items-center gap-0.5 text-[10px] font-mono ${isUnlocked ? 'text-foreground/40' : 'text-foreground/15'}`}>
+              <div className={`mt-1.5 inline-flex items-center gap-0.5 text-[10px] font-mono ${isUnlocked ? 'text-foreground/40' : 'text-foreground/30'}`}>
                 <Zap className="w-2.5 h-2.5" />
                 {achievement.xpReward} XP
               </div>
@@ -414,6 +415,7 @@ export default function Dashboard() {
         </div>
 
         <NextLesson />
+        <VoiceTutorCard />
         <StatsBar />
         <TierProgress />
         <StreakCalendar />

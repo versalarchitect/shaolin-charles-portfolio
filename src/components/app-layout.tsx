@@ -1,5 +1,6 @@
 import { AppSidebar } from '@/components/app-sidebar'
 import { StudentAssistant } from '@/components/student-assistant'
+import { VoiceTutor } from '@/components/voice-tutor'
 
 export function AppLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -9,6 +10,7 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
         {children}
       </main>
       <StudentAssistant />
+      <VoiceTutor context="course" offsetBottom />
     </div>
   )
 }

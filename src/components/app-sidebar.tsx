@@ -19,6 +19,7 @@ import {
   Award,
   Crown,
   Target,
+  Brain,
 } from 'lucide-react'
 import { Logo } from '@/components/ui/logo'
 import { LanguageSwitcher } from '@/components/language-switcher'
@@ -33,6 +34,7 @@ const NAV_ITEMS = [
   { label: 'Dashboard', href: '/course/dashboard', icon: LayoutDashboard },
   { label: 'Curriculum', href: '/course/curriculum', icon: BookOpen },
   { label: 'Community', href: '/course/community', icon: Users },
+  { label: 'Knowledge Base', href: '/course/knowledge-base', icon: Brain },
   { label: 'Chat', href: '/course/chat', icon: MessageSquare },
   { label: 'Settings', href: '/course/profile', icon: Settings },
 ]
