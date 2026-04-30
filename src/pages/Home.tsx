@@ -43,6 +43,7 @@ import {
   GlowBorder,
 } from '@/components/ui/aaa-effects'
 import { SectionSpots, Section } from '@/components/ui/gradient-background'
+import { useCourseStats } from '@/hooks/use-course-stats'
 import { SEO } from '@/components/SEO'
 import {
   Accordion,
@@ -186,6 +187,46 @@ function ScrollIndicator() {
         <ArrowDown className="w-4 h-4" />
       </motion.div>
     </motion.div>
+  )
+}
+
+function CourseStatsGrid() {
+  const { stats, loading } = useCourseStats()
+
+  const items = [
+    { label: 'Verified facts', value: stats?.activeFacts ?? 0 },
+    { label: 'Sources indexed', value: stats?.sourceEvents ?? 0 },
+    { label: 'Course sections', value: stats?.contentBlocks ?? 0 },
+    { label: 'Lessons', value: stats?.lessons ?? 0 },
+  ]
+
+  if (loading) {
+    return (
+      <div className="grid grid-cols-2 gap-3 w-full">
+        {Array.from({ length: 4 }).map((_, i) => (
+          <div key={i} className="bg-foreground/[0.03] border border-foreground/[0.08] rounded-xl p-4 animate-pulse">
+            <div className="h-7 w-12 bg-foreground/[0.05] rounded mb-2" />
+            <div className="h-3 w-20 bg-foreground/[0.05] rounded" />
+          </div>
+        ))}
+      </div>
+    )
+  }
+
+  return (
+    <div className="grid grid-cols-2 gap-3 w-full">
+      {items.map(({ label, value }) => (
+        <div
+          key={label}
+          className="bg-foreground/[0.03] border border-foreground/[0.08] rounded-xl p-4"
+        >
+          <div className="text-2xl font-bold font-mono">
+            <AnimatedNumber value={value} duration={1.5} />
+          </div>
+          <div className="text-xs text-muted-foreground font-mono mt-1">{label}</div>
+        </div>
+      ))}
+    </div>
   )
 }
 
@@ -761,6 +802,55 @@ export default function Home() {
               </Card>
             </SpotlightCard>
           </BlurFadeIn>
+        </div>
+      </Section>
+
+      {/* Self-Updating Course */}
+      <Section id="course-engine" className="relative py-24 lg:py-32">
+        <SectionSpots variant="accent" />
+        <div className="container mx-auto px-6 lg:px-8 relative z-10">
+          <ScrollFadeIn>
+            <SpotlightCard spotlightColor="rgba(var(--effect-rgb),0.04)" spotlightSize={500}>
+              <Card className="p-0 overflow-hidden border-foreground/[0.08]">
+                <div className="grid md:grid-cols-2 gap-0">
+                  {/* Left: Text Content */}
+                  <div className="p-8 md:p-10 flex flex-col justify-center">
+                    <span className="inline-flex items-center gap-2 px-3 py-1 bg-foreground/[0.05] rounded-full border border-foreground/10 text-xs font-mono text-foreground/60 w-fit mb-6">
+                      <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
+                      SELF-UPDATING
+                    </span>
+                    <h2 className="text-2xl md:text-3xl font-bold tracking-tight mb-4">
+                      A Course That Rewrites Itself
+                    </h2>
+                    <p className="text-foreground/70 leading-relaxed mb-6">
+                      An agentic software engineering course that stays current automatically. Every fact is verified against live sources. Every section updates when the technology it teaches evolves. Never stale.
+                    </p>
+                    <div className="flex flex-wrap gap-2 mb-8">
+                      {['Fact-Verified', 'Always Current', 'Real-Time', '9 Lessons', '3 Modules'].map((tag) => (
+                        <span
+                          key={tag}
+                          className="text-xs font-mono px-3 py-1.5 bg-foreground/[0.05] rounded-full border border-foreground/10 text-foreground/60"
+                        >
+                          {tag}
+                        </span>
+                      ))}
+                    </div>
+                    <Link to="/self-updating-course">
+                      <Button size="lg" className="h-12 px-8 font-mono group">
+                        Explore the Course
+                        <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
+                      </Button>
+                    </Link>
+                  </div>
+
+                  {/* Right: Live Stats Grid */}
+                  <div className="p-8 md:p-10 flex items-center border-t md:border-t-0 md:border-l border-foreground/[0.08]">
+                    <CourseStatsGrid />
+                  </div>
+                </div>
+              </Card>
+            </SpotlightCard>
+          </ScrollFadeIn>
         </div>
       </Section>
 

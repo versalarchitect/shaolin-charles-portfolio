@@ -41,6 +41,7 @@ export const NAV_ITEMS: NavItem[] = [
   { nameKey: 'nav.principles', href: '/principles', showInHeader: true, showInFooter: true },
   { nameKey: 'nav.tiers', href: '/tiers', showInHeader: true, showInFooter: true },
   { nameKey: 'nav.blog', href: '/blog', showInHeader: true, showInFooter: true },
+  { nameKey: 'nav.selfUpdatingCourse', href: '/self-updating-course', showInHeader: true, showInFooter: true },
   { nameKey: 'nav.instructor', href: '/instructor', showInHeader: true, showInFooter: true },
   { nameKey: 'nav.contact', href: '/contact', showInHeader: false, showInFooter: false },
   { nameKey: 'nav.dashboard', href: '/course/dashboard', showInHeader: false, showInFooter: false },
