@@ -1,0 +1,11 @@
+{
+  "name": "@course-engine/root",
+  "private": true,
+  "workspaces": ["packages/*"],
+  "scripts": {
+    "pipeline": "bun run scripts/run-pipeline.ts",
+    "backfill": "bun run scripts/backfill-extraction.ts",
+    "test": "bun test",
+    "typecheck": "tsc --build"
+  }
+}

@@ -75,6 +75,58 @@ bun run build               # Production build
 | Icons | Lucide React |
 | i18n | i18next (EN/FR) |
 
+## Course Engine (Self-Updating Course)
+
+An agentic pipeline under `course-engine/` that monitors AI documentation, extracts knowledge facts, and auto-updates course content when facts change.
+
+### Architecture
+
+```
+course-engine/
+├── packages/
+│   ├── core/          # Types, Supabase DB client, LLM wrapper
+│   ├── monitors/      # Source fetchers (Anthropic docs + changelog)
+│   ├── extraction/    # Fact extraction + supersession detection
+│   ├── regeneration/  # Content regeneration (Phase 3 — stubbed)
+│   └── briefing/      # Daily briefings (Phase 4 — stubbed)
+├── scripts/
+│   ├── run-pipeline.ts         # Main 4-stage pipeline
+│   └── backfill-extraction.ts  # Reprocess unprocessed events
+└── fixtures/          # Sample data for testing
+```
+
+### Running the Pipeline
+
+Requires Ollama running locally with `qwen2.5:7b`:
+
+```bash
+# Start Ollama (if not running as service)
+brew services start ollama
+
+# Daily pipeline: monitor → extract → flag → (regen placeholder)
+cd course-engine && bun run pipeline
+
+# Backfill extraction on historical events
+cd course-engine && bun run backfill
+
+# Flags: --monitor-only, --extract-only, --dry-run, --limit=N
+```
+
+### LLM Backend Selection
+
+The LLM wrapper auto-detects the backend:
+1. `ANTHROPIC_API_KEY` set → Anthropic (Haiku fast / Opus smart)
+2. Otherwise → Ollama at `localhost:11434` (qwen2.5:7b)
+3. Override with `LLM_BACKEND=anthropic|hf-inference|local`
+
+### Supabase Tables
+
+`source_events`, `knowledge_facts`, `content_blocks`, `course_modules`, `lessons`, `regeneration_proposals`, `pipeline_runs` — schema at `supabase/migrations/20260429000000_course_engine.sql`.
+
+### Current Status
+
+Phase 1 complete: 24 source events, 174 knowledge facts across 8 categories. See `course-engine/ROADMAP.md` for phases 2–8.
+
 ## Design Philosophy
 
 **Sophistication is in subtlety.**

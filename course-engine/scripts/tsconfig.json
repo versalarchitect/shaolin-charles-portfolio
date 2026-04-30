@@ -1,0 +1,18 @@
+{
+  "extends": "../tsconfig.json",
+  "compilerOptions": {
+    "outDir": "../dist/scripts",
+    "rootDir": ".",
+    "paths": {
+      "@course-engine/core": ["../packages/core/src/index.ts"],
+      "@course-engine/monitors": ["../packages/monitors/src/index.ts"],
+      "@course-engine/extraction": ["../packages/extraction/src/index.ts"]
+    }
+  },
+  "include": ["."],
+  "references": [
+    { "path": "../packages/core" },
+    { "path": "../packages/monitors" },
+    { "path": "../packages/extraction" }
+  ]
+}

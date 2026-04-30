@@ -1,0 +1,112 @@
+[
+  {
+    "id": "fact-001",
+    "statement": "Claude Opus 4 is the most capable model in the Claude 4 family, excelling at complex reasoning, coding, and agentic tasks.",
+    "category": "model_capability",
+    "entities": ["claude-opus-4", "claude-4-family"],
+    "confidence": 0.98,
+    "source_event_id": "evt-001-claude-4-models",
+    "superseded_by": null,
+    "valid_from": "2026-04-15T00:00:00.000Z",
+    "valid_until": null
+  },
+  {
+    "id": "fact-002",
+    "statement": "All Claude 4 models support a 200K token context window.",
+    "category": "model_capability",
+    "entities": ["claude-opus-4", "claude-sonnet-4", "claude-haiku-4", "context-window"],
+    "confidence": 0.99,
+    "source_event_id": "evt-001-claude-4-models",
+    "superseded_by": null,
+    "valid_from": "2026-04-15T00:00:00.000Z",
+    "valid_until": null
+  },
+  {
+    "id": "fact-003",
+    "statement": "All Claude 4 models support tool use, vision, and structured output via JSON mode.",
+    "category": "model_capability",
+    "entities": ["claude-4-family", "tool-use", "vision", "json-mode"],
+    "confidence": 0.99,
+    "source_event_id": "evt-001-claude-4-models",
+    "superseded_by": null,
+    "valid_from": "2026-04-15T00:00:00.000Z",
+    "valid_until": null
+  },
+  {
+    "id": "fact-004",
+    "statement": "Claude tool use requires defining tools with a name, description, and JSON Schema for parameters.",
+    "category": "sdk_api",
+    "entities": ["tool-use", "json-schema", "function-calling"],
+    "confidence": 0.97,
+    "source_event_id": "evt-002-tool-use-guide",
+    "superseded_by": null,
+    "valid_from": "2026-04-10T00:00:00.000Z",
+    "valid_until": null
+  },
+  {
+    "id": "fact-005",
+    "statement": "Claude supports parallel tool calls when multiple independent tools are needed in a single turn.",
+    "category": "model_capability",
+    "entities": ["tool-use", "parallel-tool-calls"],
+    "confidence": 0.95,
+    "source_event_id": "evt-002-tool-use-guide",
+    "superseded_by": null,
+    "valid_from": "2026-04-10T00:00:00.000Z",
+    "valid_until": null
+  },
+  {
+    "id": "fact-006",
+    "statement": "Limiting the number of tools to under 20 provides optimal performance for Claude tool use.",
+    "category": "best_practice",
+    "entities": ["tool-use", "performance"],
+    "confidence": 0.90,
+    "source_event_id": "evt-002-tool-use-guide",
+    "superseded_by": null,
+    "valid_from": "2026-04-10T00:00:00.000Z",
+    "valid_until": null
+  },
+  {
+    "id": "fact-007",
+    "statement": "Extended thinking is generally available for Claude Opus 4 and Sonnet 4, controlled via the budget_tokens parameter (1024-128000 tokens).",
+    "category": "model_capability",
+    "entities": ["extended-thinking", "claude-opus-4", "claude-sonnet-4", "budget-tokens"],
+    "confidence": 0.99,
+    "source_event_id": "evt-003-extended-thinking",
+    "superseded_by": null,
+    "valid_from": "2026-04-20T00:00:00.000Z",
+    "valid_until": null
+  },
+  {
+    "id": "fact-008",
+    "statement": "Extended thinking tokens are billed at standard output token rates.",
+    "category": "pricing",
+    "entities": ["extended-thinking", "pricing", "output-tokens"],
+    "confidence": 0.97,
+    "source_event_id": "evt-003-extended-thinking",
+    "superseded_by": null,
+    "valid_from": "2026-04-20T00:00:00.000Z",
+    "valid_until": null
+  },
+  {
+    "id": "fact-009",
+    "statement": "Prompt caching reduces latency by up to 85% and costs by up to 90% on cache hits, with a 5-minute TTL that refreshes on each hit.",
+    "category": "pattern",
+    "entities": ["prompt-caching", "latency", "cost-optimization"],
+    "confidence": 0.98,
+    "source_event_id": "evt-004-prompt-caching",
+    "superseded_by": null,
+    "valid_from": "2026-03-28T00:00:00.000Z",
+    "valid_until": null
+  },
+  {
+    "id": "fact-010",
+    "statement": "Minimum cacheable prefix length for prompt caching is 1024 tokens for Sonnet and Opus, and 2048 tokens for Haiku.",
+    "category": "sdk_api",
+    "entities": ["prompt-caching", "claude-sonnet-4", "claude-opus-4", "claude-haiku-4"],
+    "confidence": 0.96,
+    "source_event_id": "evt-004-prompt-caching",
+    "superseded_by": null,
+    "valid_from": "2026-03-28T00:00:00.000Z",
+    "valid_until": null
+  }
+]
