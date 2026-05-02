@@ -299,7 +299,7 @@ const content: LessonContent = {
     },
     {
       type: 'checkpoint',
-      xp: 0,
+      xp: 5,
       message: 'Deploy pipeline complete! You now have a ship-on-push workflow.',
     },
   ],

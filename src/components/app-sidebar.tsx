@@ -27,7 +27,7 @@ import { useAuth } from '@/hooks/use-auth'
 import { useTheme } from '@/components/theme-provider'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { supabase } from '@/lib/supabase'
-import { useProgress, getLevel, getNextLevel, getOverallProgress } from '@/stores/progress'
+import { useProgress, getLevel, getNextLevel, getOverallProgress, getStreakMultiplier } from '@/stores/progress'
 import { TOTAL_LESSONS } from '@/data/curriculum'
 
 const NAV_ITEMS = [
@@ -121,6 +121,11 @@ function SidebarProfile({
           <div className="flex items-center gap-1">
             <Flame className="w-3 h-3 text-foreground/30" />
             <span className="text-[10px] font-mono text-foreground/40">{progress.currentStreak}d streak</span>
+            {getStreakMultiplier().multiplier > 1 && (
+              <span className="text-[9px] font-mono px-1 py-0.5 rounded bg-foreground/10 text-foreground/50">
+                {getStreakMultiplier().label}
+              </span>
+            )}
           </div>
           <span className="text-[10px] font-mono text-foreground/30">
             {overall.completed}/{TOTAL_LESSONS} lessons

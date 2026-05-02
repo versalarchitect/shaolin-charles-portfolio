@@ -79,19 +79,23 @@ bun run build               # Production build
 
 An agentic pipeline under `course-engine/` that monitors AI documentation, extracts knowledge facts, and auto-updates course content when facts change.
 
+**IMPORTANT: The course engine implementation is proprietary.** Do NOT expose pipeline architecture, source monitoring details, extraction methods, or tech stack (Ollama, pgvector, etc.) on the public website or in marketing copy. The public-facing message is about **outcomes** (always current, fact-verified, transparent freshness) — never about **how** it works. This is a competitive advantage.
+
 ### Architecture
 
 ```
 course-engine/
 ├── packages/
 │   ├── core/          # Types, Supabase DB client, LLM wrapper
-│   ├── monitors/      # Source fetchers (Anthropic docs + changelog)
+│   ├── monitors/      # Source fetchers (Anthropic docs, changelog, GitHub releases)
 │   ├── extraction/    # Fact extraction + supersession detection
-│   ├── regeneration/  # Content regeneration (Phase 3 — stubbed)
-│   └── briefing/      # Daily briefings (Phase 4 — stubbed)
+│   ├── regeneration/  # Content regeneration (quality-checked proposals)
+│   └── briefing/      # Daily briefings (pipeline activity summaries)
 ├── scripts/
 │   ├── run-pipeline.ts         # Main 4-stage pipeline
-│   └── backfill-extraction.ts  # Reprocess unprocessed events
+│   ├── backfill-extraction.ts  # Reprocess unprocessed events
+│   ├── status.ts               # System health dashboard
+│   └── briefing.ts             # Run daily briefing
 └── fixtures/          # Sample data for testing
 ```
 
@@ -103,11 +107,17 @@ Requires Ollama running locally with `qwen2.5:7b`:
 # Start Ollama (if not running as service)
 brew services start ollama
 
-# Daily pipeline: monitor → extract → flag → (regen placeholder)
+# Daily pipeline: monitor → extract → flag → regenerate
 cd course-engine && bun run pipeline
 
 # Backfill extraction on historical events
 cd course-engine && bun run backfill
+
+# System health check
+cd course-engine && bun run status
+
+# Daily briefing summary
+cd course-engine && bun run briefing
 
 # Flags: --monitor-only, --extract-only, --dry-run, --limit=N
 ```
@@ -121,11 +131,23 @@ The LLM wrapper auto-detects the backend:
 
 ### Supabase Tables
 
-`source_events`, `knowledge_facts`, `content_blocks`, `course_modules`, `lessons`, `regeneration_proposals`, `pipeline_runs` — schema at `supabase/migrations/20260429000000_course_engine.sql`.
+`source_events`, `knowledge_facts`, `content_blocks`, `course_modules`, `lessons`, `regeneration_proposals`, `pipeline_runs` — schema at `supabase/migrations/20260429000000_course_engine.sql`. Public read-only RLS policies are set for the frontend to display live stats.
+
+### Source Monitors
+
+- **Anthropic Documentation** — 10 curated doc pages (models, tool use, caching, etc.)
+- **Anthropic Changelog** — news feed extraction
+- **GitHub Releases** — 7 repos: Anthropic SDKs (Python/TS), Claude Code, Vercel AI SDK, LangChain.js, OpenAI SDKs (Python/Node)
 
 ### Current Status
 
-Phase 1 complete: 24 source events, 174 knowledge facts across 8 categories. See `course-engine/ROADMAP.md` for phases 2–8.
+Phases 1–4 and partial Phase 6 complete. 284 active facts from 59 source events across 3 source types. 3 modules, 9 lessons, 30 content blocks seeded and linked to fact IDs. Regeneration engine, briefing system, and GitHub release monitor operational. See `course-engine/ROADMAP.md` for remaining phases (5, 7, 8).
+
+### Marketing Pages
+
+- `/self-updating-course` — public landing page with live Supabase stats (fact count, freshness, coverage bars). Shows outcomes only — no implementation details.
+- Home page "A Course That Rewrites Itself" section with live stats grid.
+- `useCourseStats` hook at `src/hooks/use-course-stats.ts` fetches live data from Supabase.
 
 ## Design Philosophy
 

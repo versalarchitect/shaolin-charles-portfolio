@@ -10,6 +10,7 @@
       "version": "0.1.0",
       "dependencies": {
         "@course-engine/core": "workspace:*",
+        "@supabase/supabase-js": "^2.49.0",
       },
     },
     "packages/core": {
@@ -43,6 +44,7 @@
       "version": "0.1.0",
       "dependencies": {
         "@course-engine/core": "workspace:*",
+        "zod": "^3.24.0",
       },
     },
   },

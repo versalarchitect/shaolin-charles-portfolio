@@ -37,6 +37,7 @@ import {
   MAX_XP,
 } from '@/data/community'
 import { useAuth } from '@/hooks/use-auth'
+import { useProgress, getLevel } from '@/stores/progress'
 import {
   fetchThreads,
   createThread,
@@ -343,6 +344,13 @@ function OfficeHoursCard({ onSubmitQuestion }: { onSubmitQuestion: () => void })
 }
 
 function LeaderboardCard() {
+  const progress = useProgress()
+  const level = getLevel()
+  const { user } = useAuth()
+
+  const userRank = spotlightMembers.filter((m) => m.xp > progress.totalXp).length + 1
+  const userInitials = user?.email?.split('@')[0].slice(0, 2).toUpperCase() ?? '?'
+
   return (
     <BlurFadeIn delay={0.2}>
       <div className="rounded-xl border border-foreground/[0.08] bg-foreground/[0.02] overflow-hidden">
@@ -393,6 +401,39 @@ function LeaderboardCard() {
               </div>
             </div>
           ))}
+
+          {/* Current user position */}
+          <div className="flex items-center gap-3 p-2.5 rounded-lg bg-foreground/[0.04] border border-foreground/10 mt-2">
+            <span className="w-5 text-center font-mono font-bold text-sm text-foreground/50">
+              {userRank}
+            </span>
+
+            <Avatar initials={userInitials} />
+
+            <div className="flex-1 min-w-0">
+              <div className="flex items-center gap-1.5 mb-0.5">
+                <span className="text-sm font-medium text-foreground/90 truncate">You</span>
+                <TierBadge tier={level.name} />
+              </div>
+
+              <div className="flex items-center gap-2">
+                <div className="flex-1 h-1 rounded-full bg-foreground/[0.06] overflow-hidden">
+                  <motion.div
+                    className="h-full rounded-full bg-foreground/25"
+                    initial={{ width: 0 }}
+                    animate={{ width: `${(progress.totalXp / MAX_XP) * 100}%` }}
+                    transition={{ delay: 0.6, duration: 0.6, ease: [0.33, 1, 0.68, 1] }}
+                  />
+                </div>
+                <span className="text-[10px] font-mono text-foreground/50 flex-shrink-0">{progress.totalXp.toLocaleString()}</span>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-1 flex-shrink-0">
+              <Flame className="w-3 h-3 text-foreground/40" />
+              <span className="text-[10px] font-mono text-foreground/50">{progress.currentStreak}d</span>
+            </div>
+          </div>
         </div>
 
         <div className="px-4 py-3 border-t border-foreground/[0.06]">

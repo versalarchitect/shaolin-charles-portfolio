@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo, useCallback } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { useParams, Link, useNavigate } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
@@ -16,7 +16,11 @@ import { SEO } from '@/components/SEO'
 import { Button } from '@/components/ui/button'
 import { LessonPlayer } from '@/components/lesson-player'
 import { CURRICULUM, ALL_LESSONS } from '@/data/curriculum'
-import { useProgress, getLessonStatus, completeLesson, startLesson } from '@/stores/progress'
+import type { Lesson } from '@/data/curriculum'
+import { useProgress, getLessonStatus, completeLesson, startLesson, getStreakMultiplier, getComboInfo } from '@/stores/progress'
+import { GamificationToasts, ComboIndicator, ComboTimer } from '@/components/gamification'
+import { CelebrationParticles } from '@/components/gamification/celebration'
+import { StatusBadge } from '@/components/gamification/shared'
 
 function findLessonAndTier(lessonId: string) {
   for (const tier of CURRICULUM) {
@@ -42,74 +46,55 @@ function formatDuration(minutes: number): string {
   return m > 0 ? `${h}h ${m}m` : `${h}h`
 }
 
-function CelebrationParticles() {
-  const particles = useMemo(
-    () =>
-      Array.from({ length: 24 }, (_, i) => ({
-        id: i,
-        x: (Math.random() - 0.5) * 300,
-        y: -(Math.random() * 200 + 80),
-        rotate: Math.random() * 720 - 360,
-        scale: Math.random() * 0.6 + 0.4,
-        delay: Math.random() * 0.3,
-        size: Math.random() * 4 + 2,
-      })),
-    []
-  )
+
+
+function LessonNavCard({ lesson, direction, disabled }: { lesson: Lesson | null; direction: 'prev' | 'next'; disabled?: boolean }) {
+  const isPrev = direction === 'prev'
+  const Arrow = isPrev ? ArrowLeft : ArrowRight
+
+  if (!lesson) {
+    return (
+      <div className="rounded-xl bg-foreground/[0.01] border border-foreground/[0.05] p-4 opacity-40">
+        <div className={`flex items-center ${isPrev ? '' : 'justify-end'} gap-3`}>
+          {isPrev && <Arrow className="w-4 h-4 text-foreground/30 shrink-0" />}
+          <div className={isPrev ? '' : 'text-right'}>
+            <p className="text-[10px] font-mono text-foreground/30 mb-0.5">{isPrev ? 'Previous' : 'Next'}</p>
+            <p className="text-sm text-foreground/30">{isPrev ? 'First lesson' : 'Course complete!'}</p>
+          </div>
+          {!isPrev && <Arrow className="w-4 h-4 text-foreground/30 shrink-0" />}
+        </div>
+      </div>
+    )
+  }
+
+  if (disabled) {
+    return (
+      <div className="rounded-xl bg-foreground/[0.01] border border-foreground/[0.05] p-4 opacity-40">
+        <div className="flex items-center justify-end gap-3">
+          <div className="text-right min-w-0">
+            <p className="text-[10px] font-mono text-foreground/30 mb-0.5">Next</p>
+            <p className="text-sm text-foreground/30 truncate"><Lock className="w-3 h-3 inline mr-1" />{lesson.title}</p>
+          </div>
+          <ArrowRight className="w-4 h-4 text-foreground/30 shrink-0" />
+        </div>
+      </div>
+    )
+  }
 
   return (
-    <div className="absolute inset-0 pointer-events-none overflow-hidden">
-      {particles.map((p) => (
-        <motion.div
-          key={p.id}
-          className="absolute left-1/2 top-1/2 rounded-full bg-foreground/30"
-          style={{ width: p.size, height: p.size }}
-          initial={{ x: 0, y: 0, opacity: 1, scale: 0 }}
-          animate={{
-            x: p.x,
-            y: p.y,
-            opacity: [1, 1, 0],
-            scale: [0, p.scale, 0],
-            rotate: p.rotate,
-          }}
-          transition={{ duration: 1.2, delay: p.delay, ease: 'easeOut' }}
-        />
-      ))}
-    </div>
+    <Link to={`/learn/${lesson.id}`} className="group rounded-xl bg-foreground/[0.02] border border-foreground/[0.08] p-4 hover:bg-foreground/[0.04] hover:border-foreground/15 transition-all">
+      <div className={`flex items-center ${isPrev ? '' : 'justify-end'} gap-3`}>
+        {isPrev && <Arrow className="w-4 h-4 text-foreground/40 group-hover:text-foreground/70 group-hover:-translate-x-1 transition-all shrink-0" />}
+        <div className={`min-w-0 ${isPrev ? '' : 'text-right'}`}>
+          <p className="text-[10px] font-mono text-foreground/40 mb-0.5">{isPrev ? 'Previous' : 'Next'}</p>
+          <p className="text-sm font-medium text-foreground/70 group-hover:text-foreground/90 truncate transition-colors">
+            {isPrev ? <><span className="font-mono text-foreground/40 mr-1">{lesson.number}</span>{lesson.title}</> : <>{lesson.title}<span className="font-mono text-foreground/40 ml-1">{lesson.number}</span></>}
+          </p>
+        </div>
+        {!isPrev && <Arrow className="w-4 h-4 text-foreground/40 group-hover:text-foreground/70 group-hover:translate-x-1 transition-all shrink-0" />}
+      </div>
+    </Link>
   )
-}
-
-function StatusBadge({ status }: { status: string }) {
-  switch (status) {
-    case 'completed':
-      return (
-        <span className="px-2.5 py-1 bg-green-500/20 text-green-500 text-xs font-mono rounded flex items-center gap-1.5">
-          <Check className="w-3 h-3" />
-          Completed
-        </span>
-      )
-    case 'in_progress':
-      return (
-        <span className="px-2.5 py-1 bg-foreground/10 text-foreground/70 text-xs font-mono rounded flex items-center gap-1.5">
-          <span className="w-1.5 h-1.5 rounded-full bg-foreground/60 animate-pulse" />
-          In Progress
-        </span>
-      )
-    case 'available':
-      return (
-        <span className="px-2.5 py-1 bg-foreground/5 text-foreground/60 text-xs font-mono rounded flex items-center gap-1.5">
-          <Zap className="w-3 h-3" />
-          Available
-        </span>
-      )
-    default:
-      return (
-        <span className="px-2.5 py-1 bg-foreground/5 text-foreground/40 text-xs font-mono rounded flex items-center gap-1.5">
-          <Lock className="w-3 h-3" />
-          Locked
-        </span>
-      )
-  }
 }
 
 function LockedState({ lessonTitle }: { lessonTitle: string }) {
@@ -177,7 +162,8 @@ export default function Learn() {
 
   const handleComplete = useCallback(() => {
     if (!lessonId || !found) return
-    setCelebrationXp(found.lesson.xp)
+    const { multiplier } = getStreakMultiplier()
+    setCelebrationXp(Math.round(found.lesson.xp * multiplier))
     completeLesson(lessonId)
     setShowCelebration(true)
   }, [lessonId, found])
@@ -215,6 +201,8 @@ export default function Learn() {
 
   const isCompleted = status === 'completed'
   const nextStatus = adjacent.next ? getLessonStatus(adjacent.next.id) : 'locked'
+  const streakInfo = getStreakMultiplier()
+  const comboInfo = getComboInfo()
 
   return (
     <>
@@ -223,6 +211,7 @@ export default function Learn() {
         description={lesson.description}
         path={`learn/${lessonId}`}
       />
+      <GamificationToasts />
 
       {/* Celebration overlay */}
       <AnimatePresence>
@@ -264,6 +253,17 @@ export default function Learn() {
               >
                 +{celebrationXp} XP
               </motion.div>
+
+              {(streakInfo.multiplier > 1 || comboInfo.active) && (
+                <motion.div className="flex items-center gap-3 justify-center" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.55 }}>
+                  {streakInfo.multiplier > 1 && (
+                    <span className="text-xs font-mono text-foreground/50 px-2 py-1 rounded bg-foreground/[0.05]">{streakInfo.label} streak</span>
+                  )}
+                  {comboInfo.active && comboInfo.count > 1 && (
+                    <span className="text-xs font-mono text-foreground/50 px-2 py-1 rounded bg-foreground/[0.05]">{comboInfo.count}x combo +{comboInfo.bonusPercent}%</span>
+                  )}
+                </motion.div>
+              )}
 
               <motion.p
                 className="text-foreground/60 text-lg"
@@ -345,6 +345,9 @@ export default function Learn() {
             <span className="flex items-center gap-1.5 text-sm font-mono text-foreground/50">
               <Zap className="w-3.5 h-3.5" />
               +{lesson.xp} XP
+              {streakInfo.multiplier > 1 && (
+                <span className="text-[10px] px-1 py-0.5 rounded bg-foreground/10 text-foreground/50">{streakInfo.label}</span>
+              )}
             </span>
             {isCompleted && (
               <span className="flex items-center gap-1.5 text-sm font-mono text-green-500">
@@ -352,11 +355,15 @@ export default function Learn() {
                 Completed
               </span>
             )}
+            <ComboIndicator />
           </div>
         </div>
 
+        {/* Combo timer */}
+        <ComboTimer />
+
         {/* Separator */}
-        <div className="h-px bg-foreground/[0.08] mb-8" />
+        <div className="h-px bg-foreground/[0.08] mb-8 mt-4" />
 
         {/* Interactive lesson player */}
         <LessonPlayer lessonId={lessonId!} />
@@ -434,76 +441,8 @@ export default function Learn() {
 
         {/* Prev / Next navigation */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          {adjacent.prev ? (
-            <Link
-              to={`/learn/${adjacent.prev.id}`}
-              className="group rounded-xl bg-foreground/[0.02] border border-foreground/[0.08] p-4 hover:bg-foreground/[0.04] hover:border-foreground/15 transition-all"
-            >
-              <div className="flex items-center gap-3">
-                <ArrowLeft className="w-4 h-4 text-foreground/40 group-hover:text-foreground/70 group-hover:-translate-x-1 transition-all shrink-0" />
-                <div className="min-w-0">
-                  <p className="text-[10px] font-mono text-foreground/40 mb-0.5">Previous</p>
-                  <p className="text-sm font-medium text-foreground/70 group-hover:text-foreground/90 truncate transition-colors">
-                    <span className="font-mono text-foreground/40 mr-1">{adjacent.prev.number}</span>
-                    {adjacent.prev.title}
-                  </p>
-                </div>
-              </div>
-            </Link>
-          ) : (
-            <div className="rounded-xl bg-foreground/[0.01] border border-foreground/[0.05] p-4 opacity-40">
-              <div className="flex items-center gap-3">
-                <ArrowLeft className="w-4 h-4 text-foreground/30 shrink-0" />
-                <div>
-                  <p className="text-[10px] font-mono text-foreground/30 mb-0.5">Previous</p>
-                  <p className="text-sm text-foreground/30">First lesson</p>
-                </div>
-              </div>
-            </div>
-          )}
-
-          {adjacent.next ? (
-            nextStatus === 'locked' && !isCompleted ? (
-              <div className="rounded-xl bg-foreground/[0.01] border border-foreground/[0.05] p-4 opacity-40">
-                <div className="flex items-center justify-end gap-3">
-                  <div className="text-right min-w-0">
-                    <p className="text-[10px] font-mono text-foreground/30 mb-0.5">Next</p>
-                    <p className="text-sm text-foreground/30 truncate">
-                      <Lock className="w-3 h-3 inline mr-1" />
-                      {adjacent.next.title}
-                    </p>
-                  </div>
-                  <ArrowRight className="w-4 h-4 text-foreground/30 shrink-0" />
-                </div>
-              </div>
-            ) : (
-              <Link
-                to={`/learn/${adjacent.next.id}`}
-                className="group rounded-xl bg-foreground/[0.02] border border-foreground/[0.08] p-4 hover:bg-foreground/[0.04] hover:border-foreground/15 transition-all"
-              >
-                <div className="flex items-center justify-end gap-3">
-                  <div className="text-right min-w-0">
-                    <p className="text-[10px] font-mono text-foreground/40 mb-0.5">Next</p>
-                    <p className="text-sm font-medium text-foreground/70 group-hover:text-foreground/90 truncate transition-colors">
-                      {adjacent.next.title}
-                      <span className="font-mono text-foreground/40 ml-1">{adjacent.next.number}</span>
-                    </p>
-                  </div>
-                  <ArrowRight className="w-4 h-4 text-foreground/40 group-hover:text-foreground/70 group-hover:translate-x-1 transition-all shrink-0" />
-                </div>
-              </Link>
-            )
-          ) : (
-            <div className="rounded-xl bg-foreground/[0.01] border border-foreground/[0.05] p-4 opacity-40">
-              <div className="flex items-center justify-end gap-3">
-                <div className="text-right">
-                  <p className="text-[10px] font-mono text-foreground/30 mb-0.5">Next</p>
-                  <p className="text-sm text-foreground/30">Course complete!</p>
-                </div>
-                <ArrowRight className="w-4 h-4 text-foreground/30 shrink-0" />
-              </div>
-            </div>
-          )}
+          <LessonNavCard lesson={adjacent.prev} direction="prev" />
+          <LessonNavCard lesson={adjacent.next} direction="next" disabled={nextStatus === 'locked' && !isCompleted} />
         </div>
       </div>
     </>

@@ -12,11 +12,10 @@ import {
   Clock,
   GraduationCap,
   Settings,
-  Star,
-  Play,
   Trophy,
   Layers,
   Zap,
+  Check,
 } from 'lucide-react'
 import {
   BlurFadeIn,
@@ -26,6 +25,8 @@ import {
 import { SectionSpots, Section } from '@/components/ui/gradient-background'
 import { CURRICULUM, TOTAL_XP, TOTAL_LESSONS } from '@/data/curriculum'
 import { useAuth } from '@/hooks/use-auth'
+import { useProgress, getTierProgress, getStreakMultiplier } from '@/stores/progress'
+import { LessonRow } from '@/components/gamification/lesson-row'
 
 const tierIcons: Record<string, typeof Code2> = {
   prework: Settings,
@@ -48,6 +49,7 @@ const tiers = CURRICULUM.map((tier) => ({
   lessonDetails: tier.lessons,
 }))
 
+
 export default function Curriculum() {
   const { isLoggedIn } = useAuth()
 
@@ -60,6 +62,8 @@ export default function Curriculum() {
 
 function AppCurriculum() {
   const totalHours = CURRICULUM.reduce((sum, t) => sum + t.hours, 0)
+  useProgress()
+  const { multiplier } = getStreakMultiplier()
 
   return (
     <div className="p-6 lg:p-8">
@@ -67,15 +71,27 @@ function AppCurriculum() {
         {/* Main content */}
         <div className="flex-1 max-w-4xl">
           <div className="mb-8">
-            <h1 className="text-2xl font-bold tracking-tight mb-2">Curriculum</h1>
-            <p className="text-sm text-muted-foreground">
-              Each tier builds on the last. The capstone from each tier proves you're ready for the next.
-            </p>
+            <div className="flex items-center justify-between">
+              <div>
+                <h1 className="text-2xl font-bold tracking-tight mb-2">Curriculum</h1>
+                <p className="text-sm text-muted-foreground">
+                  Each tier builds on the last. The capstone from each tier proves you're ready for the next.
+                </p>
+              </div>
+              {multiplier > 1 && (
+                <div className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-foreground/10 border border-foreground/15">
+                  <Zap className="w-3.5 h-3.5 text-foreground/60" />
+                  <span className="text-xs font-mono font-semibold text-foreground/70">{multiplier}x XP</span>
+                </div>
+              )}
+            </div>
           </div>
 
           <div className="space-y-8">
             {tiers.map((tier) => {
               const Icon = tier.icon
+              const tierProgress = getTierProgress(tier.id)
+
               return (
                 <div
                   key={tier.id}
@@ -87,8 +103,15 @@ function AppCurriculum() {
                       <div className="p-2 rounded-lg bg-foreground/5 border border-foreground/10">
                         <Icon className="w-4 h-4 text-foreground/70" />
                       </div>
-                      <div>
-                        <h2 className="text-lg font-bold">{tier.title}</h2>
+                      <div className="flex-1">
+                        <div className="flex items-center justify-between">
+                          <h2 className="text-lg font-bold">{tier.title}</h2>
+                          {tierProgress.percent === 100 && (
+                            <span className="flex items-center gap-1 text-[10px] font-mono px-2 py-0.5 rounded-full bg-foreground/10 text-foreground/60">
+                              <Check className="w-3 h-3" /> Complete
+                            </span>
+                          )}
+                        </div>
                         <div className="flex items-center gap-3 text-xs text-muted-foreground">
                           <span className="flex items-center gap-1">
                             <Clock className="w-3 h-3" />
@@ -96,40 +119,31 @@ function AppCurriculum() {
                           </span>
                           <span className="flex items-center gap-1">
                             <BookOpen className="w-3 h-3" />
-                            {tier.lessons}
+                            {tierProgress.completed}/{tierProgress.total}
+                          </span>
+                          <span className="flex items-center gap-1">
+                            <Zap className="w-3 h-3" />
+                            {tierProgress.earnedXp}/{tierProgress.totalXp} XP
                           </span>
                         </div>
                       </div>
                     </div>
+                    {/* Tier progress bar */}
+                    {tierProgress.percent > 0 && tierProgress.percent < 100 && (
+                      <div className="relative h-1 rounded-full bg-foreground/[0.06] overflow-hidden mt-3">
+                        <motion.div
+                          className="absolute inset-y-0 left-0 rounded-full bg-foreground/20"
+                          initial={{ width: 0 }}
+                          animate={{ width: `${tierProgress.percent}%` }}
+                          transition={{ duration: 0.6, ease: [0.33, 1, 0.68, 1] }}
+                        />
+                      </div>
+                    )}
                   </div>
 
                   <div className="divide-y divide-foreground/[0.04]">
                     {tier.lessonDetails.map((lesson) => (
-                      <Link
-                        key={lesson.id}
-                        to={`/learn/${lesson.id}`}
-                        className="flex items-center gap-3 px-5 py-3 hover:bg-foreground/[0.03] transition-colors group"
-                      >
-                        <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-foreground/10 group-hover:bg-foreground/15 transition-colors">
-                          {lesson.isCapstone ? (
-                            <Star className="h-3 w-3 text-foreground/70" />
-                          ) : (
-                            <Play className="h-2.5 w-2.5 text-foreground/60 ml-0.5" />
-                          )}
-                        </span>
-                        <div className="flex-1 min-w-0">
-                          <div className="flex items-center gap-2">
-                            <span className="text-[10px] font-mono text-foreground/40">{lesson.number}</span>
-                            <span className={`text-sm ${lesson.isCapstone ? 'font-semibold' : ''} text-foreground/80 group-hover:text-foreground transition-colors truncate`}>
-                              {lesson.title}
-                            </span>
-                          </div>
-                        </div>
-                        <div className="flex items-center gap-3 text-xs text-foreground/40 shrink-0">
-                          <span className="font-mono">{lesson.duration}m</span>
-                          <span className="font-mono text-foreground/30">+{lesson.xp} XP</span>
-                        </div>
-                      </Link>
+                      <LessonRow key={lesson.id} lesson={lesson} showStatus />
                     ))}
                   </div>
 
@@ -139,6 +153,9 @@ function AppCurriculum() {
                         <GraduationCap className="w-3.5 h-3.5 text-foreground/60" />
                         <span className="text-xs font-mono text-foreground/60">Capstone:</span>
                         <span className="text-xs text-foreground/80">{tier.capstone}</span>
+                        <span className="text-[10px] font-mono ml-auto text-foreground/30">
+                          +{tier.lessonDetails.find(l => l.isCapstone)?.xp || 0} XP
+                        </span>
                       </div>
                     </div>
                   )}
@@ -192,7 +209,7 @@ function AppCurriculum() {
               <nav className="space-y-1">
                 {tiers.map((tier) => {
                   const Icon = tier.icon
-                  const tierXp = tier.lessonDetails.reduce((sum, l) => sum + l.xp, 0)
+                  const tp = getTierProgress(tier.id)
                   return (
                     <a
                       key={tier.id}
@@ -207,7 +224,7 @@ function AppCurriculum() {
                           {tier.id === 'prework' ? 'Prework' : `Tier ${CURRICULUM.find(t => t.id === tier.id)?.number}`}
                         </span>
                         <span className="text-[10px] font-mono text-foreground/30">
-                          {tier.lessonDetails.length} lessons · {tierXp} XP
+                          {tier.lessonDetails.length} lessons · {tp.totalXp} XP
                         </span>
                       </div>
                     </a>
@@ -378,31 +395,7 @@ function MarketingCurriculum() {
                       </h4>
                       <div className="space-y-1.5">
                         {tier.lessonDetails.map((lesson) => (
-                          <Link
-                            key={lesson.id}
-                            to={`/learn/${lesson.id}`}
-                            className="flex items-center gap-3 p-2.5 rounded-lg hover:bg-foreground/[0.03] transition-colors group"
-                          >
-                            <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-foreground/10 group-hover:bg-foreground/15 transition-colors">
-                              {lesson.isCapstone ? (
-                                <Star className="h-3.5 w-3.5 text-foreground/70" />
-                              ) : (
-                                <Play className="h-3 w-3 text-foreground/60 ml-0.5" />
-                              )}
-                            </span>
-                            <div className="flex-1 min-w-0">
-                              <div className="flex items-center gap-2">
-                                <span className="text-[10px] font-mono text-foreground/40">{lesson.number}</span>
-                                <span className={`text-sm ${lesson.isCapstone ? 'font-semibold' : ''} text-foreground/80 group-hover:text-foreground transition-colors truncate`}>
-                                  {lesson.title}
-                                </span>
-                              </div>
-                            </div>
-                            <div className="flex items-center gap-3 text-xs text-foreground/40 shrink-0">
-                              <span className="font-mono">{lesson.duration}m</span>
-                              <span className="font-mono text-foreground/30">+{lesson.xp} XP</span>
-                            </div>
-                          </Link>
+                          <LessonRow key={lesson.id} lesson={lesson} />
                         ))}
                       </div>
                     </div>

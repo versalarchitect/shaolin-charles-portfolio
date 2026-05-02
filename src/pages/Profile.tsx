@@ -1,6 +1,6 @@
 import { useState, useRef } from 'react'
 import { motion } from 'framer-motion'
-import { Camera, Loader2, Save, Settings, User, Lock, Mail, Trash2 } from 'lucide-react'
+import { Camera, Loader2, Save, Settings, User, Lock, Mail, Trash2, Zap, Flame, Trophy } from 'lucide-react'
 import { toast } from 'sonner'
 import { useAuth } from '@/hooks/use-auth'
 import { supabase } from '@/lib/supabase'
@@ -9,6 +9,18 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { AppLayout } from '@/components/app-layout'
+import { LevelIcon } from '@/components/gamification/shared'
+import { useProgress, getLevel, getOverallProgress, getStreakMultiplier } from '@/stores/progress'
+import { ACHIEVEMENTS, TOTAL_XP } from '@/data/curriculum'
+
+function SectionHeader({ title, description }: { title: string; description: string }) {
+  return (
+    <>
+      <h3 className="text-sm font-semibold text-foreground/80 mb-1">{title}</h3>
+      <p className="text-xs font-mono text-foreground/40 mb-5">{description}</p>
+    </>
+  )
+}
 
 function ProfileSection() {
   const { user } = useAuth()
@@ -24,36 +36,21 @@ function ProfileSection() {
   const initials = firstName && lastName
     ? `${firstName[0]}${lastName[0]}`.toUpperCase()
     : user?.email?.split('@')[0].slice(0, 2).toUpperCase() ?? '?'
-
   const displayName = [firstName.trim(), lastName.trim()].filter(Boolean).join(' ')
 
   async function handleAvatarUpload(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0]
     if (!file || !user) return
-
-    if (!file.type.startsWith('image/')) {
-      toast.error('Please select an image file')
-      return
-    }
-    if (file.size > 2 * 1024 * 1024) {
-      toast.error('Image must be under 2 MB')
-      return
-    }
+    if (!file.type.startsWith('image/')) { toast.error('Please select an image file'); return }
+    if (file.size > 2 * 1024 * 1024) { toast.error('Image must be under 2 MB'); return }
 
     setUploading(true)
     try {
       const ext = file.name.split('.').pop()
       const path = `${user.id}/avatar.${ext}`
-
-      const { error: uploadError } = await supabase.storage
-        .from('avatars')
-        .upload(path, file, { upsert: true })
+      const { error: uploadError } = await supabase.storage.from('avatars').upload(path, file, { upsert: true })
       if (uploadError) throw uploadError
-
-      const { data: { publicUrl } } = supabase.storage
-        .from('avatars')
-        .getPublicUrl(path)
-
+      const { data: { publicUrl } } = supabase.storage.from('avatars').getPublicUrl(path)
       const url = `${publicUrl}?t=${Date.now()}`
       setAvatarUrl(url)
       await supabase.auth.updateUser({ data: { avatar_url: url } })
@@ -69,13 +66,9 @@ function ProfileSection() {
     if (!user) return
     setUploading(true)
     try {
-      const { data: files } = await supabase.storage
-        .from('avatars')
-        .list(user.id)
+      const { data: files } = await supabase.storage.from('avatars').list(user.id)
       if (files?.length) {
-        await supabase.storage
-          .from('avatars')
-          .remove(files.map(f => `${user.id}/${f.name}`))
+        await supabase.storage.from('avatars').remove(files.map(f => `${user.id}/${f.name}`))
       }
       await supabase.auth.updateUser({ data: { avatar_url: null } })
       setAvatarUrl(null)
@@ -108,10 +101,7 @@ function ProfileSection() {
     <div className="space-y-8">
       {/* Avatar card */}
       <div className="rounded-xl border border-foreground/[0.08] bg-foreground/[0.02] p-6">
-        <h3 className="text-sm font-semibold text-foreground/80 mb-1">Photo</h3>
-        <p className="text-xs font-mono text-foreground/40 mb-5">
-          This will be displayed on your profile and in the community.
-        </p>
+        <SectionHeader title="Photo" description="This will be displayed on your profile and in the community." />
         <div className="flex items-center gap-5">
           <button
             type="button"
@@ -131,13 +121,7 @@ function ProfileSection() {
                 : <Camera className="w-5 h-5 text-white" />}
             </div>
           </button>
-          <input
-            ref={fileInputRef}
-            type="file"
-            accept="image/*"
-            className="hidden"
-            onChange={handleAvatarUpload}
-          />
+          <input ref={fileInputRef} type="file" accept="image/*" className="hidden" onChange={handleAvatarUpload} />
           <div className="flex flex-col gap-2">
             <Button
               variant="outline"
@@ -168,31 +152,16 @@ function ProfileSection() {
 
       {/* Name card */}
       <div className="rounded-xl border border-foreground/[0.08] bg-foreground/[0.02] p-6">
-        <h3 className="text-sm font-semibold text-foreground/80 mb-1">Personal information</h3>
-        <p className="text-xs font-mono text-foreground/40 mb-5">
-          Update your name as it appears across the platform.
-        </p>
+        <SectionHeader title="Personal information" description="Update your name as it appears across the platform." />
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
           <div className="space-y-2">
             <Label htmlFor="firstName" className="text-xs font-mono text-foreground/60">First name</Label>
-            <Input
-              id="firstName"
-              value={firstName}
-              onChange={(e) => setFirstName(e.target.value)}
-              placeholder="First name"
-              maxLength={50}
-            />
+            <Input id="firstName" value={firstName} onChange={(e) => setFirstName(e.target.value)} placeholder="First name" maxLength={50} />
           </div>
           <div className="space-y-2">
             <Label htmlFor="lastName" className="text-xs font-mono text-foreground/60">Last name</Label>
-            <Input
-              id="lastName"
-              value={lastName}
-              onChange={(e) => setLastName(e.target.value)}
-              placeholder="Last name"
-              maxLength={50}
-            />
+            <Input id="lastName" value={lastName} onChange={(e) => setLastName(e.target.value)} placeholder="Last name" maxLength={50} />
           </div>
         </div>
 
@@ -213,10 +182,7 @@ function ProfileSection() {
 
       {/* Email card (read-only) */}
       <div className="rounded-xl border border-foreground/[0.08] bg-foreground/[0.02] p-6">
-        <h3 className="text-sm font-semibold text-foreground/80 mb-1">Email address</h3>
-        <p className="text-xs font-mono text-foreground/40 mb-5">
-          Your email is used for sign-in and cannot be changed.
-        </p>
+        <SectionHeader title="Email address" description="Your email is used for sign-in and cannot be changed." />
         <div className="flex items-center gap-3 px-3 py-2.5 rounded-lg bg-foreground/[0.03] border border-foreground/[0.06]">
           <Mail className="w-4 h-4 text-foreground/30 shrink-0" />
           <span className="text-sm font-mono text-foreground/60 truncate">{user?.email}</span>
@@ -227,8 +193,94 @@ function ProfileSection() {
   )
 }
 
+function GamificationSection() {
+  const progress = useProgress()
+  const level = getLevel()
+  const overall = getOverallProgress()
+  const { multiplier, label } = getStreakMultiplier()
+
+  return (
+    <div className="space-y-8">
+      {/* Level & XP card */}
+      <div className="rounded-xl border border-foreground/[0.08] bg-foreground/[0.02] p-6">
+        <SectionHeader title="Level & Progress" description="Your current rank and XP breakdown." />
+
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+          {([
+            { icon: <LevelIcon levelName={level.name} className="w-6 h-6 mx-auto mb-2 text-foreground/60" />, value: level.name, label: 'Current Rank' },
+            { icon: <Zap className="w-6 h-6 mx-auto mb-2 text-foreground/60" />, value: progress.totalXp.toString(), label: `/ ${TOTAL_XP} XP` },
+            { icon: <Flame className="w-6 h-6 mx-auto mb-2 text-foreground/60" />, value: progress.currentStreak.toString(), label: 'Day Streak' },
+            { icon: <Trophy className="w-6 h-6 mx-auto mb-2 text-foreground/60" />, value: `${overall.percent}%`, label: 'Complete' },
+          ] as const).map((stat) => (
+            <div key={stat.label} className="text-center p-3 rounded-lg bg-foreground/[0.03] border border-foreground/[0.06]">
+              {stat.icon}
+              <p className="text-lg font-bold font-mono">{stat.value}</p>
+              <p className="text-[10px] font-mono text-foreground/40">{stat.label}</p>
+            </div>
+          ))}
+        </div>
+
+        {multiplier > 1 && (
+          <div className="mt-4 flex items-center gap-2 px-3 py-2 rounded-lg bg-foreground/[0.04] border border-foreground/[0.08]">
+            <Flame className="w-4 h-4 text-foreground/50" />
+            <span className="text-xs font-mono text-foreground/60">
+              Active streak bonus: <span className="font-semibold text-foreground/80">{label}</span> XP multiplier
+            </span>
+          </div>
+        )}
+      </div>
+
+      {/* Records card */}
+      <div className="rounded-xl border border-foreground/[0.08] bg-foreground/[0.02] p-6">
+        <SectionHeader title="Personal Records" description="Your best achievements and all-time stats." />
+
+        <div className="space-y-3">
+          {([
+            { label: 'Longest Streak', value: `${progress.longestStreak} days` },
+            { label: 'Total Lessons Completed', value: overall.completed.toString() },
+            { label: 'Achievements Unlocked', value: `${progress.unlockedAchievements.length} / ${ACHIEVEMENTS.length}` },
+            { label: 'Active Days', value: progress.streakDates.length.toString() },
+            { label: 'Daily XP Goal', value: `${progress.dailyXpGoal} XP` },
+          ]).map((r) => (
+            <div key={r.label} className="flex items-center justify-between py-2 border-b border-foreground/[0.05] last:border-b-0">
+              <span className="text-sm text-foreground/60">{r.label}</span>
+              <span className="text-sm font-mono font-semibold">{r.value}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Badges showcase */}
+      <div className="rounded-xl border border-foreground/[0.08] bg-foreground/[0.02] p-6">
+        <SectionHeader title="Badges" description="Earned achievements displayed on your profile." />
+
+        {progress.unlockedAchievements.length === 0 ? (
+          <div className="text-center py-8">
+            <Trophy className="w-8 h-8 mx-auto mb-3 text-foreground/20" />
+            <p className="text-sm text-foreground/40">Complete lessons to earn badges</p>
+          </div>
+        ) : (
+          <div className="flex flex-wrap gap-2">
+            {ACHIEVEMENTS.filter((a) => progress.unlockedAchievements.includes(a.id)).map((a) => (
+              <div
+                key={a.id}
+                className="flex items-center gap-2 px-3 py-2 rounded-lg bg-foreground/[0.04] border border-foreground/[0.08]"
+                title={a.description}
+              >
+                <span className="text-lg">{a.icon}</span>
+                <span className="text-xs font-mono text-foreground/70">{a.name}</span>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+    </div>
+  )
+}
+
 const SECTIONS = [
   { id: 'profile', label: 'Profile', icon: User },
+  { id: 'stats', label: 'Stats & Badges', icon: Trophy },
 ] as const
 
 type SectionId = (typeof SECTIONS)[number]['id']
@@ -265,12 +317,7 @@ export default function SettingsPage() {
                     key={section.id}
                     type="button"
                     onClick={() => setActiveSection(section.id)}
-                    className={`
-                      flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm font-mono font-medium transition-colors text-left w-full
-                      ${activeSection === section.id
-                        ? 'bg-foreground/10 text-foreground'
-                        : 'text-foreground/40 hover:text-foreground/70 hover:bg-foreground/[0.03]'}
-                    `}
+                    className={`flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm font-mono font-medium transition-colors text-left w-full ${activeSection === section.id ? 'bg-foreground/10 text-foreground' : 'text-foreground/40 hover:text-foreground/70 hover:bg-foreground/[0.03]'}`}
                   >
                     <section.icon className="w-4 h-4 shrink-0" />
                     {section.label}
@@ -282,6 +329,7 @@ export default function SettingsPage() {
             {/* Content */}
             <div className="flex-1 min-w-0">
               {activeSection === 'profile' && <ProfileSection />}
+              {activeSection === 'stats' && <GamificationSection />}
             </div>
           </div>
         </motion.div>

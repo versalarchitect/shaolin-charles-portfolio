@@ -275,7 +275,7 @@ const content: LessonContent = {
     },
     {
       type: 'checkpoint',
-      xp: 0,
+      xp: 5,
       message: 'Environment complete! You\'re ready to deploy.',
     },
   ],
