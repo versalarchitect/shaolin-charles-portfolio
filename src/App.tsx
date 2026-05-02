@@ -1,25 +1,22 @@
-import { Suspense, useEffect } from 'react'
+import { Suspense, lazy, useEffect } from 'react'
 import { Outlet, useLocation } from 'react-router-dom'
 import PageLoading from '@/components/page-loading'
 import { Header } from '@/components/header'
 import { Footer } from '@/components/footer'
-import { Chatbot } from '@/components/chatbot'
-import { VoiceTutor } from '@/components/voice-tutor'
 import { Toaster } from '@/components/ui/sonner'
 import { ThemeProvider } from '@/components/theme-provider'
 import { CommandMenuProvider } from '@/components/command-menu'
-import { ScrollProgress } from '@/components/ui/aaa-effects'
+import { ScrollProgress } from '@/components/ui/scroll-progress'
 import { AppLayout } from '@/components/app-layout'
 import {
-  AmbientGlowZones,
-  GradientBlobs,
-  GradientMesh,
-  GradientWash,
-  NoiseTexture,
-  SpotlightCones,
   SectionGridProvider,
-  SectionBoundaryGrid,
 } from '@/components/ui/gradient-background'
+
+const SectionBoundaryGrid = lazy(() => import('@/components/ui/gradient-background').then(m => ({ default: m.SectionBoundaryGrid })))
+
+const Chatbot = lazy(() => import('@/components/chatbot').then(m => ({ default: m.Chatbot })))
+const VoiceTutor = lazy(() => import('@/components/voice-tutor').then(m => ({ default: m.VoiceTutor })))
+const BackgroundEffects = lazy(() => import('@/components/background-effects'))
 
 const APP_ROUTES = ['/course/']
 
@@ -38,6 +35,9 @@ export default function App() {
       <CommandMenuProvider>
       <SectionGridProvider containerPadding={24}>
         <div className="antialiased font-sans min-h-screen text-foreground relative">
+          <a href="#main-content" className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[100] focus:px-4 focus:py-2 focus:bg-background focus:text-foreground focus:border focus:border-foreground/20 focus:rounded">
+            Skip to main content
+          </a>
           {isAppPage ? (
             /* App pages: sidebar layout, clean background */
             <AppLayout>
@@ -48,24 +48,13 @@ export default function App() {
           ) : (
             /* Marketing pages: full header/footer with background effects */
             <>
-              {/* Global background effects - layered for subtle, graceful depth */}
-              <div className="fixed inset-0 pointer-events-none z-0 bg-background">
-                {/* Layer 1: Subtle gradient wash - horizontal bands of soft light */}
-                <GradientWash />
-                {/* Layer 2: Ambient glow zones - soft pools of diffused light */}
-                <AmbientGlowZones />
-                {/* Layer 3: Spotlight cones - directional lights from corners */}
-                <SpotlightCones />
-                {/* Layer 4: Gradient mesh - floating orbs that drift */}
-                <GradientMesh />
-                {/* Layer 5: Gradient blobs - additional subtle movement */}
-                <GradientBlobs />
-                {/* Top layer: Subtle noise texture overlay */}
-                <NoiseTexture />
-              </div>
+              <Suspense fallback={<div className="fixed inset-0 bg-background" />}>
+                <BackgroundEffects />
+              </Suspense>
 
-              {/* Section boundary grid - lines span viewport, + markers at section edges */}
-              <SectionBoundaryGrid intensity={1} markerSize={14} />
+              <Suspense fallback={null}>
+                <SectionBoundaryGrid intensity={1} markerSize={14} />
+              </Suspense>
 
               {/* Scroll progress indicator - marketing pages only */}
               <ScrollProgress className="bg-foreground/80" height={2} />
@@ -75,7 +64,7 @@ export default function App() {
               {/* Content wrapper with proper z-index above background effects */}
               <div className="relative z-10">
                 {/* Add top padding for fixed header */}
-                <main className="pt-16">
+                <main id="main-content" className="pt-16 min-h-screen">
                   <Suspense fallback={<PageLoading />}>
                     <Outlet />
                   </Suspense>
@@ -83,8 +72,10 @@ export default function App() {
 
                 <Footer />
               </div>
-              <Chatbot />
-              <VoiceTutor context="marketing" offsetBottom />
+              <Suspense fallback={null}>
+                <Chatbot />
+                <VoiceTutor context="marketing" offsetBottom />
+              </Suspense>
             </>
           )}
           <Toaster />

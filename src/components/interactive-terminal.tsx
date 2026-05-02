@@ -106,8 +106,10 @@ export function InteractiveTerminal() {
           </div>
           <span className="text-xs font-mono text-muted-foreground">charles@portfolio ~ </span>
           <button
+            type="button"
             onClick={handleRestart}
             className="text-xs font-mono text-muted-foreground hover:text-foreground transition-colors"
+            aria-label="Restart terminal demo"
           >
             {t('home.terminal.restart')}
           </button>

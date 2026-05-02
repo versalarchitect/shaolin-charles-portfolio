@@ -9,14 +9,16 @@
           var d = t === 'dark' || (t === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches);
           document.documentElement.classList.toggle('dark', d);
           document.documentElement.style.colorScheme = d ? 'dark' : 'light';
+          document.documentElement.style.setProperty('--shell-bg', d ? '#141417' : '#f9f9f9');
+          document.documentElement.style.setProperty('--shell-fg', d ? '#f5f5f7' : '#09090b');
         } catch(e) { document.documentElement.classList.add('dark'); }
       })();
     </script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
     <!-- Primary Meta Tags -->
-    <title>Master Multi-Agent Orchestration — The Agentic SaaS Course</title>
-    <meta name="title" content="Master Multi-Agent Orchestration — The Agentic SaaS Course" />
+    <title>Charles Jackson — Software Engineer & Instructor</title>
+    <meta name="title" content="Charles Jackson — Software Engineer & Instructor" />
     <meta name="description" content="Learn to orchestrate AI agents from first principles. 52 hours from tokens and context windows to coordinating agent fleets that build production software. $4,500, lifetime access." />
     <meta name="author" content="Charles Jackson" />
     <meta name="keywords" content="multi-agent orchestration, ai agent course, orchestrate ai agents, agent coordination, claude code course, mcp servers, agentic development, ai agent fleet, context windows, tokens, charles jackson" />
@@ -33,21 +35,21 @@
     <link rel="manifest" href="/site.webmanifest" />
 
     <!-- Canonical URL -->
-    <link rel="canonical" href="https://shaolincharles.dev" />
+    <link rel="canonical" href="https://charlesjackson.dev" />
 
     <!-- Hreflang for multilingual SEO -->
-    <link rel="alternate" hreflang="en" href="https://shaolincharles.dev" />
-    <link rel="alternate" hreflang="fr" href="https://shaolincharles.dev/?lng=fr" />
-    <link rel="alternate" hreflang="x-default" href="https://shaolincharles.dev" />
+    <link rel="alternate" hreflang="en" href="https://charlesjackson.dev" />
+    <link rel="alternate" hreflang="fr" href="https://charlesjackson.dev/?lng=fr" />
+    <link rel="alternate" hreflang="x-default" href="https://charlesjackson.dev" />
 
     <!-- Open Graph / Facebook / LinkedIn / Discord / Slack / WhatsApp / Telegram / iMessage -->
     <meta property="og:type" content="website" />
-    <meta property="og:url" content="https://shaolincharles.dev" />
+    <meta property="og:url" content="https://charlesjackson.dev" />
     <meta property="og:site_name" content="Charles Jackson" />
     <meta property="og:title" content="Master Multi-Agent Orchestration — The Agentic SaaS Course" />
     <meta property="og:description" content="Learn to orchestrate AI agents from first principles. 52 hours from tokens to agent fleets. $4,500, lifetime access." />
-    <meta property="og:image" content="https://shaolincharles.dev/og-image.png" />
-    <meta property="og:image:secure_url" content="https://shaolincharles.dev/og-image.png" />
+    <meta property="og:image" content="https://charlesjackson.dev/og-image.png" />
+    <meta property="og:image:secure_url" content="https://charlesjackson.dev/og-image.png" />
     <meta property="og:image:type" content="image/png" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
@@ -59,17 +61,17 @@
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:site" content="@shaolincharles" />
     <meta name="twitter:creator" content="@shaolincharles" />
-    <meta name="twitter:domain" content="shaolincharles.dev" />
-    <meta name="twitter:url" content="https://shaolincharles.dev" />
+    <meta name="twitter:domain" content="charlesjackson.dev" />
+    <meta name="twitter:url" content="https://charlesjackson.dev" />
     <meta name="twitter:title" content="Master Multi-Agent Orchestration — The Agentic SaaS Course" />
     <meta name="twitter:description" content="Learn to orchestrate AI agents from first principles. 52 hours from tokens to agent fleets. $4,500, lifetime access." />
-    <meta name="twitter:image" content="https://shaolincharles.dev/og-image.png" />
+    <meta name="twitter:image" content="https://charlesjackson.dev/og-image.png" />
     <meta name="twitter:image:alt" content="The Agentic SaaS Course — Charles Jackson" />
 
     <!-- Schema.org / Google+ / Pinterest microdata -->
     <meta itemprop="name" content="Master Multi-Agent Orchestration — The Agentic SaaS Course" />
     <meta itemprop="description" content="Learn to orchestrate AI agents from first principles. 52 hours from tokens to agent fleets. $4,500, lifetime access." />
-    <meta itemprop="image" content="https://shaolincharles.dev/og-image.png" />
+    <meta itemprop="image" content="https://charlesjackson.dev/og-image.png" />
 
     <!-- LinkedIn specific (uses OG but sometimes needs nudging) -->
     <meta name="linkedin:owner" content="Charles Jackson" />
@@ -107,7 +109,7 @@
         "@type": "WebSite",
         "name": "Charles Jackson",
         "alternateName": "The Agentic SaaS Course",
-        "url": "https://shaolincharles.dev",
+        "url": "https://charlesjackson.dev",
         "inLanguage": ["en", "fr"],
         "publisher": {
           "@type": "Person",
@@ -122,8 +124,8 @@
         "@context": "https://schema.org",
         "@type": "Person",
         "name": "Charles Jackson",
-        "url": "https://shaolincharles.dev",
-        "image": "https://shaolincharles.dev/og-image.png",
+        "url": "https://charlesjackson.dev",
+        "image": "https://charlesjackson.dev/og-image.png",
         "jobTitle": "Software Instructor",
         "description": "Software instructor teaching multi-agent orchestration from first principles. 20+ years building production systems.",
         "sameAs": [
@@ -151,11 +153,11 @@
         "@type": "Course",
         "name": "The Agentic SaaS Course",
         "description": "Learn to orchestrate AI agents from first principles. 52 hours from tokens and context windows to coordinating multi-agent fleets that build production software. 4 tiers, 4 capstones, 8 principles.",
-        "url": "https://shaolincharles.dev",
+        "url": "https://charlesjackson.dev",
         "provider": {
           "@type": "Person",
           "name": "Charles Jackson",
-          "url": "https://shaolincharles.dev/instructor"
+          "url": "https://charlesjackson.dev/instructor"
         },
         "educationalLevel": "Intermediate to Advanced",
         "teaches": ["Multi-Agent Orchestration", "AI Agent Coordination", "Context Windows", "Token Management", "MCP Servers", "Spec-Driven Development", "Agent Verification", "Production Agent Systems", "System Architecture", "Claude Code"],
@@ -253,20 +255,21 @@
         "@context": "https://schema.org",
         "@type": "BreadcrumbList",
         "itemListElement": [
-          { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://shaolincharles.dev/" },
-          { "@type": "ListItem", "position": 2, "name": "Curriculum", "item": "https://shaolincharles.dev/curriculum" },
-          { "@type": "ListItem", "position": 2, "name": "Principles", "item": "https://shaolincharles.dev/principles" },
-          { "@type": "ListItem", "position": 2, "name": "Tiers", "item": "https://shaolincharles.dev/tiers" },
-          { "@type": "ListItem", "position": 2, "name": "Instructor", "item": "https://shaolincharles.dev/instructor" },
-          { "@type": "ListItem", "position": 2, "name": "About", "item": "https://shaolincharles.dev/about" },
-          { "@type": "ListItem", "position": 2, "name": "Projects", "item": "https://shaolincharles.dev/projects" },
-          { "@type": "ListItem", "position": 2, "name": "Blog", "item": "https://shaolincharles.dev/blog" },
-          { "@type": "ListItem", "position": 2, "name": "Contact", "item": "https://shaolincharles.dev/contact" }
+          { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://charlesjackson.dev/" },
+          { "@type": "ListItem", "position": 2, "name": "Curriculum", "item": "https://charlesjackson.dev/curriculum" },
+          { "@type": "ListItem", "position": 3, "name": "Principles", "item": "https://charlesjackson.dev/principles" },
+          { "@type": "ListItem", "position": 4, "name": "Tiers", "item": "https://charlesjackson.dev/tiers" },
+          { "@type": "ListItem", "position": 5, "name": "Instructor", "item": "https://charlesjackson.dev/instructor" },
+          { "@type": "ListItem", "position": 6, "name": "About", "item": "https://charlesjackson.dev/about" },
+          { "@type": "ListItem", "position": 7, "name": "Projects", "item": "https://charlesjackson.dev/projects" },
+          { "@type": "ListItem", "position": 8, "name": "Blog", "item": "https://charlesjackson.dev/blog" },
+          { "@type": "ListItem", "position": 9, "name": "Contact", "item": "https://charlesjackson.dev/contact" }
         ]
       }
     </script>
   </head>
   <body>
+    <div id="app-shell" style="position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:var(--shell-bg,#141417);color:var(--shell-fg,#f5f5f7);font-family:system-ui,sans-serif;z-index:9999;transition:opacity 0.3s ease-out"><div style="text-align:center"><div style="font-size:clamp(2rem,5vw,3.5rem);font-weight:700;letter-spacing:-0.02em;margin-bottom:0.5rem">Charles Jackson</div><div style="font-size:1rem;opacity:0.5">Loading...</div></div></div>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>

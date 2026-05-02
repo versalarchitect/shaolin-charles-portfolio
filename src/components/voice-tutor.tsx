@@ -184,6 +184,7 @@ export function VoiceTutor({ context: contextProp, offsetBottom = false }: Voice
                 type="button"
                 onClick={() => setIsOpen(false)}
                 className="p-1.5 rounded-lg text-muted-foreground hover:text-foreground hover:bg-foreground/10 transition-colors"
+                aria-label="Close voice tutor"
               >
                 <X className="w-4 h-4" />
               </button>

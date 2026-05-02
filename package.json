@@ -5,15 +5,16 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
-    "build:prerender": "vite build && node scripts/prerender.mjs",
+    "build": "vite build && node scripts/inject-font-preloads.mjs",
+    "build:prerender": "vite build && node scripts/inject-font-preloads.mjs && node scripts/prerender.mjs",
     "build:fast": "vite build",
     "preview": "vite preview",
     "lint": "biome lint ./src",
     "lint:fix": "biome lint --write ./src",
     "format": "biome format --write ./src",
     "check": "biome check ./src",
-    "check:fix": "biome check --write ./src"
+    "check:fix": "biome check --write ./src",
+    "validate:lessons": "bun run scripts/validate-lessons.ts"
   },
   "dependencies": {
     "@emoji-mart/data": "^1.2.1",

@@ -50,6 +50,7 @@ function CodeDemoStep({ step }: { step: Extract<LessonStep, { type: 'code-demo' 
           type="button"
           onClick={handleCopy}
           className="absolute top-2 right-2 p-2 rounded-lg bg-foreground/[0.06] border border-foreground/[0.08] text-foreground/30 hover:text-foreground/60 hover:bg-foreground/10 transition-all opacity-0 group-hover:opacity-100"
+          aria-label={copied ? 'Copied' : 'Copy code'}
         >
           {copied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
         </button>

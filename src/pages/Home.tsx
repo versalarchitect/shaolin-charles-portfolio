@@ -83,14 +83,19 @@ function TypewriterText({ texts, className = '' }: { texts: string[]; className?
     return () => clearTimeout(timeout)
   }, [currentText, isDeleting, currentIndex, texts])
 
+  const longestText = texts.reduce((a, b) => (a.length > b.length ? a : b), '')
+
   return (
-    <span className={className}>
-      {currentText}
-      <motion.span
-        animate={{ opacity: [1, 0] }}
-        transition={{ duration: 0.5, repeat: Infinity }}
-        className="inline-block w-0.5 h-[1em] bg-current ml-1 align-middle"
-      />
+    <span className={`${className} relative inline-block`}>
+      <span className="invisible" aria-hidden="true">{longestText}</span>
+      <span className="absolute left-0 top-0" aria-live="polite">
+        {currentText}
+        <motion.span
+          animate={{ opacity: [1, 0] }}
+          transition={{ duration: 0.5, repeat: Infinity }}
+          className="inline-block w-0.5 h-[1em] bg-current ml-1 align-middle"
+        />
+      </span>
     </span>
   )
 }

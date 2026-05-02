@@ -3,10 +3,8 @@ import { lazy } from 'react'
 import App from './App'
 import { AuthGuard } from './components/auth-guard'
 
-// Homepage (load eagerly for fastest initial render)
-import Home from './pages/Home'
-
-// Lazy load all other pages (React Router v7 + React 19 code splitting)
+// Lazy load all pages (React Router v7 + React 19 code splitting)
+const Home = lazy(() => import('./pages/Home'))
 const Curriculum = lazy(() => import('./pages/Curriculum'))
 const Principles = lazy(() => import('./pages/Principles'))
 const Tiers = lazy(() => import('./pages/Tiers'))

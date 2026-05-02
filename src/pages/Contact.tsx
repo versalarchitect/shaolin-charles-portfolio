@@ -212,10 +212,11 @@ export default function Contact() {
 
                     <div className="grid md:grid-cols-2 gap-4">
                       <div className="space-y-2">
-                        <label className="text-xs font-mono uppercase tracking-wide text-muted-foreground">
+                        <label htmlFor="contact-name" className="text-xs font-mono uppercase tracking-wide text-muted-foreground">
                           {t('contact.form.name')}
                         </label>
                         <Input
+                          id="contact-name"
                           name="name"
                           value={formData.name}
                           onChange={handleChange}
@@ -227,10 +228,11 @@ export default function Contact() {
                         )}
                       </div>
                       <div className="space-y-2">
-                        <label className="text-xs font-mono uppercase tracking-wide text-muted-foreground">
+                        <label htmlFor="contact-email" className="text-xs font-mono uppercase tracking-wide text-muted-foreground">
                           {t('contact.form.email')}
                         </label>
                         <Input
+                          id="contact-email"
                           name="email"
                           type="email"
                           value={formData.email}
@@ -245,10 +247,11 @@ export default function Contact() {
                     </div>
 
                     <div className="space-y-2">
-                      <label className="text-xs font-mono uppercase tracking-wide text-muted-foreground">
+                      <label htmlFor="contact-subject" className="text-xs font-mono uppercase tracking-wide text-muted-foreground">
                         {t('contact.form.subject')}
                       </label>
                       <Input
+                        id="contact-subject"
                         name="subject"
                         value={formData.subject}
                         onChange={handleChange}
@@ -261,10 +264,11 @@ export default function Contact() {
                     </div>
 
                     <div className="space-y-2">
-                      <label className="text-xs font-mono uppercase tracking-wide text-muted-foreground">
+                      <label htmlFor="contact-message" className="text-xs font-mono uppercase tracking-wide text-muted-foreground">
                         {t('contact.form.message')}
                       </label>
                       <Textarea
+                        id="contact-message"
                         name="message"
                         value={formData.message}
                         onChange={handleChange}
