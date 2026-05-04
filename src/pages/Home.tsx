@@ -616,7 +616,7 @@ export default function Home() {
           <ScrollFadeIn delay={0.3}>
             <div className="text-center mt-8">
               <Link
-                to="/projects"
+                to="/recent-projects"
                 className="inline-flex items-center gap-2 text-sm font-mono text-foreground/40 hover:text-foreground/70 transition-colors"
               >
                 View all projects

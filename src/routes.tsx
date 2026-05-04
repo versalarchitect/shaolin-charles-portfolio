@@ -25,6 +25,7 @@ const Chat = lazy(() => import('./pages/Chat'))
 const Profile = lazy(() => import('./pages/Profile'))
 const InstructorDashboard = lazy(() => import('./pages/InstructorDashboard'))
 const SelfUpdatingCourse = lazy(() => import('./pages/SelfUpdatingCourse'))
+const RecentProjects = lazy(() => import('./pages/RecentProjects'))
 const Pipeline = lazy(() => import('./pages/Pipeline'))
 const NotFound = lazy(() => import('./pages/NotFound'))
 
@@ -91,6 +92,10 @@ const router = createBrowserRouter([
       {
         path: 'self-updating-course',
         element: <SelfUpdatingCourse />,
+      },
+      {
+        path: 'recent-projects',
+        element: <RecentProjects />,
       },
       {
         path: 'login',
