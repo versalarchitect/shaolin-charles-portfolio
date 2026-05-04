@@ -39,7 +39,7 @@ async function getEmail(): Promise<string> {
 }
 
 async function logActivity(entry: Omit<DealActivity, 'id' | 'created_at'>) {
-  await supabase.from('deal_activity').insert(entry)
+  await supabase.from('ac_deal_activity').insert(entry)
 }
 
 export function usePipeline() {
@@ -50,8 +50,8 @@ export function usePipeline() {
   const fetchDeals = useCallback(async () => {
     setLoading(true)
     const [dealsRes, activityRes] = await Promise.all([
-      supabase.from('deals').select('*').order('updated_at', { ascending: false }),
-      supabase.from('deal_activity').select('*').order('created_at', { ascending: false }).limit(50),
+      supabase.from('ac_deals').select('*').order('updated_at', { ascending: false }),
+      supabase.from('ac_deal_activity').select('*').order('created_at', { ascending: false }).limit(50),
     ])
 
     if (!dealsRes.error) setDeals((dealsRes.data as Deal[]) || [])
@@ -66,7 +66,7 @@ export function usePipeline() {
   useEffect(() => {
     const channel = supabase
       .channel('deals-realtime')
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'deals' }, (payload) => {
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'ac_deals' }, (payload) => {
         switch (payload.eventType) {
           case 'INSERT':
             setDeals(prev => {
@@ -94,7 +94,7 @@ export function usePipeline() {
     if (!user) return { error: 'Not authenticated' }
 
     const { data, error: err } = await supabase
-      .from('deals')
+      .from('ac_deals')
       .insert({ ...deal, created_by: user.id })
       .select()
       .single()
@@ -130,7 +130,7 @@ export function usePipeline() {
   const updateDeal = async (id: string, updates: Partial<Deal>) => {
     const old = deals.find(d => d.id === id)
     const { data, error: err } = await supabase
-      .from('deals')
+      .from('ac_deals')
       .update({ ...updates, updated_at: new Date().toISOString() })
       .eq('id', id)
       .select()
@@ -167,7 +167,7 @@ export function usePipeline() {
   const moveDeal = async (id: string, stage: DealStage) => {
     const old = deals.find(d => d.id === id)
     const { data, error: err } = await supabase
-      .from('deals')
+      .from('ac_deals')
       .update({ stage, updated_at: new Date().toISOString() })
       .eq('id', id)
       .select()
@@ -203,7 +203,7 @@ export function usePipeline() {
 
   const deleteDeal = async (id: string) => {
     const old = deals.find(d => d.id === id)
-    const { error: err } = await supabase.from('deals').delete().eq('id', id)
+    const { error: err } = await supabase.from('ac_deals').delete().eq('id', id)
 
     if (!err) {
       setDeals(prev => prev.filter(d => d.id !== id))

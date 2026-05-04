@@ -534,6 +534,99 @@ export default function Home() {
         <ScrollIndicator />
       </Section>
 
+      {/* Recent Projects */}
+      <Section id="recent-projects" className="relative py-24 lg:py-32">
+        <SectionSpots variant="subtle" />
+        <div className="container mx-auto px-6 lg:px-8 relative z-10">
+          <ScrollFadeIn>
+            <div className="text-center mb-12">
+              <span className="text-xs font-mono text-foreground/40 uppercase tracking-widest">Portfolio</span>
+              <h2 className="text-3xl md:text-4xl font-bold mt-3 mb-4">Recent Projects</h2>
+              <p className="text-muted-foreground max-w-lg mx-auto">
+                Production systems I've built, from AI platforms to developer tools.
+              </p>
+            </div>
+          </ScrollFadeIn>
+
+          <StaggerContainer className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
+            {[
+              {
+                title: 'Agentic SaaS Course',
+                description: '52-hour course on multi-agent orchestration. Self-updating curriculum powered by an agentic pipeline.',
+                url: 'https://charlesjackson.dev/curriculum',
+                tags: ['React', 'Supabase', 'AI'],
+                status: 'LIVE',
+              },
+              {
+                title: 'Aedis',
+                description: 'Next-generation platform for building and managing intelligent digital experiences.',
+                url: 'https://getaedis.com',
+                tags: ['Next.js', 'TypeScript', 'AI'],
+                status: 'LIVE',
+              },
+              {
+                title: 'MyUrbanFarm.ai',
+                description: 'Urban farming management platform connecting farmers, sponsors, and administrators.',
+                url: 'https://www.myurbanfarm.ai',
+                tags: ['Next.js', 'PostgreSQL', 'Maps'],
+                status: 'LIVE',
+              },
+              {
+                title: 'A2C Pipeline',
+                description: 'Private deal pipeline for managing contracts. Realtime sync, activity log, commission tracking.',
+                url: 'https://ac-pipeline.vercel.app',
+                tags: ['React', 'Supabase', 'Realtime'],
+                status: 'PRIVATE',
+              },
+            ].map((project) => (
+              <motion.a
+                key={project.title}
+                href={project.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                variants={staggerItemVariants}
+                className="group rounded-2xl bg-foreground/[0.02] border border-foreground/[0.08] p-6 hover:border-foreground/15 transition-all hover:-translate-y-1 duration-300 flex flex-col"
+              >
+                <div className="flex items-center justify-between mb-3">
+                  <span className={`text-[10px] font-mono px-2 py-0.5 rounded flex items-center gap-1.5 ${
+                    project.status === 'LIVE'
+                      ? 'bg-green-500/10 text-green-500'
+                      : 'bg-foreground/[0.05] text-foreground/40'
+                  }`}>
+                    <span className={`w-1.5 h-1.5 rounded-full ${
+                      project.status === 'LIVE' ? 'bg-green-500' : 'bg-foreground/30'
+                    }`} />
+                    {project.status}
+                  </span>
+                  <ExternalLink className="w-3.5 h-3.5 text-foreground/20 group-hover:text-foreground/50 transition-colors" />
+                </div>
+                <h3 className="text-sm font-semibold text-foreground/90 mb-1.5">{project.title}</h3>
+                <p className="text-xs text-foreground/40 leading-relaxed mb-4 flex-1">{project.description}</p>
+                <div className="flex flex-wrap gap-1.5">
+                  {project.tags.map(tag => (
+                    <span key={tag} className="text-[10px] font-mono px-2 py-0.5 bg-foreground/[0.04] rounded border border-foreground/[0.06] text-foreground/30">
+                      {tag}
+                    </span>
+                  ))}
+                </div>
+              </motion.a>
+            ))}
+          </StaggerContainer>
+
+          <ScrollFadeIn delay={0.3}>
+            <div className="text-center mt-8">
+              <Link
+                to="/projects"
+                className="inline-flex items-center gap-2 text-sm font-mono text-foreground/40 hover:text-foreground/70 transition-colors"
+              >
+                View all projects
+                <ArrowRight className="w-3.5 h-3.5" />
+              </Link>
+            </div>
+          </ScrollFadeIn>
+        </div>
+      </Section>
+
       {/* Terminal Section */}
       <Section id="terminal" className="relative py-24 lg:py-32 overflow-hidden min-h-[600px]">
         <SectionSpots variant="subtle" />
