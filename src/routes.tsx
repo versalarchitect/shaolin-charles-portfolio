@@ -25,6 +25,7 @@ const Chat = lazy(() => import('./pages/Chat'))
 const Profile = lazy(() => import('./pages/Profile'))
 const InstructorDashboard = lazy(() => import('./pages/InstructorDashboard'))
 const SelfUpdatingCourse = lazy(() => import('./pages/SelfUpdatingCourse'))
+const Pipeline = lazy(() => import('./pages/Pipeline'))
 const NotFound = lazy(() => import('./pages/NotFound'))
 
 // Create router
@@ -131,6 +132,10 @@ const router = createBrowserRouter([
       {
         path: 'course/knowledge-base',
         element: <AuthGuard><InstructorDashboard /></AuthGuard>,
+      },
+      {
+        path: 'course/pipeline',
+        element: <AuthGuard><Pipeline /></AuthGuard>,
       },
       // Redirects from old paths
       {

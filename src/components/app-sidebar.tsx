@@ -20,10 +20,12 @@ import {
   Crown,
   Target,
   Brain,
+  Briefcase,
 } from 'lucide-react'
 import { Logo } from '@/components/ui/logo'
 import { LanguageSwitcher } from '@/components/language-switcher'
 import { useAuth } from '@/hooks/use-auth'
+import { hasPipelineAccess } from '@/lib/pipeline-access'
 import { useTheme } from '@/components/theme-provider'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { supabase } from '@/lib/supabase'
@@ -209,6 +211,27 @@ function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
             </Link>
           )
         })}
+
+        {hasPipelineAccess(user?.email) && (() => {
+          const isActive = location.pathname === '/course/pipeline'
+          return (
+            <Link
+              to="/course/pipeline"
+              onClick={onNavigate}
+              className={`
+                flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium font-mono transition-colors
+                ${
+                  isActive
+                    ? 'bg-foreground/10 text-foreground'
+                    : 'text-foreground/50 hover:text-foreground/80 hover:bg-foreground/5'
+                }
+              `}
+            >
+              <Briefcase className="w-4 h-4 shrink-0" />
+              Pipeline
+            </Link>
+          )
+        })()}
       </nav>
 
       {/* Spacer */}
