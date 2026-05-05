@@ -21,6 +21,7 @@ import {
   Target,
   Brain,
   Briefcase,
+  BarChart3,
 } from 'lucide-react'
 import { Logo } from '@/components/ui/logo'
 import { LanguageSwitcher } from '@/components/language-switcher'
@@ -32,11 +33,13 @@ import { supabase } from '@/lib/supabase'
 import { useProgress, getLevel, getNextLevel, getOverallProgress, getStreakMultiplier, getActiveTitle } from '@/stores/progress'
 import { TOTAL_LESSONS } from '@/data/curriculum'
 import { StreakBadge } from '@/components/gamification/streak-badge'
+import { NotificationCenter } from '@/components/gamification/notification-center'
 
 const NAV_ITEMS = [
   { label: 'Dashboard', href: '/course/dashboard', icon: LayoutDashboard },
   { label: 'Curriculum', href: '/course/curriculum', icon: BookOpen },
   { label: 'Leaderboard', href: '/course/leaderboard', icon: Trophy },
+  { label: 'Analytics', href: '/course/analytics', icon: BarChart3 },
   { label: 'Community', href: '/course/community', icon: Users },
   { label: 'Knowledge Base', href: '/course/knowledge-base', icon: Brain },
   { label: 'Chat', href: '/course/chat', icon: MessageSquare },
@@ -383,16 +386,19 @@ function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
 
       {/* Bottom section */}
       <div className="px-3 pb-4 space-y-2">
-        {/* Language & theme */}
+        {/* Language, notifications & theme */}
         <div className="px-3 flex items-center justify-between">
           <LanguageSwitcher />
-          <button
-            onClick={() => setTheme(resolvedTheme === 'dark' ? 'light' : 'dark')}
-            className="p-2 rounded-lg text-foreground/50 hover:text-foreground/80 hover:bg-foreground/5 transition-colors"
-            aria-label="Toggle theme"
-          >
-            {resolvedTheme === 'dark' ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
-          </button>
+          <div className="flex items-center gap-1">
+            <NotificationCenter />
+            <button
+              onClick={() => setTheme(resolvedTheme === 'dark' ? 'light' : 'dark')}
+              className="p-2 rounded-lg text-foreground/50 hover:text-foreground/80 hover:bg-foreground/5 transition-colors"
+              aria-label="Toggle theme"
+            >
+              {resolvedTheme === 'dark' ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
+            </button>
+          </div>
         </div>
 
         {/* Separator */}

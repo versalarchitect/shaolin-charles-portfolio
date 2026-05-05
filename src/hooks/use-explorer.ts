@@ -4,6 +4,7 @@ import { toast } from 'sonner'
 import { useAuth } from '@/hooks/use-auth'
 import { trackPageVisit, getExplorerProgress, getExplorerVersion, subscribeExplorer } from '@/lib/explorer'
 import type { ExplorerAchievement } from '@/data/explorer-achievements'
+import { getNotificationSettings } from '@/lib/sounds'
 
 export function useExplorer() {
   const { isLoggedIn } = useAuth()
@@ -18,14 +19,16 @@ export function useExplorer() {
 
     const result = trackPageVisit(location.pathname)
 
-    if (result.awarded) {
+    const showExplorerToasts = getNotificationSettings().explorerToasts
+
+    if (result.awarded && showExplorerToasts) {
       toast(`+${result.xp} Explorer XP`, {
         description: 'Page discovered!',
         duration: 2500,
       })
     }
 
-    if (result.achievementsUnlocked.length > 0) {
+    if (result.achievementsUnlocked.length > 0 && showExplorerToasts) {
       for (const achievement of result.achievementsUnlocked) {
         showAchievementToast(achievement)
       }

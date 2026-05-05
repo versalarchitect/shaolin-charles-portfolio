@@ -4,6 +4,7 @@ import { useProgress, getNextLevel, getLevel, COMBO_WINDOW_MS } from '@/stores/p
 import { getExplorerState } from '@/lib/explorer'
 import { CURRICULUM } from '@/data/curriculum'
 import { EXPLORER_PAGES } from '@/data/explorer-achievements'
+import { getNotificationSettings } from '@/lib/sounds'
 
 const STORAGE_KEY = 'smart-tips-shown'
 const TWENTY_FOUR_HOURS = 24 * 60 * 60 * 1000
@@ -166,6 +167,8 @@ export function useSmartTips() {
     hasRun.current = true
 
     const timer = setTimeout(() => {
+      if (!getNotificationSettings().smartTips) return
+
       const tips = buildTips(progress)
 
       for (const tip of tips) {

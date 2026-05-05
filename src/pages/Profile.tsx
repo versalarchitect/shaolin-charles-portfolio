@@ -1,6 +1,6 @@
 import { useState, useRef } from 'react'
 import { motion } from 'framer-motion'
-import { Camera, Loader2, Save, Settings, User, Lock, Mail, Trash2, Zap, Flame, Trophy, Palette, Share2, Check, Star } from 'lucide-react'
+import { Camera, Loader2, Save, Settings, User, Lock, Mail, Trash2, Zap, Flame, Trophy, Palette, Share2, Check, Star, SlidersHorizontal, Volume2 } from 'lucide-react'
 import { toast } from 'sonner'
 import { useAuth } from '@/hooks/use-auth'
 import { supabase } from '@/lib/supabase'
@@ -14,6 +14,7 @@ import { ThemeSelector } from '@/components/gamification/theme-selector'
 import { ShareButton } from '@/components/gamification/share-button'
 import { useProgress, getLevel, getOverallProgress, getStreakMultiplier, setActiveTitle, getActiveTitle } from '@/stores/progress'
 import { ACHIEVEMENTS, TITLES, TOTAL_XP } from '@/data/curriculum'
+import { getSoundSettings, setSoundEnabled, setSoundVolume, getNotificationSettings, setNotificationSetting, playSound } from '@/lib/sounds'
 
 function SectionHeader({ title, description }: { title: string; description: string }) {
   return (
@@ -453,10 +454,141 @@ function ShareSection() {
   )
 }
 
+function ToggleSwitch({ enabled, onToggle }: { enabled: boolean; onToggle: () => void }) {
+  return (
+    <button
+      type="button"
+      role="switch"
+      aria-checked={enabled}
+      onClick={onToggle}
+      className={`relative inline-flex h-5 w-9 shrink-0 items-center rounded-full transition-colors ${
+        enabled ? 'bg-foreground/30' : 'bg-foreground/10'
+      }`}
+    >
+      <span
+        className={`inline-block h-3.5 w-3.5 rounded-full bg-background border border-foreground/20 transition-transform ${
+          enabled ? 'translate-x-[18px]' : 'translate-x-[3px]'
+        }`}
+      />
+    </button>
+  )
+}
+
+function PreferencesSection() {
+  const [soundEnabled, _setSoundEnabled] = useState(() => getSoundSettings().enabled)
+  const [volume, _setVolume] = useState(() => Math.round(getSoundSettings().volume * 100))
+  const [notifications, setNotifications] = useState(() => getNotificationSettings())
+
+  function handleSoundToggle() {
+    const next = !soundEnabled
+    _setSoundEnabled(next)
+    setSoundEnabled(next)
+  }
+
+  function handleVolumeChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const val = Number(e.target.value)
+    _setVolume(val)
+    setSoundVolume(val / 100)
+  }
+
+  function handleTestSound() {
+    // Temporarily ensure sound is enabled for the test
+    const wasEnabled = getSoundSettings().enabled
+    if (!wasEnabled) setSoundEnabled(true)
+    playSound('xp')
+    if (!wasEnabled) setSoundEnabled(false)
+  }
+
+  function handleNotificationToggle(key: keyof typeof notifications) {
+    const next = !notifications[key]
+    setNotifications((prev) => ({ ...prev, [key]: next }))
+    setNotificationSetting(key, next)
+  }
+
+  return (
+    <div className="space-y-8">
+      {/* Sound section */}
+      <div className="rounded-xl border border-foreground/[0.08] bg-foreground/[0.02] p-6">
+        <SectionHeader title="Sound" description="Control audio feedback for interactions and achievements." />
+
+        <div className="space-y-5">
+          {/* Sound enabled toggle */}
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <Volume2 className="w-4 h-4 text-foreground/50" />
+              <div>
+                <p className="text-sm font-mono text-foreground/80">Sound Effects</p>
+                <p className="text-[10px] font-mono text-foreground/40">Play sounds for XP, achievements, and combos</p>
+              </div>
+            </div>
+            <ToggleSwitch enabled={soundEnabled} onToggle={handleSoundToggle} />
+          </div>
+
+          {/* Volume slider - only shown when sounds enabled */}
+          {soundEnabled && (
+            <div className="pl-7 space-y-2">
+              <div className="flex items-center justify-between">
+                <label className="text-xs font-mono text-foreground/60">Volume</label>
+                <span className="text-xs font-mono text-foreground/40">{volume}%</span>
+              </div>
+              <input
+                type="range"
+                min={0}
+                max={100}
+                value={volume}
+                onChange={handleVolumeChange}
+                className="w-full h-1.5 rounded-full appearance-none bg-foreground/10 accent-foreground/50 cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-3.5 [&::-webkit-slider-thumb]:h-3.5 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-foreground/60 [&::-webkit-slider-thumb]:border [&::-webkit-slider-thumb]:border-foreground/20"
+              />
+            </div>
+          )}
+
+          {/* Test sound button */}
+          <div className="pl-7">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handleTestSound}
+              className="font-mono text-xs"
+            >
+              Test Sound
+            </Button>
+          </div>
+        </div>
+      </div>
+
+      {/* Notification section */}
+      <div className="rounded-xl border border-foreground/[0.08] bg-foreground/[0.02] p-6">
+        <SectionHeader title="Notifications" description="Choose which in-app notifications and popups to display." />
+
+        <div className="space-y-4">
+          {([
+            { key: 'smartTips' as const, label: 'Smart Tips', description: 'Contextual learning nudges' },
+            { key: 'streakWarnings' as const, label: 'Streak Warnings', description: 'Evening streak reminders' },
+            { key: 'dailyReward' as const, label: 'Daily Reward', description: 'Daily login bonus popup' },
+            { key: 'explorerToasts' as const, label: 'Explorer Toasts', description: 'XP notifications when exploring' },
+          ]).map((item) => (
+            <div key={item.key} className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-mono text-foreground/80">{item.label}</p>
+                <p className="text-[10px] font-mono text-foreground/40">{item.description}</p>
+              </div>
+              <ToggleSwitch
+                enabled={notifications[item.key]}
+                onToggle={() => handleNotificationToggle(item.key)}
+              />
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  )
+}
+
 const SECTIONS = [
   { id: 'profile', label: 'Profile', icon: User },
   { id: 'stats', label: 'Stats & Badges', icon: Trophy },
   { id: 'appearance', label: 'Appearance', icon: Palette },
+  { id: 'preferences', label: 'Preferences', icon: SlidersHorizontal },
   { id: 'share', label: 'Share', icon: Share2 },
 ] as const
 
@@ -504,6 +636,7 @@ export default function SettingsPage() {
               {activeSection === 'profile' && <ProfileSection />}
               {activeSection === 'stats' && <GamificationSection />}
               {activeSection === 'appearance' && <AppearanceSection />}
+              {activeSection === 'preferences' && <PreferencesSection />}
               {activeSection === 'share' && <ShareSection />}
             </div>
           </div>

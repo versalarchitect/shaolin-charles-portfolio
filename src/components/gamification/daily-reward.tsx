@@ -2,7 +2,7 @@ import { useState, useEffect, useMemo } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Gift, Sparkles } from 'lucide-react'
 import { useProgress, awardExplorerXp } from '@/stores/progress'
-import { playSound } from '@/lib/sounds'
+import { playSound, getNotificationSettings } from '@/lib/sounds'
 
 const STORAGE_KEY = 'last-daily-reward'
 
@@ -65,6 +65,7 @@ export function DailyReward() {
   const [celebrating, setCelebrating] = useState(false)
 
   useEffect(() => {
+    if (!getNotificationSettings().dailyReward) return
     const lastClaimed = localStorage.getItem(STORAGE_KEY)
     const today = getToday()
     if (lastClaimed !== today) {

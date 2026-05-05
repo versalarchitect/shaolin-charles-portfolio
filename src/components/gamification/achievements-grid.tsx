@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useCallback } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
   Lock,
@@ -15,12 +15,16 @@ import {
   Search,
   Sparkles,
   Eye,
+  Share2,
+  Loader2,
 } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
-import { ACHIEVEMENTS, CURRICULUM, ALL_LESSONS } from '@/data/curriculum'
+import { ACHIEVEMENTS, CURRICULUM, ALL_LESSONS, XP_LEVELS } from '@/data/curriculum'
 import { EXPLORER_ACHIEVEMENTS } from '@/data/explorer-achievements'
 import { useProgress } from '@/stores/progress'
 import { getExplorerProgress, getExplorerState } from '@/lib/explorer'
+import { generateAchievementCard } from '@/lib/achievement-card'
+import { shareCard } from '@/lib/share-card'
 
 const ACHIEVEMENT_ICONS: Record<string, LucideIcon> = {
   'first-lesson': Target, 'streak-3': Flame, 'streak-7': Zap, 'streak-30': Crown,
@@ -119,15 +123,40 @@ interface AchievementCardProps {
   id: string
   name: string
   description: string
+  emoji: string
   xpReward: number
   isUnlocked: boolean
   icon: LucideIcon
   progress: AchievementProgress
   isExpanded: boolean
   onToggle: () => void
+  userName: string
+  rank: string
 }
 
-function AchievementCard({ id, name, description, xpReward, isUnlocked, icon: AIcon, progress, isExpanded, onToggle }: AchievementCardProps) {
+function AchievementCard({ id, name, description, emoji, xpReward, isUnlocked, icon: AIcon, progress, isExpanded, onToggle, userName, rank }: AchievementCardProps) {
+  const [sharing, setSharing] = useState(false)
+
+  const handleShare = useCallback(async (e: React.MouseEvent) => {
+    e.stopPropagation()
+    if (sharing) return
+    setSharing(true)
+    try {
+      const blob = await generateAchievementCard({
+        name,
+        description,
+        icon: emoji,
+        xpReward,
+        userName,
+        rank,
+      })
+      await shareCard(blob, `${name} - Achievement Unlocked`)
+    } catch {
+      // silently fail
+    } finally {
+      setSharing(false)
+    }
+  }, [sharing, name, description, emoji, xpReward, userName, rank])
   return (
     <motion.div layout layoutId={`achievement-${id}`} className="relative">
       <motion.button
@@ -196,7 +225,17 @@ function AchievementCard({ id, name, description, xpReward, isUnlocked, icon: AI
                       <Zap className="w-2.5 h-2.5" />
                       +{xpReward} XP earned
                     </span>
-                    <span className="text-[10px] font-mono text-foreground/30">Unlocked</span>
+                    <div className="flex items-center gap-2">
+                      <span className="text-[10px] font-mono text-foreground/30">Unlocked</span>
+                      <button
+                        onClick={handleShare}
+                        disabled={sharing}
+                        title="Share achievement"
+                        className="flex items-center justify-center w-6 h-6 rounded-md bg-foreground/[0.04] border border-foreground/10 text-foreground/40 hover:text-foreground/70 hover:border-foreground/20 hover:bg-foreground/[0.08] transition-all cursor-pointer disabled:opacity-50"
+                      >
+                        {sharing ? <Loader2 className="w-3 h-3 animate-spin" /> : <Share2 className="w-3 h-3" />}
+                      </button>
+                    </div>
                   </div>
                 </>
               ) : (
@@ -242,6 +281,9 @@ export function AchievementsGrid() {
   const [expandedId, setExpandedId] = useState<string | null>(null)
   const explorerProgress = getExplorerProgress()
 
+  const rank = (XP_LEVELS.find(l => progress.totalXp >= l.minXp && progress.totalXp <= l.maxXp) || XP_LEVELS[0]).name
+  const userName = 'Student'
+
   const handleToggle = (id: string) => {
     setExpandedId(prev => prev === id ? null : id)
   }
@@ -266,12 +308,15 @@ export function AchievementsGrid() {
                 id={achievement.id}
                 name={achievement.name}
                 description={achievement.description}
+                emoji={achievement.icon}
                 xpReward={achievement.xpReward}
                 isUnlocked={isUnlocked}
                 icon={AIcon}
                 progress={achievementProgress}
                 isExpanded={expandedId === achievement.id}
                 onToggle={() => handleToggle(achievement.id)}
+                userName={userName}
+                rank={rank}
               />
             )
           })}
@@ -296,12 +341,15 @@ export function AchievementsGrid() {
                 id={achievement.id}
                 name={achievement.name}
                 description={achievement.description}
+                emoji={achievement.icon || ''}
                 xpReward={achievement.xp}
                 isUnlocked={isUnlocked}
                 icon={AIcon}
                 progress={achievementProgress}
                 isExpanded={expandedId === achievement.id}
                 onToggle={() => handleToggle(achievement.id)}
+                userName={userName}
+                rank={rank}
               />
             )
           })}

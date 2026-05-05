@@ -28,6 +28,7 @@ const SelfUpdatingCourse = lazy(() => import('./pages/SelfUpdatingCourse'))
 const RecentProjects = lazy(() => import('./pages/RecentProjects'))
 const Pipeline = lazy(() => import('./pages/Pipeline'))
 const Leaderboard = lazy(() => import('./pages/Leaderboard'))
+const Analytics = lazy(() => import('./pages/Analytics'))
 const SecretVault = lazy(() => import('./pages/SecretVault'))
 const PublicProfile = lazy(() => import('./pages/PublicProfile'))
 const NotFound = lazy(() => import('./pages/NotFound'))
@@ -153,6 +154,10 @@ const router = createBrowserRouter([
       {
         path: 'course/leaderboard',
         element: <AuthGuard><Leaderboard /></AuthGuard>,
+      },
+      {
+        path: 'course/analytics',
+        element: <AuthGuard><Analytics /></AuthGuard>,
       },
       {
         path: 'course/vault',

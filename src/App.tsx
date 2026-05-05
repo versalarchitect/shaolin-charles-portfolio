@@ -1,5 +1,6 @@
 import { Suspense, lazy, useEffect } from 'react'
 import { Outlet, useLocation } from 'react-router-dom'
+import { AnimatePresence } from 'framer-motion'
 import PageLoading from '@/components/page-loading'
 import { Header } from '@/components/header'
 import { Footer } from '@/components/footer'
@@ -8,11 +9,13 @@ import { ThemeProvider } from '@/components/theme-provider'
 import { CommandMenuProvider } from '@/components/command-menu'
 import { ScrollProgress } from '@/components/ui/scroll-progress'
 import { AppLayout } from '@/components/app-layout'
+import { PageTransition } from '@/components/page-transition'
 import {
   SectionGridProvider,
 } from '@/components/ui/gradient-background'
 import { useExplorer } from '@/hooks/use-explorer'
 import { useProgressSync } from '@/hooks/use-progress-sync'
+import { useSurpriseRewards } from '@/hooks/use-surprise-rewards'
 
 const SectionBoundaryGrid = lazy(() => import('@/components/ui/gradient-background').then(m => ({ default: m.SectionBoundaryGrid })))
 
@@ -29,6 +32,7 @@ export default function App() {
 
   useExplorer()
   useProgressSync()
+  useSurpriseRewards()
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: pathname is the intentional trigger
   useEffect(() => {
@@ -47,9 +51,13 @@ export default function App() {
           {isAppPage ? (
             /* App pages: sidebar layout, clean background */
             <AppLayout>
-              <Suspense fallback={<PageLoading />}>
-                <Outlet />
-              </Suspense>
+              <AnimatePresence mode="popLayout">
+                <PageTransition key={location.pathname}>
+                  <Suspense fallback={<PageLoading />}>
+                    <Outlet />
+                  </Suspense>
+                </PageTransition>
+              </AnimatePresence>
             </AppLayout>
           ) : (
             /* Marketing pages: full header/footer with background effects */
@@ -71,9 +79,13 @@ export default function App() {
               <div className="relative z-10">
                 {/* Add top padding for fixed header */}
                 <main id="main-content" className="pt-16 min-h-screen">
-                  <Suspense fallback={<PageLoading />}>
-                    <Outlet />
-                  </Suspense>
+                  <AnimatePresence mode="popLayout">
+                    <PageTransition key={location.pathname}>
+                      <Suspense fallback={<PageLoading />}>
+                        <Outlet />
+                      </Suspense>
+                    </PageTransition>
+                  </AnimatePresence>
                 </main>
 
                 <Footer />

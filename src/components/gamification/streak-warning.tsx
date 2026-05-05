@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { Flame, X, Shield, ArrowRight } from 'lucide-react'
 import { useProgress, getLessonStatus } from '@/stores/progress'
 import { CURRICULUM } from '@/data/curriculum'
+import { getNotificationSettings } from '@/lib/sounds'
 
 type UrgencyLevel = 'subtle' | 'urgent' | 'critical' | null
 
@@ -67,7 +68,8 @@ export function StreakWarning() {
     !dismissedRef.current &&
     hasStreak &&
     !completedToday &&
-    urgency !== null
+    urgency !== null &&
+    getNotificationSettings().streakWarnings
 
   const nextLessonPath = getNextLessonPath()
   const minutesLeft = getMinutesUntilMidnight()

@@ -1,9 +1,11 @@
 import { useState, useEffect, useCallback } from 'react'
+import { toast } from 'sonner'
 import { useParams, Link, useNavigate } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
   ArrowLeft,
   ArrowRight,
+  Bookmark,
   Clock,
   Zap,
   Target,
@@ -18,6 +20,7 @@ import { LessonPlayer } from '@/components/lesson-player'
 import { CURRICULUM, ALL_LESSONS } from '@/data/curriculum'
 import type { Lesson } from '@/data/curriculum'
 import { useProgress, getLessonStatus, completeLesson, startLesson, getStreakMultiplier, getComboInfo } from '@/stores/progress'
+import { useBookmarks, toggleBookmark, isBookmarked } from '@/stores/bookmarks'
 import { GamificationToasts, ComboIndicator, ComboTimer } from '@/components/gamification'
 import { CelebrationParticles } from '@/components/gamification/celebration'
 import { StatusBadge } from '@/components/gamification/shared'
@@ -121,6 +124,29 @@ function LockedState({ lessonTitle }: { lessonTitle: string }) {
         </Link>
       </div>
     </div>
+  )
+}
+
+function BookmarkButton({ lessonId }: { lessonId: string }) {
+  useBookmarks()
+  const bookmarked = isBookmarked(lessonId)
+
+  return (
+    <motion.button
+      onClick={() => {
+        toggleBookmark(lessonId)
+        toast(bookmarked ? 'Bookmark removed' : 'Lesson bookmarked', { duration: 2000 })
+      }}
+      whileTap={{ scale: 0.85 }}
+      animate={bookmarked ? { scale: [1, 1.25, 1] } : undefined}
+      transition={{ duration: 0.25 }}
+      className="flex items-center justify-center w-9 h-9 rounded-lg bg-foreground/[0.04] border border-foreground/[0.08] hover:bg-foreground/[0.08] hover:border-foreground/15 transition-colors shrink-0 mt-1"
+      aria-label={bookmarked ? 'Remove bookmark' : 'Bookmark this lesson'}
+    >
+      <Bookmark
+        className={`w-4 h-4 transition-colors ${bookmarked ? 'fill-foreground/70 text-foreground/70' : 'text-foreground/40'}`}
+      />
+    </motion.button>
   )
 }
 
@@ -329,9 +355,12 @@ export default function Learn() {
             )}
           </div>
 
-          <h1 className="text-2xl md:text-3xl font-bold tracking-tight mb-3">
-            {lesson.title}
-          </h1>
+          <div className="flex items-start justify-between gap-3 mb-3">
+            <h1 className="text-2xl md:text-3xl font-bold tracking-tight">
+              {lesson.title}
+            </h1>
+            <BookmarkButton lessonId={lessonId!} />
+          </div>
 
           <p className="text-foreground/60 leading-relaxed mb-4">
             {lesson.description}
