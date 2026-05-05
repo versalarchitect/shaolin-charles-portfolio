@@ -1,8 +1,10 @@
 import { useMemo, useState } from 'react'
 import { motion } from 'framer-motion'
-import { TrendingUp, Calendar, Clock, Award, PieChart } from 'lucide-react'
+import { TrendingUp, Calendar, Clock, Award, PieChart, Star, Timer } from 'lucide-react'
 import { SEO } from '@/components/SEO'
+import { FocusStatsCard } from '@/components/gamification/focus-timer'
 import { useProgress, getXpLog, getToolMastery } from '@/stores/progress'
+import { useRatings, getAverageRating, getAverageDifficulty, getRatedCount } from '@/stores/ratings'
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
@@ -523,6 +525,65 @@ function ToolDistribution() {
   )
 }
 
+// ─── Lesson Ratings ─────────────────────────────────────────────────────────
+
+function LessonRatingsSection() {
+  useRatings()
+
+  const avgRating = getAverageRating()
+  const avgDifficulty = getAverageDifficulty()
+  const ratedCount = getRatedCount()
+
+  if (ratedCount === 0) {
+    return (
+      <div className="flex items-center justify-center h-[100px] text-sm font-mono text-foreground/40">
+        Rate completed lessons to see your feedback
+      </div>
+    )
+  }
+
+  return (
+    <div className="grid grid-cols-3 gap-3">
+      {/* Average rating */}
+      <div className="rounded-lg border border-foreground/[0.08] bg-foreground/[0.03] p-4 text-center">
+        <div className="flex items-center justify-center gap-0.5 mb-1">
+          {[1, 2, 3, 4, 5].map((star) => (
+            <Star
+              key={star}
+              className={`w-3.5 h-3.5 ${
+                star <= Math.round(avgRating)
+                  ? 'fill-foreground/70 text-foreground/70'
+                  : 'fill-transparent text-foreground/20'
+              }`}
+            />
+          ))}
+        </div>
+        <p className="text-lg font-mono font-bold text-foreground/80">
+          {avgRating.toFixed(1)}
+        </p>
+        <p className="text-[10px] font-mono text-foreground/50 mt-0.5">Avg Rating</p>
+      </div>
+
+      {/* Average difficulty */}
+      <div className="rounded-lg border border-foreground/[0.08] bg-foreground/[0.03] p-4 text-center">
+        <p className="text-lg font-mono font-bold text-foreground/80 mt-3">
+          {avgDifficulty.toFixed(1)}
+          <span className="text-xs font-normal text-foreground/40">/5</span>
+        </p>
+        <p className="text-[10px] font-mono text-foreground/50 mt-0.5">Avg Difficulty</p>
+      </div>
+
+      {/* Lessons rated */}
+      <div className="rounded-lg border border-foreground/[0.08] bg-foreground/[0.03] p-4 text-center">
+        <p className="text-lg font-mono font-bold text-foreground/80 mt-3">
+          {ratedCount}
+        </p>
+        <p className="text-[10px] font-mono text-foreground/50 mt-0.5">Lessons Rated</p>
+      </div>
+    </div>
+  )
+}
+
 // ─── Main Page ───────────────────────────────────────────────────────────────
 
 export default function Analytics() {
@@ -558,6 +619,16 @@ export default function Analytics() {
         {/* Personal Records */}
         <AnalyticsSection title="Personal Records" icon={Award}>
           <PersonalRecords />
+        </AnalyticsSection>
+
+        {/* Lesson Ratings */}
+        <AnalyticsSection title="Lesson Ratings" icon={Star}>
+          <LessonRatingsSection />
+        </AnalyticsSection>
+
+        {/* Focus Sessions */}
+        <AnalyticsSection title="Focus Sessions" icon={Timer}>
+          <FocusStatsCard />
         </AnalyticsSection>
 
         {/* Tool Distribution */}

@@ -17,13 +17,15 @@ import {
 import { SEO } from '@/components/SEO'
 import { Button } from '@/components/ui/button'
 import { LessonPlayer } from '@/components/lesson-player'
-import { CURRICULUM, ALL_LESSONS } from '@/data/curriculum'
+import { CURRICULUM, ALL_LESSONS, TOTAL_LESSONS } from '@/data/curriculum'
 import type { Lesson } from '@/data/curriculum'
-import { useProgress, getLessonStatus, completeLesson, startLesson, getStreakMultiplier, getComboInfo } from '@/stores/progress'
+import { useProgress, getLessonStatus, completeLesson, startLesson, getStreakMultiplier, getComboInfo, getLevel, getNextLevel, getOverallProgress } from '@/stores/progress'
 import { useBookmarks, toggleBookmark, isBookmarked } from '@/stores/bookmarks'
 import { GamificationToasts, ComboIndicator, ComboTimer } from '@/components/gamification'
 import { CelebrationParticles } from '@/components/gamification/celebration'
 import { StatusBadge } from '@/components/gamification/shared'
+import { LessonRating } from '@/components/gamification/lesson-rating'
+import { getMotivationalMessage } from '@/lib/motivational'
 
 function findLessonAndTier(lessonId: string) {
   for (const tier of CURRICULUM) {
@@ -171,7 +173,7 @@ function LessonNotFound() {
 export default function Learn() {
   const { lessonId } = useParams<{ lessonId: string }>()
   const navigate = useNavigate()
-  useProgress()
+  const progress = useProgress()
 
   const [showCelebration, setShowCelebration] = useState(false)
   const [celebrationXp, setCelebrationXp] = useState(0)
@@ -179,6 +181,22 @@ export default function Learn() {
   const found = lessonId ? findLessonAndTier(lessonId) : null
   const adjacent = lessonId ? getAdjacentLessons(lessonId) : { prev: null, next: null, globalIndex: -1 }
   const status = lessonId ? getLessonStatus(lessonId) : 'locked'
+
+  const level = getLevel()
+  const nextLevel = getNextLevel()
+  const overall = getOverallProgress()
+
+  const motivational = getMotivationalMessage({
+    totalXp: progress.totalXp,
+    currentStreak: progress.currentStreak,
+    lessonsCompleted: overall.completed,
+    totalLessons: TOTAL_LESSONS,
+    dailyXpEarned: progress.dailyXpEarned,
+    dailyXpGoal: progress.dailyXpGoal,
+    rank: level.name,
+    nextRank: nextLevel?.name ?? null,
+    xpToNextRank: nextLevel ? nextLevel.minXp - progress.totalXp : null,
+  })
 
   useEffect(() => {
     if (lessonId && status === 'available') {
@@ -394,6 +412,11 @@ export default function Learn() {
         {/* Separator */}
         <div className="h-px bg-foreground/[0.08] mb-8 mt-4" />
 
+        {/* Motivational message */}
+        <p className="text-xs font-mono text-foreground/40 mb-6">
+          {motivational.message}
+        </p>
+
         {/* Interactive lesson player */}
         <LessonPlayer lessonId={lessonId!} />
 
@@ -467,6 +490,13 @@ export default function Learn() {
             </motion.div>
           )}
         </div>
+
+        {/* Lesson rating (completed lessons only) */}
+        {isCompleted && (
+          <div className="mb-8">
+            <LessonRating lessonId={lessonId!} />
+          </div>
+        )}
 
         {/* Prev / Next navigation */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">

@@ -3,6 +3,7 @@ import { useLocation } from 'react-router-dom'
 import { AppSidebar } from '@/components/app-sidebar'
 import { StreakWarning } from '@/components/gamification/streak-warning'
 import { StatsBarHeader } from '@/components/gamification/stats-bar-header'
+import { QuickActionsFab } from '@/components/gamification/quick-actions-fab'
 
 const StudentAssistant = lazy(() => import('@/components/student-assistant').then(m => ({ default: m.StudentAssistant })))
 const VoiceTutor = lazy(() => import('@/components/voice-tutor').then(m => ({ default: m.VoiceTutor })))
@@ -23,6 +24,7 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
         )}
         {children}
       </main>
+      <QuickActionsFab />
       <Suspense fallback={null}>
         <StudentAssistant />
         <VoiceTutor context="course" offsetBottom />

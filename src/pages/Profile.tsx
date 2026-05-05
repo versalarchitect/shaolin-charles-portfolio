@@ -3,6 +3,7 @@ import { motion } from 'framer-motion'
 import { Camera, Loader2, Save, Settings, User, Lock, Mail, Trash2, Zap, Flame, Trophy, Palette, Share2, Check, Star, SlidersHorizontal, Volume2 } from 'lucide-react'
 import { toast } from 'sonner'
 import { useAuth } from '@/hooks/use-auth'
+import { StreakFreezeCard } from '@/components/gamification/streak-freeze-card'
 import { supabase } from '@/lib/supabase'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
@@ -407,6 +408,9 @@ function GamificationSection() {
           </div>
         )}
       </div>
+
+      {/* Streak Freeze */}
+      <StreakFreezeCard compact />
 
       {/* Featured Achievement picker */}
       <FeaturedAchievementPicker unlockedAchievements={progress.unlockedAchievements} />

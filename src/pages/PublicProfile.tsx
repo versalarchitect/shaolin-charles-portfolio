@@ -8,6 +8,7 @@ import { LevelIcon } from '@/components/gamification/shared'
 import { StreakBadge } from '@/components/gamification/streak-badge'
 import { ActivityFeed } from '@/components/gamification/activity-feed'
 import { fetchPublicProfile, type PublicProfileData } from '@/lib/activity-api'
+import { fetchUserPercentile } from '@/lib/stats-api'
 import { ACHIEVEMENTS } from '@/data/curriculum'
 
 function ProfileSkeleton() {
@@ -90,6 +91,7 @@ function ErrorState({ onRetry }: { onRetry: () => void }) {
 export default function PublicProfile() {
   const { userId } = useParams<{ userId: string }>()
   const [profile, setProfile] = useState<PublicProfileData | null>(null)
+  const [percentile, setPercentile] = useState<number | null>(null)
   const [loading, setLoading] = useState(true)
   const [notFound, setNotFound] = useState(false)
   const [error, setError] = useState(false)
@@ -103,13 +105,17 @@ export default function PublicProfile() {
     setLoading(true)
     setError(false)
     let cancelled = false
-    fetchPublicProfile(userId)
-      .then((data) => {
+    Promise.all([
+      fetchPublicProfile(userId),
+      fetchUserPercentile(userId),
+    ])
+      .then(([data, pct]) => {
         if (cancelled) return
         if (!data) {
           setNotFound(true)
         } else {
           setProfile(data)
+          setPercentile(pct)
         }
         setLoading(false)
       })
@@ -142,8 +148,12 @@ export default function PublicProfile() {
     profile.unlocked_achievements.includes(a.id)
   )
 
+  const topPercent = percentile !== null && percentile > 0
+    ? Math.max(1, 100 - percentile)
+    : null
+
   const stats = [
-    { icon: Zap, label: 'Total XP', value: profile.total_xp.toLocaleString() },
+    { icon: Zap, label: 'Total XP', value: profile.total_xp.toLocaleString(), badge: topPercent !== null ? `Top ${topPercent}%` : undefined },
     { icon: Flame, label: 'Streak', value: `${profile.current_streak} days` },
     { icon: BookOpen, label: 'Achievements', value: `${profile.unlocked_achievements.length}` },
     { icon: Trophy, label: 'Rank', value: profile.rank },
@@ -210,6 +220,11 @@ export default function PublicProfile() {
                 <stat.icon className="w-4 h-4 mx-auto mb-2 text-foreground/40" />
                 <p className="text-lg font-mono font-bold">{stat.value}</p>
                 <p className="text-[10px] font-mono text-foreground/40 uppercase tracking-wider">{stat.label}</p>
+                {'badge' in stat && stat.badge && (
+                  <span className="inline-block mt-1.5 text-[9px] font-mono px-1.5 py-0.5 rounded bg-foreground/[0.06] text-foreground/50">
+                    {stat.badge}
+                  </span>
+                )}
               </motion.div>
             ))}
           </div>

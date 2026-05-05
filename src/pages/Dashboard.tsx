@@ -29,7 +29,8 @@ import { ShortcutHint } from '@/components/gamification/shortcut-hint'
 import { DailyReward } from '@/components/gamification/daily-reward'
 import { ExplorerProgress } from '@/components/gamification/explorer-progress'
 import { UnlockablesGrid } from '@/components/gamification/unlockables-grid'
-import { CelebrationModal } from '@/components/gamification/celebration-modal'
+import { CelebrationOverlay } from '@/components/gamification/celebration'
+import { FocusTimer } from '@/components/gamification/focus-timer'
 import { WelcomeModal } from '@/components/gamification/welcome-modal'
 import { XpFloatOverlay } from '@/components/gamification/xp-float'
 import { LevelUpBurst } from '@/components/gamification/level-up-burst'
@@ -37,10 +38,12 @@ import { StreakWarning } from '@/components/gamification/streak-warning'
 import { StatCard } from '@/components/gamification/shared'
 import { AchievementsGrid } from '@/components/gamification/achievements-grid'
 import { StreakCalendar } from '@/components/gamification/streak-calendar'
-import { TierProgress } from '@/components/gamification/tier-progress'
+import { StreakFreezeCard } from '@/components/gamification/streak-freeze-card'
+import { SkillTree } from '@/components/gamification/skill-tree'
 import { ToolMastery } from '@/components/gamification/tool-mastery'
 import { JourneyTimeline } from '@/components/gamification/journey-timeline'
 import { WeeklyChallenges } from '@/components/gamification/weekly-challenges'
+import { BookmarkedLessons } from '@/components/gamification/bookmarked-lessons'
 import {
   CURRICULUM,
   ACHIEVEMENTS,
@@ -60,6 +63,8 @@ import { useAuth } from '@/hooks/use-auth'
 import { useSmartTips } from '@/hooks/use-smart-tips'
 import { fetchGlobalLeaderboard, fetchUserRank } from '@/lib/leaderboard-api'
 import type { LeaderboardEntry } from '@/lib/leaderboard-api'
+import { ComparisonCard } from '@/components/gamification/comparison-card'
+import { getMotivationalMessage } from '@/lib/motivational'
 
 function LeaderboardPreview() {
   const { user } = useAuth()
@@ -261,6 +266,22 @@ function NextLesson() {
 
 export default function Dashboard() {
   useSmartTips()
+  const progress = useProgress()
+  const level = getLevel()
+  const nextLevel = getNextLevel()
+  const overall = getOverallProgress()
+
+  const motivational = getMotivationalMessage({
+    totalXp: progress.totalXp,
+    currentStreak: progress.currentStreak,
+    lessonsCompleted: overall.completed,
+    totalLessons: overall.total,
+    dailyXpEarned: progress.dailyXpEarned,
+    dailyXpGoal: progress.dailyXpGoal,
+    rank: level.name,
+    nextRank: nextLevel?.name ?? null,
+    xpToNextRank: nextLevel ? nextLevel.minXp - progress.totalXp : null,
+  })
 
   return (
     <>
@@ -273,7 +294,7 @@ export default function Dashboard() {
       <GamificationToasts />
       <XpFloatOverlay />
       <LevelUpBurst />
-      <CelebrationModal />
+      <CelebrationOverlay />
       <WelcomeModal />
 
       <div className="p-6 lg:p-8 max-w-4xl space-y-8">
@@ -281,27 +302,31 @@ export default function Dashboard() {
         <div className="flex items-start justify-between">
           <div>
             <h1 className="text-2xl font-bold tracking-tight mb-1">Dashboard</h1>
-            <p className="text-sm text-muted-foreground">Track your progress and pick up where you left off.</p>
+            <p className="text-sm text-muted-foreground">{motivational.message}</p>
           </div>
           <ShareButton />
         </div>
 
         <DailyReward />
         <NextLesson />
+        <BookmarkedLessons compact />
         <ComboTimer />
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <DailyXpGoal />
           <WeeklyProgress />
         </div>
+        <FocusTimer />
         <LeaderboardPreview />
+        <ComparisonCard />
         <StatsBar />
         <DailyChallenges />
         <WeeklyChallenges />
-        <TierProgress />
+        <SkillTree compact />
         <div className="grid grid-cols-1 lg:grid-cols-[1fr_1fr] gap-6">
           <StreakCalendar />
           <XpActivityFeed />
         </div>
+        <StreakFreezeCard />
         <JourneyTimeline compact />
         <ToolMastery />
         <ExplorerProgress />
