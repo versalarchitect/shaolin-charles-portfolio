@@ -140,3 +140,93 @@ export async function fetchContentBlocks(): Promise<ContentBlockSummary[]> {
 
   return (data ?? []) as ContentBlockSummary[]
 }
+
+export interface AffectedLesson {
+  lesson_id: string
+  lesson_title: string
+  module_title: string
+  blocks_at_risk: number
+  blocks_stale: number
+  blocks_current: number
+  blocks_regenerating: number
+  total_blocks: number
+  last_affected_at: string
+}
+
+export interface CourseImpactSummary {
+  affectedLessons: AffectedLesson[]
+  recentSupersessions: Array<{
+    old_fact: string
+    new_fact: string | null
+    category: string
+    superseded_at: string
+    affected_blocks: number
+  }>
+  healthScore: number
+}
+
+export async function fetchCourseImpact(): Promise<CourseImpactSummary> {
+  const [
+    { data: blocksWithLessons },
+    { data: recentSuperseded },
+  ] = await Promise.all([
+    supabase
+      .from('content_blocks')
+      .select('id, status, lesson_id, heading, updated_at, lessons(id, title, course_modules(title))')
+      .order('updated_at', { ascending: false }),
+    supabase
+      .from('knowledge_facts')
+      .select('id, statement, category, superseded_by, updated_at')
+      .not('superseded_by', 'is', null)
+      .order('updated_at', { ascending: false })
+      .limit(20),
+  ])
+
+  const lessonMap = new Map<string, AffectedLesson>()
+
+  for (const block of blocksWithLessons ?? []) {
+    const lesson = block.lessons as unknown as { id: string; title: string; course_modules: { title: string } } | null
+    if (!lesson) continue
+
+    const existing = lessonMap.get(lesson.id)
+    if (existing) {
+      existing.total_blocks++
+      if (block.status === 'at_risk') existing.blocks_at_risk++
+      else if (block.status === 'stale') existing.blocks_stale++
+      else if (block.status === 'regenerating') existing.blocks_regenerating++
+      else existing.blocks_current++
+      if (block.updated_at > existing.last_affected_at) existing.last_affected_at = block.updated_at
+    } else {
+      lessonMap.set(lesson.id, {
+        lesson_id: lesson.id,
+        lesson_title: lesson.title,
+        module_title: lesson.course_modules?.title ?? 'Unknown',
+        blocks_at_risk: block.status === 'at_risk' ? 1 : 0,
+        blocks_stale: block.status === 'stale' ? 1 : 0,
+        blocks_current: block.status === 'current' ? 1 : 0,
+        blocks_regenerating: block.status === 'regenerating' ? 1 : 0,
+        total_blocks: 1,
+        last_affected_at: block.updated_at as string,
+      })
+    }
+  }
+
+  const affectedLessons = Array.from(lessonMap.values())
+    .filter(l => l.blocks_at_risk > 0 || l.blocks_stale > 0 || l.blocks_regenerating > 0)
+    .sort((a, b) => (b.blocks_stale + b.blocks_at_risk) - (a.blocks_stale + a.blocks_at_risk))
+
+  const allLessons = Array.from(lessonMap.values())
+  const totalBlocks = allLessons.reduce((sum, l) => sum + l.total_blocks, 0)
+  const currentBlocks = allLessons.reduce((sum, l) => sum + l.blocks_current, 0)
+  const healthScore = totalBlocks > 0 ? Math.round((currentBlocks / totalBlocks) * 100) : 100
+
+  const recentSupersessions = (recentSuperseded ?? []).map(fact => ({
+    old_fact: fact.statement,
+    new_fact: null,
+    category: fact.category,
+    superseded_at: fact.updated_at as string,
+    affected_blocks: 0,
+  }))
+
+  return { affectedLessons, recentSupersessions, healthScore }
+}

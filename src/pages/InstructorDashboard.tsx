@@ -10,6 +10,10 @@ import {
   Loader2,
   FileText,
   ExternalLink,
+  AlertTriangle,
+  BookOpen,
+  RefreshCw,
+  ShieldCheck,
 } from 'lucide-react'
 import { SEO } from '@/components/SEO'
 import { AnimatedNumber } from '@/components/ui/aaa-effects'
@@ -18,10 +22,12 @@ import {
   fetchRecentFacts,
   fetchRecentEvents,
   fetchPipelineRuns,
+  fetchCourseImpact,
   type DashboardStats,
   type KnowledgeFactSummary,
   type SourceEventSummary,
   type PipelineRunSummary,
+  type CourseImpactSummary,
 } from '@/lib/instructor-api'
 
 function timeAgo(date: string): string {
@@ -419,11 +425,148 @@ function PipelineHistory({ runs }: { runs: PipelineRunSummary[] }) {
   )
 }
 
+function CourseHealthBadge({ score }: { score: number }) {
+  const color = score >= 90 ? 'text-green-500' : score >= 70 ? 'text-yellow-500' : 'text-red-500'
+  const bgColor = score >= 90 ? 'bg-green-500/10' : score >= 70 ? 'bg-yellow-500/10' : 'bg-red-500/10'
+  const Icon = score >= 90 ? ShieldCheck : score >= 70 ? AlertTriangle : XCircle
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, scale: 0.95 }}
+      animate={{ opacity: 1, scale: 1 }}
+      className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-full ${bgColor}`}
+    >
+      <Icon className={`w-4 h-4 ${color}`} />
+      <span className={`text-sm font-mono font-semibold ${color}`}>{score}%</span>
+      <span className="text-xs text-foreground/40">content health</span>
+    </motion.div>
+  )
+}
+
+function CourseImpactSection({ impact }: { impact: CourseImpactSummary }) {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 12 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.4, delay: 0.12, ease: [0.33, 1, 0.68, 1] }}
+      className="rounded-xl border border-foreground/[0.08] bg-foreground/[0.02] p-4 space-y-4"
+    >
+      <div className="flex items-center justify-between">
+        <h2 className="text-sm font-mono uppercase tracking-wider text-foreground/40">
+          Course Impact
+        </h2>
+        <CourseHealthBadge score={impact.healthScore} />
+      </div>
+
+      {impact.affectedLessons.length === 0 ? (
+        <div className="flex items-center gap-3 py-6 justify-center">
+          <ShieldCheck className="w-5 h-5 text-green-500/60" />
+          <p className="text-sm text-foreground/60">All content is up to date — no lessons affected.</p>
+        </div>
+      ) : (
+        <div className="space-y-2">
+          <p className="text-xs text-foreground/40">
+            {impact.affectedLessons.length} lesson{impact.affectedLessons.length !== 1 ? 's' : ''} affected by recent knowledge changes
+          </p>
+          <div className="space-y-1.5 max-h-[300px] overflow-y-auto pr-1">
+            {impact.affectedLessons.map((lesson) => (
+              <div
+                key={lesson.lesson_id}
+                className="rounded-lg border border-foreground/[0.08] bg-foreground/[0.02] p-3"
+              >
+                <div className="flex items-start justify-between gap-3">
+                  <div className="flex items-start gap-2 min-w-0">
+                    <BookOpen className="w-3.5 h-3.5 text-foreground/40 mt-0.5 shrink-0" />
+                    <div className="min-w-0">
+                      <p className="text-sm text-foreground/80 truncate">{lesson.lesson_title}</p>
+                      <p className="text-[10px] font-mono text-foreground/30 mt-0.5">{lesson.module_title}</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-2 shrink-0">
+                    {lesson.blocks_stale > 0 && (
+                      <span className="flex items-center gap-1 text-[10px] font-mono px-1.5 py-0.5 rounded bg-red-500/10 text-red-500/80">
+                        <XCircle className="w-2.5 h-2.5" />
+                        {lesson.blocks_stale} stale
+                      </span>
+                    )}
+                    {lesson.blocks_at_risk > 0 && (
+                      <span className="flex items-center gap-1 text-[10px] font-mono px-1.5 py-0.5 rounded bg-yellow-500/10 text-yellow-500/80">
+                        <AlertTriangle className="w-2.5 h-2.5" />
+                        {lesson.blocks_at_risk} at risk
+                      </span>
+                    )}
+                    {lesson.blocks_regenerating > 0 && (
+                      <span className="flex items-center gap-1 text-[10px] font-mono px-1.5 py-0.5 rounded bg-foreground/[0.05] text-foreground/60">
+                        <RefreshCw className="w-2.5 h-2.5 animate-spin" />
+                        {lesson.blocks_regenerating}
+                      </span>
+                    )}
+                  </div>
+                </div>
+                <div className="mt-2 flex items-center gap-1">
+                  <div className="flex-1 h-1.5 rounded-full bg-foreground/[0.05] overflow-hidden flex">
+                    <div
+                      className="h-full bg-green-500/40"
+                      style={{ width: `${(lesson.blocks_current / lesson.total_blocks) * 100}%` }}
+                    />
+                    <div
+                      className="h-full bg-yellow-500/40"
+                      style={{ width: `${(lesson.blocks_at_risk / lesson.total_blocks) * 100}%` }}
+                    />
+                    <div
+                      className="h-full bg-red-500/40"
+                      style={{ width: `${(lesson.blocks_stale / lesson.total_blocks) * 100}%` }}
+                    />
+                    <div
+                      className="h-full bg-foreground/20"
+                      style={{ width: `${(lesson.blocks_regenerating / lesson.total_blocks) * 100}%` }}
+                    />
+                  </div>
+                  <span className="text-[10px] font-mono text-foreground/30 ml-2 shrink-0">
+                    {lesson.blocks_current}/{lesson.total_blocks}
+                  </span>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {impact.recentSupersessions.length > 0 && (
+        <div className="border-t border-foreground/[0.05] pt-4 space-y-2">
+          <h3 className="text-xs font-mono uppercase tracking-wider text-foreground/30">
+            Recent Supersessions
+          </h3>
+          <div className="space-y-1.5 max-h-[200px] overflow-y-auto pr-1">
+            {impact.recentSupersessions.slice(0, 8).map((s, i) => (
+              <div key={i} className="flex items-start gap-2 py-1.5">
+                <Archive className="w-3 h-3 text-foreground/30 mt-0.5 shrink-0" />
+                <div className="min-w-0">
+                  <p className="text-xs text-foreground/60 line-clamp-1">{s.old_fact}</p>
+                  <div className="flex items-center gap-2 mt-0.5">
+                    <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-foreground/[0.05] text-foreground/40">
+                      {s.category}
+                    </span>
+                    <span className="text-[10px] font-mono text-foreground/20">
+                      {timeAgo(s.superseded_at)}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+    </motion.div>
+  )
+}
+
 export default function InstructorDashboard() {
   const [stats, setStats] = useState<DashboardStats | null>(null)
   const [facts, setFacts] = useState<KnowledgeFactSummary[]>([])
   const [events, setEvents] = useState<SourceEventSummary[]>([])
   const [runs, setRuns] = useState<PipelineRunSummary[]>([])
+  const [impact, setImpact] = useState<CourseImpactSummary | null>(null)
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
@@ -432,11 +575,13 @@ export default function InstructorDashboard() {
       fetchRecentFacts(),
       fetchRecentEvents(),
       fetchPipelineRuns(),
-    ]).then(([s, f, e, r]) => {
+      fetchCourseImpact(),
+    ]).then(([s, f, e, r, i]) => {
       setStats(s)
       setFacts(f)
       setEvents(e)
       setRuns(r)
+      setImpact(i)
       setLoading(false)
     })
   }, [])
@@ -466,13 +611,15 @@ export default function InstructorDashboard() {
         <div>
           <h1 className="text-2xl font-bold tracking-tight mb-1">Knowledge Base</h1>
           <p className="text-sm text-muted-foreground">
-            Monitor source events, extracted facts, and pipeline health.
+            Course engine health — what's changed, what's affected, what needs attention.
           </p>
         </div>
 
         <StatsGrid stats={stats} />
 
         {stats.lastPipelineRun && <PipelineCard run={stats.lastPipelineRun} />}
+
+        {impact && <CourseImpactSection impact={impact} />}
 
         <CategoryBreakdown factsByCategory={stats.factsByCategory} />
 
