@@ -167,8 +167,16 @@ function AchievementTimeline() {
 
   if (sorted.length === 0) {
     return (
-      <div className="text-center py-8 text-foreground/30 text-xs font-mono">
-        No achievements earned yet
+      <div className="text-center py-10">
+        <div className="flex items-center justify-center w-10 h-10 rounded-full bg-foreground/[0.04] border border-foreground/[0.06] mx-auto mb-3">
+          <Trophy className="w-4 h-4 text-foreground/15" />
+        </div>
+        <p className="text-xs text-foreground/35 font-mono mb-1">
+          Your journey begins when you earn your first achievement
+        </p>
+        <p className="text-[10px] text-foreground/20 font-mono">
+          Complete lessons and challenges to fill this timeline
+        </p>
       </div>
     )
   }
