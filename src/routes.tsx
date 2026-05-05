@@ -27,6 +27,9 @@ const InstructorDashboard = lazy(() => import('./pages/InstructorDashboard'))
 const SelfUpdatingCourse = lazy(() => import('./pages/SelfUpdatingCourse'))
 const RecentProjects = lazy(() => import('./pages/RecentProjects'))
 const Pipeline = lazy(() => import('./pages/Pipeline'))
+const Leaderboard = lazy(() => import('./pages/Leaderboard'))
+const SecretVault = lazy(() => import('./pages/SecretVault'))
+const PublicProfile = lazy(() => import('./pages/PublicProfile'))
 const NotFound = lazy(() => import('./pages/NotFound'))
 
 // Create router
@@ -105,6 +108,11 @@ const router = createBrowserRouter([
         path: 'enroll/success',
         element: <EnrollSuccess />,
       },
+      // Public profile (no auth required)
+      {
+        path: 'profile/:userId',
+        element: <PublicProfile />,
+      },
       // Course (protected) routes
       {
         path: 'course/dashboard',
@@ -141,6 +149,14 @@ const router = createBrowserRouter([
       {
         path: 'course/pipeline',
         element: <AuthGuard><Pipeline /></AuthGuard>,
+      },
+      {
+        path: 'course/leaderboard',
+        element: <AuthGuard><Leaderboard /></AuthGuard>,
+      },
+      {
+        path: 'course/vault',
+        element: <AuthGuard><SecretVault /></AuthGuard>,
       },
       // Redirects from old paths
       {

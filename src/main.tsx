@@ -20,6 +20,7 @@ import '@fontsource-variable/inter'
 
 // Import global styles (must be after fonts)
 import './globals.css'
+import './styles/cosmetic-themes.css'
 
 const app = (
   <React.StrictMode>

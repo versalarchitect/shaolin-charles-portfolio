@@ -1,11 +1,14 @@
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
+import { motion, AnimatePresence } from 'framer-motion'
 import { SEO } from '@/components/SEO'
 import { Button } from '@/components/ui/button'
 import { Home } from 'lucide-react'
+import { usePatienceEgg } from '@/components/gamification/easter-egg-handler'
 
 export default function NotFound() {
   const { t } = useTranslation()
+  const { showMessage } = usePatienceEgg()
 
   return (
     <>
@@ -28,6 +31,20 @@ export default function NotFound() {
               {t('notFound.backHome')}
             </Button>
           </Link>
+
+          {/* Patience easter egg message */}
+          <AnimatePresence>
+            {showMessage && (
+              <motion.p
+                className="text-sm text-foreground/50 font-mono mt-8 max-w-sm mx-auto"
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 1.5, ease: 'easeOut' }}
+              >
+                You waited. Most people don't. Here's your reward.
+              </motion.p>
+            )}
+          </AnimatePresence>
         </div>
       </div>
     </>

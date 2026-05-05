@@ -3,6 +3,8 @@ import { createContext, useContext, useEffect, useState } from 'react'
 type Theme = 'light' | 'dark' | 'system'
 type ResolvedTheme = 'light' | 'dark'
 
+export type CosmeticTheme = 'midnight' | 'ghost' | 'terminal' | 'blueprint' | null
+
 interface ThemeProviderProps {
   children: React.ReactNode
   defaultTheme?: Theme
@@ -13,7 +15,12 @@ interface ThemeProviderState {
   theme: Theme
   setTheme: (theme: Theme) => void
   resolvedTheme: ResolvedTheme
+  cosmeticTheme: CosmeticTheme
+  setCosmeticTheme: (theme: CosmeticTheme) => void
 }
+
+const COSMETIC_STORAGE_KEY = 'cosmetic-theme'
+const COSMETIC_THEMES: CosmeticTheme[] = ['midnight', 'ghost', 'terminal', 'blueprint']
 
 const ThemeProviderContext = createContext<ThemeProviderState | undefined>(undefined)
 
@@ -32,6 +39,15 @@ export function ThemeProvider({
     return (localStorage.getItem(storageKey) as Theme) || defaultTheme
   })
 
+  const [cosmeticTheme, setCosmeticThemeState] = useState<CosmeticTheme>(() => {
+    if (typeof window === 'undefined') return null
+    const stored = localStorage.getItem(COSMETIC_STORAGE_KEY)
+    if (stored && COSMETIC_THEMES.includes(stored as CosmeticTheme)) {
+      return stored as CosmeticTheme
+    }
+    return null
+  })
+
   const [systemTheme, setSystemTheme] = useState<ResolvedTheme>(getSystemTheme)
   const resolvedTheme: ResolvedTheme = theme === 'system' ? systemTheme : theme
 
@@ -46,6 +62,19 @@ export function ThemeProvider({
     document.querySelector('meta[name="theme-color"][media="(prefers-color-scheme: light)"]')?.setAttribute('content', themeColor)
   }, [resolvedTheme])
 
+  // Apply cosmetic theme class to <html>
+  useEffect(() => {
+    const root = document.documentElement
+    // Remove all cosmetic theme classes
+    for (const ct of COSMETIC_THEMES) {
+      if (ct) root.classList.remove(`cosmetic-${ct}`)
+    }
+    // Add active cosmetic theme class
+    if (cosmeticTheme) {
+      root.classList.add(`cosmetic-${cosmeticTheme}`)
+    }
+  }, [cosmeticTheme])
+
   useEffect(() => {
     const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)')
     const handler = (e: MediaQueryListEvent) => setSystemTheme(e.matches ? 'dark' : 'light')
@@ -58,8 +87,17 @@ export function ThemeProvider({
     setThemeState(newTheme)
   }
 
+  const setCosmeticTheme = (newCosmeticTheme: CosmeticTheme) => {
+    if (newCosmeticTheme) {
+      localStorage.setItem(COSMETIC_STORAGE_KEY, newCosmeticTheme)
+    } else {
+      localStorage.removeItem(COSMETIC_STORAGE_KEY)
+    }
+    setCosmeticThemeState(newCosmeticTheme)
+  }
+
   return (
-    <ThemeProviderContext.Provider value={{ theme, setTheme, resolvedTheme }}>
+    <ThemeProviderContext.Provider value={{ theme, setTheme, resolvedTheme, cosmeticTheme, setCosmeticTheme }}>
       {children}
     </ThemeProviderContext.Provider>
   )

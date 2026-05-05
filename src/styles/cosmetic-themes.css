@@ -1,0 +1,206 @@
+/* ============================================================
+   Cosmetic Themes — Unlockable visual overlays
+   These layer on top of the base light/dark theme.
+   Any CSS variable not overridden falls back to base theme values.
+   ============================================================ */
+
+/* ----------------------------------------------------------
+   Theme: Midnight
+   OLED-friendly true black with crisper contrast.
+   Works in dark mode only (class applied alongside .dark).
+   ---------------------------------------------------------- */
+.cosmetic-midnight {
+  --background: oklch(0.05 0.01 240);
+  --foreground: oklch(0.96 0.005 240);
+  --card: oklch(0.09 0.012 240);
+  --card-foreground: oklch(0.96 0.005 240);
+  --popover: oklch(0.07 0.012 240);
+  --popover-foreground: oklch(0.96 0.005 240);
+  --primary: oklch(0.96 0.005 240);
+  --primary-foreground: oklch(0.05 0.01 240);
+  --secondary: oklch(0.12 0.012 240);
+  --secondary-foreground: oklch(0.96 0.005 240);
+  --muted: oklch(0.10 0.012 240);
+  --muted-foreground: oklch(0.65 0.01 240);
+  --accent: oklch(0.12 0.012 240);
+  --accent-foreground: oklch(0.96 0.005 240);
+  --border: oklch(0.18 0.01 240);
+  --input: oklch(0.20 0.01 240);
+  --ring: oklch(0.96 0.005 240);
+  --sidebar: oklch(0.07 0.012 240);
+  --sidebar-foreground: oklch(0.96 0.005 240);
+  --sidebar-border: oklch(0.18 0.01 240);
+  --effect-rgb: 255, 255, 255;
+}
+
+/* ----------------------------------------------------------
+   Theme: Ghost
+   Ethereal, faded aesthetic. Works with both light and dark.
+   Reduces visual weight across all elements.
+   ---------------------------------------------------------- */
+.cosmetic-ghost {
+  --muted-foreground: oklch(0.55 0 0);
+}
+
+.dark .cosmetic-ghost {
+  --background: oklch(0.16 0.008 260);
+  --foreground: oklch(0.82 0.005 260);
+  --card: oklch(0.19 0.008 260);
+  --card-foreground: oklch(0.80 0.005 260);
+  --popover: oklch(0.18 0.008 260);
+  --popover-foreground: oklch(0.80 0.005 260);
+  --primary: oklch(0.78 0.005 260);
+  --primary-foreground: oklch(0.16 0.008 260);
+  --secondary: oklch(0.22 0.008 260);
+  --secondary-foreground: oklch(0.78 0.005 260);
+  --muted: oklch(0.20 0.008 260);
+  --muted-foreground: oklch(0.55 0.006 260);
+  --border: oklch(0.28 0.006 260);
+  --input: oklch(0.30 0.006 260);
+  --effect-rgb: 200, 200, 220;
+}
+
+:root .cosmetic-ghost {
+  --background: oklch(0.97 0.003 260);
+  --foreground: oklch(0.35 0.005 260);
+  --card: oklch(0.99 0.002 260);
+  --card-foreground: oklch(0.35 0.005 260);
+  --primary: oklch(0.35 0.005 260);
+  --primary-foreground: oklch(0.97 0.003 260);
+  --secondary: oklch(0.94 0.003 260);
+  --secondary-foreground: oklch(0.35 0.005 260);
+  --border: oklch(0.85 0.003 260);
+  --effect-rgb: 80, 80, 100;
+}
+
+/* Ghost fades interactive elements */
+.cosmetic-ghost .animate-pulse-glow {
+  animation: none;
+}
+
+/* ----------------------------------------------------------
+   Theme: Terminal
+   Retro CRT green-on-black. Dark mode only.
+   Forces monospace font, adds scanline effect.
+   ---------------------------------------------------------- */
+.cosmetic-terminal {
+  --background: oklch(0.06 0.02 145);
+  --foreground: oklch(0.80 0.18 145);
+  --card: oklch(0.09 0.02 145);
+  --card-foreground: oklch(0.80 0.18 145);
+  --popover: oklch(0.08 0.02 145);
+  --popover-foreground: oklch(0.80 0.18 145);
+  --primary: oklch(0.80 0.18 145);
+  --primary-foreground: oklch(0.06 0.02 145);
+  --secondary: oklch(0.12 0.03 145);
+  --secondary-foreground: oklch(0.75 0.16 145);
+  --muted: oklch(0.10 0.02 145);
+  --muted-foreground: oklch(0.55 0.12 145);
+  --accent: oklch(0.14 0.03 145);
+  --accent-foreground: oklch(0.80 0.18 145);
+  --border: oklch(0.25 0.08 145);
+  --input: oklch(0.28 0.08 145);
+  --ring: oklch(0.80 0.18 145);
+  --sidebar: oklch(0.08 0.02 145);
+  --sidebar-foreground: oklch(0.80 0.18 145);
+  --sidebar-border: oklch(0.25 0.08 145);
+  --effect-rgb: 0, 255, 0;
+  --font-geist-sans: 'Geist Mono', ui-monospace, 'Courier New', monospace;
+}
+
+/* Scanline overlay */
+.cosmetic-terminal::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background: repeating-linear-gradient(
+    transparent 0px,
+    transparent 2px,
+    rgba(0, 255, 0, 0.025) 2px,
+    rgba(0, 255, 0, 0.025) 4px
+  );
+  z-index: 9999;
+}
+
+/* Subtle text flicker for terminal authenticity */
+@keyframes terminal-flicker {
+  0%, 97%, 100% { opacity: 1; }
+  98% { opacity: 0.95; }
+  99% { opacity: 0.98; }
+}
+
+.cosmetic-terminal body {
+  animation: terminal-flicker 4s infinite;
+}
+
+/* ----------------------------------------------------------
+   Theme: Blueprint
+   Technical drawing aesthetic with blue tones.
+   Works in both modes, but primarily designed for dark.
+   ---------------------------------------------------------- */
+.cosmetic-blueprint {
+  --background: oklch(0.18 0.04 240);
+  --foreground: oklch(0.90 0.02 220);
+  --card: oklch(0.22 0.04 240);
+  --card-foreground: oklch(0.90 0.02 220);
+  --popover: oklch(0.20 0.04 240);
+  --popover-foreground: oklch(0.90 0.02 220);
+  --primary: oklch(0.90 0.02 220);
+  --primary-foreground: oklch(0.18 0.04 240);
+  --secondary: oklch(0.25 0.04 240);
+  --secondary-foreground: oklch(0.85 0.02 220);
+  --muted: oklch(0.22 0.035 240);
+  --muted-foreground: oklch(0.60 0.03 220);
+  --accent: oklch(0.28 0.04 240);
+  --accent-foreground: oklch(0.90 0.02 220);
+  --border: oklch(0.35 0.05 230);
+  --input: oklch(0.38 0.05 230);
+  --ring: oklch(0.70 0.10 230);
+  --sidebar: oklch(0.20 0.04 240);
+  --sidebar-foreground: oklch(0.90 0.02 220);
+  --sidebar-border: oklch(0.35 0.05 230);
+  --effect-rgb: 100, 160, 255;
+}
+
+/* Grid paper background */
+.cosmetic-blueprint body {
+  background-image:
+    linear-gradient(rgba(100, 160, 255, 0.07) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(100, 160, 255, 0.07) 1px, transparent 1px);
+  background-size: 20px 20px;
+}
+
+/* Light mode variant */
+:root .cosmetic-blueprint {
+  --background: oklch(0.94 0.02 220);
+  --foreground: oklch(0.20 0.04 240);
+  --card: oklch(0.96 0.015 220);
+  --card-foreground: oklch(0.20 0.04 240);
+  --primary: oklch(0.20 0.04 240);
+  --primary-foreground: oklch(0.94 0.02 220);
+  --secondary: oklch(0.90 0.02 220);
+  --secondary-foreground: oklch(0.20 0.04 240);
+  --muted-foreground: oklch(0.45 0.03 230);
+  --border: oklch(0.80 0.03 220);
+  --effect-rgb: 50, 100, 180;
+}
+
+:root .cosmetic-blueprint body {
+  background-image:
+    linear-gradient(rgba(50, 100, 180, 0.08) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(50, 100, 180, 0.08) 1px, transparent 1px);
+  background-size: 20px 20px;
+}
+
+/* ----------------------------------------------------------
+   Reduced motion: disable cosmetic animations
+   ---------------------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  .cosmetic-terminal::after {
+    display: none;
+  }
+  .cosmetic-terminal body {
+    animation: none;
+  }
+}

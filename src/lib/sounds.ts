@@ -23,7 +23,7 @@ function playTone(frequency: number, duration: number, type: OscillatorType = 's
   }
 }
 
-export function playSound(type: 'xp' | 'combo' | 'achievement' | 'levelup' | 'critical' | 'challenge') {
+export function playSound(type: 'xp' | 'combo' | 'achievement' | 'levelup' | 'critical' | 'challenge' | 'discovery') {
   switch (type) {
     case 'xp':
       playTone(880, 0.1, 'sine', 0.08)
@@ -51,6 +51,14 @@ export function playSound(type: 'xp' | 'combo' | 'achievement' | 'levelup' | 'cr
     case 'challenge':
       playTone(784, 0.1, 'sine', 0.1)
       setTimeout(() => playTone(988, 0.15, 'sine', 0.1), 100)
+      break
+    case 'discovery':
+      // Mysterious rising arpeggio — different from achievement (which is a major triad)
+      playTone(392, 0.12, 'triangle', 0.1)
+      setTimeout(() => playTone(494, 0.12, 'triangle', 0.1), 100)
+      setTimeout(() => playTone(587, 0.12, 'triangle', 0.1), 200)
+      setTimeout(() => playTone(740, 0.15, 'triangle', 0.12), 300)
+      setTimeout(() => playTone(988, 0.25, 'sine', 0.14), 420)
       break
   }
 }

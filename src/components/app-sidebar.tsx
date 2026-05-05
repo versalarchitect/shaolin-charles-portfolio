@@ -35,6 +35,7 @@ import { TOTAL_LESSONS } from '@/data/curriculum'
 const NAV_ITEMS = [
   { label: 'Dashboard', href: '/course/dashboard', icon: LayoutDashboard },
   { label: 'Curriculum', href: '/course/curriculum', icon: BookOpen },
+  { label: 'Leaderboard', href: '/course/leaderboard', icon: Trophy },
   { label: 'Community', href: '/course/community', icon: Users },
   { label: 'Knowledge Base', href: '/course/knowledge-base', icon: Brain },
   { label: 'Chat', href: '/course/chat', icon: MessageSquare },

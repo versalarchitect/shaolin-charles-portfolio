@@ -11,18 +11,24 @@ import { AppLayout } from '@/components/app-layout'
 import {
   SectionGridProvider,
 } from '@/components/ui/gradient-background'
+import { useExplorer } from '@/hooks/use-explorer'
+import { useProgressSync } from '@/hooks/use-progress-sync'
 
 const SectionBoundaryGrid = lazy(() => import('@/components/ui/gradient-background').then(m => ({ default: m.SectionBoundaryGrid })))
 
 const Chatbot = lazy(() => import('@/components/chatbot').then(m => ({ default: m.Chatbot })))
 const VoiceTutor = lazy(() => import('@/components/voice-tutor').then(m => ({ default: m.VoiceTutor })))
 const BackgroundEffects = lazy(() => import('@/components/background-effects'))
+const EasterEggHandler = lazy(() => import('@/components/gamification/easter-egg-handler').then(m => ({ default: m.EasterEggHandler })))
 
 const APP_ROUTES = ['/course/']
 
 export default function App() {
   const location = useLocation()
   const isAppPage = APP_ROUTES.some((r) => location.pathname.startsWith(r))
+
+  useExplorer()
+  useProgressSync()
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: pathname is the intentional trigger
   useEffect(() => {
@@ -79,6 +85,9 @@ export default function App() {
             </>
           )}
           <Toaster />
+          <Suspense fallback={null}>
+            <EasterEggHandler />
+          </Suspense>
         </div>
       </SectionGridProvider>
       </CommandMenuProvider>

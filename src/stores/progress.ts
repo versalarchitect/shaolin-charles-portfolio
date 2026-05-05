@@ -1,6 +1,7 @@
 import { useSyncExternalStore } from 'react'
 import { CURRICULUM, ALL_LESSONS, XP_LEVELS, ACHIEVEMENTS, STREAK_MULTIPLIERS, CHALLENGE_POOL, TITLES, WEEKLY_CHALLENGE_POOL } from '@/data/curriculum'
 import type { LessonStatus, Achievement, ChallengeDefinition, Title, WeeklyChallengeDefinition } from '@/data/curriculum'
+import { pushState } from '@/lib/progress-sync'
 
 const STORAGE_KEY = 'agentic-saas-progress'
 
@@ -91,6 +92,7 @@ function persist() {
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(state))
   } catch {}
+  pushState(state)
 }
 
 function load(): ProgressState {
@@ -766,6 +768,37 @@ export function setDailyXpGoal(goal: number) {
 export function resetProgress() {
   state = defaultState
   xpLog = []
+  persist()
+  emit()
+}
+
+export function awardExplorerXp(amount: number, eventKey: string) {
+  // Prevent double-awarding the same event
+  const eventId = `explorer-${eventKey}`
+  if (xpLog.some((e) => e.id === eventId)) return
+
+  const { multiplier } = getStreakMultiplier()
+  const finalXp = Math.round(amount * multiplier)
+
+  state = {
+    ...state,
+    totalXp: state.totalXp + finalXp,
+    dailyXpEarned: state.dailyXpEarned + finalXp,
+  }
+
+  const mults: string[] = []
+  if (multiplier > 1) mults.push(`${multiplier}x streak`)
+
+  const event: XpEvent = {
+    id: eventId,
+    type: 'bonus',
+    label: eventKey,
+    xp: finalXp,
+    timestamp: new Date().toISOString(),
+    multipliers: mults.length > 0 ? mults : undefined,
+  }
+  xpLog = [event, ...xpLog].slice(0, 50)
+
   persist()
   emit()
 }

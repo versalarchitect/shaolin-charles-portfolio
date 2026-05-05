@@ -11,6 +11,7 @@ import { useAuth } from '@/hooks/use-auth'
 import { useTheme } from '@/components/theme-provider'
 import { useCommandMenu } from '@/components/command-menu'
 import { HEADER_NAV, SOCIAL_LINKS, SITE } from '@/lib/constants'
+import { useSpeedClickEgg } from '@/components/gamification/easter-egg-handler'
 
 const APP_NAV = [
   { name: 'Dashboard', href: '/course/dashboard' },
@@ -22,16 +23,28 @@ const APP_ROUTES = ['/course/']
 
 export function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const [logoSpin, setLogoSpin] = useState(false)
   const location = useLocation()
   const prefersReducedMotion = useReducedMotion()
   const { t } = useTranslation()
   const { isLoggedIn } = useAuth()
   const { setTheme, resolvedTheme } = useTheme()
   const { setOpen: openCommandMenu } = useCommandMenu()
+  const { handleClick: handleSpeedClick } = useSpeedClickEgg()
 
   const isAppPage = APP_ROUTES.some((r) => location.pathname.startsWith(r))
   const marketingNav = HEADER_NAV.map((item) => ({ name: t(item.nameKey), href: item.href }))
   const navigation = isAppPage ? APP_NAV : marketingNav
+
+  const handleLogoClick = () => {
+    const triggered = handleSpeedClick()
+    if (triggered) {
+      setLogoSpin(true)
+      setTimeout(() => setLogoSpin(false), 800)
+    } else {
+      openCommandMenu(true)
+    }
+  }
 
   return (
     <header className="fixed inset-x-0 top-0 z-50">
@@ -50,7 +63,7 @@ export function Header() {
           transition={{ duration: 0.5 }}
         >
           <button
-            onClick={() => openCommandMenu(true)}
+            onClick={handleLogoClick}
             className="group flex items-center relative"
             aria-label="Open command menu"
             title="Discover more about Charles"
@@ -58,6 +71,8 @@ export function Header() {
             <motion.div
               whileHover={prefersReducedMotion ? undefined : { scale: 1.05 }}
               whileTap={prefersReducedMotion ? undefined : { scale: 0.95 }}
+              animate={logoSpin ? { rotate: [0, 360], scale: [1, 1.3, 1] } : {}}
+              transition={logoSpin ? { duration: 0.8, ease: 'easeInOut' } : {}}
               className="relative"
             >
               <Logo size="sm" className="text-foreground" />
