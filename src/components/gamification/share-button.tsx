@@ -1,10 +1,18 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Share2 } from 'lucide-react'
 import { motion } from 'framer-motion'
 import { ShareCard } from './share-card'
 
 export function ShareButton() {
   const [open, setOpen] = useState(false)
+
+  useEffect(() => {
+    function onOpenShareCard() {
+      setOpen(true)
+    }
+    window.addEventListener('open-share-card', onOpenShareCard)
+    return () => window.removeEventListener('open-share-card', onOpenShareCard)
+  }, [])
 
   return (
     <>

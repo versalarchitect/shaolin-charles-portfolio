@@ -18,6 +18,7 @@ import { SEO } from '@/components/SEO'
 import { useProgress, getLevel, getOverallProgress, getXpLog, getToolMastery } from '@/stores/progress'
 import { checkUnlocked, getUnlockable, UNLOCKABLES, getProgress } from '@/lib/unlockables'
 import { UnlockablesGrid } from '@/components/gamification/unlockables-grid'
+import { JourneyTimeline } from '@/components/gamification/journey-timeline'
 import { useUnlockState } from '@/components/gamification/unlock-gate'
 import { ACHIEVEMENTS } from '@/data/curriculum'
 
@@ -450,6 +451,11 @@ export default function SecretVault() {
           {/* Achievement Timeline */}
           <VaultSection title="Achievement Timeline" subtitle="Chronological unlock history">
             <AchievementTimeline />
+          </VaultSection>
+
+          {/* Learning Journey */}
+          <VaultSection title="Learning Journey" subtitle="Full chronological timeline">
+            <JourneyTimeline />
           </VaultSection>
 
           {/* All Time Stats */}

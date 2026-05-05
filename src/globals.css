@@ -363,6 +363,75 @@
     animation: ambient-pulse 10s ease-in-out infinite;
   }
 
+  /* Streak flame animations */
+  @keyframes flicker-gentle {
+    0%, 100% {
+      transform: scale(1) rotate(0deg);
+      opacity: 0.7;
+    }
+    25% {
+      transform: scale(1.05) rotate(-2deg);
+      opacity: 0.85;
+    }
+    75% {
+      transform: scale(0.97) rotate(1deg);
+      opacity: 0.75;
+    }
+  }
+
+  @keyframes flicker-medium {
+    0%, 100% {
+      transform: scale(1) rotate(0deg);
+      opacity: 0.75;
+    }
+    20% {
+      transform: scale(1.08) rotate(-3deg);
+      opacity: 0.9;
+    }
+    50% {
+      transform: scale(0.95) rotate(2deg);
+      opacity: 0.8;
+    }
+    80% {
+      transform: scale(1.06) rotate(-1deg);
+      opacity: 0.88;
+    }
+  }
+
+  @keyframes flicker-intense {
+    0%, 100% {
+      transform: scale(1) rotate(0deg);
+      opacity: 0.8;
+    }
+    15% {
+      transform: scale(1.1) rotate(-3deg);
+      opacity: 0.95;
+    }
+    35% {
+      transform: scale(0.94) rotate(2deg);
+      opacity: 0.85;
+    }
+    60% {
+      transform: scale(1.08) rotate(-2deg);
+      opacity: 0.92;
+    }
+    80% {
+      transform: scale(0.96) rotate(1deg);
+      opacity: 0.88;
+    }
+  }
+
+  @keyframes streak-glow {
+    0%, 100% {
+      opacity: 0.06;
+      transform: scale(1);
+    }
+    50% {
+      opacity: 0.12;
+      transform: scale(1.3);
+    }
+  }
+
   /* 3D perspective container */
   .perspective-1000 {
     perspective: 1000px;

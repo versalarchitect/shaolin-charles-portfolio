@@ -13,6 +13,7 @@ import {
 import type { LucideIcon } from 'lucide-react'
 import { SEO } from '@/components/SEO'
 import { VoiceTutorCard } from '@/components/voice-tutor-card'
+import { Certificate } from '@/components/gamification/certificate'
 import { AnimatedNumber } from '@/components/ui/aaa-effects'
 import {
   StreakMultiplierBadge,
@@ -24,17 +25,22 @@ import {
   ComboTimer,
 } from '@/components/gamification'
 import { ShareButton } from '@/components/gamification/share-button'
+import { ShortcutHint } from '@/components/gamification/shortcut-hint'
+import { DailyReward } from '@/components/gamification/daily-reward'
 import { ExplorerProgress } from '@/components/gamification/explorer-progress'
 import { UnlockablesGrid } from '@/components/gamification/unlockables-grid'
 import { CelebrationModal } from '@/components/gamification/celebration-modal'
 import { WelcomeModal } from '@/components/gamification/welcome-modal'
 import { XpFloatOverlay } from '@/components/gamification/xp-float'
 import { LevelUpBurst } from '@/components/gamification/level-up-burst'
+import { StreakWarning } from '@/components/gamification/streak-warning'
 import { StatCard } from '@/components/gamification/shared'
 import { AchievementsGrid } from '@/components/gamification/achievements-grid'
 import { StreakCalendar } from '@/components/gamification/streak-calendar'
 import { TierProgress } from '@/components/gamification/tier-progress'
 import { ToolMastery } from '@/components/gamification/tool-mastery'
+import { JourneyTimeline } from '@/components/gamification/journey-timeline'
+import { WeeklyChallenges } from '@/components/gamification/weekly-challenges'
 import {
   CURRICULUM,
   ACHIEVEMENTS,
@@ -271,6 +277,7 @@ export default function Dashboard() {
       <WelcomeModal />
 
       <div className="p-6 lg:p-8 max-w-4xl space-y-8">
+        <StreakWarning />
         <div className="flex items-start justify-between">
           <div>
             <h1 className="text-2xl font-bold tracking-tight mb-1">Dashboard</h1>
@@ -279,6 +286,7 @@ export default function Dashboard() {
           <ShareButton />
         </div>
 
+        <DailyReward />
         <NextLesson />
         <ComboTimer />
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -288,17 +296,21 @@ export default function Dashboard() {
         <LeaderboardPreview />
         <StatsBar />
         <DailyChallenges />
+        <WeeklyChallenges />
         <TierProgress />
         <div className="grid grid-cols-1 lg:grid-cols-[1fr_1fr] gap-6">
           <StreakCalendar />
           <XpActivityFeed />
         </div>
+        <JourneyTimeline compact />
         <ToolMastery />
         <ExplorerProgress />
         <AchievementsGrid />
         <UnlockablesGrid compact />
         <VoiceTutorCard />
+        {getOverallProgress().percent === 100 && <Certificate />}
       </div>
+      <ShortcutHint />
     </>
   )
 }

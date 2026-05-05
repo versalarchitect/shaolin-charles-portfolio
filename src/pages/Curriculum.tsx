@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
 import { SEO } from '@/components/SEO'
 import { Button } from '@/components/ui/button'
 import { motion } from 'framer-motion'
@@ -25,7 +25,7 @@ import {
 import { SectionSpots, Section } from '@/components/ui/gradient-background'
 import { CURRICULUM, TOTAL_XP, TOTAL_LESSONS } from '@/data/curriculum'
 import { useAuth } from '@/hooks/use-auth'
-import { useProgress, getTierProgress, getStreakMultiplier } from '@/stores/progress'
+import { useProgress, getTierProgress, getOverallProgress, getStreakMultiplier } from '@/stores/progress'
 import { LessonRow } from '@/components/gamification/lesson-row'
 
 const tierIcons: Record<string, typeof Code2> = {
@@ -52,12 +52,83 @@ const tiers = CURRICULUM.map((tier) => ({
 
 export default function Curriculum() {
   const { isLoggedIn } = useAuth()
+  const { pathname } = useLocation()
 
-  if (isLoggedIn) {
+  // /course/curriculum (auth-guarded) shows the app view; /curriculum shows marketing (with optional progress)
+  if (isLoggedIn && pathname.startsWith('/course')) {
     return <AppCurriculum />
   }
 
   return <MarketingCurriculum />
+}
+
+function ProgressBanner() {
+  const progressState = useProgress()
+  const { completed, total, percent } = getOverallProgress()
+
+  if (completed === 0) return null
+
+  return (
+    <div className="border-b border-foreground/[0.06] bg-foreground/[0.02]">
+      <div className="container mx-auto px-6 lg:px-8 py-4">
+        <div className="flex items-center justify-between mb-2">
+          <div className="flex items-center gap-3 text-sm">
+            <Trophy className="w-4 h-4 text-foreground/60" />
+            <span className="text-foreground/70 font-mono">
+              Your Progress: <span className="text-foreground/90 font-semibold">{completed}/{total} lessons</span>
+              {' · '}
+              <span className="text-foreground/90 font-semibold">{percent}% complete</span>
+              {' · '}
+              <span className="text-foreground/90 font-semibold">{progressState.totalXp.toLocaleString()} XP</span> earned
+            </span>
+          </div>
+          {percent === 100 && (
+            <span className="text-xs font-mono px-2.5 py-1 rounded-full bg-foreground/10 text-foreground/70 flex items-center gap-1.5">
+              <Check className="w-3 h-3" />
+              Course Complete
+            </span>
+          )}
+        </div>
+        <div className="relative h-1 rounded-full bg-foreground/[0.06] overflow-hidden">
+          <motion.div
+            className="absolute inset-y-0 left-0 rounded-full bg-foreground/20"
+            initial={{ width: 0 }}
+            animate={{ width: `${percent}%` }}
+            transition={{ duration: 0.8, ease: [0.33, 1, 0.68, 1] }}
+          />
+        </div>
+      </div>
+    </div>
+  )
+}
+
+function TierProgressIndicator({ tierId }: { tierId: string }) {
+  const tierProgress = getTierProgress(tierId)
+
+  if (tierProgress.completed === 0) return null
+
+  return (
+    <div className="mt-3">
+      <div className="flex items-center gap-2 mb-1.5">
+        <span className="text-xs font-mono text-foreground/40">
+          {tierProgress.completed}/{tierProgress.total} completed
+        </span>
+        {tierProgress.percent === 100 && (
+          <span className="flex items-center gap-1 text-[10px] font-mono text-foreground/50">
+            <Check className="w-2.5 h-2.5" />
+          </span>
+        )}
+      </div>
+      <div className="relative h-1 rounded-full bg-foreground/[0.06] overflow-hidden">
+        <motion.div
+          className="absolute inset-y-0 left-0 rounded-full bg-foreground/20"
+          initial={{ width: 0 }}
+          animate={{ width: `${tierProgress.percent}%` }}
+          transition={{ duration: 0.6, ease: [0.33, 1, 0.68, 1] }}
+        />
+      </div>
+    </div>
+  )
 }
 
 function AppCurriculum() {
@@ -263,8 +334,13 @@ function AppCurriculum() {
 }
 
 function MarketingCurriculum() {
+  const { isLoggedIn } = useAuth()
+  // Initialize progress store if user is logged in (needed for getLessonStatus/getTierProgress)
+  useProgress()
+
   return (
     <>
+      {isLoggedIn && <ProgressBanner />}
       <SEO
         title="Curriculum — The Agentic SaaS Course"
         description="52 hours across 51 lessons and 4 tiers. From tokens and context windows to multi-agent orchestration. Learn to direct single agents, coordinate parallel fleets, and architect agent-built systems."
@@ -381,6 +457,7 @@ function MarketingCurriculum() {
                             {tier.lessons}
                           </span>
                         </div>
+                        {isLoggedIn && <TierProgressIndicator tierId={tier.id} />}
                       </div>
                     </div>
 
@@ -395,7 +472,7 @@ function MarketingCurriculum() {
                       </h4>
                       <div className="space-y-1.5">
                         {tier.lessonDetails.map((lesson) => (
-                          <LessonRow key={lesson.id} lesson={lesson} />
+                          <LessonRow key={lesson.id} lesson={lesson} showStatus={isLoggedIn} />
                         ))}
                       </div>
                     </div>

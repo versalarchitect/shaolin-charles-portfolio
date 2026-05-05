@@ -1,6 +1,6 @@
 import { useState, useRef } from 'react'
 import { motion } from 'framer-motion'
-import { Camera, Loader2, Save, Settings, User, Lock, Mail, Trash2, Zap, Flame, Trophy, Palette, Share2 } from 'lucide-react'
+import { Camera, Loader2, Save, Settings, User, Lock, Mail, Trash2, Zap, Flame, Trophy, Palette, Share2, Check, Star } from 'lucide-react'
 import { toast } from 'sonner'
 import { useAuth } from '@/hooks/use-auth'
 import { supabase } from '@/lib/supabase'
@@ -12,8 +12,8 @@ import { AppLayout } from '@/components/app-layout'
 import { LevelIcon } from '@/components/gamification/shared'
 import { ThemeSelector } from '@/components/gamification/theme-selector'
 import { ShareButton } from '@/components/gamification/share-button'
-import { useProgress, getLevel, getOverallProgress, getStreakMultiplier } from '@/stores/progress'
-import { ACHIEVEMENTS, TOTAL_XP } from '@/data/curriculum'
+import { useProgress, getLevel, getOverallProgress, getStreakMultiplier, setActiveTitle, getActiveTitle } from '@/stores/progress'
+import { ACHIEVEMENTS, TITLES, TOTAL_XP } from '@/data/curriculum'
 
 function SectionHeader({ title, description }: { title: string; description: string }) {
   return (
@@ -91,6 +91,12 @@ function ProfileSection() {
         data: { first_name: firstName.trim(), last_name: lastName.trim(), display_name: dn },
       })
       if (error) throw error
+      // Also update user_progress.display_name for leaderboard/public profile
+      if (dn) {
+        await supabase
+          .from('user_progress')
+          .upsert({ user_id: user.id, display_name: dn }, { onConflict: 'user_id' })
+      }
       toast.success('Profile updated')
     } catch (err) {
       toast.error(err instanceof Error ? err.message : 'Save failed')
@@ -168,10 +174,13 @@ function ProfileSection() {
         </div>
 
         {displayName && (
-          <p className="text-xs font-mono text-foreground/30 mb-4">
+          <p className="text-xs font-mono text-foreground/30 mb-2">
             Display name: <span className="text-foreground/50">{displayName}</span>
           </p>
         )}
+        <p className="text-[10px] font-mono text-foreground/25 mb-4">
+          This name appears on the leaderboard and your public profile.
+        </p>
 
         <div className="flex justify-end">
           <Button onClick={handleSave} disabled={saving} size="sm" className="font-mono text-xs">
@@ -190,6 +199,127 @@ function ProfileSection() {
           <span className="text-sm font-mono text-foreground/60 truncate">{user?.email}</span>
           <Lock className="w-3.5 h-3.5 text-foreground/20 shrink-0 ml-auto" />
         </div>
+      </div>
+    </div>
+  )
+}
+
+function FeaturedAchievementPicker({ unlockedAchievements }: { unlockedAchievements: string[] }) {
+  const [featuredId, setFeaturedId] = useState<string | null>(() => {
+    try { return localStorage.getItem('featured-achievement') } catch { return null }
+  })
+
+  function selectFeatured(id: string) {
+    const newId = featuredId === id ? null : id
+    setFeaturedId(newId)
+    try {
+      if (newId) {
+        localStorage.setItem('featured-achievement', newId)
+      } else {
+        localStorage.removeItem('featured-achievement')
+      }
+    } catch {}
+    toast.success(newId ? 'Featured achievement updated' : 'Featured achievement cleared')
+  }
+
+  const unlocked = ACHIEVEMENTS.filter((a) => unlockedAchievements.includes(a.id))
+
+  return (
+    <div className="rounded-xl border border-foreground/[0.08] bg-foreground/[0.02] p-6">
+      <SectionHeader title="Featured Achievement" description="Select an achievement to showcase on your public profile." />
+
+      {unlocked.length === 0 ? (
+        <div className="text-center py-8">
+          <Star className="w-8 h-8 mx-auto mb-3 text-foreground/20" />
+          <p className="text-sm text-foreground/40">Earn achievements to feature one on your profile</p>
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          {unlocked.map((a) => {
+            const isSelected = featuredId === a.id
+            return (
+              <button
+                key={a.id}
+                type="button"
+                onClick={() => selectFeatured(a.id)}
+                className={`relative flex items-center gap-3 px-4 py-3 rounded-xl border text-left transition-all ${
+                  isSelected
+                    ? 'bg-foreground/10 border-foreground/15'
+                    : 'bg-foreground/[0.02] border-foreground/[0.08] hover:bg-foreground/[0.05] hover:border-foreground/10'
+                }`}
+              >
+                <span className="text-2xl shrink-0">{a.icon}</span>
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-mono font-medium text-foreground/80 truncate">{a.name}</p>
+                  <p className="text-[10px] font-mono text-foreground/40 truncate">{a.description}</p>
+                </div>
+                {isSelected && (
+                  <div className="flex items-center justify-center w-5 h-5 rounded-full bg-foreground/15 shrink-0">
+                    <Check className="w-3 h-3 text-foreground/80" />
+                  </div>
+                )}
+              </button>
+            )
+          })}
+        </div>
+      )}
+    </div>
+  )
+}
+
+function TitleSelector({ unlockedTitles, activeTitle }: { unlockedTitles: string[]; activeTitle: string }) {
+  function handleSelectTitle(titleId: string) {
+    if (!unlockedTitles.includes(titleId)) return
+    setActiveTitle(titleId)
+    const title = TITLES.find(t => t.id === titleId)
+    if (title) toast.success(`Title set to "${title.name}"`)
+  }
+
+  return (
+    <div className="rounded-xl border border-foreground/[0.08] bg-foreground/[0.02] p-6">
+      <SectionHeader title="Title" description="Choose a title to display alongside your name." />
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        {TITLES.map((title) => {
+          const isUnlocked = unlockedTitles.includes(title.id)
+          const isActive = activeTitle === title.id
+          return (
+            <button
+              key={title.id}
+              type="button"
+              onClick={() => handleSelectTitle(title.id)}
+              disabled={!isUnlocked}
+              className={`relative flex items-center gap-3 px-4 py-3 rounded-xl border text-left transition-all ${
+                isActive
+                  ? 'bg-foreground/10 border-foreground/15'
+                  : isUnlocked
+                    ? 'bg-foreground/[0.02] border-foreground/[0.08] hover:bg-foreground/[0.05] hover:border-foreground/10'
+                    : 'bg-foreground/[0.02] border-foreground/[0.06] opacity-50 cursor-not-allowed'
+              }`}
+            >
+              <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-foreground/[0.05] border border-foreground/[0.08] shrink-0">
+                {isUnlocked ? (
+                  <Trophy className="w-4 h-4 text-foreground/60" />
+                ) : (
+                  <Lock className="w-4 h-4 text-foreground/30" />
+                )}
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className={`text-sm font-mono font-medium truncate ${isUnlocked ? 'text-foreground/80' : 'text-foreground/40'}`}>
+                  {title.name}
+                </p>
+                <p className="text-[10px] font-mono text-foreground/40 truncate">
+                  {isUnlocked ? title.description : title.description}
+                </p>
+              </div>
+              {isActive && (
+                <div className="flex items-center justify-center w-5 h-5 rounded-full bg-foreground/15 shrink-0">
+                  <Check className="w-3 h-3 text-foreground/80" />
+                </div>
+              )}
+            </button>
+          )
+        })}
       </div>
     </div>
   )
@@ -276,6 +406,12 @@ function GamificationSection() {
           </div>
         )}
       </div>
+
+      {/* Featured Achievement picker */}
+      <FeaturedAchievementPicker unlockedAchievements={progress.unlockedAchievements} />
+
+      {/* Title Selector */}
+      <TitleSelector unlockedTitles={progress.unlockedTitles} activeTitle={progress.activeTitle} />
     </div>
   )
 }

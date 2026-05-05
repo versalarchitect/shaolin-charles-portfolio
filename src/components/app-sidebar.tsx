@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
@@ -53,6 +53,32 @@ function LevelIcon({ levelName, className }: { levelName: string; className?: st
   }
 }
 
+function StreakFlame({ streak }: { streak: number }) {
+  const intensity = streak >= 30 ? 'intense' : streak >= 14 ? 'medium' : streak >= 7 ? 'gentle' : 'none'
+
+  if (intensity === 'none') {
+    return <Flame className="w-3 h-3 text-foreground/30" />
+  }
+
+  return (
+    <span className="relative inline-flex items-center justify-center">
+      {/* Glow behind flame for streak >= 30 */}
+      {intensity === 'intense' && (
+        <span className="absolute inset-0 rounded-full bg-foreground/[0.08] blur-[3px] animate-[streak-glow_2s_ease-in-out_infinite]" />
+      )}
+      <Flame
+        className={`w-3 h-3 text-foreground/30 ${
+          intensity === 'intense'
+            ? 'animate-[flicker-intense_0.8s_ease-in-out_infinite]'
+            : intensity === 'medium'
+              ? 'animate-[flicker-medium_1s_ease-in-out_infinite]'
+              : 'animate-[flicker-gentle_1.5s_ease-in-out_infinite]'
+        }`}
+      />
+    </span>
+  )
+}
+
 function SidebarProfile({
   user,
   userId,
@@ -71,6 +97,41 @@ function SidebarProfile({
   const nextLevel = getNextLevel()
   const overall = getOverallProgress()
   const activeTitle = getActiveTitle()
+
+  // Track previous level name for rank change animation
+  const prevLevelRef = useRef(level.name)
+  const [rankChanged, setRankChanged] = useState(false)
+
+  // Track previous XP for gain animation
+  const prevXpRef = useRef(progress.totalXp)
+  const [xpGained, setXpGained] = useState(false)
+  const isInitialMount = useRef(true)
+
+  // Detect rank changes
+  useEffect(() => {
+    if (prevLevelRef.current !== level.name) {
+      setRankChanged(true)
+      prevLevelRef.current = level.name
+      const timer = setTimeout(() => setRankChanged(false), 1200)
+      return () => clearTimeout(timer)
+    }
+  }, [level.name])
+
+  // Detect XP gains
+  useEffect(() => {
+    if (isInitialMount.current) {
+      isInitialMount.current = false
+      prevXpRef.current = progress.totalXp
+      return
+    }
+    if (progress.totalXp > prevXpRef.current) {
+      setXpGained(true)
+      prevXpRef.current = progress.totalXp
+      const timer = setTimeout(() => setXpGained(false), 1000)
+      return () => clearTimeout(timer)
+    }
+    prevXpRef.current = progress.totalXp
+  }, [progress.totalXp])
 
   const displayName = user.user_metadata?.display_name
     || user.email?.split('@')[0]
@@ -107,12 +168,70 @@ function SidebarProfile({
       <div className="mx-3 rounded-lg bg-foreground/[0.03] border border-foreground/[0.06] p-2.5">
         <div className="flex items-center justify-between mb-2">
           <div className="flex items-center gap-1.5">
-            <LevelIcon levelName={level.name} className="w-3.5 h-3.5 text-foreground/50" />
-            <span className="text-[11px] font-mono font-semibold text-foreground/70">{level.name}</span>
+            {/* Animated rank badge */}
+            <span className="relative inline-flex items-center justify-center">
+              {/* Pulse ring on rank change */}
+              <AnimatePresence>
+                {rankChanged && (
+                  <motion.span
+                    className="absolute inset-0 rounded-full border border-foreground/30"
+                    initial={{ scale: 1, opacity: 0.6 }}
+                    animate={{ scale: 2.2, opacity: 0 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 0.8, ease: 'easeOut' }}
+                  />
+                )}
+              </AnimatePresence>
+              <AnimatePresence mode="wait">
+                <motion.span
+                  key={level.name}
+                  initial={{ opacity: 0, scale: 0.8, rotate: -15 }}
+                  animate={{
+                    opacity: 1,
+                    scale: rankChanged ? [1, 1.3, 1] : 1,
+                    rotate: 0,
+                  }}
+                  exit={{ opacity: 0, scale: 0.8, rotate: 15 }}
+                  transition={{
+                    duration: 0.4,
+                    scale: rankChanged ? { duration: 0.6, times: [0, 0.5, 1] } : { duration: 0.3 },
+                  }}
+                  className="inline-flex"
+                >
+                  <LevelIcon levelName={level.name} className="w-3.5 h-3.5 text-foreground/50" />
+                </motion.span>
+              </AnimatePresence>
+            </span>
+            <AnimatePresence mode="wait">
+              <motion.span
+                key={level.name}
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{
+                  opacity: 1,
+                  scale: rankChanged ? [1, 1.1, 1] : 1,
+                }}
+                exit={{ opacity: 0, scale: 0.9 }}
+                transition={{ duration: 0.3 }}
+                className="text-[11px] font-mono font-semibold text-foreground/70"
+              >
+                {level.name}
+              </motion.span>
+            </AnimatePresence>
           </div>
           <div className="flex items-center gap-1">
             <Zap className="w-3 h-3 text-foreground/30" />
-            <span className="text-[10px] font-mono text-foreground/40">{progress.totalXp} XP</span>
+            {/* XP with gain animation */}
+            <motion.span
+              animate={xpGained ? {
+                scale: [1, 1.15, 1],
+                opacity: [0.4, 0.8, 0.4],
+              } : { scale: 1, opacity: 0.4 }}
+              transition={{ duration: 0.6 }}
+              className="text-[10px] font-mono text-foreground/40"
+              style={{ display: 'inline-block' }}
+            >
+              {progress.totalXp} XP
+            </motion.span>
           </div>
         </div>
 
@@ -134,7 +253,7 @@ function SidebarProfile({
         {/* Bottom stats */}
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-1">
-            <Flame className="w-3 h-3 text-foreground/30" />
+            <StreakFlame streak={progress.currentStreak} />
             <span className="text-[10px] font-mono text-foreground/40">{progress.currentStreak}d streak</span>
             {progress.currentStreak >= 3 && (
               <StreakBadge streak={progress.currentStreak} className="!px-1.5 !py-0.5 !text-[9px] scale-75 origin-left" />

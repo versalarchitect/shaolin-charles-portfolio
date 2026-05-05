@@ -108,14 +108,60 @@ function GoalAdjuster({ currentGoal }: { currentGoal: number }) {
   )
 }
 
+function useDailyCountdown() {
+  const [timeLeft, setTimeLeft] = useState(() => {
+    const now = new Date()
+    const midnight = new Date(now)
+    midnight.setHours(24, 0, 0, 0)
+    return midnight.getTime() - now.getTime()
+  })
+
+  useEffect(() => {
+    function tick() {
+      const now = new Date()
+      const midnight = new Date(now)
+      midnight.setHours(24, 0, 0, 0)
+      setTimeLeft(midnight.getTime() - now.getTime())
+    }
+    const interval = setInterval(tick, timeLeft < 600000 ? 1000 : 60000)
+    return () => clearInterval(interval)
+  }, [timeLeft < 600000])
+
+  const totalSeconds = Math.max(0, Math.floor(timeLeft / 1000))
+  const hours = Math.floor(totalSeconds / 3600)
+  const minutes = Math.floor((totalSeconds % 3600) / 60)
+  const seconds = totalSeconds % 60
+
+  let label: string
+  let urgent = false
+  if (hours >= 1) {
+    label = `Resets in ${hours}h ${minutes}m`
+  } else if (minutes >= 10) {
+    label = `${minutes}m remaining`
+    urgent = true
+  } else {
+    label = `${minutes}m ${seconds}s`
+    urgent = true
+  }
+
+  return { label, urgent }
+}
+
 export function DailyChallenges() {
   useProgress()
   const challenges = getDailyChallenges()
   const completedCount = challenges.filter((c) => c.completed).length
+  const { label: countdownLabel, urgent } = useDailyCountdown()
   return (
     <div className="space-y-3">
       <div className="flex items-center justify-between">
-        <h2 className="text-sm font-mono uppercase tracking-wider text-foreground/40">Daily Challenges</h2>
+        <div className="flex items-center gap-2">
+          <h2 className="text-sm font-mono uppercase tracking-wider text-foreground/40">Daily Challenges</h2>
+          <span className={`flex items-center gap-1 text-[10px] font-mono ${urgent ? 'text-foreground/70' : 'text-foreground/30'}`}>
+            <Clock className="w-3 h-3" />
+            {countdownLabel}
+          </span>
+        </div>
         <span className="text-xs font-mono text-foreground/40">{completedCount}/{challenges.length}</span>
       </div>
       <div className="space-y-2">

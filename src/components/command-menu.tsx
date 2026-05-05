@@ -18,15 +18,25 @@ import {
   UserCircle,
   Command,
   ArrowRight,
+  Trophy,
+  Settings,
+  Lock,
+  Share2,
+  ExternalLink,
 } from 'lucide-react'
 import { useAuth } from '@/hooks/use-auth'
+import { checkUnlocked, UNLOCKABLES } from '@/lib/unlockables'
+import { useProgress, getLevel } from '@/stores/progress'
 
 interface CommandItem {
   id: string
   label: string
-  href: string
+  href?: string
+  action?: () => void
   icon: typeof Home
   keywords?: string[]
+  shortcut?: string
+  hidden?: boolean
 }
 
 interface CommandGroup {
@@ -68,14 +78,52 @@ export function useCommandMenu() {
 
 export function CommandMenuProvider({ children }: { children: React.ReactNode }) {
   const [open, setOpen] = useState(false)
+  const sequenceRef = useRef<{ key: string; time: number } | null>(null)
+  const navigateRef = useRef<((path: string) => void) | null>(null)
 
   useEffect(() => {
+    const SEQUENCE_TIMEOUT = 1000
+
     function onKeyDown(e: KeyboardEvent) {
+      // Cmd/Ctrl+K to toggle command menu
       if (e.key === 'k' && (e.metaKey || e.ctrlKey)) {
         e.preventDefault()
         setOpen((prev) => !prev)
+        return
+      }
+
+      // Don't process sequence shortcuts if user is typing in an input/textarea
+      const tag = (e.target as HTMLElement)?.tagName
+      if (tag === 'INPUT' || tag === 'TEXTAREA' || (e.target as HTMLElement)?.isContentEditable) return
+
+      const now = Date.now()
+      const prev = sequenceRef.current
+
+      // Check if this completes a sequence starting with 'g'
+      if (prev && prev.key === 'g' && now - prev.time < SEQUENCE_TIMEOUT) {
+        const routes: Record<string, string> = {
+          d: '/course/dashboard',
+          l: '/course/leaderboard',
+          s: '/course/profile',
+          v: '/course/vault',
+        }
+        const route = routes[e.key]
+        if (route) {
+          e.preventDefault()
+          navigateRef.current?.(route)
+          sequenceRef.current = null
+          return
+        }
+      }
+
+      // Record first key of potential sequence
+      if (e.key === 'g' && !e.metaKey && !e.ctrlKey && !e.altKey) {
+        sequenceRef.current = { key: 'g', time: now }
+      } else {
+        sequenceRef.current = null
       }
     }
+
     document.addEventListener('keydown', onKeyDown)
     return () => document.removeEventListener('keydown', onKeyDown)
   }, [])
@@ -85,19 +133,73 @@ export function CommandMenuProvider({ children }: { children: React.ReactNode })
   return (
     <CommandMenuContext.Provider value={value}>
       {children}
-      <CommandMenuDialog />
+      <CommandMenuDialog navigateRef={navigateRef} />
     </CommandMenuContext.Provider>
   )
 }
 
-function CommandMenuDialog() {
+function CommandMenuDialog({ navigateRef }: { navigateRef: React.MutableRefObject<((path: string) => void) | null> }) {
   const { open, setOpen } = useCommandMenu()
-  const { isLoggedIn } = useAuth()
+  const { isLoggedIn, user } = useAuth()
+  const progress = useProgress()
   const navigate = useNavigate()
   const [query, setQuery] = useState('')
   const [activeIndex, setActiveIndex] = useState(0)
   const inputRef = useRef<HTMLInputElement>(null)
   const listRef = useRef<HTMLDivElement>(null)
+
+  // Expose navigate to the provider for sequence shortcuts
+  useEffect(() => {
+    navigateRef.current = navigate
+  }, [navigate, navigateRef])
+
+  const vaultUnlocked = useMemo(() => {
+    const vaultItem = UNLOCKABLES.find((u) => u.id === 'secret-vault')
+    if (!vaultItem) return false
+    const level = getLevel()
+    return checkUnlocked(vaultItem, {
+      totalXp: progress.totalXp,
+      level: level.name,
+      achievements: progress.unlockedAchievements,
+      streak: progress.currentStreak,
+    })
+  }, [progress.totalXp, progress.unlockedAchievements, progress.currentStreak])
+
+  const gamificationItems = useMemo<CommandItem[]>(() => {
+    const items: CommandItem[] = [
+      { id: 'go-dashboard', label: 'Go to Dashboard', href: '/course/dashboard', icon: LayoutDashboard, keywords: ['progress', 'home'], shortcut: 'G D' },
+      { id: 'go-leaderboard', label: 'Go to Leaderboard', href: '/course/leaderboard', icon: Trophy, keywords: ['rank', 'compete', 'top'], shortcut: 'G L' },
+      { id: 'go-settings', label: 'Go to Settings', href: '/course/profile', icon: Settings, keywords: ['preferences', 'account'], shortcut: 'G S' },
+    ]
+
+    if (vaultUnlocked) {
+      items.push({ id: 'go-vault', label: 'Go to Vault', href: '/course/vault', icon: Lock, keywords: ['secret', 'hidden', 'achievements'], shortcut: 'G V' })
+    }
+
+    items.push({
+      id: 'share-progress',
+      label: 'Share Progress',
+      icon: Share2,
+      keywords: ['share', 'card', 'social'],
+      action: () => {
+        window.dispatchEvent(new CustomEvent('open-share-card'))
+      },
+    })
+
+    if (user) {
+      items.push({
+        id: 'view-public-profile',
+        label: 'View Public Profile',
+        icon: ExternalLink,
+        keywords: ['public', 'profile', 'external'],
+        action: () => {
+          window.open(`/profile/${user.id}`, '_blank')
+        },
+      })
+    }
+
+    return items
+  }, [vaultUnlocked, user])
 
   const groups = useMemo<CommandGroup[]>(() => {
     const g: CommandGroup[] = [
@@ -106,9 +208,10 @@ function CommandMenuDialog() {
     ]
     if (isLoggedIn) {
       g.push({ id: 'course', label: 'My Course', items: COURSE_ITEMS })
+      g.push({ id: 'gamification', label: 'Quick Actions', items: gamificationItems })
     }
     return g
-  }, [isLoggedIn])
+  }, [isLoggedIn, gamificationItems])
 
   const filtered = useMemo(() => {
     if (!query.trim()) return groups
@@ -144,9 +247,13 @@ function CommandMenuDialog() {
   }, [query])
 
   const go = useCallback(
-    (href: string) => {
+    (item: CommandItem) => {
       setOpen(false)
-      navigate(href)
+      if (item.action) {
+        item.action()
+      } else if (item.href) {
+        navigate(item.href)
+      }
     },
     [setOpen, navigate]
   )
@@ -160,7 +267,7 @@ function CommandMenuDialog() {
       setActiveIndex((i) => (i - 1 + allItems.length) % allItems.length)
     } else if (e.key === 'Enter' && allItems[activeIndex]) {
       e.preventDefault()
-      go(allItems[activeIndex].href)
+      go(allItems[activeIndex])
     } else if (e.key === 'Escape') {
       e.preventDefault()
       setOpen(false)
@@ -236,7 +343,7 @@ function CommandMenuDialog() {
                           <button
                             key={item.id}
                             data-active={isActive}
-                            onClick={() => go(item.href)}
+                            onClick={() => go(item)}
                             onMouseEnter={() => setActiveIndex(thisIndex)}
                             className={`
                               flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm transition-colors
@@ -248,6 +355,11 @@ function CommandMenuDialog() {
                           >
                             <Icon className="h-4 w-4 shrink-0" />
                             <span className="flex-1 text-left">{item.label}</span>
+                            {item.shortcut && (
+                              <kbd className="hidden sm:inline-flex items-center gap-0.5 rounded border border-foreground/10 bg-foreground/[0.04] px-1.5 py-0.5 text-[10px] font-mono text-foreground/25">
+                                {item.shortcut}
+                              </kbd>
+                            )}
                             {isActive && (
                               <ArrowRight className="h-3 w-3 text-foreground/30" />
                             )}
