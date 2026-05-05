@@ -1,7 +1,10 @@
-import { useEffect, useState, useRef } from 'react'
+import { useEffect, useState, useRef, useCallback } from 'react'
 import { Link } from 'react-router-dom'
 import { SEO } from '@/components/SEO'
 import { useTranslation } from 'react-i18next'
+import { trackInteraction } from '@/lib/explorer'
+import { useAuth } from '@/hooks/use-auth'
+import { toast } from 'sonner'
 import {
   ExternalLink,
   Github,
@@ -348,6 +351,21 @@ const otherProjects = [
 export default function Projects() {
   const _prefersReducedMotion = useReducedMotion()
   const { t } = useTranslation()
+  const { user } = useAuth()
+  const hoveredCards = useRef(new Set<string>())
+  const explorerAwarded = useRef(false)
+
+  const handleCardHover = useCallback((cardId: string) => {
+    if (!user || explorerAwarded.current) return
+    hoveredCards.current.add(cardId)
+    if (hoveredCards.current.size >= 4) {
+      explorerAwarded.current = true
+      const result = trackInteraction('interact:projects-explorer', 10)
+      if (result.awarded) {
+        toast('Thorough explorer! +10 XP')
+      }
+    }
+  }, [user])
 
   return (
     <>
@@ -422,7 +440,7 @@ export default function Projects() {
         <div className="container mx-auto px-6 lg:px-8 relative z-10">
           <RevealOnScroll direction="up">
             <HoverCard3D className="rounded-2xl" glowColor="rgba(var(--effect-rgb),0.1)" depth={40}>
-              <Card className="overflow-hidden border-foreground/10 bg-gradient-to-br from-background to-foreground/[0.02]">
+              <Card className="overflow-hidden border-foreground/10 bg-gradient-to-br from-background to-foreground/[0.02]" onMouseEnter={() => handleCardHover('predictive')}>
                 <div className="p-8 md:p-12 space-y-8">
                   {/* Header */}
                   <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-6">
@@ -603,7 +621,7 @@ export default function Projects() {
         <div className="container mx-auto px-6 lg:px-8 relative z-10">
           <RevealOnScroll direction="left">
             <HoverCard3D className="rounded-2xl" glowColor="rgba(var(--effect-rgb),0.08)" depth={35}>
-              <Card className="overflow-hidden border-foreground/10 bg-gradient-to-br from-background to-foreground/[0.02]">
+              <Card className="overflow-hidden border-foreground/10 bg-gradient-to-br from-background to-foreground/[0.02]" onMouseEnter={() => handleCardHover('nxsupabase')}>
                 <div className="p-8 md:p-12 space-y-8">
                   {/* Header */}
                   <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-6">
@@ -710,7 +728,7 @@ export default function Projects() {
         <div className="container mx-auto px-6 lg:px-8 relative z-10">
           <RevealOnScroll direction="right">
             <HoverCard3D className="rounded-2xl" glowColor="rgba(var(--effect-rgb),0.08)" depth={35}>
-              <Card className="overflow-hidden border-foreground/10">
+              <Card className="overflow-hidden border-foreground/10" onMouseEnter={() => handleCardHover('urbanfarm')}>
                 <div className="p-8 md:p-12 space-y-8">
                   {/* Header */}
                   <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-6">
@@ -839,7 +857,7 @@ export default function Projects() {
                   glowColor="rgba(var(--effect-rgb),0.1)"
                   depth={25}
                 >
-                  <Card className="h-full p-6 bg-background border-foreground/10 hover:border-foreground/20 transition-all">
+                  <Card className="h-full p-6 bg-background border-foreground/10 hover:border-foreground/20 transition-all" onMouseEnter={() => handleCardHover(`feature-${project.title}`)}>
                     <div className="space-y-4">
                       <div>
                         <span className="text-xs font-mono text-muted-foreground">

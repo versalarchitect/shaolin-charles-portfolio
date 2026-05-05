@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useCallback } from 'react'
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { SEO } from '@/components/SEO'
@@ -9,6 +9,8 @@ import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { motion, useReducedMotion } from 'framer-motion'
 import { toast } from 'sonner'
+import { trackInteraction } from '@/lib/explorer'
+import { useAuth } from '@/hooks/use-auth'
 import {
   BlurFadeIn,
   ScrollFadeIn,
@@ -23,6 +25,7 @@ import { SectionSpots, Section } from '@/components/ui/gradient-background'
 
 export default function Contact() {
   const { t } = useTranslation()
+  const { user } = useAuth()
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -32,6 +35,14 @@ export default function Contact() {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [errors, setErrors] = useState<Record<string, string>>({})
   const prefersReducedMotion = useReducedMotion()
+
+  const handleEmailClick = useCallback(() => {
+    if (!user) return
+    const result = trackInteraction('interact:contact-reached', 5)
+    if (result.awarded) {
+      toast('Connection made! +5 XP')
+    }
+  }, [user])
 
   // Contact methods data with translations
   const contactMethods = [
@@ -325,6 +336,7 @@ export default function Contact() {
                         target={external ? '_blank' : undefined}
                         rel={external ? 'noopener noreferrer' : undefined}
                         className="block"
+                        onClick={link.startsWith('mailto:') ? handleEmailClick : undefined}
                       >
                         <HoverCard3D
                           className="rounded-lg"
@@ -422,7 +434,7 @@ export default function Contact() {
             <div className="flex flex-wrap justify-center gap-4">
               <Magnetic strength={0.15}>
                 <Button size="lg" className="font-mono gap-2" asChild>
-                  <a href="mailto:hello@charlesjackson.dev">
+                  <a href="mailto:hello@charlesjackson.dev" onClick={handleEmailClick}>
                     <Mail className="h-4 w-4" />
                     hello@charlesjackson.dev
                   </a>

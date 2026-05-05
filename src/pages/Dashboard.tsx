@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import {
@@ -26,6 +27,9 @@ import { ShareButton } from '@/components/gamification/share-button'
 import { ExplorerProgress } from '@/components/gamification/explorer-progress'
 import { UnlockablesGrid } from '@/components/gamification/unlockables-grid'
 import { CelebrationModal } from '@/components/gamification/celebration-modal'
+import { WelcomeModal } from '@/components/gamification/welcome-modal'
+import { XpFloatOverlay } from '@/components/gamification/xp-float'
+import { LevelUpBurst } from '@/components/gamification/level-up-burst'
 import { StatCard } from '@/components/gamification/shared'
 import { AchievementsGrid } from '@/components/gamification/achievements-grid'
 import { StreakCalendar } from '@/components/gamification/streak-calendar'
@@ -46,6 +50,98 @@ import {
   getOverallProgress,
   getStreakMultiplier,
 } from '@/stores/progress'
+import { useAuth } from '@/hooks/use-auth'
+import { useSmartTips } from '@/hooks/use-smart-tips'
+import { fetchGlobalLeaderboard, fetchUserRank } from '@/lib/leaderboard-api'
+import type { LeaderboardEntry } from '@/lib/leaderboard-api'
+
+function LeaderboardPreview() {
+  const { user } = useAuth()
+  const [entries, setEntries] = useState<LeaderboardEntry[]>([])
+  const [userRank, setUserRank] = useState<number>(0)
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    let cancelled = false
+
+    async function load() {
+      const [top, rank] = await Promise.all([
+        fetchGlobalLeaderboard(3),
+        user ? fetchUserRank(user.id) : Promise.resolve(0),
+      ])
+      if (cancelled) return
+      setEntries(top)
+      setUserRank(rank)
+      setLoading(false)
+    }
+
+    load()
+    return () => { cancelled = true }
+  }, [user])
+
+  const userInTop3 = user && entries.some((e) => e.user_id === user.id)
+
+  return (
+    <div className="rounded-xl border border-foreground/[0.08] bg-foreground/[0.02] p-4">
+      <div className="flex items-center justify-between mb-3">
+        <span className="text-[10px] font-mono uppercase tracking-wider text-foreground/50">
+          Leaderboard
+        </span>
+        <Link
+          to="/course/leaderboard"
+          className="text-[10px] font-mono text-foreground/40 hover:text-foreground/70 transition-colors"
+        >
+          View All &rarr;
+        </Link>
+      </div>
+
+      {loading ? (
+        <div className="space-y-2">
+          {[1, 2, 3].map((i) => (
+            <div key={i} className="h-8 rounded-lg bg-foreground/[0.04] animate-pulse" />
+          ))}
+        </div>
+      ) : entries.length === 0 ? (
+        <p className="text-sm text-foreground/40 text-center py-4">
+          No one on the board yet. Be the first!
+        </p>
+      ) : (
+        <div className="space-y-1.5">
+          {entries.map((entry) => (
+            <div
+              key={entry.user_id}
+              className="flex items-center gap-3 px-3 py-1.5 rounded-lg bg-foreground/[0.03]"
+            >
+              <span className="text-xs font-mono text-foreground/40 w-5 text-right">
+                #{entry.rank}
+              </span>
+              <span className="text-sm text-foreground/80 truncate flex-1">
+                {entry.display_name || 'Anonymous'}
+              </span>
+              <span className="text-xs font-mono text-foreground/50">
+                {entry.total_xp.toLocaleString()} XP
+              </span>
+            </div>
+          ))}
+
+          {user && !userInTop3 && userRank > 0 && (
+            <>
+              <div className="h-px bg-foreground/[0.08] my-2" />
+              <div className="flex items-center gap-3 px-3 py-1.5 rounded-lg bg-foreground/[0.05]">
+                <span className="text-xs font-mono text-foreground/40 w-5 text-right">
+                  #{userRank}
+                </span>
+                <span className="text-sm text-foreground/80 truncate flex-1">
+                  You
+                </span>
+              </div>
+            </>
+          )}
+        </div>
+      )}
+    </div>
+  )
+}
 
 function StatsBar() {
   const progress = useProgress()
@@ -158,6 +254,8 @@ function NextLesson() {
 }
 
 export default function Dashboard() {
+  useSmartTips()
+
   return (
     <>
       <SEO
@@ -167,7 +265,10 @@ export default function Dashboard() {
         keywords="dashboard, progress, learning, agentic saas course"
       />
       <GamificationToasts />
+      <XpFloatOverlay />
+      <LevelUpBurst />
       <CelebrationModal />
+      <WelcomeModal />
 
       <div className="p-6 lg:p-8 max-w-4xl space-y-8">
         <div className="flex items-start justify-between">
@@ -184,6 +285,7 @@ export default function Dashboard() {
           <DailyXpGoal />
           <WeeklyProgress />
         </div>
+        <LeaderboardPreview />
         <StatsBar />
         <DailyChallenges />
         <TierProgress />

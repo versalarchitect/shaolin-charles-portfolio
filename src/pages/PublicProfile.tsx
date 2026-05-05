@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
-import { Zap, Flame, Trophy, BookOpen, ArrowLeft, UserX } from 'lucide-react'
+import { Zap, Flame, Trophy, BookOpen, ArrowLeft, UserX, RefreshCw } from 'lucide-react'
 import { SEO } from '@/components/SEO'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { LevelIcon } from '@/components/gamification/shared'
@@ -33,26 +33,55 @@ function ProfileSkeleton() {
 
 function NotFoundState() {
   return (
-    <div className="max-w-2xl mx-auto px-6 py-20 text-center">
+    <div className="max-w-2xl mx-auto px-6 py-20 flex items-center justify-center">
       <motion.div
         initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4 }}
+        className="rounded-xl border border-foreground/[0.08] bg-foreground/[0.02] p-10 text-center max-w-sm w-full"
       >
-        <div className="flex items-center justify-center w-16 h-16 rounded-full bg-foreground/[0.05] border border-foreground/[0.08] mx-auto mb-5">
-          <UserX className="w-7 h-7 text-foreground/30" />
+        <div className="flex items-center justify-center w-16 h-16 rounded-full bg-foreground/[0.04] border border-foreground/[0.08] mx-auto mb-5">
+          <UserX className="w-7 h-7 text-foreground/20" />
         </div>
-        <h1 className="text-xl font-semibold text-foreground/80 mb-2">Profile not found</h1>
+        <p className="text-[10px] font-mono uppercase tracking-[0.2em] text-foreground/25 mb-2">
+          404
+        </p>
+        <h1 className="text-xl font-semibold text-foreground/80 mb-2">Profile Not Found</h1>
         <p className="text-sm text-foreground/40 font-mono mb-6">
-          This user does not exist or has not set up their profile yet.
+          This user doesn't exist or hasn't set up their profile yet.
         </p>
         <Link
           to="/"
-          className="inline-flex items-center gap-2 text-sm font-mono text-foreground/60 hover:text-foreground/80 transition-colors"
+          className="inline-flex items-center gap-2 text-sm font-mono text-foreground/60 hover:text-foreground/80 transition-colors px-4 py-2 rounded-lg border border-foreground/[0.08] hover:bg-foreground/[0.04]"
         >
           <ArrowLeft className="w-4 h-4" />
-          Back to home
+          Go to Home
         </Link>
+      </motion.div>
+    </div>
+  )
+}
+
+function ErrorState({ onRetry }: { onRetry: () => void }) {
+  return (
+    <div className="max-w-2xl mx-auto px-6 py-20 flex items-center justify-center">
+      <motion.div
+        initial={{ opacity: 0, y: 12 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4 }}
+        className="rounded-xl border border-foreground/[0.08] bg-foreground/[0.02] p-10 text-center max-w-sm w-full"
+      >
+        <RefreshCw className="w-6 h-6 mx-auto mb-4 text-foreground/20" />
+        <p className="text-sm text-foreground/50 mb-4">
+          Couldn't load profile data.
+        </p>
+        <button
+          onClick={onRetry}
+          className="inline-flex items-center gap-2 text-xs font-mono text-foreground/60 hover:text-foreground/80 transition-colors px-3 py-1.5 rounded-lg border border-foreground/[0.08] hover:bg-foreground/[0.04]"
+        >
+          <RefreshCw className="w-3 h-3" />
+          Retry
+        </button>
       </motion.div>
     </div>
   )
@@ -63,27 +92,43 @@ export default function PublicProfile() {
   const [profile, setProfile] = useState<PublicProfileData | null>(null)
   const [loading, setLoading] = useState(true)
   const [notFound, setNotFound] = useState(false)
+  const [error, setError] = useState(false)
 
-  useEffect(() => {
+  const loadProfile = () => {
     if (!userId) {
       setNotFound(true)
       setLoading(false)
       return
     }
+    setLoading(true)
+    setError(false)
     let cancelled = false
-    fetchPublicProfile(userId).then((data) => {
-      if (cancelled) return
-      if (!data) {
-        setNotFound(true)
-      } else {
-        setProfile(data)
-      }
-      setLoading(false)
-    })
+    fetchPublicProfile(userId)
+      .then((data) => {
+        if (cancelled) return
+        if (!data) {
+          setNotFound(true)
+        } else {
+          setProfile(data)
+        }
+        setLoading(false)
+      })
+      .catch(() => {
+        if (cancelled) return
+        setError(true)
+        setLoading(false)
+      })
     return () => { cancelled = true }
+  }
+
+  useEffect(() => {
+    const cleanup = loadProfile()
+    return cleanup
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userId])
 
   if (loading) return <ProfileSkeleton />
+  if (error) return <ErrorState onRetry={loadProfile} />
   if (notFound || !profile) return <NotFoundState />
 
   const initials = profile.display_name

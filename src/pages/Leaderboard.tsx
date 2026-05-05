@@ -1,6 +1,6 @@
 import { useEffect, useState, useCallback } from 'react'
 import { motion } from 'framer-motion'
-import { Trophy, Zap } from 'lucide-react'
+import { Trophy, Zap, RefreshCw } from 'lucide-react'
 import { SEO } from '@/components/SEO'
 import { Leaderboard } from '@/components/gamification/leaderboard'
 import { useAuth } from '@/hooks/use-auth'
@@ -18,28 +18,35 @@ export default function LeaderboardPage() {
   const [tab, setTab] = useState<Tab>('all-time')
   const [entries, setEntries] = useState<LeaderboardEntry[]>([])
   const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
   const [userRank, setUserRank] = useState<number | null>(null)
 
   const fetchData = useCallback(async () => {
     setLoading(true)
-    const data =
-      tab === 'all-time'
-        ? await fetchGlobalLeaderboard(10)
-        : await fetchWeeklyLeaderboard(10)
-    setEntries(data)
+    setError(null)
+    try {
+      const data =
+        tab === 'all-time'
+          ? await fetchGlobalLeaderboard(10)
+          : await fetchWeeklyLeaderboard(10)
+      setEntries(data)
 
-    // Fetch user rank if logged in and not already in top 10
-    if (user) {
-      const inList = data.some((e) => e.user_id === user.id)
-      if (!inList) {
-        const rank = await fetchUserRank(user.id)
-        setUserRank(rank)
-      } else {
-        setUserRank(null)
+      // Fetch user rank if logged in and not already in top 10
+      if (user) {
+        const inList = data.some((e) => e.user_id === user.id)
+        if (!inList) {
+          const rank = await fetchUserRank(user.id)
+          setUserRank(rank)
+        } else {
+          setUserRank(null)
+        }
       }
+    } catch (err) {
+      console.error('Leaderboard fetch error:', err)
+      setError("Couldn’t load leaderboard data.")
+    } finally {
+      setLoading(false)
     }
-
-    setLoading(false)
   }, [tab, user])
 
   useEffect(() => {
@@ -72,12 +79,12 @@ export default function LeaderboardPage() {
         </div>
 
         {/* Tabs */}
-        <div className="flex gap-1 p-1 rounded-lg bg-foreground/[0.04] border border-foreground/[0.08] w-fit">
+        <div className="flex gap-1 p-1 rounded-lg bg-foreground/[0.04] border border-foreground/[0.08] w-full sm:w-fit">
           {tabs.map((t) => (
             <button
               key={t.id}
               onClick={() => setTab(t.id)}
-              className={`relative px-4 py-1.5 text-sm font-mono rounded-md transition-colors ${
+              className={`relative flex-1 sm:flex-none px-4 py-2 sm:py-1.5 text-sm font-mono rounded-md transition-colors ${
                 tab === t.id
                   ? 'text-foreground'
                   : 'text-foreground/50 hover:text-foreground/70'
@@ -95,13 +102,34 @@ export default function LeaderboardPage() {
           ))}
         </div>
 
+        {/* Error State */}
+        {error && !loading && (
+          <motion.div
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="rounded-xl border border-foreground/[0.08] bg-foreground/[0.02] p-8 text-center"
+          >
+            <RefreshCw className="w-6 h-6 mx-auto mb-3 text-foreground/20" />
+            <p className="text-sm text-foreground/50 mb-3">{error}</p>
+            <button
+              onClick={fetchData}
+              className="inline-flex items-center gap-2 text-xs font-mono text-foreground/60 hover:text-foreground/80 transition-colors px-3 py-1.5 rounded-lg border border-foreground/[0.08] hover:bg-foreground/[0.04]"
+            >
+              <RefreshCw className="w-3 h-3" />
+              Retry
+            </button>
+          </motion.div>
+        )}
+
         {/* Leaderboard */}
-        <Leaderboard
-          entries={entries}
-          currentUserId={user?.id}
-          title={tab === 'all-time' ? 'Top Learners — All Time' : 'Top Learners — This Week'}
-          loading={loading}
-        />
+        {!error && (
+          <Leaderboard
+            entries={entries}
+            currentUserId={user?.id}
+            title={tab === 'all-time' ? 'Top Learners — All Time' : 'Top Learners — This Week'}
+            loading={loading}
+          />
+        )}
 
         {/* User's position if not in top 10 */}
         {userRank && userRank > 10 && !loading && (
@@ -109,13 +137,13 @@ export default function LeaderboardPage() {
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.4, delay: 0.3 }}
-            className="rounded-xl border border-foreground/10 bg-foreground/[0.03] p-5"
+            className="rounded-xl border border-foreground/10 bg-foreground/[0.03] p-4 sm:p-5"
           >
-            <div className="flex items-center gap-4">
-              <div className="flex items-center justify-center w-10 h-10 rounded-full bg-foreground/10">
+            <div className="flex items-center gap-3 sm:gap-4">
+              <div className="flex items-center justify-center w-10 h-10 rounded-full bg-foreground/10 shrink-0">
                 <Trophy className="w-5 h-5 text-foreground/60" />
               </div>
-              <div className="flex-1">
+              <div className="flex-1 min-w-0">
                 <p className="text-[10px] font-mono text-foreground/40 uppercase tracking-wider mb-0.5">
                   Your Position
                 </p>
@@ -123,13 +151,14 @@ export default function LeaderboardPage() {
                   #{userRank}
                 </p>
               </div>
-              <div className="text-right">
+              <div className="text-right shrink-0">
                 <p className="text-[10px] font-mono text-foreground/40 uppercase tracking-wider mb-0.5">
                   Keep going
                 </p>
                 <p className="text-xs text-foreground/50 flex items-center gap-1">
                   <Zap className="w-3 h-3" />
-                  Earn XP to climb the ranks
+                  <span className="hidden sm:inline">Earn XP to climb the ranks</span>
+                  <span className="sm:hidden">Earn XP</span>
                 </p>
               </div>
             </div>

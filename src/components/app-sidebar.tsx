@@ -29,8 +29,9 @@ import { hasPipelineAccess } from '@/lib/pipeline-access'
 import { useTheme } from '@/components/theme-provider'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { supabase } from '@/lib/supabase'
-import { useProgress, getLevel, getNextLevel, getOverallProgress, getStreakMultiplier } from '@/stores/progress'
+import { useProgress, getLevel, getNextLevel, getOverallProgress, getStreakMultiplier, getActiveTitle } from '@/stores/progress'
 import { TOTAL_LESSONS } from '@/data/curriculum'
+import { StreakBadge } from '@/components/gamification/streak-badge'
 
 const NAV_ITEMS = [
   { label: 'Dashboard', href: '/course/dashboard', icon: LayoutDashboard },
@@ -54,11 +55,13 @@ function LevelIcon({ levelName, className }: { levelName: string; className?: st
 
 function SidebarProfile({
   user,
+  userId,
   initials,
   email,
   onSignOut,
 }: {
   user: { user_metadata?: Record<string, string>; email?: string }
+  userId: string
   initials: string
   email: string
   onSignOut: () => void
@@ -67,6 +70,7 @@ function SidebarProfile({
   const level = getLevel()
   const nextLevel = getNextLevel()
   const overall = getOverallProgress()
+  const activeTitle = getActiveTitle()
 
   const displayName = user.user_metadata?.display_name
     || user.email?.split('@')[0]
@@ -92,6 +96,9 @@ function SidebarProfile({
         </Avatar>
         <div className="flex-1 min-w-0">
           <p className="text-sm font-medium text-foreground/90 truncate">{displayName}</p>
+          {activeTitle && (
+            <p className="text-[10px] font-mono text-foreground/50 truncate">{activeTitle.name}</p>
+          )}
           <p className="text-[10px] font-mono text-foreground/40 truncate">{email}</p>
         </div>
       </div>
@@ -118,13 +125,21 @@ function SidebarProfile({
             transition={{ duration: 0.6, ease: [0.33, 1, 0.68, 1] }}
           />
         </div>
+        {nextLevel && (
+          <p className="text-[9px] font-mono text-foreground/30 mb-2 text-right">
+            {xpIntoLevel}/{xpForLevel} XP to {nextLevel.name}
+          </p>
+        )}
 
         {/* Bottom stats */}
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-1">
             <Flame className="w-3 h-3 text-foreground/30" />
             <span className="text-[10px] font-mono text-foreground/40">{progress.currentStreak}d streak</span>
-            {getStreakMultiplier().multiplier > 1 && (
+            {progress.currentStreak >= 3 && (
+              <StreakBadge streak={progress.currentStreak} className="!px-1.5 !py-0.5 !text-[9px] scale-75 origin-left" />
+            )}
+            {progress.currentStreak < 3 && getStreakMultiplier().multiplier > 1 && (
               <span className="text-[9px] font-mono px-1 py-0.5 rounded bg-foreground/10 text-foreground/50">
                 {getStreakMultiplier().label}
               </span>
@@ -135,6 +150,15 @@ function SidebarProfile({
           </span>
         </div>
       </div>
+
+      {/* View Profile link */}
+      <Link
+        to={`/profile/${userId}`}
+        className="flex items-center gap-3 w-full px-3 py-1.5 rounded-lg text-[11px] font-medium font-mono text-foreground/40 hover:text-foreground/70 hover:bg-foreground/[0.05] transition-colors"
+      >
+        <Settings className="w-3.5 h-3.5 shrink-0" />
+        View Profile
+      </Link>
 
       {/* Sign out */}
       <button
@@ -256,7 +280,7 @@ function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
         <div className="h-px bg-foreground/[0.08]" />
 
         {/* Profile card */}
-        {user && <SidebarProfile user={user} initials={initials} email={truncatedEmail} onSignOut={handleSignOut} />}
+        {user && <SidebarProfile user={user} userId={user.id} initials={initials} email={truncatedEmail} onSignOut={handleSignOut} />}
       </div>
     </div>
   )

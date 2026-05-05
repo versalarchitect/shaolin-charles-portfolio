@@ -102,7 +102,7 @@ export function ShareCard({ onClose }: ShareCardProps) {
 
         {/* Modal */}
         <motion.div
-          className="relative w-full max-w-2xl rounded-2xl border border-foreground/[0.08] bg-background p-6 shadow-2xl"
+          className="relative w-full max-w-2xl max-h-[90vh] overflow-y-auto rounded-2xl border border-foreground/[0.08] bg-background p-4 sm:p-6 shadow-2xl"
           initial={{ scale: 0.9, opacity: 0, y: 20 }}
           animate={{ scale: 1, opacity: 1, y: 0 }}
           exit={{ scale: 0.9, opacity: 0, y: 20 }}
@@ -141,7 +141,7 @@ export function ShareCard({ onClose }: ShareCardProps) {
           </div>
 
           {/* Actions */}
-          <div className="flex gap-3">
+          <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
             <button
               onClick={handleDownload}
               disabled={loading}
@@ -161,7 +161,7 @@ export function ShareCard({ onClose }: ShareCardProps) {
             <button
               onClick={handleCopyLink}
               disabled={loading}
-              className="flex items-center justify-center gap-2 h-10 px-4 rounded-lg bg-foreground/5 border border-foreground/10 text-sm font-mono text-foreground/80 hover:bg-foreground/10 hover:border-foreground/20 transition-all disabled:opacity-40"
+              className="flex-1 sm:flex-none flex items-center justify-center gap-2 h-10 px-4 rounded-lg bg-foreground/5 border border-foreground/10 text-sm font-mono text-foreground/80 hover:bg-foreground/10 hover:border-foreground/20 transition-all disabled:opacity-40"
             >
               {copied ? <Check className="w-4 h-4" /> : <Link2 className="w-4 h-4" />}
               {copied ? 'Copied!' : 'Copy Link'}

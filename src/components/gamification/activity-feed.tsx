@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
-import { Star, TrendingUp, Flame, GraduationCap, Compass, Activity } from 'lucide-react'
+import { Star, TrendingUp, Flame, GraduationCap, Compass, Activity, BookOpen, RefreshCw } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
 import { fetchActivityFeed, type ActivityEvent } from '@/lib/activity-api'
 
@@ -55,16 +55,39 @@ function getRelativeTime(dateStr: string): string {
 export function ActivityFeed({ userId, limit = 10, showHeader = true }: ActivityFeedProps) {
   const [events, setEvents] = useState<ActivityEvent[]>([])
   const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(false)
+
+  const loadFeed = () => {
+    setLoading(true)
+    setError(false)
+    fetchActivityFeed(userId, limit)
+      .then((data) => {
+        setEvents(data)
+        setLoading(false)
+      })
+      .catch(() => {
+        setError(true)
+        setLoading(false)
+      })
+  }
 
   useEffect(() => {
     let cancelled = false
     setLoading(true)
-    fetchActivityFeed(userId, limit).then((data) => {
-      if (!cancelled) {
-        setEvents(data)
-        setLoading(false)
-      }
-    })
+    setError(false)
+    fetchActivityFeed(userId, limit)
+      .then((data) => {
+        if (!cancelled) {
+          setEvents(data)
+          setLoading(false)
+        }
+      })
+      .catch(() => {
+        if (!cancelled) {
+          setError(true)
+          setLoading(false)
+        }
+      })
     return () => { cancelled = true }
   }, [userId, limit])
 
@@ -90,11 +113,36 @@ export function ActivityFeed({ userId, limit = 10, showHeader = true }: Activity
     )
   }
 
+  if (error) {
+    return (
+      <div className="text-center py-8">
+        <RefreshCw className="w-5 h-5 mx-auto mb-2 text-foreground/20" />
+        <p className="text-sm text-foreground/40 mb-3">Couldn't load activity.</p>
+        <button
+          onClick={loadFeed}
+          className="inline-flex items-center gap-1.5 text-xs font-mono text-foreground/50 hover:text-foreground/70 transition-colors px-3 py-1.5 rounded-lg border border-foreground/[0.08] hover:bg-foreground/[0.04]"
+        >
+          <RefreshCw className="w-3 h-3" />
+          Retry
+        </button>
+      </div>
+    )
+  }
+
   if (events.length === 0) {
     return (
       <div className="text-center py-8">
-        <Activity className="w-6 h-6 mx-auto mb-2 text-foreground/20" />
-        <p className="text-sm text-foreground/40 font-mono">No activity yet</p>
+        {showHeader && (
+          <div className="flex items-center gap-2 mb-4 justify-center">
+            <Activity className="w-4 h-4 text-foreground/40" />
+            <span className="text-sm font-mono font-medium text-foreground/60">Recent Activity</span>
+          </div>
+        )}
+        <div className="flex items-center justify-center w-12 h-12 rounded-full bg-foreground/[0.04] border border-foreground/[0.08] mx-auto mb-3">
+          <BookOpen className="w-5 h-5 text-foreground/20" />
+        </div>
+        <p className="text-sm text-foreground/40 font-mono mb-1">No activity yet</p>
+        <p className="text-xs text-foreground/30">Start learning to build your timeline.</p>
       </div>
     )
   }

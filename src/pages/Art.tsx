@@ -1,4 +1,4 @@
-import { useState, Suspense, lazy, useRef, useEffect } from 'react'
+import { useState, Suspense, lazy, useRef, useEffect, useCallback } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { SEO } from '@/components/SEO'
@@ -7,6 +7,9 @@ import { Section } from '@/components/ui/gradient-background'
 import { BlurFadeIn } from '@/components/ui/aaa-effects'
 import { Button } from '@/components/ui/button'
 import { ArrowLeft } from 'lucide-react'
+import { trackInteraction } from '@/lib/explorer'
+import { useAuth } from '@/hooks/use-auth'
+import { toast } from 'sonner'
 
 // Lazy load art canvases (explicit index paths to avoid Vite module resolution issues)
 const AsianCityCanvas = lazy(() =>
@@ -340,6 +343,21 @@ export default function Art() {
   const { category } = useParams<{ category: string }>()
   const navigate = useNavigate()
   const [selectedPiece, setSelectedPiece] = useState<(typeof artPieces)[0] | null>(null)
+  const { user } = useAuth()
+  const curiousClicks = useRef(0)
+  const curiousAwarded = useRef(false)
+
+  const handleCuriousClick = useCallback(() => {
+    if (!user || curiousAwarded.current) return
+    curiousClicks.current++
+    if (curiousClicks.current >= 3) {
+      curiousAwarded.current = true
+      const result = trackInteraction('interact:art-curious', 15)
+      if (result.awarded) {
+        toast('Curious mind! +15 XP')
+      }
+    }
+  }, [user])
 
   // Validate category from URL, default to 'abstract' if invalid
   const activeCategory: Category = (category === 'abstract' || category === 'worlds')
@@ -391,6 +409,11 @@ export default function Art() {
               <BlurFadeIn delay={0.2}>
                 <p className="text-lg text-muted-foreground">
                   Generative art, shaders, and interactive visuals.
+                  <span
+                    onClick={handleCuriousClick}
+                    className="inline-block w-2 h-2 ml-1 rounded-full bg-foreground/[0.06] hover:bg-foreground/10 transition-colors cursor-default align-middle"
+                    aria-hidden="true"
+                  />
                 </p>
               </BlurFadeIn>
 

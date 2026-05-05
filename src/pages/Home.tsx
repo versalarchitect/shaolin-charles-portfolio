@@ -1,6 +1,9 @@
 import { useEffect, useState, useRef, type MouseEvent } from 'react'
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
+import { trackInteraction } from '@/lib/explorer'
+import { useAuth } from '@/hooks/use-auth'
+import { toast } from 'sonner'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import {
@@ -239,6 +242,26 @@ export default function Home() {
   useScroll()
   const prefersReducedMotion = useReducedMotion()
   const { t } = useTranslation()
+  const { user } = useAuth()
+  const deepScrollAwarded = useRef(false)
+
+  useEffect(() => {
+    if (!user) return
+    const handleScroll = () => {
+      if (deepScrollAwarded.current) return
+      const scrollBottom = window.innerHeight + window.scrollY
+      const docHeight = document.documentElement.scrollHeight
+      if (docHeight - scrollBottom <= 50) {
+        deepScrollAwarded.current = true
+        const result = trackInteraction('interact:home-deep-scroll', 10)
+        if (result.awarded) {
+          toast('Deep diver! +10 XP')
+        }
+      }
+    }
+    window.addEventListener('scroll', handleScroll, { passive: true })
+    return () => window.removeEventListener('scroll', handleScroll)
+  }, [user])
 
   // Services data with translations
   const services = [

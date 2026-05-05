@@ -24,6 +24,46 @@ export function ExplorerProgress() {
   const totalPages = EXPLORER_PAGES.length
   const progressPercent = Math.round((visitedCount / totalPages) * 100)
 
+  if (visitedCount === 0) {
+    return (
+      <div className="space-y-5">
+        {/* Header */}
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <div className="w-8 h-8 rounded-lg bg-foreground/10 flex items-center justify-center">
+              <Compass className="w-4 h-4 text-foreground/70" />
+            </div>
+            <div>
+              <h2 className="text-sm font-mono uppercase tracking-wider text-foreground/70">
+                Explorer
+              </h2>
+              <p className="text-[10px] text-foreground/40 font-mono">
+                0 XP earned
+              </p>
+            </div>
+          </div>
+          <div className="text-right">
+            <span className="text-lg font-mono font-semibold text-foreground/80">
+              0/{totalPages}
+            </span>
+            <p className="text-[10px] text-foreground/40 font-mono">pages</p>
+          </div>
+        </div>
+
+        {/* Empty state encouragement */}
+        <div className="rounded-xl border border-foreground/[0.08] bg-foreground/[0.02] p-8 text-center">
+          <div className="flex items-center justify-center w-12 h-12 rounded-full bg-foreground/[0.04] border border-foreground/[0.08] mx-auto mb-3">
+            <Compass className="w-5 h-5 text-foreground/20" />
+          </div>
+          <p className="text-sm text-foreground/50 mb-1">No pages explored yet</p>
+          <p className="text-xs text-foreground/30 font-mono">
+            Start exploring the site to earn curiosity XP!
+          </p>
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div className="space-y-5">
       {/* Header */}
@@ -69,20 +109,20 @@ export function ExplorerProgress() {
           <MapPin className="w-3 h-3" />
           Pages
         </h3>
-        <div className="grid grid-cols-2 gap-1.5">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5">
           {EXPLORER_PAGES.map((page) => {
             const visited = state.visitedPages.has(page.key)
             return (
               <div
                 key={page.key}
-                className={`flex items-center gap-2 px-2.5 py-1.5 rounded-lg border transition-all ${
+                className={`flex items-center gap-2 px-2.5 py-1.5 rounded-lg border transition-all min-w-0 ${
                   visited
                     ? 'border-foreground/10 bg-foreground/[0.03]'
                     : 'border-foreground/[0.06] bg-foreground/[0.01]'
                 }`}
               >
                 <div
-                  className={`w-4 h-4 rounded flex items-center justify-center flex-shrink-0 ${
+                  className={`w-4 h-4 rounded flex items-center justify-center shrink-0 ${
                     visited
                       ? 'bg-foreground/10 text-foreground/70'
                       : 'bg-foreground/[0.04] text-foreground/30'

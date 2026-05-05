@@ -23,56 +23,106 @@ import { ACHIEVEMENTS } from '@/data/curriculum'
 
 function AccessGrantedAnimation({ onComplete }: { onComplete: () => void }) {
   useEffect(() => {
-    const timer = setTimeout(onComplete, 3000)
+    const timer = setTimeout(onComplete, 3800)
     return () => clearTimeout(timer)
   }, [onComplete])
 
   return (
     <motion.div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-background"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-background overflow-hidden"
       initial={{ opacity: 1 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      transition={{ duration: 0.5 }}
+      transition={{ duration: 0.4 }}
     >
-      {/* Scan lines */}
-      <div className="absolute inset-0 pointer-events-none overflow-hidden opacity-[0.03]">
-        {Array.from({ length: 40 }).map((_, i) => (
+      {/* Horizontal scanline sweep */}
+      <motion.div
+        className="absolute left-0 right-0 h-[2px] bg-foreground/20 z-10"
+        initial={{ top: '-2px' }}
+        animate={{ top: '100%' }}
+        transition={{ duration: 1.0, delay: 0.1, ease: 'linear' }}
+      />
+      <motion.div
+        className="absolute left-0 right-0 h-[1px] bg-foreground/10 z-10"
+        initial={{ top: '-1px' }}
+        animate={{ top: '100%' }}
+        transition={{ duration: 0.8, delay: 0.3, ease: 'linear' }}
+      />
+
+      {/* Static scan lines (CRT effect) */}
+      <div className="absolute inset-0 pointer-events-none overflow-hidden">
+        {Array.from({ length: 60 }).map((_, i) => (
           <motion.div
             key={i}
             className="absolute left-0 right-0 h-px bg-foreground"
-            style={{ top: `${(i / 40) * 100}%` }}
+            style={{ top: `${(i / 60) * 100}%` }}
             initial={{ opacity: 0 }}
-            animate={{ opacity: [0, 0.5, 0] }}
-            transition={{ duration: 0.1, delay: i * 0.02 }}
+            animate={{ opacity: [0, 0.04, 0.02, 0.04, 0] }}
+            transition={{ duration: 2.0, delay: 0.2 + i * 0.01, ease: 'easeOut' }}
           />
         ))}
       </div>
 
-      <div className="text-center space-y-6">
-        {/* Shield icon */}
+      {/* Screen glitch flicker */}
+      <motion.div
+        className="absolute inset-0 bg-foreground pointer-events-none"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: [0, 0.03, 0, 0.02, 0, 0.04, 0] }}
+        transition={{ duration: 0.6, delay: 0.5, times: [0, 0.1, 0.2, 0.4, 0.5, 0.7, 1] }}
+      />
+
+      {/* Glitch horizontal displacement bars */}
+      <motion.div
+        className="absolute inset-0 pointer-events-none"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: [0, 1, 0] }}
+        transition={{ duration: 0.3, delay: 0.6 }}
+      >
+        <div className="absolute top-[30%] left-0 right-0 h-1 bg-foreground/[0.06] translate-x-2" />
+        <div className="absolute top-[55%] left-0 right-0 h-0.5 bg-foreground/[0.04] -translate-x-3" />
+        <div className="absolute top-[72%] left-0 right-0 h-1 bg-foreground/[0.05] translate-x-1" />
+      </motion.div>
+
+      <div className="text-center space-y-6 relative z-20">
+        {/* Shield icon with dramatic entry */}
         <motion.div
           className="mx-auto w-20 h-20 rounded-full border border-foreground/10 flex items-center justify-center"
-          initial={{ scale: 0, rotate: -180 }}
-          animate={{ scale: 1, rotate: 0 }}
-          transition={{ type: 'spring', stiffness: 200, damping: 15, delay: 0.3 }}
+          initial={{ scale: 0, rotate: -180, opacity: 0 }}
+          animate={{ scale: 1, rotate: 0, opacity: 1 }}
+          transition={{ type: 'spring', stiffness: 200, damping: 15, delay: 0.8 }}
         >
-          <Shield className="w-10 h-10 text-foreground/60" />
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 1.1 }}
+          >
+            <Shield className="w-10 h-10 text-foreground/60" />
+          </motion.div>
         </motion.div>
 
-        {/* Text */}
+        {/* Text with glitch reveal */}
         <motion.div
           className="space-y-2"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.8 }}
+          transition={{ delay: 1.3, duration: 0.4 }}
         >
-          <p className="text-[10px] font-mono uppercase tracking-[0.3em] text-foreground/30">
+          <motion.p
+            className="text-[10px] font-mono uppercase tracking-[0.3em] text-foreground/30"
+            initial={{ opacity: 0, x: -5 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 1.4 }}
+          >
             Security clearance verified
-          </p>
-          <h1 className="text-2xl font-mono font-bold tracking-tight text-foreground/80">
+          </motion.p>
+          <motion.h1
+            className="text-2xl font-mono font-bold tracking-tight text-foreground/80"
+            initial={{ opacity: 0, clipPath: 'inset(0 100% 0 0)' }}
+            animate={{ opacity: 1, clipPath: 'inset(0 0% 0 0)' }}
+            transition={{ delay: 1.6, duration: 0.5, ease: 'easeOut' }}
+          >
             ACCESS GRANTED
-          </h1>
+          </motion.h1>
         </motion.div>
 
         {/* Loading bar */}
@@ -80,15 +130,25 @@ function AccessGrantedAnimation({ onComplete }: { onComplete: () => void }) {
           className="w-48 mx-auto h-0.5 rounded-full bg-foreground/[0.08] overflow-hidden"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ delay: 1.2 }}
+          transition={{ delay: 2.0 }}
         >
           <motion.div
             className="h-full bg-foreground/30 rounded-full"
             initial={{ width: '0%' }}
             animate={{ width: '100%' }}
-            transition={{ duration: 1.5, delay: 1.4, ease: 'easeInOut' }}
+            transition={{ duration: 1.2, delay: 2.2, ease: 'easeInOut' }}
           />
         </motion.div>
+
+        {/* Decrypting text effect */}
+        <motion.p
+          className="text-[9px] font-mono text-foreground/15 tracking-wider"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: [0, 1, 1, 0] }}
+          transition={{ duration: 1.5, delay: 2.4, times: [0, 0.1, 0.8, 1] }}
+        >
+          DECRYPTING VAULT CONTENTS...
+        </motion.p>
       </div>
     </motion.div>
   )
@@ -422,10 +482,10 @@ function VaultSection({
 }) {
   return (
     <section>
-      <div className="flex items-baseline gap-3 mb-4">
-        <h2 className="text-sm font-mono font-medium text-foreground/60">{title}</h2>
+      <div className="flex items-baseline gap-2 sm:gap-3 mb-4">
+        <h2 className="text-sm font-mono font-medium text-foreground/60 shrink-0">{title}</h2>
         <div className="h-px flex-1 bg-foreground/[0.05]" />
-        <span className="text-[9px] font-mono text-foreground/20">{subtitle}</span>
+        <span className="text-[9px] font-mono text-foreground/20 shrink-0 hidden sm:inline">{subtitle}</span>
       </div>
       {children}
     </section>
