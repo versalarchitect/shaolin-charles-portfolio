@@ -1,6 +1,6 @@
 import { useState, useRef } from 'react'
 import { motion } from 'framer-motion'
-import { Camera, Loader2, Save, Settings, User, Lock, Mail, Trash2, Zap, Flame, Trophy } from 'lucide-react'
+import { Camera, Loader2, Save, Settings, User, Lock, Mail, Trash2, Zap, Flame, Trophy, Palette, Share2 } from 'lucide-react'
 import { toast } from 'sonner'
 import { useAuth } from '@/hooks/use-auth'
 import { supabase } from '@/lib/supabase'
@@ -10,6 +10,8 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { AppLayout } from '@/components/app-layout'
 import { LevelIcon } from '@/components/gamification/shared'
+import { ThemeSelector } from '@/components/gamification/theme-selector'
+import { ShareButton } from '@/components/gamification/share-button'
 import { useProgress, getLevel, getOverallProgress, getStreakMultiplier } from '@/stores/progress'
 import { ACHIEVEMENTS, TOTAL_XP } from '@/data/curriculum'
 
@@ -278,9 +280,48 @@ function GamificationSection() {
   )
 }
 
+function AppearanceSection() {
+  return (
+    <div className="space-y-8">
+      <div className="rounded-xl border border-foreground/[0.08] bg-foreground/[0.02] p-6">
+        <SectionHeader title="Cosmetic Themes" description="Unlock and apply visual themes as you progress." />
+        <ThemeSelector />
+      </div>
+    </div>
+  )
+}
+
+function ShareSection() {
+  const { user } = useAuth()
+
+  return (
+    <div className="space-y-8">
+      <div className="rounded-xl border border-foreground/[0.08] bg-foreground/[0.02] p-6">
+        <SectionHeader title="Share Your Progress" description="Generate a shareable card or view your public profile." />
+        <div className="flex flex-col sm:flex-row gap-3">
+          <ShareButton />
+          {user && (
+            <a
+              href={`/profile/${user.id}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-foreground/[0.05] border border-foreground/[0.08] text-sm font-mono text-foreground/70 hover:text-foreground hover:border-foreground/15 transition-colors"
+            >
+              <User className="w-4 h-4" />
+              View Public Profile
+            </a>
+          )}
+        </div>
+      </div>
+    </div>
+  )
+}
+
 const SECTIONS = [
   { id: 'profile', label: 'Profile', icon: User },
   { id: 'stats', label: 'Stats & Badges', icon: Trophy },
+  { id: 'appearance', label: 'Appearance', icon: Palette },
+  { id: 'share', label: 'Share', icon: Share2 },
 ] as const
 
 type SectionId = (typeof SECTIONS)[number]['id']
@@ -296,7 +337,6 @@ export default function SettingsPage() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4 }}
         >
-          {/* Header */}
           <div className="flex items-center gap-3 mb-8">
             <div className="flex items-center justify-center w-9 h-9 rounded-lg bg-foreground/[0.05] border border-foreground/[0.08]">
               <Settings className="w-4.5 h-4.5 text-foreground/60" />
@@ -307,9 +347,7 @@ export default function SettingsPage() {
             </div>
           </div>
 
-          {/* Layout: sidebar tabs + content */}
           <div className="flex flex-col sm:flex-row gap-8">
-            {/* Section tabs */}
             <nav className="sm:w-48 shrink-0">
               <div className="flex sm:flex-col gap-1">
                 {SECTIONS.map((section) => (
@@ -326,10 +364,11 @@ export default function SettingsPage() {
               </div>
             </nav>
 
-            {/* Content */}
             <div className="flex-1 min-w-0">
               {activeSection === 'profile' && <ProfileSection />}
               {activeSection === 'stats' && <GamificationSection />}
+              {activeSection === 'appearance' && <AppearanceSection />}
+              {activeSection === 'share' && <ShareSection />}
             </div>
           </div>
         </motion.div>

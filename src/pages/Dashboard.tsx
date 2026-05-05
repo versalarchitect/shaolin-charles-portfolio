@@ -22,6 +22,9 @@ import {
   XpActivityFeed,
   ComboTimer,
 } from '@/components/gamification'
+import { ShareButton } from '@/components/gamification/share-button'
+import { ExplorerProgress } from '@/components/gamification/explorer-progress'
+import { UnlockablesGrid } from '@/components/gamification/unlockables-grid'
 import { CelebrationModal } from '@/components/gamification/celebration-modal'
 import { StatCard } from '@/components/gamification/shared'
 import { AchievementsGrid } from '@/components/gamification/achievements-grid'
@@ -132,7 +135,7 @@ function NextLesson() {
   const { lesson, tier, status } = nextLesson
 
   return (
-    <Link to={`/learn/${lesson.id}`} className="block rounded-xl border border-foreground/10 bg-foreground/[0.03] hover:bg-foreground/[0.05] hover:border-foreground/15 transition-all p-5 group">
+    <Link to={`/course/learn/${lesson.id}`} className="block rounded-xl border border-foreground/10 bg-foreground/[0.03] hover:bg-foreground/[0.05] hover:border-foreground/15 transition-all p-5 group">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-4">
           <div className="flex items-center justify-center w-10 h-10 rounded-full bg-foreground/10 group-hover:bg-foreground/15 transition-colors">
@@ -167,9 +170,12 @@ export default function Dashboard() {
       <CelebrationModal />
 
       <div className="p-6 lg:p-8 max-w-4xl space-y-8">
-        <div>
-          <h1 className="text-2xl font-bold tracking-tight mb-1">Dashboard</h1>
-          <p className="text-sm text-muted-foreground">Track your progress and pick up where you left off.</p>
+        <div className="flex items-start justify-between">
+          <div>
+            <h1 className="text-2xl font-bold tracking-tight mb-1">Dashboard</h1>
+            <p className="text-sm text-muted-foreground">Track your progress and pick up where you left off.</p>
+          </div>
+          <ShareButton />
         </div>
 
         <NextLesson />
@@ -186,7 +192,9 @@ export default function Dashboard() {
           <XpActivityFeed />
         </div>
         <ToolMastery />
+        <ExplorerProgress />
         <AchievementsGrid />
+        <UnlockablesGrid compact />
         <VoiceTutorCard />
       </div>
     </>
