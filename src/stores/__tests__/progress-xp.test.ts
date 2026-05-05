@@ -17,11 +17,13 @@ import { ALL_LESSONS, XP_LEVELS, CURRICULUM } from '@/data/curriculum'
 beforeEach(() => {
   vi.useFakeTimers()
   vi.setSystemTime(new Date('2026-05-03T10:00:00Z'))
+  vi.spyOn(Math, 'random').mockReturnValue(0.5)
   resetProgress()
 })
 
 afterEach(() => {
   vi.useRealTimers()
+  vi.restoreAllMocks()
 })
 
 function getState() {
