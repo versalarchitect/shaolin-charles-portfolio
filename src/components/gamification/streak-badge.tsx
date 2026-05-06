@@ -49,6 +49,8 @@ export function StreakBadge({ streak, className = '' }: StreakBadgeProps) {
 
   return (
     <motion.div
+      role="status"
+      aria-label={`${streak}-day streak active`}
       className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border ${styles.border} ${styles.bg} ${className}`}
       initial={{ scale: 0.9, opacity: 0 }}
       animate={{ scale: 1, opacity: 1 }}
@@ -58,7 +60,7 @@ export function StreakBadge({ streak, className = '' }: StreakBadgeProps) {
         animate={shouldPulse ? { scale: [1, 1.2, 1] } : undefined}
         transition={shouldPulse ? { repeat: Infinity, duration: 1.5, ease: 'easeInOut' } : undefined}
       >
-        <Flame className={`w-4 h-4 ${styles.icon}`} />
+        <Flame className={`w-4 h-4 ${styles.icon}`} aria-hidden="true" />
       </motion.div>
       <span className={`text-sm font-mono font-semibold ${styles.text}`}>
         {streak}

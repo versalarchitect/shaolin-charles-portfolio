@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, useCallback } from 'react'
+import { useEffect, useRef, useState, useCallback, type KeyboardEvent as ReactKeyboardEvent } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { X, Download, Share2, Link2, Check, Loader2 } from 'lucide-react'
 import { generateShareCard, downloadShareCard, shareCard, type ShareCardData } from '@/lib/share-card'
@@ -12,6 +12,8 @@ interface ShareCardProps {
 export function ShareCard({ onClose }: ShareCardProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const blobRef = useRef<Blob | null>(null)
+  const modalRef = useRef<HTMLDivElement>(null)
+  const previousFocusRef = useRef<HTMLElement | null>(null)
   const progress = useProgress()
   const [loading, setLoading] = useState(true)
   const [copied, setCopied] = useState(false)
@@ -58,6 +60,56 @@ export function ShareCard({ onClose }: ShareCardProps) {
     renderCard()
   }, [renderCard])
 
+  // Focus trap and auto-focus
+  useEffect(() => {
+    previousFocusRef.current = document.activeElement as HTMLElement
+
+    const timer = setTimeout(() => {
+      const focusable = modalRef.current?.querySelectorAll<HTMLElement>(
+        'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+      )
+      if (focusable && focusable.length > 0) {
+        focusable[0].focus()
+      }
+    }, 100)
+
+    // Escape key handler
+    function handleEscape(e: KeyboardEvent) {
+      if (e.key === 'Escape') onClose?.()
+    }
+    document.addEventListener('keydown', handleEscape)
+
+    return () => {
+      clearTimeout(timer)
+      document.removeEventListener('keydown', handleEscape)
+      previousFocusRef.current?.focus()
+    }
+  }, [onClose])
+
+  const handleKeyDown = useCallback((e: ReactKeyboardEvent) => {
+    if (e.key !== 'Tab') return
+
+    const focusable = modalRef.current?.querySelectorAll<HTMLElement>(
+      'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+    )
+    if (!focusable || focusable.length === 0) return
+
+    const first = focusable[0]
+    const last = focusable[focusable.length - 1]
+
+    if (e.shiftKey) {
+      if (document.activeElement === first) {
+        e.preventDefault()
+        last.focus()
+      }
+    } else {
+      if (document.activeElement === last) {
+        e.preventDefault()
+        first.focus()
+      }
+    }
+  }, [])
+
   const handleDownload = () => {
     if (blobRef.current) {
       downloadShareCard(blobRef.current)
@@ -102,6 +154,11 @@ export function ShareCard({ onClose }: ShareCardProps) {
 
         {/* Modal */}
         <motion.div
+          ref={modalRef}
+          role="dialog"
+          aria-modal="true"
+          aria-label="Share your progress"
+          onKeyDown={handleKeyDown}
           className="relative w-full max-w-2xl max-h-[90vh] overflow-y-auto rounded-2xl border border-foreground/[0.08] bg-background p-4 sm:p-6 shadow-2xl"
           initial={{ scale: 0.9, opacity: 0, y: 20 }}
           animate={{ scale: 1, opacity: 1, y: 0 }}
@@ -117,6 +174,7 @@ export function ShareCard({ onClose }: ShareCardProps) {
             {onClose && (
               <button
                 onClick={onClose}
+                aria-label="Close share dialog"
                 className="flex items-center justify-center w-8 h-8 rounded-full bg-foreground/5 border border-foreground/10 text-foreground/60 hover:text-foreground hover:border-foreground/20 transition-all"
               >
                 <X className="w-4 h-4" />

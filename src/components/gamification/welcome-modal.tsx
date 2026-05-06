@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef, useCallback } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Zap, Flame, Compass, Eye, Award, X } from 'lucide-react'
 
@@ -161,6 +161,8 @@ export function WelcomeModal() {
   const [visible, setVisible] = useState(false)
   const [slide, setSlide] = useState(0)
   const [direction, setDirection] = useState(1)
+  const modalRef = useRef<HTMLDivElement>(null)
+  const previousFocusRef = useRef<HTMLElement | null>(null)
   const totalSlides = 4
 
   useEffect(() => {
@@ -171,6 +173,59 @@ export function WelcomeModal() {
       }
     } catch {
       // localStorage not available
+    }
+  }, [])
+
+  // Focus trap and auto-focus
+  useEffect(() => {
+    if (!visible) return
+
+    previousFocusRef.current = document.activeElement as HTMLElement
+
+    // Auto-focus first focusable element
+    const timer = setTimeout(() => {
+      const focusable = modalRef.current?.querySelectorAll<HTMLElement>(
+        'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+      )
+      if (focusable && focusable.length > 0) {
+        focusable[0].focus()
+      }
+    }, 100)
+
+    return () => {
+      clearTimeout(timer)
+      // Restore focus on close
+      previousFocusRef.current?.focus()
+    }
+  }, [visible])
+
+  // Focus trap keyboard handler
+  const handleKeyDown = useCallback((e: React.KeyboardEvent) => {
+    if (e.key === 'Escape') {
+      dismiss()
+      return
+    }
+
+    if (e.key !== 'Tab') return
+
+    const focusable = modalRef.current?.querySelectorAll<HTMLElement>(
+      'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+    )
+    if (!focusable || focusable.length === 0) return
+
+    const first = focusable[0]
+    const last = focusable[focusable.length - 1]
+
+    if (e.shiftKey) {
+      if (document.activeElement === first) {
+        e.preventDefault()
+        last.focus()
+      }
+    } else {
+      if (document.activeElement === last) {
+        e.preventDefault()
+        first.focus()
+      }
     }
   }, [])
 
@@ -222,6 +277,11 @@ export function WelcomeModal() {
 
           {/* Modal */}
           <motion.div
+            ref={modalRef}
+            role="dialog"
+            aria-modal="true"
+            aria-label="Welcome onboarding"
+            onKeyDown={handleKeyDown}
             className="relative w-full max-w-md rounded-2xl border border-foreground/[0.08] bg-background shadow-2xl overflow-hidden"
             initial={{ scale: 0.9, opacity: 0, y: 20 }}
             animate={{ scale: 1, opacity: 1, y: 0 }}
@@ -250,6 +310,7 @@ export function WelcomeModal() {
               <button
                 onClick={prev}
                 disabled={slide === 0}
+                aria-label={`Go to previous slide (${slide} of ${totalSlides})`}
                 className="text-xs font-mono text-foreground/40 hover:text-foreground/70 disabled:opacity-0 disabled:pointer-events-none transition-all"
               >
                 Back
@@ -271,6 +332,7 @@ export function WelcomeModal() {
               {slide < totalSlides - 1 ? (
                 <button
                   onClick={next}
+                  aria-label={`Go to next slide (${slide + 2} of ${totalSlides})`}
                   className="text-xs font-mono text-foreground/60 hover:text-foreground transition-all"
                 >
                   Next

@@ -1,12 +1,14 @@
-import { useEffect, useState, useRef } from 'react'
+import { useEffect, useState, useRef, useSyncExternalStore } from 'react'
 import { useAuth } from '@/hooks/use-auth'
-import { initSync, stopSync } from '@/lib/progress-sync'
+import { initSync, stopSync, getSyncStatus, subscribeSyncStatus } from '@/lib/progress-sync'
+import type { SyncStatus } from '@/lib/progress-sync'
 
-export function useProgressSync(): { isSyncing: boolean; lastSyncedAt: Date | null } {
+export function useProgressSync(): { isSyncing: boolean; lastSyncedAt: Date | null; syncStatus: SyncStatus } {
   const { user } = useAuth()
-  const [isSyncing, setIsSyncing] = useState(false)
   const [lastSyncedAt, setLastSyncedAt] = useState<Date | null>(null)
   const prevUserIdRef = useRef<string | null>(null)
+
+  const syncStatus = useSyncExternalStore(subscribeSyncStatus, getSyncStatus, () => 'idle' as SyncStatus)
 
   useEffect(() => {
     const userId = user?.id ?? null
@@ -16,16 +18,12 @@ export function useProgressSync(): { isSyncing: boolean; lastSyncedAt: Date | nu
     prevUserIdRef.current = userId
 
     if (userId) {
-      setIsSyncing(true)
       initSync(userId)
         .then(() => {
           setLastSyncedAt(new Date())
         })
         .catch(() => {
           // Errors already logged inside initSync
-        })
-        .finally(() => {
-          setIsSyncing(false)
         })
     } else {
       stopSync()
@@ -39,5 +37,5 @@ export function useProgressSync(): { isSyncing: boolean; lastSyncedAt: Date | nu
     }
   }, [user?.id])
 
-  return { isSyncing, lastSyncedAt }
+  return { isSyncing: syncStatus === 'syncing', lastSyncedAt, syncStatus }
 }

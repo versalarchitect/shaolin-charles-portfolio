@@ -270,6 +270,8 @@ export function FocusTimer() {
               {DURATION_OPTIONS.map((d) => (
                 <button
                   key={d}
+                  aria-label={`${d} minute focus session`}
+                  aria-pressed={duration === d}
                   onClick={() => { setDuration(d); setSecondsLeft(d * 60) }}
                   className={`px-3 py-1.5 rounded-lg text-xs font-mono transition-all ${
                     duration === d
@@ -299,6 +301,8 @@ export function FocusTimer() {
 
               <button
                 onClick={() => setTickSound(!tickSound)}
+                aria-label={tickSound ? 'Disable tick sound' : 'Enable tick sound'}
+                aria-pressed={tickSound}
                 className="flex items-center gap-1 text-foreground/40 hover:text-foreground/60 transition-colors"
               >
                 {tickSound ? <Volume2 className="w-3.5 h-3.5" /> : <VolumeX className="w-3.5 h-3.5" />}
@@ -345,10 +349,15 @@ export function FocusTimer() {
                   {timerState === 'break' ? (
                     <Coffee className="w-4 h-4 text-foreground/40 mb-1" />
                   ) : null}
-                  <span className="text-2xl font-mono font-bold leading-none tracking-tight">
+                  <span
+                    role="timer"
+                    aria-live="polite"
+                    aria-label={`${timerState === 'break' ? 'Break' : timerState === 'paused' ? 'Paused' : 'Focus'} timer: ${minutes} minutes and ${seconds} seconds remaining`}
+                    className="text-2xl font-mono font-bold leading-none tracking-tight"
+                  >
                     {timeDisplay}
                   </span>
-                  <span className="text-[10px] font-mono text-foreground/40 mt-1">
+                  <span className="text-[10px] font-mono text-foreground/40 mt-1" aria-hidden="true">
                     {timerState === 'break' ? 'Break' : timerState === 'paused' ? 'Paused' : 'Focusing'}
                   </span>
                 </div>
@@ -360,6 +369,7 @@ export function FocusTimer() {
                   whileHover={{ scale: 1.1 }}
                   whileTap={{ scale: 0.95 }}
                   onClick={timerState === 'paused' ? resumeFromPause : togglePause}
+                  aria-label={timerState === 'paused' ? 'Resume timer' : 'Pause timer'}
                   className="w-10 h-10 rounded-full bg-foreground/10 hover:bg-foreground/15 border border-foreground/[0.08] flex items-center justify-center text-foreground/70 hover:text-foreground/90 transition-all"
                 >
                   {timerState === 'paused' ? (
@@ -373,6 +383,7 @@ export function FocusTimer() {
                   whileHover={{ scale: 1.1 }}
                   whileTap={{ scale: 0.95 }}
                   onClick={reset}
+                  aria-label="Reset timer"
                   className="w-10 h-10 rounded-full bg-foreground/[0.04] hover:bg-foreground/[0.08] border border-foreground/[0.06] flex items-center justify-center text-foreground/40 hover:text-foreground/60 transition-all"
                 >
                   <RotateCcw className="w-4 h-4" />
@@ -380,7 +391,7 @@ export function FocusTimer() {
               </div>
 
               {/* Session dots */}
-              <div className="flex items-center gap-1.5">
+              <div className="flex items-center gap-1.5" role="group" aria-label={`Session progress: ${cycleSessionCount} of ${SESSIONS_PER_CYCLE} completed`}>
                 {Array.from({ length: SESSIONS_PER_CYCLE }).map((_, i) => (
                   <div
                     key={i}

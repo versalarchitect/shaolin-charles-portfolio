@@ -221,7 +221,7 @@ function NodeCircle({
 
   if (isClickable) {
     return (
-      <Link to={`/course/learn/${node.lesson.id}`}>
+      <Link to={`/course/learn/${node.lesson.id}`} aria-label={`${node.lesson.title}${node.isCapstone ? ' (Capstone)' : ''} - ${status === 'completed' ? 'Completed' : status === 'in_progress' ? 'In progress' : 'Available'}`}>
         {inner}
       </Link>
     )
@@ -356,6 +356,8 @@ export function SkillTree({ compact = false }: SkillTreeProps) {
           viewBox={`0 0 ${totalWidth + 16} ${totalHeight}`}
           className="block"
           style={{ minWidth: totalWidth + 16 }}
+          role="group"
+          aria-label="Skill tree: course lesson progression map"
         >
           {/* Connections */}
           {connections.map((c, i) => {

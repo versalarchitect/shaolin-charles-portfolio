@@ -325,6 +325,7 @@ export function CelebrationOverlay() {
   return (
     <canvas
       ref={canvasRef}
+      aria-hidden="true"
       className="fixed inset-0 z-[110] pointer-events-none"
       style={{ width: '100vw', height: '100vh' }}
     />
@@ -360,6 +361,7 @@ export function CelebrationParticles() {
   return (
     <canvas
       ref={canvasRef}
+      aria-hidden="true"
       className="absolute inset-0 pointer-events-none"
       style={{ width: '100%', height: '100%' }}
     />

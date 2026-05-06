@@ -26,6 +26,13 @@ export function MatrixRain({ onComplete }: MatrixRainProps) {
     // Parse the color - it might be in hsl or rgb format
     const color = fg || '0 0% 100%'
 
+    // Get background-like color for trail fade effect (inverted from --effect-rgb)
+    // In dark mode --effect-rgb is 255,255,255 so trail is black (0,0,0)
+    // In light mode --effect-rgb is 0,0,0 so trail is white (255,255,255)
+    const effectRgb = computedStyle.getPropertyValue('--effect-rgb').trim() || '255, 255, 255'
+    const rgbParts = effectRgb.split(',').map((v) => 255 - parseInt(v.trim(), 10))
+    const trailColor = `rgba(${rgbParts.join(', ')}, 0.05)`
+
     canvas.width = window.innerWidth
     canvas.height = window.innerHeight
 
@@ -40,8 +47,8 @@ export function MatrixRain({ onComplete }: MatrixRainProps) {
     function draw() {
       if (!ctx || !canvas) return
 
-      // Semi-transparent background to create trail effect
-      ctx.fillStyle = 'rgba(0, 0, 0, 0.05)'
+      // Semi-transparent background to create trail effect (theme-aware)
+      ctx.fillStyle = trailColor
       ctx.fillRect(0, 0, canvas.width, canvas.height)
 
       ctx.font = `${FONT_SIZE}px monospace`

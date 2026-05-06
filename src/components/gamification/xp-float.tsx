@@ -74,7 +74,7 @@ export function XpFloatOverlay() {
   }, [addFloat])
 
   return (
-    <div className="fixed inset-0 pointer-events-none z-[9999] overflow-hidden">
+    <div className="fixed inset-0 pointer-events-none z-[9999] overflow-hidden" aria-hidden="true">
       <AnimatePresence>
         {floats.map((f) => (
           <motion.div

@@ -1,7 +1,8 @@
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
-import { Zap, Flame, Trophy, BookOpen, ArrowLeft, UserX, RefreshCw } from 'lucide-react'
+import { Zap, Flame, Trophy, BookOpen, ArrowLeft, UserX, RefreshCw, Share2 } from 'lucide-react'
+import { toast } from 'sonner'
 import { SEO } from '@/components/SEO'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { LevelIcon } from '@/components/gamification/shared'
@@ -159,12 +160,46 @@ export default function PublicProfile() {
     { icon: Trophy, label: 'Rank', value: profile.rank },
   ]
 
+  const profileUrl = `https://charlesjackson.dev/profile/${userId}`
+
+  const handleShare = useCallback(async () => {
+    const shareData = {
+      title: `${profile.display_name}'s Profile`,
+      text: `${profile.rank} rank · ${profile.total_xp.toLocaleString()} XP · ${profile.current_streak}-day streak`,
+      url: profileUrl,
+    }
+
+    if (navigator.share) {
+      try {
+        await navigator.share(shareData)
+        return
+      } catch (err) {
+        if (err instanceof Error && err.name === 'AbortError') return
+        // Fall through to clipboard fallback
+      }
+    }
+
+    try {
+      await navigator.clipboard.writeText(profileUrl)
+      toast.success('Profile link copied!')
+    } catch {
+      // Final fallback: prompt-based copy
+      window.prompt('Copy this link:', profileUrl)
+    }
+  }, [profile, profileUrl])
+
   return (
     <>
       <SEO
-        title={`${profile.display_name} — Profile`}
-        description={`${profile.display_name}'s learning profile. ${profile.rank} rank with ${profile.total_xp} XP.`}
+        title={`${profile.display_name}'s Profile — The Agentic SaaS Course`}
+        description={`${profile.rank} rank · ${profile.total_xp.toLocaleString()} XP · ${profile.current_streak}-day streak · ${profile.unlocked_achievements.length} achievements`}
         path={`profile/${userId}`}
+        type="profile"
+        jsonLd={{
+          '@type': 'Person',
+          name: profile.display_name,
+          url: profileUrl,
+        }}
       />
 
       <div className="max-w-2xl mx-auto px-6 py-12 lg:py-20">
@@ -205,6 +240,17 @@ export default function PublicProfile() {
             {profile.current_streak >= 3 && (
               <StreakBadge streak={profile.current_streak} />
             )}
+
+            {/* Share profile button */}
+            <motion.button
+              onClick={handleShare}
+              className="mt-3 inline-flex items-center gap-1.5 text-xs font-mono text-foreground/40 hover:text-foreground/70 transition-colors px-3 py-1.5 rounded-lg border border-foreground/[0.08] hover:bg-foreground/[0.04]"
+              whileHover={{ scale: 1.03 }}
+              whileTap={{ scale: 0.97 }}
+            >
+              <Share2 className="w-3 h-3" />
+              Share Profile
+            </motion.button>
           </div>
 
           {/* Stats Row */}

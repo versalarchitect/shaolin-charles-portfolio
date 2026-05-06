@@ -162,6 +162,8 @@ function AchievementCard({ id, name, description, emoji, xpReward, isUnlocked, i
       <motion.button
         layout="position"
         onClick={onToggle}
+        aria-expanded={isExpanded}
+        aria-label={isUnlocked ? `${name}: ${description}. ${xpReward} XP` : `Locked achievement. ${description}`}
         className={`w-full rounded-xl border p-3 text-center transition-colors cursor-pointer ${
           isUnlocked
             ? 'border-foreground/10 bg-foreground/[0.03] hover:border-foreground/20 hover:bg-foreground/[0.05]'
@@ -231,6 +233,7 @@ function AchievementCard({ id, name, description, emoji, xpReward, isUnlocked, i
                         onClick={handleShare}
                         disabled={sharing}
                         title="Share achievement"
+                        aria-label={`Share ${name} achievement`}
                         className="flex items-center justify-center w-6 h-6 rounded-md bg-foreground/[0.04] border border-foreground/10 text-foreground/40 hover:text-foreground/70 hover:border-foreground/20 hover:bg-foreground/[0.08] transition-all cursor-pointer disabled:opacity-50"
                       >
                         {sharing ? <Loader2 className="w-3 h-3 animate-spin" /> : <Share2 className="w-3 h-3" />}

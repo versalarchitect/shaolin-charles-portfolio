@@ -11,7 +11,7 @@ export function StatsBarHeader() {
   const goalPercent = Math.min(100, (progress.dailyXpEarned / progress.dailyXpGoal) * 100)
 
   return (
-    <div className="sticky top-0 z-10 flex items-center justify-between h-8 px-4 bg-foreground/[0.02] border-b border-foreground/[0.06] select-none">
+    <nav aria-label="Course progress stats" className="sticky top-0 z-10 flex items-center justify-between h-8 px-4 bg-foreground/[0.02] border-b border-foreground/[0.06] select-none">
       {/* Left: XP badge */}
       <button
         onClick={() => navigate('/course/analytics')}
@@ -66,6 +66,6 @@ export function StatsBarHeader() {
           </span>
         )}
       </button>
-    </div>
+    </nav>
   )
 }

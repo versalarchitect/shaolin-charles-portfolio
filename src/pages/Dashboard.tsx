@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { Suspense, lazy, useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import {
@@ -13,7 +13,6 @@ import {
 import type { LucideIcon } from 'lucide-react'
 import { SEO } from '@/components/SEO'
 import { VoiceTutorCard } from '@/components/voice-tutor-card'
-import { Certificate } from '@/components/gamification/certificate'
 import { AnimatedNumber } from '@/components/ui/aaa-effects'
 import {
   StreakMultiplierBadge,
@@ -25,23 +24,17 @@ import {
   ComboTimer,
 } from '@/components/gamification'
 import { ShareButton } from '@/components/gamification/share-button'
+import { GamificationErrorBoundary } from '@/components/gamification/error-boundary'
 import { ShortcutHint } from '@/components/gamification/shortcut-hint'
 import { DailyReward } from '@/components/gamification/daily-reward'
 import { ExplorerProgress } from '@/components/gamification/explorer-progress'
 import { UnlockablesGrid } from '@/components/gamification/unlockables-grid'
-import { CelebrationOverlay } from '@/components/gamification/celebration'
-import { FocusTimer } from '@/components/gamification/focus-timer'
-import { WelcomeModal } from '@/components/gamification/welcome-modal'
-import { XpFloatOverlay } from '@/components/gamification/xp-float'
-import { LevelUpBurst } from '@/components/gamification/level-up-burst'
 import { StreakWarning } from '@/components/gamification/streak-warning'
 import { StatCard } from '@/components/gamification/shared'
 import { AchievementsGrid } from '@/components/gamification/achievements-grid'
 import { StreakCalendar } from '@/components/gamification/streak-calendar'
 import { StreakFreezeCard } from '@/components/gamification/streak-freeze-card'
-import { SkillTree } from '@/components/gamification/skill-tree'
 import { ToolMastery } from '@/components/gamification/tool-mastery'
-import { JourneyTimeline } from '@/components/gamification/journey-timeline'
 import { WeeklyChallenges } from '@/components/gamification/weekly-challenges'
 import { BookmarkedLessons } from '@/components/gamification/bookmarked-lessons'
 import {
@@ -63,8 +56,21 @@ import { useAuth } from '@/hooks/use-auth'
 import { useSmartTips } from '@/hooks/use-smart-tips'
 import { fetchGlobalLeaderboard, fetchUserRank } from '@/lib/leaderboard-api'
 import type { LeaderboardEntry } from '@/lib/leaderboard-api'
-import { ComparisonCard } from '@/components/gamification/comparison-card'
 import { getMotivationalMessage } from '@/lib/motivational'
+import { DashboardSection } from '@/components/dashboard-section'
+
+// Lazy-loaded heavy/conditional components
+const SkillTree = lazy(() => import('@/components/gamification/skill-tree').then(m => ({ default: m.SkillTree })))
+const CelebrationOverlay = lazy(() => import('@/components/gamification/celebration').then(m => ({ default: m.CelebrationOverlay })))
+const XpFloatOverlay = lazy(() => import('@/components/gamification/xp-float').then(m => ({ default: m.XpFloatOverlay })))
+const LevelUpBurst = lazy(() => import('@/components/gamification/level-up-burst').then(m => ({ default: m.LevelUpBurst })))
+const WelcomeModal = lazy(() => import('@/components/gamification/welcome-modal').then(m => ({ default: m.WelcomeModal })))
+const Certificate = lazy(() => import('@/components/gamification/certificate').then(m => ({ default: m.Certificate })))
+const JourneyTimeline = lazy(() => import('@/components/gamification/journey-timeline').then(m => ({ default: m.JourneyTimeline })))
+const ComparisonCard = lazy(() => import('@/components/gamification/comparison-card').then(m => ({ default: m.ComparisonCard })))
+const FocusTimer = lazy(() => import('@/components/gamification/focus-timer').then(m => ({ default: m.FocusTimer })))
+
+const SectionFallback = <div className="h-20 animate-pulse bg-foreground/[0.04] rounded-xl" />
 
 function LeaderboardPreview() {
   const { user } = useAuth()
@@ -291,14 +297,31 @@ export default function Dashboard() {
         path="dashboard"
         keywords="dashboard, progress, learning, agentic saas course"
       />
-      <GamificationToasts />
-      <XpFloatOverlay />
-      <LevelUpBurst />
-      <CelebrationOverlay />
-      <WelcomeModal />
+
+      {/* Global overlays/modals — outside sections */}
+      <GamificationErrorBoundary silent>
+        <GamificationToasts />
+      </GamificationErrorBoundary>
+      <Suspense fallback={null}>
+        <GamificationErrorBoundary silent>
+          <XpFloatOverlay />
+        </GamificationErrorBoundary>
+        <GamificationErrorBoundary silent>
+          <LevelUpBurst />
+        </GamificationErrorBoundary>
+        <GamificationErrorBoundary silent>
+          <CelebrationOverlay />
+        </GamificationErrorBoundary>
+        <GamificationErrorBoundary silent>
+          <WelcomeModal />
+        </GamificationErrorBoundary>
+      </Suspense>
 
       <div className="p-6 lg:p-8 max-w-4xl space-y-8">
-        <StreakWarning />
+        {/* ── Always visible (top) ── */}
+        <GamificationErrorBoundary silent>
+          <StreakWarning />
+        </GamificationErrorBoundary>
         <div className="flex items-start justify-between">
           <div>
             <h1 className="text-2xl font-bold tracking-tight mb-1">Dashboard</h1>
@@ -307,35 +330,113 @@ export default function Dashboard() {
           <ShareButton />
         </div>
 
-        <DailyReward />
-        <NextLesson />
-        <BookmarkedLessons compact />
-        <ComboTimer />
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <DailyXpGoal />
-          <WeeklyProgress />
-        </div>
-        <FocusTimer />
-        <LeaderboardPreview />
-        <ComparisonCard />
-        <StatsBar />
-        <DailyChallenges />
-        <WeeklyChallenges />
-        <SkillTree compact />
-        <div className="grid grid-cols-1 lg:grid-cols-[1fr_1fr] gap-6">
-          <StreakCalendar />
-          <XpActivityFeed />
-        </div>
-        <StreakFreezeCard />
-        <JourneyTimeline compact />
-        <ToolMastery />
-        <ExplorerProgress />
-        <AchievementsGrid />
-        <UnlockablesGrid compact />
-        <VoiceTutorCard />
-        {getOverallProgress().percent === 100 && <Certificate />}
+        <GamificationErrorBoundary>
+          <DailyReward />
+        </GamificationErrorBoundary>
+        <GamificationErrorBoundary>
+          <NextLesson />
+        </GamificationErrorBoundary>
+        <GamificationErrorBoundary>
+          <BookmarkedLessons compact />
+        </GamificationErrorBoundary>
+        <GamificationErrorBoundary>
+          <ComboTimer />
+        </GamificationErrorBoundary>
+
+        {/* ── Progress (default open) ── */}
+        <DashboardSection id="progress" title="Progress" defaultOpen>
+          <GamificationErrorBoundary>
+            <StatsBar />
+          </GamificationErrorBoundary>
+          <GamificationErrorBoundary>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <DailyXpGoal />
+              <WeeklyProgress />
+            </div>
+          </GamificationErrorBoundary>
+          <GamificationErrorBoundary>
+            <Suspense fallback={SectionFallback}>
+              <SkillTree compact />
+            </Suspense>
+          </GamificationErrorBoundary>
+        </DashboardSection>
+
+        {/* ── Challenges (default open) ── */}
+        <DashboardSection id="challenges" title="Challenges" defaultOpen>
+          <GamificationErrorBoundary>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <DailyChallenges />
+              <WeeklyChallenges />
+            </div>
+          </GamificationErrorBoundary>
+          <GamificationErrorBoundary>
+            <Suspense fallback={SectionFallback}>
+              <FocusTimer />
+            </Suspense>
+          </GamificationErrorBoundary>
+        </DashboardSection>
+
+        {/* ── Social (collapsed by default) ── */}
+        <DashboardSection id="social" title="Social" defaultOpen={false}>
+          <GamificationErrorBoundary>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <LeaderboardPreview />
+              <Suspense fallback={SectionFallback}>
+                <ComparisonCard />
+              </Suspense>
+            </div>
+          </GamificationErrorBoundary>
+          <GamificationErrorBoundary>
+            <Suspense fallback={SectionFallback}>
+              <JourneyTimeline compact />
+            </Suspense>
+          </GamificationErrorBoundary>
+        </DashboardSection>
+
+        {/* ── Achievements (collapsed by default) ── */}
+        <DashboardSection id="achievements" title="Achievements" defaultOpen={false}>
+          <GamificationErrorBoundary>
+            <AchievementsGrid />
+          </GamificationErrorBoundary>
+          <GamificationErrorBoundary>
+            <UnlockablesGrid compact />
+          </GamificationErrorBoundary>
+          <GamificationErrorBoundary>
+            <ExplorerProgress />
+          </GamificationErrorBoundary>
+        </DashboardSection>
+
+        {/* ── Stats (collapsed by default) ── */}
+        <DashboardSection id="stats" title="Stats" defaultOpen={false}>
+          <GamificationErrorBoundary>
+            <div className="grid grid-cols-1 lg:grid-cols-[1fr_1fr] gap-6">
+              <StreakCalendar />
+              <XpActivityFeed />
+            </div>
+          </GamificationErrorBoundary>
+          <GamificationErrorBoundary>
+            <ToolMastery />
+          </GamificationErrorBoundary>
+          <GamificationErrorBoundary>
+            <StreakFreezeCard />
+          </GamificationErrorBoundary>
+        </DashboardSection>
+
+        {/* ── Bottom ── */}
+        {getOverallProgress().percent === 100 && (
+          <GamificationErrorBoundary>
+            <Suspense fallback={SectionFallback}>
+              <Certificate />
+            </Suspense>
+          </GamificationErrorBoundary>
+        )}
+        <GamificationErrorBoundary>
+          <VoiceTutorCard />
+        </GamificationErrorBoundary>
       </div>
-      <ShortcutHint />
+      <GamificationErrorBoundary silent>
+        <ShortcutHint />
+      </GamificationErrorBoundary>
     </>
   )
 }

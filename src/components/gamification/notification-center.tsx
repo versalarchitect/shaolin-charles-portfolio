@@ -124,6 +124,8 @@ export function NotificationCenter() {
         transition={{ duration: 0.5 }}
         className="relative p-2 rounded-lg text-foreground/50 hover:text-foreground/80 hover:bg-foreground/5 transition-colors"
         aria-label={`Notifications${unreadCount > 0 ? ` (${unreadCount} unread)` : ''}`}
+        aria-expanded={open}
+        aria-haspopup="dialog"
       >
         <Bell className="w-4 h-4" />
         {/* Unread badge */}
@@ -143,6 +145,8 @@ export function NotificationCenter() {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: -8, scale: 0.95 }}
             transition={{ duration: 0.15, ease: [0.4, 0, 0.2, 1] }}
+            role="dialog"
+            aria-label="Notifications"
             className="absolute bottom-full left-0 mb-2 w-72 rounded-xl border border-foreground/[0.08] bg-background shadow-lg overflow-hidden z-50"
           >
             {/* Header */}
@@ -160,23 +164,23 @@ export function NotificationCenter() {
             </div>
 
             {/* Notification list */}
-            <div className="max-h-[400px] overflow-y-auto">
+            <ul role="list" aria-label="Notification list" className="max-h-[400px] overflow-y-auto">
               {notifications.length === 0 ? (
-                <div className="px-4 py-8 text-center">
-                  <Bell className="w-8 h-8 text-foreground/10 mx-auto mb-2" />
+                <li className="px-4 py-8 text-center list-none">
+                  <Bell className="w-8 h-8 text-foreground/10 mx-auto mb-2" aria-hidden="true" />
                   <p className="text-xs font-mono text-foreground/30">No notifications yet</p>
-                </div>
+                </li>
               ) : (
-                <div className="py-1">
-                  {notifications.map((n) => (
+                notifications.map((n) => (
+                  <li key={n.id} role="listitem" className="list-none">
                     <button
-                      key={n.id}
                       onClick={() => { if (!n.read) markRead(n.id) }}
+                      aria-label={`${n.read ? '' : 'Unread: '}${n.title}. ${n.description}. ${relativeTime(n.timestamp)}`}
                       className={`w-full text-left px-4 py-3 flex items-start gap-3 hover:bg-foreground/[0.03] transition-colors ${
                         !n.read ? 'border-l-2 border-foreground/30' : 'border-l-2 border-transparent opacity-60'
                       }`}
                     >
-                      <span className="text-base leading-none mt-0.5 shrink-0">
+                      <span className="text-base leading-none mt-0.5 shrink-0" aria-hidden="true">
                         {n.icon || getDefaultIcon(n.type)}
                       </span>
                       <div className="flex-1 min-w-0">
@@ -185,13 +189,13 @@ export function NotificationCenter() {
                         <p className="text-[9px] font-mono text-foreground/30 mt-1">{relativeTime(n.timestamp)}</p>
                       </div>
                       {!n.read && (
-                        <span className="w-1.5 h-1.5 rounded-full bg-foreground/40 shrink-0 mt-1.5" />
+                        <span className="w-1.5 h-1.5 rounded-full bg-foreground/40 shrink-0 mt-1.5" aria-hidden="true" />
                       )}
                     </button>
-                  ))}
-                </div>
+                  </li>
+                ))
               )}
-            </div>
+            </ul>
           </motion.div>
         )}
       </AnimatePresence>

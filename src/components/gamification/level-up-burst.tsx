@@ -29,6 +29,7 @@ export function LevelUpBurst() {
       {burst && (
         <motion.div
           key={burst.id}
+          aria-hidden="true"
           className="fixed inset-0 pointer-events-none z-[9998] flex items-center justify-center"
           initial={{ opacity: 1 }}
           animate={{ opacity: 1 }}

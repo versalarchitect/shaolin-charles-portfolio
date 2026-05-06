@@ -77,9 +77,9 @@ export function Leaderboard({ entries, currentUserId, title, loading }: Leaderbo
       <h2 className="text-sm font-mono uppercase tracking-wider text-foreground/40">
         {title}
       </h2>
-      <div className="rounded-xl border border-foreground/[0.08] bg-foreground/[0.02] overflow-hidden divide-y divide-foreground/[0.06]">
+      <ol aria-label={title} className="rounded-xl border border-foreground/[0.08] bg-foreground/[0.02] overflow-hidden divide-y divide-foreground/[0.06] list-none m-0 p-0">
         {entries.length === 0 && (
-          <div className="p-10 text-center">
+          <li className="p-10 text-center list-none">
             <motion.div
               initial={{ scale: 0.9, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
@@ -99,19 +99,20 @@ export function Leaderboard({ entries, currentUserId, title, loading }: Leaderbo
               <Zap className="w-3 h-3" />
               Start your first lesson
             </Link>
-          </div>
+          </li>
         )}
         {entries.map((entry, index) => {
           const isCurrentUser = entry.user_id === currentUserId
           const isTopThree = entry.rank <= 3
 
           return (
-            <motion.div
+            <motion.li
               key={entry.user_id}
               initial={{ opacity: 0, y: 8 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.3, delay: index * 0.05 }}
-              className={`flex items-center gap-2 sm:gap-3 px-3 sm:px-4 py-3 transition-colors ${
+              aria-label={`Rank ${entry.rank}: ${entry.display_name}, ${entry.total_xp.toLocaleString()} XP${isCurrentUser ? ' (you)' : ''}`}
+              className={`flex items-center gap-2 sm:gap-3 px-3 sm:px-4 py-3 transition-colors list-none ${
                 isCurrentUser ? 'bg-foreground/[0.05]' : ''
               }`}
             >
@@ -154,10 +155,10 @@ export function Leaderboard({ entries, currentUserId, title, loading }: Leaderbo
                 <Zap className="w-3 h-3" />
                 {entry.total_xp.toLocaleString()}
               </span>
-            </motion.div>
+            </motion.li>
           )
         })}
-      </div>
+      </ol>
     </div>
   )
 }

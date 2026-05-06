@@ -121,6 +121,7 @@ export function ThemeSelector() {
         {cosmeticTheme && (
           <motion.button
             onClick={() => setCosmeticTheme(null)}
+            aria-label="Reset cosmetic theme to default"
             className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-foreground/5 border border-foreground/10 text-xs font-mono text-foreground/60 hover:text-foreground hover:border-foreground/20 transition-all"
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
@@ -131,7 +132,7 @@ export function ThemeSelector() {
         )}
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+      <div role="radiogroup" aria-label="Cosmetic theme selection" className="grid grid-cols-1 sm:grid-cols-2 gap-3">
         {COSMETIC_THEME_REGISTRY.map((themeDef) => {
           const unlocked = isThemeUnlocked(themeDef.unlockCondition, progress)
           const isActive = cosmeticTheme === themeDef.id
@@ -140,6 +141,9 @@ export function ThemeSelector() {
           return (
             <motion.button
               key={themeDef.id}
+              role="radio"
+              aria-checked={isActive}
+              aria-label={`${themeDef.name} theme${!unlocked ? ' (locked)' : isDarkOnlyBlocked ? ' (dark mode only)' : ''}`}
               onClick={() => {
                 if (!unlocked || isDarkOnlyBlocked) return
                 setCosmeticTheme(isActive ? null : themeDef.id)

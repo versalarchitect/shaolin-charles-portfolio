@@ -13,6 +13,7 @@ import { PageTransition } from '@/components/page-transition'
 import {
   SectionGridProvider,
 } from '@/components/ui/gradient-background'
+import { GamificationErrorBoundary } from '@/components/gamification/error-boundary'
 import { useExplorer } from '@/hooks/use-explorer'
 import { useProgressSync } from '@/hooks/use-progress-sync'
 import { useSurpriseRewards } from '@/hooks/use-surprise-rewards'
@@ -96,9 +97,13 @@ export default function App() {
               </Suspense>
             </>
           )}
-          <Toaster />
+          <GamificationErrorBoundary silent>
+            <Toaster />
+          </GamificationErrorBoundary>
           <Suspense fallback={null}>
-            <EasterEggHandler />
+            <GamificationErrorBoundary silent>
+              <EasterEggHandler />
+            </GamificationErrorBoundary>
           </Suspense>
         </div>
       </SectionGridProvider>
