@@ -47,9 +47,10 @@ function setSyncStatus(next: SyncStatus) {
 
 function getWeekId(): string {
   const now = new Date()
-  const startOfYear = new Date(now.getFullYear(), 0, 1)
-  const weekNum = Math.ceil(((now.getTime() - startOfYear.getTime()) / 86400000 + startOfYear.getDay() + 1) / 7)
-  return `${now.getFullYear()}-W${weekNum}`
+  const jan4 = new Date(now.getFullYear(), 0, 4)
+  const dayOfYear = Math.floor((now.getTime() - new Date(now.getFullYear(), 0, 1).getTime()) / 86400000) + 1
+  const weekNumber = Math.ceil((dayOfYear + jan4.getDay() - 1) / 7)
+  return `${now.getFullYear()}-W${String(weekNumber).padStart(2, '0')}`
 }
 
 function isOnline(): boolean {

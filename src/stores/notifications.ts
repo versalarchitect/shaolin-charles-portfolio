@@ -49,7 +49,7 @@ export function addNotification(n: Omit<Notification, 'id' | 'timestamp' | 'read
   persist()
   emit()
   // Dispatch custom event so the bell can animate
-  window.dispatchEvent(new CustomEvent('notification-added'))
+  if (typeof window !== 'undefined') window.dispatchEvent(new CustomEvent('notification-added'))
 }
 
 export function markRead(id: string) {

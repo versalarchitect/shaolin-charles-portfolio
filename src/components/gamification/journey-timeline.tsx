@@ -178,7 +178,7 @@ export function JourneyTimeline({ maxItems = 20, compact = false }: JourneyTimel
       {/* Timeline line */}
       <div className="absolute left-[11px] top-3 bottom-3 w-px bg-foreground/[0.08]" />
 
-      <div className={`space-y-${compact ? '2' : '3'} pl-8`}>
+      <div className={`${compact ? 'space-y-2' : 'space-y-3'} pl-8`}>
         {visibleEvents.map((event, i) => {
           const Icon = getEventIcon(event.type)
 

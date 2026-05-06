@@ -207,20 +207,22 @@ export function FocusTimer() {
     setTimerState('running')
   }
 
+  const pausedFromRef = useRef<'running' | 'break'>('running')
+
   const togglePause = () => {
     if (timerState === 'running') {
+      pausedFromRef.current = 'running'
       setTimerState('paused')
     } else if (timerState === 'paused') {
-      setTimerState('running')
+      setTimerState(pausedFromRef.current)
     } else if (timerState === 'break') {
-      // Allow pause during break too
+      pausedFromRef.current = 'break'
       setTimerState('paused')
     }
   }
 
   const resumeFromPause = () => {
-    // Resume to whatever state we were in
-    setTimerState('running')
+    setTimerState(pausedFromRef.current)
   }
 
   const reset = () => {
