@@ -39,7 +39,7 @@ export default function EnrollSuccess() {
 
             <BlurFadeIn delay={0.2} immediate>
               <p className="text-lg text-muted-foreground leading-relaxed mb-4">
-                Your enrollment in The Agentic SaaS Course is confirmed. Welcome to the journey from tokens to agent fleets.
+                Your enrollment in The Agentic SaaS Course is confirmed. Welcome to the journey from zero to directing teams of AI agents.
               </p>
               <p className="text-muted-foreground mb-10">
                 Check your email for login credentials and next steps. The Prework module is ready for you.

@@ -8,8 +8,8 @@ export const SITE = {
   name: 'Charles Jackson',
   shortName: 'Charles',
   initials: 'CJ',
-  title: 'Software Instructor',
-  description: 'Learn to orchestrate AI agents from first principles.',
+  title: 'AI Agent Orchestration Instructor',
+  description: 'Learn to direct AI agents that build real software for your business.',
   url: 'https://charlesjackson.dev',
   email: 'hello@charlesjackson.dev',
 } as const

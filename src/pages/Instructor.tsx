@@ -35,14 +35,14 @@ const content = {
   en: {
     seo: {
       title: 'Meet the Instructor — Charles Jackson',
-      description: '10+ years building production software. CTO & CAIO at MicroHabitat, Founder of Cursuum. Built products for startups that raised $400M+ combined, including a $277M exit. Based in Montreal, Canada.',
+      description: '10+ years building products for startups that raised $400M+ combined, including a $277M exit. CTO at MicroHabitat, Founder of Cursuum. Now teaching entrepreneurs how to direct AI agents. Based in Montreal, Canada.',
       imageAlt: 'Meet the Instructor — Charles Jackson: 20+ years building production systems',
     },
     badge: '10+ Years Experience',
     heading: 'Building software since',
     bio: [
       "I build products for companies that go on to do big things. The startups I've worked with have collectively raised over $400M and generated a $277M exit. nesto became Canada's largest tech-enabled mortgage lender. Dialogue IPO'd and was acquired by Sun Life. Bus.com won FounderFuel and Y Combinator. Crew was acquired by Dribbble.",
-      "For 9+ years I've served as CTO & CAIO at MicroHabitat — the world's largest urban farming network. Now I'm building Cursuum, an AI scheduling engine, and teaching the principles I wish someone had taught me.",
+      "For 9+ years I've served as CTO & CAIO at MicroHabitat — the world's largest urban farming network. Now I'm building Cursuum, an AI scheduling engine, and teaching entrepreneurs how to direct AI agents to build real software — the principles I wish someone had taught me.",
     ],
     cta: {
       curriculum: 'See the Curriculum',
@@ -135,12 +135,12 @@ const content = {
     },
     philosophy: {
       heading: 'How I Work',
-      subtitle: 'Principles that guide every line of code I write — and every lesson I teach',
+      subtitle: 'Principles that guide every product I build — and every lesson I teach',
       items: [
-        { title: 'Fix Root Causes', desc: 'Address underlying issues rather than working around symptoms. Build proper infrastructure instead of creating technical debt.' },
-        { title: 'Elegant Simplicity', desc: 'The best code is simple, maintainable, and solves real problems. Complexity should only exist where it adds value.' },
-        { title: 'Performance First', desc: 'Optimize for speed at every layer. Sub-200ms response times, efficient bundling, and thoughtful resource management.' },
-        { title: 'Type Safety', desc: "Leverage TypeScript's strict mode for catching errors at compile time and improving developer experience." },
+        { title: 'Fix Root Causes', desc: 'Address underlying issues rather than working around symptoms. Build proper foundations instead of cutting corners.' },
+        { title: 'Elegant Simplicity', desc: 'The best solutions are simple, maintainable, and solve real problems. Complexity should only exist where it adds value.' },
+        { title: 'Performance First', desc: 'Optimize for speed at every layer. Fast load times, efficient systems, and thoughtful resource management.' },
+        { title: 'Quality Assurance', desc: 'Build in safeguards that catch errors before they reach users. Prevention beats firefighting.' },
       ],
     },
     research: {
@@ -156,18 +156,18 @@ const content = {
         { title: 'Bayesian Inference', description: 'Updating beliefs with evidence' },
       ],
       closingP1: 'Mathematics is the language of patterns. In a world drowning in data, mathematical models help us find signal in noise, structure in chaos, and insights in complexity.',
-      closingP2: "The goal isn't prediction for its own sake. It's about making better decisions under uncertainty — and teaching students to think the same way about the code they write with AI.",
+      closingP2: "The goal isn't prediction for its own sake. It's about making better decisions under uncertainty — and teaching students to think the same way about the products they build with AI.",
     },
     ctaSection: {
       heading: "Let's build something worth shipping.",
-      subtitle: "Whether you're enrolling in the course or just want to connect — I'd love to hear from you.",
+      subtitle: "Whether you're considering the course, have a project in mind, or just want to connect — I'd love to hear from you.",
       viewProjects: 'View Projects',
     },
   },
   fr: {
     seo: {
       title: "Rencontrez l'instructeur — Charles Jackson",
-      description: "Plus de 10 ans de développement logiciel en production. CTO & CAIO chez MicroHabitat, fondateur de Cursuum. A conçu des produits pour des startups ayant levé plus de 400 M$ au total, dont une sortie à 277 M$. Basé à Montréal, Canada.",
+      description: "Plus de 10 ans à créer des produits pour des startups ayant levé plus de 400 M$ au total. CTO chez MicroHabitat, fondateur de Cursuum. Enseigne maintenant aux entrepreneurs comment diriger des agents IA. A conçu des produits pour des startups ayant levé plus de 400 M$ au total, dont une sortie à 277 M$. Basé à Montréal, Canada.",
       imageAlt: "Rencontrez l'instructeur — Charles Jackson : plus de 20 ans de systèmes en production",
     },
     badge: "10+ ans d'expérience",
@@ -325,13 +325,13 @@ export default function Instructor() {
         image="/og-image.png"
         imageAlt={c.seo.imageAlt}
         type="profile"
-        keywords="charles jackson developer, software instructor montreal, full stack developer, ai development teacher, cursuum founder, microhabitat cto, nesto dialogue bus.com startups"
+        keywords="charles jackson instructor, ai agent course instructor, entrepreneur teacher, cursuum founder, microhabitat cto, nesto dialogue bus.com startups, ai for business"
         jsonLd={{
           '@type': 'ProfilePage',
           mainEntity: {
             '@type': 'Person',
             name: 'Charles Jackson',
-            jobTitle: 'Software Instructor',
+            jobTitle: 'AI Agent Orchestration Instructor',
             description: c.seo.description,
             url: 'https://charlesjackson.dev/instructor',
             image: 'https://charlesjackson.dev/og-image.png',

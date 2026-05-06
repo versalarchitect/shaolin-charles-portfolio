@@ -49,33 +49,33 @@
     "techStack": "Stack technique",
     "byTheNumbers": "En chiffres",
     "hoursOfInstruction": "Heures d'instruction",
-    "capstonesShipped": "Capstones livrés"
+    "capstonesShipped": "Projets concrets livrés"
   },
   "home": {
     "meta": {
-      "title": "Maîtrisez l'orchestration multi-agents — Le cours Agentic SaaS",
-      "description": "Apprenez à orchestrer des agents IA depuis les fondamentaux. 52 heures des tokens et fenêtres de contexte à la coordination de flottes d'agents qui construisent des logiciels en production. 4 500 $ USD, accès à vie."
+      "title": "Apprenez à diriger des agents IA qui créent de vrais logiciels — Le cours Agentic SaaS",
+      "description": "Aucune expérience en programmation requise. Apprenez à diriger des agents IA qui créent de vrais logiciels pour votre entreprise. 52 heures des bases à l'orchestration d'équipes d'agents IA. 4 500 $ USD, accès à vie."
     },
     "hero": {
       "statusBadge": "Inscriptions ouvertes",
       "name": "Charles Jackson",
       "tagline": "J'enseigne",
       "typewriter": {
-        "intelligentSystems": "l'orchestration multi-agents",
-        "beautifulInterfaces": "la coordination d'agents",
-        "scalablePlatforms": "des tokens aux flottes d'agents",
-        "shippingReal": "livrer avec l'IA, pas juste prompter"
+        "intelligentSystems": "comment diriger des agents IA",
+        "beautifulInterfaces": "comment créer avec des équipes IA",
+        "scalablePlatforms": "de zéro à l'orchestration d'agents",
+        "shippingReal": "créer avec l'IA, pas juste prompter"
       },
-      "description": "Apprenez à orchestrer des agents IA qui construisent des logiciels en production — en partant des fondamentaux des tokens et des fenêtres de contexte.",
-      "predictive": "52 heures depuis votre premier token",
-      "aiPlatform": " jusqu'à la coordination de flottes d'agents qui livrent de vrais produits."
+      "description": "Apprenez à diriger des agents IA qui créent de vrais logiciels pour votre entreprise — aucune expérience en programmation requise.",
+      "predictive": "52 heures de zéro",
+      "aiPlatform": " jusqu'à diriger des équipes d'agents IA qui créent des logiciels fonctionnels."
     },
     "terminal": {
       "badge": "Interactif",
       "title": "Découvrez le cours",
-      "welcome": "# Maîtrisez l'orchestration multi-agents",
-      "project": "52 heures · tokens → agent unique → multi-agents → architecte",
-      "uptime": "De votre première fenêtre de contexte à la coordination de flottes",
+      "welcome": "# Dirigez des agents IA qui créent des logiciels",
+      "project": "52 heures · bases → un agent → plusieurs agents → systèmes complets",
+      "uptime": "De votre première leçon à diriger des équipes d'agents IA",
       "status": "Inscriptions ouvertes — commencez quand vous voulez",
       "restart": "redémarrer"
     },
@@ -183,13 +183,13 @@
       "lighthouseScore": "Heures d'apprentissage",
       "p95Response": "Leçons",
       "initialBundle": "Principes",
-      "components": "Capstones",
+      "components": "Projets concrets",
       "lifeDomains": "Niveaux",
       "domainNodes": "Prix"
     },
     "timeline": {
       "title": "Votre parcours",
-      "subtitle": "De votre premier token à l'orchestration de flottes d'agents",
+      "subtitle": "De votre première leçon à diriger des équipes d'agents IA",
       "items": {
         "2024_founder": {
           "title": "Préparation",
@@ -254,7 +254,7 @@
     "cta": {
       "title": "Prêt à orchestrer,",
       "titleHighlight": "pas juste prompter ?",
-      "subtitle": "52 heures. Des tokens aux flottes d'agents. 4 produits déployés construits par des agents que vous dirigez. Apprenez la compétence qui sépare les prompteurs des orchestrateurs.",
+      "subtitle": "52 heures. De zéro à diriger des équipes d'agents IA. 4 projets concrets construits par des agents IA que vous dirigez. Apprenez la compétence qui sépare les prompteurs des orchestrateurs.",
       "basedIn": "Basé à Montréal, Canada"
     }
   },
@@ -589,7 +589,7 @@
     }
   },
   "footer": {
-    "description": "Apprenez l'orchestration multi-agents depuis les fondamentaux. 52 heures des tokens à la coordination de flottes d'agents qui livrent des logiciels en production.",
+    "description": "Apprenez à diriger des agents IA qui créent de vrais logiciels. 52 heures de zéro à l'orchestration d'équipes d'agents IA qui livrent des produits fonctionnels.",
     "letsConnect": "COMMENCER",
     "openTo": "Des questions sur le cours ? Discutons.",
     "getInTouch": "Me contacter",

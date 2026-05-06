@@ -28,7 +28,7 @@ const PROMISES = [
     icon: RefreshCw,
     title: 'Always Current',
     description:
-      'When a model ships, a pricing change drops, or an API evolves — the course content updates automatically. No stale screenshots. No outdated code samples.',
+      'When AI tools change, pricing shifts, or new features launch — your course content updates automatically. No stale information. No outdated examples.',
   },
   {
     icon: ShieldCheck,
@@ -40,7 +40,7 @@ const PROMISES = [
     icon: Clock,
     title: 'Real-Time Awareness',
     description:
-      'The course monitors dozens of official sources continuously. New SDK release? Pricing change? Deprecation notice? The course knows before you do.',
+      'The course monitors dozens of official sources continuously. New AI tool release? Pricing change? Feature update? The course knows before you do.',
   },
   {
     icon: TrendingUp,
@@ -104,10 +104,10 @@ export default function SelfUpdatingCourse() {
   return (
     <>
       <SEO
-        title="Self-Updating Agentic Engineering Course"
-        description="A living course on Agentic Software Engineering that updates itself as AI technology evolves. Every fact verified. Every section current."
+        title="Self-Updating Course — Always Current, Never Outdated"
+        description="A living course that updates itself as AI technology evolves. Every fact verified against live sources. Every section always current. You always learn what's true right now."
         path="self-updating-course"
-        keywords="agentic engineering, AI course, self-updating, Claude, LLM, software engineering"
+        keywords="self-updating ai course, always current ai course, ai for entrepreneurs, never outdated, verified ai content"
       />
 
       {/* Hero */}
@@ -126,9 +126,9 @@ export default function SelfUpdatingCourse() {
 
           <BlurFadeIn delay={0.1}>
             <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold tracking-tight text-foreground mb-6">
-              Agentic Software
+              A Course That
               <br />
-              Engineering
+              Never Goes Stale
             </h1>
           </BlurFadeIn>
 
@@ -184,7 +184,7 @@ export default function SelfUpdatingCourse() {
               Why This Course Is Different
             </h2>
             <p className="text-foreground/50 text-center max-w-xl mx-auto mb-16">
-              Most AI courses go stale the week after they launch. This one can&apos;t.
+              Most AI courses go stale within weeks of launching. This one can&apos;t.
             </p>
           </ScrollFadeIn>
 
@@ -218,7 +218,7 @@ export default function SelfUpdatingCourse() {
               Course Freshness
             </h2>
             <p className="text-foreground/50 text-center max-w-xl mx-auto mb-12">
-              Live data from the knowledge base backing this course.
+              Live data showing how current your course content is, right now.
             </p>
           </ScrollFadeIn>
 
@@ -349,7 +349,7 @@ export default function SelfUpdatingCourse() {
               Stop Learning Yesterday&apos;s AI
             </h2>
             <p className="text-foreground/50 mb-8 max-w-lg mx-auto">
-              Enroll in a course that evolves as fast as the technology it teaches.
+              Enroll in a course that stays current as fast as AI evolves.
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
               <Button asChild size="lg" className="h-12 px-8 font-mono group">

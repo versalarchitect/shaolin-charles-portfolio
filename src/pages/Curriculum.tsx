@@ -146,7 +146,7 @@ function AppCurriculum() {
               <div>
                 <h1 className="text-2xl font-bold tracking-tight mb-2">Curriculum</h1>
                 <p className="text-sm text-muted-foreground">
-                  Each tier builds on the last. The capstone from each tier proves you're ready for the next.
+                  Each tier builds on the last. The milestone project from each tier proves you're ready for the next.
                 </p>
               </div>
               {multiplier > 1 && (
@@ -222,7 +222,7 @@ function AppCurriculum() {
                     <div className="px-5 py-3 border-t border-foreground/[0.06] bg-foreground/[0.02]">
                       <div className="flex items-center gap-2">
                         <GraduationCap className="w-3.5 h-3.5 text-foreground/60" />
-                        <span className="text-xs font-mono text-foreground/60">Capstone:</span>
+                        <span className="text-xs font-mono text-foreground/60">Milestone Project:</span>
                         <span className="text-xs text-foreground/80">{tier.capstone}</span>
                         <span className="text-[10px] font-mono ml-auto text-foreground/30">
                           +{tier.lessonDetails.find(l => l.isCapstone)?.xp || 0} XP
@@ -308,7 +308,7 @@ function AppCurriculum() {
             <div className="rounded-xl border border-foreground/10 bg-foreground/[0.02] p-5">
               <h3 className="text-xs font-mono uppercase tracking-wide text-foreground/40 mb-4">
                 <Trophy className="w-3 h-3 inline-block mr-1.5 -mt-0.5" />
-                Capstones
+                Milestone Projects
               </h3>
               <div className="space-y-3">
                 {tiers.filter(t => t.capstone).map((tier) => (
@@ -343,20 +343,20 @@ function MarketingCurriculum() {
       {isLoggedIn && <ProgressBanner />}
       <SEO
         title="Curriculum — The Agentic SaaS Course"
-        description="52 hours across 51 lessons and 4 tiers. From tokens and context windows to multi-agent orchestration. Learn to direct single agents, coordinate parallel fleets, and architect agent-built systems."
+        description="52 hours across 51 lessons and 4 tiers. From the basics to directing teams of AI agents. Learn to direct a single agent, coordinate multiple agents in parallel, and design complete agent workflows."
         path="/curriculum"
         image="/og-image.png"
         imageAlt="Curriculum — The Agentic SaaS Course: 52 hours, 51 lessons, 4 tiers"
-        keywords="agentic saas curriculum, ai development lessons, course syllabus, next.js lessons, supabase tutorial, claude code training, full stack course outline, 52 hour coding course"
+        keywords="agentic saas curriculum, ai agent course for entrepreneurs, course syllabus, learn to direct ai agents, ai for business owners, 52 hour ai course"
         jsonLd={{
           '@type': 'Course',
           name: 'The Agentic SaaS Course — Full Curriculum',
-          description: '52 hours of interactive instruction across 51 lessons and 4 tiers. From tokens to multi-agent orchestration.',
+          description: '52 hours of interactive instruction across 51 lessons and 4 tiers. From the basics to directing teams of AI agents.',
           url: 'https://charlesjackson.dev/curriculum',
           provider: { '@type': 'Person', name: 'Charles Jackson' },
           numberOfCredits: '52 hours',
-          educationalLevel: 'Intermediate to Advanced',
-          teaches: ['Multi-Agent Orchestration', 'AI Agent Coordination', 'Context Windows', 'Token Management', 'MCP Servers', 'Spec-Driven Development', 'Agent Verification', 'Production Agent Systems'],
+          educationalLevel: 'Beginner to Advanced',
+          teaches: ['Multi-Agent Orchestration', 'AI Agent Direction', 'Agent Coordination', 'Brief Writing', 'Agent Verification', 'Building with AI Agents', 'Agent Workflow Design', 'Real-World Projects'],
         }}
       />
 
@@ -374,14 +374,14 @@ function MarketingCurriculum() {
 
             <BlurFadeIn delay={0.1} immediate>
               <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight mb-8 leading-[1.1]">
-                From tokens to{' '}
-                <span className="text-muted-foreground">agent fleets.</span>
+                From zero to{' '}
+                <span className="text-muted-foreground">directing AI teams.</span>
               </h1>
             </BlurFadeIn>
 
             <BlurFadeIn delay={0.2} immediate>
               <p className="text-lg md:text-xl text-muted-foreground leading-relaxed max-w-2xl">
-                52 hours across 51 interactive lessons. Each tier takes you deeper into how agents think, coordinate, and ship. You don't move up until you ship.
+                52 hours across 51 interactive lessons. Each tier takes you deeper into directing AI agents — from understanding how they work to orchestrating entire teams. You advance by shipping real projects.
               </p>
             </BlurFadeIn>
           </div>
@@ -396,7 +396,7 @@ function MarketingCurriculum() {
               { value: 52, suffix: 'h', label: 'Total Hours' },
               { value: 51, suffix: '', label: 'Lessons' },
               { value: 8, suffix: '', label: 'Principles' },
-              { value: 4, suffix: '', label: 'Capstones' },
+              { value: 4, suffix: '', label: 'Milestone Projects' },
             ].map(({ value, suffix, label }, index) => (
               <motion.div
                 key={label}
@@ -424,7 +424,7 @@ function MarketingCurriculum() {
               Course Breakdown
             </h2>
             <p className="text-muted-foreground max-w-2xl">
-              Each tier builds on the last. You can't skip ahead — the capstone from each tier proves you're ready for the next.
+              Each tier builds on the last. You advance by completing a milestone project that proves you're ready for the next level.
             </p>
           </ScrollFadeIn>
 
@@ -482,7 +482,7 @@ function MarketingCurriculum() {
                       <div className="p-4 rounded-lg bg-foreground/[0.03] border border-foreground/5 mb-4">
                         <div className="flex items-center gap-2 mb-1.5">
                           <GraduationCap className="w-4 h-4 text-foreground/60" />
-                          <span className="text-sm font-mono text-foreground/60">Capstone</span>
+                          <span className="text-sm font-mono text-foreground/60">Milestone Project</span>
                         </div>
                         <p className="text-sm text-foreground/80">{tier.capstone}</p>
                       </div>
@@ -513,10 +513,10 @@ function MarketingCurriculum() {
         <div className="container mx-auto px-6 lg:px-8 relative z-10">
           <ScrollFadeIn className="text-center max-w-3xl mx-auto">
             <h2 className="text-3xl md:text-4xl font-bold tracking-tight mb-6">
-              Ready to start building?
+              Ready to start directing AI?
             </h2>
             <p className="text-muted-foreground text-lg mb-8">
-              52 hours. 4 deployed products. Principles that outlast the next model release.
+              52 hours. 4 real-world projects. Principles that outlast the next AI release.
             </p>
             <div className="flex flex-wrap justify-center gap-4">
               <Button size="lg" className="font-mono group" asChild>

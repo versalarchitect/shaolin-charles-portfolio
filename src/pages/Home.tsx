@@ -318,16 +318,16 @@ export default function Home() {
         description={t('home.meta.description')}
         path=""
         image="/og-image.png"
-        imageAlt="The Agentic SaaS Course — Master multi-agent orchestration from first principles"
-        keywords="multi-agent orchestration course, ai agent course, orchestrate ai agents, agent coordination, claude code course, mcp servers, agentic development, context windows, tokens, agent fleet, ai agent patterns, charles jackson"
+        imageAlt="The Agentic SaaS Course — Learn to direct AI agents that build real software"
+        keywords="ai agent course for entrepreneurs, direct ai agents, build software with ai, ai for business owners, ai agent orchestration, no code ai course, ai agents for founders, charles jackson"
         jsonLd={[
           {
             '@type': 'Course',
             name: 'The Agentic SaaS Course',
-            description: 'Learn to orchestrate AI agents from first principles. 52 hours from tokens to coordinating agent fleets that build production software.',
+            description: 'No coding required. Learn to direct AI agents that build real software for your business. 52 hours from zero to orchestrating teams of AI agents.',
             url: 'https://charlesjackson.dev',
             provider: { '@type': 'Person', name: 'Charles Jackson', url: 'https://charlesjackson.dev/instructor' },
-            educationalLevel: 'Intermediate to Advanced',
+            educationalLevel: 'Beginner to Advanced',
             numberOfCredits: '52 hours',
             teaches: ['AI-Assisted Development', 'Next.js', 'React', 'TypeScript', 'Supabase', 'Claude Code', 'Vercel'],
           },
@@ -480,7 +480,7 @@ export default function Home() {
               {[
                 { text: '8 Principles', x: '60%', y: '5%', delay: 0 },
                 { text: '52 Hours', x: '10%', y: '15%', delay: 0.1 },
-                { text: '4 Capstones', x: '75%', y: '25%', delay: 0.2 },
+                { text: '4 Projects', x: '75%', y: '25%', delay: 0.2 },
                 { text: 'Next.js', x: '5%', y: '45%', delay: 0.3 },
                 { text: 'Claude Code', x: '65%', y: '50%', delay: 0.4 },
                 { text: 'Supabase', x: '25%', y: '70%', delay: 0.5 },
@@ -566,7 +566,7 @@ export default function Home() {
               <span className="text-xs font-mono text-foreground/40 uppercase tracking-widest">Portfolio</span>
               <h2 className="text-3xl md:text-4xl font-bold mt-3 mb-4">Recent Projects</h2>
               <p className="text-muted-foreground max-w-lg mx-auto">
-                Production systems I've built, from AI platforms to developer tools.
+                Real products I've built, from AI platforms to business tools.
               </p>
             </div>
           </ScrollFadeIn>
@@ -575,7 +575,7 @@ export default function Home() {
             {[
               {
                 title: 'Agentic SaaS Course',
-                description: '52-hour course on multi-agent orchestration. Self-updating curriculum powered by an agentic pipeline.',
+                description: '52-hour course on directing AI agents that build real software. Self-updating curriculum that never goes stale.',
                 url: 'https://charlesjackson.dev/curriculum',
                 tags: ['React', 'Supabase', 'AI'],
                 status: 'LIVE',
@@ -944,7 +944,7 @@ export default function Home() {
                       A Course That Rewrites Itself
                     </h2>
                     <p className="text-foreground/70 leading-relaxed mb-6">
-                      An agentic software engineering course that stays current automatically. Every fact is verified against live sources. Every section updates when the technology it teaches evolves. Never stale.
+                      A course that stays current automatically. Every fact is verified against live sources. Every section updates when the technology it teaches evolves. You always learn what's true right now — never outdated information.
                     </p>
                     <div className="flex flex-wrap gap-2 mb-8">
                       {['Fact-Verified', 'Always Current', 'Real-Time', '9 Lessons', '3 Modules'].map((tag) => (

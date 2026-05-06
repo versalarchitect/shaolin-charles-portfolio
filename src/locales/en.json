@@ -49,33 +49,33 @@
     "techStack": "Tech Stack",
     "byTheNumbers": "By The Numbers",
     "hoursOfInstruction": "Hours of Instruction",
-    "capstonesShipped": "Capstones Shipped"
+    "capstonesShipped": "Real-World Projects Shipped"
   },
   "home": {
     "meta": {
-      "title": "Master Multi-Agent Orchestration — The Agentic SaaS Course",
-      "description": "Learn to orchestrate AI agents from first principles. 52 hours from tokens and context windows to coordinating agent fleets that build production software. $4,500, lifetime access."
+      "title": "Learn to Direct AI Agents That Build Real Software — The Agentic SaaS Course",
+      "description": "No coding required. Learn to direct AI agents that build real software for your business. 52 hours from the basics to orchestrating teams of AI agents. $4,500, lifetime access."
     },
     "hero": {
       "statusBadge": "Now enrolling",
       "name": "Charles Jackson",
       "tagline": "I teach",
       "typewriter": {
-        "intelligentSystems": "multi-agent orchestration",
-        "beautifulInterfaces": "agent coordination patterns",
-        "scalablePlatforms": "from tokens to agent fleets",
-        "shippingReal": "shipping with AI, not just prompting"
+        "intelligentSystems": "how to direct AI agents",
+        "beautifulInterfaces": "how to build with AI teams",
+        "scalablePlatforms": "from zero to agent orchestration",
+        "shippingReal": "building with AI, not just prompting"
       },
-      "description": "Learn to orchestrate AI agents that build production software — starting from the fundamentals of tokens and context windows.",
-      "predictive": "52 hours from your first token",
-      "aiPlatform": " to coordinating agent fleets that ship real products."
+      "description": "Learn to direct AI agents that build real software for your business — no coding experience required.",
+      "predictive": "52 hours from zero",
+      "aiPlatform": " to directing teams of AI agents that build working software."
     },
     "terminal": {
       "badge": "Interactive",
       "title": "Get to know the course",
-      "welcome": "# Master Multi-Agent Orchestration",
-      "project": "52 hours · tokens → single agent → multi-agent → architect",
-      "uptime": "From your first context window to agent fleet coordination",
+      "welcome": "# Direct AI Agents That Build Software",
+      "project": "52 hours · basics → one agent → multiple agents → full systems",
+      "uptime": "From your first lesson to directing teams of AI agents",
       "status": "Enrollment open — start anytime",
       "restart": "restart"
     },
@@ -84,57 +84,57 @@
       "title": "Tokens to Agent Fleets",
       "subtitle": "Four tiers. Each one takes you deeper into how agents think, coordinate, and ship.",
       "fullStack": {
-        "title": "Tier 1 — Understand the Machine",
+        "title": "Tier 1 — Understand How AI Works",
         "subtitle": "8 hours · 10 lessons",
-        "description": "How agents process your intent. Tokens, context windows, and the tool ladder from paste to MCP. You learn the mechanics so you can direct agents, not just prompt them.",
+        "description": "Before you can direct AI agents, you need to understand how they think. Learn the fundamentals — what AI agents can and can't do, how to give them clear instructions, and how to spot when they go off track.",
         "highlights": [
-          "How tokens and context windows shape every agent interaction",
-          "The tool ladder: paste → skill → script → agent → MCP server",
+          "How AI agents interpret your instructions and where they go wrong",
+          "Choosing the right AI tool for each task — from simple to complex",
           "Reading agent behavior — why it drifts and how to catch it early",
-          "Directing an agent to deploy a working tool from a written spec"
+          "Directing an agent to build and deploy a working tool from a brief"
         ],
-        "tags": ["Tokens", "Context Windows", "MCP", "Tool Ladder"]
+        "tags": ["AI Fundamentals", "Agent Behavior", "Clear Instructions", "Tool Selection"]
       },
       "consulting": {
         "title": "Tier 2 — Direct a Single Agent",
         "subtitle": "12 hours · 12 lessons",
-        "description": "Master constraining and verifying one agent's output. Write specs that prevent scope creep. Build a full SaaS by directing a single agent through auth, database, and payments — learning to iterate when the agent drifts off-spec.",
+        "description": "Learn to give an AI agent clear, precise instructions and verify what it builds. Write briefs that keep the agent focused. Build a complete web application by directing one agent through every layer — login, database, payments — and learn to course-correct when it drifts.",
         "highlights": [
-          "Writing specs that constrain agent scope and prevent drift",
-          "Verification loops — catching when the agent goes off-spec",
-          "Iterating through auth, database, and payments with one agent",
-          "Shipping a complete SaaS product you directed, not coded"
+          "Writing briefs that keep the agent focused and prevent scope creep",
+          "Quality checks — catching when the agent goes off-brief",
+          "Building login, database, and payments by directing one agent",
+          "Shipping a complete product you directed, not coded yourself"
         ],
-        "tags": ["Spec Writing", "Constraints", "Verification", "Shipping"]
+        "tags": ["Briefs", "Quality Checks", "Iteration", "Shipping"]
       },
       "mvp": {
         "title": "Tier 3 — Orchestrate Multiple Agents",
         "subtitle": "15 hours · 14 lessons",
-        "description": "The core differentiator. Run 3-5 agents in parallel on the same codebase using git worktrees. Write CLAUDE.md files as shared coordination context. Decompose complex features into agent-sized tasks. Resolve conflicts when agents touch related code.",
+        "description": "This is where it gets powerful. Direct 3-5 AI agents working on the same project at the same time. Give each agent its own workspace so they don't step on each other. Break complex features into tasks each agent can handle. Coordinate their work and ship faster than any solo workflow.",
         "highlights": [
-          "Running 3-5 parallel agents on one codebase with git worktrees",
-          "Writing CLAUDE.md files as shared coordination context",
-          "Decomposing features into agent-sized tasks that don't collide",
-          "Cross-agent verification and conflict resolution across branches"
+          "Running 3-5 AI agents in parallel on the same project",
+          "Giving each agent shared context so they stay aligned",
+          "Breaking big features into focused tasks that don't collide",
+          "Coordinating agent work and resolving conflicts between them"
         ],
-        "tags": ["Multi-Agent", "Parallel Tasks", "Coordination", "Production"]
+        "tags": ["Multi-Agent", "Parallel Work", "Coordination", "Speed"]
       },
       "codeReview": {
-        "title": "Tier 4 — Architect Agent Systems",
+        "title": "Tier 4 — Design Your Agent Workflow",
         "subtitle": "15 hours · 12 lessons",
-        "description": "Design codebases that parallel agents can navigate effectively. Write agent coordination protocols. Evaluate AI architecture decisions and know when to override. Prove system-level judgment that agents can't replicate.",
+        "description": "Design projects that teams of AI agents can build efficiently. Create coordination playbooks that scale beyond your direct oversight. Know when to split work, combine results, or override an agent's decision. Prove the strategic thinking that AI cannot replicate.",
         "highlights": [
-          "Designing codebases optimized for parallel agent navigation",
-          "Writing agent coordination protocols and CLAUDE.md hierarchies",
-          "Evaluating AI architecture decisions and knowing when to override",
-          "Proving system-level judgment — the skill agents can't replicate"
+          "Designing projects optimized for teams of AI agents",
+          "Creating coordination playbooks and shared instructions",
+          "Knowing when to trust, redirect, or override an agent's decision",
+          "Proving strategic judgment — the skill AI agents can't replicate"
         ],
-        "tags": ["Architecture", "Agent Design", "System Thinking", "Judgment"]
+        "tags": ["Strategy", "Agent Workflows", "Systems Thinking", "Judgment"]
       }
     },
     "skills": {
       "title": "What You'll Actually Learn",
-      "subtitle": "Not how to code — how to orchestrate AI agents that code for you.",
+      "subtitle": "Not how to code — how to direct AI agents that build software for you.",
       "items": {
         "frontend": {
           "title": "Next.js + React",
@@ -178,40 +178,40 @@
       "badge": "The Course",
       "title": "The Agentic SaaS Course",
       "subtitle": "Multi-Agent Orchestration",
-      "description": "52 hours from understanding your first token to coordinating agent fleets that build production software. You'll progress from directing a single agent to orchestrating multiple agents in parallel — and ship 4 real products along the way.",
+      "description": "52 hours from zero to directing teams of AI agents that build real software. You'll progress from directing a single agent to orchestrating multiple agents in parallel — and ship 4 real-world projects along the way.",
       "viewCaseStudy": "See Full Curriculum",
       "lighthouseScore": "Hours of Learning",
       "p95Response": "Lessons",
       "initialBundle": "Principles",
-      "components": "Capstones",
+      "components": "Milestone Projects",
       "lifeDomains": "Tiers",
       "domainNodes": "Price"
     },
     "timeline": {
       "title": "Your Journey",
-      "subtitle": "From your first token to orchestrating agent fleets",
+      "subtitle": "From your first lesson to directing teams of AI agents",
       "items": {
         "2024_founder": {
           "title": "Prework",
           "company": "2 hours · 3 lessons",
-          "description": "Set up your environment, install Claude Code, configure MCP servers. Get your first agent running."
+          "description": "Set up your workspace, install the AI tools you'll use, and get your first agent running."
         },
         "2024_urbanfarm": {
           "title": "Understand the Machine",
           "company": "8 hours · 10 lessons",
-          "description": "Tokens, context windows, the tool ladder. Understand how agents think so you can direct them. Ship your first agent-built tool."
+          "description": "Understand how AI agents think so you can direct them effectively. Ship your first agent-built tool."
         },
         "2018_senior": {
           "title": "Direct a Single Agent",
-          "description": "Write specs that guide agent output. Constrain, verify, and ship a full SaaS product built by directing an agent."
+          "description": "Write clear briefs that guide agent output. Direct, verify, and ship a complete product built by directing one AI agent."
         },
         "2015_lead": {
           "title": "Orchestrate Multiple Agents",
-          "description": "Coordinate parallel agents on a production system. Split tasks, merge outputs, handle failures. Ship with a fleet."
+          "description": "Coordinate multiple AI agents working on the same project. Split tasks, combine outputs, handle issues. Ship with a team of agents."
         },
         "2010_fullstack": {
-          "title": "Architect Agent Systems",
-          "description": "Design the systems agents build. Evaluate AI decisions at the architecture level. Your capstone proves system-level judgment."
+          "title": "Design Your Agent Workflow",
+          "description": "Design the systems AI agents build. Make strategic decisions about how agents work together. Your milestone project proves system-level judgment."
         },
         "2005_start": {
           "title": "Alumni",
@@ -232,21 +232,21 @@
       "at": "completed",
       "items": [
         {
-          "quote": "I went from pasting prompts into ChatGPT to running three Claude Code agents in parallel on different parts of my SaaS. The progression from tokens to multi-agent is the real magic of this course.",
+          "quote": "I went from pasting prompts into ChatGPT to running three AI agents in parallel, each building a different part of my product. The progression from basics to multi-agent orchestration is the real magic of this course.",
           "author": "Alex Chen",
-          "role": "Software Engineer",
+          "role": "Founder",
           "company": "Tier 3"
         },
         {
-          "quote": "Tier 1 alone was worth it — I finally understood WHY my agents were losing context and giving garbage output. By Tier 3, I was coordinating agents on a live product. Completely transformed how I work.",
+          "quote": "Tier 1 alone was worth it — I finally understood WHY my AI tools were giving me garbage output. By Tier 3, I was coordinating agents building a live product. Completely transformed how I work.",
           "author": "Sarah Martinez",
-          "role": "Indie Developer",
+          "role": "Indie Builder",
           "company": "Tier 4"
         },
         {
-          "quote": "The jump from Tier 2 to Tier 3 is where everything clicked. Directing one agent is easy. Orchestrating five agents on the same codebase without them stepping on each other — that's what this course actually teaches.",
+          "quote": "Directing one agent is easy. Orchestrating five agents on the same project without them stepping on each other — that's what this course actually teaches. Game changer for my business.",
           "author": "Jordan Osei",
-          "role": "Full-Stack Developer",
+          "role": "Entrepreneur",
           "company": "Tier 4"
         }
       ]
@@ -254,7 +254,7 @@
     "cta": {
       "title": "Ready to orchestrate",
       "titleHighlight": "not just prompt?",
-      "subtitle": "52 hours. From tokens to agent fleets. 4 deployed products built by agents you direct. Learn the skill that separates prompters from orchestrators.",
+      "subtitle": "52 hours. From zero to directing teams of AI agents. 4 real-world projects built by AI agents you direct. Learn the skill that separates prompters from orchestrators.",
       "basedIn": "Based in Montreal, Canada"
     }
   },
@@ -524,7 +524,7 @@
       "badge": "Available for Projects",
       "title": "Let's Work",
       "titleHighlight": "Together",
-      "subtitle": "Have a project in mind, need technical consultation, or just want to connect? I'd love to hear from you."
+      "subtitle": "Have a question about the course, want to discuss your business goals, or just want to connect? I'd love to hear from you."
     },
     "info": {
       "location": "Montreal, Canada",
@@ -539,7 +539,7 @@
       "email": "Email",
       "emailPlaceholder": "you@example.com",
       "subject": "Subject",
-      "subjectPlaceholder": "Project inquiry, collaboration, consulting...",
+      "subjectPlaceholder": "Course question, project inquiry, collaboration...",
       "message": "Message",
       "messagePlaceholder": "Tell me about your project or inquiry...",
       "send": "Send Message",
@@ -562,7 +562,7 @@
       "title": "Or Reach Out Directly",
       "email": {
         "title": "Email",
-        "description": "Best for project inquiries and detailed discussions."
+        "description": "Best for course questions, project inquiries, and detailed discussions."
       },
       "github": {
         "title": "GitHub",
@@ -571,7 +571,7 @@
     },
     "availability": {
       "title": "Currently Available",
-      "description": "I'm open to side projects, consulting engagements, and interesting collaborations. While I'm primarily focused on building Predictive, I always make time for exciting opportunities."
+      "description": "I'm open to course enrollment questions, consulting engagements, and interesting collaborations. Whether you're exploring the course or have a project in mind, I always make time to connect."
     },
     "expectations": {
       "title": "What to Expect",
@@ -579,17 +579,17 @@
         "Response within 24-48 hours, usually sooner",
         "Clear communication and honest feedback",
         "A genuine interest in understanding your needs",
-        "Technical expertise backed by 16 years of experience"
+        "Practical expertise backed by 10+ years building real products"
       ]
     },
     "cta": {
       "title": "Let's Build Something Great",
-      "subtitle": "Whether it's a challenging technical problem, an ambitious startup idea, or a complex enterprise system - I'm here to help.",
+      "subtitle": "Whether it's a question about the course, an ambitious business idea, or a project you want to bring to life with AI - I'm here to help.",
       "basedIn": "Based in Montreal, Canada • Available worldwide"
     }
   },
   "footer": {
-    "description": "Learn multi-agent orchestration from first principles. 52 hours from tokens to coordinating agent fleets that ship production software.",
+    "description": "Learn to direct AI agents that build real software. 52 hours from zero to orchestrating teams of AI agents that ship working products.",
     "letsConnect": "GET STARTED",
     "openTo": "Questions about the course? Let's talk.",
     "getInTouch": "Get in touch",

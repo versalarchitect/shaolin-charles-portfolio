@@ -26,21 +26,21 @@ const principles = [
     number: '01',
     title: 'Read Before You Generate',
     subtitle: 'Understanding precedes creation',
-    description: 'Before asking AI to write code, read the existing codebase. Understand the patterns, conventions, and constraints already in place. Generation without comprehension produces code that compiles but doesn\'t belong.',
+    description: 'Before asking AI to build something, understand what already exists. Know the patterns and constraints in place. Generating without comprehension produces work that technically functions but doesn\'t fit.',
     icon: Eye,
   },
   {
     number: '02',
-    title: 'Spec Before You Build',
+    title: 'Brief Before You Build',
     subtitle: 'Clarity before velocity',
-    description: 'Write a specification before writing code. Define inputs, outputs, edge cases, and success criteria. A spec turns vague intent into precise instruction — for you and for the AI.',
+    description: 'Write a clear brief before asking AI to build anything. Define what you want, what success looks like, and what to watch out for. A good brief turns a vague idea into a precise instruction — for you and for the AI.',
     icon: FileText,
   },
   {
     number: '03',
     title: 'Error-First Debugging',
     subtitle: 'Read the error message. The whole thing.',
-    description: 'When something breaks, start with the error message — not a prompt. Most developers skip the stack trace and go straight to "fix this." The error message is the spec for the fix.',
+    description: 'When something breaks, start with the error message — not a prompt. Most people skip the details and go straight to "fix this." The error message tells you exactly what went wrong and points to the solution.',
     icon: Bug,
   },
   {
@@ -53,29 +53,29 @@ const principles = [
   {
     number: '05',
     title: 'Own Your Constraints',
-    subtitle: 'Boundaries create better software',
-    description: 'Constraints aren\'t obstacles — they\'re design parameters. Token limits, context windows, rate limits, and budget constraints force better architectural decisions than unlimited resources ever would.',
+    subtitle: 'Boundaries create better results',
+    description: 'Constraints aren\'t obstacles — they\'re design parameters. AI has limits on how much it can process at once. Budget, time, and scope constraints force better decisions than unlimited resources ever would.',
     icon: Shield,
   },
   {
     number: '06',
     title: 'Test What Matters',
     subtitle: 'Coverage is vanity. Confidence is sanity.',
-    description: 'Don\'t test everything — test the things that would wake you up at 3am. Critical paths, payment flows, auth boundaries, data integrity. 20% of tests catch 80% of production bugs.',
+    description: 'Don\'t test everything — test the things that would wake you up at 3am. Critical user flows, payment processing, login security, data integrity. 20% of tests catch 80% of real-world bugs.',
     icon: TestTube,
   },
   {
     number: '07',
     title: 'Ship to Learn',
-    subtitle: 'Deployed code teaches more than perfect code',
-    description: 'You learn more from deploying an imperfect product than from perfecting one that never ships. Real users generate real feedback. Ship early, ship often, and fix what matters.',
+    subtitle: 'A launched product teaches more than a perfect plan',
+    description: 'You learn more from launching an imperfect product than from perfecting one that never ships. Real users generate real feedback. Ship early, ship often, and fix what matters.',
     icon: Sparkles,
   },
   {
     number: '08',
     title: 'Taste Is the Moat',
     subtitle: 'AI can generate. Only you can judge.',
-    description: 'AI can write code, but it can\'t tell you if the code is good. Taste — the ability to distinguish between "works" and "right" — is the skill that separates builders from prompters. It\'s the one thing AI can\'t replicate.',
+    description: 'AI can build, but it can\'t tell you if what it built is good. Taste — the ability to distinguish between "works" and "right" — is the skill that separates builders from prompters. It\'s the one thing AI can\'t replicate.',
     icon: PenTool,
   },
 ]
@@ -87,11 +87,11 @@ export default function Principles() {
     <>
       <SEO
         title="8 Principles — The Agentic SaaS Course"
-        description="The 8 principles that guide multi-agent orchestration. From reading before generating to taste as the moat — these apply whether you're directing one agent or coordinating a fleet."
+        description="The 8 principles that guide how you direct AI agents. From understanding before generating to taste as the moat — these apply whether you're directing one agent or coordinating a team."
         path="/principles"
         image="/og-image.png"
         imageAlt="8 Principles — The Agentic SaaS Course: principles for multi-agent orchestration"
-        keywords="agent orchestration principles, ai agent guidelines, multi-agent coordination principles, context window management, spec-driven development, agent verification patterns"
+        keywords="ai agent principles, directing ai agents, ai agent guidelines, multi-agent coordination, building with ai, agent verification, ai for entrepreneurs"
         jsonLd={{
           '@type': 'ItemList',
           name: '8 Principles of the Agentic SaaS Course',
@@ -189,7 +189,7 @@ export default function Principles() {
               Ready to internalize them?
             </h2>
             <p className="text-muted-foreground text-lg mb-8">
-              You don't memorize principles from a list. You internalize them by shipping real products under real constraints across 4 tiers.
+              You don't memorize principles from a list. You internalize them by shipping real-world projects under real constraints across 4 tiers.
             </p>
             <div className="flex flex-wrap justify-center gap-4">
               <Button size="lg" className="font-mono group" asChild>
