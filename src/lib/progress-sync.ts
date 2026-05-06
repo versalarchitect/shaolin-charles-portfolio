@@ -206,8 +206,6 @@ async function doPush(state: ProgressState): Promise<boolean> {
         {
           user_id: syncUserId,
           state,
-          total_xp: state.totalXp,
-          current_streak: state.currentStreak,
           updated_at: now,
         },
         { onConflict: 'user_id' }

@@ -87,7 +87,7 @@ function LessonNavCard({ lesson, direction, disabled }: { lesson: Lesson | null;
   }
 
   return (
-    <Link to={`/learn/${lesson.id}`} className="group rounded-xl bg-foreground/[0.02] border border-foreground/[0.08] p-4 hover:bg-foreground/[0.04] hover:border-foreground/15 transition-all">
+    <Link to={`/course/learn/${lesson.id}`} className="group rounded-xl bg-foreground/[0.02] border border-foreground/[0.08] p-4 hover:bg-foreground/[0.04] hover:border-foreground/15 transition-all">
       <div className={`flex items-center ${isPrev ? '' : 'justify-end'} gap-3`}>
         {isPrev && <Arrow className="w-4 h-4 text-foreground/40 group-hover:text-foreground/70 group-hover:-translate-x-1 transition-all shrink-0" />}
         <div className={`min-w-0 ${isPrev ? '' : 'text-right'}`}>
@@ -216,7 +216,7 @@ export default function Learn() {
     if (!showCelebration) return
     const timer = setTimeout(() => {
       if (adjacent.next) {
-        navigate(`/learn/${adjacent.next.id}`)
+        navigate(`/course/learn/${adjacent.next.id}`)
       }
       setShowCelebration(false)
     }, 3000)
@@ -324,7 +324,7 @@ export default function Learn() {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 1 }}
                 >
-                  <Link to={`/learn/${adjacent.next.id}`} onClick={() => setShowCelebration(false)}>
+                  <Link to={`/course/learn/${adjacent.next.id}`} onClick={() => setShowCelebration(false)}>
                     <Button size="lg" className="gap-2 font-mono group">
                       Continue to next lesson
                       <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
