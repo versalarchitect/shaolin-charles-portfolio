@@ -62,7 +62,7 @@ function buildTips(progress: ReturnType<typeof useProgress>): Tip[] {
     {
       id: 'streak-nudge-2',
       condition: () => progress.currentStreak === 2,
-      message: () => 'Come back tomorrow to start a streak multiplier at 3 days!',
+      message: () => 'Come back tomorrow to start earning streak bonuses at 3 days!',
     },
     // 3. Completed 5+ lessons but never found an easter egg
     {
@@ -75,7 +75,7 @@ function buildTips(progress: ReturnType<typeof useProgress>): Tip[] {
         return completedCount >= 5 && explorer.easterEggsFound.size === 0
       },
       message: () =>
-        'Psst... there are 5 hidden easter eggs on this site. Try the Konami code.',
+        'Psst... there are 5 hidden surprises on this site. Try clicking around!',
     },
     // 4. Combo is 0 but completed a lesson in the last 10 minutes
     {

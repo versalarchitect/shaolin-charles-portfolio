@@ -33,12 +33,12 @@ const MESSAGES: Record<string, string[]> = {
   ],
   course_complete: [
     'You finished the whole thing. Respect.',
-    'Course complete. Now go build something real.',
+    'Course complete. Now go build something for your business.',
     'Done. You earned every XP.',
   ],
   course_halfway: [
-    'Halfway through. The second half is where it gets real.',
-    '50% down. The interesting stuff is ahead.',
+    'Halfway through. The best stuff is ahead.',
+    '50% done. The exciting parts are coming.',
     'Half the course behind you. Keep the momentum.',
   ],
   high_progress: [
@@ -49,28 +49,28 @@ const MESSAGES: Record<string, string[]> = {
   ],
   streak_high: [
     '{streak} days strong. Don\'t stop now.',
-    'Consistency compounds. Keep showing up.',
-    '{streak}-day streak. That\'s discipline.',
+    'Consistency pays off. Keep showing up.',
+    '{streak}-day streak. That\'s dedication.',
     'Day {streak}. The habit is forming.',
     '{streak} days in a row. Most people quit by now.',
   ],
   streak_start: [
     'Streak started. Come back tomorrow.',
-    'Day {streak}. Build the habit.',
+    'Day {streak}. Building the habit.',
     'Two days in. Three is where it counts.',
   ],
   zero_progress: [
     'Every expert was once a beginner.',
     'One lesson. That\'s all it takes to start.',
-    'The hardest part is opening the app. You did that.',
+    'The hardest part is showing up. You did that.',
     'Start small. Start now.',
     'No progress yet today. Change that.',
   ],
   morning: [
-    'Fresh start. Let\'s build something.',
+    'Fresh start. Let\'s learn something new.',
     'Morning sessions hit different. Dive in.',
     'Early hours, clear mind. Good time to learn.',
-    'Morning. Coffee and code.',
+    'Morning. Coffee and learning.',
   ],
   afternoon: [
     'Afternoon push. Make it count.',
@@ -78,7 +78,7 @@ const MESSAGES: Record<string, string[]> = {
     'Solid time to knock out a lesson.',
   ],
   evening: [
-    'Evening grind. Respect.',
+    'Evening learning. Respect.',
     'The best work happens when no one\'s watching.',
     'Quiet hours. Deep focus.',
     'Evening session. No distractions.',
@@ -91,9 +91,9 @@ const MESSAGES: Record<string, string[]> = {
   default: [
     'Show up. Do the work.',
     'Progress over perfection.',
-    'One lesson closer to mastery.',
+    'One lesson closer to your goal.',
     'Small steps, big results.',
-    'Keep building.',
+    'Keep going.',
   ],
 }
 

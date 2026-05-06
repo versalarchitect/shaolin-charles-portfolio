@@ -53,7 +53,7 @@ function Slide1({ direction }: SlideProps) {
     <SlideWrapper direction={direction}>
       <h2 className="text-xl font-bold tracking-tight">Welcome to Your Learning Journey</h2>
       <p className="text-sm text-foreground/60 mt-2 leading-relaxed">
-        Everything you do here earns XP and unlocks rewards. Complete lessons, maintain streaks, explore — it all counts.
+        Everything you do here earns XP (experience points) and unlocks rewards. Finish lessons, keep coming back each day, explore the site — it all counts.
       </p>
       <AnimatedXpCounter />
     </SlideWrapper>
@@ -62,10 +62,10 @@ function Slide1({ direction }: SlideProps) {
 
 function Slide2({ direction }: SlideProps) {
   const items = [
-    { icon: Zap, label: 'Complete lessons', detail: '+10-50 XP' },
-    { icon: Flame, label: 'Maintain streaks', detail: 'up to 3x multiplier' },
+    { icon: Zap, label: 'Finish lessons', detail: '+10-50 XP' },
+    { icon: Flame, label: 'Come back each day', detail: 'up to 3x bonus' },
     { icon: Compass, label: 'Explore the site', detail: '+5 XP per page' },
-    { icon: Eye, label: 'Find easter eggs', detail: 'hidden bonuses' },
+    { icon: Eye, label: 'Find hidden surprises', detail: 'secret bonuses' },
   ]
 
   return (
@@ -99,7 +99,7 @@ function Slide3({ direction }: SlideProps) {
     <SlideWrapper direction={direction}>
       <h2 className="text-xl font-bold tracking-tight">Unlock Rewards</h2>
       <p className="text-sm text-foreground/60 mt-2 leading-relaxed">
-        Earn ranks, unlock cosmetic themes, discover secret pages, and climb the leaderboard.
+        Earn ranks, unlock new dashboard looks, discover secret pages, and climb the leaderboard.
       </p>
       <div className="flex items-center justify-center gap-2 mt-6">
         {RANKS.map((rank, i) => (
@@ -137,7 +137,7 @@ function Slide4({ direction, onDismiss }: SlideProps & { onDismiss: () => void }
         Start Learning
       </motion.button>
       <p className="text-[11px] text-foreground/30 text-center mt-3 font-mono">
-        5 easter eggs are hidden across the site. Can you find them all?
+        5 hidden surprises are scattered across the site. Can you find them all?
       </p>
     </SlideWrapper>
   )

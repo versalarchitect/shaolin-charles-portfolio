@@ -25,7 +25,7 @@ export const EXPLORER_ACHIEVEMENTS: ExplorerAchievement[] = [
   { id: 'explorer-curious', name: 'Curious Mind', description: 'Visit 3 different pages', xp: 15, condition: 'pages_visited', threshold: 3 },
   { id: 'explorer-wanderer', name: 'Digital Wanderer', description: 'Visit 6 different pages', xp: 30, condition: 'pages_visited', threshold: 6 },
   { id: 'explorer-cartographer', name: 'Cartographer', description: 'Visit every page on the site', xp: 75, condition: 'pages_visited', threshold: 10 },
-  { id: 'explorer-egg-hunter', name: 'Egg Hunter', description: 'Find your first easter egg', xp: 25, condition: 'easter_egg', threshold: 1 },
-  { id: 'explorer-secret-finder', name: 'Secret Finder', description: 'Find 3 easter eggs', xp: 50, condition: 'easter_egg', threshold: 3 },
-  { id: 'explorer-completionist', name: 'Completionist', description: 'Earn 200 Explorer XP', xp: 100, condition: 'total_explorer_xp', threshold: 200 },
+  { id: 'explorer-egg-hunter', name: 'Egg Hunter', description: 'Find your first hidden surprise', xp: 25, condition: 'easter_egg', threshold: 1 },
+  { id: 'explorer-secret-finder', name: 'Secret Finder', description: 'Find 3 hidden surprises', xp: 50, condition: 'easter_egg', threshold: 3 },
+  { id: 'explorer-completionist', name: 'Completionist', description: 'Earn 200 XP from exploring the site', xp: 100, condition: 'total_explorer_xp', threshold: 200 },
 ]

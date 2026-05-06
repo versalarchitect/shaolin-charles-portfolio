@@ -221,7 +221,7 @@ function NodeCircle({
 
   if (isClickable) {
     return (
-      <Link to={`/course/learn/${node.lesson.id}`} aria-label={`${node.lesson.title}${node.isCapstone ? ' (Capstone)' : ''} - ${status === 'completed' ? 'Completed' : status === 'in_progress' ? 'In progress' : 'Available'}`}>
+      <Link to={`/course/learn/${node.lesson.id}`} aria-label={`${node.lesson.title}${node.isCapstone ? ' (Milestone)' : ''} - ${status === 'completed' ? 'Completed' : status === 'in_progress' ? 'In progress' : 'Available'}`}>
         {inner}
       </Link>
     )
@@ -450,7 +450,7 @@ export function SkillTree({ compact = false }: SkillTreeProps) {
           <div className="px-3 py-2 rounded-lg bg-background border border-foreground/10 shadow-lg max-w-[220px]">
             <p className="text-[10px] font-mono text-foreground/40 mb-0.5">
               {tooltip.node.lesson.number}
-              {tooltip.node.isCapstone && ' -- Capstone'}
+              {tooltip.node.isCapstone && ' -- Milestone'}
             </p>
             <p className="text-xs font-medium text-foreground/80 leading-tight">
               {tooltip.node.lesson.title}

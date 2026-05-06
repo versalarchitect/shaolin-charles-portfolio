@@ -42,18 +42,18 @@ export const XP_LEVELS = [
 ] as const
 
 export const ACHIEVEMENTS: Achievement[] = [
-  { id: 'first-lesson', name: 'First Steps', description: 'Complete your first lesson', icon: '🎯', xpReward: 10, condition: 'complete_1_lesson' },
-  { id: 'streak-3', name: 'On Fire', description: '3-day learning streak', icon: '🔥', xpReward: 15, condition: 'streak_3' },
-  { id: 'streak-7', name: 'Unstoppable', description: '7-day learning streak', icon: '⚡', xpReward: 30, condition: 'streak_7' },
-  { id: 'streak-30', name: 'Dedicated', description: '30-day learning streak', icon: '💎', xpReward: 100, condition: 'streak_30' },
-  { id: 'prework-done', name: 'Ready to Build', description: 'Complete all Prework lessons', icon: '🛠️', xpReward: 20, condition: 'complete_prework' },
-  { id: 'tier1-done', name: 'Machine Understood', description: 'Complete Tier 1 capstone', icon: '🧠', xpReward: 50, condition: 'complete_tier1' },
-  { id: 'tier2-done', name: 'Agent Director', description: 'Complete Tier 2 capstone', icon: '🏗️', xpReward: 75, condition: 'complete_tier2' },
-  { id: 'tier3-done', name: 'Orchestrator', description: 'Complete Tier 3 capstone', icon: '🚀', xpReward: 100, condition: 'complete_tier3' },
-  { id: 'tier4-done', name: 'Architect', description: 'Complete Tier 4 capstone', icon: '👑', xpReward: 150, condition: 'complete_tier4' },
-  { id: 'speed-learner', name: 'Speed Learner', description: 'Complete 3 lessons in one day', icon: '⏱️', xpReward: 25, condition: 'three_in_day' },
-  { id: 'half-way', name: 'Halfway There', description: 'Complete 50% of all lessons', icon: '🎖️', xpReward: 50, condition: 'half_complete' },
-  { id: 'full-course', name: 'Course Complete', description: 'Complete every lesson', icon: '🏆', xpReward: 200, condition: 'all_complete' },
+  { id: 'first-lesson', name: 'First Steps', description: 'Finish your first lesson', icon: '🎯', xpReward: 10, condition: 'complete_1_lesson' },
+  { id: 'streak-3', name: 'On Fire', description: 'Learn 3 days in a row', icon: '🔥', xpReward: 15, condition: 'streak_3' },
+  { id: 'streak-7', name: 'Unstoppable', description: 'Learn 7 days in a row', icon: '⚡', xpReward: 30, condition: 'streak_7' },
+  { id: 'streak-30', name: 'Dedicated', description: 'Learn 30 days in a row', icon: '💎', xpReward: 100, condition: 'streak_30' },
+  { id: 'prework-done', name: 'Ready to Build', description: 'Finish the setup guide', icon: '🛠️', xpReward: 20, condition: 'complete_prework' },
+  { id: 'tier1-done', name: 'Machine Understood', description: 'Finish your first major project', icon: '🧠', xpReward: 50, condition: 'complete_tier1' },
+  { id: 'tier2-done', name: 'Agent Director', description: 'Finish the Tier 2 milestone project', icon: '🏗️', xpReward: 75, condition: 'complete_tier2' },
+  { id: 'tier3-done', name: 'Orchestrator', description: 'Finish the Tier 3 milestone project', icon: '🚀', xpReward: 100, condition: 'complete_tier3' },
+  { id: 'tier4-done', name: 'Architect', description: 'Finish the Tier 4 milestone project', icon: '👑', xpReward: 150, condition: 'complete_tier4' },
+  { id: 'speed-learner', name: 'Speed Learner', description: 'Finish 3 lessons in one day', icon: '⏱️', xpReward: 25, condition: 'three_in_day' },
+  { id: 'half-way', name: 'Halfway There', description: 'Finish half of all lessons', icon: '🎖️', xpReward: 50, condition: 'half_complete' },
+  { id: 'full-course', name: 'Course Complete', description: 'Finish every lesson in the course', icon: '🏆', xpReward: 200, condition: 'all_complete' },
 ]
 
 export const CURRICULUM: Tier[] = [
@@ -709,18 +709,18 @@ export interface Title {
 
 export const TITLES: Title[] = [
   { id: 'newcomer', name: 'Newcomer', description: 'Join the course', condition: 'default' },
-  { id: 'early-bird', name: 'Early Bird', description: 'Complete 5 lessons before noon', condition: 'five_before_noon' },
-  { id: 'speed-demon', name: 'Speed Demon', description: 'Complete 5 lessons in a single day', condition: 'five_in_day' },
-  { id: 'unbreakable', name: 'Unbreakable', description: 'Reach a 14-day streak', condition: 'streak_14' },
-  { id: 'iron-will', name: 'Iron Will', description: 'Reach a 30-day streak', condition: 'streak_30' },
-  { id: 'combo-king', name: 'Combo King', description: 'Reach a 5x combo', condition: 'combo_5' },
-  { id: 'scholar', name: 'Scholar', description: 'Complete Tier 1', condition: 'complete_tier1' },
-  { id: 'director', name: 'Director', description: 'Complete Tier 2', condition: 'complete_tier2' },
-  { id: 'orchestrator', name: 'Orchestrator', description: 'Complete Tier 3', condition: 'complete_tier3' },
-  { id: 'architect', name: 'The Architect', description: 'Complete Tier 4', condition: 'complete_tier4' },
-  { id: 'perfectionist', name: 'Perfectionist', description: 'Complete every lesson', condition: 'all_complete' },
-  { id: 'goal-crusher', name: 'Goal Crusher', description: 'Hit daily XP goal 7 days in a row', condition: 'seven_goals' },
-  { id: 'challenger', name: 'The Challenger', description: 'Complete 30 daily challenges', condition: 'thirty_challenges' },
+  { id: 'early-bird', name: 'Early Bird', description: 'Finish 5 lessons before noon', condition: 'five_before_noon' },
+  { id: 'speed-demon', name: 'Speed Demon', description: 'Finish 5 lessons in a single day', condition: 'five_in_day' },
+  { id: 'unbreakable', name: 'Unbreakable', description: 'Learn 14 days in a row', condition: 'streak_14' },
+  { id: 'iron-will', name: 'Iron Will', description: 'Learn 30 days in a row', condition: 'streak_30' },
+  { id: 'combo-king', name: 'Combo King', description: 'Hit a 5x combo', condition: 'combo_5' },
+  { id: 'scholar', name: 'Scholar', description: 'Finish Tier 1', condition: 'complete_tier1' },
+  { id: 'director', name: 'Director', description: 'Finish Tier 2', condition: 'complete_tier2' },
+  { id: 'orchestrator', name: 'Orchestrator', description: 'Finish Tier 3', condition: 'complete_tier3' },
+  { id: 'architect', name: 'The Architect', description: 'Finish Tier 4', condition: 'complete_tier4' },
+  { id: 'perfectionist', name: 'Perfectionist', description: 'Finish every lesson', condition: 'all_complete' },
+  { id: 'goal-crusher', name: 'Goal Crusher', description: 'Hit your daily goal 7 days in a row', condition: 'seven_goals' },
+  { id: 'challenger', name: 'The Challenger', description: 'Finish 30 daily challenges', condition: 'thirty_challenges' },
 ]
 
 export interface WeeklyChallengeDefinition {
@@ -733,25 +733,25 @@ export interface WeeklyChallengeDefinition {
 }
 
 export const WEEKLY_CHALLENGE_POOL: WeeklyChallengeDefinition[] = [
-  { id: 'wc-10-lessons', title: 'Marathon Runner', description: 'Complete 10 lessons this week', xpReward: 75, condition: 'lessons_this_week', target: 10 },
+  { id: 'wc-10-lessons', title: 'Marathon Runner', description: 'Finish 10 lessons this week', xpReward: 75, condition: 'lessons_this_week', target: 10 },
   { id: 'wc-7-days', title: 'Perfect Week', description: 'Learn every day this week', xpReward: 100, condition: 'active_days_week', target: 7 },
-  { id: 'wc-200xp', title: 'XP Hoarder', description: 'Earn 200+ XP this week', xpReward: 50, condition: 'xp_this_week', target: 200 },
-  { id: 'wc-5-challenges', title: 'Challenge Accepted', description: 'Complete 5 daily challenges this week', xpReward: 60, condition: 'challenges_this_week', target: 5 },
-  { id: 'wc-combo-10', title: 'Combo Legend', description: 'Reach a 5x combo 3 times this week', xpReward: 80, condition: 'combos_this_week', target: 3 },
-  { id: 'wc-tier-progress', title: 'Tier Climber', description: 'Complete a full tier this week', xpReward: 120, condition: 'tier_complete_week', target: 1 },
+  { id: 'wc-200xp', title: 'XP Collector', description: 'Earn 200+ XP this week', xpReward: 50, condition: 'xp_this_week', target: 200 },
+  { id: 'wc-5-challenges', title: 'Challenge Accepted', description: 'Finish 5 daily challenges this week', xpReward: 60, condition: 'challenges_this_week', target: 5 },
+  { id: 'wc-combo-10', title: 'Combo Legend', description: 'Hit a 5x combo 3 times this week', xpReward: 80, condition: 'combos_this_week', target: 3 },
+  { id: 'wc-tier-progress', title: 'Tier Climber', description: 'Finish a full tier this week', xpReward: 120, condition: 'tier_complete_week', target: 1 },
 ]
 
 export const CHALLENGE_POOL: ChallengeDefinition[] = [
-  { id: 'dc-2-lessons', title: 'Double Down', description: 'Complete 2 lessons today', xpReward: 20, condition: 'two_lessons_today' },
-  { id: 'dc-3-lessons', title: 'Hat Trick', description: 'Complete 3 lessons today', xpReward: 35, condition: 'three_lessons_today' },
-  { id: 'dc-streak-keep', title: 'Keep the Fire', description: 'Maintain your streak', xpReward: 10, condition: 'maintain_streak' },
-  { id: 'dc-capstone', title: 'Boss Level', description: 'Complete a capstone lesson', xpReward: 40, condition: 'complete_capstone' },
+  { id: 'dc-2-lessons', title: 'Double Down', description: 'Finish 2 lessons today', xpReward: 20, condition: 'two_lessons_today' },
+  { id: 'dc-3-lessons', title: 'Hat Trick', description: 'Finish 3 lessons today', xpReward: 35, condition: 'three_lessons_today' },
+  { id: 'dc-streak-keep', title: 'Keep the Fire', description: 'Keep your streak going today', xpReward: 10, condition: 'maintain_streak' },
+  { id: 'dc-capstone', title: 'Boss Level', description: 'Finish a milestone lesson', xpReward: 40, condition: 'complete_capstone' },
   { id: 'dc-50xp', title: 'XP Hunter', description: 'Earn 50+ XP today', xpReward: 15, condition: 'earn_50_xp' },
   { id: 'dc-100xp', title: 'XP Crusher', description: 'Earn 100+ XP today', xpReward: 25, condition: 'earn_100_xp' },
   { id: 'dc-new-tier', title: 'Tier Breaker', description: 'Start a lesson in a new tier', xpReward: 20, condition: 'new_tier_lesson' },
-  { id: 'dc-first-today', title: 'Early Bird', description: 'Complete your first lesson of the day', xpReward: 10, condition: 'first_lesson_today' },
-  { id: 'dc-combo-3', title: 'Combo Builder', description: 'Reach a 3x combo', xpReward: 20, condition: 'combo_3' },
-  { id: 'dc-combo-5', title: 'Combo Master', description: 'Reach a 5x combo', xpReward: 35, condition: 'combo_5' },
-  { id: 'dc-goal-hit', title: 'Goal Crusher', description: 'Hit your daily XP goal', xpReward: 15, condition: 'daily_goal_met' },
-  { id: 'dc-tools-variety', title: 'Tool Explorer', description: 'Complete lessons using 3+ different tools', xpReward: 20, condition: 'three_tools' },
+  { id: 'dc-first-today', title: 'Early Bird', description: 'Finish your first lesson of the day', xpReward: 10, condition: 'first_lesson_today' },
+  { id: 'dc-combo-3', title: 'Combo Builder', description: 'Hit a 3x combo', xpReward: 20, condition: 'combo_3' },
+  { id: 'dc-combo-5', title: 'Combo Master', description: 'Hit a 5x combo', xpReward: 35, condition: 'combo_5' },
+  { id: 'dc-goal-hit', title: 'Goal Crusher', description: 'Hit your daily goal', xpReward: 15, condition: 'daily_goal_met' },
+  { id: 'dc-tools-variety', title: 'Tool Explorer', description: 'Try 3 different tools in your lessons', xpReward: 20, condition: 'three_tools' },
 ]

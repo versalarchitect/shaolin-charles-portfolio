@@ -89,7 +89,7 @@ function getExplorerAchievementProgress(condition: string, threshold: number): A
     }
     case 'easter_egg': {
       const current = explorerState.easterEggsFound.size
-      return { current: Math.min(current, threshold), target: threshold, label: `${current}/${threshold} eggs found` }
+      return { current: Math.min(current, threshold), target: threshold, label: `${current}/${threshold} surprises found` }
     }
     case 'interaction': {
       const current = explorerState.interactions.size

@@ -152,7 +152,7 @@ export function ExplorerProgress() {
         <div className="space-y-1.5">
           <h3 className="text-xs font-mono uppercase tracking-wider text-foreground/40 flex items-center gap-1.5">
             <Eye className="w-3 h-3" />
-            Easter Eggs Found
+            Hidden Surprises Found
           </h3>
           <div className="flex items-center gap-2">
             <div className="flex gap-1">

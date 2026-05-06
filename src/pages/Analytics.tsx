@@ -100,7 +100,7 @@ function XpOverTimeChart() {
   if (!hasData) {
     return (
       <div className="flex items-center justify-center h-[200px] text-sm font-mono text-foreground/40">
-        Complete lessons to see your XP trend
+        Finish lessons to see your progress over time
       </div>
     )
   }
@@ -472,7 +472,7 @@ function ToolDistribution() {
   if (toolMastery.length === 0) {
     return (
       <div className="flex items-center justify-center h-[160px] text-sm font-mono text-foreground/40">
-        Complete lessons to see tool distribution
+        Finish lessons to see which tools you're learning
       </div>
     )
   }
@@ -537,7 +537,7 @@ function LessonRatingsSection() {
   if (ratedCount === 0) {
     return (
       <div className="flex items-center justify-center h-[100px] text-sm font-mono text-foreground/40">
-        Rate completed lessons to see your feedback
+        Rate lessons after finishing them to see your feedback here
       </div>
     )
   }
@@ -598,7 +598,7 @@ export default function Analytics() {
         {/* Header */}
         <div>
           <h1 className="text-xl font-mono font-bold text-foreground/90">Analytics</h1>
-          <p className="text-sm font-mono text-foreground/50 mt-1">Your learning patterns and progress data</p>
+          <p className="text-sm font-mono text-foreground/50 mt-1">See how you learn and track your progress</p>
         </div>
 
         {/* XP Over Time */}
@@ -631,8 +631,8 @@ export default function Analytics() {
           <FocusStatsCard />
         </AnalyticsSection>
 
-        {/* Tool Distribution */}
-        <AnalyticsSection title="Tool Distribution" icon={PieChart}>
+        {/* Tools You're Learning */}
+        <AnalyticsSection title="Tools You're Learning" icon={PieChart}>
           <ToolDistribution />
         </AnalyticsSection>
       </div>

@@ -147,10 +147,10 @@ export function DailyReward() {
                   </p>
                   <p className="text-xs text-foreground/50 mt-0.5">
                     {isWeeklyBonus
-                      ? 'Weekly bonus! 7 days in a row.'
+                      ? 'Amazing! 7 days in a row. Here\'s a bonus.'
                       : consecutiveDays >= 30
-                        ? 'Incredible dedication. Max daily reward!'
-                        : `Keep logging in daily for bigger rewards.`}
+                        ? 'Incredible dedication. You\'ve earned the top daily reward!'
+                        : `Come back each day for bigger rewards.`}
                   </p>
                 </div>
               </div>

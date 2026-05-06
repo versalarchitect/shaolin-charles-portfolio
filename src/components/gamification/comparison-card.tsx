@@ -149,9 +149,9 @@ export function ComparisonCard() {
         >
           <BarChart3 className="w-5 h-5 text-foreground/25" />
         </motion.div>
-        <p className="text-sm text-foreground/50 mb-1 font-medium">Be the first to set the bar!</p>
+        <p className="text-sm text-foreground/50 mb-1 font-medium">Be the first one here!</p>
         <p className="text-xs text-foreground/30 font-mono">
-          Community stats will appear once more learners join.
+          You'll see how you compare once more learners join.
         </p>
       </div>
     )

@@ -423,7 +423,7 @@ export function FocusTimer() {
               <Trophy className="w-5 h-5 text-foreground/60" />
             </div>
             <div>
-              <p className="text-sm font-medium text-foreground/80">Cycle Complete!</p>
+              <p className="text-sm font-medium text-foreground/80">Great work! All sessions done.</p>
               <p className="text-xs text-foreground/40 mt-1">
                 {sessionCount} sessions &middot; {sessionCount * duration} minutes focused
               </p>
@@ -438,7 +438,7 @@ export function FocusTimer() {
               className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-foreground/[0.06] hover:bg-foreground/10 border border-foreground/[0.08] text-xs font-mono text-foreground/60 hover:text-foreground/80 transition-all"
             >
               <RotateCcw className="w-3.5 h-3.5" />
-              Start New Cycle
+              Start Again
             </motion.button>
           </motion.div>
         )}
