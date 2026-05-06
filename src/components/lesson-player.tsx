@@ -14,6 +14,7 @@ import { Button } from '@/components/ui/button'
 import type { LessonStep, LessonContent } from '@/data/lessons/types'
 import { loadLessonContent } from '@/data/lessons'
 import { FlowDiagram } from '@/components/ui/flow-diagram'
+import { awardExplorerXp } from '@/stores/progress'
 
 // ============================================================================
 // Step components
@@ -71,7 +72,8 @@ function TerminalStep({
 }) {
   const [input, setInput] = useState('')
   const [status, setStatus] = useState<'idle' | 'correct' | 'wrong'>('idle')
-  const [showHint, setShowHint] = useState(false)
+  const [showCommand, setShowCommand] = useState(false)
+  const [copied, setCopied] = useState(false)
   const inputRef = useRef<HTMLInputElement>(null)
 
   useEffect(() => {
@@ -81,7 +83,6 @@ function TerminalStep({
   const handleSubmit = () => {
     const trimmed = input.trim()
     const expected = step.expectedCommand.trim()
-    // Allow flexible matching — ignore quote style differences and exact email/name
     const normalize = (s: string) => s.replace(/["']/g, '').replace(/\s+/g, ' ').toLowerCase()
     if (normalize(trimmed).startsWith(normalize(expected).split('"')[0].split("'")[0].trim()) ||
         normalize(trimmed) === normalize(expected)) {
@@ -93,13 +94,31 @@ function TerminalStep({
     }
   }
 
+  const handleCopyCommand = () => {
+    navigator.clipboard.writeText(step.expectedCommand)
+    setCopied(true)
+    setInput(step.expectedCommand)
+    setTimeout(() => setCopied(false), 2000)
+  }
+
+  const handleSkip = () => {
+    setInput(step.expectedCommand)
+    setStatus('correct')
+    setTimeout(onComplete, 800)
+  }
+
   return (
     <div className="space-y-4">
       <p className="text-foreground/70 leading-relaxed text-lg">{step.instruction}</p>
       <div className="rounded-xl border border-foreground/[0.08] bg-foreground/[0.03] overflow-hidden">
-        <div className="flex items-center gap-2 px-4 py-2.5 border-b border-foreground/[0.06]">
-          <Terminal className="w-4 h-4 text-foreground/40" />
-          <span className="text-[11px] font-mono text-foreground/40">Terminal</span>
+        <div className="flex items-center justify-between px-4 py-2.5 border-b border-foreground/[0.06]">
+          <div className="flex items-center gap-2">
+            <Terminal className="w-4 h-4 text-foreground/40" />
+            <span className="text-[11px] font-mono text-foreground/40">Terminal</span>
+          </div>
+          <span className="text-[10px] font-mono text-foreground/30">
+            Type or copy the command below
+          </span>
         </div>
         <div className="p-4">
           <div className="flex items-center gap-2">
@@ -114,7 +133,7 @@ function TerminalStep({
                 flex-1 bg-transparent font-mono text-sm outline-none
                 ${status === 'correct' ? 'text-green-400' : status === 'wrong' ? 'text-red-400' : 'text-foreground/80'}
               `}
-              placeholder="Type the command..."
+              placeholder="Type the command or click 'Show command' below..."
               spellCheck={false}
               autoComplete="off"
             />
@@ -131,26 +150,46 @@ function TerminalStep({
         </div>
       </div>
 
-      <div className="flex items-center justify-between">
-        <div>
-          {step.hint && (
+      {showCommand && (
+        <motion.div
+          initial={{ opacity: 0, height: 0 }}
+          animate={{ opacity: 1, height: 'auto' }}
+          className="rounded-xl border border-foreground/[0.08] bg-foreground/[0.02] overflow-hidden"
+        >
+          <div className="flex items-center justify-between px-4 py-3">
+            <code className="font-mono text-sm text-foreground/80 break-all">{step.expectedCommand}</code>
             <button
               type="button"
-              onClick={() => setShowHint(!showHint)}
+              onClick={handleCopyCommand}
+              className="ml-3 shrink-0 p-1.5 rounded-lg bg-foreground/[0.05] hover:bg-foreground/10 transition-colors"
+              aria-label="Copy command"
+            >
+              {copied ? <Check className="w-3.5 h-3.5 text-green-500" /> : <Copy className="w-3.5 h-3.5 text-foreground/50" />}
+            </button>
+          </div>
+        </motion.div>
+      )}
+
+      <div className="flex items-center justify-between gap-3 flex-wrap">
+        <div className="flex items-center gap-3">
+          {status !== 'correct' && (
+            <button
+              type="button"
+              onClick={() => setShowCommand(!showCommand)}
               className="flex items-center gap-1.5 text-xs text-foreground/40 hover:text-foreground/60 transition-colors"
             >
               <Lightbulb className="w-3.5 h-3.5" />
-              {showHint ? 'Hide hint' : 'Show hint'}
+              {showCommand ? 'Hide command' : 'Show command'}
             </button>
           )}
-          {showHint && step.hint && (
-            <motion.p
-              initial={{ opacity: 0, y: -5 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="text-xs font-mono text-foreground/40 mt-2"
+          {status !== 'correct' && (
+            <button
+              type="button"
+              onClick={handleSkip}
+              className="flex items-center gap-1.5 text-xs text-foreground/30 hover:text-foreground/50 transition-colors"
             >
-              {step.hint}
-            </motion.p>
+              I ran this already — skip
+            </button>
           )}
         </div>
         {status !== 'correct' && (
@@ -295,7 +334,7 @@ function CodeInputStep({
 }) {
   const [input, setInput] = useState('')
   const [status, setStatus] = useState<'idle' | 'correct' | 'wrong'>('idle')
-  const [showHint, setShowHint] = useState(false)
+  const [showAnswer, setShowAnswer] = useState(false)
   const inputRef = useRef<HTMLInputElement>(null)
 
   useEffect(() => { inputRef.current?.focus() }, [])
@@ -309,6 +348,12 @@ function CodeInputStep({
       setStatus('wrong')
       setTimeout(() => setStatus('idle'), 600)
     }
+  }
+
+  const handleReveal = () => {
+    setInput(step.answer)
+    setStatus('correct')
+    setTimeout(onComplete, 800)
   }
 
   return (
@@ -329,17 +374,28 @@ function CodeInputStep({
           spellCheck={false}
         />
       </div>
-      <div className="flex items-center justify-between">
-        {step.hint ? (
-          <button
-            type="button"
-            onClick={() => setShowHint(!showHint)}
-            className="flex items-center gap-1.5 text-xs text-foreground/40 hover:text-foreground/60 transition-colors"
-          >
-            <Lightbulb className="w-3.5 h-3.5" />
-            {showHint ? step.hint : 'Show hint'}
-          </button>
-        ) : <div />}
+      <div className="flex items-center justify-between gap-3 flex-wrap">
+        <div className="flex items-center gap-3">
+          {step.hint && status !== 'correct' && (
+            <button
+              type="button"
+              onClick={() => setShowAnswer(!showAnswer)}
+              className="flex items-center gap-1.5 text-xs text-foreground/40 hover:text-foreground/60 transition-colors"
+            >
+              <Lightbulb className="w-3.5 h-3.5" />
+              {showAnswer ? step.hint : 'Show hint'}
+            </button>
+          )}
+          {status !== 'correct' && (
+            <button
+              type="button"
+              onClick={handleReveal}
+              className="flex items-center gap-1.5 text-xs text-foreground/30 hover:text-foreground/50 transition-colors"
+            >
+              Show answer
+            </button>
+          )}
+        </div>
         {status !== 'correct' && (
           <Button onClick={handleSubmit} disabled={!input.trim()} className="font-mono gap-2">
             Check <ArrowRight className="w-4 h-4" />
@@ -635,9 +691,11 @@ export function LessonPlayer({ lessonId }: { lessonId: string }) {
     if (currentStep < totalSteps - 1) {
       setDirection(1)
       setCompletedSteps((prev) => new Set(prev).add(currentStep))
-      setCurrentStep((prev) => prev + 1)
+      const nextStep = currentStep + 1
+      setCurrentStep(nextStep)
+      awardExplorerXp(1, `step-${lessonId}-${nextStep}`)
     }
-  }, [currentStep, totalSteps])
+  }, [currentStep, totalSteps, lessonId])
 
   const goPrev = useCallback(() => {
     if (currentStep > 0) {
