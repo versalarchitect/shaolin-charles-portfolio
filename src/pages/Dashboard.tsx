@@ -11,6 +11,7 @@ import {
   ChevronRight,
 } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 import { SEO } from '@/components/SEO'
 import { VoiceTutorCard } from '@/components/voice-tutor-card'
 import { AnimatedNumber } from '@/components/ui/aaa-effects'
@@ -74,6 +75,7 @@ const SectionFallback = <div className="h-20 animate-pulse bg-foreground/[0.04] 
 
 function LeaderboardPreview() {
   const { user } = useAuth()
+  const { t } = useTranslation()
   const [entries, setEntries] = useState<LeaderboardEntry[]>([])
   const [userRank, setUserRank] = useState<number>(0)
   const [loading, setLoading] = useState(true)
@@ -102,13 +104,13 @@ function LeaderboardPreview() {
     <div className="rounded-xl border border-foreground/[0.08] bg-foreground/[0.02] p-4">
       <div className="flex items-center justify-between mb-3">
         <span className="text-[10px] font-mono uppercase tracking-wider text-foreground/50">
-          Leaderboard
+          {t('gamification.leaderboard')}
         </span>
         <Link
           to="/course/leaderboard"
           className="text-[10px] font-mono text-foreground/40 hover:text-foreground/70 transition-colors"
         >
-          View All &rarr;
+          {t('gamification.viewAll')} &rarr;
         </Link>
       </div>
 
@@ -162,6 +164,7 @@ function LeaderboardPreview() {
 
 function StatsBar() {
   const progress = useProgress()
+  const { t } = useTranslation()
   const level = getLevel()
   const nextLevel = getNextLevel()
   const overall = getOverallProgress()
@@ -174,10 +177,10 @@ function StatsBar() {
     : 100
 
   const stats: { icon: LucideIcon; label: string; content: React.ReactNode }[] = [
-    { icon: Target, label: 'Rank', content: <p className="text-lg font-semibold">{level.name}</p> },
-    { icon: Flame, label: 'Streak', content: <div className="flex items-center gap-2"><p className="text-lg font-mono font-semibold">{progress.currentStreak} <span className="text-sm text-foreground/40">days</span></p><StreakMultiplierBadge /></div> },
-    { icon: Check, label: 'Lessons', content: <p className="text-lg font-mono font-semibold">{overall.completed}<span className="text-sm text-foreground/30">/{TOTAL_LESSONS}</span></p> },
-    { icon: Trophy, label: 'Achievements', content: <p className="text-lg font-mono font-semibold">{progress.unlockedAchievements.length}<span className="text-sm text-foreground/30">/{ACHIEVEMENTS.length}</span></p> },
+    { icon: Target, label: t('gamification.rank'), content: <p className="text-lg font-semibold">{level.name}</p> },
+    { icon: Flame, label: t('gamification.streak'), content: <div className="flex items-center gap-2"><p className="text-lg font-mono font-semibold">{progress.currentStreak} <span className="text-sm text-foreground/40">{t('gamification.days')}</span></p><StreakMultiplierBadge /></div> },
+    { icon: Check, label: t('gamification.lessons'), content: <p className="text-lg font-mono font-semibold">{overall.completed}<span className="text-sm text-foreground/30">/{TOTAL_LESSONS}</span></p> },
+    { icon: Trophy, label: t('gamification.achievements'), content: <p className="text-lg font-mono font-semibold">{progress.unlockedAchievements.length}<span className="text-sm text-foreground/30">/{ACHIEVEMENTS.length}</span></p> },
   ]
 
   return (
@@ -272,6 +275,7 @@ function NextLesson() {
 
 export default function Dashboard() {
   useSmartTips()
+  const { t } = useTranslation()
   const progress = useProgress()
   const level = getLevel()
   const nextLevel = getNextLevel()
@@ -324,7 +328,7 @@ export default function Dashboard() {
         </GamificationErrorBoundary>
         <div className="flex items-start justify-between">
           <div>
-            <h1 className="text-2xl font-bold tracking-tight mb-1">Dashboard</h1>
+            <h1 className="text-2xl font-bold tracking-tight mb-1">{t('gamification.dashboard')}</h1>
             <p className="text-sm text-muted-foreground">{motivational.message}</p>
           </div>
           <ShareButton />
@@ -344,7 +348,7 @@ export default function Dashboard() {
         </GamificationErrorBoundary>
 
         {/* ── Progress (default open) ── */}
-        <DashboardSection id="progress" title="Progress" defaultOpen>
+        <DashboardSection id="progress" title={t('gamification.progress')} defaultOpen>
           <GamificationErrorBoundary>
             <StatsBar />
           </GamificationErrorBoundary>
@@ -362,7 +366,7 @@ export default function Dashboard() {
         </DashboardSection>
 
         {/* ── Challenges (default open) ── */}
-        <DashboardSection id="challenges" title="Challenges" defaultOpen>
+        <DashboardSection id="challenges" title={t('gamification.challenges')} defaultOpen>
           <GamificationErrorBoundary>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <DailyChallenges />
@@ -377,7 +381,7 @@ export default function Dashboard() {
         </DashboardSection>
 
         {/* ── Social (collapsed by default) ── */}
-        <DashboardSection id="social" title="Social" defaultOpen={false}>
+        <DashboardSection id="social" title={t('gamification.social')} defaultOpen={false}>
           <GamificationErrorBoundary>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <LeaderboardPreview />
@@ -394,7 +398,7 @@ export default function Dashboard() {
         </DashboardSection>
 
         {/* ── Achievements (collapsed by default) ── */}
-        <DashboardSection id="achievements" title="Achievements" defaultOpen={false}>
+        <DashboardSection id="achievements" title={t('gamification.achievements')} defaultOpen={false}>
           <GamificationErrorBoundary>
             <AchievementsGrid />
           </GamificationErrorBoundary>
@@ -407,7 +411,7 @@ export default function Dashboard() {
         </DashboardSection>
 
         {/* ── Stats (collapsed by default) ── */}
-        <DashboardSection id="stats" title="Stats" defaultOpen={false}>
+        <DashboardSection id="stats" title={t('gamification.stats')} defaultOpen={false}>
           <GamificationErrorBoundary>
             <div className="grid grid-cols-1 lg:grid-cols-[1fr_1fr] gap-6">
               <StreakCalendar />

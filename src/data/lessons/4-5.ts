@@ -6,7 +6,7 @@ const content: LessonContent = {
     // === INTRODUCTION ===
     {
       type: 'info',
-      title: 'The Teardown: reverse-engineering for agent-buildability',
+      title: 'Analyzing existing systems for AI-readiness',
       body: "Take any production system — an e-commerce platform, a SaaS product, an internal tool. Now ask one question: could a coordinated agent fleet build and maintain this? Not \"could an agent write some of the code\" — but could agents own it end-to-end? Build new features in parallel. Fix bugs without breaking unrelated modules. Extend it without tribal knowledge. The Teardown Methodology gives you a systematic way to answer this question and produce an actionable redesign proposal.",
     },
     {

@@ -6,7 +6,7 @@ const content: LessonContent = {
     // === INTRODUCTION ===
     {
       type: 'info',
-      title: 'The trust problem',
+      title: 'How to check AI-generated code before trusting it',
       body: "Agent-generated code looks professional. It has comments, follows patterns, uses modern syntax. It passes a quick visual scan. That is exactly the danger. Subtle bugs hide behind competent-looking code: missing error boundaries, unchecked null access, race conditions in async flows, SQL injection in dynamic queries. The agent does not test edge cases unless you specified them. \"Trust but check\" means: assume the agent tried its best, then verify systematically before you commit.",
     },
     {
@@ -247,7 +247,7 @@ const content: LessonContent = {
     {
       type: 'checkpoint',
       xp: 5,
-      message: 'Verification mastery achieved! Your agent-generated code is production-safe.',
+      message: 'Verification complete! You know how to check AI code before putting it in front of users.',
     },
   ],
 }

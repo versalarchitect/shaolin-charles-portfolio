@@ -6,7 +6,7 @@ const content: LessonContent = {
     // === INTRODUCTION ===
     {
       type: 'info',
-      title: 'The invisible cliff',
+      title: 'When AI forgets what you told it',
       body: "Every agent has a context window — a fixed amount of text it can hold in working memory. When you direct a long build session, the window fills up. Early decisions, file contents, and your original spec get pushed out as new code, errors, and conversation accumulate. The agent does not warn you. It just starts making decisions that contradict what it decided 30 minutes ago. Output quality degrades silently. Recognizing this cliff before you hit it is the single most important skill for long sessions.",
     },
     {
@@ -194,7 +194,7 @@ const content: LessonContent = {
     {
       type: 'checkpoint',
       xp: 10,
-      message: 'Context management mastered! You can now run long build sessions without quality decay.',
+      message: 'Context management learned! You know how to keep AI focused during long work sessions.',
     },
   ],
 }

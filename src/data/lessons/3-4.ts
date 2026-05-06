@@ -6,7 +6,7 @@ const content: LessonContent = {
     // === INTRO ===
     {
       type: 'info',
-      title: 'Not everything can run at once',
+      title: 'Planning which tasks can run at the same time',
       body: "Parallelism is powerful, but blindly launching five agents at the same time can create chaos. Some tasks depend on others — the UI can't be built until the API types exist, and the API can't be built until the database schema is locked. Task graphs give you a visual model for what can run simultaneously and what must wait. This lesson teaches you to decompose a feature into a dependency graph, find the critical path, and maximize parallelism without breaking anything.",
     },
     {
@@ -285,7 +285,7 @@ const content: LessonContent = {
     {
       type: 'checkpoint',
       xp: 17,
-      message: 'Task Graphs complete! You can now map any feature into a dependency graph and find the fastest execution plan.',
+      message: 'Task planning complete! You can figure out the fastest way to split work across multiple AI agents.',
     },
   ],
 }

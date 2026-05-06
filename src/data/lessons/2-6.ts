@@ -6,7 +6,7 @@ const content: LessonContent = {
     // === INTRODUCTION ===
     {
       type: 'info',
-      title: 'Why integrations are different',
+      title: 'Connecting to payment systems and external services',
       body: "An agent can scaffold a CRUD app quickly because the logic is self-contained. Third-party integrations are different. They involve external APIs with their own rules, webhooks that arrive asynchronously, failure modes the agent has never seen in training data, and idempotency requirements that are easy to forget. When you direct an agent through a Stripe integration, you are not asking it to write code — you are asking it to handle a distributed system correctly. That requires a different kind of spec.",
     },
     {
@@ -208,7 +208,7 @@ const content: LessonContent = {
     {
       type: 'checkpoint',
       xp: 13,
-      message: 'Integration mastery unlocked! You can direct an agent through any third-party integration with confidence.',
+      message: 'Integration skills unlocked! You can direct AI to connect your app to payment systems and external services.',
     },
   ],
 }

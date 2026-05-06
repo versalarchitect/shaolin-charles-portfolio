@@ -6,8 +6,8 @@ const content: LessonContent = {
     // === INTRODUCTION ===
     {
       type: 'info',
-      title: 'The shift: from tasks to products',
-      body: "In Tier 1, you learned to use an agent for individual tasks — write a function, fix a bug, add a test. That is useful but limited. In Tier 2, you direct a single agent to build an entire product. The difference is not just scale. It is a fundamentally different skill: you stop writing code and start writing specifications. The spec becomes your primary artifact — the thing you iterate on, refine, and hand to the agent as an execution contract.",
+      title: 'The shift: from small tasks to full products',
+      body: "In Tier 1, you learned to direct AI on individual tasks — add a feature, fix a problem, run a check. That is useful but limited. In Tier 2, you direct AI to build an entire product from start to finish. The difference is not just scale — it is a different skill entirely. You stop thinking about code and start thinking about specifications. Your spec becomes the most important thing you write — it is your contract with the AI about exactly what to build.",
     },
     {
       type: 'info',
@@ -45,7 +45,7 @@ const content: LessonContent = {
     {
       type: 'checkpoint',
       xp: 2,
-      message: 'Spec anatomy understood!',
+      message: 'You know the five sections of a good spec. This is your most important tool.',
     },
 
     // === REAL EXAMPLE ===
@@ -232,7 +232,7 @@ const content: LessonContent = {
     {
       type: 'checkpoint',
       xp: 10,
-      message: 'Spec writing mastered! You are ready to direct agents at product scale.',
+      message: 'Spec writing for products mastered! You can now direct AI to build entire applications.',
     },
   ],
 }

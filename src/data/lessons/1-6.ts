@@ -6,7 +6,7 @@ const content: LessonContent = {
     // === INTRODUCTION ===
     {
       type: 'info',
-      title: 'Principle 3: Read the error first',
+      title: 'Principle 3: Read the error message first',
       body: "Read the error message. The whole error message. Before anything else. Most developers — and most AI agents — skip this step. They see red text and start guessing. They change random things. They ask \"why doesn't this work?\" without reading what the computer already told them. This wastes enormous amounts of time.",
     },
     {
@@ -17,7 +17,7 @@ const content: LessonContent = {
     {
       type: 'checkpoint',
       xp: 2,
-      message: 'Mindset shift: errors are data.',
+      message: 'Mindset shift: error messages are helpful clues, not scary red text.',
     },
 
     // === DEBUGGING DECISION TREE DIAGRAM ===
@@ -75,7 +75,7 @@ const content: LessonContent = {
     {
       type: 'checkpoint',
       xp: 2,
-      message: 'Error anatomy mastered!',
+      message: 'You can read error messages like a pro now.',
     },
 
     // === ERROR CATEGORIES ===
@@ -144,7 +144,7 @@ const content: LessonContent = {
     {
       type: 'checkpoint',
       xp: 3,
-      message: 'Error categories locked in!',
+      message: 'You know the three types of errors. That is half the battle.',
     },
 
     // === CLASSIFY REAL ERRORS ===
@@ -205,7 +205,7 @@ const content: LessonContent = {
     {
       type: 'checkpoint',
       xp: 3,
-      message: 'Agent debugging unlocked!',
+      message: 'You know how to ask AI for debugging help the right way.',
     },
 
     // === THE 3-STEP DEBUG LOOP ===
@@ -231,7 +231,7 @@ const content: LessonContent = {
     },
     {
       type: 'terminal',
-      instruction: 'Use Claude Code to investigate a root cause. Ask it to trace where data originates:',
+      instruction: 'Ask Claude Code to trace the problem back to its source. Paste this command — it tells the AI to follow the data from start to finish:',
       expectedCommand: 'claude "Trace where the users prop in UserList.tsx gets its data. Start from the API call and follow it through every component to find where it becomes undefined."',
       hint: 'claude "Trace where the users prop..."',
     },
@@ -272,7 +272,7 @@ const content: LessonContent = {
     {
       type: 'checkpoint',
       xp: 10,
-      message: 'Error-First Debugging complete! You now debug systematically, not randomly.',
+      message: 'Error-First Debugging complete! You now approach problems systematically instead of guessing.',
     },
   ],
 }

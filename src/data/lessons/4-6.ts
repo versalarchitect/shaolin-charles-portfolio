@@ -6,7 +6,7 @@ const content: LessonContent = {
     // === INTRODUCTION ===
     {
       type: 'info',
-      title: 'System-level architecture for agent fleets',
+      title: 'Designing systems that scale with more AI agents',
       body: "Module boundaries handle individual features. But what about the entire system architecture? How do you design a system where adding another agent to the fleet makes things FASTER rather than slower? This is the scaling question. Some architectures have a natural ceiling — after 3 concurrent agents, adding a 4th creates more coordination overhead than speed gain. Other architectures scale linearly: 10 agents working 10x faster with zero additional coordination cost. The difference is in the system-level patterns.",
     },
     {

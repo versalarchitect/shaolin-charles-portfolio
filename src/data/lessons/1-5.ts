@@ -6,8 +6,8 @@ const content: LessonContent = {
     // === INTRO ===
     {
       type: 'info',
-      title: 'Vague prompts produce vague code',
-      body: "You have learned how models process text and manage context. Now comes the discipline that separates productive agent sessions from frustrating ones: writing a spec before you build. Principle 2 of directing AI agents is simple -- spec before you build. A spec is a short document that tells the agent exactly what to build, what constraints to follow, and how to know when it is done. Without one, you are gambling that the agent interprets your intent correctly.",
+      title: 'Vague instructions produce vague results',
+      body: "Now comes the discipline that separates productive AI sessions from frustrating ones: writing a spec before you build. A spec is a short document that tells the AI exactly what to build, what rules to follow, and how to know when it is done. Without one, you are gambling that the AI correctly guesses what you meant. A spec takes 15 minutes to write and saves hours of back-and-forth corrections.",
     },
     {
       type: 'info',
@@ -68,7 +68,7 @@ const content: LessonContent = {
     {
       type: 'checkpoint',
       xp: 3,
-      message: 'Spec structure understood!',
+      message: 'You know the anatomy of a good spec. This is how you communicate clearly with AI.',
     },
 
     // === THE TEMPLATE ===
@@ -241,7 +241,7 @@ const content: LessonContent = {
     {
       type: 'checkpoint',
       xp: 7,
-      message: 'Spec writing unlocked! You can now constrain agent output with clear specs.',
+      message: 'Spec writing learned! You can now give AI clear, detailed instructions that produce exactly what you want.',
     },
 
     // === FINAL QUIZ ===

@@ -6,12 +6,12 @@ const content: LessonContent = {
     {
       type: 'info',
       title: 'Welcome to your first lesson',
-      body: "Every bug you'll chase, every deploy you'll ship, every agent you'll direct — it all runs through your local machine first. A sloppy setup means friction on every task. A clean one means you disappear into the work.",
+      body: "Before you can direct AI agents to build software for your business, your computer needs a few tools installed. Think of this like setting up a workshop before you start building. A clean setup now saves you headaches on every future task.",
     },
     {
       type: 'info',
       title: 'What we\'re installing',
-      body: 'Node.js 22+ (JavaScript runtime), Bun (fast package manager), Git (version control), VS Code (editor), SSH keys (secure GitHub access). Nothing optional — every tool here gets used in the course.',
+      body: 'Here is what we are setting up: Node.js (the engine that runs your apps), Bun (a tool that installs project dependencies quickly), Git (tracks all your changes like Google Docs version history), VS Code (the text editor where you will review code), and SSH keys (secure login credentials for GitHub, like a password but safer). Every tool here gets used in the course.',
     },
     {
       type: 'diagram',
@@ -20,10 +20,10 @@ const content: LessonContent = {
       diagram: {
         direction: 'LR',
         nodes: [
-          { id: 'rt', label: 'Runtimes', sublabel: 'Node + Bun' },
-          { id: 'git', label: 'Git', sublabel: 'Version Control' },
-          { id: 'ed', label: 'VS Code', sublabel: 'Editor' },
-          { id: 'cfg', label: 'Config', sublabel: 'Shell + SSH' },
+          { id: 'rt', label: 'Engines', sublabel: 'Node + Bun' },
+          { id: 'git', label: 'Git', sublabel: 'Change Tracking' },
+          { id: 'ed', label: 'VS Code', sublabel: 'Code Editor' },
+          { id: 'cfg', label: 'Config', sublabel: 'Shortcuts + Security' },
           { id: 'done', label: 'Ready', shape: 'pill', highlight: true },
         ],
         edges: [
@@ -37,50 +37,50 @@ const content: LessonContent = {
     {
       type: 'checkpoint',
       xp: 1,
-      message: 'Setup begins!',
+      message: 'Great start! Let us get your machine ready.',
     },
 
     // === NODE.JS ===
     {
       type: 'info',
       title: 'Step 1: Node.js',
-      body: 'Node.js is the runtime for everything we build. We need version 22 or later — it includes native fetch, a stable test runner, and better ESM support.',
+      body: 'Node.js is the engine that runs JavaScript code on your computer. Think of it as the motor under the hood of every app you will build. We need version 22 or later because it includes the latest modern features.',
     },
     {
       type: 'code-demo',
-      title: 'Use nvm, not a direct install',
-      body: 'nvm (Node Version Manager) lets you switch Node versions per project. Essential when you work on multiple codebases.',
+      title: 'Installing Node.js using nvm',
+      body: 'nvm (Node Version Manager) is a small tool that manages which version of Node.js your computer uses. Different projects may need different versions, and nvm lets you switch between them easily. Open your terminal and paste this command to install nvm:',
       language: 'bash',
       code: 'curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.3/install.sh | bash',
     },
     {
       type: 'terminal',
-      instruction: 'After restarting your terminal, install Node.js 22. Type the command:',
+      instruction: 'Close your terminal, reopen it, then paste this command. It installs Node.js version 22 on your machine:',
       expectedCommand: 'nvm install 22',
       hint: 'nvm install <version>',
     },
     {
       type: 'terminal',
-      instruction: 'Set Node 22 as your default version:',
+      instruction: 'Now set Node 22 as the default so it is always available when you open a new terminal:',
       expectedCommand: 'nvm alias default 22',
       hint: 'nvm alias default <version>',
     },
     {
       type: 'multiple-choice',
-      question: 'Why do we use nvm instead of installing Node directly?',
+      question: 'Why do we use nvm instead of installing Node.js directly from the website?',
       options: [
-        'nvm is faster than Node',
-        'nvm lets you switch Node versions per project',
-        'nvm is required by Vercel',
-        'nvm replaces npm',
+        'nvm makes Node.js run faster',
+        'nvm lets you easily switch between different Node.js versions for different projects',
+        'nvm is required by the hosting platform',
+        'nvm replaces the need for other tools',
       ],
       correctIndex: 1,
-      explanation: 'nvm lets you switch between Node versions instantly — essential when different projects need different versions.',
+      explanation: 'Different projects sometimes need different versions of Node.js. nvm lets you switch between them instantly, so you are never stuck. You do not need to memorize this — just understand the idea.',
     },
     {
       type: 'checkpoint',
       xp: 2,
-      message: 'Node.js ready!',
+      message: 'Nice work! Node.js is installed and ready to go.',
     },
 
     {
@@ -113,46 +113,46 @@ const content: LessonContent = {
     {
       type: 'info',
       title: 'Step 2: Bun',
-      body: "Bun is a fast JavaScript runtime and package manager. We use it for installing dependencies and running scripts — it's significantly faster than npm.",
+      body: "Bun is a tool that installs your project's dependencies (the building blocks your app needs) and runs scripts. It does the same job as npm but much faster. You will use it throughout the course.",
     },
     {
       type: 'terminal',
-      instruction: 'Install Bun:',
+      instruction: 'Open your terminal and paste this command. It downloads and installs Bun on your machine:',
       expectedCommand: 'curl -fsSL https://bun.sh/install | bash',
     },
     {
       type: 'terminal',
-      instruction: 'After restarting your terminal, verify Bun is installed:',
+      instruction: 'Close and reopen your terminal, then paste this command to confirm Bun installed correctly. You should see a version number:',
       expectedCommand: 'bun --version',
     },
     {
       type: 'checkpoint',
       xp: 2,
-      message: 'Bun installed!',
+      message: 'Bun is installed! Two tools down, a few more to go.',
     },
 
     // === GIT ===
     {
       type: 'info',
       title: 'Step 3: Git',
-      body: "Git is version control — it tracks every change you make and lets you undo mistakes, collaborate with others, and deploy code. If you're on macOS, you likely have it via Xcode Command Line Tools.",
+      body: "Git is a tool that tracks all your changes — like Google Docs version history, but for code. It lets you undo mistakes, see what changed and when, and safely collaborate with others. If you are on a Mac, you may already have it installed.",
     },
     {
       type: 'code-demo',
       title: 'Install Git if needed',
-      body: 'Most systems have Git already. Run git --version to check. If not:',
+      body: 'Most computers already have Git. Open your terminal and type git --version to check. If you see a version number, you are good. If not, use one of these commands for your system:',
       language: 'bash',
       code: 'xcode-select --install  # macOS\nsudo apt install git     # Ubuntu/Debian\nwinget install Git.Git   # Windows',
     },
     {
       type: 'terminal',
-      instruction: 'Configure your Git name (this shows in every commit):',
+      instruction: 'Tell Git your name. This gets attached to every change you save. Replace "Your Name" with your actual name:',
       expectedCommand: 'git config --global user.name "Your Name"',
       hint: 'git config --global user.name "..."',
     },
     {
       type: 'terminal',
-      instruction: 'Configure your Git email (use the same one as GitHub):',
+      instruction: 'Now tell Git your email. Use the same email you used to sign up for GitHub so your changes get linked to your profile:',
       expectedCommand: 'git config --global user.email "you@example.com"',
       hint: 'git config --global user.email "..."',
     },
@@ -166,30 +166,30 @@ const content: LessonContent = {
         'It makes Git faster',
       ],
       correctIndex: 1,
-      explanation: 'GitHub matches commit emails to profiles. If they differ, your commits show as "unknown contributor."',
+      explanation: 'GitHub matches the email in your changes to your profile. If they do not match, your work shows up as "unknown contributor" instead of your name.',
     },
     {
       type: 'checkpoint',
       xp: 2,
-      message: 'Git configured!',
+      message: 'Git is configured! Your changes will now be tracked under your name.',
     },
 
     // === VS CODE ===
     {
       type: 'info',
       title: 'Step 4: VS Code',
-      body: 'VS Code is the editor we use throughout the course. Download it from code.visualstudio.com if you haven\'t already.',
+      body: 'VS Code is the code editor we use throughout the course. It is free and works on Mac, Windows, and Linux. Download it from code.visualstudio.com if you have not already.',
     },
     {
       type: 'order',
-      instruction: 'Install these VS Code extensions in priority order (most important first):',
+      instruction: 'Install these VS Code extensions (add-ons that make coding easier). Put them in this order, most important first:',
       items: ['ESLint', 'Tailwind CSS IntelliSense', 'Prettier', 'Error Lens'],
       correctOrder: [0, 1, 2, 3],
     },
     {
       type: 'code-demo',
       title: 'Enable format on save',
-      body: 'Add this to your VS Code settings so code auto-formats every time you save:',
+      body: 'Add this to your VS Code settings. It automatically cleans up your code formatting every time you save a file — one less thing to worry about:',
       language: 'json',
       filename: 'settings.json',
       code: '{\n  "editor.formatOnSave": true,\n  "editor.defaultFormatter": "esbenp.prettier-vscode"\n}',
@@ -197,86 +197,86 @@ const content: LessonContent = {
     {
       type: 'checkpoint',
       xp: 1,
-      message: 'Editor ready!',
+      message: 'VS Code is set up! Your editor is ready for action.',
     },
 
     // === SHELL ALIASES ===
     {
       type: 'info',
-      title: 'Step 5: Shell aliases',
-      body: "You'll spend a lot of time in the terminal. A few aliases save hours over the course. These go in your shell config file (~/.zshrc or ~/.bashrc).",
+      title: 'Step 5: Terminal shortcuts',
+      body: "You will use the terminal a lot in this course. Shortcuts (called aliases) let you type short commands instead of long ones. They go in your terminal settings file (called ~/.zshrc on Mac or ~/.bashrc on Linux).",
     },
     {
       type: 'code-demo',
-      body: 'Add these shortcuts to your shell config:',
+      body: 'Add these shortcuts to your terminal settings file. This lets you type short commands instead of long ones — for example, typing gs instead of git status:',
       language: 'bash',
       filename: '~/.zshrc',
       code: '# Git shortcuts\nalias gs="git status"\nalias gc="git commit"\nalias gp="git push"\nalias gl="git log --oneline -20"\n\n# Project shortcuts\nalias dev="bun run dev"\nalias build="bun run build"',
     },
     {
       type: 'code-input',
-      instruction: 'What command reloads your shell config after editing?',
+      instruction: 'After editing your terminal settings file, you need to reload it. What command does that? (The file is called .zshrc)',
       placeholder: 'source ~/.______',
       answer: 'source ~/.zshrc',
-      hint: 'source + the path to your config file',
+      hint: 'Type source followed by the path to your settings file: ~/.zshrc',
     },
     {
       type: 'checkpoint',
       xp: 1,
-      message: 'Aliases set!',
+      message: 'Shortcuts are set! You will save a lot of typing from here on.',
     },
 
     // === SSH KEYS ===
     {
       type: 'info',
-      title: 'Step 6: SSH keys',
-      body: 'SSH keys let you push to GitHub without entering your password every time. We use Ed25519 — the modern default.',
+      title: 'Step 6: SSH keys (secure login for GitHub)',
+      body: 'SSH keys are secure login credentials — like a password, but safer and more convenient. Once set up, you can send code to GitHub without typing your password every time. We will create a key using the Ed25519 format, which is the modern standard.',
     },
     {
       type: 'terminal',
-      instruction: 'Generate an SSH key:',
+      instruction: 'Open your terminal and paste this command to create your SSH key. Replace the email with your own:',
       expectedCommand: 'ssh-keygen -t ed25519 -C "you@example.com"',
       hint: 'ssh-keygen -t ed25519 -C "your email"',
     },
     {
       type: 'code-demo',
-      body: 'Start the SSH agent and add your key:',
+      body: 'Now activate the SSH helper program and register your new key. Paste these two commands one at a time:',
       language: 'bash',
       code: 'eval "$(ssh-agent -s)"\nssh-add ~/.ssh/id_ed25519',
     },
     {
       type: 'info',
-      title: 'Add to GitHub',
-      body: 'Copy your public key with: cat ~/.ssh/id_ed25519.pub | pbcopy — then go to GitHub → Settings → SSH and GPG keys → New SSH key. Paste and save.',
+      title: 'Add your key to GitHub',
+      body: 'Copy your public key by pasting this in your terminal: cat ~/.ssh/id_ed25519.pub | pbcopy — this copies it to your clipboard. Then go to GitHub, click your profile picture, go to Settings, then SSH and GPG keys, click New SSH key, paste your key, and save.',
     },
     {
       type: 'terminal',
-      instruction: 'Test the GitHub connection:',
+      instruction: 'Test your connection to GitHub. If it works, you will see a message saying "successfully authenticated":',
       expectedCommand: 'ssh -T git@github.com',
     },
     {
       type: 'checkpoint',
       xp: 1,
-      message: 'SSH connected!',
+      message: 'SSH is connected! You can now securely communicate with GitHub.',
     },
 
     // === VERIFICATION ===
     {
       type: 'checklist',
-      title: 'Final verification — check off each one:',
+      title: 'Final check — run each of these in your terminal and confirm they work:',
       items: [
-        'node --version → v22.x.x or higher',
-        'bun --version → 1.x.x',
-        'git --version → 2.x.x',
-        'VS Code opens with extensions installed',
-        'ssh -T git@github.com authenticates',
-        'Shell aliases work (gs shows git status)',
+        'Run node --version in your terminal — you should see v22 or higher',
+        'Run bun --version — you should see a version number like 1.x.x',
+        'Run git --version — you should see a version number like 2.x.x',
+        'Open VS Code and confirm your extensions are installed (look in the sidebar)',
+        'Run ssh -T git@github.com — you should see "successfully authenticated"',
+        'Type gs in your terminal — it should show your git status (this tests your shortcuts)',
       ],
     },
     {
       type: 'checkpoint',
       xp: 5,
-      message: 'Environment complete! You\'re ready to deploy.',
+      message: 'Your machine is fully set up! Everything is installed and ready. On to the next lesson.',
     },
   ],
 }

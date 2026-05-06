@@ -6,7 +6,7 @@ const content: LessonContent = {
     // === INTRODUCTION ===
     {
       type: 'info',
-      title: 'Building Verification Pipelines for Agent Output',
+      title: 'Automated quality checks for AI-generated code',
       body: "Agents produce code fast — a fleet of 5 can generate thousands of lines in minutes. Your manual review can't keep pace. The solution: automated verification pipelines that validate every agent branch before it touches main. Type-checking, linting, tests, integration checks — all automated, all mandatory.",
     },
     {
@@ -384,7 +384,7 @@ EOF`,
     {
       type: 'checkpoint',
       xp: 7,
-      message: 'Lesson complete. Your pipeline verifies at machine speed. Trust the system, ship with confidence.',
+      message: 'Verification pipeline built! Automated checks run on every AI branch before it goes live.',
     },
   ],
 }

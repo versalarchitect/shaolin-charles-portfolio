@@ -6,7 +6,7 @@ const content: LessonContent = {
     // === INTRODUCTION ===
     {
       type: 'info',
-      title: 'Beyond Request-Response: Event-Driven Systems',
+      title: 'Building reliable background jobs and workflows',
       body: "Your agents can build CRUD endpoints all day. But real products need background jobs, webhooks, scheduled tasks, and durable workflows that survive crashes. Today you learn to direct agents to build event-driven architecture — systems where things happen asynchronously, retry on failure, and never lose data.",
     },
     {
@@ -391,7 +391,7 @@ export const onOnboardingStart = inngest.createFunction(
     {
       type: 'checkpoint',
       xp: 7,
-      message: 'Lesson complete. Your agents now build systems that survive crashes, not just sunny days.',
+      message: 'Event-driven systems learned! Your apps can now handle failures gracefully.',
     },
   ],
 }

@@ -6,7 +6,7 @@ const content: LessonContent = {
     // === INTRODUCTION ===
     {
       type: 'info',
-      title: 'Conflict Resolution in Agent-Built Code',
+      title: 'When AI agents\'s changes overlap',
       body: "Two agents touched related files. Maybe both modified the router configuration. Maybe they imported different versions of a shared utility. The merge has conflicts — not because anyone failed, but because parallel work inherently creates overlapping zones. This lesson teaches you to resolve these conflicts by understanding intent, not just diff lines.",
     },
     {
@@ -326,7 +326,7 @@ Fix: Tailwind utility-first (no globals). Each component is
     {
       type: 'checkpoint',
       xp: 7,
-      message: 'Lesson complete. Conflicts are just feedback on your decomposition boundaries.',
+      message: 'Conflict resolution learned! Overlapping changes are normal and fixable.',
     },
   ],
 }

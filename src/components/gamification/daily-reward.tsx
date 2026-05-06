@@ -1,6 +1,7 @@
 import { useState, useEffect, useMemo } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Gift, Sparkles } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 import { useProgress, awardExplorerXp } from '@/stores/progress'
 import { playSound, getNotificationSettings } from '@/lib/sounds'
 
@@ -60,6 +61,7 @@ function getLast7Days(): string[] {
 
 export function DailyReward() {
   const progress = useProgress()
+  const { t } = useTranslation()
   const [visible, setVisible] = useState(false)
   const [claimed, setClaimed] = useState(false)
   const [celebrating, setCelebrating] = useState(false)
@@ -143,14 +145,14 @@ export function DailyReward() {
                 </div>
                 <div>
                   <p className="text-sm font-medium text-foreground/90">
-                    Day {consecutiveDays} — Welcome Back!
+                    {t('gamification.day')} {consecutiveDays} — {t('gamification.welcomeBack')}
                   </p>
                   <p className="text-xs text-foreground/50 mt-0.5">
                     {isWeeklyBonus
-                      ? 'Amazing! 7 days in a row. Here\'s a bonus.'
+                      ? t('gamification.weeklyBonus')
                       : consecutiveDays >= 30
-                        ? 'Incredible dedication. You\'ve earned the top daily reward!'
-                        : `Come back each day for bigger rewards.`}
+                        ? t('gamification.topReward')
+                        : t('gamification.comeBackDaily')}
                   </p>
                 </div>
               </div>
@@ -201,7 +203,7 @@ export function DailyReward() {
                   : 'bg-foreground/10 hover:bg-foreground/15 text-foreground/80'
               }`}
             >
-              {claimed ? 'Claimed!' : 'Claim Reward'}
+              {claimed ? t('gamification.claimed') : t('gamification.claimReward')}
             </motion.button>
           </div>
         </motion.div>

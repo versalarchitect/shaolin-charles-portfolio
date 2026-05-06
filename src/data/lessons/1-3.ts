@@ -5,8 +5,8 @@ const content: LessonContent = {
   steps: [
     {
       type: 'info',
-      title: 'Most people never leave Level 1',
-      body: "There are five levels of AI assistance — from copy-pasting into a chat window to fully autonomous agents with tool access. Most developers stay at Level 1 forever: paste code in, get an answer, paste it back. That works, but it's like using a Ferrari to get groceries. This lesson teaches you to recognize which level a task demands and escalate accordingly.",
+      title: 'Five levels of AI tools — most people only know one',
+      body: "There are five levels of AI assistance — from copying text into a chat window all the way up to fully autonomous agents that connect to real tools. Most people never move past Level 1: paste a question, get an answer, paste the answer back. That works for quick questions, but it barely scratches the surface. This lesson teaches you to recognize which level each task needs.",
     },
     {
       type: 'info',
@@ -37,7 +37,7 @@ const content: LessonContent = {
     {
       type: 'checkpoint',
       xp: 2,
-      message: 'Ladder unlocked!',
+      message: 'You see the five levels of AI tools. Most people only know level one.',
     },
 
     // === LEVEL 1: PASTE ===
@@ -83,7 +83,7 @@ const content: LessonContent = {
     {
       type: 'checkpoint',
       xp: 2,
-      message: 'Skills understood!',
+      message: 'You understand reusable AI instructions. Nice.',
     },
 
     // === LEVEL 3: SCRIPT ===
@@ -115,7 +115,7 @@ const content: LessonContent = {
     {
       type: 'checkpoint',
       xp: 2,
-      message: 'Automation unlocked!',
+      message: 'You understand automated AI scripts. These run without you.',
     },
 
     // === LEVEL 4: AGENT ===
@@ -126,7 +126,7 @@ const content: LessonContent = {
     },
     {
       type: 'terminal',
-      instruction: 'Launch Claude Code in agent mode (the default mode when you start it):',
+      instruction: 'Open your terminal and launch Claude Code. It starts in agent mode by default, which means it can read and modify your project files:',
       expectedCommand: 'claude',
       hint: 'Just type the command name to start Claude Code',
     },
@@ -232,7 +232,7 @@ const content: LessonContent = {
     {
       type: 'checkpoint',
       xp: 3,
-      message: 'Task classification mastered!',
+      message: 'You can match the right AI tool to the right task. That is efficient thinking.',
     },
 
     // === ORDER EXERCISE ===
@@ -266,7 +266,7 @@ const content: LessonContent = {
     {
       type: 'checkpoint',
       xp: 9,
-      message: 'Tool Ladder complete! You now see five levels where most people see one.',
+      message: 'Tool Ladder complete! You now see five levels of AI tools. That perspective is your competitive advantage.',
     },
   ],
 }

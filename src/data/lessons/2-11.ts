@@ -6,7 +6,7 @@ const content: LessonContent = {
     // === INTRODUCTION ===
     {
       type: 'info',
-      title: 'Deployment is not optional',
+      title: 'Getting your product live on the internet',
       body: "A product that runs on localhost is a prototype. A product that runs in production is a product. The gap between these two is where most agent-directed projects die — not because the code is wrong, but because deployment configuration, environment variables, DNS, and security concerns get hand-waved. In this lesson you will direct an agent through the full deployment pipeline: configure, audit, preview, and ship. This is the last skill before you prove the whole loop in the capstone.",
     },
     {
@@ -193,7 +193,7 @@ const content: LessonContent = {
     {
       type: 'checkpoint',
       xp: 5,
-      message: 'Deploy pipeline mastered! You can ship with confidence.',
+      message: 'Deploy skills mastered! You can put any AI-built project live on the internet.',
     },
   ],
 }

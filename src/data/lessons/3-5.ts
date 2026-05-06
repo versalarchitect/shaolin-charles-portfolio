@@ -6,7 +6,7 @@ const content: LessonContent = {
     // === INTRODUCTION ===
     {
       type: 'info',
-      title: 'Running Your First Agent Fleet',
+      title: 'Running multiple AI agents at the same time',
       body: "This is the moment. Everything you've learned — decomposition, worktrees, CLAUDE.md, task graphs — converges here. You're about to launch 3-5 agents simultaneously, each building a different feature, each in its own worktree, all coordinated by a shared context file. Think of yourself as mission control: you don't fly the rockets, but you track every one of them.",
     },
     {
@@ -340,7 +340,7 @@ echo "Integration verified. Fleet output is clean."`,
     {
       type: 'checkpoint',
       xp: 12,
-      message: 'Lesson complete. You\'ve run your first fleet. Parallel execution is your new default.',
+      message: 'Fleet run complete! You can now run multiple AI agents in parallel. That is a serious speed advantage.',
     },
   ],
 }

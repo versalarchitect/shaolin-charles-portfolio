@@ -6,7 +6,7 @@ const content: LessonContent = {
     // === INTRODUCTION ===
     {
       type: 'info',
-      title: 'The economics changed. The answer did not.',
+      title: 'When to rebuild vs improve existing code',
       body: "Before agent fleets, rewrites were terrifying. Months of work. Parallel systems running simultaneously. Feature freezes on the old system while the new one catches up. That fear was justified — human-hours made rewrites expensive. With agent fleets, a rewrite that took a team 6 months might take 5 agents 2 weeks. The economics changed dramatically. But the DECISION of when to rewrite versus refactor? That still requires human judgment. Cheap rewrites do not mean every rewrite is correct.",
     },
     {

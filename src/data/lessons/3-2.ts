@@ -6,7 +6,7 @@ const content: LessonContent = {
     // === INTRODUCTION ===
     {
       type: 'info',
-      title: 'CLAUDE.md as Shared Agent Context',
+      title: 'Keeping all your AI agents on the same page',
       body: "When one agent builds your project, consistency is automatic — it remembers its own decisions. But when five agents build in parallel, each starts with a blank slate. Agent A picks REST. Agent B picks GraphQL. Agent C names files in camelCase. Agent D uses kebab-case. You merge and get chaos. CLAUDE.md is the coordination protocol that prevents this.",
     },
     {
@@ -386,7 +386,7 @@ Agents working with user data: include this field in your types.`,
     {
       type: 'checkpoint',
       xp: 7,
-      message: 'Lesson complete. CLAUDE.md is your coordination protocol — the sheet music every agent reads.',
+      message: 'Lesson complete! You know how to keep multiple AI agents consistent with shared instructions.',
     },
   ],
 }

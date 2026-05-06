@@ -6,8 +6,8 @@ const content: LessonContent = {
     // === INTRODUCTION ===
     {
       type: 'info',
-      title: 'You are the architect, not the builder',
-      body: "The skill in this lesson is NOT knowing Next.js. If you already know Next.js perfectly, you could just build it yourself. The skill is knowing enough about architecture to evaluate whether the agent chose correctly — and knowing how to redirect it when it did not. You are a technical director reviewing architectural decisions in real-time, not a developer writing code.",
+      title: 'You make the decisions, AI does the building',
+      body: "The skill here is NOT knowing how to code. If you could code it yourself, you would not need this course. The skill is knowing enough about how apps are structured to evaluate whether the AI made good choices — and knowing how to redirect it when it did not. You are a director reviewing decisions, not a builder writing code.",
     },
     {
       type: 'info',
@@ -294,7 +294,7 @@ const content: LessonContent = {
     {
       type: 'checkpoint',
       xp: 14,
-      message: 'Full-stack architecture direction mastered! You can scaffold entire apps through an agent.',
+      message: 'Architecture direction mastered! You can guide AI to set up entire application structures.',
     },
   ],
 }

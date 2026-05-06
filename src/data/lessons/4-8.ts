@@ -6,7 +6,7 @@ const content: LessonContent = {
     // === INTRODUCTION ===
     {
       type: 'info',
-      title: 'Constraints are not restrictions — they are accelerants',
+      title: 'Why clear rules make AI agents work faster',
       body: "Counter-intuitive truth: the more rules you impose on your agent fleet, the faster they move. An unconstrained agent wastes tokens deliberating, makes incompatible choices, and produces output that conflicts with other agents. A constrained agent knows exactly what it can and cannot do — so it executes immediately within its lane. System-level constraints are not bureaucracy. They are the rails that let your fleet run at full speed without derailing.",
     },
     {

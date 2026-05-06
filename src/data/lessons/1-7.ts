@@ -6,7 +6,7 @@ const content: LessonContent = {
     // === INTRODUCTION ===
     {
       type: 'info',
-      title: 'The missing piece: external tools',
+      title: 'Giving your AI agent superpowers with external tools',
       body: "Your agent can read files, write code, and run commands. But what if it needs to query a database? Check deployment status? Browse documentation? Out of the box, agents are trapped inside your filesystem. MCP — Model Context Protocol — is the standard that breaks them out. It gives your agent a structured way to call external tools: databases, APIs, browsers, anything you can wrap in a server.",
     },
     {
@@ -40,7 +40,7 @@ const content: LessonContent = {
     {
       type: 'checkpoint',
       xp: 2,
-      message: 'Protocol architecture mapped!',
+      message: 'You understand how AI connects to external services.',
     },
 
     // === CORE CONCEPTS ===
@@ -92,7 +92,7 @@ const content: LessonContent = {
     {
       type: 'checkpoint',
       xp: 2,
-      message: 'Server landscape understood!',
+      message: 'You know what kinds of tools AI can connect to.',
     },
 
     // === CONFIGURATION ===
@@ -138,7 +138,7 @@ const content: LessonContent = {
     {
       type: 'checkpoint',
       xp: 3,
-      message: 'Tools vs resources — clear!',
+      message: 'You understand the difference between actions and data access.',
     },
 
     // === BUILDING A SERVER ===
@@ -179,14 +179,14 @@ const content: LessonContent = {
     },
     {
       type: 'terminal',
-      instruction: 'Install the MCP SDK package to start building your own server:',
+      instruction: 'Install the MCP toolkit. This is the package that lets you create connections to external tools:',
       expectedCommand: 'npm install @modelcontextprotocol/sdk',
       hint: 'Use npm install followed by the package name',
     },
     {
       type: 'checkpoint',
       xp: 3,
-      message: 'You can build MCP servers!',
+      message: 'You understand how tool connections work. You can direct AI to set them up.',
     },
 
     // === DEBUGGING ===
@@ -218,7 +218,7 @@ const content: LessonContent = {
     {
       type: 'checkpoint',
       xp: 3,
-      message: 'Debug instincts sharpened!',
+      message: 'You know how to troubleshoot when a tool connection fails.',
     },
 
     // === REAL-WORLD PRACTICE ===
@@ -290,7 +290,7 @@ const content: LessonContent = {
     {
       type: 'checkpoint',
       xp: 12,
-      message: 'MCP Deep Dive complete! Your agents now reach beyond the filesystem.',
+      message: 'MCP complete! Your AI agents can now connect to databases, APIs, and other services.',
     },
   ],
 }

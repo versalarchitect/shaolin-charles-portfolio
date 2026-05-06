@@ -6,7 +6,7 @@ const content: LessonContent = {
     // === INTRO ===
     {
       type: 'info',
-      title: 'The file collision problem',
+      title: 'Preventing AI agents from overwriting each other',
       body: "You spin up three Claude Code agents on the same repo. Agent 1 edits src/auth.ts. Agent 2 edits src/auth.ts. Agent 3 reads a stale version of src/auth.ts. One overwrites the other. The third agent's work is based on code that no longer exists. Welcome to the number-one reason parallel agents fail: they're all fighting over the same working directory.",
     },
     {
@@ -309,7 +309,7 @@ const content: LessonContent = {
     {
       type: 'checkpoint',
       xp: 17,
-      message: 'Worktree mastery complete! You can now run agents in true parallel isolation.',
+      message: 'Worktree skills complete! You can run multiple AI agents at the same time without conflicts.',
     },
   ],
 }

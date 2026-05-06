@@ -6,8 +6,8 @@ const content: LessonContent = {
     // === INTRO ===
     {
       type: 'info',
-      title: 'Principle 1: Read before you generate',
-      body: "You get a task -- \"add a login page\" -- and you immediately type it into Claude Code. The agent generates a component, but it uses a different CSS framework, invents its own routing pattern, and imports a library that's not in package.json. You've created more work than you saved. The fix: before asking an agent to write or modify code, you must first understand what already exists -- the file structure, naming conventions, import patterns, and existing components. An agent that receives context produces code that fits. An agent that receives only a task description produces code that conflicts.",
+      title: 'Principle 1: Understand before you build',
+      body: "You get a task -- \"add a login page\" -- and you immediately type it into Claude Code. The AI generates a page, but it uses a different styling approach than your project, invents its own patterns, and uses tools your project does not have. You have created more work than you saved. The fix: before asking AI to write or modify code, first understand what already exists in your project. An AI agent that receives context about your project produces code that fits. An agent that only gets a vague task description produces code that conflicts with everything else.",
     },
 
     // === DIAGRAM 1: Read Then Generate ===
@@ -77,7 +77,7 @@ const content: LessonContent = {
     },
     {
       type: 'terminal',
-      instruction: 'Use find to discover all TypeScript React files in a project. Type this command:',
+      instruction: 'Use this command to see all the TypeScript React files in your project. This helps you understand what already exists before asking AI to create something new:',
       expectedCommand: 'find . -name "*.tsx" | head -20',
       hint: 'Use find with -name to match the .tsx extension, pipe to head to limit output',
     },
@@ -91,7 +91,7 @@ const content: LessonContent = {
     },
     {
       type: 'terminal',
-      instruction: 'Use grep to find how components are exported in a project:',
+      instruction: 'Use this command to see how existing components are set up. This tells you the patterns your project follows:',
       expectedCommand: 'grep -r "export default" src/components/ | head -10',
       hint: 'Use grep -r to search recursively through the components directory',
     },
@@ -198,13 +198,13 @@ const content: LessonContent = {
     // === PRACTICE: READING A PROJECT ===
     {
       type: 'terminal',
-      instruction: 'Practice time. You need to add an "Announcements" feature. Start by checking project dependencies:',
+      instruction: 'Practice time. Imagine you need to add an "Announcements" feature. Start by checking what tools and libraries your project already uses:',
       expectedCommand: 'cat package.json',
       hint: 'Read the package.json file to understand the project dependencies',
     },
     {
       type: 'terminal',
-      instruction: 'Now find all existing page components to understand the routing pattern:',
+      instruction: 'Now find all existing pages in your project to see where they live and how they are named:',
       expectedCommand: 'find ./src/pages -name "*.tsx"',
       hint: 'Use find to list .tsx files in the pages directory',
     },

@@ -6,7 +6,7 @@ const content: LessonContent = {
     // === INTRODUCTION ===
     {
       type: 'info',
-      title: 'Your codebase is the agent\'s map',
+      title: 'Organizing your project so AI can navigate it',
       body: "You are no longer writing code for humans to maintain. You are designing a codebase that agent fleets will navigate, modify, and extend — often in parallel. The single most impactful architectural decision you can make is this: can an agent FIND what it needs in under three searches? If yes, your structure works. If no, every task costs extra tokens, extra time, and extra risk of the agent modifying the wrong file. This lesson teaches you to evaluate and design directory structures as navigation systems.",
     },
     {

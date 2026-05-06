@@ -1,5 +1,13 @@
 import type { LessonContent } from './types'
 
+function getLocale(): string {
+  try {
+    return localStorage.getItem('i18nextLng') ?? 'fr'
+  } catch {
+    return 'fr'
+  }
+}
+
 const modules: Record<string, () => Promise<{ default: LessonContent }>> = {
   p1: () => import('./p1'),
   p2: () => import('./p2'),
@@ -54,7 +62,39 @@ const modules: Record<string, () => Promise<{ default: LessonContent }>> = {
   '4-12': () => import('./4-12'),
 }
 
+const frModules: Record<string, () => Promise<{ default: LessonContent }>> = {
+  p1: () => import('./p1-fr'),
+  p2: () => import('./p2-fr'),
+  p3: () => import('./p3-fr'),
+  '1-1': () => import('./1-1-fr'),
+  '1-2': () => import('./1-2-fr'),
+  '1-3': () => import('./1-3-fr'),
+  '1-4': () => import('./1-4-fr'),
+  '1-5': () => import('./1-5-fr'),
+  '1-6': () => import('./1-6-fr'),
+  '2-1': () => import('./2-1-fr'),
+  '2-2': () => import('./2-2-fr'),
+  '2-3': () => import('./2-3-fr'),
+  '2-4': () => import('./2-4-fr'),
+  '2-5': () => import('./2-5-fr'),
+  '3-1': () => import('./3-1-fr'),
+  '3-2': () => import('./3-2-fr'),
+  '3-3': () => import('./3-3-fr'),
+  '4-1': () => import('./4-1-fr'),
+  '4-2': () => import('./4-2-fr'),
+  '4-3': () => import('./4-3-fr'),
+  '4-4': () => import('./4-4-fr'),
+}
+
 export async function loadLessonContent(lessonId: string): Promise<LessonContent | null> {
+  const locale = getLocale()
+  if (locale === 'fr') {
+    const frLoader = frModules[lessonId]
+    if (frLoader) {
+      const mod = await frLoader()
+      return mod.default
+    }
+  }
   const loader = modules[lessonId]
   if (!loader) return null
   const mod = await loader()

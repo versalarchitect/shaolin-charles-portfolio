@@ -7,19 +7,19 @@ const content: LessonContent = {
     {
       type: 'info',
       title: 'What happens when you hit Enter?',
-      body: "You type a prompt. A response appears. But between those two moments, a cascade of math transforms your words into numbers, weighs every word against every other word, and predicts the next token one at a time. Understanding this pipeline is the difference between guessing at prompts and engineering them.",
+      body: "You type a message to an AI. A response appears. But between those two moments, a lot happens behind the scenes. The AI breaks your words into pieces, converts them into numbers, figures out which words matter most, and predicts its response one word at a time. Understanding this process helps you write better instructions and get better results.",
     },
     {
       type: 'info',
       title: 'Why this matters for directing agents',
-      body: "AI agents are built on language models. When your agent misunderstands an instruction, hallucinates a file path, or loses context halfway through a task, the root cause is almost always in how the model processes text. This lesson gives you the mental model to diagnose those failures instead of just retrying.",
+      body: "AI agents are built on language models. When your agent misunderstands an instruction, makes something up, or forgets what you asked for halfway through a task, the cause is usually in how the AI processes text. This lesson gives you a simple mental model to understand why those problems happen — so you can fix them instead of just trying again.",
     },
 
     // === TOKENIZATION ===
     {
       type: 'info',
-      title: 'Tokens: the atoms of AI',
-      body: "Models don't read words -- they read tokens. A token is a chunk of text, usually a word piece, not a whole word. The word \"tokenization\" becomes two tokens: \"token\" and \"ization\". Common words like \"the\" are single tokens. Rare words get split into more pieces. Spaces and punctuation are tokens too.",
+      title: 'Tokens: how AI reads your words',
+      body: "AI does not read words the way you do. It reads \"tokens\" — small chunks of text. A common word like \"the\" is one token. A longer word like \"tokenization\" gets split into two pieces: \"token\" and \"ization\". Even spaces and punctuation count as tokens. Why does this matter? Because AI charges per token, and there is a limit to how many tokens it can handle at once.",
     },
     {
       type: 'multiple-choice',
@@ -35,28 +35,28 @@ const content: LessonContent = {
     },
     {
       type: 'code-demo',
-      title: 'Token count affects cost and limits',
-      body: "Every API call is billed per token -- both input and output. Models also have a context window measured in tokens (e.g., 200K tokens for Claude). A rough rule: 1 token is about 4 characters in English, or roughly 3/4 of a word.",
+      title: 'Tokens affect cost and limits',
+      body: "Every AI request costs money based on how many tokens are used — both what you send and what the AI sends back. AI also has a memory limit measured in tokens (Claude can hold about 200,000 tokens at once). A simple rule of thumb: 1 token is about 4 characters in English, or roughly 3/4 of a word.",
       language: 'text',
       code: 'Prompt: "Explain recursion in Python"  →  ~5 tokens\nPrompt: "Explain recursion in Python with 3 examples, edge cases, and performance analysis"  →  ~16 tokens\n\nMore tokens in = higher cost + less room for the response',
     },
     {
       type: 'terminal',
-      instruction: 'Use Claude Code to count the tokens in a short phrase. Type this command:',
+      instruction: 'Try this: send a short phrase to Claude Code and ask it to count the tokens. Paste this command in your terminal:',
       expectedCommand: 'echo "Hello world" | claude --print-tokens',
       hint: 'Pipe text into claude with the --print-tokens flag',
     },
     {
       type: 'checkpoint',
       xp: 3,
-      message: 'You understand tokenization!',
+      message: 'You understand how AI reads text. That is a real advantage.',
     },
 
     // === EMBEDDINGS ===
     {
       type: 'info',
-      title: 'Embeddings: meaning as coordinates',
-      body: "Once text is tokenized, each token gets converted into an embedding -- a long list of numbers (a vector) that represents its meaning. Think of it as GPS coordinates in \"meaning space.\" Words with similar meanings land near each other: \"dog\" is close to \"puppy\" but far from \"algebra.\" This is how the model understands that synonyms are related without anyone explicitly programming that.",
+      title: 'Embeddings: how AI understands meaning',
+      body: "After breaking text into tokens, the AI converts each token into a list of numbers that represents its meaning. Think of it like GPS coordinates, but for meaning instead of location. Words with similar meanings land near each other: \"dog\" is close to \"puppy\" but far from \"algebra.\" This is how AI understands that similar words are related — nobody had to teach it every synonym.",
     },
     {
       type: 'multiple-choice',
@@ -99,8 +99,8 @@ const content: LessonContent = {
     // === ATTENTION ===
     {
       type: 'info',
-      title: 'Attention: the model\'s spotlight',
-      body: "Attention is the mechanism that lets the model decide which parts of the input matter most for generating each word of the output. When you write \"The cat sat on the mat because it was tired,\" the model uses attention to figure out that \"it\" refers to \"cat,\" not \"mat.\" It does this by computing a relevance score between every pair of tokens. High-scoring pairs influence each other more.",
+      title: 'Attention: how AI decides what matters',
+      body: "Attention is how the AI decides which parts of your message are most important for each word it writes back. For example, in \"The cat sat on the mat because it was tired,\" the AI uses attention to figure out that \"it\" refers to \"the cat,\" not \"the mat.\" It compares every word to every other word and gives higher importance to the most relevant pairs.",
     },
     {
       type: 'code-demo',
@@ -123,14 +123,14 @@ const content: LessonContent = {
     {
       type: 'checkpoint',
       xp: 3,
-      message: 'Attention mechanism understood!',
+      message: 'You understand how AI focuses on your instructions. Great insight.',
     },
 
     // === TEMPERATURE ===
     {
       type: 'info',
-      title: 'Temperature: controlling randomness',
-      body: "After attention, the model produces a probability distribution over all possible next tokens. Temperature controls how that distribution is sampled. At temperature 0, the model always picks the highest-probability token (deterministic). At temperature 1, it samples proportionally (creative). Above 1, outputs become increasingly random and chaotic. For agent tasks, lower temperature (0-0.3) is almost always better -- you want reliability, not creativity.",
+      title: 'Temperature: controlling how creative vs reliable AI is',
+      body: "After figuring out which words to focus on, the AI picks its next word from a list of possibilities. Temperature controls how it chooses. At temperature 0, it always picks the most likely word — very predictable and reliable. At temperature 1, it mixes in more variety — more creative but less predictable. For business tasks where you need reliable results, lower temperature is almost always better.",
     },
     {
       type: 'multiple-choice',
@@ -148,8 +148,8 @@ const content: LessonContent = {
     // === HALLUCINATION ===
     {
       type: 'info',
-      title: 'When models hallucinate',
-      body: "Hallucination happens when a model generates confident-sounding text that is factually wrong. It occurs because the model is always predicting the most probable next token -- it has no concept of truth, only probability. Three common triggers: (1) the topic is outside training data, (2) the prompt is ambiguous, letting the model fill in gaps with plausible-but-wrong details, (3) leading questions that bias the model toward a specific (incorrect) answer.",
+      title: 'When AI makes things up (hallucination)',
+      body: "Sometimes AI writes something that sounds confident but is factually wrong. This is called hallucination. It happens because AI is always guessing the most likely next word — it does not actually know what is true. Three things trigger hallucinations: (1) you ask about something it was not trained on, (2) your instructions are vague, so it fills in the blanks with plausible-but-wrong details, (3) you ask a leading question that steers it toward a wrong answer.",
     },
     {
       type: 'diagram',
@@ -205,7 +205,7 @@ const content: LessonContent = {
     {
       type: 'checkpoint',
       xp: 3,
-      message: 'You can predict when models fail!',
+      message: 'You can now spot when AI might get things wrong. That is a superpower.',
     },
 
     // === PUTTING IT TOGETHER ===

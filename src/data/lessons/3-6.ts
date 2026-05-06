@@ -6,7 +6,7 @@ const content: LessonContent = {
     // === INTRODUCTION ===
     {
       type: 'info',
-      title: 'Cross-Agent Verification',
+      title: 'Using one AI agent to check another\'s work',
       body: "Agent A builds a feature. You could review it yourself. But there's a better move: send Agent B to systematically verify Agent A's output against the spec. This isn't code review — it's structured verification. Agent B has fresh context, no sunk-cost bias, and can catch what Agent A missed because it wasn't emotionally invested in the implementation.",
     },
     {
@@ -330,7 +330,7 @@ Blocking issues: expired token handling, JWT role field, token verify export`,
     {
       type: 'checkpoint',
       xp: 7,
-      message: 'Lesson complete. You never merge unverified agent output again.',
+      message: 'Verification learned! You now have AI checking AI. Trust but verify.',
     },
   ],
 }

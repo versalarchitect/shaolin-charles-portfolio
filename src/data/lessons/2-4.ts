@@ -6,7 +6,7 @@ const content: LessonContent = {
     // === INTRODUCTION ===
     {
       type: 'info',
-      title: 'Agents are fast at SQL and bad at data modeling',
+      title: 'AI is fast at databases but needs your judgment on structure',
       body: "Claude Code will generate a CREATE TABLE statement in seconds. It will normalize, denormalize, add indexes, and create migrations. But data modeling is about judgment calls — is this a one-to-many or many-to-many? Should this be a separate table or an enum column? Should we cascade deletes or set null? Agents optimize for \"works now\" not \"works in 6 months.\" Your job is to catch the structural decisions that will haunt you later.",
     },
     {
@@ -17,7 +17,7 @@ const content: LessonContent = {
     {
       type: 'checkpoint',
       xp: 2,
-      message: 'Schema decisions are permanent decisions.',
+      message: 'Database structure is hard to change later. Getting it right now matters.',
     },
 
     // === SPECCING A DATABASE ===
@@ -48,7 +48,7 @@ const content: LessonContent = {
     },
     {
       type: 'terminal',
-      instruction: 'Create a new Supabase migration file for the users and workspaces tables:',
+      instruction: 'Create a new database migration file (a set of instructions that sets up your database tables):',
       expectedCommand: 'supabase migration new add_users_and_workspaces',
       hint: 'Use supabase migration new followed by a descriptive snake_case name',
     },
@@ -158,7 +158,7 @@ const content: LessonContent = {
     // === MIGRATION WORKFLOW ===
     {
       type: 'terminal',
-      instruction: 'Push your migrations to the local Supabase database to test them:',
+      instruction: 'Apply your database changes to test that they work correctly:',
       expectedCommand: 'supabase db push',
       hint: 'The Supabase CLI command that applies pending migrations to your linked database',
     },

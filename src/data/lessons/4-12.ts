@@ -6,7 +6,7 @@ const content: LessonContent = {
     // === INTRODUCTION ===
     {
       type: 'info',
-      title: 'The final synthesis',
+      title: 'Final capstone: redesign a real system for AI',
       body: "This is it. Everything you have learned — specs, constraints, task graphs, verification pipelines, override judgment, taste, stakeholder communication — synthesized into a single exercise. You will analyze a complex system, identify its architectural weaknesses, and redesign it for agent-fleet buildability. This is not a drill. This is the exact process you will execute in production. When you finish, you will have produced an artifact you could present to a real engineering team.",
     },
     {

@@ -6,7 +6,7 @@ const content: LessonContent = {
     // === INTRODUCTION ===
     {
       type: 'info',
-      title: 'Your job is verification, not implementation',
+      title: 'Your job is checking the work, not doing the work',
       body: "Claude Code can scaffold an entire auth system in minutes — providers, middleware, RLS policies, the works. But agents make optimistic assumptions about access. They assume if the query works for an admin, it works for everyone. Your role is not to write RLS policies by hand. It is to verify the agent did not leave holes. You are the security auditor, not the security engineer.",
     },
     {
@@ -17,7 +17,7 @@ const content: LessonContent = {
     {
       type: 'checkpoint',
       xp: 2,
-      message: 'Mindset locked in: you are the auditor.',
+      message: 'Mindset set: you check the security, AI does the building.',
     },
 
     // === SPECCING THE AUTH SYSTEM ===
@@ -48,7 +48,7 @@ const content: LessonContent = {
     },
     {
       type: 'terminal',
-      instruction: 'Initialize a new Supabase project in the current directory:',
+      instruction: 'Set up Supabase (a database and authentication service) in your project. Paste this command:',
       expectedCommand: 'supabase init',
       hint: 'The Supabase CLI command to scaffold local project config',
     },
@@ -137,7 +137,7 @@ const content: LessonContent = {
     },
     {
       type: 'terminal',
-      instruction: 'Reset your local Supabase database to apply fresh migrations and start from a clean state:',
+      instruction: 'Reset your local database to a fresh state. This applies all your latest changes and starts clean:',
       expectedCommand: 'supabase db reset',
       hint: 'The Supabase CLI command that drops and recreates your local database',
     },
@@ -216,7 +216,7 @@ const content: LessonContent = {
     // === HANDS-ON VERIFICATION ===
     {
       type: 'terminal',
-      instruction: 'List all tables that do NOT have RLS enabled (a quick audit command):',
+      instruction: 'Run a security check to find any database tables that might be missing protection rules:',
       expectedCommand: "supabase db lint",
       hint: 'Supabase has a built-in linting command that checks for security issues including missing RLS',
     },
@@ -251,7 +251,7 @@ const content: LessonContent = {
     {
       type: 'checkpoint',
       xp: 9,
-      message: 'Agent-Directed Auth & Security Verification complete! No holes left behind.',
+      message: 'Auth and Security Verification complete! You know how to check for security gaps.',
     },
   ],
 }

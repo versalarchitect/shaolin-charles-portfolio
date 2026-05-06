@@ -6,7 +6,7 @@ const content: LessonContent = {
     // === INTRODUCTION ===
     {
       type: 'info',
-      title: 'When the agent builds the wrong thing',
+      title: 'When AI builds something different from what you wanted',
       body: "You gave a clear spec. The agent built something. It looks like code. It even runs. But it is not what you asked for. Maybe the data model is wrong, the flow is backwards, or it solved a different problem entirely. This happens to everyone. The agent is not broken — it interpreted your words differently than you intended. The skill is not preventing this (you cannot fully), but recovering efficiently when it happens.",
     },
     {
@@ -194,7 +194,7 @@ const content: LessonContent = {
     {
       type: 'checkpoint',
       xp: 13,
-      message: 'Recovery mastery unlocked! You can efficiently redirect any agent back on track.',
+      message: 'Recovery skills learned! You know how to get AI back on track when it goes in the wrong direction.',
     },
   ],
 }

@@ -6,7 +6,7 @@ const content: LessonContent = {
     // === INTRODUCTION ===
     {
       type: 'info',
-      title: 'Your Agent\'s Code Is in Production. Now What?',
+      title: 'Monitoring AI-built code in production',
       body: "The fleet shipped. Four agents built authentication, API, payments, and UI — all merged, deployed, live. Users are hitting it. Then at 2am: 500 errors spike. You open Sentry and see a stack trace in code an agent wrote three days ago. The question isn't 'who wrote this bug' — it's 'how do I trace this back to the spec that produced it, and how do I prevent this class of bug next time?'",
     },
     {
@@ -486,7 +486,7 @@ exit $ISSUES`,
     {
       type: 'checkpoint',
       xp: 7,
-      message: 'Lesson complete. Production errors are no longer surprises — they\'re spec feedback.',
+      message: 'Production monitoring learned! Every error teaches you how to write better specs next time.',
     },
   ],
 }

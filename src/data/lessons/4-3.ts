@@ -6,7 +6,7 @@ const content: LessonContent = {
     // === INTRODUCTION ===
     {
       type: 'info',
-      title: 'Module boundaries are agent work units',
+      title: 'Organizing code so AI agents can work in parallel',
       body: "Here is the core insight of this lesson: if two agents need to edit the same file at the same time, your architecture has failed. A module boundary in an agent-native codebase is not just a code organization concept — it is a parallelism boundary. Each module should be independently modifiable by one agent without conflicting with any other agent working on any other module. Your architecture IS the coordination layer. Get the boundaries right and agents can work in parallel without conflicts. Get them wrong and you are back to serial execution.",
     },
     {

@@ -6,8 +6,8 @@ const content: LessonContent = {
     // === INTRODUCTION ===
     {
       type: 'info',
-      title: 'The Multi-Agent Mental Model',
-      body: "You've been directing a single agent. That's like having one contractor build your entire house — foundation, framing, plumbing, electrical — one task at a time. It works, but it's painfully slow. Today you learn to think like a general contractor: decompose the work, assign specialists, and run them in parallel.",
+      title: 'Running multiple AI agents at once',
+      body: "You have been directing one AI agent at a time. That is like having one contractor build your entire house — foundation, framing, plumbing, electrical — one task at a time. It works, but it is painfully slow. Today you learn to think like a general contractor: break the work into pieces, assign each piece to a specialist, and run them all at the same time.",
     },
     {
       type: 'info',
@@ -329,7 +329,7 @@ Define types in src/types/task.ts
     {
       type: 'checkpoint',
       xp: 7,
-      message: 'Lesson complete. You think in graphs now, not chains.',
+      message: 'Lesson complete! You understand how to split work across multiple AI agents for faster results.',
     },
   ],
 }

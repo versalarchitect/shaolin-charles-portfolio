@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
   <head>
     <meta charset="UTF-8" />
     <script>
@@ -15,6 +15,8 @@
           if (ct && ['midnight','ghost','terminal','blueprint'].indexOf(ct) !== -1) {
             document.documentElement.classList.add('cosmetic-' + ct);
           }
+          var lang = localStorage.getItem('charles-portfolio-lang');
+          if (lang) document.documentElement.lang = lang;
         } catch(e) { document.documentElement.classList.add('dark'); }
       })();
     </script>
@@ -44,7 +46,7 @@
     <!-- Hreflang for multilingual SEO -->
     <link rel="alternate" hreflang="en" href="https://charlesjackson.dev" />
     <link rel="alternate" hreflang="fr" href="https://charlesjackson.dev/?lng=fr" />
-    <link rel="alternate" hreflang="x-default" href="https://charlesjackson.dev" />
+    <link rel="alternate" hreflang="x-default" href="https://charlesjackson.dev/?lng=fr" />
 
     <!-- Open Graph / Facebook / LinkedIn / Discord / Slack / WhatsApp / Telegram / iMessage -->
     <meta property="og:type" content="website" />

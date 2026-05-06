@@ -6,7 +6,7 @@ const content: LessonContent = {
     // === INTRODUCTION ===
     {
       type: 'info',
-      title: 'The agent is confident. It is also wrong.',
+      title: 'When to override AI\'s confident-but-wrong advice',
       body: "You ask five agents to evaluate an architecture decision. All five agree: migrate to microservices. Their reasoning is sound, their confidence is high, and they cite industry best practices. But you know something they do not — your team is three people, your deploy pipeline cannot handle 12 services, and your traffic patterns make a modular monolith ten times simpler. This lesson is about the hardest skill in agent-augmented development: knowing when every agent in the room is wrong, and having the conviction to override them.",
     },
     {

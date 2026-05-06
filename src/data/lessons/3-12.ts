@@ -6,7 +6,7 @@ const content: LessonContent = {
     // === INTRODUCTION ===
     {
       type: 'info',
-      title: 'Five Agents, One Brain: The Context Problem',
+      title: 'Keeping five AI agents working from the same playbook',
       body: "You have five agents building different parts of the same product. Each needs to understand the overall vision, the architecture decisions, the coding conventions, and how their piece connects to others. But context windows are finite, and dumping everything into every agent's prompt is wasteful and confusing. The art is knowing what context goes where — and keeping it synchronized as the codebase evolves during parallel work.",
     },
     {
@@ -441,7 +441,7 @@ YOUR module (src/ui/utils.ts) and note it for post-merge extraction.`,
     {
       type: 'checkpoint',
       xp: 7,
-      message: 'Lesson complete. Five agents, one coherent product. Context architecture makes it possible.',
+      message: 'Shared context mastered! Multiple AI agents can build one coherent product.',
     },
   ],
 }

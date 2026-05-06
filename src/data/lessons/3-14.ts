@@ -615,7 +615,7 @@ echo "Equivalent serial time: ~60 minutes"`,
     {
       type: 'checkpoint',
       xp: 30,
-      message: 'CAPSTONE COMPLETE. You are an agent fleet orchestrator. Go build something real.',
+      message: 'TIER 3 COMPLETE! You can orchestrate multiple AI agents building in parallel. This is advanced stuff.',
     },
   ],
 }

@@ -6,7 +6,7 @@ const content: LessonContent = {
     // === INTRODUCTION ===
     {
       type: 'info',
-      title: 'Agents degrade when scope is too broad',
+      title: 'Why focused tasks get better AI results',
       body: "Give an agent a focused task — implement a login form — and it delivers clean, correct code. Give it 'build the entire auth system including login, registration, password reset, email verification, session management, and role-based access control' in a single prompt, and quality degrades. Responses get longer but less precise. The agent makes inconsistent decisions across the codebase. It forgets constraints from the top of the prompt by the time it reaches the bottom. Broad scope is not ambition — it is a quality tax.",
     },
     {
@@ -40,7 +40,7 @@ const content: LessonContent = {
     {
       type: 'checkpoint',
       xp: 2,
-      message: 'Scope degradation understood!',
+      message: 'You understand why focused tasks get better results. Quality over quantity.',
     },
 
     // === FILE BOUNDARIES ===
@@ -223,7 +223,7 @@ const content: LessonContent = {
     {
       type: 'checkpoint',
       xp: 6,
-      message: 'Scope mastery achieved! Precision over ambition.',
+      message: 'Scope discipline learned! Focused instructions beat broad ones every time.',
     },
   ],
 }

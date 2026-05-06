@@ -6,7 +6,7 @@ const content: LessonContent = {
     // === INTRODUCTION: WHY 2→5 IS NOT LINEAR ===
     {
       type: 'info',
-      title: 'What breaks when you add agent #3',
+      title: 'Scaling from 2 agents to 5 or more',
       body: "Running 2 agents in parallel feels manageable. You check on one, switch to the other, merge their work. But add a third and something shifts — you're juggling context switches, resolving merge conflicts, and losing track of who's doing what. This isn't a skill problem — it's a math problem. Communication lines between agents grow as n*(n-1)/2. With 2 agents, that's 1 connection. With 5, it's 10. With 10, it's 45. The solution isn't \"try harder\" — it's choosing a coordination pattern that reduces the number of active connections.",
     },
     {
@@ -277,7 +277,7 @@ const content: LessonContent = {
     {
       type: 'checkpoint',
       xp: 10,
-      message: 'Multi-Agent Coordination complete! You now scale from 2 agents to 5+ with the right pattern for every situation.',
+      message: 'Multi-Agent Coordination complete! You can scale up your AI workforce with the right pattern for each situation.',
     },
   ],
 }

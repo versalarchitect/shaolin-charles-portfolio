@@ -6,7 +6,7 @@ const content: LessonContent = {
     // === INTRODUCTION ===
     {
       type: 'info',
-      title: 'You architect for agent fleets. Your team thinks in engineers.',
+      title: 'Explaining AI-first architecture to your team',
       body: "You have internalized agent-first development. You think in task graphs, worktrees, CLAUDE.md protocols, and verification pipelines. But when you present architecture proposals to stakeholders — engineering managers, CTOs, product leads — they think in engineer-hours, sprint capacity, and team velocity. If you explain your architecture in YOUR terms, they will not understand it, will not fund it, and will not support it. Translation is not dumbing down. It is connecting your technical reality to their decision framework.",
     },
     {

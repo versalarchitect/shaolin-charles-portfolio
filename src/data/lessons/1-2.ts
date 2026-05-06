@@ -5,13 +5,13 @@ const content: LessonContent = {
   steps: [
     {
       type: 'info',
-      title: 'The model\'s working memory',
-      body: 'Every time you talk to Claude, you\'re writing into a fixed-size buffer called the context window. It holds everything: the system prompt, your CLAUDE.md, code files the agent reads, your conversation history, and the model\'s responses. When the buffer fills up, the oldest information gets dropped. Understanding this budget is the difference between a productive session and one where the agent forgets what you asked for ten minutes ago.',
+      title: 'How AI memory works',
+      body: 'Every time you talk to an AI agent, you are writing into a fixed-size memory space called the context window. It holds everything: your instructions, the files the AI reads, your conversation history, and the AI\'s responses. When this memory fills up, the oldest information gets dropped. Understanding this limit is the difference between a productive session and one where the AI forgets what you asked ten minutes ago.',
     },
     {
       type: 'info',
       title: 'What is a context window?',
-      body: 'Think of it as a whiteboard with a fixed surface area. Claude\'s whiteboard is 200,000 tokens — roughly 150,000 words or 500 pages of text. That sounds enormous, but it fills faster than you\'d expect. System prompts, CLAUDE.md files, and code context can consume 30-50% of the window before you type a single word.',
+      body: 'Think of it as a whiteboard with a fixed surface area. Claude\'s whiteboard holds about 200,000 tokens — roughly 150,000 words or 500 pages of text. That sounds enormous, but it fills faster than you would expect. Background instructions and project files can use up 30-50% of the space before you even type your first message.',
     },
     {
       type: 'diagram',
@@ -39,7 +39,7 @@ const content: LessonContent = {
     {
       type: 'checkpoint',
       xp: 2,
-      message: 'Context window model understood!',
+      message: 'You understand how AI memory works. This will save you a lot of time.',
     },
 
     // === TOKEN COUNTING ===
@@ -78,7 +78,7 @@ const content: LessonContent = {
     {
       type: 'checkpoint',
       xp: 2,
-      message: 'Token math on lock!',
+      message: 'You can estimate how much AI memory your requests use. Practical skill.',
     },
 
     // === WHAT FILLS THE WINDOW ===
@@ -101,7 +101,7 @@ const content: LessonContent = {
     },
     {
       type: 'terminal',
-      instruction: 'Use wc to count the characters in a file, which you can then divide by 3-4 to estimate tokens. Try it on any TypeScript file:',
+      instruction: 'Here is a quick way to estimate how many tokens a file uses. This command counts the characters in a file. Divide the result by 3 or 4 to get an approximate token count:',
       expectedCommand: 'wc -c src/App.tsx',
       hint: 'wc -c <filepath>',
     },
@@ -116,7 +116,7 @@ const content: LessonContent = {
     {
       type: 'checkpoint',
       xp: 2,
-      message: 'Budget planning unlocked!',
+      message: 'You can plan your AI sessions like a budget. Smart.',
     },
 
     // === CONTEXT EXHAUSTION ===
@@ -167,7 +167,7 @@ const content: LessonContent = {
     {
       type: 'checkpoint',
       xp: 2,
-      message: 'Exhaustion patterns recognized!',
+      message: 'You know the warning signs of AI memory running low. That saves hours.',
     },
 
     // === STRATEGIES ===
@@ -223,7 +223,7 @@ const content: LessonContent = {
     {
       type: 'checkpoint',
       xp: 5,
-      message: 'Context mastery achieved! You now think in token budgets.',
+      message: 'Context management learned! You now understand how AI memory works and how to use it wisely.',
     },
   ],
 }

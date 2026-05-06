@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Zap, Flame, Compass, Eye, Award, X } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 
 const STORAGE_KEY = 'gamification-onboarded'
 
@@ -46,31 +47,32 @@ function AnimatedXpCounter() {
 
 interface SlideProps {
   direction: number
+  t: (key: string) => string
 }
 
-function Slide1({ direction }: SlideProps) {
+function Slide1({ direction, t }: SlideProps) {
   return (
     <SlideWrapper direction={direction}>
-      <h2 className="text-xl font-bold tracking-tight">Welcome to Your Learning Journey</h2>
+      <h2 className="text-xl font-bold tracking-tight">{t('gamification.welcomeTitle')}</h2>
       <p className="text-sm text-foreground/60 mt-2 leading-relaxed">
-        Everything you do here earns XP (experience points) and unlocks rewards. Finish lessons, keep coming back each day, explore the site — it all counts.
+        {t('gamification.welcomeDescription')}
       </p>
       <AnimatedXpCounter />
     </SlideWrapper>
   )
 }
 
-function Slide2({ direction }: SlideProps) {
+function Slide2({ direction, t }: SlideProps) {
   const items = [
-    { icon: Zap, label: 'Finish lessons', detail: '+10-50 XP' },
-    { icon: Flame, label: 'Come back each day', detail: 'up to 3x bonus' },
-    { icon: Compass, label: 'Explore the site', detail: '+5 XP per page' },
-    { icon: Eye, label: 'Find hidden surprises', detail: 'secret bonuses' },
+    { icon: Zap, label: t('gamification.earnFinishLessons'), detail: '+10-50 XP' },
+    { icon: Flame, label: t('gamification.earnComeBack'), detail: 'up to 3x bonus' },
+    { icon: Compass, label: t('gamification.earnExplore'), detail: '+5 XP per page' },
+    { icon: Eye, label: t('gamification.earnHidden'), detail: 'secret bonuses' },
   ]
 
   return (
     <SlideWrapper direction={direction}>
-      <h2 className="text-xl font-bold tracking-tight">How You Earn XP</h2>
+      <h2 className="text-xl font-bold tracking-tight">{t('gamification.howYouEarnXp')}</h2>
       <ul className="mt-4 space-y-3">
         {items.map((item, i) => (
           <motion.li
@@ -94,12 +96,12 @@ function Slide2({ direction }: SlideProps) {
   )
 }
 
-function Slide3({ direction }: SlideProps) {
+function Slide3({ direction, t }: SlideProps) {
   return (
     <SlideWrapper direction={direction}>
-      <h2 className="text-xl font-bold tracking-tight">Unlock Rewards</h2>
+      <h2 className="text-xl font-bold tracking-tight">{t('gamification.unlockRewards')}</h2>
       <p className="text-sm text-foreground/60 mt-2 leading-relaxed">
-        Earn ranks, unlock new dashboard looks, discover secret pages, and climb the leaderboard.
+        {t('gamification.unlockRewardsDesc')}
       </p>
       <div className="flex items-center justify-center gap-2 mt-6">
         {RANKS.map((rank, i) => (
@@ -121,12 +123,12 @@ function Slide3({ direction }: SlideProps) {
   )
 }
 
-function Slide4({ direction, onDismiss }: SlideProps & { onDismiss: () => void }) {
+function Slide4({ direction, t, onDismiss }: SlideProps & { onDismiss: () => void }) {
   return (
     <SlideWrapper direction={direction}>
-      <h2 className="text-xl font-bold tracking-tight">Ready?</h2>
+      <h2 className="text-xl font-bold tracking-tight">{t('gamification.ready')}</h2>
       <p className="text-sm text-foreground/60 mt-2 leading-relaxed">
-        Your journey starts now. Every interaction brings you closer to mastery.
+        {t('gamification.readyDesc')}
       </p>
       <motion.button
         className="mt-6 w-full h-11 rounded-lg bg-foreground text-background font-medium text-sm hover:bg-foreground/90 transition-colors"
@@ -134,10 +136,10 @@ function Slide4({ direction, onDismiss }: SlideProps & { onDismiss: () => void }
         whileHover={{ scale: 1.02 }}
         whileTap={{ scale: 0.98 }}
       >
-        Start Learning
+        {t('gamification.startLearning')}
       </motion.button>
       <p className="text-[11px] text-foreground/30 text-center mt-3 font-mono">
-        5 hidden surprises are scattered across the site. Can you find them all?
+        {t('gamification.hiddenHint')}
       </p>
     </SlideWrapper>
   )
@@ -163,6 +165,7 @@ export function WelcomeModal() {
   const [direction, setDirection] = useState(1)
   const modalRef = useRef<HTMLDivElement>(null)
   const previousFocusRef = useRef<HTMLElement | null>(null)
+  const { t } = useTranslation()
   const totalSlides = 4
 
   useEffect(() => {
@@ -251,10 +254,10 @@ export function WelcomeModal() {
   }
 
   const slides = [
-    <Slide1 key="s1" direction={direction} />,
-    <Slide2 key="s2" direction={direction} />,
-    <Slide3 key="s3" direction={direction} />,
-    <Slide4 key="s4" direction={direction} onDismiss={dismiss} />,
+    <Slide1 key="s1" direction={direction} t={t} />,
+    <Slide2 key="s2" direction={direction} t={t} />,
+    <Slide3 key="s3" direction={direction} t={t} />,
+    <Slide4 key="s4" direction={direction} t={t} onDismiss={dismiss} />,
   ]
 
   return (
@@ -313,7 +316,7 @@ export function WelcomeModal() {
                 aria-label={`Go to previous slide (${slide} of ${totalSlides})`}
                 className="text-xs font-mono text-foreground/40 hover:text-foreground/70 disabled:opacity-0 disabled:pointer-events-none transition-all"
               >
-                Back
+                {t('gamification.back')}
               </button>
 
               {/* Dots */}
@@ -335,7 +338,7 @@ export function WelcomeModal() {
                   aria-label={`Go to next slide (${slide + 2} of ${totalSlides})`}
                   className="text-xs font-mono text-foreground/60 hover:text-foreground transition-all"
                 >
-                  Next
+                  {t('gamification.next')}
                 </button>
               ) : (
                 <div className="w-8" />

@@ -6,8 +6,8 @@ const content: LessonContent = {
     // === INTRODUCTION ===
     {
       type: 'info',
-      title: 'Everything else will be automated. Taste will not.',
-      body: "Agents can write code, generate tests, scaffold architectures, deploy systems, and fix bugs. Within two years, they will do all of this better than most engineers. What they cannot do — and may never do — is decide what SHOULD exist. Whether this feature is worth building. Whether this abstraction is elegant or merely clever. Whether this interface respects the user or just serves the developer. Taste is the human judgment that separates functional output from excellent output. It is the last irreplaceable skill.",
+      title: 'Your taste and judgment: the skill AI cannot replace',
+      body: "AI can write code, generate tests, build project structures, deploy systems, and fix bugs. It will only get better at all of this. What it cannot do — and may never do — is decide what SHOULD exist. Whether a feature is worth building. Whether a design is elegant or just complicated. Whether an interface truly serves the user. Taste is the human judgment that separates something that works from something that is actually good. It is your most valuable and irreplaceable skill.",
     },
     {
       type: 'info',

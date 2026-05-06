@@ -6,7 +6,7 @@ const content: LessonContent = {
     // === INTRODUCTION ===
     {
       type: 'info',
-      title: 'Visual output requires human taste',
+      title: 'Your eye for design is what AI cannot replace',
       body: "You can write a perfect spec — every acceptance criterion met, every boundary respected — and still get an interface that feels wrong. The card padding is cramped, the hierarchy is unclear, the spacing rhythm is off. This is the gap between spec compliance and good design. Agents are excellent at implementing structure but mediocre at visual judgment. That is your job: you are the taste filter between the agent's output and what ships to users.",
     },
     {
@@ -212,7 +212,7 @@ const content: LessonContent = {
     {
       type: 'checkpoint',
       xp: 8,
-      message: 'Visual direction mastered! Your taste is the quality gate.',
+      message: 'Visual direction learned! Your design judgment is the final quality check AI cannot do.',
     },
   ],
 }

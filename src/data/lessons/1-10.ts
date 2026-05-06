@@ -6,7 +6,7 @@ const content: LessonContent = {
     // === INTRODUCTION ===
     {
       type: 'info',
-      title: 'Capstone: from spec to production',
+      title: 'Capstone: build and launch a real tool',
       body: "This is where everything clicks. You will combine every skill from Tier 1 — structured prompting, iterative development, context management, CLAUDE.md, multi-step workflows — into one continuous flow. The project: a Commit Message Generator. A single-page web app where users paste a git diff and get back a conventional commit message. You will spec it, direct an agent to build it, verify the output, and ship it live to a public URL. Real utility, real deployment, real portfolio piece.",
     },
 
@@ -64,7 +64,7 @@ const content: LessonContent = {
     {
       type: 'checkpoint',
       xp: 5,
-      message: 'Spec written — agent has its marching orders!',
+      message: 'Spec written! Your AI agent knows exactly what to build.',
     },
 
     // === PHASE 2: SCAFFOLD ===
@@ -160,7 +160,7 @@ const content: LessonContent = {
     {
       type: 'checkpoint',
       xp: 5,
-      message: 'Implementation directed — agent did the heavy lifting!',
+      message: 'Implementation complete! The AI built it, you directed it.',
     },
 
     // === PHASE 4: VERIFY ===
@@ -206,7 +206,7 @@ const content: LessonContent = {
     {
       type: 'checkpoint',
       xp: 5,
-      message: 'Code reviewed and verified — ready to ship!',
+      message: 'Code reviewed and verified! Everything looks good.',
     },
 
     // === PHASE 5: DEPLOY ===
@@ -284,7 +284,7 @@ const content: LessonContent = {
     {
       type: 'checkpoint',
       xp: 30,
-      message: 'TIER 1 CAPSTONE COMPLETE! You deployed an agent-built tool to production. Welcome to the next level.',
+      message: 'TIER 1 COMPLETE! You directed an AI to build a tool and deploy it live. You are an AI director now.',
     },
   ],
 }

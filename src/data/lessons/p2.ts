@@ -6,7 +6,7 @@ const content: LessonContent = {
     {
       type: 'info',
       title: 'Deploy first, code second',
-      body: "Most courses save deployment for the end. We do it first. If you can't deploy, nothing else matters. A feature that works locally but can't ship is a feature that doesn't exist.",
+      body: "Most courses save deployment for the end. We do it first. Deployment means putting your app on the internet so anyone can visit it. If you cannot deploy, nothing else matters. Something that works only on your computer is not a product yet.",
     },
     {
       type: 'multiple-choice',
@@ -18,12 +18,12 @@ const content: LessonContent = {
         'Vercel requires it',
       ],
       correctIndex: 2,
-      explanation: 'A deploy pipeline is the foundation. Every feature, fix, and experiment needs to reach users — setting this up first means you never get stuck at the end.',
+      explanation: 'Your deploy pipeline is the road from your computer to the internet. Every feature you build needs this road to reach users. Setting it up first means you will never get stuck at the end wondering how to go live.',
     },
     {
       type: 'checkpoint',
       xp: 1,
-      message: 'Philosophy unlocked!',
+      message: 'You understand why we deploy first. Smart thinking.',
     },
 
     {
@@ -36,8 +36,8 @@ const content: LessonContent = {
           { id: 'edit', label: 'Edit Code' },
           { id: 'commit', label: 'Commit' },
           { id: 'push', label: 'Push' },
-          { id: 'gh', label: 'GitHub' },
-          { id: 'vc', label: 'Vercel', sublabel: 'Auto-build' },
+          { id: 'gh', label: 'GitHub', sublabel: 'Code storage' },
+          { id: 'vc', label: 'Vercel', sublabel: 'Auto-publishes' },
           { id: 'live', label: 'Live', shape: 'pill', highlight: true },
         ],
         edges: [
@@ -54,7 +54,7 @@ const content: LessonContent = {
     {
       type: 'info',
       title: 'Step 1: Create a Vercel account',
-      body: 'Go to vercel.com and sign up. Use "Continue with GitHub" — this connects your repos automatically and saves a step later.',
+      body: 'Go to vercel.com and sign up for a free account. Click "Continue with GitHub" — this automatically connects your GitHub projects to Vercel, saving you a setup step later.',
     },
     {
       type: 'multiple-choice',
@@ -66,7 +66,7 @@ const content: LessonContent = {
         'Vercel only supports GitHub',
       ],
       correctIndex: 1,
-      explanation: 'Signing up with GitHub lets Vercel auto-detect your repos and set up automatic deployments on every push. One less thing to configure.',
+      explanation: 'Signing up with GitHub lets Vercel see your projects automatically and publish updates every time you push new code. One less thing to configure.',
     },
     {
       type: 'checklist',
@@ -86,23 +86,23 @@ const content: LessonContent = {
     // === CREATE PROJECT ===
     {
       type: 'info',
-      title: 'Step 2: Create a Next.js project',
-      body: "We'll use Next.js as the framework for the course projects. Let's scaffold one with TypeScript, Tailwind CSS, and the App Router.",
+      title: 'Step 2: Create your first project',
+      body: "We will use Next.js, a popular framework (a pre-built foundation) for building web apps. Let us create one now. You do not need to understand everything it sets up — the AI agent will handle the details.",
     },
     {
       type: 'terminal',
-      instruction: 'Create a new Next.js project:',
+      instruction: 'Open your terminal and paste this command. It creates a new project folder with all the starter files you need:',
       expectedCommand: 'bunx create-next-app@latest my-first-deploy --ts --tailwind --app --src-dir --eslint',
       hint: 'bunx create-next-app@latest my-first-deploy --ts --tailwind --app --src-dir --eslint',
     },
     {
       type: 'terminal',
-      instruction: 'Enter the project directory:',
+      instruction: 'Now navigate into your new project folder by pasting this command:',
       expectedCommand: 'cd my-first-deploy',
     },
     {
       type: 'terminal',
-      instruction: 'Start the dev server to verify it works:',
+      instruction: 'Start the development server. This runs your project locally so you can see it in your browser:',
       expectedCommand: 'bun dev',
     },
     {
@@ -113,49 +113,49 @@ const content: LessonContent = {
     {
       type: 'checkpoint',
       xp: 2,
-      message: 'Project scaffolded!',
+      message: 'Your project is running on your computer! You just created a web app.',
     },
 
     // === PUSH TO GITHUB ===
     {
       type: 'info',
       title: 'Step 3: Push to GitHub',
-      body: "Create a new repository on GitHub (github.com/new). Name it my-first-deploy. Don't add a README — the project already has one.",
+      body: "Now let us put your code on GitHub so Vercel can see it. Go to github.com/new in your browser. Name the repository my-first-deploy. Do not check any boxes (no README, no .gitignore) — the project already has those files.",
     },
     {
       type: 'terminal',
-      instruction: 'Add the GitHub remote:',
+      instruction: 'Tell your local project where to send code on GitHub. Replace YOUR_USERNAME with your GitHub username:',
       expectedCommand: 'git remote add origin git@github.com:YOUR_USERNAME/my-first-deploy.git',
       hint: 'git remote add origin git@github.com:...',
     },
     {
       type: 'terminal',
-      instruction: 'Push your code to GitHub:',
+      instruction: 'Send your code up to GitHub for the first time. The -u flag remembers this connection so you will not need to type it again:',
       expectedCommand: 'git push -u origin main',
     },
     {
       type: 'multiple-choice',
       question: 'What does the -u flag do in git push -u origin main?',
       options: [
-        'Uploads all branches',
-        'Sets the upstream tracking branch so future pushes just need "git push"',
-        'Undoes the previous commit',
-        'Updates the remote URL',
+        'Uploads all branches at once',
+        'Remembers the connection so future pushes only need "git push"',
+        'Undoes your last change',
+        'Updates the web address of your project',
       ],
       correctIndex: 1,
-      explanation: 'The -u (--set-upstream) flag links your local branch to the remote one. After this, you can just type "git push" without specifying the remote and branch.',
+      explanation: 'The -u flag tells Git to remember where to send your code. After this first time, you can just type "git push" and it knows where to go. One less thing to remember.',
     },
     {
       type: 'checkpoint',
       xp: 2,
-      message: 'Code on GitHub!',
+      message: 'Your code is on GitHub! Anyone with the link can see your project.',
     },
 
     // === DEPLOY ===
     {
       type: 'info',
       title: 'Step 4: Deploy to Vercel',
-      body: 'Go to vercel.com/new. You\'ll see your GitHub repos. Find my-first-deploy, click Import, and hit Deploy. Vercel auto-detects Next.js — leave all settings as defaults.',
+      body: 'Go to vercel.com/new in your browser. You will see your GitHub projects listed. Find my-first-deploy, click Import, and hit Deploy. Vercel automatically detects that it is a Next.js project — just leave all settings as they are.',
     },
     {
       type: 'checklist',
@@ -171,14 +171,14 @@ const content: LessonContent = {
     {
       type: 'checkpoint',
       xp: 2,
-      message: 'First deploy live!',
+      message: 'Your app is live on the internet! You have a real URL anyone can visit.',
     },
 
     // === AUTO DEPLOY ===
     {
       type: 'info',
       title: 'Step 5: Auto-deploy on push',
-      body: "The real power: every push to main triggers a new production deploy. Let's test it. Replace the content of src/app/page.tsx:",
+      body: "Here is the magic: every time you push code to GitHub, Vercel automatically publishes the update. No manual steps. Let us test this by making a small change to your homepage file:",
     },
     {
       type: 'code-demo',
@@ -189,36 +189,36 @@ const content: LessonContent = {
     },
     {
       type: 'terminal',
-      instruction: 'Stage all changes:',
+      instruction: 'Tell Git to include all your changes in the next save. This is called "staging":',
       expectedCommand: 'git add .',
     },
     {
       type: 'terminal',
-      instruction: 'Commit with a message:',
+      instruction: 'Save your changes with a short description of what you did. This is called a "commit":',
       expectedCommand: 'git commit -m "Replace default page with hello world"',
       hint: 'git commit -m "..."',
     },
     {
       type: 'terminal',
-      instruction: 'Push to trigger auto-deploy:',
+      instruction: 'Send your changes to GitHub. Vercel will automatically detect the update and publish it:',
       expectedCommand: 'git push',
     },
     {
       type: 'info',
       title: 'Watch it deploy',
-      body: 'Go to your Vercel dashboard — a new deployment is building. In under a minute, your live site updates automatically. No manual deploy needed, ever.',
+      body: 'Check your Vercel dashboard — you will see a new deployment building. In under a minute, your live site updates automatically. From now on, every time you push code, your site updates. No manual work needed.',
     },
     {
       type: 'checkpoint',
       xp: 1,
-      message: 'Auto-deploy works!',
+      message: 'Auto-deploy is working! Push code, site updates. That simple.',
     },
 
     // === PREVIEW VS PRODUCTION ===
     {
       type: 'diagram',
       title: 'Preview vs Production',
-      body: 'The branch you push to determines the deployment type.',
+      body: 'Which branch you push to determines whether your changes go live to users or just create a test version for you to preview first.',
       diagram: {
         direction: 'TB',
         nodes: [
@@ -241,7 +241,7 @@ const content: LessonContent = {
     {
       type: 'info',
       title: 'Step 6: Preview vs. Production',
-      body: 'Vercel has two deployment types. Understanding this is critical for the rest of the course.',
+      body: 'Vercel has two deployment types: production (what your users see) and preview (a private test version). Understanding this keeps you safe.',
     },
     {
       type: 'multiple-choice',
@@ -253,11 +253,11 @@ const content: LessonContent = {
         'Creating a pull request',
       ],
       correctIndex: 1,
-      explanation: 'Pushes to main = production. Pushes to any other branch = preview deployment with a unique URL. Your users only see production.',
+      explanation: 'Pushing to the main branch updates your live site that users see. Pushing to any other branch creates a preview — a private test URL only you can see. This keeps your live site safe while you experiment.',
     },
     {
       type: 'terminal',
-      instruction: 'Create a test branch for a preview deployment:',
+      instruction: 'Create a test branch (a separate workspace for experimenting). This will not affect your live site:',
       expectedCommand: 'git checkout -b test-preview',
     },
     {
@@ -270,12 +270,12 @@ const content: LessonContent = {
     {
       type: 'info',
       title: 'Preview = safety net',
-      body: 'Preview deployments are your safety net. Test changes on a unique URL before merging to main. Your production site stays untouched. This habit prevents broken deploys.',
+      body: 'Preview deployments are your safety net. You test changes on a private URL before they go live. Your real site stays untouched. This habit prevents you from accidentally breaking something your users see.',
     },
     {
       type: 'checkpoint',
       xp: 1,
-      message: 'Preview deploys mastered!',
+      message: 'Preview deploys understood! You know how to test safely.',
     },
 
     // === FINAL ===
@@ -300,7 +300,7 @@ const content: LessonContent = {
     {
       type: 'checkpoint',
       xp: 5,
-      message: 'Deploy pipeline complete! You now have a ship-on-push workflow.',
+      message: 'Deploy pipeline complete! You can now push code and it goes live automatically. That is a real superpower.',
     },
   ],
 }

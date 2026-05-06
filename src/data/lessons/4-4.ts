@@ -6,8 +6,8 @@ const content: LessonContent = {
     // === INTRODUCTION ===
     {
       type: 'info',
-      title: 'You are the evaluator, not the executor',
-      body: "The agent suggests microservices. It sounds confident. The reasoning is articulate. The code examples are clean. But is it RIGHT for your system? At Tier 4, your role shifts from \"person who uses agents\" to \"person who evaluates agent output at the architectural level.\" Agents are excellent at generating plausible architectures. They are poor at evaluating whether that architecture fits YOUR constraints, YOUR team size, YOUR scale requirements, and YOUR maintenance budget. That evaluation is your job — and it requires a systematic framework, not vibes.",
+      title: 'Evaluating AI\'s architecture suggestions with your judgment',
+      body: "The AI suggests a complex architecture. It sounds confident. The reasoning is clear. The examples look professional. But is it RIGHT for your situation? At this level, your role shifts from \"person who uses AI\" to \"person who evaluates AI recommendations.\" AI is excellent at generating plausible-sounding solutions. It is poor at evaluating whether that solution fits YOUR budget, YOUR team size, YOUR timeline, and YOUR maintenance capacity. That evaluation is your job — and it requires a simple framework, not gut feelings.",
     },
     {
       type: 'info',

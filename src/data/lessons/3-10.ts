@@ -6,7 +6,7 @@ const content: LessonContent = {
     // === INTRODUCTION ===
     {
       type: 'info',
-      title: 'When an Agent Goes Off the Rails',
+      title: 'What to do when an AI agent goes wrong',
       body: "You have four agents running in parallel. Three are producing clean, spec-compliant code. One is spiraling — it misunderstood the spec, introduced a circular dependency, or got stuck in a loop rewriting the same file. In a single-agent workflow, you'd just stop and restart. In a fleet, you need surgical intervention: detect, isolate, recover — without disrupting the healthy agents.",
     },
     {
@@ -345,7 +345,7 @@ export async function createCheckout(user: User, priceId: string) {
     {
       type: 'checkpoint',
       xp: 7,
-      message: 'Lesson complete. Failures are inevitable — cascades are not.',
+      message: 'Failure recovery learned! One broken agent does not have to break everything.',
     },
   ],
 }

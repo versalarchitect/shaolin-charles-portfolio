@@ -10,6 +10,7 @@ import {
   ArrowRight,
   RotateCcw,
 } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 import { Button } from '@/components/ui/button'
 import type { LessonStep, LessonContent } from '@/data/lessons/types'
 import { loadLessonContent } from '@/data/lessons'
@@ -31,6 +32,7 @@ function InfoStep({ step }: { step: Extract<LessonStep, { type: 'info' }> }) {
 
 function CodeDemoStep({ step }: { step: Extract<LessonStep, { type: 'code-demo' }> }) {
   const [copied, setCopied] = useState(false)
+  const { t } = useTranslation()
   const handleCopy = useCallback(() => {
     navigator.clipboard.writeText(step.code)
     setCopied(true)
@@ -51,7 +53,7 @@ function CodeDemoStep({ step }: { step: Extract<LessonStep, { type: 'code-demo' 
           type="button"
           onClick={handleCopy}
           className="absolute top-2 right-2 p-2 rounded-lg bg-foreground/[0.06] border border-foreground/[0.08] text-foreground/30 hover:text-foreground/60 hover:bg-foreground/10 transition-all opacity-0 group-hover:opacity-100"
-          aria-label={copied ? 'Copied' : 'Copy code'}
+          aria-label={copied ? t('gamification.copied') : t('gamification.copy')}
         >
           {copied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
         </button>
@@ -72,6 +74,7 @@ function TerminalStep({
 }) {
   const [copied, setCopied] = useState(false)
   const [confirmed, setConfirmed] = useState(false)
+  const { t } = useTranslation()
 
   const handleCopy = () => {
     navigator.clipboard.writeText(step.expectedCommand)
@@ -106,9 +109,9 @@ function TerminalStep({
             type="button"
             onClick={handleCopy}
             className="shrink-0 flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-foreground/[0.05] hover:bg-foreground/10 border border-foreground/[0.08] transition-colors text-xs font-mono"
-            aria-label="Copy command"
+            aria-label={t('gamification.copy')}
           >
-            {copied ? <><Check className="w-3.5 h-3.5 text-green-500" /> Copied!</> : <><Copy className="w-3.5 h-3.5 text-foreground/50" /> Copy</>}
+            {copied ? <><Check className="w-3.5 h-3.5 text-green-500" /> {t('gamification.copied')}</> : <><Copy className="w-3.5 h-3.5 text-foreground/50" /> {t('gamification.copy')}</>}
           </button>
         </div>
       </div>
@@ -127,7 +130,7 @@ function TerminalStep({
             className="font-mono gap-2"
           >
             <Check className="w-4 h-4" />
-            I did this
+            {t('gamification.iDidThis')}
           </Button>
         </div>
       ) : (
@@ -137,7 +140,7 @@ function TerminalStep({
           className="flex items-center gap-2 justify-center py-2"
         >
           <Check className="w-5 h-5 text-green-500" />
-          <span className="text-sm font-mono text-foreground/60">Done!</span>
+          <span className="text-sm font-mono text-foreground/60">{t('gamification.done')}</span>
         </motion.div>
       )}
     </div>
@@ -153,6 +156,7 @@ function MultipleChoiceStep({
 }) {
   const [selected, setSelected] = useState<number | null>(null)
   const [submitted, setSubmitted] = useState(false)
+  const { t } = useTranslation()
 
   const handleSelect = (index: number) => {
     if (submitted) return
@@ -240,7 +244,7 @@ function MultipleChoiceStep({
             className="font-mono gap-2 h-12 px-6"
             size="lg"
           >
-            Check
+            {t('gamification.check')}
             <ChevronRight className="w-4 h-4" />
           </Button>
         </div>
@@ -254,7 +258,7 @@ function MultipleChoiceStep({
             className="font-mono gap-2"
           >
             <RotateCcw className="w-4 h-4" />
-            Try again
+            {t('gamification.tryAgain')}
           </Button>
         </div>
       )}
@@ -273,6 +277,7 @@ function CodeInputStep({
   const [status, setStatus] = useState<'idle' | 'correct' | 'wrong'>('idle')
   const [showAnswer, setShowAnswer] = useState(false)
   const inputRef = useRef<HTMLInputElement>(null)
+  const { t } = useTranslation()
 
   useEffect(() => { inputRef.current?.focus() }, [])
 
@@ -320,7 +325,7 @@ function CodeInputStep({
               className="flex items-center gap-1.5 text-xs text-foreground/40 hover:text-foreground/60 transition-colors"
             >
               <Lightbulb className="w-3.5 h-3.5" />
-              {showAnswer ? step.hint : 'Show hint'}
+              {showAnswer ? step.hint : t('gamification.showHint')}
             </button>
           )}
           {status !== 'correct' && (
@@ -329,7 +334,7 @@ function CodeInputStep({
               onClick={handleReveal}
               className="flex items-center gap-1.5 text-xs text-foreground/30 hover:text-foreground/50 transition-colors"
             >
-              Show answer
+              {t('gamification.showAnswer')}
             </button>
           )}
         </div>
@@ -350,6 +355,7 @@ function OrderStep({
   step: Extract<LessonStep, { type: 'order' }>
   onComplete: () => void
 }) {
+  const { t } = useTranslation()
   const shuffled = useMemo(() => {
     const indices = step.items.map((_, i) => i)
     for (let i = indices.length - 1; i > 0; i--) {
@@ -429,7 +435,7 @@ function OrderStep({
       {status !== 'correct' && (
         <div className="flex justify-end">
           <Button onClick={handleCheck} className="font-mono gap-2 h-12 px-6" size="lg">
-            Check Order <ChevronRight className="w-4 h-4" />
+            {t('gamification.checkOrder')} <ChevronRight className="w-4 h-4" />
           </Button>
         </div>
       )}
@@ -602,6 +608,7 @@ export function LessonPlayer({ lessonId }: { lessonId: string }) {
   const [currentStep, setCurrentStep] = useState(0)
   const [completedSteps, setCompletedSteps] = useState<Set<number>>(new Set())
   const [direction, setDirection] = useState(1)
+  const { t } = useTranslation()
 
   useEffect(() => {
     setLoading(true)
@@ -725,7 +732,7 @@ export function LessonPlayer({ lessonId }: { lessonId: string }) {
           disabled={currentStep === 0}
           className="text-sm font-mono text-foreground/40 hover:text-foreground/70 disabled:opacity-20 disabled:cursor-not-allowed transition-colors"
         >
-          Back
+          {t('gamification.back')}
         </button>
 
         {(isPassive || isStepCompleted) && !isLastStep && (
@@ -739,7 +746,7 @@ export function LessonPlayer({ lessonId }: { lessonId: string }) {
               size="lg"
               className="font-mono gap-2 h-12 px-8 text-base group"
             >
-              Continue
+              {t('gamification.continue')}
               <ChevronRight className="w-5 h-5 group-hover:translate-x-0.5 transition-transform" />
             </Button>
           </motion.div>
@@ -752,7 +759,7 @@ export function LessonPlayer({ lessonId }: { lessonId: string }) {
             className="flex items-center gap-2 text-sm font-mono text-foreground/50"
           >
             <Check className="w-4 h-4" />
-            Lesson complete — mark it above
+            {t('gamification.lessonComplete')}
           </motion.div>
         )}
       </div>

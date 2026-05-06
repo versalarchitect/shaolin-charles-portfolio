@@ -246,7 +246,7 @@ const content: LessonContent = {
     {
       type: 'checkpoint',
       xp: 15,
-      message: 'TIER 2 CAPSTONE COMPLETE! You are a single-agent director. Tier 3 awaits.',
+      message: 'TIER 2 COMPLETE! You can direct AI to build entire products from scratch. You are ready for the next level.',
     },
   ],
 }

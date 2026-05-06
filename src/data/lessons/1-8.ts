@@ -6,7 +6,7 @@ const content: LessonContent = {
     // === INTRODUCTION ===
     {
       type: 'info',
-      title: 'Beyond one-shot prompts',
+      title: 'Save and reuse your best instructions',
       body: "You have been typing instructions to Claude Code one at a time. That works — but it does not scale. What if you could package a complex workflow into a single slash command? What if your agent could automatically run checks before writing files, or notify you after a deployment? Skills and hooks solve this. Skills are reusable instruction sets you invoke with a slash command. Hooks are shell commands that fire automatically when certain events occur. Together, they turn Claude Code from a reactive assistant into a proactive automation platform.",
     },
     {
@@ -17,7 +17,7 @@ const content: LessonContent = {
     {
       type: 'checkpoint',
       xp: 2,
-      message: 'Skills concept locked in!',
+      message: 'You understand reusable instructions. This saves a lot of repetition.',
     },
 
     // === SKILL FILE STRUCTURE ===
@@ -50,7 +50,7 @@ const content: LessonContent = {
     // === CREATING A SKILL ===
     {
       type: 'terminal',
-      instruction: 'Create the commands directory for your project skills:',
+      instruction: 'Create a folder to store your reusable instructions (skills). This folder is where Claude Code looks for them:',
       expectedCommand: 'mkdir -p .claude/commands',
       hint: 'Use mkdir with the -p flag to create nested directories',
     },
@@ -137,7 +137,7 @@ const content: LessonContent = {
     {
       type: 'checkpoint',
       xp: 3,
-      message: 'Hook mechanics mastered!',
+      message: 'You understand automatic actions. Your AI agent now has guardrails.',
     },
 
     // === PRACTICAL EXAMPLES ===
@@ -190,7 +190,7 @@ const content: LessonContent = {
     },
     {
       type: 'terminal',
-      instruction: 'List all available skills (slash commands) in your current Claude Code session:',
+      instruction: 'See all the reusable instructions (slash commands) available in your current Claude Code session:',
       expectedCommand: '/commands',
       hint: 'Use the slash command that lists all available commands',
     },
@@ -252,7 +252,7 @@ const content: LessonContent = {
     {
       type: 'checkpoint',
       xp: 15,
-      message: 'Skill Configuration & Hooks complete! Your agent is now fully governed and automated.',
+      message: 'Skills and Hooks complete! You can now save instructions and set up automatic safety checks.',
     },
   ],
 }

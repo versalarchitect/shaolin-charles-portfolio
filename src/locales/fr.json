@@ -84,57 +84,57 @@
       "title": "Des tokens aux flottes d'agents",
       "subtitle": "Quatre niveaux. Chacun vous plonge plus profond dans la façon dont les agents pensent, se coordonnent et livrent.",
       "fullStack": {
-        "title": "Niveau 1 — Comprendre la machine",
+        "title": "Niveau 1 — Comprendre le fonctionnement de l'IA",
         "subtitle": "8 heures · 10 leçons",
-        "description": "Comment les agents traitent votre intention. Tokens, fenêtres de contexte et l'échelle d'outils du copier-coller au MCP. Vous apprenez les mécanismes pour diriger les agents, pas juste les prompter.",
+        "description": "Avant de pouvoir diriger des agents IA, vous devez comprendre comment ils pensent. Apprenez les bases — ce que les agents IA peuvent et ne peuvent pas faire, comment leur donner des instructions claires et comment détecter quand ils dévient.",
         "highlights": [
-          "Comment les tokens et fenêtres de contexte façonnent chaque interaction agent",
-          "L'échelle d'outils : coller → skill → script → agent → serveur MCP",
+          "Comment les agents IA interprètent vos instructions et où ils se trompent",
+          "Choisir le bon outil IA pour chaque tâche — du simple au complexe",
           "Lire le comportement de l'agent — pourquoi il dérive et comment le détecter tôt",
-          "Diriger un agent pour déployer un outil fonctionnel à partir d'un spec écrit"
+          "Diriger un agent pour construire et déployer un outil fonctionnel à partir d'un brief"
         ],
-        "tags": ["Tokens", "Fenêtres de contexte", "MCP", "Échelle d'outils"]
+        "tags": ["Fondamentaux IA", "Comportement d'agent", "Instructions claires", "Sélection d'outils"]
       },
       "consulting": {
         "title": "Niveau 2 — Diriger un agent unique",
         "subtitle": "12 heures · 12 leçons",
-        "description": "Maîtrisez la contrainte et la vérification de la sortie d'un agent. Rédigez des specs qui empêchent la dérive de périmètre. Construisez un SaaS complet en dirigeant un agent unique à travers l'auth, la base de données et les paiements — en apprenant à itérer quand l'agent s'écarte du spec.",
+        "description": "Apprenez à donner des instructions claires et précises à un agent IA et à vérifier ce qu'il construit. Rédigez des briefs qui gardent l'agent concentré. Construisez une application web complète en dirigeant un seul agent à travers chaque couche — authentification, base de données, paiements — et apprenez à corriger le tir quand il dévie.",
         "highlights": [
-          "Rédiger des specs qui contraignent le périmètre de l'agent et empêchent la dérive",
-          "Boucles de vérification — détecter quand l'agent s'écarte du spec",
-          "Itérer à travers auth, base de données et paiements avec un seul agent",
-          "Livrer un produit SaaS complet que vous avez dirigé, pas codé"
+          "Rédiger des briefs qui gardent l'agent concentré et empêchent la dérive de périmètre",
+          "Contrôles qualité — détecter quand l'agent s'écarte du brief",
+          "Construire authentification, base de données et paiements en dirigeant un seul agent",
+          "Livrer un produit complet que vous avez dirigé, pas codé vous-même"
         ],
-        "tags": ["Rédaction de specs", "Contraintes", "Vérification", "Livraison"]
+        "tags": ["Briefs", "Contrôles qualité", "Itération", "Livraison"]
       },
       "mvp": {
         "title": "Niveau 3 — Orchestrer plusieurs agents",
         "subtitle": "15 heures · 14 leçons",
-        "description": "Le vrai différenciateur. Faites tourner 3 à 5 agents en parallèle sur le même codebase avec des git worktrees. Rédigez des fichiers CLAUDE.md comme contexte de coordination partagé. Décomposez les fonctionnalités complexes en tâches à la taille d'un agent. Résolvez les conflits quand les agents touchent du code connexe.",
+        "description": "C'est ici que ça devient puissant. Dirigez 3 à 5 agents IA travaillant sur le même projet en même temps. Donnez à chaque agent son propre espace de travail pour qu'ils ne se marchent pas dessus. Décomposez les fonctionnalités complexes en tâches que chaque agent peut gérer. Coordonnez leur travail et livrez plus vite qu'avec n'importe quel workflow solo.",
         "highlights": [
-          "Faire tourner 3 à 5 agents parallèles sur un codebase avec git worktrees",
-          "Rédiger des fichiers CLAUDE.md comme contexte de coordination partagé",
-          "Décomposer les fonctionnalités en tâches agent-sized qui ne se chevauchent pas",
-          "Vérification inter-agents et résolution de conflits entre branches"
+          "Faire tourner 3 à 5 agents IA en parallèle sur le même projet",
+          "Donner à chaque agent un contexte partagé pour qu'ils restent alignés",
+          "Décomposer les grosses fonctionnalités en tâches ciblées qui ne se chevauchent pas",
+          "Coordonner le travail des agents et résoudre les conflits entre eux"
         ],
-        "tags": ["Multi-agents", "Tâches parallèles", "Coordination", "Production"]
+        "tags": ["Multi-agents", "Travail parallèle", "Coordination", "Vitesse"]
       },
       "codeReview": {
-        "title": "Niveau 4 — Architecturer des systèmes d'agents",
+        "title": "Niveau 4 — Concevoir votre workflow d'agents",
         "subtitle": "15 heures · 12 leçons",
-        "description": "Concevez des codebases que les agents parallèles peuvent naviguer efficacement. Rédigez des protocoles de coordination d'agents. Évaluez les décisions d'architecture IA et sachez quand les surcharger. Prouvez un jugement au niveau système que les agents ne peuvent pas répliquer.",
+        "description": "Concevez des projets que des équipes d'agents IA peuvent construire efficacement. Créez des playbooks de coordination qui passent à l'échelle au-delà de votre supervision directe. Sachez quand diviser le travail, combiner les résultats ou surcharger la décision d'un agent. Prouvez la pensée stratégique que l'IA ne peut pas reproduire.",
         "highlights": [
-          "Concevoir des codebases optimisés pour la navigation par agents parallèles",
-          "Rédiger des protocoles de coordination d'agents et des hiérarchies CLAUDE.md",
-          "Évaluer les décisions d'architecture IA et savoir quand les surcharger",
-          "Prouver le jugement système — la compétence que les agents ne peuvent pas répliquer"
+          "Concevoir des projets optimisés pour des équipes d'agents IA",
+          "Créer des playbooks de coordination et des instructions partagées",
+          "Savoir quand faire confiance, rediriger ou surcharger la décision d'un agent",
+          "Prouver le jugement stratégique — la compétence que les agents IA ne peuvent pas reproduire"
         ],
-        "tags": ["Architecture", "Design d'agents", "Pensée système", "Jugement"]
+        "tags": ["Stratégie", "Workflows d'agents", "Pensée système", "Jugement"]
       }
     },
     "skills": {
       "title": "Ce que vous apprendrez vraiment",
-      "subtitle": "Pas comment coder — comment orchestrer des agents IA qui codent pour vous.",
+      "subtitle": "Pas comment coder — comment diriger des agents IA qui construisent des logiciels pour vous.",
       "items": {
         "frontend": {
           "title": "Next.js + React",
@@ -178,12 +178,12 @@
       "badge": "Le cours",
       "title": "Le cours Agentic SaaS",
       "subtitle": "Orchestration multi-agents",
-      "description": "52 heures depuis la compréhension de votre premier token jusqu'à la coordination de flottes d'agents qui construisent des logiciels en production. Vous progresserez de la direction d'un agent unique à l'orchestration de plusieurs agents en parallèle — et livrerez 4 vrais produits en cours de route.",
+      "description": "52 heures de zéro à diriger des équipes d'agents IA qui construisent de vrais logiciels. Vous progresserez de la direction d'un seul agent à l'orchestration de plusieurs agents en parallèle — et livrerez 4 projets concrets en cours de route.",
       "viewCaseStudy": "Voir le programme complet",
       "lighthouseScore": "Heures d'apprentissage",
       "p95Response": "Leçons",
       "initialBundle": "Principes",
-      "components": "Projets concrets",
+      "components": "Projets étapes",
       "lifeDomains": "Niveaux",
       "domainNodes": "Prix"
     },
@@ -194,28 +194,28 @@
         "2024_founder": {
           "title": "Préparation",
           "company": "2 heures · 3 leçons",
-          "description": "Configurez votre environnement, installez Claude Code, configurez les serveurs MCP. Faites tourner votre premier agent."
+          "description": "Configurez votre environnement, installez les outils IA que vous utiliserez et faites tourner votre premier agent."
         },
         "2024_urbanfarm": {
           "title": "Comprendre la machine",
           "company": "8 heures · 10 leçons",
-          "description": "Tokens, fenêtres de contexte, l'échelle d'outils. Comprenez comment les agents pensent pour pouvoir les diriger. Livrez votre premier outil construit par agent."
+          "description": "Comprenez comment les agents IA pensent pour pouvoir les diriger efficacement. Livrez votre premier outil construit par un agent."
         },
         "2018_senior": {
           "title": "Diriger un agent unique",
-          "description": "Rédigez des specs qui guident la sortie de l'agent. Contraignez, vérifiez et livrez un produit SaaS complet construit en dirigeant un agent."
+          "description": "Rédigez des briefs clairs qui guident la sortie de l'agent. Dirigez, vérifiez et livrez un produit complet construit en dirigeant un seul agent IA."
         },
         "2015_lead": {
           "title": "Orchestrer plusieurs agents",
-          "description": "Coordonnez des agents parallèles sur un système de production. Divisez les tâches, fusionnez les sorties, gérez les échecs. Livrez avec une flotte."
+          "description": "Coordonnez plusieurs agents IA travaillant sur le même projet. Divisez les tâches, combinez les sorties, gérez les problèmes. Livrez avec une équipe d'agents."
         },
         "2010_fullstack": {
-          "title": "Architecturer des systèmes d'agents",
-          "description": "Concevez les systèmes que les agents construisent. Évaluez les décisions IA au niveau architecture. Votre capstone prouve le jugement système."
+          "title": "Concevoir votre workflow d'agents",
+          "description": "Concevez les systèmes que les agents IA construisent. Prenez des décisions stratégiques sur la façon dont les agents travaillent ensemble. Votre projet étape prouve le jugement au niveau système."
         },
         "2005_start": {
           "title": "Alumni",
-          "description": "Accès à vie à tous les matériaux. Mises à jour futures incluses. Rejoignez la communauté alumni."
+          "description": "Accès à vie à tous les contenus. Mises à jour futures incluses. Rejoignez la communauté alumni."
         }
       },
       "milestones": {
@@ -232,21 +232,21 @@
       "at": "a complété",
       "items": [
         {
-          "quote": "Je suis passé de coller des prompts dans ChatGPT à faire tourner trois agents Claude Code en parallèle sur différentes parties de mon SaaS. La progression des tokens au multi-agents est la vraie magie de ce cours.",
+          "quote": "Je suis passé de coller des prompts dans ChatGPT à faire tourner trois agents IA en parallèle, chacun construisant une partie différente de mon produit. La progression des bases à l'orchestration multi-agents, c'est la vraie magie de ce cours.",
           "author": "Alex Chen",
-          "role": "Ingénieur logiciel",
+          "role": "Fondateur",
           "company": "Niveau 3"
         },
         {
-          "quote": "Le Niveau 1 seul valait le coup — j'ai enfin compris POURQUOI mes agents perdaient le contexte et produisaient n'importe quoi. Au Niveau 3, je coordonnais des agents sur un produit en ligne. Transformation complète.",
+          "quote": "Le Niveau 1 seul valait le coup — j'ai enfin compris POURQUOI mes outils IA me donnaient des résultats pourris. Au Niveau 3, je coordonnais des agents qui construisaient un produit en ligne. Ça a complètement transformé ma façon de travailler.",
           "author": "Sarah Martinez",
-          "role": "Développeuse indépendante",
+          "role": "Bâtisseuse indépendante",
           "company": "Niveau 4"
         },
         {
-          "quote": "Le saut du Niveau 2 au Niveau 3 est le moment où tout a cliqué. Diriger un agent c'est facile. Orchestrer cinq agents sur le même codebase sans qu'ils se marchent dessus — c'est ça que ce cours enseigne vraiment.",
+          "quote": "Diriger un agent, c'est facile. Orchestrer cinq agents sur le même projet sans qu'ils se marchent dessus — c'est ça que ce cours enseigne vraiment. Un game changer pour mon entreprise.",
           "author": "Jordan Osei",
-          "role": "Développeur Full-Stack",
+          "role": "Entrepreneur",
           "company": "Niveau 4"
         }
       ]
@@ -524,7 +524,7 @@
       "badge": "Disponible pour des projets",
       "title": "Travaillons",
       "titleHighlight": "ensemble",
-      "subtitle": "Vous avez un projet en tête, besoin d'une consultation technique, ou simplement envie de discuter ? Je serais ravi d'échanger avec vous."
+      "subtitle": "Vous avez une question sur le cours, envie de discuter de vos objectifs d'affaires, ou simplement envie de connecter ? Je serais ravi d'échanger avec vous."
     },
     "info": {
       "location": "Montréal, Canada",
@@ -539,7 +539,7 @@
       "email": "Courriel",
       "emailPlaceholder": "vous@exemple.com",
       "subject": "Sujet",
-      "subjectPlaceholder": "Demande de projet, collaboration, consultation...",
+      "subjectPlaceholder": "Question sur le cours, projet, collaboration...",
       "message": "Message",
       "messagePlaceholder": "Parlez-moi de votre projet ou demande...",
       "send": "Envoyer le message",
@@ -562,7 +562,7 @@
       "title": "Ou contactez-moi directement",
       "email": {
         "title": "Courriel",
-        "description": "Idéal pour les demandes de projet et les discussions détaillées."
+        "description": "Idéal pour les questions sur le cours, les projets et les discussions détaillées."
       },
       "github": {
         "title": "GitHub",
@@ -571,7 +571,7 @@
     },
     "availability": {
       "title": "Actuellement disponible",
-      "description": "Je suis ouvert aux projets, aux engagements de consultation et aux collaborations intéressantes. Bien que je sois principalement concentré sur Predictive, je prends toujours le temps pour des opportunités excitantes."
+      "description": "Je suis ouvert aux questions sur le cours, aux engagements de consultation et aux collaborations intéressantes. Que vous exploriez le cours ou que vous ayez un projet en tête, je prends toujours le temps de connecter."
     },
     "expectations": {
       "title": "À quoi s'attendre",
@@ -579,12 +579,12 @@
         "Réponse sous 24-48 heures, généralement plus tôt",
         "Communication claire et retours honnêtes",
         "Un intérêt sincère à comprendre vos besoins",
-        "Une expertise technique appuyée par 16 ans d'expérience"
+        "Une expertise concrète appuyée par 10+ ans de construction de vrais produits"
       ]
     },
     "cta": {
       "title": "Construisons quelque chose de génial",
-      "subtitle": "Que ce soit un problème technique stimulant, une idée de startup ambitieuse ou un système d'entreprise complexe - je suis là pour vous aider.",
+      "subtitle": "Que ce soit une question sur le cours, une idée d'affaires ambitieuse ou un projet que vous voulez concrétiser avec l'IA — je suis là pour vous aider.",
       "basedIn": "Basé à Montréal, Canada • Disponible mondialement"
     }
   },
@@ -710,6 +710,66 @@
       "subtitle": "Toujours intéressé par des collaborations créatives, des commandes d'art génératif, ou simplement geeker sur les shaders et la programmation visuelle.",
       "getInTouch": "Me contacter"
     }
+  },
+  "gamification": {
+    "dashboard": "Tableau de bord",
+    "leaderboard": "Classement",
+    "achievements": "Réalisations",
+    "dailyChallenges": "Défis du jour",
+    "weeklyChallenges": "Défis de la semaine",
+    "progress": "Progrès",
+    "streak": "Série",
+    "rank": "Rang",
+    "lessons": "Leçons",
+    "markComplete": "Marquer comme terminé",
+    "completed": "Terminé",
+    "locked": "Leçon verrouillée",
+    "iDidThis": "C'est fait",
+    "copy": "Copier",
+    "copied": "Copié !",
+    "showHint": "Voir l'indice",
+    "showAnswer": "Voir la réponse",
+    "continue": "Continuer",
+    "startLearning": "Commencer",
+    "claimReward": "Réclamer",
+    "welcomeBack": "Bon retour !",
+    "focusSession": "Session de concentration",
+    "startSession": "Démarrer une session",
+    "viewAll": "Voir tout",
+    "shareProgress": "Partager vos progrès",
+    "downloadCard": "Télécharger",
+    "share": "Partager",
+    "noEntries": "Aucune entrée. Commencez à apprendre pour apparaître ici.",
+    "allContent": "Tout le contenu est à jour",
+    "xp": "XP",
+    "days": "jours",
+    "day": "Jour",
+    "claimed": "Réclamé !",
+    "check": "Vérifier",
+    "tryAgain": "Réessayer",
+    "checkOrder": "Vérifier l'ordre",
+    "back": "Retour",
+    "next": "Suivant",
+    "lessonComplete": "Leçon terminée — marquez-la ci-dessus",
+    "done": "Terminé !",
+    "social": "Social",
+    "stats": "Statistiques",
+    "challenges": "Défis",
+    "welcomeTitle": "Bienvenue dans votre parcours d'apprentissage",
+    "welcomeDescription": "Tout ce que vous faites ici rapporte des XP (points d'expérience) et débloque des récompenses. Terminez des leçons, revenez chaque jour, explorez le site — tout compte.",
+    "howYouEarnXp": "Comment gagner des XP",
+    "earnFinishLessons": "Terminer des leçons",
+    "earnComeBack": "Revenir chaque jour",
+    "earnExplore": "Explorer le site",
+    "earnHidden": "Trouver des surprises cachées",
+    "unlockRewards": "Débloquer des récompenses",
+    "unlockRewardsDesc": "Gagnez des rangs, débloquez de nouveaux looks pour le tableau de bord, découvrez des pages secrètes et grimpez au classement.",
+    "ready": "Prêt ?",
+    "readyDesc": "Votre parcours commence maintenant. Chaque interaction vous rapproche de la maîtrise.",
+    "hiddenHint": "5 surprises cachées sont dispersées sur le site. Pouvez-vous toutes les trouver ?",
+    "weeklyBonus": "Incroyable ! 7 jours d'affilée. Voici un bonus.",
+    "topReward": "Dévouement incroyable. Vous avez gagné la récompense quotidienne maximale !",
+    "comeBackDaily": "Revenez chaque jour pour de plus grandes récompenses."
   },
   "interests": {
     "meta": {

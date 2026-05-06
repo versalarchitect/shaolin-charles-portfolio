@@ -6,7 +6,7 @@ const content: LessonContent = {
     // === INTRODUCTION ===
     {
       type: 'info',
-      title: 'Agents write code differently',
+      title: 'Managing changes when AI writes code',
       body: "When a human writes code, they context-switch between reading, thinking, and typing. When an AI agent writes code, it generates large diffs in seconds — sometimes across many files at once. This speed is a superpower, but it changes how you manage version control. Branches, commits, and pull requests all need new conventions. Without discipline, you end up with 50-file PRs, vague commit messages, and merge conflicts that take hours to untangle. This lesson gives you the git workflow that makes agents productive without creating chaos.",
     },
     {
@@ -17,7 +17,7 @@ const content: LessonContent = {
     {
       type: 'checkpoint',
       xp: 2,
-      message: 'Git fundamentals for agents established!',
+      message: 'You understand why version control matters even more with AI.',
     },
 
     // === BRANCH STRATEGY ===
@@ -28,7 +28,7 @@ const content: LessonContent = {
     },
     {
       type: 'terminal',
-      instruction: 'Create a new feature branch for an agent task:',
+      instruction: 'Create a new branch (a separate workspace) for the AI to work in. This keeps your main project safe while the AI experiments:',
       expectedCommand: 'git checkout -b feat/add-user-settings',
       hint: 'Use git checkout -b followed by the branch name',
     },
@@ -113,7 +113,7 @@ const content: LessonContent = {
     {
       type: 'checkpoint',
       xp: 3,
-      message: 'PR review workflow locked in!',
+      message: 'You know how to review AI-generated code before it goes live.',
     },
 
     // === MERGE CONFLICTS ===
@@ -132,7 +132,7 @@ const content: LessonContent = {
     },
     {
       type: 'terminal',
-      instruction: 'View which files have merge conflicts after a rebase:',
+      instruction: 'After combining branches, check if any files have conflicting changes that need your attention:',
       expectedCommand: 'git diff --name-only --diff-filter=U',
       hint: 'Use git diff with --name-only and filter for unmerged (U) files',
     },
@@ -195,7 +195,7 @@ const content: LessonContent = {
     },
     {
       type: 'terminal',
-      instruction: 'View a compact log of the last 10 commits to check agent commit quality:',
+      instruction: 'View the last 10 saved changes to check that the AI wrote clear descriptions for each one:',
       expectedCommand: 'git log --oneline -10',
       hint: 'Use git log with --oneline for compact output and -10 to limit results',
     },
@@ -235,7 +235,7 @@ const content: LessonContent = {
     {
       type: 'checkpoint',
       xp: 15,
-      message: 'Git Workflow with AI Agents complete! Your version control is agent-ready.',
+      message: 'Git Workflow complete! You can safely manage code changes from AI agents.',
     },
   ],
 }

@@ -6,61 +6,61 @@ const content: LessonContent = {
     // === INTRO ===
     {
       type: 'info',
-      title: 'Your AI copilot lives in the terminal',
-      body: "Claude Code is a CLI agent that reads your codebase, runs commands, edits files, and reasons about architecture — all from your terminal. In this lesson you'll install it, connect it to external tools via MCP, configure skills and hooks, and complete your first agent-directed task.",
+      title: 'Meet your AI building partner',
+      body: "Claude Code is an AI assistant that lives in your terminal (the command-line window). It can read your project files, write code, run commands, and make decisions — all from a text interface. In this lesson you will install it, connect it to external tools, and complete your first AI-directed task. You tell it what to build in plain English. It does the building.",
     },
     {
       type: 'multiple-choice',
-      question: 'What makes Claude Code different from a chatbot?',
+      question: 'What makes Claude Code different from a regular AI chatbot?',
       options: [
-        'It has a nicer UI',
-        'It can read, edit, and run code directly in your project',
-        'It only works with Python',
-        'It requires a browser extension',
+        'It has a prettier interface',
+        'It can read, edit, and run code directly inside your project',
+        'It only works with one programming language',
+        'It requires a browser plugin',
       ],
       correctIndex: 1,
-      explanation: 'Claude Code is an agentic tool — it operates inside your codebase, reads files, writes code, and executes terminal commands. A chatbot just takes text in and gives text out.',
+      explanation: 'Claude Code works directly inside your project — it reads files, writes code, and runs commands on your computer. A regular chatbot just has a conversation. Claude Code takes action.',
     },
     {
       type: 'checkpoint',
       xp: 2,
-      message: 'Agent mindset unlocked!',
+      message: 'You understand the difference. Claude Code is a doer, not just a talker.',
     },
 
     // === INSTALL & AUTH ===
     {
       type: 'terminal',
-      instruction: 'Install Claude Code globally via npm:',
+      instruction: 'Open your terminal and paste this command. It installs Claude Code on your machine so you can use it from any project:',
       expectedCommand: 'npm install -g @anthropic-ai/claude-code',
       hint: 'npm install -g @anthropic-ai/claude-code',
     },
     {
       type: 'terminal',
-      instruction: 'Launch Claude Code to start the auth flow (it opens a browser window for OAuth):',
+      instruction: 'Now launch Claude Code by typing this. It will open your browser to sign in with your Anthropic account:',
       expectedCommand: 'claude',
       hint: 'Just type "claude" — it walks you through authentication.',
     },
     {
       type: 'checklist',
-      title: 'Installation check:',
+      title: 'Installation check — confirm each step:',
       items: [
-        'Ran npm install -g @anthropic-ai/claude-code',
-        'Launched claude in the terminal',
-        'Completed the browser auth flow',
-        'Saw the Claude Code welcome prompt',
+        'Pasted the install command and it completed without errors',
+        'Typed claude in the terminal and it launched',
+        'Signed in through the browser window that opened',
+        'Saw the Claude Code welcome screen in your terminal',
       ],
     },
     {
       type: 'checkpoint',
       xp: 2,
-      message: 'Claude Code installed and authenticated!',
+      message: 'Claude Code is installed and ready! You now have an AI building partner.',
     },
 
     // === MCP ARCHITECTURE ===
     {
       type: 'diagram',
-      title: 'MCP Architecture',
-      body: 'The Model Context Protocol lets Claude Code connect to external tools and data sources through a standard interface.',
+      title: 'How Claude Code connects to external tools',
+      body: 'MCP (Model Context Protocol) is like a universal adapter. It lets Claude Code plug into databases, websites, and other services through a standard connection. You do not need to understand the technical details — just know that MCP is how Claude Code gains new abilities beyond reading and writing files.',
       diagram: {
         direction: 'TB',
         nodes: [
@@ -80,8 +80,8 @@ const content: LessonContent = {
     },
     {
       type: 'info',
-      title: 'Understanding MCP',
-      body: "MCP (Model Context Protocol) is an open standard that lets AI agents talk to external tools — databases, APIs, browsers, file systems, anything. An MCP server is a small program that exposes tools and resources over a standard protocol. Claude Code connects to these servers and gains new capabilities without any custom code.",
+      title: 'Understanding MCP in plain terms',
+      body: "Think of MCP like a USB port. Before USB, every device needed its own cable. MCP works the same way for AI tools — it is a universal standard that lets Claude Code plug into any service: databases, websites, deployment platforms, and more. An MCP server is a small program that gives Claude Code access to a specific tool. You do not need to build these yourself — most are pre-built and ready to use.",
     },
     {
       type: 'multiple-choice',
@@ -93,44 +93,44 @@ const content: LessonContent = {
         'Cloud storage for your files',
       ],
       correctIndex: 1,
-      explanation: 'MCP servers expose tools (actions the agent can take) and resources (data it can read). This is how Claude Code gains capabilities beyond its built-in features.',
+      explanation: 'MCP servers give Claude Code two things: tools (actions it can perform, like running a database query) and resources (data it can read, like checking deployment status). This is how Claude Code goes from just editing files to interacting with the whole world.',
     },
 
     // === CONFIGURE MCP SERVER ===
     {
       type: 'code-demo',
-      title: 'Configure an MCP server',
-      body: "Add the filesystem MCP server to your project settings. This lets Claude Code read and search files with enhanced capabilities.",
+      title: 'Connect an MCP tool to your project',
+      body: "Let us add a file system tool to your project settings. This gives Claude Code enhanced abilities to read and search your files. You just need to add this configuration to a settings file:",
       language: 'json',
       filename: '.claude/settings.json',
       code: '{\n  "mcpServers": {\n    "filesystem": {\n      "command": "npx",\n      "args": [\n        "-y",\n        "@modelcontextprotocol/server-filesystem",\n        "."\n      ]\n    }\n  }\n}',
     },
     {
       type: 'code-input',
-      instruction: 'In the MCP config, what key holds the object mapping server names to their configurations?',
+      instruction: 'In the settings file above, what is the name of the main section that holds all your MCP tool connections?',
       placeholder: '"________": { "filesystem": { ... } }',
       answer: 'mcpServers',
-      hint: 'Look at the top-level key in the settings JSON.',
+      hint: 'Look at the very first key inside the curly braces in the JSON above.',
     },
     {
       type: 'checkpoint',
       xp: 3,
-      message: 'MCP mastered — first server configured!',
+      message: 'MCP tool connected! Claude Code now has enhanced file abilities.',
     },
 
     // === SKILLS & HOOKS ===
     {
       type: 'code-demo',
-      title: 'Create a skill',
-      body: "Skills are reusable prompts invoked with a slash command. They teach Claude Code your project's patterns. Create .claude/skills/component.md:",
+      title: 'Create a reusable instruction (called a "skill")',
+      body: "Skills are saved instructions you can reuse anytime with a simple slash command. Instead of typing the same detailed request every time, you save it once and invoke it by name. Create a file at .claude/skills/component.md:",
       language: 'markdown',
       filename: '.claude/skills/component.md',
       code: '# Component Generator\n\nWhen asked to create a React component:\n\n1. Use TypeScript with explicit prop interfaces\n2. Export as default\n3. Use Tailwind for styling\n4. Add JSDoc comments for props\n5. Place in src/components/',
     },
     {
       type: 'code-demo',
-      title: 'Set up a hook',
-      body: "Hooks are automated actions that run at specific lifecycle points — before a command, after a file edit, or on conversation start. Add this to your settings.json:",
+      title: 'Set up an automatic action (called a "hook")',
+      body: "Hooks are automatic actions that happen without you asking. For example, every time Claude Code edits a file, a hook can automatically clean up the formatting. They run in the background. Add this to your settings.json:",
       language: 'json',
       filename: '.claude/settings.json',
       code: '{\n  "hooks": {\n    "afterEdit": [\n      {\n        "command": "npx eslint --fix ${file}",\n        "description": "Auto-lint after edit"\n      }\n    ]\n  }\n}',
@@ -139,18 +139,18 @@ const content: LessonContent = {
       type: 'multiple-choice',
       question: 'What is the purpose of a Claude Code skill?',
       options: [
-        'To replace your package.json scripts',
-        'To teach Claude reusable, project-specific patterns',
-        'To encrypt your source code',
-        'To deploy your application',
+        'To replace other software tools',
+        'To save reusable instructions that Claude Code follows every time',
+        'To protect your files from being changed',
+        'To publish your application online',
       ],
       correctIndex: 1,
-      explanation: "Skills encode your team's conventions as reusable prompts. Instead of explaining your patterns every time, define them once and invoke with a slash command.",
+      explanation: "Skills save your instructions so you do not have to repeat yourself. Define your preferred approach once, save it as a skill, and invoke it anytime with a slash command. Think of it like a saved recipe.",
     },
     {
       type: 'checkpoint',
       xp: 3,
-      message: 'Skills and hooks configured!',
+      message: 'Skills and hooks are set up! You now have reusable instructions and automatic actions.',
     },
 
     // === YOUR AI TOOLING STACK ===
@@ -179,13 +179,13 @@ const content: LessonContent = {
     // === FIRST AGENT TASK ===
     {
       type: 'terminal',
-      instruction: 'Ask Claude Code to create a hello world component in your project:',
+      instruction: 'Give Claude Code your first real task. Paste this command to have it create a simple component in your project:',
       expectedCommand: 'claude "Create a HelloWorld React component in src/components that renders a centered heading"',
       hint: 'claude "Create a HelloWorld React component..."',
     },
     {
       type: 'order',
-      instruction: 'Put the agent-directed workflow in the correct order:',
+      instruction: 'Put these steps in the correct order. This is how you direct an AI agent to build something:',
       items: [
         'You describe the intent in natural language',
         'Claude Code reads your project context',
@@ -197,20 +197,20 @@ const content: LessonContent = {
     },
     {
       type: 'checklist',
-      title: 'Final verification:',
+      title: 'Final check — make sure you have completed each of these:',
       items: [
-        'Claude Code installed and authenticated',
-        'Understand MCP architecture (servers, tools, resources)',
-        'Configured an MCP server in settings',
-        'Created a skill file',
-        'Set up a hook',
-        'Completed a real agent-directed task',
+        'Claude Code is installed and you signed in successfully',
+        'You understand MCP at a high level (it connects Claude Code to external tools)',
+        'You added an MCP tool connection to your project settings',
+        'You created a skill file (a saved reusable instruction)',
+        'You set up a hook (an automatic action)',
+        'You gave Claude Code a real task and it completed it',
       ],
     },
     {
       type: 'checkpoint',
       xp: 5,
-      message: 'AI tooling configured! You have a working agent-directed development environment.',
+      message: 'Your AI toolkit is ready! You have Claude Code installed, connected to tools, with skills and hooks set up. Time to start building.',
     },
   ],
 }

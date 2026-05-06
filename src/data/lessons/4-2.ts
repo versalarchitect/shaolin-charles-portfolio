@@ -6,7 +6,7 @@ const content: LessonContent = {
     // === INTRODUCTION ===
     {
       type: 'info',
-      title: 'CLAUDE.md is not documentation',
+      title: 'CLAUDE.md: your project\'s instruction manual for AI',
       body: "Stop thinking of CLAUDE.md as a README. A README explains the project to humans who will explore, ask questions, and build context over time. CLAUDE.md is a coordination protocol — it tells every agent that enters the codebase exactly how to behave, what patterns to follow, what to avoid, and where to find things. It is the difference between \"here is our project\" and \"here are your orders.\" Every agent session starts by reading this file. If it is wrong, vague, or missing, every agent session starts confused.",
     },
     {

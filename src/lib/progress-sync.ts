@@ -448,20 +448,22 @@ export function postActivity(event: { type: string; payload: Record<string, unkn
   // Don't attempt when offline
   if (!isOnline()) return
 
-  supabase
-    .from('activity_feed')
-    .insert({
-      user_id: syncUserId,
-      event_type: event.type,
-      payload: event.payload,
-      created_at: new Date().toISOString(),
-    })
+  Promise.resolve(
+    supabase
+      .from('activity_feed')
+      .insert({
+        user_id: syncUserId,
+        event_type: event.type,
+        payload: event.payload,
+        created_at: new Date().toISOString(),
+      })
+  )
     .then(({ error }) => {
       if (error) {
         console.warn('[progress-sync] postActivity failed:', error.message)
       }
     })
-    .catch((err) => {
+    .catch((err: unknown) => {
       console.warn('[progress-sync] postActivity network error:', err)
     })
 }
