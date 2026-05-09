@@ -170,12 +170,12 @@ export function WelcomeModal() {
 
   useEffect(() => {
     try {
-      const onboarded = localStorage.getItem(STORAGE_KEY)
-      if (!onboarded) {
+      const dismissed = sessionStorage.getItem(STORAGE_KEY)
+      if (!dismissed) {
         setVisible(true)
       }
     } catch {
-      // localStorage not available
+      // storage not available
     }
   }, [])
 
@@ -234,7 +234,7 @@ export function WelcomeModal() {
 
   function dismiss() {
     try {
-      localStorage.setItem(STORAGE_KEY, 'true')
+      sessionStorage.setItem(STORAGE_KEY, 'true')
     } catch {}
     setVisible(false)
   }

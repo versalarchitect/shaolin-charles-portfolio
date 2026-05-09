@@ -13,6 +13,22 @@ import { Section, SectionSpots } from '@/components/ui/gradient-background'
 
 const PROJECTS = [
   {
+    title: 'Predictive',
+    subtitle: 'predictives.company',
+    description:
+      'AI-powered operating system for one-person companies. Automates business operations through a constitution-driven agent architecture — domain agents observe, decide via Claude, gate against your rules, execute, and trace every action.',
+    url: 'https://predictives.company',
+    tags: ['Next.js 16', 'TypeScript', 'Supabase', 'Vercel AI SDK', 'Claude API', 'Tailwind v4'],
+    highlights: [
+      'Constitution-driven agent architecture',
+      'Domain agents with confidence gating',
+      'Append-only audit trail for every decision',
+      'Automated via Vercel Cron Functions',
+    ],
+    status: 'LIVE' as const,
+    year: '2026',
+  },
+  {
     title: 'Agentic SaaS Course',
     subtitle: 'charlesjackson.dev',
     description:
