@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
-import { motion, AnimatePresence, useReducedMotion } from 'framer-motion'
+import { motion, AnimatePresence, useReducedMotion } from 'motion/react'
 import { useTranslation } from 'react-i18next'
 import { Button } from './ui/button'
 import { AlignJustify, X, ArrowUpRight, Github, LogIn, LayoutDashboard, Users, BookOpen, Sun, Moon } from 'lucide-react'

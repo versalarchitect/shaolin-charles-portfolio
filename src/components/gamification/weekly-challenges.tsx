@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { motion } from 'framer-motion'
+import { motion } from 'motion/react'
 import { Clock, Target, Sparkles, Zap } from 'lucide-react'
 import { useProgress, getWeeklyChallenges } from '@/stores/progress'
 import type { WeeklyChallenge } from '@/stores/progress'

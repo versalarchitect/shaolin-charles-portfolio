@@ -1,4 +1,4 @@
-import { motion } from 'framer-motion'
+import { motion } from 'motion/react'
 import { useTranslation } from 'react-i18next'
 import { GraduationCap, Rocket, Code2, Star, Zap, Layers } from 'lucide-react'
 

@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react'
-import { motion } from 'framer-motion'
+import { motion } from 'motion/react'
 import { Crown, Award, Trophy, Star, Target, Check, Zap, Lock } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
 

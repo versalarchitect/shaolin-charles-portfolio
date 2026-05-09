@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react'
 import { useParams, Link } from 'react-router-dom'
-import { motion } from 'framer-motion'
+import { motion } from 'motion/react'
 import { Zap, Flame, Trophy, BookOpen, ArrowLeft, UserX, RefreshCw, Share2 } from 'lucide-react'
 import { toast } from 'sonner'
 import { SEO } from '@/components/SEO'

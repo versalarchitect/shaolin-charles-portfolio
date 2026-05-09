@@ -1,5 +1,5 @@
 import { useState, useRef } from 'react'
-import { motion } from 'framer-motion'
+import { motion } from 'motion/react'
 import { Camera, Loader2, Save, Settings, User, Lock, Mail, Trash2, Zap, Flame, Trophy, Palette, Share2, Check, Star, SlidersHorizontal, Volume2 } from 'lucide-react'
 import { toast } from 'sonner'
 import { useAuth } from '@/hooks/use-auth'

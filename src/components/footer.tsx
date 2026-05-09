@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom'
-import { motion } from 'framer-motion'
+import { motion } from 'motion/react'
 import { useTranslation } from 'react-i18next'
 import { Mail, ArrowUpRight } from 'lucide-react'
 import { FOOTER_NAV, SOCIAL_LINKS, SITE } from '@/lib/constants'

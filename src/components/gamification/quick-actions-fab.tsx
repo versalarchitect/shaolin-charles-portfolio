@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback, useRef } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
-import { motion, AnimatePresence, useReducedMotion } from 'framer-motion'
+import { motion, AnimatePresence, useReducedMotion } from 'motion/react'
 import { Plus, Play, Target, Timer, Share2, Command } from 'lucide-react'
 import { useCommandMenu } from '@/components/command-menu'
 import { CURRICULUM } from '@/data/curriculum'

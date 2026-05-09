@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import { motion, AnimatePresence } from 'framer-motion'
+import { motion, AnimatePresence } from 'motion/react'
 import { SEO } from '@/components/SEO'
 import { Home, BookOpen, Briefcase, Mail, Palette } from 'lucide-react'
 import { usePatienceEgg } from '@/components/gamification/easter-egg-handler'

@@ -1,5 +1,5 @@
 import { useEffect, useState, useCallback } from 'react'
-import { motion } from 'framer-motion'
+import { motion } from 'motion/react'
 import { Trophy, Zap, RefreshCw } from 'lucide-react'
 import { SEO } from '@/components/SEO'
 import { Leaderboard } from '@/components/gamification/leaderboard'

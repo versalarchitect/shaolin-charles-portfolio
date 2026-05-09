@@ -1,4 +1,4 @@
-import { motion } from 'framer-motion'
+import { motion } from 'motion/react'
 import { Link } from 'react-router-dom'
 import { Flame, Trophy, Zap } from 'lucide-react'
 import type { LeaderboardEntry } from '@/lib/leaderboard-api'

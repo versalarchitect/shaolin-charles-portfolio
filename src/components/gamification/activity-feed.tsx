@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { motion } from 'framer-motion'
+import { motion } from 'motion/react'
 import { Star, TrendingUp, Flame, GraduationCap, Compass, Activity, BookOpen, RefreshCw } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
 import { fetchActivityFeed, type ActivityEvent } from '@/lib/activity-api'

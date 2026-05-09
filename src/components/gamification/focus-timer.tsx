@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
+import { motion, AnimatePresence } from 'motion/react'
 import { Play, Pause, RotateCcw, Timer, Coffee, Trophy, Volume2, VolumeX } from 'lucide-react'
 import { awardExplorerXp } from '@/stores/progress'
 import { getSoundSettings } from '@/lib/sounds'

@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom'
-import { motion } from 'framer-motion'
+import { motion } from 'motion/react'
 import { Check } from 'lucide-react'
 import { CURRICULUM } from '@/data/curriculum'
 import { getLessonStatus, getTierProgress } from '@/stores/progress'

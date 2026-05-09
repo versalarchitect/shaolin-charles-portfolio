@@ -1,6 +1,6 @@
 import { Suspense, lazy, useEffect } from 'react'
 import { Outlet, useLocation } from 'react-router-dom'
-import { AnimatePresence } from 'framer-motion'
+import { AnimatePresence } from 'motion/react'
 import PageLoading from '@/components/page-loading'
 import { Header } from '@/components/header'
 import { Footer } from '@/components/footer'
@@ -18,6 +18,12 @@ import { useExplorer } from '@/hooks/use-explorer'
 import { useProgressSync } from '@/hooks/use-progress-sync'
 import { useSurpriseRewards } from '@/hooks/use-surprise-rewards'
 
+function CourseHooks() {
+  useExplorer()
+  useSurpriseRewards()
+  return null
+}
+
 const SectionBoundaryGrid = lazy(() => import('@/components/ui/gradient-background').then(m => ({ default: m.SectionBoundaryGrid })))
 
 const Chatbot = lazy(() => import('@/components/chatbot').then(m => ({ default: m.Chatbot })))
@@ -31,9 +37,7 @@ export default function App() {
   const location = useLocation()
   const isAppPage = APP_ROUTES.some((r) => location.pathname.startsWith(r))
 
-  useExplorer()
   useProgressSync()
-  useSurpriseRewards()
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: pathname is the intentional trigger
   useEffect(() => {
@@ -52,6 +56,7 @@ export default function App() {
           {isAppPage ? (
             /* App pages: sidebar layout, clean background */
             <AppLayout>
+              <CourseHooks />
               <AnimatePresence mode="popLayout">
                 <PageTransition key={location.pathname}>
                   <Suspense fallback={<PageLoading />}>

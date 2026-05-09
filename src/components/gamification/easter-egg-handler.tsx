@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState, useCallback } from 'react'
-import { AnimatePresence, motion } from 'framer-motion'
+import { AnimatePresence, motion } from 'motion/react'
 import { toast } from 'sonner'
 import { trackEasterEgg, isEggDiscovered } from '@/lib/explorer'
 import { MatrixRain } from './matrix-rain'

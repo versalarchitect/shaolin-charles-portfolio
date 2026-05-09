@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
+import { motion, AnimatePresence } from 'motion/react'
 import { Lock, Zap, Flame, Trophy, Star } from 'lucide-react'
 import { useProgress, getLevel } from '@/stores/progress'
 import { getUnlockable, checkUnlocked, getProgress } from '@/lib/unlockables'

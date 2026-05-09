@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
+import { motion, AnimatePresence } from 'motion/react'
 import { Mic, Radio, ChevronRight, PhoneOff, MicOff, Bot, User } from 'lucide-react'
 import { Button } from './ui/button'
 import { VoiceTutorVisualizer } from './voice-tutor-visualizer'

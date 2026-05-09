@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { SEO } from '@/components/SEO'
 import { Button } from '@/components/ui/button'
-import { motion, useReducedMotion } from 'framer-motion'
+import { motion, useReducedMotion } from 'motion/react'
 import { initiateCheckout } from '@/lib/checkout'
 import {
   ArrowRight,

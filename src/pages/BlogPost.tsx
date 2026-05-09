@@ -16,7 +16,7 @@ import {
   ChevronUp,
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import { motion, useReducedMotion, AnimatePresence } from 'framer-motion'
+import { motion, useReducedMotion, AnimatePresence } from 'motion/react'
 import {
   BlurFadeIn,
   ScrollFadeIn,

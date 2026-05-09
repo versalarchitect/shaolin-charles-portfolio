@@ -2,7 +2,7 @@ import { useState, useRef, useEffect, useCallback, type KeyboardEvent } from 're
 import { useParams, Link, Navigate } from 'react-router-dom'
 import { SEO } from '@/components/SEO'
 import { Button } from '@/components/ui/button'
-import { motion, AnimatePresence } from 'framer-motion'
+import { motion, AnimatePresence } from 'motion/react'
 import {
   ArrowLeft,
   MessageSquare,

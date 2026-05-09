@@ -1,4 +1,4 @@
-import { type Variants, motion, useReducedMotion } from 'framer-motion'
+import { type Variants, motion, useReducedMotion } from 'motion/react'
 
 const variants: Variants = {
   initial: { opacity: 0, y: 8 },

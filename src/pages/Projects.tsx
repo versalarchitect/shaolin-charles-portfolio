@@ -39,7 +39,7 @@ import {
   useSpring,
   useTransform,
   useReducedMotion,
-} from 'framer-motion'
+} from 'motion/react'
 import {
   BlurFadeIn,
   ScrollFadeIn,

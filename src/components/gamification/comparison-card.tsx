@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { motion } from 'framer-motion'
+import { motion } from 'motion/react'
 import { BarChart3, Flame, BookOpen, Zap, Crown } from 'lucide-react'
 import { useAuth } from '@/hooks/use-auth'
 import { useProgress, getOverallProgress } from '@/stores/progress'

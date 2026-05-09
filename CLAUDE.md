@@ -47,6 +47,7 @@ git push origin main
 **Important:**
 - Always build before pushing to catch errors locally
 - Lint errors will NOT block Vercel deployment, but fix them anyway
+- **Always verify the deploy succeeded** after pushing — poll `gh api repos/versalarchitect/shaolin-charles-portfolio/commits/<sha>/status` until terminal state and report the result
 - Vercel auto-deploys on push to `main` - no manual deployment needed
 - Check Vercel dashboard for build logs if deployment fails
 

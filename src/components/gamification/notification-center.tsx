@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
+import { motion, AnimatePresence } from 'motion/react'
 import { Bell, Check } from 'lucide-react'
 import { useNotifications, markRead, markAllRead, addNotification } from '@/stores/notifications'
 import { onProgressEvent } from '@/stores/progress'

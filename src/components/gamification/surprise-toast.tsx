@@ -1,5 +1,5 @@
 import { Gift, Sparkles } from 'lucide-react'
-import { motion } from 'framer-motion'
+import { motion } from 'motion/react'
 
 interface SurpriseToastProps {
   title: string

@@ -1,4 +1,4 @@
-import { motion } from 'framer-motion'
+import { motion } from 'motion/react'
 import { Lock, Palette, FileText, BookOpen, Award, Check, Zap } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
 import { UNLOCKABLES, checkUnlocked, getProgress, getUnlockablesByType } from '@/lib/unlockables'

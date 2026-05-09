@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { motion, AnimatePresence } from 'framer-motion'
+import { motion, AnimatePresence } from 'motion/react'
 import { Flame, X, Shield, ArrowRight } from 'lucide-react'
 import { useProgress, getLessonStatus } from '@/stores/progress'
 import { CURRICULUM } from '@/data/curriculum'

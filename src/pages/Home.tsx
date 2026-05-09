@@ -14,7 +14,7 @@ import {
   useScroll,
   useInView,
   useReducedMotion,
-} from 'framer-motion'
+} from 'motion/react'
 import {
   ArrowRight,
   ArrowDown,

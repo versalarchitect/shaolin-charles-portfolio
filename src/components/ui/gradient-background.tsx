@@ -1,5 +1,5 @@
 import { useEffect, useRef, createContext, useContext, useState, useCallback, useLayoutEffect } from 'react'
-import { motion } from 'framer-motion'
+import { motion } from 'motion/react'
 
 // Subtle ambient glow zones - creates soft pools of light (static, no animation)
 export function AmbientGlowZones() {

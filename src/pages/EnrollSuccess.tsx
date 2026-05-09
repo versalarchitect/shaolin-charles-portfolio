@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom'
 import { SEO } from '@/components/SEO'
 import { Button } from '@/components/ui/button'
-import { motion } from 'framer-motion'
+import { motion } from 'motion/react'
 import { Check, ArrowRight, Mail, BookOpen } from 'lucide-react'
 import { BlurFadeIn } from '@/components/ui/aaa-effects'
 import { SectionSpots, Section } from '@/components/ui/gradient-background'

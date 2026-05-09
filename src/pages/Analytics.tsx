@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react'
-import { motion } from 'framer-motion'
+import { motion } from 'motion/react'
 import { TrendingUp, Calendar, Clock, Award, PieChart, Star, Timer } from 'lucide-react'
 import { SEO } from '@/components/SEO'
 import { FocusStatsCard } from '@/components/gamification/focus-timer'

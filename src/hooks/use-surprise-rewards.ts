@@ -2,7 +2,7 @@ import { useEffect, useRef } from 'react'
 import { useLocation } from 'react-router-dom'
 import { toast } from 'sonner'
 import { useAuth } from '@/hooks/use-auth'
-import { useProgress, awardExplorerXp } from '@/stores/progress'
+import { hasCompletedAnyLesson as checkCompletedLesson, awardExplorerXp } from '@/stores/progress'
 import { playSound } from '@/lib/sounds'
 import { SurpriseToast } from '@/components/gamification/surprise-toast'
 
@@ -37,13 +37,9 @@ const TRIGGER_CHANCE = 0.05
 export function useSurpriseRewards() {
   const { isLoggedIn } = useAuth()
   const location = useLocation()
-  const progress = useProgress()
   const hasTriggeredRef = useRef(false)
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
-  const hasCompletedAnyLesson = Object.values(progress.lessonProgress).some(
-    (p) => p.status === 'completed'
-  )
   const isCourseRoute = location.pathname.startsWith('/course/')
 
   useEffect(() => {
@@ -57,7 +53,7 @@ export function useSurpriseRewards() {
   }, [location.pathname])
 
   useEffect(() => {
-    if (!isLoggedIn || !isCourseRoute || !hasCompletedAnyLesson || hasTriggeredRef.current) {
+    if (!isLoggedIn || !isCourseRoute || !checkCompletedLesson() || hasTriggeredRef.current) {
       return
     }
 
@@ -89,5 +85,5 @@ export function useSurpriseRewards() {
         timerRef.current = null
       }
     }
-  }, [location.pathname, isLoggedIn, isCourseRoute, hasCompletedAnyLesson])
+  }, [location.pathname, isLoggedIn, isCourseRoute])
 }

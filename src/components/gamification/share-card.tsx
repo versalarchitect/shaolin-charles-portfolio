@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState, useCallback, type KeyboardEvent as ReactKeyboardEvent } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
+import { motion, AnimatePresence } from 'motion/react'
 import { X, Download, Share2, Link2, Check, Loader2 } from 'lucide-react'
 import { generateShareCard, downloadShareCard, shareCard, type ShareCardData } from '@/lib/share-card'
 import { useProgress, getLevel, getOverallProgress, getActiveTitle } from '@/stores/progress'

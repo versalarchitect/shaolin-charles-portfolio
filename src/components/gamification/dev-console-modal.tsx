@@ -1,5 +1,5 @@
 import { useEffect, useState, useCallback } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
+import { motion, AnimatePresence } from 'motion/react'
 import { X } from 'lucide-react'
 import { useProgress } from '@/stores/progress'
 import { getDiscoveredCount, TOTAL_EASTER_EGGS } from '@/lib/explorer'

@@ -1,4 +1,4 @@
-import { motion } from 'framer-motion'
+import { motion } from 'motion/react'
 import { Check, Lock, Palette, RotateCcw } from 'lucide-react'
 import { useTheme, type CosmeticTheme } from '@/components/theme-provider'
 import { useProgress } from '@/stores/progress'

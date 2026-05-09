@@ -1,4 +1,4 @@
-import { motion } from 'framer-motion';
+import { motion } from 'motion/react';
 import { Wrench } from 'lucide-react';
 import { getToolMastery, useProgress } from '@/stores/progress';
 

@@ -826,3 +826,15 @@ export function useProgress(): ProgressState {
     () => defaultState,
   )
 }
+
+export function useProgressSelector<T>(selector: (state: ProgressState) => T): T {
+  return useSyncExternalStore(
+    (cb) => { listeners.add(cb); return () => listeners.delete(cb) },
+    () => selector(state),
+    () => selector(defaultState),
+  )
+}
+
+export function hasCompletedAnyLesson(): boolean {
+  return Object.values(state.lessonProgress).some(p => p.status === 'completed')
+}

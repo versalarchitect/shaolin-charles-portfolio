@@ -1,0 +1,879 @@
+{
+  "nav": {
+    "home": "Accueil",
+    "curriculum": "Programme",
+    "principles": "Principes",
+    "tiers": "Formules",
+    "blog": "Blog",
+    "selfUpdatingCourse": "Le Cours",
+    "instructor": "Instructeur",
+    "contact": "Contact",
+    "about": "À propos",
+    "projects": "Projets",
+    "interests": "Intérêts",
+    "art": "Art",
+    "dashboard": "Tableau de bord",
+    "community": "Communauté",
+    "getInTouch": "S'inscrire",
+    "navigation": "Navigation"
+  },
+  "common": {
+    "viewMyWork": "Voir le programme",
+    "letsTalk": "C'est pour vous ?",
+    "startConversation": "S'inscrire",
+    "learnAboutMe": "En savoir plus",
+    "viewProjects": "Voir les projets",
+    "scrollToExplore": "Défiler pour explorer",
+    "shippingCode": "Inscriptions ouvertes",
+    "openToCollaboration": "Inscriptions ouvertes",
+    "currentlyBuilding": "Projet actuel",
+    "location": "Localisation",
+    "montrealCanada": "Montréal, Canada",
+    "availableWorldwide": "Disponible mondialement",
+    "status": "Statut",
+    "sideProjectsConsulting": "Projets & consultation",
+    "yearsExperience": "Années d'expérience",
+    "projectsShipped": "Projets livrés",
+    "technologies": "Technologies",
+    "typeCoverage": "Couverture TypeScript",
+    "teamsLed": "Équipes dirigées",
+    "usersImpacted": "Utilisateurs touchés",
+    "live": "EN LIGNE",
+    "inDevelopment": "EN DEV",
+    "current": "Actuel",
+    "present": "Présent",
+    "featured": "À LA UNE",
+    "code": "Code",
+    "liveDemo": "Démo en ligne",
+    "visitSite": "Visiter le site",
+    "techStack": "Stack technique",
+    "byTheNumbers": "En chiffres",
+    "hoursOfInstruction": "Heures d'instruction",
+    "capstonesShipped": "Projets concrets livrés"
+  },
+  "home": {
+    "meta": {
+      "title": "Apprenez à diriger des agents IA qui créent de vrais logiciels — Le cours Agentic SaaS",
+      "description": "Aucune expérience en programmation requise. Apprenez à diriger des agents IA qui créent de vrais logiciels pour votre entreprise. 52 heures des bases à l'orchestration d'équipes d'agents IA. 4 500 $ USD, accès à vie."
+    },
+    "hero": {
+      "statusBadge": "Inscriptions ouvertes",
+      "name": "Charles Jackson",
+      "tagline": "J'enseigne",
+      "typewriter": {
+        "intelligentSystems": "comment diriger des agents IA",
+        "beautifulInterfaces": "comment créer avec des équipes IA",
+        "scalablePlatforms": "de zéro à l'orchestration d'agents",
+        "shippingReal": "créer avec l'IA, pas juste prompter"
+      },
+      "description": "Apprenez à diriger des agents IA qui créent de vrais logiciels pour votre entreprise — aucune expérience en programmation requise.",
+      "predictive": "52 heures de zéro",
+      "aiPlatform": " jusqu'à diriger des équipes d'agents IA qui créent des logiciels fonctionnels."
+    },
+    "terminal": {
+      "badge": "Interactif",
+      "title": "Découvrez le cours",
+      "welcome": "# Dirigez des agents IA qui créent des logiciels",
+      "project": "52 heures · bases → un agent → plusieurs agents → systèmes complets",
+      "uptime": "De votre première leçon à diriger des équipes d'agents IA",
+      "status": "Inscriptions ouvertes — commencez quand vous voulez",
+      "restart": "redémarrer"
+    },
+    "services": {
+      "badge": "Le parcours",
+      "title": "Des tokens aux flottes d'agents",
+      "subtitle": "Quatre niveaux. Chacun vous plonge plus profond dans la façon dont les agents pensent, se coordonnent et livrent.",
+      "fullStack": {
+        "title": "Niveau 1 — Comprendre le fonctionnement de l'IA",
+        "subtitle": "8 heures · 10 leçons",
+        "description": "Avant de pouvoir diriger des agents IA, vous devez comprendre comment ils pensent. Apprenez les bases — ce que les agents IA peuvent et ne peuvent pas faire, comment leur donner des instructions claires et comment détecter quand ils dévient.",
+        "highlights": [
+          "Comment les agents IA interprètent vos instructions et où ils se trompent",
+          "Choisir le bon outil IA pour chaque tâche — du simple au complexe",
+          "Lire le comportement de l'agent — pourquoi il dérive et comment le détecter tôt",
+          "Diriger un agent pour construire et déployer un outil fonctionnel à partir d'un brief"
+        ],
+        "tags": ["Fondamentaux IA", "Comportement d'agent", "Instructions claires", "Sélection d'outils"]
+      },
+      "consulting": {
+        "title": "Niveau 2 — Diriger un agent unique",
+        "subtitle": "12 heures · 12 leçons",
+        "description": "Apprenez à donner des instructions claires et précises à un agent IA et à vérifier ce qu'il construit. Rédigez des briefs qui gardent l'agent concentré. Construisez une application web complète en dirigeant un seul agent à travers chaque couche — authentification, base de données, paiements — et apprenez à corriger le tir quand il dévie.",
+        "highlights": [
+          "Rédiger des briefs qui gardent l'agent concentré et empêchent la dérive de périmètre",
+          "Contrôles qualité — détecter quand l'agent s'écarte du brief",
+          "Construire authentification, base de données et paiements en dirigeant un seul agent",
+          "Livrer un produit complet que vous avez dirigé, pas codé vous-même"
+        ],
+        "tags": ["Briefs", "Contrôles qualité", "Itération", "Livraison"]
+      },
+      "mvp": {
+        "title": "Niveau 3 — Orchestrer plusieurs agents",
+        "subtitle": "15 heures · 14 leçons",
+        "description": "C'est ici que ça devient puissant. Dirigez 3 à 5 agents IA travaillant sur le même projet en même temps. Donnez à chaque agent son propre espace de travail pour qu'ils ne se marchent pas dessus. Décomposez les fonctionnalités complexes en tâches que chaque agent peut gérer. Coordonnez leur travail et livrez plus vite qu'avec n'importe quel workflow solo.",
+        "highlights": [
+          "Faire tourner 3 à 5 agents IA en parallèle sur le même projet",
+          "Donner à chaque agent un contexte partagé pour qu'ils restent alignés",
+          "Décomposer les grosses fonctionnalités en tâches ciblées qui ne se chevauchent pas",
+          "Coordonner le travail des agents et résoudre les conflits entre eux"
+        ],
+        "tags": ["Multi-agents", "Travail parallèle", "Coordination", "Vitesse"]
+      },
+      "codeReview": {
+        "title": "Niveau 4 — Concevoir votre workflow d'agents",
+        "subtitle": "15 heures · 12 leçons",
+        "description": "Concevez des projets que des équipes d'agents IA peuvent construire efficacement. Créez des playbooks de coordination qui passent à l'échelle au-delà de votre supervision directe. Sachez quand diviser le travail, combiner les résultats ou surcharger la décision d'un agent. Prouvez la pensée stratégique que l'IA ne peut pas reproduire.",
+        "highlights": [
+          "Concevoir des projets optimisés pour des équipes d'agents IA",
+          "Créer des playbooks de coordination et des instructions partagées",
+          "Savoir quand faire confiance, rediriger ou surcharger la décision d'un agent",
+          "Prouver le jugement stratégique — la compétence que les agents IA ne peuvent pas reproduire"
+        ],
+        "tags": ["Stratégie", "Workflows d'agents", "Pensée système", "Jugement"]
+      }
+    },
+    "skills": {
+      "title": "Ce que vous apprendrez vraiment",
+      "subtitle": "Pas comment coder — comment diriger des agents IA qui construisent des logiciels pour vous.",
+      "items": {
+        "frontend": {
+          "title": "Next.js + React",
+          "description": "App Router, Server Components et TypeScript"
+        },
+        "backend": {
+          "title": "Supabase",
+          "description": "PostgreSQL, auth et temps réel"
+        },
+        "cloud": {
+          "title": "Vercel",
+          "description": "Déployer, prévisualiser et scaler"
+        },
+        "architecture": {
+          "title": "Drizzle ORM",
+          "description": "Requêtes de base de données typées"
+        },
+        "performance": {
+          "title": "Claude Code",
+          "description": "Développement assisté par IA, bien fait"
+        },
+        "devops": {
+          "title": "Stripe",
+          "description": "Paiements et webhooks"
+        },
+        "designSystems": {
+          "title": "Tailwind + shadcn",
+          "description": "Composants UI prêts pour la production"
+        },
+        "mobile": {
+          "title": "Inngest",
+          "description": "Tâches de fond durables"
+        },
+        "security": {
+          "title": "Vitest + Playwright",
+          "description": "Tests unitaires et end-to-end"
+        }
+      }
+    },
+    "featuredProject": {
+      "badge": "Le cours",
+      "title": "Le cours Agentic SaaS",
+      "subtitle": "Orchestration multi-agents",
+      "description": "52 heures de zéro à diriger des équipes d'agents IA qui construisent de vrais logiciels. Vous progresserez de la direction d'un seul agent à l'orchestration de plusieurs agents en parallèle — et livrerez 4 projets concrets en cours de route.",
+      "viewCaseStudy": "Voir le programme complet",
+      "lighthouseScore": "Heures d'apprentissage",
+      "p95Response": "Leçons",
+      "initialBundle": "Principes",
+      "components": "Projets étapes",
+      "lifeDomains": "Niveaux",
+      "domainNodes": "Prix"
+    },
+    "timeline": {
+      "title": "Votre parcours",
+      "subtitle": "De votre première leçon à diriger des équipes d'agents IA",
+      "items": {
+        "2024_founder": {
+          "title": "Préparation",
+          "company": "2 heures · 3 leçons",
+          "description": "Configurez votre environnement, installez les outils IA que vous utiliserez et faites tourner votre premier agent."
+        },
+        "2024_urbanfarm": {
+          "title": "Comprendre la machine",
+          "company": "8 heures · 10 leçons",
+          "description": "Comprenez comment les agents IA pensent pour pouvoir les diriger efficacement. Livrez votre premier outil construit par un agent."
+        },
+        "2018_senior": {
+          "title": "Diriger un agent unique",
+          "description": "Rédigez des briefs clairs qui guident la sortie de l'agent. Dirigez, vérifiez et livrez un produit complet construit en dirigeant un seul agent IA."
+        },
+        "2015_lead": {
+          "title": "Orchestrer plusieurs agents",
+          "description": "Coordonnez plusieurs agents IA travaillant sur le même projet. Divisez les tâches, combinez les sorties, gérez les problèmes. Livrez avec une équipe d'agents."
+        },
+        "2010_fullstack": {
+          "title": "Concevoir votre workflow d'agents",
+          "description": "Concevez les systèmes que les agents IA construisent. Prenez des décisions stratégiques sur la façon dont les agents travaillent ensemble. Votre projet étape prouve le jugement au niveau système."
+        },
+        "2005_start": {
+          "title": "Alumni",
+          "description": "Accès à vie à tous les contenus. Mises à jour futures incluses. Rejoignez la communauté alumni."
+        }
+      },
+      "milestones": {
+        "2005": "Début",
+        "2010": "Niveau 1",
+        "2015": "Niveau 2",
+        "2024": "Niveau 4"
+      }
+    },
+    "testimonials": {
+      "badge": "Témoignages",
+      "title": "Ce que les étudiants disent",
+      "subtitle": "Retours d'étudiants ayant complété le cours",
+      "at": "a complété",
+      "items": [
+        {
+          "quote": "Je suis passé de coller des prompts dans ChatGPT à faire tourner trois agents IA en parallèle, chacun construisant une partie différente de mon produit. La progression des bases à l'orchestration multi-agents, c'est la vraie magie de ce cours.",
+          "author": "Alex Chen",
+          "role": "Fondateur",
+          "company": "Niveau 3"
+        },
+        {
+          "quote": "Le Niveau 1 seul valait le coup — j'ai enfin compris POURQUOI mes outils IA me donnaient des résultats pourris. Au Niveau 3, je coordonnais des agents qui construisaient un produit en ligne. Ça a complètement transformé ma façon de travailler.",
+          "author": "Sarah Martinez",
+          "role": "Bâtisseuse indépendante",
+          "company": "Niveau 4"
+        },
+        {
+          "quote": "Diriger un agent, c'est facile. Orchestrer cinq agents sur le même projet sans qu'ils se marchent dessus — c'est ça que ce cours enseigne vraiment. Un game changer pour mon entreprise.",
+          "author": "Jordan Osei",
+          "role": "Entrepreneur",
+          "company": "Niveau 4"
+        }
+      ]
+    },
+    "cta": {
+      "title": "Prêt à orchestrer,",
+      "titleHighlight": "pas juste prompter ?",
+      "subtitle": "52 heures. De zéro à diriger des équipes d'agents IA. 4 projets concrets construits par des agents IA que vous dirigez. Apprenez la compétence qui sépare les prompteurs des orchestrateurs.",
+      "basedIn": "Basé à Montréal, Canada"
+    }
+  },
+  "about": {
+    "meta": {
+      "title": "À propos de Charles Jackson - 16 ans développeur Full Stack",
+      "description": "Découvrez le parcours de 16 ans de Charles Jackson en tant que développeur full-stack. De ses débuts à 20 ans à la création de plateformes d'entreprise, découvrez l'expérience et la philosophie derrière le code."
+    },
+    "hero": {
+      "experience": "20+ ans d'expérience",
+      "title": "Je développe depuis",
+      "year": "2005",
+      "description": "J'ai commencé à coder à 16 ans et je n'ai jamais arrêté. Deux décennies plus tard, j'ai livré des produits utilisés par des millions de personnes, dirigé des équipes d'ingénierie et construit des plateformes de A à Z.",
+      "currentFocus": "Actuellement concentré sur",
+      "predictiveDesc": ", une plateforme propulsée par l'IA qui aide les gens à prendre de meilleures décisions."
+    },
+    "career": {
+      "badge": "Parcours professionnel",
+      "title": "20 ans de création",
+      "subtitle": "De mes premières lignes de code à 16 ans à la direction d'équipes d'ingénierie et la création de startups"
+    },
+    "skills": {
+      "badge": "Stack technique",
+      "title": "Compétences & Technologies",
+      "subtitle": "Deux décennies d'expertise accumulée sur toute la stack",
+      "frontend": "Frontend",
+      "backend": "Backend",
+      "devops": "DevOps & Outils",
+      "architecture": "Architecture"
+    },
+    "philosophy": {
+      "badge": "Philosophie",
+      "title": "Ma façon de travailler",
+      "subtitle": "Les principes qui guident chaque ligne de code que j'écris",
+      "rootCauses": {
+        "title": "Corriger les causes profondes",
+        "description": "Traiter les problèmes sous-jacents plutôt que de contourner les symptômes. Construire une infrastructure solide au lieu de créer de la dette technique."
+      },
+      "simplicity": {
+        "title": "Simplicité élégante",
+        "description": "Le meilleur code est simple, maintenable et résout de vrais problèmes. La complexité ne devrait exister que là où elle apporte de la valeur."
+      },
+      "performance": {
+        "title": "Performance avant tout",
+        "description": "Optimiser la vitesse à chaque niveau. Des temps de réponse inférieurs à 200ms, un bundling efficace et une gestion réfléchie des ressources."
+      },
+      "typeSafety": {
+        "title": "Typage strict",
+        "description": "Tirer parti du mode strict de TypeScript pour détecter les erreurs à la compilation et améliorer l'expérience développeur."
+      }
+    },
+    "personal": {
+      "title": "Au-delà du code",
+      "description": "Quand je ne développe pas, vous me trouverez en train d'explorer de nouvelles technologies, de contribuer à l'open source ou de mentorer la prochaine génération de développeurs. Je crois en l'apprentissage continu et au partage des connaissances avec la communauté.",
+      "interests": {
+        "coffee": "Amateur de café",
+        "openSource": "Open Source",
+        "problemSolving": "Résolution de problèmes",
+        "mentoring": "Mentorat"
+      },
+      "predictiveDesc": "Intelligence décisionnelle propulsée par l'IA"
+    },
+    "cta": {
+      "title": "Construisons quelque chose ensemble",
+      "subtitle": "Que vous ayez un projet en tête, besoin d'une consultation technique, ou simplement envie de discuter - je serais ravi d'échanger avec vous."
+    },
+    "timeline": {
+      "2024_founder": {
+        "title": "Fondateur & Développeur principal",
+        "company": "Predictive (Augure)",
+        "description": "Création d'une plateforme de prédiction propulsée par l'IA avec des simulations Monte Carlo, 17 domaines de vie interconnectés et des profils utilisateurs à plus de 230 champs. Architecture full-stack de la conception de la base de données au déploiement."
+      },
+      "2024_urbanfarm": {
+        "title": "CTO et développeur logiciel principal",
+        "company": "MyUrbanFarm.ai",
+        "description": "Développement d'une plateforme complète pour les agriculteurs urbains et les sponsors corporatifs pour gérer des initiatives d'agriculture sur toiture avec des analyses en temps réel, un accès basé sur les rôles et une cartographie interactive."
+      },
+      "2018_senior": {
+        "title": "Développeur Full-Stack Senior",
+        "company": "Divers clients et entreprises",
+        "description": "Conception et livraison d'applications d'entreprise dans les secteurs fintech, santé et SaaS. Direction d'équipes, définition de standards techniques et mentorat de développeurs juniors."
+      },
+      "2015_lead": {
+        "title": "Tech Lead & Architecte",
+        "company": "Plusieurs startups",
+        "description": "Direction d'équipes de développement de 3 à 8 ingénieurs. Mise en place de pipelines CI/CD, processus de revue de code et patterns d'architecture évolutifs. Livraison de produits utilisés par des millions."
+      },
+      "2010_fullstack": {
+        "title": "Développeur Full-Stack",
+        "company": "Agences et entreprises produit",
+        "description": "Transition vers le développement full-stack, création de solutions complètes pour divers clients. Développement d'une expertise dans les systèmes frontend et backend."
+      },
+      "2005_start": {
+        "title": "Développeur Web",
+        "company": "Freelance & début de carrière",
+        "description": "Début du parcours professionnel à 16 ans. Construction de sites web, apprentissage de l'administration système et développement des compétences fondamentales qui façonneraient une carrière de 20 ans."
+      }
+    }
+  },
+  "projects": {
+    "meta": {
+      "title": "Projets - Charles Jackson | Portfolio Développeur Full Stack",
+      "description": "Explorez les projets de Charles Jackson incluant Predictive (plateforme de prédiction IA) et MyUrbanFarm.ai (gestion d'agriculture urbaine). Études de cas avec analyses techniques approfondies."
+    },
+    "hero": {
+      "badge": "Portfolio de projets",
+      "title": "Ce que j'ai",
+      "titleHighlight": "construit",
+      "subtitle": "Analyses approfondies des systèmes complexes que j'ai conçus et construits, montrant la prise de décision technique et les résultats mesurables. Des plateformes IA à la technologie agricole durable."
+    },
+    "predictive": {
+      "subtitle": "Plateforme de prédiction propulsée par l'IA",
+      "description": "Plateforme d'intelligence prédictive de niveau entreprise qui modélise des interdépendances complexes à travers 17 domaines de vie. Comprend un système de profilage utilisateur à 230 champs, une ontologie hiérarchique avec plus de 1 000 nœuds de domaine, des simulations Monte Carlo et un tableau de bord analytique en temps réel.",
+      "longDescription": "Construit entièrement en solo, de l'architecture au déploiement. La plateforme aide les utilisateurs à prendre de meilleures décisions en analysant les patterns à travers plusieurs domaines de vie en utilisant l'inférence bayésienne et les ratios de vraisemblance.",
+      "architectureTitle": "Décisions d'architecture",
+      "challenges": {
+        "dataModeling": {
+          "title": "Modélisation de données complexes",
+          "description": "Conception d'une architecture basée sur l'ontologie pour représenter les relations entre 17 domaines avec des arêtes pondérées et des patterns d'héritage. CTEs récursifs pour un parcours d'arbre efficace."
+        },
+        "performance": {
+          "title": "Performance à grande échelle",
+          "description": "Latence P95 inférieure à 200ms grâce à une dénormalisation stratégique, des vues matérialisées et le cache React Query. Bundle code-splitté à 47KB."
+        },
+        "security": {
+          "title": "Sécurité & Confidentialité",
+          "description": "Politiques Row Level Security pour l'isolation des données multi-tenant. Zéro PII dans les bundles client. Chiffrement au repos avec rotation automatique des clés."
+        }
+      },
+      "architecture": {
+        "monorepo": {
+          "title": "Stratégie Monorepo Nx",
+          "description": "Bibliothèques partagées pour les composants UI, utilitaires et types TypeScript. Builds incrémentiels avec cache de calcul réduisant le temps CI de 60%."
+        },
+        "database": {
+          "title": "PostgreSQL + Supabase",
+          "description": "Souscriptions temps réel pour les mises à jour en direct. Génération automatique d'API avec PostgREST. Index GIN sur colonnes JSONB pour une évolution de schéma flexible."
+        },
+        "edge": {
+          "title": "Déploiement Edge-First",
+          "description": "Vercel Edge Functions pour les routes API. Assets statiques sur CDN mondial avec cache immuable. Service worker pour une expérience offline-first."
+        },
+        "typeSafe": {
+          "title": "Full Stack Type-Safe",
+          "description": "Typage de bout en bout de la base de données à l'UI. Types générés depuis le schéma PostgreSQL. Validation Zod aux frontières API. TypeScript strict."
+        }
+      },
+      "stats": {
+        "pagesRoutes": "Pages & Routes",
+        "reactComponents": "Composants React",
+        "profileFields": "Champs de profil",
+        "domainNodes": "Nœuds de domaine",
+        "lifeDomains": "Domaines de vie",
+        "databaseTables": "Tables de base de données",
+        "typeCoverage": "Couverture TypeScript"
+      },
+      "metrics": {
+        "lighthouseScore": "Score Lighthouse",
+        "p95ApiResponse": "Réponse API P95",
+        "initialBundle": "Bundle initial",
+        "runtimeErrors": "Erreurs runtime"
+      }
+    },
+    "urbanfarm": {
+      "subtitle": "Plateforme de gestion d'agriculture urbaine",
+      "description": "Une plateforme numérique complète connectant agriculteurs urbains, sponsors corporatifs et administrateurs pour gérer et surveiller des initiatives d'agriculture durable sur toiture. Suivi en temps réel, analyses et collaboration multi-parties prenantes.",
+      "longDescription": "Permet aux parties prenantes de l'écosystème agricole urbain de suivre les cultures, récoltes et conditions de croissance. Comprend un accès basé sur les rôles pour les agriculteurs, sponsors et administrateurs avec cartographie interactive et analyses de performance.",
+      "challenges": {
+        "mapping": {
+          "title": "Cartographie interactive",
+          "description": "Visualisation multi-sites avec surveillance des performances régionales. Suivi de localisation en temps réel et superpositions de statut des fermes."
+        },
+        "roles": {
+          "title": "Accès basé sur les rôles",
+          "description": "Permissions différenciées pour les agriculteurs urbains, entreprises clientes, agriculteurs urbains en chef et administrateurs. Architecture multi-tenant sécurisée."
+        },
+        "analytics": {
+          "title": "Analyses & Rapports",
+          "description": "Insights de performance, données de rendement et métriques d'utilisation des ressources. Rapports parties prenantes avec suivi KPI et documentation d'impact environnemental."
+        }
+      },
+      "features": {
+        "farmManagement": {
+          "label": "Gestion de ferme",
+          "description": "Suivi complet des cultures, récoltes et conditions"
+        },
+        "clientPortal": {
+          "label": "Portail client",
+          "description": "Accès en temps réel pour les sponsors pour voir l'avancement des fermes"
+        },
+        "multiSite": {
+          "label": "Support multi-sites",
+          "description": "Gérer plusieurs emplacements de ferme depuis un seul tableau de bord"
+        },
+        "impactReports": {
+          "label": "Rapports d'impact",
+          "description": "Documentation environnementale et de durabilité"
+        }
+      }
+    },
+    "nxsupabase": {
+      "subtitle": "Plugin Nx officiel pour Supabase",
+      "description": "Le plugin Nx officiel qui simplifie l'intégration de Supabase dans les environnements monorepo. Automatise les migrations de base de données, la génération de types TypeScript et la configuration du développement local sans aucune configuration.",
+      "longDescription": "Construit pour résoudre la complexité de la gestion de Supabase dans les monorepos Nx. Propose une gestion intelligente des ports pour plusieurs instances concurrentes, un cache Nx pour les types générés et un support complet du cycle de vie du développement local au déploiement en production.",
+      "challenges": {
+        "multiProject": {
+          "title": "Support multi-projets",
+          "description": "Allocation automatique des ports et inférence de projet via createNodesV2 pour des configurations monorepo multi-projets fluides."
+        },
+        "typeGeneration": {
+          "title": "Génération de types intelligente",
+          "description": "Types TypeScript mis en cache par Nx, régénérés uniquement lors des changements de schéma. Zéro configuration manuelle avec détection automatique de config.toml."
+        },
+        "docker": {
+          "title": "Orchestration Docker",
+          "description": "Orchestration complète de la stack Supabase avec des executors pour les instances locales, les migrations et le déploiement de Edge Functions."
+        }
+      },
+      "features": {
+        "generators": {
+          "label": "Générateurs",
+          "description": "Créer des projets, migrations, Edge Functions et fichiers seed"
+        },
+        "executors": {
+          "label": "Executors",
+          "description": "Gérer les instances locales, exécuter les migrations, déployer en production"
+        },
+        "typeSafety": {
+          "label": "Typage strict",
+          "description": "Types TypeScript générés automatiquement depuis votre schéma de base de données"
+        },
+        "nxIntegration": {
+          "label": "Intégration Nx",
+          "description": "Cache complet, orchestration des tâches et graphe de dépendances"
+        }
+      }
+    },
+    "features": {
+      "badge": "Points forts",
+      "title": "Composants notables",
+      "subtitle": "Analyses approfondies de fonctionnalités et systèmes spécifiques que j'ai construits",
+      "partOf": "Partie de",
+      "analytics": {
+        "title": "Moteur d'analyses en temps réel",
+        "description": "Tableau de bord analytique haute performance avec mises à jour WebSocket, virtualisation optimisée pour grands jeux de données et animations fluides à 60fps."
+      },
+      "designSystem": {
+        "title": "Design System de composants",
+        "description": "Design system complet avec plus de 150 composants suivant les principes de design atomique. Accessibilité complète, support de thèmes et espacement cohérent."
+      },
+      "monteCarlo": {
+        "title": "Moteur de simulation Monte Carlo",
+        "description": "Moteur de prédiction basé sur Python utilisant l'inférence bayésienne et les ratios de vraisemblance. Validation de précision historique contre des résultats réels."
+      }
+    },
+    "cta": {
+      "title": "Vous avez un projet en tête ?",
+      "subtitle": "Je suis toujours intéressé par des problèmes stimulants et des idées innovantes. Discutons de comment nous pouvons travailler ensemble."
+    }
+  },
+  "contact": {
+    "meta": {
+      "title": "Contacter Charles Jackson - Développeur Full Stack",
+      "description": "Contactez Charles Jackson pour des demandes de projet, consultation ou collaboration. Basé à Montréal, disponible mondialement."
+    },
+    "hero": {
+      "badge": "Disponible pour des projets",
+      "title": "Travaillons",
+      "titleHighlight": "ensemble",
+      "subtitle": "Vous avez une question sur le cours, envie de discuter de vos objectifs d'affaires, ou simplement envie de connecter ? Je serais ravi d'échanger avec vous."
+    },
+    "info": {
+      "location": "Montréal, Canada",
+      "responseTime": "Réponse sous 24-48h",
+      "availability": "Disponible mondialement"
+    },
+    "form": {
+      "title": "Envoyer un message",
+      "subtitle": "Remplissez le formulaire ci-dessous et je vous répondrai rapidement.",
+      "name": "Nom",
+      "namePlaceholder": "Votre nom",
+      "email": "Courriel",
+      "emailPlaceholder": "vous@exemple.com",
+      "subject": "Sujet",
+      "subjectPlaceholder": "Question sur le cours, projet, collaboration...",
+      "message": "Message",
+      "messagePlaceholder": "Parlez-moi de votre projet ou demande...",
+      "send": "Envoyer le message",
+      "sending": "Envoi en cours...",
+      "validation": {
+        "nameRequired": "Le nom est requis",
+        "emailRequired": "Le courriel est requis",
+        "emailInvalid": "Adresse courriel invalide",
+        "subjectRequired": "Le sujet est requis",
+        "messageRequired": "Le message est requis",
+        "messageTooShort": "Le message doit contenir au moins 10 caractères",
+        "fixErrors": "Veuillez corriger les erreurs dans le formulaire"
+      },
+      "success": {
+        "title": "Message envoyé avec succès !",
+        "description": "Je vous répondrai sous 24-48 heures."
+      }
+    },
+    "direct": {
+      "title": "Ou contactez-moi directement",
+      "email": {
+        "title": "Courriel",
+        "description": "Idéal pour les questions sur le cours, les projets et les discussions détaillées."
+      },
+      "github": {
+        "title": "GitHub",
+        "description": "Consultez mes dépôts et mon travail open source."
+      }
+    },
+    "availability": {
+      "title": "Actuellement disponible",
+      "description": "Je suis ouvert aux questions sur le cours, aux engagements de consultation et aux collaborations intéressantes. Que vous exploriez le cours ou que vous ayez un projet en tête, je prends toujours le temps de connecter."
+    },
+    "expectations": {
+      "title": "À quoi s'attendre",
+      "items": [
+        "Réponse sous 24-48 heures, généralement plus tôt",
+        "Communication claire et retours honnêtes",
+        "Un intérêt sincère à comprendre vos besoins",
+        "Une expertise concrète appuyée par 10+ ans de construction de vrais produits"
+      ]
+    },
+    "cta": {
+      "title": "Construisons quelque chose de génial",
+      "subtitle": "Que ce soit une question sur le cours, une idée d'affaires ambitieuse ou un projet que vous voulez concrétiser avec l'IA — je suis là pour vous aider.",
+      "basedIn": "Basé à Montréal, Canada • Disponible mondialement"
+    }
+  },
+  "footer": {
+    "description": "Apprenez à diriger des agents IA qui créent de vrais logiciels. 52 heures de zéro à l'orchestration d'équipes d'agents IA qui livrent des produits fonctionnels.",
+    "letsConnect": "COMMENCER",
+    "openTo": "Des questions sur le cours ? Discutons.",
+    "getInTouch": "Me contacter",
+    "copyright": "Charles Jackson. Tous droits réservés.",
+    "builtWith": "Construit avec",
+    "using": "avec React & TypeScript"
+  },
+  "notFound": {
+    "title": "Page non trouvée",
+    "description": "La page que vous cherchez n'existe pas ou a été déplacée.",
+    "backHome": "Retour à l'accueil"
+  },
+  "blog": {
+    "meta": {
+      "title": "Blog - Charles Jackson | Développeur Full Stack",
+      "description": "Articles techniques sur l'architecture logicielle, React, TypeScript et la construction de systèmes évolutifs. Insights de 20+ ans de développement full-stack."
+    },
+    "hero": {
+      "badge": "Blog technique",
+      "title": "Réflexions sur",
+      "titleHighlight": "la création de logiciels",
+      "subtitle": "Analyses approfondies des décisions d'architecture, de l'optimisation des performances et des leçons apprises de deux décennies de livraison de code en production."
+    },
+    "newsletter": {
+      "badge": "Restez informé",
+      "title": "D'autres articles à venir",
+      "subtitle": "J'écris sur la construction de systèmes en production, les patterns d'architecture et les leçons apprises de la livraison de logiciels. Suivez-moi pour plus d'insights.",
+      "viewProjects": "Voir les projets"
+    }
+  },
+  "art": {
+    "meta": {
+      "title": "Art & Expériences créatives - Charles Jackson",
+      "description": "Expériences de creative coding avec Three.js, WebGL, animations CSS et art visuel interactif. Explorer l'intersection du code et de la créativité."
+    },
+    "hero": {
+      "badge": "Code créatif",
+      "title": "Là où le code rencontre la",
+      "titleHighlight": "créativité",
+      "subtitle": "Expériences à l'intersection de la programmation et de l'art. Visualisations Three.js, graphiques génératifs, animations CSS et expériences interactives qui repoussent les limites du possible dans le navigateur.",
+      "viewGallery": "Explorer la galerie",
+      "viewCode": "Voir le code"
+    },
+    "philosophy": {
+      "badge": "Philosophie",
+      "title": "Le code comme toile",
+      "description": "Je crois que le code est un médium créatif. Ces expériences explorent l'esthétique visuelle, le mouvement et l'interactivité - traitant le navigateur comme une toile pour l'expression artistique."
+    },
+    "categories": {
+      "all": "Tous",
+      "threejs": "Three.js",
+      "css": "Art CSS",
+      "generative": "Génératif",
+      "interactive": "Interactif"
+    },
+    "projects": {
+      "particleGalaxy": {
+        "title": "Galaxie de particules",
+        "description": "Simulation de galaxie 3D interactive avec 100 000 particules. Physique accélérée par GPU et shaders personnalisés pour des formations d'étoiles réalistes.",
+        "tech": ["Three.js", "WebGL", "GLSL"]
+      },
+      "fluidSimulation": {
+        "title": "Dynamique des fluides",
+        "description": "Simulation de fluides en temps réel utilisant les équations de Navier-Stokes. Réactif au toucher avec un beau mélange de couleurs.",
+        "tech": ["WebGL", "Fragment Shaders", "Maths"]
+      },
+      "geometricPatterns": {
+        "title": "Motifs géométriques",
+        "description": "Art géométrique généré procéduralement avec des algorithmes récursifs. Chaque rafraîchissement crée une composition unique.",
+        "tech": ["Canvas API", "Algorithmes", "Théorie des couleurs"]
+      },
+      "morphingShapes": {
+        "title": "Formes morphiques",
+        "description": "Animations de morphing en CSS pur sans JavaScript. Transitions de formes fluides utilisant les propriétés CSS personnalisées.",
+        "tech": ["CSS", "Keyframes", "Custom Properties"]
+      },
+      "audioVisualizer": {
+        "title": "Réactif au son",
+        "description": "Visualiseur alimenté par WebAudio qui répond à la musique en temps réel. L'analyse de fréquence pilote le comportement des particules.",
+        "tech": ["Web Audio API", "Three.js", "FFT"]
+      },
+      "raymarching": {
+        "title": "Mondes raymarching",
+        "description": "Scènes 3D procédurales rendues entièrement dans des fragment shaders. Les fonctions de distance signées créent un détail infini.",
+        "tech": ["GLSL", "Raymarching", "SDF"]
+      }
+    },
+    "featured": {
+      "badge": "Expérience vedette",
+      "viewLive": "Voir en direct",
+      "viewSource": "Code source"
+    },
+    "techniques": {
+      "badge": "Techniques",
+      "title": "Technologies & Méthodes",
+      "subtitle": "Les outils et approches que j'utilise pour donner vie aux visions créatives.",
+      "items": {
+        "webgl": {
+          "title": "WebGL & Shaders",
+          "description": "Programmation GPU bas niveau pour une fidélité visuelle et des performances maximales. Shaders GLSL personnalisés pour des effets uniques."
+        },
+        "threejs": {
+          "title": "Three.js",
+          "description": "Bibliothèque graphique 3D pour des scènes complexes, des systèmes de particules et des expériences immersives."
+        },
+        "css": {
+          "title": "CSS avancé",
+          "description": "Pousser CSS à ses limites avec des animations, dégradés, filtres et utilisation créative des pseudo-éléments."
+        },
+        "generative": {
+          "title": "Art génératif",
+          "description": "Algorithmes qui créent des variations uniques. Fonctions de bruit, L-systèmes et génération procédurale."
+        }
+      }
+    },
+    "cta": {
+      "title": "Envie de collaborer ?",
+      "subtitle": "Toujours intéressé par des collaborations créatives, des commandes d'art génératif, ou simplement geeker sur les shaders et la programmation visuelle.",
+      "getInTouch": "Me contacter"
+    }
+  },
+  "gamification": {
+    "dashboard": "Tableau de bord",
+    "leaderboard": "Classement",
+    "achievements": "Réalisations",
+    "dailyChallenges": "Défis du jour",
+    "weeklyChallenges": "Défis de la semaine",
+    "progress": "Progrès",
+    "streak": "Série",
+    "rank": "Rang",
+    "lessons": "Leçons",
+    "markComplete": "Marquer comme terminé",
+    "completed": "Terminé",
+    "locked": "Leçon verrouillée",
+    "iDidThis": "C'est fait",
+    "copy": "Copier",
+    "copied": "Copié !",
+    "showHint": "Voir l'indice",
+    "showAnswer": "Voir la réponse",
+    "continue": "Continuer",
+    "startLearning": "Commencer",
+    "claimReward": "Réclamer",
+    "welcomeBack": "Bon retour !",
+    "focusSession": "Session de concentration",
+    "startSession": "Démarrer une session",
+    "viewAll": "Voir tout",
+    "shareProgress": "Partager vos progrès",
+    "downloadCard": "Télécharger",
+    "share": "Partager",
+    "noEntries": "Aucune entrée. Commencez à apprendre pour apparaître ici.",
+    "allContent": "Tout le contenu est à jour",
+    "xp": "XP",
+    "days": "jours",
+    "day": "Jour",
+    "claimed": "Réclamé !",
+    "check": "Vérifier",
+    "tryAgain": "Réessayer",
+    "checkOrder": "Vérifier l'ordre",
+    "back": "Retour",
+    "next": "Suivant",
+    "lessonComplete": "Leçon terminée — marquez-la ci-dessus",
+    "done": "Terminé !",
+    "social": "Social",
+    "stats": "Statistiques",
+    "challenges": "Défis",
+    "welcomeTitle": "Bienvenue dans votre parcours d'apprentissage",
+    "welcomeDescription": "Tout ce que vous faites ici rapporte des XP (points d'expérience) et débloque des récompenses. Terminez des leçons, revenez chaque jour, explorez le site — tout compte.",
+    "howYouEarnXp": "Comment gagner des XP",
+    "earnFinishLessons": "Terminer des leçons",
+    "earnComeBack": "Revenir chaque jour",
+    "earnExplore": "Explorer le site",
+    "earnHidden": "Trouver des surprises cachées",
+    "unlockRewards": "Débloquer des récompenses",
+    "unlockRewardsDesc": "Gagnez des rangs, débloquez de nouveaux looks pour le tableau de bord, découvrez des pages secrètes et grimpez au classement.",
+    "ready": "Prêt ?",
+    "readyDesc": "Votre parcours commence maintenant. Chaque interaction vous rapproche de la maîtrise.",
+    "hiddenHint": "5 surprises cachées sont dispersées sur le site. Pouvez-vous toutes les trouver ?",
+    "weeklyBonus": "Incroyable ! 7 jours d'affilée. Voici un bonus.",
+    "topReward": "Dévouement incroyable. Vous avez gagné la récompense quotidienne maximale !",
+    "comeBackDaily": "Revenez chaque jour pour de plus grandes récompenses."
+  },
+  "interests": {
+    "meta": {
+      "title": "Intérêts - Charles Jackson | Modélisation mathématique & Apprentissage automatique",
+      "description": "Explorer l'intersection des mathématiques et du logiciel. Simulations Monte Carlo, architectures transformer, réseaux de neurones profonds et traitement du langage naturel."
+    },
+    "hero": {
+      "badge": "Fondements mathématiques",
+      "title": "Utiliser les maths pour",
+      "titleHighlight": "prédire l'avenir",
+      "description": "Fasciné par le pouvoir de la modélisation mathématique et de l'apprentissage automatique pour transformer l'incertitude en insights actionnables. Des simulations Monte Carlo aux architectures transformer, j'explore comment les mathématiques peuvent nous aider à comprendre et prédire des systèmes complexes.",
+      "philosophy": "Chaque prédiction est une hypothèse, chaque simulation un test. L'objectif n'est pas une prévision parfaite — c'est de réduire l'incertitude et de prendre de meilleures décisions avec des informations incomplètes.",
+      "viewProjects": "Voir en action"
+    },
+    "core": {
+      "badge": "Intérêts principaux",
+      "title": "Domaines de focus",
+      "subtitle": "Les techniques mathématiques et computationnelles qui alimentent les systèmes de prédiction modernes"
+    },
+    "areas": {
+      "monteCarlo": {
+        "title": "Simulations Monte Carlo",
+        "description": "Modélisation probabiliste par échantillonnage aléatoire répété",
+        "details": "Exécuter des milliers de simulations pour cartographier les distributions de probabilité et quantifier l'incertitude. Essentiel pour modéliser des systèmes complexes où les solutions analytiques sont impossibles.",
+        "applications": ["Analyse de risque", "Modélisation financière", "Aide à la décision", "Planification de scénarios"]
+      },
+      "transformers": {
+        "title": "Modèles Transformer",
+        "description": "Architectures basées sur l'attention pour la modélisation de séquences",
+        "details": "Construire et affiner des modèles basés sur les transformers pour la prédiction de séquences, en exploitant les mécanismes d'auto-attention pour capturer les dépendances à long terme dans les données.",
+        "applications": ["Séries temporelles", "Prédiction de séquences", "Reconnaissance de motifs", "Extraction de caractéristiques"]
+      },
+      "deepLearning": {
+        "title": "Réseaux de neurones profonds",
+        "description": "Architectures multicouches pour apprendre des patterns complexes",
+        "details": "Concevoir des architectures de réseaux de neurones optimisées pour des tâches de prédiction spécifiques. Des réseaux feedforward aux architectures récurrentes, choisir la bonne topologie est crucial.",
+        "applications": ["Classification", "Régression", "Détection d'anomalies", "Embeddings"]
+      },
+      "nlp": {
+        "title": "Traitement du langage naturel",
+        "description": "Extraire structure et sens du texte",
+        "details": "Traiter et comprendre le langage humain pour extraire des insights, de la reconnaissance d'entités nommées à l'analyse sémantique et l'extraction d'information.",
+        "applications": ["Analyse de texte", "Extraction d'information", "Traitement de documents", "Recherche"]
+      },
+      "sentiment": {
+        "title": "Analyse de sentiment",
+        "description": "Quantifier l'opinion et l'émotion dans le texte",
+        "details": "Analyser le texte pour déterminer la polarité du sentiment et le ton émotionnel. Utile pour comprendre le sentiment du marché, les retours clients et l'opinion publique.",
+        "applications": ["Analyse de marché", "Retours clients", "Écoute sociale", "Surveillance de marque"]
+      },
+      "bayesian": {
+        "title": "Inférence bayésienne",
+        "description": "Mettre à jour les croyances avec les preuves",
+        "details": "Utiliser le théorème de Bayes pour mettre à jour les estimations de probabilité à mesure que de nouvelles données arrivent. Le fondement mathématique pour apprendre des preuves et quantifier l'incertitude.",
+        "applications": ["Tests A/B", "Estimation de paramètres", "Quantification d'incertitude", "Théorie de la décision"]
+      }
+    },
+    "why": {
+      "badge": "Philosophie",
+      "title": "Pourquoi les mathématiques ?",
+      "p1": "Les mathématiques sont le langage des patterns. Dans un monde noyé de données, les modèles mathématiques nous aident à trouver le signal dans le bruit, la structure dans le chaos et les insights dans la complexité.",
+      "p2": "Je suis attiré par les problèmes où les mathématiques élégantes rencontrent la réalité désordonnée. Les méthodes Monte Carlo nous permettent d'explorer de vastes espaces de possibilités. L'inférence bayésienne nous aide à apprendre des preuves. Les réseaux de neurones découvrent des patterns trop subtils pour la perception humaine.",
+      "p3": "L'objectif n'est pas la prédiction pour elle-même. C'est de prendre de meilleures décisions sous l'incertitude — que ce soit pour les choix de vie personnels, la stratégie d'entreprise ou la compréhension de systèmes complexes."
+    },
+    "research": {
+      "badge": "Focus de recherche",
+      "title": "Explorations actuelles",
+      "subtitle": "Domaines actifs d'investigation et d'expérimentation",
+      "prediction": {
+        "title": "Marchés de prédiction",
+        "description": "Comment l'intelligence collective et les mécanismes de marché peuvent améliorer la précision des prévisions"
+      },
+      "ensemble": {
+        "title": "Méthodes d'ensemble",
+        "description": "Combiner plusieurs modèles pour obtenir de meilleures prédictions qu'un modèle unique"
+      },
+      "causal": {
+        "title": "Inférence causale",
+        "description": "Aller au-delà de la corrélation pour comprendre les relations de cause à effet"
+      },
+      "uncertainty": {
+        "title": "Quantification d'incertitude",
+        "description": "Mesurer et communiquer la confiance dans les prédictions"
+      }
+    },
+    "application": {
+      "badge": "En pratique",
+      "title": "Où la théorie rencontre la réalité",
+      "subtitle": "Ces intérêts ne sont pas seulement académiques — ils sont le fondement de ce que je construis",
+      "predictive": {
+        "title": "Plateforme Predictive",
+        "description": "Toutes ces techniques se rejoignent dans Augure, une plateforme de prédiction propulsée par l'IA qui aide les gens à prendre de meilleures décisions pour leur avenir.",
+        "features": [
+          "Simulations Monte Carlo sur 17 domaines de vie",
+          "Inférence bayésienne pour les mises à jour de probabilité",
+          "NLP pour extraire des données structurées des questions",
+          "Modèles transformer pour la reconnaissance de patterns"
+        ],
+        "cta": "Explorer le projet"
+      }
+    },
+    "cta": {
+      "title": "Parlons prédictions",
+      "subtitle": "Intéressé par la modélisation mathématique, l'apprentissage automatique ou les systèmes de prédiction ? J'adore geeker sur ces sujets."
+    }
+  }
+}

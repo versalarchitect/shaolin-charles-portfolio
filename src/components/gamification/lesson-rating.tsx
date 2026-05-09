@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
+import { motion, AnimatePresence } from 'motion/react'
 import { Star } from 'lucide-react'
 import { useRatings, getRating, setRating } from '@/stores/ratings'
 import { awardExplorerXp } from '@/stores/progress'

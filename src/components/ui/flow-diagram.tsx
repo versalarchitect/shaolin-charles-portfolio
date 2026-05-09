@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import { motion } from 'framer-motion'
+import { motion } from 'motion/react'
 
 export type NodeShape = 'rect' | 'diamond' | 'rounded' | 'pill'
 

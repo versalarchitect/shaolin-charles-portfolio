@@ -1,5 +1,5 @@
 import { useState, createContext, useContext, type ReactNode } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
+import { motion, AnimatePresence } from 'motion/react'
 import { Plus, Minus } from 'lucide-react'
 import { cn } from '@/lib/utils'
 

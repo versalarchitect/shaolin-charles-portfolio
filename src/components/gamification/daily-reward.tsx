@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
+import { motion, AnimatePresence } from 'motion/react'
 import { Gift, Sparkles } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { useProgress, awardExplorerXp } from '@/stores/progress'

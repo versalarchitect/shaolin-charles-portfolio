@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { SEO } from '@/components/SEO'
 import { Button } from '@/components/ui/button'
-import { motion } from 'framer-motion'
+import { motion } from 'motion/react'
 import {
   ArrowRight,
   Calendar,

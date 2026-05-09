@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom'
-import { motion } from 'framer-motion'
+import { motion } from 'motion/react'
 import { Bookmark, Clock, Zap, X } from 'lucide-react'
 import { CURRICULUM, ALL_LESSONS } from '@/data/curriculum'
 import type { Lesson } from '@/data/curriculum'

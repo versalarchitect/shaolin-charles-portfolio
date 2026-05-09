@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
+import { motion, AnimatePresence } from 'motion/react'
 import { Crown, Zap, Trophy } from 'lucide-react'
 import { onProgressEvent } from '@/stores/progress'
 import type { ProgressEvent } from '@/stores/progress'

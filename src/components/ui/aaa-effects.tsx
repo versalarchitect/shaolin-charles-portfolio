@@ -1,5 +1,5 @@
 import { useRef, useState, useEffect, type ReactNode, type MouseEvent, type CSSProperties, useCallback, type ReactElement } from 'react'
-import { motion, useMotionValue, useSpring, useTransform, useScroll, useReducedMotion, type MotionStyle, useAnimationFrame, AnimatePresence } from 'framer-motion'
+import { motion, useMotionValue, useSpring, useTransform, useScroll, useReducedMotion, type MotionStyle, useAnimationFrame, AnimatePresence } from 'motion/react'
 
 // ============================================================================
 // MOTION PREFERENCES HOOK

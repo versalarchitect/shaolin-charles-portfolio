@@ -1,6 +1,6 @@
 import { useMemo, useState, useCallback } from 'react'
 import { Link } from 'react-router-dom'
-import { motion } from 'framer-motion'
+import { motion } from 'motion/react'
 import { Check, Lock } from 'lucide-react'
 import { CURRICULUM } from '@/data/curriculum'
 import type { Lesson, Tier } from '@/data/curriculum'

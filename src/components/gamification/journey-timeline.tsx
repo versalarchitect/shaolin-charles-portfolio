@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react'
-import { motion } from 'framer-motion'
+import { motion } from 'motion/react'
 import { BookOpen, Star, Flame, TrendingUp, ChevronDown } from 'lucide-react'
 import { useProgress, getXpLog, getLevel } from '@/stores/progress'
 import { ACHIEVEMENTS, XP_LEVELS, ALL_LESSONS } from '@/data/curriculum'

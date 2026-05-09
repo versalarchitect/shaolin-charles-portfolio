@@ -34,7 +34,7 @@ export default defineConfig({
       'react',
       'react-dom',
       'react-router-dom',
-      'framer-motion',
+      'motion',
     ],
   },
 
@@ -45,7 +45,7 @@ export default defineConfig({
     cssCodeSplit: true,
     cssMinify: 'lightningcss',
     reportCompressedSize: false,
-    target: ['chrome107', 'firefox104', 'safari16', 'edge107'],
+    target: ['chrome120', 'firefox121', 'safari17.2', 'edge120'],
     chunkSizeWarningLimit: 500,
 
     rollupOptions: {
@@ -55,7 +55,7 @@ export default defineConfig({
           if (id.includes('node_modules/react-dom/') || id.includes('node_modules/react/') || id.includes('node_modules/react-router')) {
             return 'react-vendor'
           }
-          if (id.includes('node_modules/framer-motion/')) {
+          if (id.includes('node_modules/motion/')) {
             return 'animation-vendor'
           }
           if (id.includes('node_modules/lucide-react/') || id.includes('node_modules/@radix-ui/')) {
@@ -66,6 +66,18 @@ export default defineConfig({
           }
           if (id.includes('node_modules/@supabase/')) {
             return 'supabase-vendor'
+          }
+          if (id.includes('node_modules/p5/')) {
+            return 'p5-vendor'
+          }
+          if (id.includes('node_modules/three/')) {
+            return 'three-vendor'
+          }
+          if (id.includes('node_modules/livekit-client/')) {
+            return 'livekit-vendor'
+          }
+          if (id.includes('node_modules/@huggingface/')) {
+            return 'ml-vendor'
           }
 
           // Gamification core: stores + libs (state management, sounds, explorer)

@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom'
-import { motion, AnimatePresence } from 'framer-motion'
+import { motion, AnimatePresence } from 'motion/react'
 import { Zap, Flame } from 'lucide-react'
 import { useProgress, getStreakMultiplier } from '@/stores/progress'
 

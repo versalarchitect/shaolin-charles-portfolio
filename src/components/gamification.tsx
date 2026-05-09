@@ -1,5 +1,5 @@
 import { type ReactNode, useEffect, useState } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
+import { motion, AnimatePresence } from 'motion/react'
 import { Flame, Zap, Target, Trophy, Sparkles, ChevronUp, ChevronDown, TrendingUp, TrendingDown, Clock, BookOpen, Shield, Star } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
 import { toast } from 'sonner'
