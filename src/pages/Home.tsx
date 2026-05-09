@@ -576,7 +576,7 @@ export default function Home() {
               {
                 title: 'Predictive',
                 description: 'AI-powered operating system for one-person companies. Constitution-driven agent architecture.',
-                url: 'https://predictives.company',
+                url: 'https://predictive.company',
                 tags: ['Next.js', 'Claude API', 'Supabase'],
                 status: 'LIVE',
               },

@@ -14,10 +14,10 @@ import { Section, SectionSpots } from '@/components/ui/gradient-background'
 const PROJECTS = [
   {
     title: 'Predictive',
-    subtitle: 'predictives.company',
+    subtitle: 'predictive.company',
     description:
       'AI-powered operating system for one-person companies. Automates business operations through a constitution-driven agent architecture — domain agents observe, decide via Claude, gate against your rules, execute, and trace every action.',
-    url: 'https://predictives.company',
+    url: 'https://predictive.company',
     tags: ['Next.js 16', 'TypeScript', 'Supabase', 'Vercel AI SDK', 'Claude API', 'Tailwind v4'],
     highlights: [
       'Constitution-driven agent architecture',
