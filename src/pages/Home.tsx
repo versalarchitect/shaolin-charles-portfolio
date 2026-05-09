@@ -571,8 +571,15 @@ export default function Home() {
             </div>
           </ScrollFadeIn>
 
-          <StaggerContainer className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
+          <StaggerContainer className="grid md:grid-cols-2 lg:grid-cols-5 gap-4">
             {[
+              {
+                title: 'Predictive',
+                description: 'AI-powered operating system for one-person companies. Constitution-driven agent architecture.',
+                url: 'https://predictives.company',
+                tags: ['Next.js', 'Claude API', 'Supabase'],
+                status: 'LIVE',
+              },
               {
                 title: 'Agentic SaaS Course',
                 description: '52-hour course on directing AI agents that build real software. Self-updating curriculum that never goes stale.',
