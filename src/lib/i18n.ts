@@ -2,6 +2,7 @@ import i18n from 'i18next'
 import { initReactI18next } from 'react-i18next'
 import LanguageDetector from 'i18next-browser-languagedetector'
 
+import en from '@/locales/en.json'
 import fr from '@/locales/fr.json'
 
 export const defaultNS = 'translation'
@@ -11,6 +12,7 @@ i18n
   .use(initReactI18next)
   .init({
     resources: {
+      en: { translation: en },
       fr: { translation: fr },
     },
     fallbackLng: 'fr',
@@ -25,7 +27,7 @@ i18n
     },
   })
 
-const loadedLanguages = new Set(['fr'])
+const loadedLanguages = new Set(['en', 'fr'])
 
 i18n.on('languageChanged', async (lng) => {
   const lang = lng.split('-')[0]
@@ -39,18 +41,5 @@ i18n.on('languageChanged', async (lng) => {
     }
   } catch {}
 })
-
-if (i18n.language && !i18n.language.startsWith('fr')) {
-  const lang = i18n.language.split('-')[0]
-  fetch(`/locales/${lang}.json`)
-    .then(res => res.ok ? res.json() : null)
-    .then(translations => {
-      if (translations) {
-        i18n.addResourceBundle(lang, 'translation', translations)
-        loadedLanguages.add(lang)
-      }
-    })
-    .catch(() => {})
-}
 
 export default i18n
