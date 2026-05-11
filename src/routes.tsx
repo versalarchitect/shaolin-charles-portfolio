@@ -32,6 +32,7 @@ const Leaderboard = lazy(() => import('./pages/Leaderboard'))
 const Analytics = lazy(() => import('./pages/Analytics'))
 const SecretVault = lazy(() => import('./pages/SecretVault'))
 const PublicProfile = lazy(() => import('./pages/PublicProfile'))
+const AuthCallback = lazy(() => import('./pages/AuthCallback'))
 const NotFound = lazy(() => import('./pages/NotFound'))
 
 // Create router
@@ -106,6 +107,10 @@ const router = createBrowserRouter([
       {
         path: 'login',
         element: <Login />,
+      },
+      {
+        path: 'auth/callback',
+        element: <AuthCallback />,
       },
       {
         path: 'enroll/success',
