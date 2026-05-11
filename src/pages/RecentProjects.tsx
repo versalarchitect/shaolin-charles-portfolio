@@ -13,6 +13,22 @@ import { Section, SectionSpots } from '@/components/ui/gradient-background'
 
 const PROJECTS = [
   {
+    title: 'Sameroom',
+    subtitle: 'sameroom.app',
+    description:
+      'Virtual office where remote teams gather in a 2D pixel-art world with proximity-based audio and video. Walk over to a colleague to start talking — no links, no scheduling. Built with Electron, Phaser 4, LiveKit, and a Bun WebSocket server with binary MessagePack protocol.',
+    url: 'https://sameroom.app',
+    tags: ['Next.js 15', 'Electron', 'Phaser 4', 'LiveKit', 'Bun', 'shadcn/ui'],
+    highlights: [
+      'Proximity-based audio & video via LiveKit',
+      '2D pixel-art office with rooms & avatars',
+      'Binary WebSocket protocol (20Hz tick rate)',
+      'Room-scoped chat & minimap',
+    ],
+    status: 'LIVE' as const,
+    year: '2026',
+  },
+  {
     title: 'Predictive',
     subtitle: 'predictive.company',
     description:

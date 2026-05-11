@@ -571,8 +571,15 @@ export default function Home() {
             </div>
           </ScrollFadeIn>
 
-          <StaggerContainer className="grid md:grid-cols-2 lg:grid-cols-5 gap-4">
+          <StaggerContainer className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
             {[
+              {
+                title: 'Sameroom',
+                description: 'Virtual office with proximity-based audio & video. Walk over to a colleague in a 2D pixel-art world to start talking.',
+                url: 'https://sameroom.app',
+                tags: ['Next.js', 'Electron', 'LiveKit'],
+                status: 'LIVE',
+              },
               {
                 title: 'Predictive',
                 description: 'AI-powered operating system for one-person companies. Constitution-driven agent architecture.',
@@ -643,17 +650,6 @@ export default function Home() {
             ))}
           </StaggerContainer>
 
-          <ScrollFadeIn delay={0.3}>
-            <div className="text-center mt-8">
-              <Link
-                to="/recent-projects"
-                className="inline-flex items-center gap-2 text-sm font-mono text-foreground/40 hover:text-foreground/70 transition-colors"
-              >
-                View all projects
-                <ArrowRight className="w-3.5 h-3.5" />
-              </Link>
-            </div>
-          </ScrollFadeIn>
         </div>
       </Section>
 
