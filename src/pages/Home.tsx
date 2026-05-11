@@ -2,6 +2,7 @@ import { useEffect, useState, useRef, type MouseEvent } from 'react'
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { trackInteraction } from '@/lib/explorer'
+import { tArray } from '@/lib/safe-t'
 import { useAuth } from '@/hooks/use-auth'
 import { toast } from 'sonner'
 import { Button } from '@/components/ui/button'
@@ -271,8 +272,8 @@ export default function Home() {
       title: t('home.services.fullStack.title'),
       subtitle: t('home.services.fullStack.subtitle'),
       description: t('home.services.fullStack.description'),
-      highlights: t('home.services.fullStack.highlights', { returnObjects: true }) as string[],
-      tags: t('home.services.fullStack.tags', { returnObjects: true }) as string[],
+      highlights: tArray(t, 'home.services.fullStack.highlights'),
+      tags: tArray(t, 'home.services.fullStack.tags'),
     },
     {
       id: 'consulting',
@@ -280,8 +281,8 @@ export default function Home() {
       title: t('home.services.consulting.title'),
       subtitle: t('home.services.consulting.subtitle'),
       description: t('home.services.consulting.description'),
-      highlights: t('home.services.consulting.highlights', { returnObjects: true }) as string[],
-      tags: t('home.services.consulting.tags', { returnObjects: true }) as string[],
+      highlights: tArray(t, 'home.services.consulting.highlights'),
+      tags: tArray(t, 'home.services.consulting.tags'),
     },
     {
       id: 'mvp',
@@ -289,8 +290,8 @@ export default function Home() {
       title: t('home.services.mvp.title'),
       subtitle: t('home.services.mvp.subtitle'),
       description: t('home.services.mvp.description'),
-      highlights: t('home.services.mvp.highlights', { returnObjects: true }) as string[],
-      tags: t('home.services.mvp.tags', { returnObjects: true }) as string[],
+      highlights: tArray(t, 'home.services.mvp.highlights'),
+      tags: tArray(t, 'home.services.mvp.tags'),
     },
     {
       id: 'code-review',
@@ -298,8 +299,8 @@ export default function Home() {
       title: t('home.services.codeReview.title'),
       subtitle: t('home.services.codeReview.subtitle'),
       description: t('home.services.codeReview.description'),
-      highlights: t('home.services.codeReview.highlights', { returnObjects: true }) as string[],
-      tags: t('home.services.codeReview.tags', { returnObjects: true }) as string[],
+      highlights: tArray(t, 'home.services.codeReview.highlights'),
+      tags: tArray(t, 'home.services.codeReview.tags'),
     },
   ]
 

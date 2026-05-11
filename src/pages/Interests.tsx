@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
+import { tArray } from '@/lib/safe-t'
 import { SEO } from '@/components/SEO'
 import { Button } from '@/components/ui/button'
 import { motion, useReducedMotion } from 'motion/react'
@@ -92,7 +93,7 @@ export default function Interests() {
       description: t('interests.areas.monteCarlo.description'),
       details: t('interests.areas.monteCarlo.details'),
       formula: 'E[f(X)] ≈ (1/N) Σ f(xᵢ)',
-      applications: t('interests.areas.monteCarlo.applications', { returnObjects: true }) as string[],
+      applications: tArray(t, 'interests.areas.monteCarlo.applications'),
     },
     {
       id: 'transformers',
@@ -101,7 +102,7 @@ export default function Interests() {
       description: t('interests.areas.transformers.description'),
       details: t('interests.areas.transformers.details'),
       formula: 'Attention(Q,K,V) = softmax(QKᵀ/√d)V',
-      applications: t('interests.areas.transformers.applications', { returnObjects: true }) as string[],
+      applications: tArray(t, 'interests.areas.transformers.applications'),
     },
     {
       id: 'deep-learning',
@@ -110,7 +111,7 @@ export default function Interests() {
       description: t('interests.areas.deepLearning.description'),
       details: t('interests.areas.deepLearning.details'),
       formula: 'y = σ(Wx + b)',
-      applications: t('interests.areas.deepLearning.applications', { returnObjects: true }) as string[],
+      applications: tArray(t, 'interests.areas.deepLearning.applications'),
     },
     {
       id: 'nlp',
@@ -119,7 +120,7 @@ export default function Interests() {
       description: t('interests.areas.nlp.description'),
       details: t('interests.areas.nlp.details'),
       formula: 'P(w|context) = softmax(h · W)',
-      applications: t('interests.areas.nlp.applications', { returnObjects: true }) as string[],
+      applications: tArray(t, 'interests.areas.nlp.applications'),
     },
     {
       id: 'sentiment',
@@ -128,7 +129,7 @@ export default function Interests() {
       description: t('interests.areas.sentiment.description'),
       details: t('interests.areas.sentiment.details'),
       formula: 'sentiment ∈ [-1, 1]',
-      applications: t('interests.areas.sentiment.applications', { returnObjects: true }) as string[],
+      applications: tArray(t, 'interests.areas.sentiment.applications'),
     },
     {
       id: 'bayesian',
@@ -137,7 +138,7 @@ export default function Interests() {
       description: t('interests.areas.bayesian.description'),
       details: t('interests.areas.bayesian.details'),
       formula: 'P(H|E) = P(E|H)P(H) / P(E)',
-      applications: t('interests.areas.bayesian.applications', { returnObjects: true }) as string[],
+      applications: tArray(t, 'interests.areas.bayesian.applications'),
     },
   ]
 
@@ -453,7 +454,7 @@ export default function Interests() {
                       {t('interests.application.predictive.description')}
                     </p>
                     <ul className="space-y-3 mb-6">
-                      {(t('interests.application.predictive.features', { returnObjects: true }) as string[]).map((feature) => (
+                      {tArray(t, 'interests.application.predictive.features').map((feature) => (
                         <li key={feature} className="flex items-start gap-3 text-sm">
                           <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-foreground/10 mt-0.5">
                             <span className="w-1.5 h-1.5 rounded-full bg-foreground/50" />

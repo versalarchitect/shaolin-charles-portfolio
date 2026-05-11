@@ -17,6 +17,7 @@ i18n
     },
     fallbackLng: 'fr',
     defaultNS,
+    initAsync: false,
     interpolation: {
       escapeValue: false,
     },
@@ -26,20 +27,5 @@ i18n
       lookupLocalStorage: 'charles-portfolio-lang',
     },
   })
-
-const loadedLanguages = new Set(['en', 'fr'])
-
-i18n.on('languageChanged', async (lng) => {
-  const lang = lng.split('-')[0]
-  if (loadedLanguages.has(lang)) return
-  try {
-    const res = await fetch(`/locales/${lang}.json`)
-    if (res.ok) {
-      const translations = await res.json()
-      i18n.addResourceBundle(lang, 'translation', translations)
-      loadedLanguages.add(lang)
-    }
-  } catch {}
-})
 
 export default i18n

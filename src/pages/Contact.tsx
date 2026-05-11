@@ -1,6 +1,7 @@
 import { useState, useCallback } from 'react'
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
+import { tArray } from '@/lib/safe-t'
 import { SEO } from '@/components/SEO'
 import { Github, Mail, Send, Loader2, Clock, ArrowRight, Calendar } from 'lucide-react'
 import { Button } from '@/components/ui/button'
@@ -399,7 +400,7 @@ export default function Contact() {
                   <Card className="p-6 border-foreground/10">
                     <h3 className="font-bold mb-4">{t('contact.expectations.title')}</h3>
                     <ul className="space-y-3 text-sm text-muted-foreground">
-                      {(t('contact.expectations.items', { returnObjects: true }) as string[]).map((item, index) => (
+                      {tArray(t, 'contact.expectations.items').map((item, index) => (
                         <motion.li
                           key={item}
                           initial={{ opacity: 0, x: -10 }}

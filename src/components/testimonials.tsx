@@ -1,5 +1,6 @@
 import { motion, useReducedMotion } from 'motion/react'
 import { useTranslation } from 'react-i18next'
+import { tArray } from '@/lib/safe-t'
 import { Quote, Star } from 'lucide-react'
 import { Card } from './ui/card'
 import { useRef, useState, type MouseEvent } from 'react'
@@ -39,12 +40,12 @@ const itemVariants = {
 export function Testimonials() {
   const { t } = useTranslation()
 
-  const testimonialItems = t('home.testimonials.items', { returnObjects: true }) as Array<{
+  const testimonialItems = tArray<{
     quote: string
     author: string
     role: string
     company: string
-  }>
+  }>(t, 'home.testimonials.items')
 
   const testimonials: Testimonial[] = testimonialItems.map((item) => ({
     ...item,
@@ -167,12 +168,12 @@ export function TestimonialMarquee() {
   const { t } = useTranslation()
   const prefersReducedMotion = useReducedMotion()
 
-  const testimonialItems = t('home.testimonials.items', { returnObjects: true }) as Array<{
+  const testimonialItems = tArray<{
     quote: string
     author: string
     role: string
     company: string
-  }>
+  }>(t, 'home.testimonials.items')
 
   const testimonials: Testimonial[] = testimonialItems.map((item) => ({
     ...item,

@@ -2,6 +2,7 @@ import { createBrowserRouter, redirect } from 'react-router-dom'
 import { lazy } from 'react'
 import App from './App'
 import { AuthGuard } from './components/auth-guard'
+import { RouteErrorBoundary } from './components/route-error-boundary'
 
 // Lazy load all pages (React Router v7 + React 19 code splitting)
 const Home = lazy(() => import('./pages/Home'))
@@ -38,6 +39,7 @@ const router = createBrowserRouter([
   {
     path: '/',
     element: <App />,
+    errorElement: <RouteErrorBoundary />,
     children: [
       // Homepage
       {
