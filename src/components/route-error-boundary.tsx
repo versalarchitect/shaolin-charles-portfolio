@@ -1,39 +1,4 @@
-import { Component, type ReactNode } from 'react'
 import { useRouteError, Link } from 'react-router-dom'
-
-interface DiagnosticState {
-  error: Error | null
-  componentStack: string | null
-}
-
-export class DiagnosticErrorBoundary extends Component<{ children: ReactNode }, DiagnosticState> {
-  state: DiagnosticState = { error: null, componentStack: null }
-
-  static getDerivedStateFromError(error: Error) {
-    return { error }
-  }
-
-  componentDidCatch(error: Error, errorInfo: { componentStack?: string | null }) {
-    this.setState({ componentStack: errorInfo.componentStack ?? null })
-  }
-
-  render() {
-    if (this.state.error) {
-      return (
-        <div style={{ padding: 32, fontFamily: 'monospace', fontSize: 13, background: '#111', color: '#eee', minHeight: '100vh' }}>
-          <h1 style={{ color: '#f55', fontSize: 20, marginBottom: 16 }}>Render Error Diagnostic</h1>
-          <p style={{ color: '#faa', marginBottom: 8 }}>{this.state.error.message}</p>
-          {this.state.componentStack && (
-            <pre style={{ whiteSpace: 'pre-wrap', color: '#adf', background: '#1a1a2e', padding: 16, borderRadius: 8, maxHeight: 500, overflow: 'auto' }}>
-              {this.state.componentStack}
-            </pre>
-          )}
-        </div>
-      )
-    }
-    return this.props.children
-  }
-}
 
 export function RouteErrorBoundary() {
   const error = useRouteError() as Error | null

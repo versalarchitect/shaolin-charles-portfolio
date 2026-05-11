@@ -33,13 +33,7 @@ export function Header() {
   const { handleClick: handleSpeedClick } = useSpeedClickEgg()
 
   const isAppPage = APP_ROUTES.some((r) => location.pathname.startsWith(r))
-  const marketingNav = HEADER_NAV.map((item) => {
-    const name = t(item.nameKey)
-    if (typeof name !== 'string') {
-      console.error('[HEADER DEBUG] t() returned non-string for key:', item.nameKey, 'got:', typeof name, name)
-    }
-    return { name: String(name), href: item.href }
-  })
+  const marketingNav = HEADER_NAV.map((item) => ({ name: t(item.nameKey), href: item.href }))
   const navigation = isAppPage ? APP_NAV : marketingNav
 
   const handleLogoClick = () => {
@@ -163,7 +157,7 @@ export function Header() {
           {!isAppPage && !isLoggedIn && (
             <Button size="sm" className="font-mono gap-1.5 group" asChild>
               <Link to="/contact">
-                {String(t('nav.getInTouch'))}
+                {t('nav.getInTouch')}
                 <ArrowUpRight className="h-3.5 w-3.5 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
               </Link>
             </Button>
@@ -302,7 +296,7 @@ export function Header() {
                         asChild
                       >
                         <Link to="/contact" onClick={() => setMobileMenuOpen(false)}>
-                          {String(t('nav.getInTouch'))}
+                          {t('nav.getInTouch')}
                           <ArrowUpRight className="h-4 w-4" />
                         </Link>
                       </Button>

@@ -242,8 +242,7 @@ function CourseStatsGrid() {
 export default function Home() {
   useScroll()
   const prefersReducedMotion = useReducedMotion()
-  const { t: _t } = useTranslation()
-  const t = (key: string) => String(_t(key))
+  const { t } = useTranslation()
   const { user } = useAuth()
   const deepScrollAwarded = useRef(false)
 

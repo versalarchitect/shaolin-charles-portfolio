@@ -14,7 +14,6 @@ import {
   SectionGridProvider,
 } from '@/components/ui/gradient-background'
 import { GamificationErrorBoundary } from '@/components/gamification/error-boundary'
-import { DiagnosticErrorBoundary } from '@/components/route-error-boundary'
 import { useExplorer } from '@/hooks/use-explorer'
 import { useProgressSync } from '@/hooks/use-progress-sync'
 import { useSurpriseRewards } from '@/hooks/use-surprise-rewards'
@@ -47,7 +46,6 @@ export default function App() {
   }, [location.pathname])
 
   return (
-    <DiagnosticErrorBoundary>
     <ThemeProvider>
       <CommandMenuProvider>
       <SectionGridProvider containerPadding={24}>
@@ -116,6 +114,5 @@ export default function App() {
       </SectionGridProvider>
       </CommandMenuProvider>
     </ThemeProvider>
-    </DiagnosticErrorBoundary>
   )
 }
