@@ -9,10 +9,13 @@ export function Footer() {
   const { t } = useTranslation()
 
   // Map nav items to translated names
-  const mainNavigation = FOOTER_NAV.map((item) => ({
-    name: t(item.nameKey),
-    href: item.href,
-  }))
+  const mainNavigation = FOOTER_NAV.map((item) => {
+    const name = t(item.nameKey)
+    if (typeof name !== 'string') {
+      console.error('[FOOTER DEBUG] t() returned non-string for key:', item.nameKey, 'got:', typeof name, name)
+    }
+    return { name: String(name), href: item.href }
+  })
 
   return (
     <footer className="border-t border-border bg-muted/30" aria-labelledby="footer-heading">
@@ -31,7 +34,7 @@ export function Footer() {
               <span className="text-xl font-bold">Charles Jackson</span>
             </Link>
             <p className="text-sm text-muted-foreground leading-relaxed max-w-sm">
-              {t('footer.description')}
+              {String(t('footer.description'))}
             </p>
 
             {/* Social links */}
@@ -55,7 +58,7 @@ export function Footer() {
           {/* Navigation */}
           <div className="lg:col-span-1">
             <h3 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-4">
-              {t('nav.navigation')}
+              {String(t('nav.navigation'))}
             </h3>
             <nav className="space-y-3">
               {mainNavigation.map((item) => (
@@ -74,10 +77,10 @@ export function Footer() {
           {/* Contact CTA */}
           <div className="lg:col-span-1">
             <h3 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-4">
-              {t('footer.letsConnect')}
+              {String(t('footer.letsConnect'))}
             </h3>
             <p className="text-sm text-muted-foreground mb-4">
-              {t('footer.openTo')}
+              {String(t('footer.openTo'))}
             </p>
             <motion.a
               href={`mailto:${SITE.email}`}
@@ -86,7 +89,7 @@ export function Footer() {
               className="inline-flex items-center gap-2 px-4 py-2.5 bg-foreground text-background rounded-lg text-sm font-medium hover:bg-foreground/90 transition-colors"
             >
               <Mail className="h-4 w-4" />
-              {t('footer.getInTouch')}
+              {String(t('footer.getInTouch'))}
             </motion.a>
           </div>
         </div>
@@ -94,7 +97,7 @@ export function Footer() {
         {/* Bottom bar */}
         <div className="mt-12 pt-8 border-t border-border">
           <p className="text-xs text-muted-foreground text-center sm:text-left">
-            &copy; {currentYear} {t('footer.copyright')}
+            &copy; {currentYear} {String(t('footer.copyright'))}
           </p>
         </div>
       </div>
