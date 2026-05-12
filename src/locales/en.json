@@ -54,7 +54,7 @@
   "home": {
     "meta": {
       "title": "Learn to Direct AI Agents That Build Real Software — The Agentic SaaS Course",
-      "description": "No coding required. Learn to direct AI agents that build real software for your business. 52 hours from the basics to orchestrating teams of AI agents. $4,500, lifetime access."
+      "description": "No coding required. Learn to direct AI agents that build real software for your business. 52 hours from the basics to orchestrating teams of AI agents. $7,500, lifetime access."
     },
     "hero": {
       "statusBadge": "Now enrolling",
@@ -81,55 +81,55 @@
     },
     "services": {
       "badge": "The Path",
-      "title": "Tokens to Agent Fleets",
-      "subtitle": "Four tiers. Each one takes you deeper into how agents think, coordinate, and ship.",
+      "title": "From Basics to AI Teams",
+      "subtitle": "Four sections. Each one takes you deeper into directing AI agents that build real products.",
       "fullStack": {
-        "title": "Tier 1 — Understand How AI Works",
+        "title": "Section 1 — How AI Thinks",
         "subtitle": "8 hours · 10 lessons",
-        "description": "Before you can direct AI agents, you need to understand how they think. Learn the fundamentals — what AI agents can and can't do, how to give them clear instructions, and how to spot when they go off track.",
+        "description": "Before you can direct AI agents, you need to understand how they think. Learn the basics — what AI agents can and can't do, how to give them clear instructions, and how to spot when they go off track.",
         "highlights": [
-          "How AI agents interpret your instructions and where they go wrong",
-          "Choosing the right AI tool for each task — from simple to complex",
-          "Reading agent behavior — why it drifts and how to catch it early",
-          "Directing an agent to build and deploy a working tool from a brief"
+          "How AI agents read your instructions and where they go wrong",
+          "Choosing the right level of AI help for each task",
+          "Spotting when AI drifts off course and how to catch it early",
+          "Directing an AI to build and publish a working tool from a brief"
         ],
-        "tags": ["AI Fundamentals", "Agent Behavior", "Clear Instructions", "Tool Selection"]
+        "tags": ["AI Basics", "Clear Instructions", "Problem Solving", "Tool Selection"]
       },
       "consulting": {
-        "title": "Tier 2 — Direct a Single Agent",
+        "title": "Section 2 — Build Your First Product",
         "subtitle": "12 hours · 12 lessons",
-        "description": "Learn to give an AI agent clear, precise instructions and verify what it builds. Write briefs that keep the agent focused. Build a complete web application by directing one agent through every layer — login, database, payments — and learn to course-correct when it drifts.",
+        "description": "Give an AI agent clear instructions and check what it builds. Write simple briefs that keep the AI focused. Build a complete product by directing one AI through every part — user accounts, database, payments — and learn to get it back on track when it wanders.",
         "highlights": [
-          "Writing briefs that keep the agent focused and prevent scope creep",
-          "Quality checks — catching when the agent goes off-brief",
-          "Building login, database, and payments by directing one agent",
+          "Writing briefs that keep the AI focused and on-task",
+          "Checking the AI's work before you accept it",
+          "Building user accounts, database, and payments with one AI agent",
           "Shipping a complete product you directed, not coded yourself"
         ],
-        "tags": ["Briefs", "Quality Checks", "Iteration", "Shipping"]
+        "tags": ["Briefs", "Quality Checks", "Building", "Shipping"]
       },
       "mvp": {
-        "title": "Tier 3 — Orchestrate Multiple Agents",
+        "title": "Section 3 — Run a Team of AI Agents",
         "subtitle": "15 hours · 14 lessons",
-        "description": "This is where it gets powerful. Direct 3-5 AI agents working on the same project at the same time. Give each agent its own workspace so they don't step on each other. Break complex features into tasks each agent can handle. Coordinate their work and ship faster than any solo workflow.",
+        "description": "This is where it gets powerful. Direct 3-5 AI agents working on the same project at the same time. Give each agent its own workspace so they don't step on each other. Break big features into focused tasks. Coordinate their work and ship faster than working alone.",
         "highlights": [
-          "Running 3-5 AI agents in parallel on the same project",
-          "Giving each agent shared context so they stay aligned",
-          "Breaking big features into focused tasks that don't collide",
-          "Coordinating agent work and resolving conflicts between them"
+          "Running 3-5 AI agents at the same time on one project",
+          "Keeping agents aligned with shared rules and context",
+          "Breaking big features into focused tasks that don't conflict",
+          "Coordinating AI work and resolving disagreements between agents"
         ],
-        "tags": ["Multi-Agent", "Parallel Work", "Coordination", "Speed"]
+        "tags": ["AI Teams", "Parallel Work", "Coordination", "Speed"]
       },
       "codeReview": {
-        "title": "Tier 4 — Design Your Agent Workflow",
+        "title": "Section 4 — Design Your Own Workflows",
         "subtitle": "15 hours · 12 lessons",
-        "description": "Design projects that teams of AI agents can build efficiently. Create coordination playbooks that scale beyond your direct oversight. Know when to split work, combine results, or override an agent's decision. Prove the strategic thinking that AI cannot replicate.",
+        "description": "Design projects that teams of AI agents can build efficiently. Create playbooks that scale. Know when to split work, combine results, or override an AI's decision. Develop the strategic thinking that AI cannot replicate.",
         "highlights": [
           "Designing projects optimized for teams of AI agents",
-          "Creating coordination playbooks and shared instructions",
-          "Knowing when to trust, redirect, or override an agent's decision",
-          "Proving strategic judgment — the skill AI agents can't replicate"
+          "Creating playbooks and shared rules that scale",
+          "Knowing when to trust, redirect, or override an AI's decision",
+          "Developing strategic judgment — the skill AI can't replicate"
         ],
-        "tags": ["Strategy", "Agent Workflows", "Systems Thinking", "Judgment"]
+        "tags": ["Strategy", "Workflows", "Systems Thinking", "Judgment"]
       }
     },
     "skills": {
@@ -137,40 +137,40 @@
       "subtitle": "Not how to code — how to direct AI agents that build software for you.",
       "items": {
         "frontend": {
-          "title": "Next.js + React",
-          "description": "App Router, Server Components, and TypeScript"
+          "title": "Web Applications",
+          "description": "Your AI builds pages, navigation, and user experience"
         },
         "backend": {
-          "title": "Supabase",
-          "description": "PostgreSQL, auth, and real-time"
+          "title": "Database & Users",
+          "description": "Secure login, data storage, and real-time features"
         },
         "cloud": {
-          "title": "Vercel",
-          "description": "Deploy, preview, and scale"
+          "title": "Publishing",
+          "description": "One click to put your product live on the internet"
         },
         "architecture": {
-          "title": "Drizzle ORM",
-          "description": "Type-safe database queries"
+          "title": "Data Management",
+          "description": "Your AI organizes and manages your data efficiently"
         },
         "performance": {
-          "title": "Claude Code",
-          "description": "AI-assisted development done right"
+          "title": "Your AI Agent",
+          "description": "The AI that builds your software from your instructions"
         },
         "devops": {
-          "title": "Stripe",
-          "description": "Payments and webhooks"
+          "title": "Payments",
+          "description": "Accept payments from customers, set up by your AI"
         },
         "designSystems": {
-          "title": "Tailwind + shadcn",
-          "description": "Production-ready UI components"
+          "title": "Beautiful Design",
+          "description": "Professional interfaces without designing anything yourself"
         },
         "mobile": {
-          "title": "Inngest",
-          "description": "Durable background jobs"
+          "title": "Automation",
+          "description": "Things that happen automatically — reminders, processing"
         },
         "security": {
-          "title": "Vitest + Playwright",
-          "description": "Unit and end-to-end testing"
+          "title": "Quality Checks",
+          "description": "Your AI tests its own work before you ship it"
         }
       }
     },
@@ -192,26 +192,26 @@
       "subtitle": "From your first lesson to directing teams of AI agents",
       "items": {
         "2024_founder": {
-          "title": "Prework",
+          "title": "Getting Started",
           "company": "2 hours · 3 lessons",
-          "description": "Set up your workspace, install the AI tools you'll use, and get your first agent running."
+          "description": "Set up your workspace, meet your AI agent, and publish your first project."
         },
         "2024_urbanfarm": {
-          "title": "Understand the Machine",
+          "title": "How AI Thinks",
           "company": "8 hours · 10 lessons",
-          "description": "Understand how AI agents think so you can direct them effectively. Ship your first agent-built tool."
+          "description": "Understand how AI agents work so you can direct them effectively. Publish your first AI-built tool."
         },
         "2018_senior": {
-          "title": "Direct a Single Agent",
-          "description": "Write clear briefs that guide agent output. Direct, verify, and ship a complete product built by directing one AI agent."
+          "title": "Build Your First Product",
+          "description": "Write clear briefs that keep the AI focused. Direct, check, and ship a complete product built by one AI agent."
         },
         "2015_lead": {
-          "title": "Orchestrate Multiple Agents",
-          "description": "Coordinate multiple AI agents working on the same project. Split tasks, combine outputs, handle issues. Ship with a team of agents."
+          "title": "Run a Team of AI Agents",
+          "description": "Coordinate multiple AI agents on the same project. Split tasks, combine their work, handle conflicts. Ship faster with an AI team."
         },
         "2010_fullstack": {
-          "title": "Design Your Agent Workflow",
-          "description": "Design the systems AI agents build. Make strategic decisions about how agents work together. Your milestone project proves system-level judgment."
+          "title": "Design Your Own Workflows",
+          "description": "Design projects optimized for AI teams. Make strategic decisions. Your milestone project proves system-level judgment."
         },
         "2005_start": {
           "title": "Alumni",
@@ -220,9 +220,9 @@
       },
       "milestones": {
         "2005": "Start",
-        "2010": "Tier 1",
-        "2015": "Tier 2",
-        "2024": "Tier 4"
+        "2010": "Section 1",
+        "2015": "Section 2",
+        "2024": "Section 4"
       }
     },
     "testimonials": {
@@ -741,7 +741,7 @@
     "share": "Share",
     "noEntries": "No entries yet. Start learning to appear here.",
     "allContent": "All content is up to date",
-    "xp": "XP",
+    "xp": "pts",
     "days": "days",
     "day": "Day",
     "claimed": "Claimed!",
@@ -755,9 +755,9 @@
     "social": "Social",
     "stats": "Stats",
     "challenges": "Challenges",
-    "welcomeTitle": "Welcome to Your Learning Journey",
-    "welcomeDescription": "Everything you do here earns XP (experience points) and unlocks rewards. Finish lessons, keep coming back each day, explore the site — it all counts.",
-    "howYouEarnXp": "How You Earn XP",
+    "welcomeTitle": "Welcome! Let's Build Something",
+    "welcomeDescription": "Everything you do here earns points and unlocks rewards. Finish lessons, come back each day, explore — it all counts.",
+    "howYouEarnXp": "How You Earn Points",
     "earnFinishLessons": "Finish lessons",
     "earnComeBack": "Come back each day",
     "earnExplore": "Explore the site",
@@ -765,7 +765,7 @@
     "unlockRewards": "Unlock Rewards",
     "unlockRewardsDesc": "Earn ranks, unlock new dashboard looks, discover secret pages, and climb the leaderboard.",
     "ready": "Ready?",
-    "readyDesc": "Your journey starts now. Every interaction brings you closer to mastery.",
+    "readyDesc": "Every lesson brings you closer to directing AI agents that build real products.",
     "hiddenHint": "5 hidden surprises are scattered across the site. Can you find them all?",
     "weeklyBonus": "Amazing! 7 days in a row. Here's a bonus.",
     "topReward": "Incredible dedication. You've earned the top daily reward!",

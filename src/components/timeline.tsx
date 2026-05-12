@@ -24,7 +24,7 @@ export function Timeline() {
       type: 'milestone',
     },
     {
-      year: 'Tier 1',
+      year: 'Section 1',
       titleKey: 'home.timeline.items.2024_urbanfarm.title',
       companyKey: 'home.timeline.items.2024_urbanfarm.company',
       descriptionKey: 'home.timeline.items.2024_urbanfarm.description',
@@ -32,21 +32,21 @@ export function Timeline() {
       type: 'project',
     },
     {
-      year: 'Tier 2',
+      year: 'Section 2',
       titleKey: 'home.timeline.items.2018_senior.title',
       descriptionKey: 'home.timeline.items.2018_senior.description',
       icon: Star,
       type: 'project',
     },
     {
-      year: 'Tier 3',
+      year: 'Section 3',
       titleKey: 'home.timeline.items.2015_lead.title',
       descriptionKey: 'home.timeline.items.2015_lead.description',
       icon: Zap,
       type: 'project',
     },
     {
-      year: 'Tier 4',
+      year: 'Section 4',
       titleKey: 'home.timeline.items.2010_fullstack.title',
       descriptionKey: 'home.timeline.items.2010_fullstack.description',
       icon: Layers,

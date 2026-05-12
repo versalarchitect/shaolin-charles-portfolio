@@ -39,7 +39,7 @@ const tierIcons: Record<string, typeof Code2> = {
 const tiers = CURRICULUM.map((tier) => ({
   id: tier.id,
   icon: tierIcons[tier.id] || Code2,
-  title: tier.id === 'prework' ? 'Prework' : `Tier ${tier.number} — ${tier.subtitle}`,
+  title: tier.id === 'prework' ? tier.name : `Section ${tier.number} — ${tier.name}`,
   hours: `${tier.hours} hours`,
   lessons: `${tier.lessonCount} lessons`,
   description: tier.description,
@@ -146,7 +146,7 @@ function AppCurriculum() {
               <div>
                 <h1 className="text-2xl font-bold tracking-tight mb-2">Curriculum</h1>
                 <p className="text-sm text-muted-foreground">
-                  Each tier builds on the last. The milestone project from each tier proves you're ready for the next.
+                  Each section builds on the last. The milestone project from each section proves you're ready for the next.
                 </p>
               </div>
               {multiplier > 1 && (
@@ -260,7 +260,7 @@ function AppCurriculum() {
                 <div>
                   <div className="flex items-center gap-1.5 mb-1">
                     <Layers className="w-3 h-3 text-foreground/40" />
-                    <span className="text-xs text-foreground/40">Tiers</span>
+                    <span className="text-xs text-foreground/40">Sections</span>
                   </div>
                   <span className="text-2xl font-bold font-mono">4</span>
                 </div>
@@ -276,7 +276,7 @@ function AppCurriculum() {
 
             {/* Tier Navigation */}
             <div className="rounded-xl border border-foreground/10 bg-foreground/[0.02] p-5">
-              <h3 className="text-xs font-mono uppercase tracking-wide text-foreground/40 mb-4">Jump to Tier</h3>
+              <h3 className="text-xs font-mono uppercase tracking-wide text-foreground/40 mb-4">Jump to Section</h3>
               <nav className="space-y-1">
                 {tiers.map((tier) => {
                   const Icon = tier.icon
@@ -292,7 +292,7 @@ function AppCurriculum() {
                       </div>
                       <div className="flex-1 min-w-0">
                         <span className="text-sm text-foreground/70 group-hover:text-foreground transition-colors block truncate">
-                          {tier.id === 'prework' ? 'Prework' : `Tier ${CURRICULUM.find(t => t.id === tier.id)?.number}`}
+                          {CURRICULUM.find(t => t.id === tier.id)?.name ?? tier.id}
                         </span>
                         <span className="text-[10px] font-mono text-foreground/30">
                           {tier.lessonDetails.length} lessons · {tp.totalXp} XP
@@ -316,7 +316,7 @@ function AppCurriculum() {
                     <GraduationCap className="w-3.5 h-3.5 text-foreground/30 mt-0.5 shrink-0" />
                     <div>
                       <span className="text-[10px] font-mono text-foreground/30 block">
-                        {tier.id === 'prework' ? 'Prework' : `Tier ${CURRICULUM.find(t => t.id === tier.id)?.number}`}
+                        {CURRICULUM.find(t => t.id === tier.id)?.name ?? tier.id}
                       </span>
                       <span className="text-xs text-foreground/60 leading-relaxed">
                         {tier.capstone}
@@ -381,7 +381,7 @@ function MarketingCurriculum() {
 
             <BlurFadeIn delay={0.2} immediate>
               <p className="text-lg md:text-xl text-muted-foreground leading-relaxed max-w-2xl">
-                52 hours across 51 interactive lessons. Each tier takes you deeper into directing AI agents — from understanding how they work to orchestrating entire teams. You advance by shipping real projects.
+                52 hours across 51 interactive lessons. Each section takes you deeper into directing AI agents — from understanding how they work to running entire teams. You advance by shipping real projects.
               </p>
             </BlurFadeIn>
           </div>
@@ -424,7 +424,7 @@ function MarketingCurriculum() {
               Course Breakdown
             </h2>
             <p className="text-muted-foreground max-w-2xl">
-              Each tier builds on the last. You advance by completing a milestone project that proves you're ready for the next level.
+              Each section builds on the last. You advance by completing a milestone project that proves you're ready for the next level.
             </p>
           </ScrollFadeIn>
 

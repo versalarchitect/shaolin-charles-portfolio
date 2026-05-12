@@ -46,7 +46,7 @@ const principles = [
   {
     number: '04',
     title: 'The Tool Ladder',
-    subtitle: 'paste → skill → script → agent → MCP',
+    subtitle: 'quick help → shortcuts → small tasks → full agent → connected tools',
     description: 'Not every problem needs an agent. Match the tool to the task. A simple paste might be all you need. Reaching for the most powerful tool by default creates fragile, over-engineered solutions.',
     icon: Layers,
   },

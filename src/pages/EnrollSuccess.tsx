@@ -42,7 +42,7 @@ export default function EnrollSuccess() {
                 Your enrollment in The Agentic SaaS Course is confirmed. Welcome to the journey from zero to directing teams of AI agents.
               </p>
               <p className="text-muted-foreground mb-10">
-                Check your email for login credentials and next steps. The Prework module is ready for you.
+                Check your email for login credentials and next steps. The Getting Started section is ready for you.
               </p>
             </BlurFadeIn>
 
@@ -55,8 +55,8 @@ export default function EnrollSuccess() {
                 </div>
                 <div className="p-5 rounded-xl border border-foreground/10 bg-foreground/[0.02] text-left">
                   <BookOpen className="w-5 h-5 text-muted-foreground mb-3" />
-                  <h3 className="text-sm font-semibold mb-1">Start Prework</h3>
-                  <p className="text-xs text-muted-foreground">Set up your environment, install Claude Code, configure MCP.</p>
+                  <h3 className="text-sm font-semibold mb-1">Get Started</h3>
+                  <p className="text-xs text-muted-foreground">Set up your workspace, meet your AI agent, and publish your first project.</p>
                 </div>
               </div>
             </BlurFadeIn>

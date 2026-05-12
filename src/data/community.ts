@@ -59,10 +59,10 @@ export const threads: DiscussionThread[] = [
   },
   {
     id: 'study-group',
-    title: 'Tier 1 Study Group — Weekly Check-ins',
+    title: 'Section 1 Study Group — Weekly Check-ins',
     author: 'Sarah K.',
     authorInitial: 'SK',
-    tier: 'Tier 1',
+    tier: 'Section 1',
     replies: 21,
     lastActivity: '4h ago',
     isPinned: true,
@@ -70,14 +70,14 @@ export const threads: DiscussionThread[] = [
     preview:
       'Every Monday we sync on progress. Post your blockers and wins from the week.',
     content:
-      "Hey Tier 1 crew! 👋\n\nEvery Monday we sync on progress. Post your blockers and wins from the week. Format:\n\n**Wins:**\n- What did you accomplish?\n- What clicked for you?\n\n**Blockers:**\n- Where are you stuck?\n- What concepts need more clarity?\n\n**This week's goal:**\n- One concrete thing you'll ship by next Monday\n\nLet's keep each other accountable!",
+      "Hey Section 1 crew! 👋\n\nEvery Monday we sync on progress. Post your blockers and wins from the week. Format:\n\n**Wins:**\n- What did you accomplish?\n- What clicked for you?\n\n**Blockers:**\n- Where are you stuck?\n- What concepts need more clarity?\n\n**This week's goal:**\n- One concrete thing you'll ship by next Monday\n\nLet's keep each other accountable!",
   },
   {
     id: 'mcp-config',
     title: 'Struggling with MCP server configuration',
     author: 'Devin R.',
     authorInitial: 'DR',
-    tier: 'Tier 1',
+    tier: 'Section 1',
     replies: 12,
     lastActivity: '6h ago',
     isPinned: false,
@@ -89,10 +89,10 @@ export const threads: DiscussionThread[] = [
   },
   {
     id: 'capstone-feedback',
-    title: 'My Tier 2 capstone — feedback wanted',
+    title: 'My Section 2 capstone — feedback wanted',
     author: 'Amara T.',
     authorInitial: 'AT',
-    tier: 'Tier 2',
+    tier: 'Section 2',
     replies: 8,
     lastActivity: '1d ago',
     isPinned: false,
@@ -100,14 +100,14 @@ export const threads: DiscussionThread[] = [
     preview:
       'Built an AI-powered invoice processor. Looking for feedback on my agent orchestration pattern.',
     content:
-      "Built an AI-powered invoice processor for my Tier 2 capstone. Looking for feedback on my agent orchestration pattern.\n\nThe system uses three agents:\n1. **Extraction Agent** — Parses invoice PDFs and extracts structured data\n2. **Validation Agent** — Cross-references extracted data against vendor database\n3. **Routing Agent** — Determines approval workflow based on amount and department\n\nI'm using a fan-out pattern where the extraction agent spawns validation and routing in parallel once extraction is complete.\n\nQuestions:\n- Is parallel validation + routing the right call, or should routing wait for validation?\n- How would you handle partial extraction failures?\n- Any thoughts on the retry strategy for the PDF parsing step?\n\nRepo link is in my profile. Would love any feedback!",
+      "Built an AI-powered invoice processor for my Section 2 capstone. Looking for feedback on my agent orchestration pattern.\n\nThe system uses three agents:\n1. **Extraction Agent** — Parses invoice PDFs and extracts structured data\n2. **Validation Agent** — Cross-references extracted data against vendor database\n3. **Routing Agent** — Determines approval workflow based on amount and department\n\nI'm using a fan-out pattern where the extraction agent spawns validation and routing in parallel once extraction is complete.\n\nQuestions:\n- Is parallel validation + routing the right call, or should routing wait for validation?\n- How would you handle partial extraction failures?\n- Any thoughts on the retry strategy for the PDF parsing step?\n\nRepo link is in my profile. Would love any feedback!",
   },
   {
     id: 'parallel-agents',
     title: 'Best practices for parallel agent workflows',
     author: 'James L.',
     authorInitial: 'JL',
-    tier: 'Tier 3',
+    tier: 'Section 3',
     replies: 15,
     lastActivity: '1d ago',
     isPinned: false,
@@ -122,7 +122,7 @@ export const threads: DiscussionThread[] = [
     title: 'Postmortem: My first production incident',
     author: 'Nina W.',
     authorInitial: 'NW',
-    tier: 'Tier 3',
+    tier: 'Section 3',
     replies: 19,
     lastActivity: '2d ago',
     isPinned: false,
@@ -134,10 +134,10 @@ export const threads: DiscussionThread[] = [
   },
   {
     id: 'teardown-tips',
-    title: 'Tier 4 teardown methodology tips',
+    title: 'Section 4 teardown methodology tips',
     author: 'Marcus B.',
     authorInitial: 'MB',
-    tier: 'Tier 4',
+    tier: 'Section 4',
     replies: 7,
     lastActivity: '3d ago',
     isPinned: false,
@@ -145,14 +145,14 @@ export const threads: DiscussionThread[] = [
     preview:
       'Sharing my approach to tearing down complex agent architectures for analysis.',
     content:
-      "Sharing my approach to tearing down complex agent architectures for analysis. This is the methodology I've developed through several Tier 4 exercises.\n\n**Step 1: Map the topology**\nBefore reading any code, diagram every agent and its connections. Tools: Mermaid, Excalidraw.\n\n**Step 2: Trace a single request**\nFollow one request from entry to completion. Note every decision point.\n\n**Step 3: Identify the orchestrator**\nWho decides what runs? Is it a central router or distributed? This tells you everything about the architecture's philosophy.\n\n**Step 4: Find the failure modes**\nWhat happens when each agent fails? Is there a fallback? A circuit breaker? Nothing?\n\n**Step 5: Evaluate the state management**\nWhere does state live? Is it shared? How is consistency maintained?\n\nHappy to do a live teardown in office hours if there's interest.",
+      "Sharing my approach to tearing down complex agent architectures for analysis. This is the methodology I've developed through several Section 4 exercises.\n\n**Step 1: Map the topology**\nBefore reading any code, diagram every agent and its connections. Tools: Mermaid, Excalidraw.\n\n**Step 2: Trace a single request**\nFollow one request from entry to completion. Note every decision point.\n\n**Step 3: Identify the orchestrator**\nWho decides what runs? Is it a central router or distributed? This tells you everything about the architecture's philosophy.\n\n**Step 4: Find the failure modes**\nWhat happens when each agent fails? Is there a fallback? A circuit breaker? Nothing?\n\n**Step 5: Evaluate the state management**\nWhere does state live? Is it shared? How is consistency maintained?\n\nHappy to do a live teardown in office hours if there's interest.",
   },
   {
     id: 'inngest-patterns',
     title: 'Inngest v3 event-driven patterns — what changed?',
     author: 'Priya S.',
     authorInitial: 'PS',
-    tier: 'Tier 3',
+    tier: 'Section 3',
     replies: 11,
     lastActivity: '4d ago',
     isPinned: false,
@@ -171,7 +171,7 @@ export const replies: Record<string, Reply[]> = {
       threadId: 'welcome',
       author: 'Sarah K.',
       authorInitial: 'SK',
-      tier: 'Tier 1',
+      tier: 'Section 1',
       content:
         "Hi everyone! I'm Sarah, working on a customer support automation tool. Tier 1, just getting started. Goal this month: get my first MCP server running.",
       timeAgo: '1h ago',
@@ -182,7 +182,7 @@ export const replies: Record<string, Reply[]> = {
       threadId: 'welcome',
       author: 'James L.',
       authorInitial: 'JL',
-      tier: 'Tier 3',
+      tier: 'Section 3',
       content:
         'Welcome Sarah! The MCP lessons are solid — make sure to check out the debugging section, it saved me a lot of time.',
       timeAgo: '1h ago',
@@ -193,7 +193,7 @@ export const replies: Record<string, Reply[]> = {
       threadId: 'welcome',
       author: 'Devin R.',
       authorInitial: 'DR',
-      tier: 'Tier 1',
+      tier: 'Section 1',
       content:
         "Hey! I'm Devin, building a code review assistant. Also on Tier 1. Excited to be here.",
       timeAgo: '45m ago',
@@ -204,7 +204,7 @@ export const replies: Record<string, Reply[]> = {
       threadId: 'welcome',
       author: 'Nina W.',
       authorInitial: 'NW',
-      tier: 'Tier 3',
+      tier: 'Section 3',
       content:
         "Welcome to the community! Don't hesitate to ask questions — everyone here is super helpful.",
       timeAgo: '30m ago',
@@ -217,7 +217,7 @@ export const replies: Record<string, Reply[]> = {
       threadId: 'study-group',
       author: 'Devin R.',
       authorInitial: 'DR',
-      tier: 'Tier 1',
+      tier: 'Section 1',
       content:
         "**Wins:** Got my first tool registered and working! Simple file reader but it feels great.\n**Blockers:** Still confused about transport protocols — when to use stdio vs HTTP?\n**This week:** Build a multi-tool server.",
       timeAgo: '3h ago',
@@ -228,7 +228,7 @@ export const replies: Record<string, Reply[]> = {
       threadId: 'study-group',
       author: 'Sarah K.',
       authorInitial: 'SK',
-      tier: 'Tier 1',
+      tier: 'Section 1',
       content:
         "**Wins:** Finished lessons 1.1–1.4. The principles section really changed my perspective.\n**Blockers:** TypeScript generics in the SDK are tripping me up.\n**This week:** Complete the first hands-on project.",
       timeAgo: '2h ago',
@@ -239,7 +239,7 @@ export const replies: Record<string, Reply[]> = {
       threadId: 'study-group',
       author: 'Marcus B.',
       authorInitial: 'MB',
-      tier: 'Tier 4',
+      tier: 'Section 4',
       content:
         'Great progress everyone! For the transport question — use stdio for local dev, HTTP for production deployments. The lesson in 1.6 covers this well.',
       timeAgo: '1h ago',
@@ -252,7 +252,7 @@ export const replies: Record<string, Reply[]> = {
       threadId: 'mcp-config',
       author: 'James L.',
       authorInitial: 'JL',
-      tier: 'Tier 3',
+      tier: 'Section 3',
       content:
         'I hit the same issue. Try adding `"transport": "stdio"` explicitly in your config. The default changed in the latest version.',
       timeAgo: '5h ago',
@@ -263,7 +263,7 @@ export const replies: Record<string, Reply[]> = {
       threadId: 'mcp-config',
       author: 'Devin R.',
       authorInitial: 'DR',
-      tier: 'Tier 1',
+      tier: 'Section 1',
       content:
         "That fixed it! Thank you James. The transport default change wasn't documented anywhere I could find.",
       timeAgo: '4h ago',
@@ -285,7 +285,7 @@ export const replies: Record<string, Reply[]> = {
       threadId: 'mcp-config',
       author: 'Priya S.',
       authorInitial: 'PS',
-      tier: 'Tier 3',
+      tier: 'Section 3',
       content:
         "Another thing to check — make sure your `server.js` file exports a proper MCP server instance. If it's just a bare Node script, the handshake will fail.",
       timeAgo: '2h ago',
@@ -298,7 +298,7 @@ export const replies: Record<string, Reply[]> = {
       threadId: 'capstone-feedback',
       author: 'James L.',
       authorInitial: 'JL',
-      tier: 'Tier 3',
+      tier: 'Section 3',
       content:
         "Nice architecture! I'd suggest routing should wait for validation — you don't want to route an invoice that fails validation. Sequential here makes more sense than parallel.",
       timeAgo: '20h ago',
@@ -309,7 +309,7 @@ export const replies: Record<string, Reply[]> = {
       threadId: 'capstone-feedback',
       author: 'Nina W.',
       authorInitial: 'NW',
-      tier: 'Tier 3',
+      tier: 'Section 3',
       content:
         'For partial extraction failures, consider having the extraction agent return a confidence score with each field. Then the validation agent can flag low-confidence fields for human review instead of failing the whole invoice.',
       timeAgo: '18h ago',
@@ -333,7 +333,7 @@ export const replies: Record<string, Reply[]> = {
       threadId: 'parallel-agents',
       author: 'Nina W.',
       authorInitial: 'NW',
-      tier: 'Tier 3',
+      tier: 'Section 3',
       content:
         'Great summary. One pattern I\'ve found useful: "parallel with merge." Run agents in parallel but have a dedicated merge step that reconciles their outputs before proceeding. Catches conflicts early.',
       timeAgo: '22h ago',
@@ -344,7 +344,7 @@ export const replies: Record<string, Reply[]> = {
       threadId: 'parallel-agents',
       author: 'Marcus B.',
       authorInitial: 'MB',
-      tier: 'Tier 4',
+      tier: 'Section 4',
       content:
         "For error handling in fan-out: use a \"partial success\" model. If 3/5 parallel agents succeed, decide whether that's enough to continue. Not every failure needs to be fatal.",
       timeAgo: '20h ago',
@@ -366,7 +366,7 @@ export const replies: Record<string, Reply[]> = {
       threadId: 'parallel-agents',
       author: 'Priya S.',
       authorInitial: 'PS',
-      tier: 'Tier 3',
+      tier: 'Section 3',
       content:
         "On observability — I've been using structured logging with correlation IDs that span across parallel agents. Makes it much easier to trace what happened when things go wrong.",
       timeAgo: '12h ago',
@@ -379,7 +379,7 @@ export const replies: Record<string, Reply[]> = {
       threadId: 'postmortem',
       author: 'James L.',
       authorInitial: 'JL',
-      tier: 'Tier 3',
+      tier: 'Section 3',
       content:
         "This is exactly the kind of content we need more of. Idempotency is one of those things you don't think about until it bites you. Thanks for sharing.",
       timeAgo: '1d ago',
@@ -390,7 +390,7 @@ export const replies: Record<string, Reply[]> = {
       threadId: 'postmortem',
       author: 'Marcus B.',
       authorInitial: 'MB',
-      tier: 'Tier 4',
+      tier: 'Section 4',
       content:
         'The "dry run" mode is a great idea. I\'d also suggest adding a kill switch — a way to immediately halt all agent operations if something goes wrong. Circuit breakers are your friend.',
       timeAgo: '1d ago',
@@ -403,7 +403,7 @@ export const replies: Record<string, Reply[]> = {
       authorInitial: 'CJ',
       tier: 'Instructor',
       content:
-        "Excellent postmortem Nina. This is going in the Tier 3 \"real-world patterns\" section as a case study (with your permission). The idempotency lesson is one every builder needs to internalize.",
+        "Excellent postmortem Nina. This is going in the Section 3 \"real-world patterns\" section as a case study (with your permission). The idempotency lesson is one every builder needs to internalize.",
       timeAgo: '1d ago',
       likes: 20,
     },
@@ -412,7 +412,7 @@ export const replies: Record<string, Reply[]> = {
       threadId: 'postmortem',
       author: 'Amara T.',
       authorInitial: 'AT',
-      tier: 'Tier 2',
+      tier: 'Section 2',
       content:
         'Wow, this is making me rethink my capstone architecture. I need to add idempotency keys to my invoice processor ASAP.',
       timeAgo: '23h ago',
@@ -425,7 +425,7 @@ export const replies: Record<string, Reply[]> = {
       threadId: 'teardown-tips',
       author: 'James L.',
       authorInitial: 'JL',
-      tier: 'Tier 3',
+      tier: 'Section 3',
       content:
         "The \"identify the orchestrator\" step is key. In my experience, that single question reveals 80% of the architecture's design philosophy.",
       timeAgo: '2d ago',
@@ -436,7 +436,7 @@ export const replies: Record<string, Reply[]> = {
       threadId: 'teardown-tips',
       author: 'Nina W.',
       authorInitial: 'NW',
-      tier: 'Tier 3',
+      tier: 'Section 3',
       content:
         'Would love a live teardown in office hours! Maybe we could look at an open-source agent system?',
       timeAgo: '2d ago',
@@ -460,7 +460,7 @@ export const replies: Record<string, Reply[]> = {
       threadId: 'inngest-patterns',
       author: 'Marcus B.',
       authorInitial: 'MB',
-      tier: 'Tier 4',
+      tier: 'Section 4',
       content:
         "I migrated last month. The biggest gotcha: `step.ai.infer()` doesn't automatically retry on model errors the way `step.run()` does. You need to configure the retry behavior explicitly.",
       timeAgo: '3d ago',
@@ -471,7 +471,7 @@ export const replies: Record<string, Reply[]> = {
       threadId: 'inngest-patterns',
       author: 'James L.',
       authorInitial: 'JL',
-      tier: 'Tier 3',
+      tier: 'Section 3',
       content:
         'The cost tracking is pretty accurate in my testing — within 5% of actual API bills. Worth using even if not perfect.',
       timeAgo: '3d ago',
@@ -484,7 +484,7 @@ export const replies: Record<string, Reply[]> = {
       authorInitial: 'CJ',
       tier: 'Instructor',
       content:
-        "I'm updating the Tier 3 Inngest lessons for v3 this week. The migration is worth it — the AI-native primitives are much cleaner. Hold off on migrating until the new lessons drop if you want a guided walkthrough.",
+        "I'm updating the Section 3 Inngest lessons for v3 this week. The migration is worth it — the AI-native primitives are much cleaner. Hold off on migrating until the new lessons drop if you want a guided walkthrough.",
       timeAgo: '2d ago',
       likes: 18,
     },
@@ -494,7 +494,7 @@ export const replies: Record<string, Reply[]> = {
 export const announcements: Announcement[] = [
   {
     id: 'tier3-update',
-    title: 'Tier 3 content update: New lesson on Inngest v3',
+    title: 'Section 3 content update: New lesson on Inngest v3',
     content:
       'Lesson 3.8 has been updated with the latest Inngest v3 patterns including the new step.ai integration. Re-watch if you already completed this section.',
     timeAgo: '2 days ago',
@@ -504,7 +504,7 @@ export const announcements: Announcement[] = [
     id: 'recording',
     title: 'Office hours recording from April 24 now available',
     content:
-      'This session covered common Tier 2 capstone blockers, Stripe webhook debugging, and a live teardown of a student project. Link in the course portal.',
+      'This session covered common Section 2 capstone blockers, Stripe webhook debugging, and a live teardown of a student project. Link in the course portal.',
     timeAgo: '5 days ago',
     type: 'recording',
   },
@@ -522,7 +522,7 @@ export const spotlightMembers: MemberSpotlight[] = [
   {
     id: 'james',
     name: 'James L.',
-    tier: 'Tier 3',
+    tier: 'Section 3',
     streak: 21,
     xp: 4120,
     quote:
@@ -532,7 +532,7 @@ export const spotlightMembers: MemberSpotlight[] = [
   {
     id: 'nina',
     name: 'Nina W.',
-    tier: 'Tier 3',
+    tier: 'Section 3',
     streak: 9,
     xp: 3580,
     quote:
@@ -542,7 +542,7 @@ export const spotlightMembers: MemberSpotlight[] = [
   {
     id: 'sarah',
     name: 'Sarah K.',
-    tier: 'Tier 2',
+    tier: 'Section 2',
     streak: 14,
     xp: 2340,
     quote:

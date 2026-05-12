@@ -23,6 +23,13 @@ export default defineConfig({
   server: {
     port: 3000,
     host: true,
+    proxy: {
+      '/api/ollama': {
+        target: 'http://localhost:11434',
+        changeOrigin: true,
+        rewrite: (p) => p.replace(/^\/api\/ollama/, ''),
+      },
+    },
   },
 
   css: {

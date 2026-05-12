@@ -34,7 +34,7 @@ function getActionsForResponse(content: string, lang: string): Array<{ label: st
   const lower = content.toLowerCase()
   const actions: Array<{ label: string; href: string }> = []
 
-  if (lower.includes('price') || lower.includes('prix') || lower.includes('$4,500') || lower.includes('4 500') || lower.includes('enroll') || lower.includes('inscrire')) {
+  if (lower.includes('price') || lower.includes('prix') || lower.includes('$7,500') || lower.includes('7 500') || lower.includes('enroll') || lower.includes('inscrire')) {
     actions.push({ label: lang === 'fr' ? "S'inscrire" : 'Enroll Now', href: '/tiers' })
   }
   if (lower.includes('tier') || lower.includes('niveau') || lower.includes('curriculum') || lower.includes('programme') || lower.includes('lesson') || lower.includes('leçon')) {
@@ -56,12 +56,12 @@ function getActionsForResponse(content: string, lang: string): Array<{ label: st
 function getFollowUps(content: string, lang: string): string[] {
   const lower = content.toLowerCase()
   if (lang === 'fr') {
-    if (lower.includes('prix') || lower.includes('4 500')) return ['Quelle est la politique de remboursement ?', 'Quels sont les niveaux ?']
+    if (lower.includes('prix') || lower.includes('7 500')) return ['Quelle est la politique de remboursement ?', 'Quels sont les niveaux ?']
     if (lower.includes('niveau') || lower.includes('tier')) return ['Combien ça coûte ?', "Qu'est-ce que je vais apprendre ?"]
     if (lower.includes('orchestr') || lower.includes('agent')) return ['Dois-je savoir coder ?', 'Quels sont les niveaux ?']
     return ['Combien ça coûte ?', "Qu'est-ce que je vais apprendre ?"]
   }
-  if (lower.includes('price') || lower.includes('$4,500')) return ["What's the refund policy?", 'What are the tiers?']
+  if (lower.includes('price') || lower.includes('$7,500')) return ["What's the refund policy?", 'What are the tiers?']
   if (lower.includes('tier') || lower.includes('curriculum')) return ['How much is it?', 'What will I learn?']
   if (lower.includes('orchestrat') || lower.includes('agent')) return ['Do I need coding experience?', 'What are the tiers?']
   return ['How much is it?', 'What will I learn?']

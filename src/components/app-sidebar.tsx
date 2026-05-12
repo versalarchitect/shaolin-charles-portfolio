@@ -22,6 +22,7 @@ import {
   Brain,
   Briefcase,
   BarChart3,
+  Bot,
 } from 'lucide-react'
 import { Logo } from '@/components/ui/logo'
 import { LanguageSwitcher } from '@/components/language-switcher'
@@ -376,6 +377,27 @@ function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
             >
               <Briefcase className="w-4 h-4 shrink-0" />
               Pipeline
+            </Link>
+          )
+        })()}
+
+        {hasPipelineAccess(user?.email) && (() => {
+          const isActive = location.pathname === '/course/student-agent'
+          return (
+            <Link
+              to="/course/student-agent"
+              onClick={onNavigate}
+              className={`
+                flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium font-mono transition-colors
+                ${
+                  isActive
+                    ? 'bg-foreground/10 text-foreground'
+                    : 'text-foreground/50 hover:text-foreground/80 hover:bg-foreground/5'
+                }
+              `}
+            >
+              <Bot className="w-4 h-4 shrink-0" />
+              Student Agent
             </Link>
           )
         })()}

@@ -205,11 +205,11 @@ export function ComparisonCard() {
       <div className="divide-y divide-foreground/[0.06]">
         <ComparisonRow
           icon={Zap}
-          label="Your XP"
+          label="Your Points"
           userValue={progress.totalXp}
-          userLabel={`${progress.totalXp.toLocaleString()} XP`}
+          userLabel={`${progress.totalXp.toLocaleString()} pts`}
           avgValue={stats.averageXp}
-          avgLabel={`${stats.averageXp.toLocaleString()} XP`}
+          avgLabel={`${stats.averageXp.toLocaleString()} pts`}
           maxValue={stats.topXp}
           badge={xpBadge}
           index={0}

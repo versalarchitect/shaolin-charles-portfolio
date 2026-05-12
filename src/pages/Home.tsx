@@ -902,7 +902,7 @@ export default function Home() {
                         { value: 4, label: t('home.featuredProject.components'), suffix: '' },
                         { value: 4, label: t('home.featuredProject.lifeDomains'), suffix: '' },
                         {
-                          value: 4500,
+                          value: 7500,
                           label: t('home.featuredProject.domainNodes'),
                           prefix: '$',
                           suffix: '',

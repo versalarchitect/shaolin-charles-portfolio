@@ -351,7 +351,7 @@ export default function Learn() {
             </Link>
             <ChevronRight className="w-3.5 h-3.5 shrink-0 text-foreground/25" />
             <span className="truncate text-foreground/35">
-              {tier.id === 'prework' ? 'Prework' : `Tier ${tier.number}`}
+              {tier.name}
             </span>
             <ChevronRight className="w-3.5 h-3.5 shrink-0 text-foreground/25" />
             <span className="font-mono text-foreground/60 shrink-0">{lesson.number}</span>
@@ -363,7 +363,7 @@ export default function Learn() {
         <div className="mb-8">
           <div className="flex flex-wrap items-center gap-2 mb-3">
             <span className="text-xs font-mono px-2.5 py-1 bg-foreground/[0.05] rounded border border-foreground/[0.08] text-foreground/50">
-              {tier.id === 'prework' ? 'Prework' : `Tier ${tier.number} — ${tier.name}`}
+              {tier.name}
             </span>
             {lesson.isCapstone && (
               <span className="text-xs font-mono px-2.5 py-1 bg-foreground/10 rounded border border-foreground/15 text-foreground/70 flex items-center gap-1">

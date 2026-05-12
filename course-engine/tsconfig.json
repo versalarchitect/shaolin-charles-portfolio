@@ -20,6 +20,7 @@
     { "path": "packages/extraction" },
     { "path": "packages/regeneration" },
     { "path": "packages/briefing" },
+    { "path": "packages/simulator" },
     { "path": "scripts" }
   ]
 }

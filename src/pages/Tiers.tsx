@@ -40,9 +40,9 @@ import { SectionSpots, Section } from '@/components/ui/gradient-background'
 const content = {
   en: {
     seo: {
-      title: 'Enroll — The Agentic SaaS Course | $4500',
-      description: '52 hours from zero to directing teams of AI agents. One price, full access — learn to direct a single agent, coordinate multiple agents in parallel, and design complete agent workflows. $4500 USD, lifetime access.',
-      imageAlt: 'Enroll in The Agentic SaaS Course — $4500 USD, lifetime access',
+      title: 'Enroll — The Agentic SaaS Course | $7,500',
+      description: '52 hours from zero to directing teams of AI agents. One price, full access — learn to direct a single agent, coordinate multiple agents in parallel, and design complete agent workflows. $7,500 USD, lifetime access.',
+      imageAlt: 'Enroll in The Agentic SaaS Course — $7,500 USD, lifetime access',
     },
     hero: {
       badge: 'Enrollment Open',
@@ -61,48 +61,48 @@ const content = {
     },
     tiersSection: {
       heading: 'From the basics to directing AI teams',
-      subheading: 'Each tier takes you deeper into directing AI agents — how they work, how to coordinate them, and how to ship with them. All four are included.',
-      tierLabel: 'Tier',
+      subheading: 'Each section takes you deeper into directing AI agents — how they work, how to coordinate them, and how to build with them. All four are included.',
+      tierLabel: 'Section',
       lessonsLabel: 'lessons',
       capstoneLabel: 'Milestone Project',
     },
     tiers: [
       {
-        name: 'Understand How AI Works',
+        name: 'How AI Thinks',
         description: 'You can\'t direct what you don\'t understand. Learn how AI agents interpret your instructions, why they sometimes go off track, and how to give them the right amount of context. This foundation makes everything else click.',
-        capstone: 'AI capability assessment with documented strengths and limits',
-        skills: ['AI Fundamentals', 'Clear Instructions', 'Tool Selection', 'Understanding Limits', 'Agent Behavior'],
+        capstone: 'Documented analysis of what AI can and can\'t do',
+        skills: ['AI Basics', 'Clear Instructions', 'Tool Selection', 'Understanding Limits', 'Reading AI Behavior'],
       },
       {
-        name: 'Direct a Single Agent',
+        name: 'Build Your First Product',
         description: 'Master the art of giving clear instructions, checking the output, and iterating until it\'s right. Write briefs that eliminate ambiguity. Build a complete web application by directing one AI agent through every layer — login, database, payments, launch.',
-        capstone: 'Complete product shipped by directing one agent end-to-end',
-        skills: ['Brief Writing', 'Output Verification', 'Iteration', 'Drift Detection', 'Single-Agent Direction'],
+        capstone: 'Complete product built by directing one AI agent',
+        skills: ['Brief Writing', 'Checking AI Work', 'Iteration', 'Catching Mistakes', 'Directing One Agent'],
       },
       {
-        name: 'Orchestrate Multiple Agents',
+        name: 'Run a Team of AI Agents',
         description: 'Direct 3-5 AI agents working on the same project at once. Give each agent its own workspace so they don\'t interfere with each other. Break complex features into focused tasks. Coordinate their outputs and ship faster than any solo workflow.',
-        capstone: 'Working product built by 3+ AI agents on the same project',
-        skills: ['Agent Workspaces', 'Shared Context', 'Task Breakdown', 'Conflict Resolution', 'Cross-Agent Verification'],
+        capstone: 'Product built by 3+ AI agents working together',
+        skills: ['Separate Workspaces', 'Shared Rules', 'Task Breakdown', 'Conflict Resolution', 'Agents Checking Each Other'],
       },
       {
-        name: 'Design Your Agent Workflow',
+        name: 'Design Your Own Workflows',
         description: 'Design projects that teams of AI agents can build efficiently. Create coordination playbooks that scale beyond your direct oversight. Know when to split work, combine results, or override an agent\'s judgment. Prove strategic thinking that AI cannot replicate.',
-        capstone: 'Coordination playbook powering an autonomous agent team',
-        skills: ['Project Design for Agents', 'Coordination Playbooks', 'Work Splitting Strategy', 'Override Judgment', 'System-Level Verification'],
+        capstone: 'Playbook for running an AI team independently',
+        skills: ['Designing for AI Teams', 'Coordination Playbooks', 'Work Splitting', 'Overriding AI', 'System-Wide Quality Checks'],
       },
     ],
     included: {
       heading: 'Everything included',
-      subheading: 'No tiers to choose between. No features locked behind paywalls. One price, full access.',
+      subheading: 'No sections to choose between. No features locked behind paywalls. One price, full access.',
       priceLabel: 'One-time · Lifetime',
       noSubscriptions: 'No subscriptions',
       noHiddenFees: 'No hidden fees',
       guarantee: '30-day guarantee',
       items: [
-        'All 4 tiers — from the basics to designing agent workflows',
+        'All 4 sections — from the basics to designing AI workflows',
         '52 hours of interactive instruction across 51 lessons',
-        '4 real-world projects you ship live',
+        '4 real-world projects you build and publish',
         '8 timeless principles internalized through practice',
         'Private AI tutor — runs in your browser, trained on every lesson. Practice exercises, Q&A, zero data shared',
         'AI-graded feedback on every milestone project submission',
@@ -112,28 +112,28 @@ const content = {
       ],
     },
     testimonials: [
-      { quote: 'By Tier 3 I was running three AI agents in parallel, each building a different part of my product. That progression is the real magic.', author: 'Alex Chen', tier: 'Tier 3' },
-      { quote: 'Tier 1 alone was worth it — I finally understood why my AI tools kept giving me bad output. By Tier 3, everything clicked.', author: 'Sarah Martinez', tier: 'Tier 4' },
-      { quote: 'Directing one agent is easy. Orchestrating five on the same project without them stepping on each other — that\'s what this teaches.', author: 'Jordan Osei', tier: 'Tier 4' },
+      { quote: 'By Section 3 I was running three AI agents in parallel, each building a different part of my product. That progression is the real magic.', author: 'Alex Chen', tier: 'Section 3' },
+      { quote: 'Section 1 alone was worth it — I finally understood why my AI tools kept giving me bad output. By Section 3, everything clicked.', author: 'Sarah Martinez', tier: 'Section 4' },
+      { quote: 'Directing one agent is easy. Coordinating five on the same project without them stepping on each other — that\'s what this teaches.', author: 'Jordan Osei', tier: 'Section 4' },
     ],
     guaranteeSection: {
       heading: '30-day guarantee',
-      description: 'Complete Tier 1 and submit the milestone project. If the course isn\'t for you, email within 30 days for a full refund.',
-      keepMaterials: 'No questions asked. You keep the Tier 1 materials either way.',
+      description: 'Complete Section 1 and submit the milestone project. If the course isn\'t for you, email within 30 days for a full refund.',
+      keepMaterials: 'No questions asked. You keep the Section 1 materials either way.',
       riskFree: 'Risk-free enrollment',
       fullRefund: 'Full refund if not satisfied',
-      keepTier1: 'Keep Tier 1 materials',
+      keepTier1: 'Keep Section 1 materials',
     },
     faq: {
       heading: 'Common questions',
       items: [
         {
           q: 'Do I need to know how to code?',
-          a: 'No. This course teaches you to DIRECT AI agents, not to code yourself. You\'ll learn to give clear instructions, verify results, and guide agents to build what you need. Some technical comfort helps, but you don\'t need programming experience.',
+          a: 'No. This course teaches you to DIRECT AI agents, not to code yourself. You\'ll learn to give clear instructions, verify results, and guide agents to build what you need. No programming experience required.',
         },
         {
           q: 'What if I already use ChatGPT / Claude / Copilot?',
-          a: 'Great — you\'ll go much deeper. Most people use AI for simple one-off tasks. This course teaches you to coordinate multiple AI agents working together, run parallel workflows, and orchestrate entire projects — skills that most people never develop.',
+          a: 'Great — you\'ll go much deeper. Most people use AI for simple one-off tasks. This course teaches you to coordinate multiple AI agents working together, work together on the same project — skills that most people never develop.',
         },
         {
           q: 'Is the content self-paced?',
@@ -141,17 +141,17 @@ const content = {
         },
         {
           q: 'Will these skills transfer beyond Claude Code?',
-          a: 'Absolutely. The orchestration patterns you learn work with any AI tool. We teach with Claude Code because it\'s the most capable right now, but the principles of task management, verification, and coordination apply to any AI agent system.',
+          a: 'Absolutely. The coordination patterns you learn work with any AI tool. We teach with Claude Code because it\'s the most capable right now, but the principles of task management, verification, and coordination apply to any AI agent system.',
         },
         {
           q: 'What\'s the refund policy?',
-          a: 'Complete Tier 1 and submit the milestone project. If the course isn\'t for you, email within 30 days for a full refund. No questions asked.',
+          a: 'Complete Section 1 and submit the milestone project. If the course isn\'t for you, email within 30 days for a full refund. No questions asked.',
         },
       ],
     },
     cta: {
       badge: 'Now enrolling',
-      heading: 'Ready to orchestrate,',
+      heading: 'Ready to direct AI teams,',
       headingHighlight: 'not just prompt?',
       subheading: '52 hours. From zero to directing teams of AI agents. 4 real-world projects built by AI agents you direct.',
       questionsLink: 'Questions? Let\'s talk',
@@ -160,9 +160,9 @@ const content = {
   },
   fr: {
     seo: {
-      title: 'Inscription — Le cours Agentic SaaS | 4 500 $',
-      description: '52 heures, de zéro à diriger des équipes d’agents IA. Un seul prix, accès complet — apprenez à diriger un agent, coordonner plusieurs agents en parallèle et concevoir des workflows d’agents. 4 500 $ USD, accès à vie.',
-      imageAlt: 'Inscrivez-vous au cours Agentic SaaS — 4 500 $ USD, accès à vie',
+      title: 'Inscription — Le cours Agentic SaaS | 7 500 $',
+      description: '52 heures, de zéro à diriger des équipes d’agents IA. Un seul prix, accès complet — apprenez à diriger un agent, coordonner plusieurs agents en parallèle et concevoir des workflows d’agents. 7 500 $ USD, accès à vie.',
+      imageAlt: 'Inscrivez-vous au cours Agentic SaaS — 7 500 $ USD, accès à vie',
     },
     hero: {
       badge: 'Inscriptions ouvertes',
@@ -181,46 +181,46 @@ const content = {
     },
     tiersSection: {
       heading: 'Des bases à diriger des équipes d’agents IA',
-      subheading: 'Chaque palier vous plonge plus profondément dans la direction d’agents IA — comment ils fonctionnent, comment les coordonner et comment livrer avec eux. Les quatre sont inclus.',
-      tierLabel: 'Palier',
+      subheading: 'Chaque section vous plonge plus profondément dans la direction d’agents IA — comment ils fonctionnent, comment les coordonner et comment construire avec eux. Les quatre sont incluses.',
+      tierLabel: 'Section',
       lessonsLabel: 'leçons',
       capstoneLabel: 'Projet concret',
     },
     tiers: [
       {
-        name: 'Comprendre le fonctionnement de l’IA',
+        name: 'Comment l’IA pense',
         description: 'On ne peut pas diriger ce qu’on ne comprend pas. Apprenez comment les agents IA interprètent vos instructions, pourquoi ils déraillent parfois, et comment leur donner le bon contexte. Cette base rend tout le reste accessible.',
-        capstone: 'Évaluation des capacités IA avec forces et limites documentées',
-        skills: ['Économie des tokens', 'Fenêtres de contexte', 'Échelle d’outils', 'Analyse d’intention', 'Modes de défaillance'],
+        capstone: 'Analyse documentée de ce que l’IA peut et ne peut pas faire',
+        skills: ['Bases de l’IA', 'Instructions claires', 'Choix d’outils', 'Comprendre les limites', 'Lire le comportement de l’IA'],
       },
       {
-        name: 'Diriger un agent unique',
-        description: 'Maîtrisez l’art de contraindre, vérifier et itérer sur la sortie d’un agent unique. Rédigez des spécifications qui éliminent l’ambiguïté. Construisez des boucles de rétroaction qui détectent la dérive. Livrez un SaaS complet en dirigeant un agent à travers chaque couche — auth, API, UI, déploiement.',
-        capstone: 'SaaS complet livré en dirigeant un agent de bout en bout',
-        skills: ['Contraintes de specs', 'Vérification de sortie', 'Boucles d’itération', 'Détection de dérive', 'Orchestration mono-agent'],
+        name: 'Construisez votre premier produit',
+        description: 'Maîtrisez l’art de donner des instructions claires, vérifier le résultat et itérer. Rédigez des briefs qui éliminent l’ambiguïté. Construisez un produit complet en dirigeant un agent IA — comptes, base de données, paiements, mise en ligne.',
+        capstone: 'Produit complet construit en dirigeant un seul agent IA',
+        skills: ['Écriture de briefs', 'Vérification du travail IA', 'Itération', 'Détection d’erreurs', 'Direction d’un seul agent'],
       },
       {
-        name: 'Orchestrer plusieurs agents',
-        description: 'Exécutez 3 à 5 agents en parallèle sur le même codebase. Utilisez les worktrees git pour l’isolation, CLAUDE.md pour le contexte partagé, et la décomposition de tâches pour éviter les collisions entre agents. Résolvez les conflits de fusion, vérifiez les sorties croisées et livrez plus vite que tout workflow solo.',
-        capstone: 'Application de production construite par 3+ agents parallèles sur un codebase partagé',
-        skills: ['Git Worktrees', 'Contexte partagé (CLAUDE.md)', 'Décomposition de tâches', 'Résolution de conflits', 'Vérification inter-agents'],
+        name: 'Dirigez une équipe d’agents IA',
+        description: 'Dirigez 3 à 5 agents IA sur le même projet en même temps. Donnez à chaque agent son propre espace pour qu’ils ne se gênent pas. Décomposez les grosses fonctionnalités en tâches ciblées. Coordonnez leur travail et construisez plus vite qu’en travaillant seul.',
+        capstone: 'Produit construit par 3+ agents IA travaillant ensemble',
+        skills: ['Espaces de travail séparés', 'Règles partagées', 'Décomposition de tâches', 'Résolution de conflits', 'Vérification entre agents'],
       },
       {
-        name: 'Concevoir votre workflow d’agents',
-        description: 'Concevez des projets que des équipes d’agents IA peuvent construire efficacement. Créez des playbooks de coordination qui fonctionnent au-delà de votre supervision directe. Sachez quand diviser le travail, combiner les résultats ou corriger la décision d’un agent. Prouvez la pensée stratégique que l’IA ne peut pas répliquer.',
-        capstone: 'Playbook de coordination alimentant une équipe d’agents autonome',
-        skills: ['Conception de codebase pour agents', 'Protocoles de coordination', 'Stratégie de division/fusion', 'Jugement de dérogation', 'Vérification au niveau système'],
+        name: 'Concevez vos propres workflows',
+        description: 'Concevez des projets que des équipes d’agents IA peuvent construire efficacement. Créez des playbooks qui fonctionnent au-delà de votre supervision. Sachez quand diviser le travail, combiner les résultats ou corriger la décision d’un agent. Développez la pensée stratégique que l’IA ne peut pas reproduire.',
+        capstone: 'Playbook pour diriger une équipe IA de manière autonome',
+        skills: ['Conception pour équipes IA', 'Playbooks de coordination', 'Répartition du travail', 'Surcharge des décisions IA', 'Contrôles qualité globaux'],
       },
     ],
     included: {
       heading: 'Tout est inclus',
-      subheading: 'Pas de paliers à choisir. Pas de fonctionnalités bloquées derrière un paywall. Un prix, accès complet.',
+      subheading: 'Pas de sections à choisir. Pas de fonctionnalités bloquées derrière un paywall. Un prix, accès complet.',
       priceLabel: 'Unique · À vie',
       noSubscriptions: 'Pas d’abonnement',
       noHiddenFees: 'Pas de frais cachés',
       guarantee: 'Garantie 30 jours',
       items: [
-        'Les 4 paliers — des tokens à la conception de systèmes d’agents',
+        'Les 4 sections — des bases à la conception de workflows IA',
         '52 heures d’instruction interactive à travers 51 leçons',
         '4 vrais projets concrets que vous livrez en ligne',
         '8 principes intemporels intériorisés par la pratique',
@@ -232,24 +232,24 @@ const content = {
       ],
     },
     testimonials: [
-      { quote: 'Au Palier 3, je faisais tourner trois agents en parallèle sur différentes parties de mon SaaS. Cette progression, c’est la vraie magie.', author: 'Alex Chen', tier: 'Palier 3' },
-      { quote: 'Le Palier 1 seul valait le coup — j’ai enfin compris pourquoi mes agents perdaient le contexte. Au Palier 3, tout s’est assemblé.', author: 'Sarah Martinez', tier: 'Palier 4' },
-      { quote: 'Diriger un agent, c’est facile. En orchestrer cinq sur le même codebase sans qu’ils se marchent dessus — c’est ça que ce cours enseigne.', author: 'Jordan Osei', tier: 'Palier 4' },
+      { quote: 'À la Section 3, je faisais tourner trois agents en parallèle sur différentes parties de mon SaaS. Cette progression, c’est la vraie magie.', author: 'Alex Chen', tier: 'Section 3' },
+      { quote: 'La Section 1 seul valait le coup — j’ai enfin compris pourquoi mes agents perdaient le contexte. À la Section 3, tout s’est assemblé.', author: 'Sarah Martinez', tier: 'Section 4' },
+      { quote: 'Diriger un agent, c’est facile. En coordonner cinq sur le même projet sans qu’ils se marchent dessus — c’est ça que ce cours enseigne.', author: 'Jordan Osei', tier: 'Section 4' },
     ],
     guaranteeSection: {
       heading: 'Garantie 30 jours',
-      description: 'Complétez le Palier 1 et soumettez le projet concret. Si le cours ne vous convient pas, envoyez un email dans les 30 jours pour un remboursement intégral.',
-      keepMaterials: 'Sans conditions. Vous gardez les matériaux du Palier 1 dans tous les cas.',
+      description: 'Complétez la Section 1 et soumettez le projet concret. Si le cours ne vous convient pas, envoyez un email dans les 30 jours pour un remboursement intégral.',
+      keepMaterials: 'Sans conditions. Vous gardez les matériaux de la Section 1 dans tous les cas.',
       riskFree: 'Inscription sans risque',
       fullRefund: 'Remboursement intégral si insatisfait',
-      keepTier1: 'Gardez les matériaux du Palier 1',
+      keepTier1: 'Gardez les matériaux de la Section 1',
     },
     faq: {
       heading: 'Questions fréquentes',
       items: [
         {
           q: 'Ai-je besoin de savoir coder ?',
-          a: 'Non. Ce cours vous apprend à DIRIGER des agents IA, pas à coder vous-même. Vous apprendrez à donner des instructions claires, vérifier les résultats et guider les agents. Un certain confort technique aide, mais aucune expérience en programmation n’est requise.',
+          a: 'Non. Ce cours vous apprend à DIRIGER des agents IA, pas à coder vous-même. Vous apprendrez à donner des instructions claires, vérifier les résultats et guider les agents. Aucune expérience en programmation n’est requise.',
         },
         {
           q: 'Et si j’utilise déjà ChatGPT / Claude / Copilot ?',
@@ -265,7 +265,7 @@ const content = {
         },
         {
           q: 'Quelle est la politique de remboursement ?',
-          a: 'Complétez le Palier 1 et soumettez le projet concret. Si le cours ne vous convient pas, envoyez un email dans les 30 jours pour un remboursement intégral. Sans conditions.',
+          a: 'Complétez la Section 1 et soumettez le projet concret. Si le cours ne vous convient pas, envoyez un email dans les 30 jours pour un remboursement intégral. Sans conditions.',
         },
       ],
     },
@@ -313,13 +313,13 @@ export default function Tiers() {
         path="/tiers"
         image="/og-image.png"
         imageAlt={c.seo.imageAlt}
-        keywords="agentic saas course price, multi-agent orchestration course, $4500 ai course, agent coordination course, lifetime access, charles jackson course"
+        keywords="agentic saas course price, multi-agent orchestration course, $7,500 ai course, agent coordination course, lifetime access, charles jackson course"
         jsonLd={{
           '@type': 'Offer',
           name: 'The Agentic SaaS Course — Full Access',
           description: '52 hours of interactive instruction from the basics to directing teams of AI agents. 51 lessons, 4 milestone projects, lifetime access.',
           url: 'https://charlesjackson.dev/tiers',
-          price: '4500',
+          price: '7500',
           priceCurrency: 'USD',
           availability: 'https://schema.org/InStock',
           seller: { '@type': 'Person', name: 'Charles Jackson' },
@@ -361,7 +361,7 @@ export default function Tiers() {
                 <div className="relative">
                   <div className="text-8xl md:text-9xl font-bold tracking-[-0.06em] leading-none bg-gradient-to-b from-foreground via-foreground/90 to-foreground/50 bg-clip-text text-transparent">
                     <span className="text-6xl md:text-7xl align-top mr-1">$</span>
-                    <AnimatedNumber value={4500} duration={1.5} />
+                    <AnimatedNumber value={7500} duration={1.5} />
                   </div>
                   <div className="text-sm text-muted-foreground mt-4 tracking-widest uppercase">
                     {c.hero.payment}
@@ -563,7 +563,7 @@ export default function Tiers() {
               <div className="h-full rounded-2xl border border-foreground/15 bg-foreground/[0.03] p-8 flex flex-col items-center justify-center text-center relative overflow-hidden">
                 <div className="absolute -right-6 -top-6 text-[140px] font-bold leading-none text-foreground/[0.02] select-none pointer-events-none">$</div>
                 <div className="relative">
-                  <div className="text-5xl md:text-6xl font-bold font-mono mb-3 bg-gradient-to-b from-foreground to-foreground/70 bg-clip-text text-transparent">$4500</div>
+                  <div className="text-5xl md:text-6xl font-bold font-mono mb-3 bg-gradient-to-b from-foreground to-foreground/70 bg-clip-text text-transparent">$7,500</div>
                   <div className="text-sm text-muted-foreground mb-6 font-mono">{c.included.priceLabel}</div>
                   <div className="h-px w-16 bg-gradient-to-r from-transparent via-foreground/20 to-transparent mx-auto mb-6" />
                   <div className="space-y-2 text-xs text-muted-foreground">
@@ -730,7 +730,7 @@ export default function Tiers() {
               <p className="text-muted-foreground text-lg mb-4 max-w-xl mx-auto leading-relaxed">
                 {c.cta.subheading}
               </p>
-              <p className="text-4xl md:text-5xl font-bold font-mono mb-8">$4500</p>
+              <p className="text-4xl md:text-5xl font-bold font-mono mb-8">$7,500</p>
             </BlurFadeIn>
 
             <BlurFadeIn delay={0.2}>

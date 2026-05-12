@@ -531,7 +531,7 @@ function NewThreadModal({
     setSubmitting(true)
     const displayName = user.user_metadata?.display_name || user.email?.split('@')[0] || 'User'
     const initial = displayName.slice(0, 2).toUpperCase()
-    const tier = user.user_metadata?.tier || 'Tier 1'
+    const tier = user.user_metadata?.tier || 'Section 1'
     const preview = content.slice(0, 150).replace(/\n/g, ' ')
 
     try {

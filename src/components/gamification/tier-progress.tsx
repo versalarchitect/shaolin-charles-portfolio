@@ -21,7 +21,7 @@ export function TierProgress() {
               <div className="flex items-center justify-between mb-2">
                 <div className="flex items-center gap-2">
                   {isComplete && <Check className="w-3.5 h-3.5 text-foreground/60" />}
-                  <span className="text-sm font-medium">{tier.id === 'prework' ? 'Prework' : `Tier ${tier.number}`}</span>
+                  <span className="text-sm font-medium">{tier.name}</span>
                   <span className="text-xs text-foreground/40">{tier.subtitle}</span>
                 </div>
                 <span className="text-xs font-mono text-foreground/50">{tierProgress.completed}/{tierProgress.total}</span>

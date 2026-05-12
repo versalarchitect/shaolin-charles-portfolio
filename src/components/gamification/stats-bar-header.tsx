@@ -35,7 +35,7 @@ export function StatsBarHeader() {
       {/* Center: Daily goal progress (hidden on mobile) */}
       <div
         className="hidden md:flex items-center gap-2 text-foreground/50"
-        title={`${remaining} XP remaining today`}
+        title={`${remaining} points remaining today`}
       >
         <div className="w-24 h-1 rounded-full bg-foreground/[0.06] overflow-hidden">
           <motion.div

@@ -28,6 +28,7 @@ const InstructorDashboard = lazy(() => import('./pages/InstructorDashboard'))
 const SelfUpdatingCourse = lazy(() => import('./pages/SelfUpdatingCourse'))
 const RecentProjects = lazy(() => import('./pages/RecentProjects'))
 const Pipeline = lazy(() => import('./pages/Pipeline'))
+const StudentAgent = lazy(() => import('./pages/StudentAgent'))
 const Leaderboard = lazy(() => import('./pages/Leaderboard'))
 const Analytics = lazy(() => import('./pages/Analytics'))
 const SecretVault = lazy(() => import('./pages/SecretVault'))
@@ -157,6 +158,10 @@ const router = createBrowserRouter([
       {
         path: 'course/pipeline',
         element: <AuthGuard><Pipeline /></AuthGuard>,
+      },
+      {
+        path: 'course/student-agent',
+        element: <AuthGuard><StudentAgent /></AuthGuard>,
       },
       {
         path: 'course/leaderboard',

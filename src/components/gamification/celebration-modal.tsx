@@ -94,7 +94,7 @@ function getCelebrationData(event: ProgressEvent): CelebrationData | null {
     case 'milestone':
       return { icon: <Trophy className="w-10 h-10 text-foreground/80" />, title: event.label, subtitle: `${event.percent}% of the course complete` }
     case 'critical_hit':
-      return { icon: <Zap className="w-10 h-10 text-foreground/80" />, title: 'CRITICAL HIT!', subtitle: 'Double XP earned', xp: event.totalXp }
+      return { icon: <Zap className="w-10 h-10 text-foreground/80" />, title: 'CRITICAL HIT!', subtitle: 'Double points earned', xp: event.totalXp }
     default:
       return null
   }

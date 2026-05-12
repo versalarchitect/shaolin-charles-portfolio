@@ -149,7 +149,7 @@ function buildTips(progress: ReturnType<typeof useProgress>): Tip[] {
               progress.lessonProgress[l.id]?.status === 'in_progress'
           )
           if (tierComplete && !nextTierStarted) {
-            return `Tier ${i + 1} complete! Ready for the next challenge?`
+            return `Section ${i + 1} complete! Ready for the next challenge?`
           }
         }
         return ''

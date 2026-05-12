@@ -1,0 +1,13 @@
+{
+  "name": "@course-engine/simulator",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "dependencies": {
+    "@course-engine/core": "workspace:*",
+    "zod": "^3.24.0"
+  }
+}

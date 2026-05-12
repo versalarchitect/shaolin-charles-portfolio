@@ -127,15 +127,15 @@ function buildRawChunks(
 
   // --- Course metadata ---
   raw.push({
-    text: 'The Agentic SaaS Course: 52 hours, 51 lessons, 4 tiers + prework. Multi-agent orchestration from first principles. Price: $4,500 USD one-time, lifetime access. Technologies: Claude Code, Next.js, TypeScript, Supabase, Vercel, Stripe, Drizzle ORM, Inngest, Vitest, Playwright.',
+    text: 'The Agentic SaaS Course: 52 hours, 51 lessons, 4 sections + getting started. Learn to direct AI agents that build real software. Price: $7,500 USD one-time, lifetime access. Tools: Claude Code (your AI agent), plus the tools it uses to build — web frameworks, databases, payments, publishing, and quality testing.',
     category: 'meta',
   })
   raw.push({
-    text: 'Prerequisites: Basic JavaScript/TypeScript to read and verify agent output. Not a coding bootcamp. Prior AI tool experience helpful but not required.',
+    text: 'Prerequisites: None. No coding experience required. You learn to direct AI agents, not to code yourself. Prior AI tool experience is helpful but not required.',
     category: 'meta',
   })
   raw.push({
-    text: 'XP progression system: Bronze (0-149 XP), Silver (150-499), Gold (500-999), Platinum (1000-1799), Diamond (1800+). 12 achievements including tier completions, streak badges, and Course Complete (200 XP). Total available XP: ~1,325.',
+    text: 'Points progression: Starter (0-149 pts), Builder (150-499), Leader (500-999), Strategist (1000-1799), Visionary (1800+). 12 achievements including section completions, streak badges, and Graduate (200 pts). Total available points: ~1,325.',
     category: 'meta',
   })
   raw.push({
@@ -143,18 +143,18 @@ function buildRawChunks(
     category: 'meta',
   })
   raw.push({
-    text: 'Refund policy: 30-day money-back guarantee. Complete Tier 1 and submit the capstone. If not for you, email for full refund.',
+    text: 'Refund policy: 30-day money-back guarantee. Complete Section 1 and submit the milestone project. If not for you, email for full refund.',
     category: 'meta',
   })
   raw.push({
-    text: 'Capstone projects: Tier 1 — deploy an agent-built tool. Tier 2 — ship a full SaaS product directed by a single agent. Tier 3 — ship a product built by a coordinated agent fleet. Tier 4 — system teardown and agent-buildable redesign document.',
+    text: 'Milestone projects: Section 1 — publish your first AI-built tool. Section 2 — build and ship a complete product directed by one AI agent. Section 3 — ship a product built by a team of AI agents working together. Section 4 — analyze a real system and redesign it for AI teams.',
     category: 'meta',
   })
 
   // --- Tier descriptions ---
   for (const tier of CURRICULUM) {
     raw.push({
-      text: `Tier ${tier.number} "${tier.name}": ${tier.description}. ${tier.hours} hours, ${tier.lessonCount} lessons.`,
+      text: `Section ${tier.number} "${tier.name}": ${tier.description}. ${tier.hours} hours, ${tier.lessonCount} lessons.`,
       category: 'tier',
       lessonId: tier.id,
     })
@@ -163,7 +163,7 @@ function buildRawChunks(
   // --- Every lesson: summary + objectives ---
   for (const lesson of ALL_LESSONS) {
     raw.push({
-      text: `Lesson ${lesson.number} "${lesson.title}": ${lesson.description}. Tools: ${lesson.tools.join(', ')}.${lesson.isCapstone ? ' This is a capstone project.' : ''} Duration: ${lesson.duration} min, ${lesson.xp} XP.`,
+      text: `Lesson ${lesson.number} "${lesson.title}": ${lesson.description}. Tools: ${lesson.tools.join(', ')}.${lesson.isCapstone ? ' This is a milestone project.' : ''} Duration: ${lesson.duration} min, ${lesson.xp} pts.`,
       category: 'lesson',
       lessonId: lesson.id,
     })

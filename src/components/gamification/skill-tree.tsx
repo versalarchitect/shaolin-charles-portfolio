@@ -402,11 +402,9 @@ export function SkillTree({ compact = false }: SkillTreeProps) {
                 fontSize={compact ? 9 : 11}
                 fontFamily="var(--font-mono, monospace)"
               >
-                {tl.tier.id === 'prework'
-                  ? 'Prework'
-                  : compact
-                  ? `T${tl.tier.number}`
-                  : `Tier ${tl.tier.number}`}
+                {compact && tl.tier.id !== 'prework'
+                  ? `S${tl.tier.number}`
+                  : tl.tier.name}
               </text>
               <text
                 x={compact ? 4 : 8}

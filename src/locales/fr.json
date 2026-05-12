@@ -54,7 +54,7 @@
   "home": {
     "meta": {
       "title": "Apprenez à diriger des agents IA qui créent de vrais logiciels — Le cours Agentic SaaS",
-      "description": "Aucune expérience en programmation requise. Apprenez à diriger des agents IA qui créent de vrais logiciels pour votre entreprise. 52 heures des bases à l'orchestration d'équipes d'agents IA. 4 500 $ USD, accès à vie."
+      "description": "Aucune expérience en programmation requise. Apprenez à diriger des agents IA qui créent de vrais logiciels pour votre entreprise. 52 heures des bases à l'orchestration d'équipes d'agents IA. 7 500 $ USD, accès à vie."
     },
     "hero": {
       "statusBadge": "Inscriptions ouvertes",
@@ -81,55 +81,55 @@
     },
     "services": {
       "badge": "Le parcours",
-      "title": "Des tokens aux flottes d'agents",
-      "subtitle": "Quatre niveaux. Chacun vous plonge plus profond dans la façon dont les agents pensent, se coordonnent et livrent.",
+      "title": "Des bases aux équipes IA",
+      "subtitle": "Quatre sections. Chacune vous plonge plus profond dans la direction d'agents IA qui construisent de vrais produits.",
       "fullStack": {
-        "title": "Niveau 1 — Comprendre le fonctionnement de l'IA",
+        "title": "Section 1 — Comment l'IA pense",
         "subtitle": "8 heures · 10 leçons",
-        "description": "Avant de pouvoir diriger des agents IA, vous devez comprendre comment ils pensent. Apprenez les bases — ce que les agents IA peuvent et ne peuvent pas faire, comment leur donner des instructions claires et comment détecter quand ils dévient.",
+        "description": "Avant de diriger des agents IA, comprenez comment ils fonctionnent. Apprenez les bases — ce qu'ils peuvent et ne peuvent pas faire, comment leur donner des instructions claires et comment repérer quand ils dévient.",
         "highlights": [
-          "Comment les agents IA interprètent vos instructions et où ils se trompent",
-          "Choisir le bon outil IA pour chaque tâche — du simple au complexe",
-          "Lire le comportement de l'agent — pourquoi il dérive et comment le détecter tôt",
-          "Diriger un agent pour construire et déployer un outil fonctionnel à partir d'un brief"
+          "Comment les agents IA lisent vos instructions et où ils se trompent",
+          "Choisir le bon niveau d'aide IA pour chaque tâche",
+          "Repérer quand l'IA dévie et comment la rattraper tôt",
+          "Diriger une IA pour construire et publier un outil fonctionnel à partir d'un brief"
         ],
-        "tags": ["Fondamentaux IA", "Comportement d'agent", "Instructions claires", "Sélection d'outils"]
+        "tags": ["Bases IA", "Instructions claires", "Résolution de problèmes", "Choix d'outils"]
       },
       "consulting": {
-        "title": "Niveau 2 — Diriger un agent unique",
+        "title": "Section 2 — Construisez votre premier produit",
         "subtitle": "12 heures · 12 leçons",
-        "description": "Apprenez à donner des instructions claires et précises à un agent IA et à vérifier ce qu'il construit. Rédigez des briefs qui gardent l'agent concentré. Construisez une application web complète en dirigeant un seul agent à travers chaque couche — authentification, base de données, paiements — et apprenez à corriger le tir quand il dévie.",
+        "description": "Donnez des instructions claires à un agent IA et vérifiez ce qu'il construit. Rédigez des briefs simples qui gardent l'IA concentrée. Construisez un produit complet en dirigeant une seule IA — comptes utilisateurs, base de données, paiements — et apprenez à la remettre sur les rails quand elle s'égare.",
         "highlights": [
-          "Rédiger des briefs qui gardent l'agent concentré et empêchent la dérive de périmètre",
-          "Contrôles qualité — détecter quand l'agent s'écarte du brief",
-          "Construire authentification, base de données et paiements en dirigeant un seul agent",
+          "Rédiger des briefs qui gardent l'IA concentrée et sur la bonne voie",
+          "Vérifier le travail de l'IA avant de l'accepter",
+          "Construire comptes, base de données et paiements avec un seul agent IA",
           "Livrer un produit complet que vous avez dirigé, pas codé vous-même"
         ],
-        "tags": ["Briefs", "Contrôles qualité", "Itération", "Livraison"]
+        "tags": ["Briefs", "Contrôle qualité", "Construction", "Livraison"]
       },
       "mvp": {
-        "title": "Niveau 3 — Orchestrer plusieurs agents",
+        "title": "Section 3 — Dirigez une équipe d'agents IA",
         "subtitle": "15 heures · 14 leçons",
-        "description": "C'est ici que ça devient puissant. Dirigez 3 à 5 agents IA travaillant sur le même projet en même temps. Donnez à chaque agent son propre espace de travail pour qu'ils ne se marchent pas dessus. Décomposez les fonctionnalités complexes en tâches que chaque agent peut gérer. Coordonnez leur travail et livrez plus vite qu'avec n'importe quel workflow solo.",
+        "description": "C'est ici que ça devient puissant. Dirigez 3 à 5 agents IA sur le même projet en même temps. Donnez à chaque agent son propre espace pour qu'ils ne se gênent pas. Décomposez les grosses fonctionnalités en tâches ciblées. Coordonnez leur travail et livrez plus vite qu'en travaillant seul.",
         "highlights": [
-          "Faire tourner 3 à 5 agents IA en parallèle sur le même projet",
-          "Donner à chaque agent un contexte partagé pour qu'ils restent alignés",
-          "Décomposer les grosses fonctionnalités en tâches ciblées qui ne se chevauchent pas",
-          "Coordonner le travail des agents et résoudre les conflits entre eux"
+          "Faire tourner 3 à 5 agents IA en même temps sur un même projet",
+          "Garder les agents alignés avec des règles et un contexte partagés",
+          "Décomposer les grosses fonctionnalités en tâches ciblées sans conflits",
+          "Coordonner le travail des IA et résoudre les désaccords entre agents"
         ],
-        "tags": ["Multi-agents", "Travail parallèle", "Coordination", "Vitesse"]
+        "tags": ["Équipes IA", "Travail parallèle", "Coordination", "Vitesse"]
       },
       "codeReview": {
-        "title": "Niveau 4 — Concevoir votre workflow d'agents",
+        "title": "Section 4 — Concevez vos propres workflows",
         "subtitle": "15 heures · 12 leçons",
-        "description": "Concevez des projets que des équipes d'agents IA peuvent construire efficacement. Créez des playbooks de coordination qui passent à l'échelle au-delà de votre supervision directe. Sachez quand diviser le travail, combiner les résultats ou surcharger la décision d'un agent. Prouvez la pensée stratégique que l'IA ne peut pas reproduire.",
+        "description": "Concevez des projets que des équipes d'agents IA peuvent construire efficacement. Créez des playbooks qui passent à l'échelle. Sachez quand diviser le travail, combiner les résultats ou surcharger la décision d'une IA. Développez la pensée stratégique que l'IA ne peut pas reproduire.",
         "highlights": [
           "Concevoir des projets optimisés pour des équipes d'agents IA",
-          "Créer des playbooks de coordination et des instructions partagées",
-          "Savoir quand faire confiance, rediriger ou surcharger la décision d'un agent",
-          "Prouver le jugement stratégique — la compétence que les agents IA ne peuvent pas reproduire"
+          "Créer des playbooks et des règles partagées qui passent à l'échelle",
+          "Savoir quand faire confiance, rediriger ou surcharger la décision d'une IA",
+          "Développer le jugement stratégique — la compétence que l'IA ne peut pas reproduire"
         ],
-        "tags": ["Stratégie", "Workflows d'agents", "Pensée système", "Jugement"]
+        "tags": ["Stratégie", "Workflows", "Pensée système", "Jugement"]
       }
     },
     "skills": {
@@ -137,40 +137,40 @@
       "subtitle": "Pas comment coder — comment diriger des agents IA qui construisent des logiciels pour vous.",
       "items": {
         "frontend": {
-          "title": "Next.js + React",
-          "description": "App Router, Server Components et TypeScript"
+          "title": "Applications web",
+          "description": "Votre IA construit les pages, la navigation et l'expérience utilisateur"
         },
         "backend": {
-          "title": "Supabase",
-          "description": "PostgreSQL, auth et temps réel"
+          "title": "Base de données et utilisateurs",
+          "description": "Connexion sécurisée, stockage de données et fonctionnalités temps réel"
         },
         "cloud": {
-          "title": "Vercel",
-          "description": "Déployer, prévisualiser et scaler"
+          "title": "Publication",
+          "description": "Un clic pour mettre votre produit en ligne sur Internet"
         },
         "architecture": {
-          "title": "Drizzle ORM",
-          "description": "Requêtes de base de données typées"
+          "title": "Gestion des données",
+          "description": "Votre IA organise et gère vos données efficacement"
         },
         "performance": {
-          "title": "Claude Code",
-          "description": "Développement assisté par IA, bien fait"
+          "title": "Votre agent IA",
+          "description": "L'IA qui construit vos logiciels à partir de vos instructions"
         },
         "devops": {
-          "title": "Stripe",
-          "description": "Paiements et webhooks"
+          "title": "Paiements",
+          "description": "Acceptez les paiements de vos clients, configurés par votre IA"
         },
         "designSystems": {
-          "title": "Tailwind + shadcn",
-          "description": "Composants UI prêts pour la production"
+          "title": "Beau design",
+          "description": "Des interfaces professionnelles sans rien dessiner vous-même"
         },
         "mobile": {
-          "title": "Inngest",
-          "description": "Tâches de fond durables"
+          "title": "Automatisation",
+          "description": "Des actions automatiques — rappels, traitement de données"
         },
         "security": {
-          "title": "Vitest + Playwright",
-          "description": "Tests unitaires et end-to-end"
+          "title": "Contrôles qualité",
+          "description": "Votre IA teste son propre travail avant la mise en ligne"
         }
       }
     },
@@ -192,26 +192,26 @@
       "subtitle": "De votre première leçon à diriger des équipes d'agents IA",
       "items": {
         "2024_founder": {
-          "title": "Préparation",
+          "title": "Pour commencer",
           "company": "2 heures · 3 leçons",
-          "description": "Configurez votre environnement, installez les outils IA que vous utiliserez et faites tourner votre premier agent."
+          "description": "Configurez votre espace de travail, rencontrez votre agent IA et publiez votre premier projet."
         },
         "2024_urbanfarm": {
-          "title": "Comprendre la machine",
+          "title": "Comment l'IA pense",
           "company": "8 heures · 10 leçons",
-          "description": "Comprenez comment les agents IA pensent pour pouvoir les diriger efficacement. Livrez votre premier outil construit par un agent."
+          "description": "Comprenez comment les agents IA fonctionnent pour les diriger efficacement. Publiez votre premier outil construit par IA."
         },
         "2018_senior": {
-          "title": "Diriger un agent unique",
-          "description": "Rédigez des briefs clairs qui guident la sortie de l'agent. Dirigez, vérifiez et livrez un produit complet construit en dirigeant un seul agent IA."
+          "title": "Construisez votre premier produit",
+          "description": "Rédigez des briefs clairs qui gardent l'IA concentrée. Dirigez, vérifiez et livrez un produit complet construit par un seul agent IA."
         },
         "2015_lead": {
-          "title": "Orchestrer plusieurs agents",
-          "description": "Coordonnez plusieurs agents IA travaillant sur le même projet. Divisez les tâches, combinez les sorties, gérez les problèmes. Livrez avec une équipe d'agents."
+          "title": "Dirigez une équipe d'agents IA",
+          "description": "Coordonnez plusieurs agents IA sur le même projet. Répartissez les tâches, combinez leur travail, gérez les conflits. Livrez plus vite avec une équipe IA."
         },
         "2010_fullstack": {
-          "title": "Concevoir votre workflow d'agents",
-          "description": "Concevez les systèmes que les agents IA construisent. Prenez des décisions stratégiques sur la façon dont les agents travaillent ensemble. Votre projet étape prouve le jugement au niveau système."
+          "title": "Concevez vos propres workflows",
+          "description": "Concevez des projets optimisés pour les équipes IA. Prenez des décisions stratégiques. Votre projet étape prouve votre jugement au niveau système."
         },
         "2005_start": {
           "title": "Alumni",
@@ -220,9 +220,9 @@
       },
       "milestones": {
         "2005": "Début",
-        "2010": "Niveau 1",
-        "2015": "Niveau 2",
-        "2024": "Niveau 4"
+        "2010": "Section 1",
+        "2015": "Section 2",
+        "2024": "Section 4"
       }
     },
     "testimonials": {
@@ -741,7 +741,7 @@
     "share": "Partager",
     "noEntries": "Aucune entrée. Commencez à apprendre pour apparaître ici.",
     "allContent": "Tout le contenu est à jour",
-    "xp": "XP",
+    "xp": "pts",
     "days": "jours",
     "day": "Jour",
     "claimed": "Réclamé !",
@@ -755,9 +755,9 @@
     "social": "Social",
     "stats": "Statistiques",
     "challenges": "Défis",
-    "welcomeTitle": "Bienvenue dans votre parcours d'apprentissage",
-    "welcomeDescription": "Tout ce que vous faites ici rapporte des XP (points d'expérience) et débloque des récompenses. Terminez des leçons, revenez chaque jour, explorez le site — tout compte.",
-    "howYouEarnXp": "Comment gagner des XP",
+    "welcomeTitle": "Bienvenue ! Construisons quelque chose",
+    "welcomeDescription": "Tout ce que vous faites ici rapporte des points et débloque des récompenses. Terminez des leçons, revenez chaque jour, explorez — tout compte.",
+    "howYouEarnXp": "Comment gagner des points",
     "earnFinishLessons": "Terminer des leçons",
     "earnComeBack": "Revenir chaque jour",
     "earnExplore": "Explorer le site",
@@ -765,7 +765,7 @@
     "unlockRewards": "Débloquer des récompenses",
     "unlockRewardsDesc": "Gagnez des rangs, débloquez de nouveaux looks pour le tableau de bord, découvrez des pages secrètes et grimpez au classement.",
     "ready": "Prêt ?",
-    "readyDesc": "Votre parcours commence maintenant. Chaque interaction vous rapproche de la maîtrise.",
+    "readyDesc": "Chaque leçon vous rapproche de la direction d'agents IA qui construisent de vrais produits.",
     "hiddenHint": "5 surprises cachées sont dispersées sur le site. Pouvez-vous toutes les trouver ?",
     "weeklyBonus": "Incroyable ! 7 jours d'affilée. Voici un bonus.",
     "topReward": "Dévouement incroyable. Vous avez gagné la récompense quotidienne maximale !",

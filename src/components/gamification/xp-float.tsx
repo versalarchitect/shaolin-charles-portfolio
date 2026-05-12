@@ -17,17 +17,17 @@ const MAX_FLOATS = 5
 function getXpFromEvent(event: ProgressEvent): { xp: number; text: string; subtext?: string; size: 'sm' | 'md' | 'lg'; duration: number } | null {
   switch (event.type) {
     case 'critical_hit':
-      return { xp: event.totalXp, text: `+${event.totalXp} XP`, subtext: 'CRITICAL!', size: 'md', duration: 1.5 }
+      return { xp: event.totalXp, text: `+${event.totalXp} pts`, subtext: 'CRITICAL!', size: 'md', duration: 1.5 }
     case 'level_up':
       return { xp: 0, text: event.to, subtext: 'LEVEL UP', size: 'lg', duration: 2.5 }
     case 'achievement_unlocked':
-      return { xp: event.achievement.xpReward, text: `+${event.achievement.xpReward} XP`, subtext: event.achievement.name, size: 'sm', duration: 1.5 }
+      return { xp: event.achievement.xpReward, text: `+${event.achievement.xpReward} pts`, subtext: event.achievement.name, size: 'sm', duration: 1.5 }
     case 'challenge_completed':
-      return { xp: event.challenge.xpReward, text: `+${event.challenge.xpReward} XP`, size: 'sm', duration: 1.5 }
+      return { xp: event.challenge.xpReward, text: `+${event.challenge.xpReward} pts`, size: 'sm', duration: 1.5 }
     case 'streak_milestone':
       return { xp: 0, text: `${event.multiplier}x COMBO +${event.days}d`, size: 'md', duration: 1.5 }
     case 'first_of_day':
-      return { xp: event.bonusXp, text: `+${event.bonusXp} XP`, subtext: 'First today!', size: 'sm', duration: 1.5 }
+      return { xp: event.bonusXp, text: `+${event.bonusXp} pts`, subtext: 'First today!', size: 'sm', duration: 1.5 }
     case 'milestone':
       return { xp: 0, text: event.label, size: 'md', duration: 2 }
     case 'title_unlocked':

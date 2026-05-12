@@ -8,7 +8,8 @@
       "@course-engine/monitors": ["../packages/monitors/src/index.ts"],
       "@course-engine/extraction": ["../packages/extraction/src/index.ts"],
       "@course-engine/regeneration": ["../packages/regeneration/src/index.ts"],
-      "@course-engine/briefing": ["../packages/briefing/src/index.ts"]
+      "@course-engine/briefing": ["../packages/briefing/src/index.ts"],
+      "@course-engine/simulator": ["../packages/simulator/src/index.ts"]
     }
   },
   "include": ["."],
@@ -17,6 +18,7 @@
     { "path": "../packages/monitors" },
     { "path": "../packages/extraction" },
     { "path": "../packages/regeneration" },
-    { "path": "../packages/briefing" }
+    { "path": "../packages/briefing" },
+    { "path": "../packages/simulator" }
   ]
 }

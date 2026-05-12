@@ -19,11 +19,7 @@ function findTierForLesson(lessonId: string) {
 function BookmarkedItem({ lesson }: { lesson: Lesson }) {
   const tier = findTierForLesson(lesson.id)
   const status = getLessonStatus(lesson.id)
-  const tierLabel = tier
-    ? tier.id === 'prework'
-      ? 'Prework'
-      : `Tier ${tier.number}`
-    : ''
+  const tierLabel = tier?.name ?? ''
 
   return (
     <div className="group flex items-center gap-3 px-3 py-2.5 rounded-lg bg-foreground/[0.02] border border-foreground/[0.06] hover:bg-foreground/[0.04] hover:border-foreground/10 transition-all">
