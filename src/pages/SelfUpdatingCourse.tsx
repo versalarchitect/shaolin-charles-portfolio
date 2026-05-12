@@ -175,13 +175,13 @@ export default function SelfUpdatingCourse() {
         </div>
       </Section>
 
-      {/* Why This Course Is Different */}
+      {/* What Makes This Course Different */}
       <Section id="promises" className="relative py-24 lg:py-32 px-6 lg:px-8">
         <SectionSpots variant="subtle" />
         <div className="relative max-w-5xl mx-auto">
           <ScrollFadeIn>
             <h2 className="text-3xl md:text-4xl font-bold text-center text-foreground mb-4">
-              Why This Course Is Different
+              What Makes This Course Different
             </h2>
             <p className="text-foreground/50 text-center max-w-xl mx-auto mb-16">
               Most AI courses go stale within weeks of launching. This one can&apos;t.
