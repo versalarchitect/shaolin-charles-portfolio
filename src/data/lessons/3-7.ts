@@ -122,6 +122,44 @@ export default app`,
       before: 'export async function handleRequest(req: Request) {\n  const data = await fetchData(req.url)\n  return new Response(JSON.stringify(data))\n}',
       after: 'export async function handleRequest(req: Request) {\n  try {\n    console.log(`[API] Processing ${req.url}`)\n    const data = await fetchData(req.url)\n    console.log(`[API] Success: ${data.length} items`)\n    return new Response(JSON.stringify(data))\n  } catch (error) {\n    console.error(`[API] Failed: ${error.message}`)\n    return new Response(JSON.stringify({ error: error.message }), { status: 500 })\n  }\n}',
     },
+    // === COMPARE: MANUAL vs STRUCTURED RESOLUTION ===
+    {
+      type: 'compare',
+      title: 'Manual vs structured resolution',
+      body: 'Two approaches to the same merge conflict. Manual resolution reads diffs line by line. Structured resolution starts by understanding each agent\'s intent before touching any code.',
+      question: 'Which approach produces fewer regressions in the merged result?',
+      correctSide: 'right',
+      left: {
+        label: 'Manual (Line-by-line)',
+        content: "1. Open the conflicted file\n2. Read the <<<<<<< and >>>>>>> markers\n3. Eyeball both versions\n4. Pick lines that \"look right\"\n5. Delete conflict markers\n6. Hope nothing breaks\n\nRisks:\n- Miss subtle intent behind a change\n- Accidentally drop a needed import\n- Ordering errors (middleware after routes)\n- No systematic verification",
+      },
+      right: {
+        label: 'Structured (Intent-first)',
+        content: "1. Read Agent A's task spec: what was it trying to do?\n2. Read Agent B's task spec: what was it trying to do?\n3. Classify: additive, contradictory, or structural?\n4. Merge by combining intents, not just lines\n5. Verify: does the result satisfy BOTH specs?\n6. Test the merged code\n\nBenefits:\n- Intent-aware merging catches hidden dependencies\n- Ordering reflects actual execution flow\n- Systematic verification against specs",
+      },
+      explanation: 'Manual resolution treats conflicts as a text problem. Structured resolution treats them as an intent problem. When you understand WHY each agent made its changes, you can merge semantically — keeping the logic correct, not just the syntax.',
+    },
+
+    // === MATCH: CONFLICT TYPES TO STRATEGIES ===
+    {
+      type: 'match',
+      instruction: 'Match each conflict type to the best resolution strategy:',
+      leftItems: [
+        'Same line edited differently',
+        'New function added by both agents',
+        'Import conflicts',
+        'Style/formatting differences',
+      ],
+      rightItems: [
+        'Keep both functions, rename if names collide',
+        'Choose the semantically correct version based on intent',
+        'Merge import lists (union of both)',
+        'Apply project conventions from CLAUDE.md',
+      ],
+      correctPairs: { 0: 1, 1: 0, 2: 2, 3: 3 },
+      explanation: 'Same-line edits require understanding intent to pick the right version. Duplicate functions are usually additive — keep both. Import conflicts are almost always resolved by merging the lists. Style differences should defer to project conventions, not individual agent preferences.',
+    },
+
     {
       type: 'checkpoint',
       xp: 5,

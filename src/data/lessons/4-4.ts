@@ -193,6 +193,58 @@ const content: LessonContent = {
       message: 'Review checklist built!',
     },
 
+    // === NEW INTERACTIVE STEPS ===
+    {
+      type: 'prompt-lab',
+      instruction: 'Write a prompt rejecting the agent\'s architecture suggestion. The agent has suggested adding Redis caching to your API before any performance profiling has been done. Push back with evidence-based reasoning.',
+      scenario: 'Your API serves 200 requests per minute with an average response time of 45ms. The agent says: "Let\'s add Redis caching to improve performance. I\'ll set up a Redis instance, add cache-aside logic to all read endpoints, and implement cache invalidation on writes." There is no evidence of a performance problem.',
+      starterPrompt: 'Good idea, add it.',
+      responses: [
+        {
+          triggerKeywords: ['profile', 'premature', 'evidence', 'measure', 'no evidence', 'not slow'],
+          response: 'You\'re right — I should not optimize without evidence. Current response times are 45ms average, well within acceptable range. I\'ll skip the Redis caching for now. If profiling later reveals a bottleneck, we can add targeted caching at that point.',
+          quality: 'excellent',
+          feedback: 'Excellent pushback. You identified this as premature optimization by citing the actual performance data (45ms average) and requiring evidence before adding complexity. This is exactly the evaluator mindset — reject plausible-sounding suggestions that solve problems that do not exist.',
+        },
+        {
+          triggerKeywords: ['wait', 'later', 'not yet', 'hold', 'defer'],
+          response: 'I\'ll hold off on Redis for now and revisit it later when we have more traffic.',
+          quality: 'good',
+          feedback: 'Good instinct to defer, but your reasoning is weak. Instead of "later when we have more traffic", cite the specific evidence: current response times are 45ms (well under any threshold), and adding Redis introduces operational complexity (another service to maintain, cache invalidation bugs, deployment dependency). Rejection should be evidence-based.',
+        },
+        {
+          triggerKeywords: ['sounds good', 'yes', 'do it', 'go ahead', 'great'],
+          response: 'I\'ll set up Redis with cache-aside pattern on all read endpoints, implement TTL-based expiration, and add cache invalidation hooks on every write operation.',
+          quality: 'poor',
+          feedback: 'You accepted a premature optimization without questioning it. The API responds in 45ms — there is no performance problem to solve. Adding Redis means: a new infrastructure dependency, cache invalidation complexity, potential stale data bugs, and operational overhead. Always ask: "What evidence do we have that this is slow?" before accepting optimization suggestions.',
+        },
+      ],
+      fallbackResponse: {
+        response: 'I\'ll implement the Redis caching as suggested, with cache-aside pattern and TTL-based invalidation across all endpoints.',
+        feedback: 'You need to push back. The agent is solving a problem that does not exist (45ms response times are fast). Effective rejection includes: (1) cite the actual metrics — "response times are 45ms, well within our 200ms target", (2) name the anti-pattern — "this is premature optimization", (3) state the cost — "Redis adds infrastructure complexity and cache invalidation risk", (4) set the trigger — "profile first, optimize only measured bottlenecks."',
+      },
+    },
+    {
+      type: 'compare',
+      title: 'Blindly accepting vs critically evaluating agent suggestions',
+      body: 'The agent suggests adding Redis caching. See the difference between accepting without evidence and pushing back with data.',
+      left: {
+        label: 'Blind Acceptance',
+        content: 'Agent: "Add Redis caching"\nYou: "Sounds good, go ahead"\n\nResult:\n- Redis server added to infrastructure\n- Cache-aside logic in every endpoint\n- Cache invalidation on every write\n- TTL management across 12 endpoints\n- New failure mode: stale data bugs\n- New dependency: Redis must be running\n- DevOps overhead: monitoring, backups\n- Total cost: ~40 hours of work\n\nActual performance gain: 45ms → 8ms\nDid users notice? No.\nWas 45ms a problem? No.',
+        language: 'text',
+        filename: 'blind-acceptance.txt',
+      },
+      right: {
+        label: 'Critical Evaluation',
+        content: 'Agent: "Add Redis caching"\nYou: "What evidence says this is slow?"\n\nEvaluation:\n- Current response: 45ms average\n- Target SLA: 200ms p95\n- 45ms is 4.4x under target\n- No user complaints about speed\n- Profile shows: 90% time in DB query\n\nVerdict: REJECT premature optimization\n- If DB becomes bottleneck: add index\n- If that fails: add read replica\n- If that fails: then consider caching\n\nTotal cost: 5 minutes of evaluation\nResult: zero unnecessary complexity',
+        language: 'text',
+        filename: 'critical-evaluation.txt',
+      },
+      question: 'Which approach prevents unnecessary complexity while keeping the option to optimize later?',
+      correctSide: 'right',
+      explanation: 'Critical evaluation costs 5 minutes and prevents 40 hours of unnecessary work. The key is requiring evidence before optimization: current metrics (45ms), target SLA (200ms), and a profiling-based escalation path (index, then replica, then cache). Blind acceptance adds permanent operational complexity to solve a problem that does not exist.',
+    },
+
     // === OVERRIDE SCENARIOS ===
     {
       type: 'info',

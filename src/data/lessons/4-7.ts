@@ -149,6 +149,52 @@ const content: LessonContent = {
       explanation: 'Each scenario represents a case where the agent optimizes for a general best practice while ignoring specific constraints. NoSQL for relational data ignores data structure needs. Caching before profiling is premature optimization. Microservices for a 3-person team adds coordination overhead that kills velocity.',
     },
 
+    // === PROMPT-LAB: OVERRIDING WRONG ADVICE ===
+    {
+      type: 'prompt-lab',
+      instruction: 'Write a prompt overriding an agent that confidently recommends MongoDB for an app that clearly needs relational joins. The agent is wrong — your data is highly relational (users, orders, products with many-to-many relationships). Push back with specific reasoning.',
+      scenario: 'You are building an e-commerce platform with users, orders, products, categories, and reviews — all heavily interrelated. An agent recommends MongoDB because "it scales better." You know this data is deeply relational and will require complex joins for reports, dashboards, and order history. Override the agent with a clear, reasoned response.',
+      starterPrompt: 'Sounds good, use MongoDB.',
+      responses: [
+        {
+          triggerKeywords: ['PostgreSQL', 'relational', 'joins', 'foreign key', 'SQL', 'normalize', 'relationships'],
+          response: 'Understood. Switching to PostgreSQL. You are right that the data model is fundamentally relational:\n\n- Users have many Orders (1:N)\n- Orders have many Products (M:N via order_items)\n- Products belong to Categories (M:N)\n- Reviews link Users to Products (M:N)\n\nMongoDB would require denormalization and application-level joins, adding complexity and inconsistency risk. PostgreSQL handles this natively with JOIN operations and foreign key constraints.\n\nI will set up PostgreSQL with proper schema, indexes on foreign keys, and migration tooling.',
+          quality: 'excellent',
+          feedback: 'Perfect override. You identified the specific data relationships (1:N, M:N) that make this relational, explained why MongoDB would struggle (denormalization, app-level joins), and directed the agent to the correct technology with reasoning. This is exactly how domain knowledge overrides training bias.',
+        },
+        {
+          triggerKeywords: ['not MongoDB', 'wrong', 'no', 'disagree', 'different', 'instead'],
+          response: 'I understand you prefer a different database. Could you share more about what you would like to use instead and why?',
+          quality: 'good',
+          feedback: 'You pushed back, which is the right instinct. But you need to be more specific. State WHY MongoDB is wrong for this use case: the data is relational (users, orders, products with foreign keys), you need JOIN operations for reports, and denormalization would cause data inconsistency. Name the alternative (PostgreSQL) and the specific reasons.',
+        },
+      ],
+      fallbackResponse: {
+        response: 'Great, I will set up MongoDB with collections for users, orders, and products. I will embed order items directly in the order documents for fast reads.',
+        feedback: 'You accepted the agent\'s recommendation without pushback. This data model is deeply relational — users have orders, orders reference products, products belong to categories. MongoDB would force you to denormalize, duplicate data, and implement joins in application code. Override by specifying PostgreSQL and explaining the relational structure: foreign keys, JOIN operations, and data consistency requirements.',
+      },
+    },
+    {
+      type: 'compare',
+      title: 'Deferring to agent consensus vs applying domain expertise',
+      body: 'When all agents agree on MongoDB for your clearly relational data, see the difference between deferring and applying your own judgment.',
+      left: {
+        label: 'Deferring to Agent Consensus',
+        content: 'You: "What database should I use?"\n\nAgent 1: MongoDB — scales horizontally\nAgent 2: MongoDB — flexible schema\nAgent 3: MongoDB — popular choice\n\nYou: "OK, MongoDB it is."\n\nResult after 3 months:\n- 47 aggregate pipelines replacing SQL JOINs\n- Data duplication across 6 collections\n- 3 data inconsistency bugs in production\n- Reports take 8 seconds (vs 200ms with SQL)\n- Migration to PostgreSQL costs 3 weeks',
+        language: 'text',
+        filename: 'deferring.txt',
+      },
+      right: {
+        label: 'Applying Domain Expertise',
+        content: 'You: "What database should I use?"\n\nAgent 1: MongoDB — scales horizontally\nAgent 2: MongoDB — flexible schema\nAgent 3: MongoDB — popular choice\n\nYou: "Override. The data is relational:\n  users -> orders -> products (JOINs).\n  Use PostgreSQL."\n\nResult after 3 months:\n- Clean normalized schema, 12 tables\n- Foreign key constraints prevent bad data\n- Zero data inconsistency bugs\n- Reports run in 180ms with indexed JOINs\n- Schema migrations are straightforward',
+        language: 'text',
+        filename: 'domain-expertise.txt',
+      },
+      question: 'Which approach leads to a better outcome for relational data?',
+      correctSide: 'right',
+      explanation: 'Agent consensus was wrong because all three agents drew from the same training bias (MongoDB is frequently recommended for "scale"). Your domain expertise — knowing that users, orders, and products are inherently relational — outweighs three identical recommendations. The 3-month outcome proves it: the override path has zero data inconsistency bugs and fast reports, while deferring creates 47 workaround aggregations and 3 production bugs.',
+    },
+
     // === PRACTICAL SCENARIOS ===
     {
       type: 'info',

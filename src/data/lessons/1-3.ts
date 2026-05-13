@@ -180,6 +180,74 @@ const content: LessonContent = {
       explanation: 'Each level gives the AI more autonomy. Paste is manual copy-paste. Skill means inline editing. Script automates steps. Agent plans independently. MCP extends capabilities beyond the local machine.',
     },
 
+    // === COMPARE: PASTE vs MCP ===
+    {
+      type: 'compare',
+      title: 'Level 1 vs Level 5',
+      body: 'The gap between the bottom and top of the ladder is enormous. Compare how the same task — "check if our API is down" — looks at each extreme.',
+      question: 'Which approach catches the outage faster and with less effort?',
+      correctSide: 'right',
+      left: {
+        label: 'Level 1: Paste',
+        content: '1. Open browser, go to ChatGPT\n2. Paste: "Here are my server logs: [copy 200 lines]"\n3. Read the answer: "Looks like a 502 on /api/users"\n4. Manually open Vercel dashboard\n5. Manually check deployment status\n6. Manually restart if needed\n\nTime: 5-10 minutes\nAutomation: None\nContext: Only what you paste',
+      },
+      right: {
+        label: 'Level 5: MCP',
+        content: '1. Tell Claude Code: "Check if our API is down"\n2. Agent queries Vercel deployment status via MCP\n3. Agent reads recent error logs via MCP\n4. Agent checks the health endpoint directly\n5. Agent reports: "502s on /api/users since 14:32,\n   caused by failed DB migration. Rolling back."\n\nTime: 30 seconds\nAutomation: Full\nContext: Live production data',
+      },
+      explanation: 'Level 1 requires you to gather context manually and interpret results yourself. Level 5 connects to real tools (Vercel, databases, browsers) and acts autonomously. The difference is not just speed — it is access to live data the paste approach can never have.',
+    },
+
+    // === INTERACTIVE DIAGRAM: TOOL LADDER WALKTHROUGH ===
+    {
+      type: 'interactive-diagram',
+      title: 'Climbing the Tool Ladder',
+      body: 'Step through each level to see how autonomy increases and human effort decreases.',
+      diagram: {
+        direction: 'TB',
+        nodes: [
+          { id: 'mcp', label: 'MCP', sublabel: 'Connected', shape: 'rounded', highlight: true },
+          { id: 'agent', label: 'Agent', sublabel: 'Autonomous', shape: 'rect' },
+          { id: 'script', label: 'Script', sublabel: 'Automated', shape: 'rect' },
+          { id: 'skill', label: 'Skill', sublabel: 'Repeatable', shape: 'rect' },
+          { id: 'paste', label: 'Paste', sublabel: 'Copy-paste', shape: 'rect' },
+        ],
+        edges: [
+          { from: 'paste', to: 'skill' },
+          { from: 'skill', to: 'script' },
+          { from: 'script', to: 'agent' },
+          { from: 'agent', to: 'mcp' },
+        ],
+      },
+      stages: [
+        {
+          highlightNodes: ['paste'],
+          highlightEdges: [],
+          explanation: 'Level 1: Paste. You copy a question into a chat window, read the answer, and paste the result back. Zero setup. Fully manual. No memory between sessions. Good for one-off questions.',
+        },
+        {
+          highlightNodes: ['paste', 'skill'],
+          highlightEdges: [{ from: 'paste', to: 'skill' }],
+          explanation: 'Level 2: Skill. You define a reusable prompt template (like /a11y-review) and invoke it by name. The prompt stays the same, the target changes. The AI now edits files inline instead of you copy-pasting.',
+        },
+        {
+          highlightNodes: ['skill', 'script'],
+          highlightEdges: [{ from: 'skill', to: 'script' }],
+          explanation: 'Level 3: Script. The AI runs without you. A script calls the API on a schedule or git hook — no human in the loop. Predictable, repeatable tasks that need zero judgment.',
+        },
+        {
+          highlightNodes: ['script', 'agent'],
+          highlightEdges: [{ from: 'script', to: 'agent' }],
+          explanation: 'Level 4: Agent. The AI reads your codebase, plans a multi-step approach, writes code across files, runs tests, and fixes errors. You give one high-level instruction and it executes autonomously.',
+        },
+        {
+          highlightNodes: ['agent', 'mcp'],
+          highlightEdges: [{ from: 'agent', to: 'mcp' }],
+          explanation: 'Level 5: MCP. Agent mode plus external tool access. The AI connects to databases, APIs, browsers, and services through a standardized protocol. Autonomous action with real-world connectivity — the ceiling.',
+        },
+      ],
+    },
+
     // === DECISION FLOW ===
     {
       type: 'diagram',

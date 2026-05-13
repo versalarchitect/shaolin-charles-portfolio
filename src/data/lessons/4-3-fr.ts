@@ -150,6 +150,44 @@ const content: LessonContent = {
       message: 'Contrats d\'interface maîtrisés !',
     },
 
+    // === NEW INTERACTIVE STEPS ===
+    {
+      type: 'code-fill',
+      instruction: 'Complétez ce contrat d\'interface que deux agents partageront. Remplissez les noms de types, types de champs et types de retour pour que les deux agents puissent construire indépendamment.',
+      language: 'typescript',
+      template: '// Contract: Orders module → Payments module\n// Both agents build against this shared agreement.\n\nexport interface ___ {\n  orderId: ___\n  customerId: string\n  amountCents: ___\n  currency: \'USD\' | \'EUR\'\n  idempotencyKey: string\n}\n\nexport interface ___ {\n  success: boolean\n  transactionId?: string\n  failureReason?: ___\n}\n\nexport interface PaymentGateway {\n  charge(request: ChargeRequest): Promise<___>\n  refund(transactionId: string): Promise<ChargeResult>\n}',
+      blanks: [
+        { id: 'request-type', answer: 'ChargeRequest', alternatives: ['PaymentRequest', 'ChargePayload'], hint: 'Nom décrivant une requête pour facturer un paiement', placeholder: 'NomDeType' },
+        { id: 'id-type', answer: 'string', alternatives: [], hint: 'Le type standard pour les identifiants', placeholder: 'type' },
+        { id: 'amount-type', answer: 'number', alternatives: ['int', 'integer'], hint: 'Les montants monétaires en centimes sont des nombres entiers', placeholder: 'type' },
+        { id: 'result-type', answer: 'ChargeResult', alternatives: ['PaymentResult', 'ChargeResponse'], hint: 'Nom décrivant le résultat d\'une opération de facturation', placeholder: 'NomDeType' },
+        { id: 'reason-type', answer: 'string', alternatives: [], hint: 'Les explications d\'échec lisibles par un humain sont du texte', placeholder: 'type' },
+        { id: 'return-type', answer: 'ChargeResult', alternatives: ['PaymentResult', 'ChargeResponse'], hint: 'La méthode charge retourne le même type de résultat', placeholder: 'NomDeType' },
+      ],
+      filename: 'src/contracts/order-payment.contract.ts',
+      explanation: 'Les contrats d\'interface définissent les types exacts qui circulent entre les modules. L\'agent Orders et l\'agent Payments construisent tous les deux contre ce contrat indépendamment. L\'agent Orders appelle charge() avec un ChargeRequest et attend un ChargeResult. L\'agent Payments implémente charge() retournant un ChargeResult. Aucun n\'a besoin de connaître l\'implémentation interne de l\'autre.',
+    },
+    {
+      type: 'compare',
+      title: 'État mutable partagé vs isolation par contrat',
+      body: 'Deux approches de coordination multi-agents. L\'une crée des conflits ; l\'autre permet un vrai travail parallèle.',
+      left: {
+        label: 'État mutable partagé (Conflits)',
+        content: '// god-file.ts — Les DEUX agents modifient\nexport const config = { ... }\nexport const routes = [ ... ]\nexport type AllTypes = { ... }\n\n// Agent A ajoute les routes paiement ici\n// Agent B ajoute les routes commande ici\n// RÉSULTAT : conflit de merge à chaque fois\n\n// Les deux agents doivent lire tout le\n// fichier pour comprendre ce que fait\n// l\'autre. Les changements sont entrelacés\n// et fragiles. Une modif peut casser l\'autre.',
+        language: 'typescript',
+        filename: 'god-file.ts',
+      },
+      right: {
+        label: 'Isolation par contrat (Pas de conflits)',
+        content: '// contract.ts — défini UNE FOIS par l\'architecte\nexport interface ChargeRequest { ... }\nexport interface ChargeResult { ... }\n\n// payments/payments.service.ts\n// Agent A touche UNIQUEMENT ce fichier\n// Implémente l\'interface du contrat\n\n// orders/orders.service.ts\n// Agent B touche UNIQUEMENT ce fichier\n// Appelle l\'interface du contrat\n\n// RÉSULTAT : zéro conflit, vrai parallèle\n// Chaque agent possède entièrement son\n// module. Le contrat est le seul artefact.',
+        language: 'typescript',
+        filename: 'contract-isolation.ts',
+      },
+      question: 'Quelle approche permet à deux agents de travailler simultanément sans jamais modifier le même fichier ?',
+      correctSide: 'right',
+      explanation: 'L\'isolation par contrat signifie que l\'architecte définit l\'interface une fois, puis chaque agent travaille exclusivement dans son propre module. Le fichier de contrat est en lecture seule pendant l\'implémentation — aucun agent ne le modifie. En revanche, l\'état mutable partagé force les deux agents à modifier le même fichier, garantissant des conflits de merge.',
+    },
+
     // === ELIMINATING SHARED MUTABLE STATE ===
     {
       type: 'info',

@@ -180,6 +180,74 @@ const content: LessonContent = {
       explanation: 'Chaque niveau donne plus d\'autonomie à l\'IA. Paste est du copier-coller manuel. Skill signifie l\'édition en ligne. Script automatise les étapes. Agent planifie indépendamment. MCP étend les capacités au-delà de la machine locale.',
     },
 
+    // === COMPARE: PASTE vs MCP ===
+    {
+      type: 'compare',
+      title: 'Niveau 1 vs Niveau 5',
+      body: "L'écart entre le bas et le haut de l'échelle est énorme. Compare comment la même tâche — « vérifier si notre API est en panne » — se présente à chaque extrême.",
+      question: 'Quelle approche détecte la panne plus vite et avec moins d\'effort ?',
+      correctSide: 'right',
+      left: {
+        label: 'Niveau 1 : Coller',
+        content: '1. Ouvrir le navigateur, aller sur ChatGPT\n2. Coller : « Voici mes logs serveur : [copier 200 lignes] »\n3. Lire la réponse : « On dirait un 502 sur /api/users »\n4. Ouvrir manuellement le tableau de bord Vercel\n5. Vérifier manuellement le statut du déploiement\n6. Redémarrer manuellement si nécessaire\n\nTemps : 5-10 minutes\nAutomatisation : Aucune\nContexte : Seulement ce que tu colles',
+      },
+      right: {
+        label: 'Niveau 5 : MCP',
+        content: '1. Dire à Claude Code : « Vérifie si notre API est en panne »\n2. L\'agent interroge le statut Vercel via MCP\n3. L\'agent lit les logs d\'erreur récents via MCP\n4. L\'agent vérifie le endpoint de santé directement\n5. L\'agent rapporte : « 502 sur /api/users depuis 14h32,\n   causé par une migration DB échouée. Rollback en cours. »\n\nTemps : 30 secondes\nAutomatisation : Totale\nContexte : Données de production en direct',
+      },
+      explanation: "Le niveau 1 t'oblige à rassembler le contexte manuellement et interpréter les résultats toi-même. Le niveau 5 se connecte aux vrais outils (Vercel, bases de données, navigateurs) et agit de façon autonome. La différence n'est pas juste la vitesse — c'est l'accès aux données en direct que l'approche coller ne peut jamais avoir.",
+    },
+
+    // === INTERACTIVE DIAGRAM: TOOL LADDER WALKTHROUGH ===
+    {
+      type: 'interactive-diagram',
+      title: "Grimper l'échelle des outils",
+      body: 'Parcours chaque niveau pour voir comment l\'autonomie augmente et l\'effort humain diminue.',
+      diagram: {
+        direction: 'TB',
+        nodes: [
+          { id: 'mcp', label: 'MCP', sublabel: 'Connecté', shape: 'rounded', highlight: true },
+          { id: 'agent', label: 'Agent', sublabel: 'Autonome', shape: 'rect' },
+          { id: 'script', label: 'Script', sublabel: 'Automatisé', shape: 'rect' },
+          { id: 'skill', label: 'Skill', sublabel: 'Réutilisable', shape: 'rect' },
+          { id: 'paste', label: 'Coller', sublabel: 'Copier-coller', shape: 'rect' },
+        ],
+        edges: [
+          { from: 'paste', to: 'skill' },
+          { from: 'skill', to: 'script' },
+          { from: 'script', to: 'agent' },
+          { from: 'agent', to: 'mcp' },
+        ],
+      },
+      stages: [
+        {
+          highlightNodes: ['paste'],
+          highlightEdges: [],
+          explanation: "Niveau 1 : Coller. Tu copies une question dans une fenêtre de chat, tu lis la réponse et tu recolles le résultat. Zéro configuration. Entièrement manuel. Aucune mémoire entre les sessions. Bon pour les questions ponctuelles.",
+        },
+        {
+          highlightNodes: ['paste', 'skill'],
+          highlightEdges: [{ from: 'paste', to: 'skill' }],
+          explanation: "Niveau 2 : Skill. Tu définis un modèle de prompt réutilisable (comme /a11y-review) et tu l'invoques par son nom. Le prompt reste le même, la cible change. L'IA édite maintenant les fichiers en ligne au lieu que tu copies-colles.",
+        },
+        {
+          highlightNodes: ['skill', 'script'],
+          highlightEdges: [{ from: 'skill', to: 'script' }],
+          explanation: "Niveau 3 : Script. L'IA tourne sans toi. Un script appelle l'API selon un horaire ou un hook git — aucun humain dans la boucle. Tâches prévisibles et répétitives qui ne nécessitent aucun jugement.",
+        },
+        {
+          highlightNodes: ['script', 'agent'],
+          highlightEdges: [{ from: 'script', to: 'agent' }],
+          explanation: "Niveau 4 : Agent. L'IA lit ta codebase, planifie une approche multi-étapes, écrit du code dans plusieurs fichiers, lance des tests et corrige les erreurs. Tu donnes une seule instruction de haut niveau et elle exécute de façon autonome.",
+        },
+        {
+          highlightNodes: ['agent', 'mcp'],
+          highlightEdges: [{ from: 'agent', to: 'mcp' }],
+          explanation: "Niveau 5 : MCP. Le mode agent plus l'accès aux outils externes. L'IA se connecte aux bases de données, API, navigateurs et services via un protocole standardisé. Action autonome avec connectivité au monde réel — le plafond.",
+        },
+      ],
+    },
+
     // === DECISION FLOW ===
     {
       type: 'diagram',

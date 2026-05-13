@@ -212,6 +212,57 @@ const content: LessonContent = {
       message: 'Anti-patrons reconnus !',
     },
 
+    // === NEW INTERACTIVE STEPS ===
+    {
+      type: 'match',
+      instruction: 'Associez chaque section de CLAUDE.md à son objectif :',
+      leftItems: ['Conventions', 'Contraintes', 'Anti-patrons', 'Décisions d\'architecture'],
+      rightItems: ['Comment nommer et structurer', 'Quelles limites technologiques s\'appliquent', 'Quoi ne jamais faire', 'Pourquoi les choses sont comme elles sont'],
+      correctPairs: { 0: 0, 1: 1, 2: 2, 3: 3 },
+      explanation: 'Les conventions disent aux agents COMMENT nommer les fichiers, structurer le code et formater la sortie de façon cohérente. Les contraintes définissent les limites technologiques — bibliothèques approuvées, budgets de performance, règles de sécurité. Les anti-patrons listent explicitement ce que les agents ne doivent JAMAIS faire, même si ça semble raisonnable. Les décisions d\'architecture expliquent POURQUOI le système est structuré de cette façon, donnant aux agents le contexte pour de futures décisions.',
+    },
+    {
+      type: 'prompt-lab',
+      instruction: 'Écrivez des conventions CLAUDE.md pour un nouveau projet d\'API TypeScript. Les conventions doivent être assez spécifiques et impératives pour que tout agent produise une sortie identique.',
+      scenario: 'Vous démarrez une nouvelle API REST TypeScript. Vous devez écrire la section Conventions de CLAUDE.md. Le projet utilise des modules par fonctionnalité, Zod pour la validation, Vitest pour les tests et Drizzle ORM pour l\'accès à la base de données. Vous voulez un nommage strict, pas de fichiers génériques et des tests colocalisés.',
+      starterPrompt: 'Ajoute quelques règles au projet.',
+      responses: [
+        {
+          triggerKeywords: ['DOIT', 'JAMAIS', 'TOUT', 'TOUTES', 'nommage', 'convention', '[domain]', '[domaine]', 'MUST', 'NEVER', 'ALL'],
+          response: '## Conventions\n\n### Nommage\n- TOUS les fichiers de fonctionnalité : [domain].[role].ts (ex: payments.handler.ts)\n- TOUS les fichiers de test : [domain].test.ts, colocalisés dans le même répertoire\n- JAMAIS de noms génériques : utils.ts, helpers.ts, common.ts\n\n### Structure\n- Nouvelles fonctionnalités : src/features/[nom-du-domaine]/\n- Chaque fonctionnalité exporte via index.ts\n- Les tests DOIVENT être colocalisés avec l\'implémentation\n\n### Technologie\n- Validation : Zod schemas UNIQUEMENT\n- Tests : Vitest UNIQUEMENT\n- Base de données : Drizzle ORM, pas de SQL brut',
+          quality: 'excellent',
+          feedback: 'Excellent. Vos conventions utilisent un langage impératif (DOIT, JAMAIS, TOUTES, UNIQUEMENT) qui ne laisse aucune ambiguïté. Vous avez spécifié des patrons de nommage exacts, une structure de répertoires et des contraintes technologiques. Tout agent lisant ceci produira une sortie identique.',
+        },
+        {
+          triggerKeywords: ['utiliser', 'suivre', 'structure', 'nommer', 'use', 'follow', 'name'],
+          response: '## Conventions\n\n- Utiliser des répertoires par fonctionnalité\n- Nommer les fichiers de façon descriptive\n- Utiliser Zod et Vitest\n- Garder les tests proches du code',
+          quality: 'good',
+          feedback: 'Bonne direction mais trop doux. « Utiliser des répertoires par fonctionnalité » ne spécifie pas le patron de chemin exact. « Nommer les fichiers de façon descriptive » est subjectif. Ajoutez des qualificatifs impératifs (DOIT, TOUTES, JAMAIS) et spécifiez des patrons exacts comme [domain].[role].ts.',
+        },
+        {
+          triggerKeywords: ['règles', 'directives', 'bonnes pratiques', 'rules', 'guidelines', 'best practices'],
+          response: '## Directives\n\n- Essayer de garder les choses organisées\n- Considérer l\'utilisation des bonnes pratiques TypeScript\n- Suivre les conventions communes',
+          quality: 'poor',
+          feedback: 'Ceci sera ignoré. « Essayer de », « considérer » et « conventions communes » sont du langage consultatif que les agents interprètent comme optionnel. Réécrivez avec des impératifs : spécifiez des patrons de nommage exacts, des outils obligatoires et des interdictions explicites.',
+        },
+      ],
+      fallbackResponse: {
+        response: '## Règles du projet\n\n- Bien organiser le code\n- Écrire de bons tests\n- Garder ça propre',
+        feedback: 'Trop vague pour être utile. Des conventions CLAUDE.md efficaces incluent : (1) des patrons de nommage exacts comme [domain].[role].ts, (2) un langage impératif — DOIT, JAMAIS, TOUTES, (3) des mandats technologiques explicites — « Zod UNIQUEMENT, aucune autre bibliothèque de validation », et (4) des règles de structure de répertoires — « Les nouvelles fonctionnalités vont dans src/features/[domain]/ ».',
+      },
+    },
+    {
+      type: 'code-diff',
+      title: 'Réécrire le langage doux en commandes impératives',
+      body: 'Voyez comment des conventions CLAUDE.md vagues et consultatives sont réécrites en commandes impératives que les agents suivent systématiquement.',
+      language: 'markdown',
+      filename: 'CLAUDE.md',
+      before: '## Conventions\n\n- Essayez d\'utiliser le camelCase pour les noms de variables\n- Considérez organiser le code par fonctionnalité\n- On préfère Zod pour la validation mais d\'autres options marchent\n- Ce serait bien de garder les fichiers courts\n- Vous pourriez vouloir colocaliser les tests\n- S\'il vous plaît, évitez d\'ajouter trop de dépendances\n- Pensez à utiliser un logging structuré',
+      after: '## Conventions\n\n- TOUTES les variables utilisent le camelCase. Sans exception.\n- Les nouvelles fonctionnalités vont dans src/features/[domain]/. Pas d\'autre emplacement.\n- Utilisez Zod pour TOUTE validation. Aucune autre bibliothèque permise.\n- Aucun fichier ne dépasse 300 lignes. Divisez à ce seuil.\n- Les tests DOIVENT être colocalisés : [domain].test.ts dans le même répertoire.\n- JAMAIS ajouter une dépendance sans approbation explicite.\n- Utilisez le logger structuré pour TOUTE sortie. Pas de console.log.',
+      question: 'Quelle transformation clé rend la version APRÈS efficace pour la coordination d\'agents ?',
+      explanation: 'Chaque « essayez de », « considérez », « préférez » et « vous pourriez vouloir » a été remplacé par des impératifs absolus : « TOUTES », « DOIVENT », « JAMAIS », « Sans exception ». Le langage doux donne aux agents la permission de dévier. Le langage impératif donne des ordres. La version APRÈS produit un comportement d\'agent identique entre les sessions parce qu\'il n\'y a aucune interprétation nécessaire.',
+    },
+
     // === PRACTICAL EXERCISE ===
     {
       type: 'info',

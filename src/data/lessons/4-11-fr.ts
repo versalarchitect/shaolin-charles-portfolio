@@ -179,6 +179,40 @@ const content: LessonContent = {
       correctOrder: [3, 1, 4, 2, 0],
     },
 
+    // === ASSOCIATION PARTIES PRENANTES ===
+    {
+      type: 'match',
+      instruction: 'Associe chaque préoccupation de partie prenante au type de preuve qui y répond :',
+      leftItems: ['Est-ce que ça va casser la production ?', 'Combien ça va coûter ?', 'Quand est-ce que ça sera livré ?', 'Est-ce que l\'investissement en vaut la peine ?'],
+      rightItems: ['Couverture de tests + plan de retour arrière', 'Estimation de temps + allocation d\'équipe', 'Calendrier avec jalons', 'Calcul de ROI avec métriques avant/après'],
+      correctPairs: { 0: 0, 1: 1, 2: 2, 3: 3 },
+      explanation: 'Chaque préoccupation de partie prenante correspond à un type de preuve spécifique. Le risque de production est adressé par la couverture de tests et les plans de retour arrière. Les préoccupations de coût nécessitent des estimations concrètes de temps et de ressources. Les questions de calendrier nécessitent des jalons. La justification de l\'investissement nécessite un ROI avec des métriques mesurables avant/après. Préparer la bonne preuve pour la bonne préoccupation élimine les allers-retours.',
+    },
+    {
+      type: 'prompt-lab',
+      instruction: 'Écris une mise à jour pour les parties prenantes expliquant une refactorisation technique en termes métier.',
+      scenario: 'Tu as passé 2 semaines à refactoriser un monolithe en modules indépendants en utilisant l\'architecture agent-first. Le CTO veut savoir pourquoi ça a pris 2 semaines et ce que l\'entreprise en a tiré. Tu dois écrire une mise à jour qui met l\'accent sur les résultats métier, pas les détails techniques.',
+      starterPrompt: 'On a refactorisé le code.',
+      responses: [
+        {
+          triggerKeywords: ['faster', 'deploy', 'risk', 'cost', 'outcome', 'business', 'velocity', 'independently', 'parallel', 'rapide', 'déploie', 'risque', 'coût', 'résultat', 'métier', 'vélocité', 'indépendamment', 'parallèle'],
+          response: 'Bonne mise à jour. Voici comment je structurerais le message au CTO :\n\n**Objet : Mise à niveau architecturale — livraison 3x plus rapide, 60 % moins d\'incidents**\n\nAu cours des 2 dernières semaines, nous avons restructuré la plateforme pour que les équipes puissent livrer des fonctionnalités indépendamment. Résultats clés :\n\n- **Fréquence de déploiement** : 2x/semaine → 4x/jour (chaque module se déploie seul)\n- **Risque d\'incidents** : les changements à la facturation ne peuvent plus casser l\'authentification (rayon d\'impact isolé)\n- **Vélocité fonctionnelle** : développement 3-5x plus rapide — les flux de travail ne se bloquent plus entre eux\n- **Coût** : 850 $ vs 8 000 $ estimés en approche traditionnelle\n\nL\'investissement se rentabilise dès le premier sprint grâce à la réduction de la coordination seule.\n\nC\'est une mise à jour convaincante axée sur le métier.',
+          quality: 'excellent',
+          feedback: 'Excellent. Tu as mené avec des résultats qui intéressent le CTO : vitesse, réduction des risques et coût. Les détails techniques (modules, agents, adaptateurs) sont invisibles — le CTO voit des résultats métier. C\'est la compétence de traduction qui fait financer l\'architecture.',
+        },
+        {
+          triggerKeywords: ['module', 'refactor', 'package', 'separate', 'improve', 'refactoriser', 'séparer', 'améliorer'],
+          response: 'Je peux aider à rédiger cette mise à jour. Quelles métriques spécifiques ont changé ? La fréquence de déploiement s\'est-elle améliorée ? Une réduction des incidents ? J\'aurai besoin de chiffres concrets pour argumenter efficacement.\n\nQuels résultats métier dois-je mettre en avant ?',
+          quality: 'good',
+          feedback: 'Tu as reconnu que les métriques comptent, ce qui est mieux que « on a refactorisé le code ». Mais le prompt devrait déjà inclure les résultats : amélioration de la fréquence de déploiement, réduction des incidents, comparaison des coûts. Donne à l\'agent (ou à toi-même) les données dès le départ pour que la mise à jour s\'écrive d\'elle-même.',
+        },
+      ],
+      fallbackResponse: {
+        response: 'Voici la mise à jour :\n\n« Nous avons passé 2 semaines à refactoriser le monolithe en packages indépendants avec des frontières de modules appliquées via des règles eslint et des tags Nx. Chaque package a maintenant son propre protocole CLAUDE.md, son propre pipeline CI indépendant, et des adaptateurs strangler fig pour les consommateurs legacy. Nous avons utilisé des git worktrees pour l\'exécution parallèle des agents et atteint 94 % de couverture de tests sur tous les modules extraits. »\n\nDois-je ajouter plus de détails techniques ?',
+        feedback: 'Cette mise à jour est techniquement exacte mais ne parle qu\'aux ingénieurs. Le CTO entend : jargon, jargon, jargon. Une bonne mise à jour pour les parties prenantes mène avec les résultats métier (livraison plus rapide, moins d\'incidents, coût inférieur) et ne mentionne les mécanismes techniques que si on le demande. Traduis « frontières de modules » en « les équipes travaillent indépendamment ». Traduis « 94 % de couverture » en « 60 % moins de bogues en production ».',
+      },
+    },
+
     // === COMMON STAKEHOLDER PERSONAS ===
     {
       type: 'info',

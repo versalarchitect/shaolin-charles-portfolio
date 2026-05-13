@@ -160,6 +160,41 @@ const content: LessonContent = {
       message: 'Strangler fig with agents — understood!',
     },
 
+    // === STRANGLER FIG IN PRACTICE ===
+    {
+      type: 'code-fill',
+      instruction: 'Complete this strangler fig migration plan by filling in the blanks for each step.',
+      language: 'markdown',
+      filename: 'docs/strangler-fig-plan.md',
+      template: '# Strangler Fig Migration Plan\n\n## Step 1: Identify Target\n- Old module to wrap: {{old_module}}\n- Reason: callback-based, 12 dependents, high coupling\n\n## Step 2: Build New Module\n- New module path: {{new_module_path}}\n- Pattern: async/await, typed interfaces, independent tests\n\n## Step 3: Bridge\n- Adapter interface: {{adapter_interface}}\n- Purpose: let old consumers keep working via legacy API\n\n## Step 4: Safety Net\n- Rollback strategy: {{rollback_strategy}}\n- Ensures zero-risk cutover for each consumer',
+      blanks: [
+        { id: 'old_module', answer: 'LegacyAuth', alternatives: ['legacy auth', 'auth module', 'old auth', 'the auth module'], placeholder: 'which module?', hint: 'The callback-based auth module referenced in the adapter example' },
+        { id: 'new_module_path', answer: 'packages/auth/src/modern-auth.ts', alternatives: ['packages/auth/src/modern.ts', 'packages/auth/modern-auth.ts', 'src/modern-auth.ts', 'packages/auth/'], placeholder: 'file path?', hint: 'Where does the new async implementation live?' },
+        { id: 'adapter_interface', answer: 'createLegacyAdapter', alternatives: ['legacy adapter', 'LegacyAdapter', 'adapter function', 'createAdapter'], placeholder: 'adapter name?', hint: 'The function that wraps ModernAuth in the old callback interface' },
+        { id: 'rollback_strategy', answer: 'revert to old module by removing adapter', alternatives: ['switch back to legacy', 'disable adapter', 'route back to old', 'feature flag to old module', 'revert the import'], placeholder: 'how to rollback?', hint: 'What do you do if the new module has issues?' },
+      ],
+      explanation: 'A strangler fig plan makes each step explicit: which module to wrap, where the new code lives, how old consumers bridge to new code, and how to rollback safely. This eliminates ambiguity for any agent or developer executing the migration.',
+    },
+    {
+      type: 'match',
+      instruction: 'Match each rebuild indicator to its recommended decision:',
+      leftItems: ['Test coverage >80%', 'Test coverage <20%', 'Clear module boundaries', 'Global state everywhere'],
+      rightItems: ['Safe to refactor incrementally', 'Consider full rewrite', 'Strangler fig viable', 'Rewrite likely necessary'],
+      correctPairs: { 0: 0, 1: 1, 2: 2, 3: 3 },
+      explanation: 'High test coverage means you can safely refactor — tests catch regressions immediately. Low coverage means a rewrite with tests from scratch may be safer. Clear boundaries make the strangler fig pattern viable. Global state means the design itself is broken and incremental improvement is nearly impossible.',
+    },
+    {
+      type: 'code-diff',
+      title: 'Before and after strangler fig wrapping',
+      body: 'See how a module transforms from direct usage (tightly coupled) to adapter-wrapped usage (decoupled and migratable).',
+      language: 'typescript',
+      filename: 'checkout-service.ts',
+      before: "// BEFORE: Direct usage — checkout is coupled to auth internals\nimport { authenticate, authorize } from '../auth/legacy-auth'\n\nasync function processCheckout(token: string, cartId: string) {\n  // Direct call — if auth changes signature, checkout breaks\n  authenticate(token, (err, user) => {\n    if (err) throw err\n    authorize(user!, 'checkout', (err, allowed) => {\n      if (err) throw err\n      if (!allowed) throw new Error('Forbidden')\n      // ... proceed with checkout\n    })\n  })\n}",
+      after: "// AFTER: Adapter pattern — checkout depends on interface, not implementation\nimport type { ModernAuth } from '@shop/auth'\n\nasync function processCheckout(\n  auth: ModernAuth,\n  token: string,\n  cartId: string\n) {\n  // Clean async call — auth implementation can change freely\n  const user = await auth.authenticate(token)\n  const allowed = await auth.authorize(user, 'checkout')\n  if (!allowed) throw new Error('Forbidden')\n  // ... proceed with checkout\n}",
+      question: 'What structural improvement does the adapter pattern provide?',
+      explanation: 'The before version imports directly from auth internals — any signature change in auth breaks checkout. The after version depends on a typed interface (ModernAuth). The actual implementation behind that interface can be swapped (legacy adapter or new module) without changing checkout at all. This is the core power of the strangler fig: consumers migrate at their own pace.',
+    },
+
     // === WHEN TO ACTUALLY REWRITE ===
     {
       type: 'info',

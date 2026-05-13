@@ -160,6 +160,41 @@ const content: LessonContent = {
       message: 'Strangler fig avec des agents — compris !',
     },
 
+    // === STRANGLER FIG EN PRATIQUE ===
+    {
+      type: 'code-fill',
+      instruction: 'Complète ce plan de migration strangler fig en remplissant les blancs pour chaque étape.',
+      language: 'markdown',
+      filename: 'docs/strangler-fig-plan.md',
+      template: '# Plan de migration Strangler Fig\n\n## Étape 1 : Identifier la cible\n- Ancien module à envelopper : {{old_module}}\n- Raison : à base de callbacks, 12 dépendants, couplage élevé\n\n## Étape 2 : Construire le nouveau module\n- Chemin du nouveau module : {{new_module_path}}\n- Patron : async/await, interfaces typées, tests indépendants\n\n## Étape 3 : Faire le pont\n- Interface d\'adaptation : {{adapter_interface}}\n- But : laisser les anciens consommateurs fonctionner via l\'API legacy\n\n## Étape 4 : Filet de sécurité\n- Stratégie de retour arrière : {{rollback_strategy}}\n- Assure une bascule zéro risque pour chaque consommateur',
+      blanks: [
+        { id: 'old_module', answer: 'LegacyAuth', alternatives: ['legacy auth', 'auth module', 'old auth', 'le module auth'], placeholder: 'quel module ?', hint: 'Le module auth à base de callbacks référencé dans l\'exemple d\'adaptateur' },
+        { id: 'new_module_path', answer: 'packages/auth/src/modern-auth.ts', alternatives: ['packages/auth/src/modern.ts', 'packages/auth/modern-auth.ts', 'src/modern-auth.ts', 'packages/auth/'], placeholder: 'chemin du fichier ?', hint: 'Où vit la nouvelle implémentation async ?' },
+        { id: 'adapter_interface', answer: 'createLegacyAdapter', alternatives: ['legacy adapter', 'LegacyAdapter', 'adapter function', 'createAdapter', 'adaptateur legacy'], placeholder: 'nom de l\'adaptateur ?', hint: 'La fonction qui enveloppe ModernAuth dans l\'ancienne interface callback' },
+        { id: 'rollback_strategy', answer: 'revert to old module by removing adapter', alternatives: ['switch back to legacy', 'disable adapter', 'route back to old', 'feature flag to old module', 'revert the import', 'revenir à l\'ancien module'], placeholder: 'comment revenir en arrière ?', hint: 'Que fais-tu si le nouveau module a des problèmes ?' },
+      ],
+      explanation: 'Un plan strangler fig rend chaque étape explicite : quel module envelopper, où vit le nouveau code, comment les anciens consommateurs font le pont vers le nouveau code, et comment revenir en arrière en toute sécurité. Ça élimine l\'ambiguïté pour tout agent ou développeur exécutant la migration.',
+    },
+    {
+      type: 'match',
+      instruction: 'Associe chaque indicateur de reconstruction à sa décision recommandée :',
+      leftItems: ['Couverture de tests >80 %', 'Couverture de tests <20 %', 'Frontières de modules claires', 'État global partout'],
+      rightItems: ['Sûr de refactoriser de façon incrémentale', 'Envisager une réécriture complète', 'Strangler fig viable', 'Réécriture probablement nécessaire'],
+      correctPairs: { 0: 0, 1: 1, 2: 2, 3: 3 },
+      explanation: 'Une couverture de tests élevée signifie que tu peux refactoriser en toute sécurité — les tests attrapent les régressions immédiatement. Une faible couverture signifie qu\'une réécriture avec des tests dès le départ peut être plus sûre. Des frontières claires rendent le patron strangler fig viable. L\'état global signifie que le design lui-même est cassé et que l\'amélioration incrémentale est quasi impossible.',
+    },
+    {
+      type: 'code-diff',
+      title: 'Avant et après l\'enveloppement strangler fig',
+      body: 'Vois comment un module passe de l\'utilisation directe (couplage fort) à l\'utilisation via adaptateur (découplé et migrable).',
+      language: 'typescript',
+      filename: 'checkout-service.ts',
+      before: "// AVANT : Utilisation directe — checkout est couplé aux internals d'auth\nimport { authenticate, authorize } from '../auth/legacy-auth'\n\nasync function processCheckout(token: string, cartId: string) {\n  // Appel direct — si auth change de signature, checkout casse\n  authenticate(token, (err, user) => {\n    if (err) throw err\n    authorize(user!, 'checkout', (err, allowed) => {\n      if (err) throw err\n      if (!allowed) throw new Error('Forbidden')\n      // ... procéder au checkout\n    })\n  })\n}",
+      after: "// APRÈS : Patron adaptateur — checkout dépend de l'interface, pas de l'implémentation\nimport type { ModernAuth } from '@shop/auth'\n\nasync function processCheckout(\n  auth: ModernAuth,\n  token: string,\n  cartId: string\n) {\n  // Appel async propre — l'implémentation d'auth peut changer librement\n  const user = await auth.authenticate(token)\n  const allowed = await auth.authorize(user, 'checkout')\n  if (!allowed) throw new Error('Forbidden')\n  // ... procéder au checkout\n}",
+      question: 'Quelle amélioration structurelle le patron adaptateur apporte-t-il ?',
+      explanation: 'La version d\'avant importe directement des internals d\'auth — tout changement de signature dans auth casse checkout. La version d\'après dépend d\'une interface typée (ModernAuth). L\'implémentation réelle derrière cette interface peut être échangée (adaptateur legacy ou nouveau module) sans changer checkout du tout. C\'est le pouvoir fondamental du strangler fig : les consommateurs migrent à leur propre rythme.',
+    },
+
     // === WHEN TO ACTUALLY REWRITE ===
     {
       type: 'info',

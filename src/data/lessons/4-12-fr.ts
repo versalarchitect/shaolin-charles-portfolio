@@ -204,6 +204,47 @@ const content: LessonContent = {
       message: 'Phase 4 complétée : redesign documenté !',
     },
 
+    // === EXERCICES INTERACTIFS PHASE 4 ===
+    {
+      type: 'match',
+      instruction: 'Associe chaque phase de migration à son livrable principal :',
+      leftItems: ['Fondation', 'Extraction', 'Intégration', 'Vérification'],
+      rightItems: ['Types partagés + bus d\'événements', 'Implémentations spécifiques aux modules', 'Communication inter-modules', 'Suite de tests de bout en bout'],
+      correctPairs: { 0: 0, 1: 1, 2: 2, 3: 3 },
+      explanation: 'La fondation livre l\'infrastructure partagée (types et bus d\'événements) dont tout le reste dépend. L\'extraction produit des implémentations de modules indépendants. L\'intégration met en place la communication inter-modules via le bus d\'événements. La vérification confirme que le système découplé se comporte de façon identique au monolithe via des tests de bout en bout.',
+    },
+    {
+      type: 'compare',
+      title: 'Migration naïve vs Migration par phases',
+      body: 'Deux approches pour migrer le monolithe ShopFlow. L\'une est tentante. L\'autre fonctionne réellement.',
+      left: {
+        label: 'Naïve (Big Bang)',
+        content: 'Stratégie : Tout réécrire d\'un coup\n\nSemaines 1-4 : Construire les 6 packages simultanément\nSemaine 5 : Bascule big bang — ancien système éteint, nouveau allumé\n\nRisques :\n- Pas de repli si le nouveau système a des bogues\n- TOUT le trafic affecté par un seul bogue\n- Gel de fonctionnalités sur l\'ancien pendant la construction\n- Cas limites découverts seulement après la bascule\n- Retour arrière = redéployer tout le monolithe\n- Zéro confiance jusqu\'à ce que tout soit fini\n\nExpérience de l\'équipe : terrifiante\nTemps de retour arrière : heures à jours\nTaux de succès dans l\'industrie : ~30 %',
+        language: 'text',
+        filename: 'migration-naive.txt',
+      },
+      right: {
+        label: 'Par phases (Strangler Fig)',
+        content: 'Stratégie : Remplacement graduel avec adaptateurs\n\nSemaine 1 : Fondation (types + bus d\'événements)\nSemaine 2 : Extraire 4 domaines en parallèle\nSemaine 3 : Strangler fig pour Commandes\nSemaine 4 : Reconstruction Admin + vérification complète\n\nRisques :\n- Chaque phase a un retour arrière instantané\n- Les bogues n\'affectent que le trafic migré\n- L\'ancien système reste en ligne tout du long\n- Cas limites attrapés par module\n- Retour arrière = basculer un feature flag\n- La confiance se construit de façon incrémentale\n\nExpérience de l\'équipe : contrôlée\nTemps de retour arrière : < 5 minutes\nTaux de succès dans l\'industrie : ~85 %',
+        language: 'text',
+        filename: 'migration-phases.txt',
+      },
+      question: 'Quelle approche proposerais-tu pour la migration ShopFlow ?',
+      correctSide: 'right',
+      explanation: 'L\'approche par phases réussit ~85 % du temps vs ~30 % pour les réécritures big bang. Chaque phase est vérifiable et réversible indépendamment. L\'ancien système reste en ligne comme filet de sécurité. Avec les flottes d\'agents, l\'approche par phases est aussi rapide — 4 agents sur 4 extractions simultanément. Tu obtiens la vitesse d\'un big bang avec la sécurité d\'une migration incrémentale.',
+    },
+    {
+      type: 'code-diff',
+      title: 'Avant extraction vs après : le domaine Commandes',
+      body: 'Vois comment le module Commandes passe de participant monolithique à couplage fort à package isolé et déployable indépendamment.',
+      language: 'typescript',
+      filename: 'orders/checkout.ts',
+      before: "// AVANT : Monolithique — Commandes accède à chaque autre domaine\nimport { checkStock, reserveStock } from '../inventory/stock'\nimport { chargeCard } from '../payments/processor'\nimport { sendConfirmation } from '../notifications/email'\nimport { getUser } from '../auth/sessions'\n\nexport async function checkout(sessionId: string, cartId: string) {\n  const user = getUser(sessionId)\n  const cart = await loadCart(cartId)\n\n  // Couplage direct aux internals d'inventaire\n  for (const item of cart.items) {\n    if (!checkStock(item.sku, item.qty)) throw new Error('Rupture de stock')\n    reserveStock(item.sku, item.qty)\n  }\n\n  // Couplage direct aux internals de paiements\n  const charge = await chargeCard(user.paymentMethod, cart.total)\n\n  // Couplage direct aux internals de notifications\n  await sendConfirmation(user.email, cart, charge.receiptId)\n}",
+      after: "// APRÈS : Isolé — Commandes publie des événements, ne possède rien d'autre\nimport { eventBus } from '@shop/event-bus'\nimport type { OrderPlaced } from '@shop/shared-types'\n\nexport async function checkout(userId: string, cartId: string) {\n  const cart = await loadCart(cartId)\n\n  // Publier l'événement — inventaire, paiements, notifications\n  // chacun s'abonne et gère ses propres préoccupations\n  const event: OrderPlaced = {\n    type: 'OrderPlaced',\n    orderId: crypto.randomUUID(),\n    userId,\n    items: cart.items,\n    total: cart.total,\n    timestamp: new Date().toISOString(),\n  }\n\n  await eventBus.publish(event)\n\n  // Commandes ne gère que l'état des commandes — rien d'autre\n  return { orderId: event.orderId, status: 'processing' }\n}",
+      question: 'Quel est le changement structurel clé entre les deux versions ?',
+      explanation: 'La version d\'avant importe de 4 autres domaines — tout changement dans inventaire, paiements, notifications ou auth peut casser checkout. La version d\'après n\'importe que des types partagés et du bus d\'événements. Elle publie un événement OrderPlaced et laisse chaque domaine gérer ses propres préoccupations. Commandes ne sait plus et ne se soucie plus de comment le stock est vérifié, les paiements sont traités, ou les courriels sont envoyés. C\'est un vrai découplage.',
+    },
+
     // === PHASE 4 CONTINUED: TASK GRAPH ===
     {
       type: 'info',

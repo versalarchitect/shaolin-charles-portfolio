@@ -204,6 +204,46 @@ const content: LessonContent = {
       message: 'Stratégie de refactoring maîtrisée !',
     },
 
+    // === NEW INTERACTIVE STEPS ===
+    {
+      type: 'match',
+      instruction: 'Associez chaque concept de structure de projet au bénéfice qu\'il apporte aux agents IA :',
+      leftItems: ['Répertoires par fonctionnalité', 'Colocalisation', 'Frontières de modules claires', 'Exports index'],
+      rightItems: ['L\'IA trouve tout le code connexe en un seul listing', 'Les tests vivent à côté de l\'implémentation', 'Les agents peuvent travailler en parallèle sans conflits', 'L\'API publique est explicite'],
+      correctPairs: { 0: 0, 1: 1, 2: 2, 3: 3 },
+      explanation: 'Les répertoires par fonctionnalité signifient qu\'un seul listing révèle tous les fichiers connexes. La colocalisation garde les tests à côté du code qu\'ils valident. Les frontières de modules claires permettent aux agents de travailler sur des fonctionnalités séparées sans toucher les mêmes fichiers. Les exports index définissent une API publique explicite pour que les agents sachent ce qui est interne versus externe.',
+    },
+    {
+      type: 'prompt-lab',
+      instruction: 'Écrivez un prompt demandant à un agent IA de refactorer une structure de répertoires par couche vers une structure par fonctionnalité.',
+      scenario: 'Vous avez un projet Node.js organisé par couche technique : src/controllers/, src/services/, src/models/, src/validators/. Il y a 3 fonctionnalités : payments, users et orders. Chaque fonctionnalité a des fichiers dispersés dans les 4 répertoires. Vous voulez réorganiser en src/features/[domaine]/ avec des fichiers colocalisés.',
+      starterPrompt: 'Réorganise le projet.',
+      responses: [
+        {
+          triggerKeywords: ['feature', 'move', 'colocate', 'domain', 'fonctionnalité', 'déplacer', 'colocaliser', 'domaine'],
+          response: 'Je vais restructurer le projet en modules par fonctionnalité :\n\n1. Créer src/features/payments/, src/features/users/, src/features/orders/\n2. Déplacer le controller, service, model et validator de chaque domaine dans son répertoire de fonctionnalité\n3. Renommer les fichiers selon la convention [domain].[role].ts\n4. Ajouter un index.ts à chaque fonctionnalité exportant l\'API publique\n5. Mettre à jour tous les imports pour utiliser les chemins de fonctionnalité\n6. Colocaliser les tests à côté des fichiers d\'implémentation',
+          quality: 'excellent',
+          feedback: 'Excellent prompt. Vous avez spécifié la structure cible (par fonctionnalité), l\'action de migration (déplacer et renommer), et les conventions à suivre (nommage, exports index, tests colocalisés). Un agent peut exécuter ça sans ambiguïté.',
+        },
+        {
+          triggerKeywords: ['restructurer', 'organiser', 'grouper', 'reorganize', 'organize', 'group'],
+          response: 'Je vais réorganiser le code en regroupant les fichiers liés ensemble. Je vais créer de nouveaux répertoires et déplacer les fichiers pour améliorer la structure.',
+          quality: 'good',
+          feedback: 'Bonne direction mais manque de spécificité. L\'agent comprend l\'intention mais pourrait prendre des décisions structurelles différentes des vôtres. Spécifiez la structure cible exacte (src/features/[domain]/), les conventions de nommage, et que les tests doivent être colocalisés.',
+        },
+        {
+          triggerKeywords: ['nettoyer', 'améliorer', 'clean', 'improve', 'better'],
+          response: 'Je vais nettoyer la structure du projet et la rendre plus organisée. Laissez-moi examiner la codebase et suggérer des améliorations.',
+          quality: 'poor',
+          feedback: 'Trop vague. « Nettoyer » et « plus organisé » donnent à l\'agent toute latitude pour prendre des décisions arbitraires. Vous devez spécifier : le regroupement par fonctionnalité, le patron de répertoire exact, les conventions de nommage, et ce que « organisé » signifie dans votre contexte.',
+        },
+      ],
+      fallbackResponse: {
+        response: 'Je vais examiner le projet et faire quelques changements organisationnels basés sur les bonnes pratiques.',
+        feedback: 'Votre prompt a besoin de plus de direction. Incluez : (1) la structure cible (modules par fonctionnalité à src/features/[domain]/), (2) l\'action (déplacer les fichiers spécifiques au domaine hors des répertoires par couche), (3) les conventions de nommage ([domain].[role].ts), et (4) les exigences de colocalisation (tests à côté de l\'implémentation).',
+      },
+    },
+
     // === PRACTICAL EVALUATION ===
     {
       type: 'info',

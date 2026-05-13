@@ -150,6 +150,44 @@ const content: LessonContent = {
       message: 'Interface contracts mastered!',
     },
 
+    // === NEW INTERACTIVE STEPS ===
+    {
+      type: 'code-fill',
+      instruction: 'Complete this interface contract that two agents will share. Fill in the type names, field types, and return types so both agents can build independently.',
+      language: 'typescript',
+      template: '// Contract: Orders module → Payments module\n// Both agents build against this shared agreement.\n\nexport interface ___ {\n  orderId: ___\n  customerId: string\n  amountCents: ___\n  currency: \'USD\' | \'EUR\'\n  idempotencyKey: string\n}\n\nexport interface ___ {\n  success: boolean\n  transactionId?: string\n  failureReason?: ___\n}\n\nexport interface PaymentGateway {\n  charge(request: ChargeRequest): Promise<___>\n  refund(transactionId: string): Promise<ChargeResult>\n}',
+      blanks: [
+        { id: 'request-type', answer: 'ChargeRequest', alternatives: ['PaymentRequest', 'ChargePayload'], hint: 'Name describing a request to charge a payment', placeholder: 'TypeName' },
+        { id: 'id-type', answer: 'string', alternatives: [], hint: 'The standard type for identifiers', placeholder: 'type' },
+        { id: 'amount-type', answer: 'number', alternatives: ['int', 'integer'], hint: 'Monetary amounts in cents are whole numbers', placeholder: 'type' },
+        { id: 'result-type', answer: 'ChargeResult', alternatives: ['PaymentResult', 'ChargeResponse'], hint: 'Name describing the result of a charge operation', placeholder: 'TypeName' },
+        { id: 'reason-type', answer: 'string', alternatives: [], hint: 'Human-readable failure explanations are text', placeholder: 'type' },
+        { id: 'return-type', answer: 'ChargeResult', alternatives: ['PaymentResult', 'ChargeResponse'], hint: 'The charge method returns the same result type', placeholder: 'TypeName' },
+      ],
+      filename: 'src/contracts/order-payment.contract.ts',
+      explanation: 'Interface contracts define the exact types that flow between modules. Both the Orders agent and the Payments agent build against this contract independently. The Orders agent calls charge() with a ChargeRequest and expects a ChargeResult. The Payments agent implements charge() returning a ChargeResult. Neither needs to know the other\'s internal implementation.',
+    },
+    {
+      type: 'compare',
+      title: 'Shared mutable state vs contract-based isolation',
+      body: 'Two approaches to multi-agent coordination. One creates conflicts; the other enables true parallel work.',
+      left: {
+        label: 'Shared Mutable State (Conflicts)',
+        content: '// god-file.ts — BOTH agents edit this\nexport const config = { ... }\nexport const routes = [ ... ]\nexport type AllTypes = { ... }\n\n// Agent A adds payment routes here\n// Agent B adds order routes here\n// RESULT: merge conflict every time\n\n// Both agents must read the entire file\n// to understand what the other is doing.\n// Changes are interleaved and fragile.\n// One agent\'s edit can break the other\'s.',
+        language: 'typescript',
+        filename: 'god-file.ts',
+      },
+      right: {
+        label: 'Contract-Based Isolation (No Conflicts)',
+        content: '// contract.ts — defined ONCE by architect\nexport interface ChargeRequest { ... }\nexport interface ChargeResult { ... }\n\n// payments/payments.service.ts\n// Agent A ONLY touches this file\n// Implements the contract interface\n\n// orders/orders.service.ts\n// Agent B ONLY touches this file\n// Calls the contract interface\n\n// RESULT: zero conflicts, true parallel\n// Each agent owns their module entirely.\n// The contract is the only shared artifact.',
+        language: 'typescript',
+        filename: 'contract-isolation.ts',
+      },
+      question: 'Which approach lets two agents work simultaneously without ever editing the same file?',
+      correctSide: 'right',
+      explanation: 'Contract-based isolation means the architect defines the interface once, then each agent works exclusively within their own module. The contract file is read-only during implementation — neither agent modifies it. In contrast, shared mutable state forces both agents to edit the same file, guaranteeing merge conflicts.',
+    },
+
     // === ELIMINATING SHARED MUTABLE STATE ===
     {
       type: 'info',

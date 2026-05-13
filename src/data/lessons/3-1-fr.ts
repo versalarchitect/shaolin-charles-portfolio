@@ -275,6 +275,56 @@ Static content only.`,
       explanation: 'Fan-out parallélise le travail identique. Pipeline enchaîne les étapes séquentielles. La délégation spécialisée route par expertise. La redondance compétitive assure la qualité par la comparaison.',
     },
 
+    // === PROMPT LAB: DECOMPOSITION PROMPT ===
+    {
+      type: 'prompt-lab',
+      instruction: "Écrivez un prompt de décomposition qui divise la construction d'un tableau de bord SaaS en tâches adaptées aux agents avec des frontières claires.",
+      scenario: "Vous devez construire un tableau de bord SaaS avec authentification utilisateur, une page de visualisation de données, une couche API et une page de facturation. Écrivez un prompt pour répartir plusieurs agents en parallèle.",
+      starterPrompt: 'Construis le tableau de bord avec plusieurs agents.',
+      responses: [
+        {
+          triggerKeywords: ['owns', 'boundary', 'contract', 'file ownership', 'interface', 'possède', 'frontière', 'contrat', 'propriété'],
+          response: "Compris. Je répartis 4 agents avec propriété exclusive des fichiers :\n\n- Agent 1 (Auth) : src/auth/* — login, inscription, gestion de session\n- Agent 2 (API) : src/api/* — endpoints REST, types de réponse\n- Agent 3 (Dashboard) : src/dashboard/* — graphiques, tableaux, filtres\n- Agent 4 (Facturation) : src/billing/* — intégration Stripe, factures\n\nContrat partagé : src/types/contracts.ts (lecture seule pour tous les agents)\n\nDémarrage de l'exécution parallèle...",
+          quality: 'excellent',
+          feedback: "Vous avez spécifié les rôles des agents, les frontières de propriété des fichiers et les contrats partagés. Chaque agent a un périmètre clair et sans chevauchement. C'est de la décomposition de niveau production.",
+        },
+        {
+          triggerKeywords: ['agent', 'auth', 'api', 'dashboard', 'billing', 'facturation', 'tableau'],
+          response: "Je configure les agents :\n\n- Agent 1 : Construire l'authentification\n- Agent 2 : Construire l'API\n- Agent 3 : Construire l'interface du tableau de bord\n- Agent 4 : Construire la facturation\n\nDois-je définir les types partagés d'abord ? Quels fichiers chaque agent devrait-il posséder ?",
+          quality: 'good',
+          feedback: "Vous avez identifié les bons rôles d'agents, mais sans propriété explicite des fichiers et contrats, les agents posent des questions de suivi. Spécifiez quels répertoires chaque agent possède et définissez l'interface partagée en amont.",
+        },
+        {
+          triggerKeywords: ['construis', 'tableau', 'multiple', 'plusieurs'],
+          response: "Je vais construire tout le tableau de bord ! Je commence par l'auth, puis l'API, puis l'UI, puis la facturation. Je gère tout séquentiellement pour éviter les conflits.\n\nCréation de src/app/...",
+          quality: 'poor',
+          feedback: "Trop vague. L'agent est retombé sur l'exécution séquentielle car il n'y avait pas de frontières définies. Sans règles de propriété des fichiers, il ne peut pas paralléliser en sécurité. Spécifiez les rôles des agents, les répertoires possédés et les contrats partagés.",
+        },
+      ],
+      fallbackResponse: {
+        response: "Je vais construire le tableau de bord. Je déterminerai la répartition des agents au fur et à mesure...",
+        feedback: "Votre prompt a besoin de trois choses : (1) des rôles d'agents explicites avec des descriptions en une phrase, (2) des frontières de propriété des fichiers pour que les agents ne touchent jamais les mêmes fichiers, et (3) un fichier de contrats partagé que tous les agents lisent mais qu'aucun ne modifie.",
+      },
+    },
+
+    // === COMPARE: MONOLITHIQUE vs MULTI-AGENT ===
+    {
+      type: 'compare',
+      title: 'Agent unique vs flotte d\'agents',
+      body: 'La même construction de tableau de bord SaaS, deux approches. Un seul agent qui fait tout séquentiellement versus quatre agents travaillant en parallèle avec des frontières claires.',
+      question: 'Quelle approche finit plus vite avec moins de problèmes d\'intégration ?',
+      correctSide: 'right',
+      left: {
+        label: 'Agent unique (Séquentiel)',
+        content: "1. Construire l'auth (10 min)\n2. Construire l'API (10 min)\n3. Construire l'UI tableau de bord (12 min)\n4. Construire la facturation (8 min)\n5. Total : ~40 minutes\n\nRisques :\n- La fenêtre de contexte se remplit à l'étape 3\n- L'agent oublie les décisions antérieures\n- Un échec bloque tout\n- Aucun parallélisme possible",
+      },
+      right: {
+        label: 'Flotte d\'agents (Parallèle)',
+        content: "Phase 0 : Définir les contrats (5 min, vous)\nPhase 1 : 4 agents en parallèle (12 min)\n  - Agent Auth : src/auth/*\n  - Agent API : src/api/*\n  - Agent Dashboard : src/dashboard/*\n  - Agent Facturation : src/billing/*\nPhase 2 : Fusion d'intégration (3 min)\nTotal : ~20 minutes\n\nAvantages :\n- Chaque agent a un contexte focalisé\n- Les échecs sont isolés\n- 2x plus rapide en temps réel",
+      },
+      explanation: "L'approche en flotte est plus rapide car les tâches indépendantes s'exécutent simultanément. Chaque agent opère avec un contexte focalisé (pas d'épuisement du contexte), et les échecs d'un agent ne bloquent pas les autres. Le coût initial de définition des contrats se rentabilise largement.",
+    },
+
     // === HANDS-ON EXERCISE ===
     {
       type: 'info',

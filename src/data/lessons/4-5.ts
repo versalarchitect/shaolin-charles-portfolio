@@ -91,6 +91,68 @@ const content: LessonContent = {
       explanation: 'Scoring reveals exactly where agent-buildability breaks down. Auth has good boundaries (4/5) but poor isolation (2/5) because every module depends on it. Orders has terrible boundaries (2/5) because files are scattered. Payments with self-contained code and consistent patterns scores as agent-native. The scorecard directs your refactoring effort to the worst components first.',
     },
     {
+      type: 'match',
+      instruction: 'Match each AI-readiness factor to what it enables for agents:',
+      leftItems: [
+        'Clear module boundaries',
+        'Comprehensive test suite',
+        'Typed interfaces',
+        'Documentation',
+      ],
+      rightItems: [
+        'Agents can work in isolation',
+        'Agents can verify their own output',
+        'Agents understand expected shapes',
+        'Agents have context without reading everything',
+      ],
+      correctPairs: { 0: 0, 1: 1, 2: 2, 3: 3 },
+      explanation: 'Each readiness factor unlocks a specific agent capability. Clear boundaries let agents work without touching unrelated code. Tests let agents verify correctness autonomously. Types give agents the shape of data without reading implementation. Documentation provides context that would otherwise require tribal knowledge or reading the entire codebase.',
+    },
+    {
+      type: 'prompt-lab',
+      instruction: 'Write a prompt directing an agent to assess a codebase for AI-readiness. Be specific about what the agent should evaluate.',
+      scenario: 'You have inherited a mid-size TypeScript monolith and want to know how ready it is for agent-parallel development. Write a prompt that directs an agent to perform a thorough AI-readiness assessment.',
+      starterPrompt: 'Is this codebase AI-ready?',
+      responses: [
+        {
+          triggerKeywords: ['boundaries', 'modules', 'types', 'tests', 'typed', 'test coverage', 'module boundary'],
+          response: 'Excellent. I will assess along the key dimensions:\n\n1. **Module boundaries**: Checking feature directories, index.ts public APIs, import restrictions\n2. **Type coverage**: Scanning for `any` usage, untyped function parameters, missing return types\n3. **Test infrastructure**: Measuring coverage, checking for isolated test suites, mocking patterns\n4. **Documentation**: Looking for CLAUDE.md files, inline business rule docs, API contracts\n\nI will produce a scorecard with scores 1-5 for each dimension and specific remediation items for anything below 3.',
+          quality: 'excellent',
+          feedback: 'Outstanding. You specified concrete assessment criteria (boundaries, types, tests, docs) that map directly to the agent-buildability factors. The agent knows exactly what to evaluate and how to report findings.',
+        },
+        {
+          triggerKeywords: ['assess', 'evaluate', 'check', 'review', 'analyze', 'audit'],
+          response: 'I will review the codebase structure and provide my assessment of its readiness for AI-assisted development. Let me look at the overall architecture and code quality.',
+          quality: 'poor',
+          feedback: 'Too vague. "Review the codebase structure" gives the agent no criteria to evaluate against. Specify what readiness means: module boundaries, type coverage, test isolation, documentation quality. Without specific factors, the agent will produce generic observations instead of an actionable scorecard.',
+        },
+      ],
+      fallbackResponse: {
+        response: 'I will look at the codebase and assess whether it is ready for AI development.',
+        feedback: 'Your prompt needs specific assessment criteria. Mention the readiness factors: module boundaries (can agents find all files for a feature?), type safety (are interfaces typed?), test coverage (can agents verify their work?), and documentation (is tribal knowledge written down?). Specific criteria produce actionable assessments.',
+      },
+    },
+    {
+      type: 'compare',
+      title: 'AI-ready vs AI-hostile codebase',
+      body: 'See the structural differences between a codebase agents can work in effectively and one that will defeat them.',
+      left: {
+        label: 'AI-Hostile Codebase',
+        content: 'src/\n  utils.ts          (1200 lines, mixed concerns)\n  helpers.js        (untyped, no JSDoc)\n  app.ts            (monolithic entry point)\n  db.ts             (raw SQL, no schema types)\n  tests/\n    everything.test.ts (one giant test file)\n\n// No module boundaries\nimport { calcTotal, sendEmail, authCheck,\n  formatDate, validateOrder } from \'../utils\'\n\n// Untyped function\nfunction processOrder(data) {\n  // business rule: no cancel after ship\n  // (not documented anywhere else)\n  if (data.status === \'shipped\') return\n  // ... 200 lines of mixed concerns\n}',
+        language: 'typescript',
+        filename: 'ai-hostile.ts',
+      },
+      right: {
+        label: 'AI-Ready Codebase',
+        content: 'src/features/\n  orders/\n    orders.service.ts\n    orders.types.ts\n    orders.test.ts\n    CLAUDE.md          (business rules)\n    index.ts           (public API)\n  payments/\n    payments.service.ts\n    payments.types.ts\n    payments.test.ts\n    index.ts\n\n// Typed, bounded imports\nimport { placeOrder } from \'@/features/orders\'\nimport type { Order } from \'@/features/orders\'\n\n// Typed function with documented rules\nfunction processOrder(input: ProcessOrderInput): Result<Order> {\n  // State machine enforces valid transitions\n  return orderStateMachine.transition(input)\n}',
+        language: 'typescript',
+        filename: 'ai-ready.ts',
+      },
+      question: 'Which codebase can agents work in without tribal knowledge?',
+      correctSide: 'right',
+      explanation: 'The AI-ready codebase has every readiness factor: clear module boundaries (feature directories with index.ts), typed interfaces (ProcessOrderInput, Result<Order>), testable contracts (collocated tests per module), and documented knowledge (CLAUDE.md with business rules). An agent can find all order files in one directory, understand the interface from types alone, verify work with isolated tests, and learn business rules from documentation. The AI-hostile codebase requires a human to explain where things are, what types to expect, and what undocumented rules exist.',
+    },
+    {
       type: 'checkpoint',
       xp: 2,
       message: 'Methodology overview complete!',

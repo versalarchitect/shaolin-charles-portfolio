@@ -114,6 +114,43 @@ const content: LessonContent = {
       explanation: 'Named functions (getActiveItems, indexById) communicate intent. Each function does one thing and can be tested independently. The composition reads like prose: "index by ID the active items from data." The before version requires mental parsing of reduce with spread syntax.',
     },
     {
+      type: 'match',
+      instruction: 'Match each code quality to its indicator:',
+      leftItems: ['Elegant', 'Clever', 'Over-engineered', 'Simple'],
+      rightItems: [
+        'Readable by a new team member in 30 seconds',
+        'Impressive but requires mental gymnastics',
+        'Handles edge cases that don\'t exist yet',
+        'Does one thing and does it well',
+      ],
+      correctPairs: { 0: 0, 1: 1, 2: 2, 3: 3 },
+      explanation: 'Elegant code is immediately readable. Clever code impresses but burdens readers. Over-engineered code solves hypothetical problems. Simple code does one thing well. In production, elegant and simple win — they minimize cognitive overhead for every future reader and agent.',
+    },
+    {
+      type: 'prompt-lab',
+      instruction: 'Write a prompt asking an agent to refactor clever code into elegant code.',
+      scenario: 'An agent produced a dense one-liner that chains filter, reduce, and spread operations to transform an array into a grouped object. It works and passes tests, but no one on the team can read it without pausing for 30 seconds. You need to ask the agent to refactor it for readability.',
+      starterPrompt: 'This is fine.',
+      responses: [
+        {
+          triggerKeywords: ['named', 'function', 'readable', 'readability', 'clear', 'step'],
+          response: 'I\'ll refactor the one-liner into named functions with clear steps.\n\nPlan:\n1. Extract the filter into `getActiveItems()` with an explicit name\n2. Replace the reduce+spread with a simple for-of loop in `groupByCategory()`\n3. Compose the two: `groupByCategory(getActiveItems(data))`\n4. Each function gets a JSDoc comment explaining intent\n5. Add a unit test per function for independent verification\n\nRefactoring now...',
+          quality: 'excellent',
+          feedback: 'Excellent. You asked for named functions and readability, and the agent responded with a clear decomposition plan. Each function has a single responsibility, is independently testable, and the composition reads like prose.',
+        },
+        {
+          triggerKeywords: ['refactor', 'simplify', 'clean'],
+          response: 'I\'ll clean up the code. Should I:\n- Keep the reduce or switch to a loop?\n- Add comments to explain the one-liner?\n- Split into multiple lines?\n\nLet me know your preference.',
+          quality: 'good',
+          feedback: 'You indicated refactoring was needed, but the agent still has to ask clarifying questions. Specify what "elegant" means to you: named functions, single-responsibility steps, readable in 30 seconds by any team member.',
+        },
+      ],
+      fallbackResponse: {
+        response: 'The current implementation looks correct and all tests pass. The one-liner is efficient and handles the grouping logic in a single expression. I don\'t see any issues to fix.\n\nWould you like me to move on to the next task?',
+        feedback: 'Accepting the dense one-liner means every future reader (human or agent) will spend 30 seconds decoding it. A good prompt specifies: break this into named functions, each doing one thing, so anyone can read, debug, and modify it instantly. Taste demands readability over cleverness.',
+      },
+    },
+    {
       type: 'multiple-choice',
       question: 'Which quality makes the "elegant" version better for a production codebase?',
       options: [

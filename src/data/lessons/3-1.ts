@@ -275,6 +275,56 @@ Static content only.`,
       explanation: 'Fan-out parallelizes identical work. Pipeline chains sequential stages. Specialist delegation routes by expertise. Competitive redundancy ensures quality through comparison.',
     },
 
+    // === PROMPT LAB: DECOMPOSITION PROMPT ===
+    {
+      type: 'prompt-lab',
+      instruction: 'Write a decomposition prompt that breaks a SaaS dashboard build into agent-sized tasks with clear boundaries.',
+      scenario: 'You need to build a SaaS dashboard with user authentication, a data visualization page, an API layer, and a billing page. Write a prompt to dispatch multiple agents in parallel.',
+      starterPrompt: 'Build the dashboard with multiple agents.',
+      responses: [
+        {
+          triggerKeywords: ['owns', 'boundary', 'contract', 'file ownership', 'interface'],
+          response: "Understood. I'll dispatch 4 agents with exclusive file ownership:\n\n- Agent 1 (Auth): src/auth/* — login, signup, session management\n- Agent 2 (API): src/api/* — REST endpoints, response types\n- Agent 3 (Dashboard): src/dashboard/* — charts, tables, filters\n- Agent 4 (Billing): src/billing/* — Stripe integration, invoices\n\nShared contract: src/types/contracts.ts (read-only for all agents)\n\nStarting parallel execution...",
+          quality: 'excellent',
+          feedback: 'You specified agent roles, file ownership boundaries, and shared contracts. Each agent has a clear, non-overlapping scope. This is production-grade decomposition.',
+        },
+        {
+          triggerKeywords: ['agent', 'auth', 'api', 'dashboard', 'billing'],
+          response: "I'll set up the agents:\n\n- Agent 1: Build authentication\n- Agent 2: Build the API\n- Agent 3: Build the dashboard UI\n- Agent 4: Build billing\n\nShould I define the shared types first? Which files should each agent own?",
+          quality: 'good',
+          feedback: 'You identified the right agent roles, but without explicit file ownership and contracts, the agents will ask follow-up questions. Specify which directories each agent owns and define the shared interface upfront.',
+        },
+        {
+          triggerKeywords: ['build', 'dashboard', 'multiple'],
+          response: "I'll build the entire dashboard! Starting with auth, then the API, then the UI, then billing. I'll handle everything sequentially to avoid conflicts.\n\nCreating src/app/...",
+          quality: 'poor',
+          feedback: 'Too vague. The agent fell back to sequential execution because there were no boundaries defined. Without file ownership rules, it cannot safely parallelize. Specify agent roles, owned directories, and shared contracts.',
+        },
+      ],
+      fallbackResponse: {
+        response: "I'll build the dashboard. Let me figure out the agent split as I go...",
+        feedback: 'Your prompt needs three things: (1) explicit agent roles with one-sentence descriptions, (2) file ownership boundaries so agents never touch the same files, and (3) a shared contract file that all agents read but none modify.',
+      },
+    },
+
+    // === COMPARE: MONOLITHIC vs MULTI-AGENT ===
+    {
+      type: 'compare',
+      title: 'Single agent vs agent fleet',
+      body: 'The same SaaS dashboard build, two approaches. One agent doing everything sequentially versus four agents working in parallel with clear boundaries.',
+      question: 'Which approach finishes faster with fewer integration issues?',
+      correctSide: 'right',
+      left: {
+        label: 'Single Agent (Serial)',
+        content: "1. Build auth (10 min)\n2. Build API (10 min)\n3. Build dashboard UI (12 min)\n4. Build billing (8 min)\n5. Total: ~40 minutes\n\nRisks:\n- Context window fills up by step 3\n- Agent forgets early decisions\n- One failure blocks everything\n- No parallelism possible",
+      },
+      right: {
+        label: 'Agent Fleet (Parallel)',
+        content: "Phase 0: Define contracts (5 min, you)\nPhase 1: 4 agents in parallel (12 min)\n  - Auth agent: src/auth/*\n  - API agent: src/api/*\n  - Dashboard agent: src/dashboard/*\n  - Billing agent: src/billing/*\nPhase 2: Integration merge (3 min)\nTotal: ~20 minutes\n\nBenefits:\n- Each agent has focused context\n- Failures are isolated\n- 2x faster wall-clock time",
+      },
+      explanation: 'The fleet approach is faster because independent tasks run simultaneously. Each agent operates with focused context (no context exhaustion), and failures in one agent do not block others. The upfront cost of defining contracts pays for itself many times over.',
+    },
+
     // === HANDS-ON EXERCISE ===
     {
       type: 'info',

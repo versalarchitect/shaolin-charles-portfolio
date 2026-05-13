@@ -122,6 +122,44 @@ export default app`,
       before: 'export async function handleRequest(req: Request) {\n  const data = await fetchData(req.url)\n  return new Response(JSON.stringify(data))\n}',
       after: 'export async function handleRequest(req: Request) {\n  try {\n    console.log(`[API] Processing ${req.url}`)\n    const data = await fetchData(req.url)\n    console.log(`[API] Success: ${data.length} items`)\n    return new Response(JSON.stringify(data))\n  } catch (error) {\n    console.error(`[API] Failed: ${error.message}`)\n    return new Response(JSON.stringify({ error: error.message }), { status: 500 })\n  }\n}',
     },
+    // === COMPARE: RÉSOLUTION MANUELLE vs STRUCTURÉE ===
+    {
+      type: 'compare',
+      title: 'Résolution manuelle vs structurée',
+      body: "Deux approches pour le même conflit de fusion. La résolution manuelle lit les diffs ligne par ligne. La résolution structurée commence par comprendre l'intention de chaque agent avant de toucher au code.",
+      question: 'Quelle approche produit moins de régressions dans le résultat fusionné ?',
+      correctSide: 'right',
+      left: {
+        label: 'Manuelle (Ligne par ligne)',
+        content: "1. Ouvrir le fichier en conflit\n2. Lire les marqueurs <<<<<<< et >>>>>>>\n3. Examiner les deux versions à l'oeil\n4. Choisir les lignes qui « semblent correctes »\n5. Supprimer les marqueurs de conflit\n6. Espérer que rien ne casse\n\nRisques :\n- Rater l'intention subtile derrière un changement\n- Supprimer accidentellement un import nécessaire\n- Erreurs d'ordre (middleware après les routes)\n- Aucune vérification systématique",
+      },
+      right: {
+        label: 'Structurée (Intention d\'abord)',
+        content: "1. Lire le cahier des charges de l'Agent A : que voulait-il faire ?\n2. Lire le cahier des charges de l'Agent B : que voulait-il faire ?\n3. Classifier : additif, contradictoire ou structurel ?\n4. Fusionner en combinant les intentions, pas juste les lignes\n5. Vérifier : le résultat satisfait-il LES DEUX cahiers ?\n6. Tester le code fusionné\n\nAvantages :\n- La fusion consciente de l'intention détecte les dépendances cachées\n- L'ordre reflète le flux d'exécution réel\n- Vérification systématique contre les cahiers des charges",
+      },
+      explanation: "La résolution manuelle traite les conflits comme un problème de texte. La résolution structurée les traite comme un problème d'intention. Quand tu comprends POURQUOI chaque agent a fait ses changements, tu peux fusionner sémantiquement — en gardant la logique correcte, pas juste la syntaxe.",
+    },
+
+    // === MATCH: TYPES DE CONFLITS → STRATÉGIES ===
+    {
+      type: 'match',
+      instruction: 'Associe chaque type de conflit à la meilleure stratégie de résolution :',
+      leftItems: [
+        'Même ligne éditée différemment',
+        'Nouvelle fonction ajoutée par les deux agents',
+        'Conflits d\'imports',
+        'Différences de style/formatage',
+      ],
+      rightItems: [
+        'Garder les deux fonctions, renommer si collision de noms',
+        'Choisir la version sémantiquement correcte selon l\'intention',
+        'Fusionner les listes d\'imports (union des deux)',
+        'Appliquer les conventions du projet depuis le CLAUDE.md',
+      ],
+      correctPairs: { 0: 1, 1: 0, 2: 2, 3: 3 },
+      explanation: "Les éditions de la même ligne nécessitent de comprendre l'intention pour choisir la bonne version. Les fonctions en double sont généralement additives — garde les deux. Les conflits d'imports se résolvent presque toujours en fusionnant les listes. Les différences de style doivent suivre les conventions du projet, pas les préférences individuelles de chaque agent.",
+    },
+
     {
       type: 'checkpoint',
       xp: 5,

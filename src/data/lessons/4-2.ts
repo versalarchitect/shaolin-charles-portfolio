@@ -212,6 +212,57 @@ const content: LessonContent = {
       message: 'Anti-patterns recognized!',
     },
 
+    // === NEW INTERACTIVE STEPS ===
+    {
+      type: 'match',
+      instruction: 'Match each CLAUDE.md section to its purpose:',
+      leftItems: ['Conventions', 'Constraints', 'Anti-patterns', 'Architecture decisions'],
+      rightItems: ['How to name and structure', 'What technology limits apply', 'What to never do', 'Why things are the way they are'],
+      correctPairs: { 0: 0, 1: 1, 2: 2, 3: 3 },
+      explanation: 'Conventions tell agents HOW to name files, structure code, and format output consistently. Constraints define technology limits — approved libraries, performance budgets, security rules. Anti-patterns explicitly list what agents must NEVER do, even if it seems reasonable. Architecture decisions explain WHY the system is structured the way it is, giving agents context for future choices.',
+    },
+    {
+      type: 'prompt-lab',
+      instruction: 'Write CLAUDE.md conventions for a new TypeScript API project. The conventions must be specific and imperative enough that any agent would produce identical output.',
+      scenario: 'You are starting a new TypeScript REST API. You need to write the Conventions section of CLAUDE.md. The project uses feature-based modules, Zod for validation, Vitest for testing, and Drizzle ORM for database access. You want strict naming, no generic files, and colocated tests.',
+      starterPrompt: 'Add some rules to the project.',
+      responses: [
+        {
+          triggerKeywords: ['MUST', 'NEVER', 'ALL', 'naming', 'convention', '[domain]'],
+          response: '## Conventions\n\n### Naming\n- ALL feature files: [domain].[role].ts (e.g., payments.handler.ts)\n- ALL test files: [domain].test.ts, colocated in same directory\n- NEVER use generic names: utils.ts, helpers.ts, common.ts\n\n### Structure\n- New features: src/features/[domain-name]/\n- Each feature exports via index.ts\n- Tests MUST be colocated with implementation\n\n### Technology\n- Validation: Zod schemas ONLY\n- Testing: Vitest ONLY\n- Database: Drizzle ORM, no raw SQL',
+          quality: 'excellent',
+          feedback: 'Excellent. Your conventions use imperative language (MUST, NEVER, ALL, ONLY) that leaves zero ambiguity. You specified exact naming patterns, directory structure, and technology constraints. Any agent reading this will produce identical output.',
+        },
+        {
+          triggerKeywords: ['use', 'follow', 'structure', 'name'],
+          response: '## Conventions\n\n- Use feature-based directories\n- Name files descriptively\n- Use Zod and Vitest\n- Keep tests near code',
+          quality: 'good',
+          feedback: 'Right direction but too soft. "Use feature-based directories" does not specify the exact path pattern. "Name files descriptively" is subjective. Add imperative qualifiers (MUST, ALL, NEVER) and specify exact patterns like [domain].[role].ts.',
+        },
+        {
+          triggerKeywords: ['rules', 'guidelines', 'best practices'],
+          response: '## Guidelines\n\n- Try to keep things organized\n- Consider using TypeScript best practices\n- Follow common conventions',
+          quality: 'poor',
+          feedback: 'This will be ignored. "Try to", "consider", and "common conventions" are advisory language that agents interpret as optional. Rewrite with imperatives: specify exact naming patterns, mandatory tools, and explicit prohibitions.',
+        },
+      ],
+      fallbackResponse: {
+        response: '## Project Rules\n\n- Organize code well\n- Write good tests\n- Keep it clean',
+        feedback: 'Too vague to be useful. Effective CLAUDE.md conventions include: (1) exact naming patterns like [domain].[role].ts, (2) imperative language — MUST, NEVER, ALL, (3) explicit technology mandates — "Zod ONLY, no other validation library", and (4) directory structure rules — "New features go in src/features/[domain]/".',
+      },
+    },
+    {
+      type: 'code-diff',
+      title: 'Rewriting soft language into imperative commands',
+      body: 'Watch how vague, advisory CLAUDE.md conventions get rewritten into imperative commands that agents follow consistently.',
+      language: 'markdown',
+      filename: 'CLAUDE.md',
+      before: '## Conventions\n\n- Try to use camelCase for variable names\n- Consider organizing code by feature\n- We prefer Zod for validation but other options work\n- It would be nice to keep files small\n- You might want to colocate tests\n- Please avoid adding too many dependencies\n- Think about using structured logging',
+      after: '## Conventions\n\n- ALL variables use camelCase. No exceptions.\n- New features go in src/features/[domain]/. No other location.\n- Use Zod for ALL validation. No other library permitted.\n- No file exceeds 300 lines. Split at that threshold.\n- Tests MUST be colocated: [domain].test.ts in same directory.\n- NEVER add a dependency without explicit approval.\n- Use structured logger for ALL output. No console.log.',
+      question: 'What key transformation makes the AFTER version effective for agent coordination?',
+      explanation: 'Every "try to", "consider", "prefer", and "might want to" has been replaced with absolute imperatives: "ALL", "MUST", "NEVER", "No exceptions", "No other". Soft language gives agents permission to deviate. Imperative language gives orders. The AFTER version will produce identical agent behavior across sessions because there is no interpretation required.',
+    },
+
     // === PRACTICAL EXERCISE ===
     {
       type: 'info',

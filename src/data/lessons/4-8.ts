@@ -82,6 +82,62 @@ const content: LessonContent = {
       explanation: 'Each filled blank removes a decision the agent would otherwise make on its own. Technology choices prevent stack deliberation. Path boundaries prevent cross-feature coupling. Exclusions prevent scope creep. The more specific, the faster the agent executes.',
     },
 
+    // === PROMPT-LAB: CONSTRAINED SPEC ===
+    {
+      type: 'prompt-lab',
+      instruction: 'Write a constrained spec for a notification system. Specify the technology, file boundaries, and what is explicitly excluded. The more constraints you add, the faster the agent will execute.',
+      scenario: 'You need a notification system for your application. It should use Supabase Realtime for in-app notifications, be contained to a single directory, and must NOT include email, SMS, or push notification integration for this version. Write a spec that eliminates all agent deliberation.',
+      starterPrompt: 'Build notifications.',
+      responses: [
+        {
+          triggerKeywords: ['Supabase', 'only modify', 'no email', 'no SMS', 'no push', 'boundary', 'exclude', 'response time', 'performance', 'ms'],
+          response: 'Clear spec received. Implementing notification system with these constraints:\n\n1. Technology: Supabase Realtime subscriptions only\n2. Scope: src/features/notifications/ — all files here\n3. Excluded: email, SMS, push notifications, third-party services\n4. Interface: subscribe(userId) -> Observable<Notification>\n5. Storage: notifications table in Supabase\n\nStarting implementation with types, service, and subscription hook.',
+          quality: 'excellent',
+          feedback: 'Outstanding. You specified technology (Supabase Realtime), file boundary (single directory), scope exclusions (no email/SMS/push), and the agent can execute immediately with zero follow-up questions. Each constraint removed a decision point.',
+        },
+        {
+          triggerKeywords: ['notification', 'in-app', 'real-time', 'realtime', 'Supabase'],
+          response: 'I will build an in-app notification system. Let me clarify a few things:\n- Should I also handle email notifications?\n- What about push notifications for mobile?\n- Which directory should this live in?\n\nOnce you confirm, I will start implementation.',
+          quality: 'good',
+          feedback: 'You mentioned the technology but left gaps that caused follow-up questions. Add explicit exclusions ("no email, no SMS, no push") and file boundaries ("only modify src/features/notifications/") to eliminate all deliberation.',
+        },
+      ],
+      fallbackResponse: {
+        response: 'I will build a notification system. Let me explore the options:\n- In-app notifications via WebSocket or polling?\n- Email notifications via SendGrid or Resend?\n- Push notifications via Firebase?\n- Should I set up a notification preferences page?\n- Where should the notification logic live?\n\nThis is a big feature — let me draft an architecture doc first.',
+        feedback: 'The agent generated 5 questions and wants to write a design doc before any code. Your spec was too open-ended. Add constraints: "Use Supabase Realtime only. Only modify src/lib/notifications.ts. No email integration. No SMS. No push notifications. Max 100ms response time." Each constraint removes a question and gets you closer to immediate execution.',
+      },
+    },
+    {
+      type: 'match',
+      instruction: 'Match each constraint type to a concrete example:',
+      leftItems: [
+        'Technology constraint',
+        'File boundary',
+        'Scope exclusion',
+        'Performance budget',
+      ],
+      rightItems: [
+        'Use Supabase Realtime only',
+        'Only modify src/lib/notifications.ts',
+        'No email integration',
+        'Max 100ms response time',
+      ],
+      correctPairs: { 0: 0, 1: 1, 2: 2, 3: 3 },
+      explanation: 'Each constraint type eliminates a different category of agent deliberation. Technology constraints prevent stack exploration (the agent will not evaluate 5 WebSocket libraries). File boundaries prevent architectural decisions (the agent knows exactly where to write code). Scope exclusions prevent feature creep (no time wasted on email templates). Performance budgets prevent over-engineering (the agent will not add caching layers for a 100ms target).',
+    },
+    {
+      type: 'code-diff',
+      title: 'Tightening an open-ended spec',
+      body: 'See how an open-ended spec gets transformed into a constrained spec by adding specific constraints line by line.',
+      language: 'markdown',
+      filename: 'specs/notification-system.md',
+      before: "# Feature: Notification System\n\n## Description\nBuild a notification system for the app.\nUsers should be able to receive notifications.\n\n## Requirements\n- Users get notified about important events\n- Notifications should be reliable\n- Good user experience",
+      after: "# Feature: Notification System\n\n## Technology Constraints\n- Transport: Supabase Realtime subscriptions ONLY\n- Storage: notifications table in existing Supabase project\n- Frontend: React hook useNotifications() in src/hooks/\n\n## File Boundaries\n- Backend: src/lib/notifications.ts (single file)\n- Frontend: src/hooks/use-notifications.ts\n- Types: src/types/notifications.ts\n- NO new directories, NO new packages\n\n## Scope Exclusions (do NOT build)\n- No email notifications\n- No SMS or push notifications\n- No notification preferences UI\n- No notification grouping or batching\n- No read/unread tracking (v2)\n\n## Performance Budget\n- Notification delivery: < 500ms end-to-end\n- Hook re-render: < 16ms (one frame)\n- Max 50 notifications in memory per user",
+      question: 'How many decision points were eliminated by adding constraints?',
+      highlightLines: [3, 4, 5, 8, 9, 10, 11, 14, 15, 16, 17, 18, 21, 22, 23],
+      explanation: 'The constrained spec eliminates at least 12 decision points: transport choice, storage location, frontend pattern, file locations, directory structure, email support, SMS support, push support, preferences UI, grouping logic, read tracking, and performance targets. Each line removes a question the agent would otherwise ask or a choice it would make on its own — potentially incompatibly with your existing system.',
+    },
+
     // === MONOREPO BOUNDARIES ===
     {
       type: 'info',

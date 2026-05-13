@@ -179,6 +179,40 @@ const content: LessonContent = {
       correctOrder: [3, 1, 4, 2, 0],
     },
 
+    // === STAKEHOLDER MATCHING ===
+    {
+      type: 'match',
+      instruction: 'Match each stakeholder concern to the evidence type that addresses it:',
+      leftItems: ['Will it break production?', 'How much will it cost?', 'When will it ship?', 'Is it worth the investment?'],
+      rightItems: ['Test coverage + rollback plan', 'Time estimate + team allocation', 'Milestone timeline', 'ROI calculation with before/after metrics'],
+      correctPairs: { 0: 0, 1: 1, 2: 2, 3: 3 },
+      explanation: 'Each stakeholder concern maps to a specific evidence type. Production risk is addressed with test coverage and rollback plans. Cost concerns need concrete time and resource estimates. Timeline questions need milestones. Investment justification needs ROI with measurable before/after metrics. Preparing the right evidence for the right concern eliminates back-and-forth.',
+    },
+    {
+      type: 'prompt-lab',
+      instruction: 'Write a stakeholder update explaining a technical refactoring in business terms.',
+      scenario: 'You spent 2 weeks refactoring a monolith into independent modules using agent-first architecture. The CTO wants to know why it took 2 weeks and what the business got for it. You need to write an update that emphasizes business outcomes, not technical details.',
+      starterPrompt: 'We refactored the code.',
+      responses: [
+        {
+          triggerKeywords: ['faster', 'deploy', 'risk', 'cost', 'outcome', 'business', 'velocity', 'independently', 'parallel'],
+          response: 'Great update. Here\'s how I\'d structure the message to the CTO:\n\n**Subject: Architecture upgrade — 3x faster feature delivery, 60% fewer incidents**\n\nOver the past 2 weeks, we restructured the platform so teams can ship features independently. Key results:\n\n- **Deploy frequency**: 2x/week → 4x/day (each module deploys on its own)\n- **Incident risk**: Changes to billing can no longer break authentication (isolated blast radius)\n- **Feature velocity**: 3-5x faster development — work streams no longer block each other\n- **Cost**: $850 vs estimated $8,000 if done traditionally\n\nThe investment pays for itself within the first sprint through reduced coordination overhead alone.\n\nThis is a compelling business-first update.',
+          quality: 'excellent',
+          feedback: 'Excellent. You led with outcomes the CTO cares about: speed, risk reduction, and cost. The technical details (modules, agents, adapters) are invisible — the CTO sees business results. This is the translation skill that gets architecture funded.',
+        },
+        {
+          triggerKeywords: ['module', 'refactor', 'package', 'separate', 'improve'],
+          response: 'I can help draft that update. What specific metrics changed? Did deploy frequency improve? Any reduction in incidents? I\'ll need concrete numbers to make the case effectively.\n\nWhat business outcomes should I highlight?',
+          quality: 'good',
+          feedback: 'You recognized that metrics matter, which is better than "we refactored the code." But the prompt should already include the outcomes: deploy frequency improvement, incident reduction, cost comparison. Give the agent (or yourself) the data upfront so the update writes itself.',
+        },
+      ],
+      fallbackResponse: {
+        response: 'Here\'s the update:\n\n"We spent 2 weeks refactoring the monolith into independent packages with module boundaries enforced via eslint rules and Nx tags. Each package now has its own CLAUDE.md protocol, independent CI pipeline, and strangler fig adapters for legacy consumers. We used git worktrees for parallel agent execution and achieved 94% test coverage across all extracted modules."\n\nShall I add more technical details?',
+        feedback: 'This update is technically accurate but speaks only to engineers. The CTO hears: jargon, jargon, jargon. A good stakeholder update leads with business outcomes (faster shipping, fewer incidents, lower cost) and only mentions technical mechanisms if asked. Translate "module boundaries" into "teams work independently." Translate "94% coverage" into "60% fewer production bugs."',
+      },
+    },
+
     // === COMMON STAKEHOLDER PERSONAS ===
     {
       type: 'info',

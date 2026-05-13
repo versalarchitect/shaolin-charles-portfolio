@@ -114,6 +114,43 @@ const content: LessonContent = {
       explanation: 'Les fonctions nommées (getActiveItems, indexById) communiquent l\'intention. Chaque fonction fait une seule chose et peut être testée indépendamment. La composition se lit comme de la prose : « indexer par ID les éléments actifs des données ». La version d\'avant nécessite un décodage mental du reduce avec la syntaxe spread.',
     },
     {
+      type: 'match',
+      instruction: 'Associe chaque qualité de code à son indicateur :',
+      leftItems: ['Élégant', 'Rusé', 'Sur-ingéniéré', 'Simple'],
+      rightItems: [
+        'Lisible par un nouveau membre de l\'équipe en 30 secondes',
+        'Impressionnant mais demande de la gymnastique mentale',
+        'Gère des cas limites qui n\'existent pas encore',
+        'Fait une seule chose et la fait bien',
+      ],
+      correctPairs: { 0: 0, 1: 1, 2: 2, 3: 3 },
+      explanation: 'Le code élégant est immédiatement lisible. Le code rusé impressionne mais surcharge les lecteurs. Le code sur-ingéniéré résout des problèmes hypothétiques. Le code simple fait une seule chose bien. En production, l\'élégant et le simple gagnent — ils minimisent la surcharge cognitive pour chaque futur lecteur et agent.',
+    },
+    {
+      type: 'prompt-lab',
+      instruction: 'Écris un prompt demandant à un agent de refactoriser du code rusé en code élégant.',
+      scenario: 'Un agent a produit un one-liner dense qui enchaîne filter, reduce et spread pour transformer un tableau en objet groupé. Ça fonctionne et passe les tests, mais personne dans l\'équipe ne peut le lire sans s\'arrêter 30 secondes. Tu dois demander à l\'agent de le refactoriser pour la lisibilité.',
+      starterPrompt: 'C\'est correct.',
+      responses: [
+        {
+          triggerKeywords: ['named', 'function', 'readable', 'readability', 'clear', 'step', 'nommé', 'fonction', 'lisible', 'lisibilité', 'clair', 'étape'],
+          response: 'Je vais refactoriser le one-liner en fonctions nommées avec des étapes claires.\n\nPlan :\n1. Extraire le filter dans `getActiveItems()` avec un nom explicite\n2. Remplacer le reduce+spread par une simple boucle for-of dans `groupByCategory()`\n3. Composer les deux : `groupByCategory(getActiveItems(data))`\n4. Chaque fonction reçoit un commentaire JSDoc expliquant l\'intention\n5. Ajouter un test unitaire par fonction pour la vérification indépendante\n\nRefactorisation en cours...',
+          quality: 'excellent',
+          feedback: 'Excellent. Tu as demandé des fonctions nommées et de la lisibilité, et l\'agent a répondu avec un plan de décomposition clair. Chaque fonction a une seule responsabilité, est testable indépendamment, et la composition se lit comme de la prose.',
+        },
+        {
+          triggerKeywords: ['refactor', 'simplify', 'clean', 'refactoriser', 'simplifier', 'nettoyer'],
+          response: 'Je vais nettoyer le code. Devrais-je :\n- Garder le reduce ou passer à une boucle ?\n- Ajouter des commentaires pour expliquer le one-liner ?\n- Découper en plusieurs lignes ?\n\nDis-moi ta préférence.',
+          quality: 'good',
+          feedback: 'Tu as indiqué qu\'une refactorisation était nécessaire, mais l\'agent doit encore poser des questions de clarification. Spécifie ce que « élégant » signifie pour toi : fonctions nommées, étapes à responsabilité unique, lisible en 30 secondes par n\'importe quel membre de l\'équipe.',
+        },
+      ],
+      fallbackResponse: {
+        response: 'L\'implémentation actuelle semble correcte et tous les tests passent. Le one-liner est efficace et gère la logique de groupement en une seule expression. Je ne vois pas de problème à corriger.\n\nVoulez-vous que je passe à la tâche suivante ?',
+        feedback: 'Accepter le one-liner dense signifie que chaque futur lecteur (humain ou agent) passera 30 secondes à le décoder. Un bon prompt spécifie : décompose ça en fonctions nommées, chacune faisant une seule chose, pour que n\'importe qui puisse le lire, le déboguer et le modifier instantanément. Le goût exige la lisibilité plutôt que la ruse.',
+      },
+    },
+    {
       type: 'multiple-choice',
       question: 'Quelle qualité rend la version « élégante » meilleure pour une codebase de production ?',
       options: [

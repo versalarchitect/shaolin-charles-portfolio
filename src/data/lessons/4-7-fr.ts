@@ -149,6 +149,52 @@ const content: LessonContent = {
       explanation: 'Chaque scénario représente un cas où l\'agent optimise pour une bonne pratique générale en ignorant des contraintes spécifiques. NoSQL pour des données relationnelles ignore les besoins de structure de données. Le cache avant le profilage, c\'est de l\'optimisation prématurée. Les microservices pour une équipe de 3 ajoutent de la surcharge de coordination qui tue la vélocité.',
     },
 
+    // === PROMPT-LAB: OUTREPASSER UN MAUVAIS CONSEIL ===
+    {
+      type: 'prompt-lab',
+      instruction: 'Écris un prompt outrepassant un agent qui recommande avec confiance MongoDB pour une app qui a clairement besoin de jointures relationnelles. L\'agent a tort — tes données sont hautement relationnelles (utilisateurs, commandes, produits avec des relations many-to-many). Repousse avec un raisonnement spécifique.',
+      scenario: 'Tu construis une plateforme de commerce en ligne avec des utilisateurs, commandes, produits, catégories et avis — tous fortement interconnectés. Un agent recommande MongoDB parce que « ça s\'adapte mieux ». Tu sais que ces données sont profondément relationnelles et nécessiteront des jointures complexes pour les rapports, tableaux de bord et historiques de commandes. Outrepasse l\'agent avec une réponse claire et raisonnée.',
+      starterPrompt: 'Ça marche, utilise MongoDB.',
+      responses: [
+        {
+          triggerKeywords: ['PostgreSQL', 'relationnel', 'jointures', 'clé étrangère', 'SQL', 'normaliser', 'relations', 'relational', 'joins'],
+          response: 'Compris. Passage à PostgreSQL. Tu as raison que le modèle de données est fondamentalement relationnel :\n\n- Les utilisateurs ont plusieurs commandes (1:N)\n- Les commandes ont plusieurs produits (M:N via order_items)\n- Les produits appartiennent à des catégories (M:N)\n- Les avis lient les utilisateurs aux produits (M:N)\n\nMongoDB nécessiterait de la dénormalisation et des jointures au niveau applicatif, ajoutant complexité et risque d\'incohérence. PostgreSQL gère ça nativement avec les opérations JOIN et les contraintes de clé étrangère.\n\nJe vais configurer PostgreSQL avec un schéma propre, des index sur les clés étrangères et un outillage de migration.',
+          quality: 'excellent',
+          feedback: 'Outrepassement parfait. Tu as identifié les relations de données spécifiques (1:N, M:N) qui rendent ça relationnel, expliqué pourquoi MongoDB aurait du mal (dénormalisation, jointures applicatives), et dirigé l\'agent vers la bonne technologie avec un raisonnement. C\'est exactement comment l\'expertise du domaine outrepasse le biais d\'entraînement.',
+        },
+        {
+          triggerKeywords: ['pas MongoDB', 'tort', 'non', 'désaccord', 'différent', 'plutôt', 'not MongoDB', 'wrong', 'disagree'],
+          response: 'Je comprends que tu préfères une base de données différente. Peux-tu partager plus sur ce que tu voudrais utiliser à la place et pourquoi ?',
+          quality: 'good',
+          feedback: 'Tu as repoussé, ce qui est le bon instinct. Mais tu dois être plus spécifique. Explique POURQUOI MongoDB est le mauvais choix pour ce cas d\'usage : les données sont relationnelles (utilisateurs, commandes, produits avec clés étrangères), tu as besoin d\'opérations JOIN pour les rapports, et la dénormalisation causerait des incohérences de données. Nomme l\'alternative (PostgreSQL) et les raisons spécifiques.',
+        },
+      ],
+      fallbackResponse: {
+        response: 'Parfait, je vais configurer MongoDB avec des collections pour les utilisateurs, commandes et produits. Je vais intégrer les articles de commande directement dans les documents de commande pour des lectures rapides.',
+        feedback: 'Tu as accepté la recommandation de l\'agent sans repousser. Ce modèle de données est profondément relationnel — les utilisateurs ont des commandes, les commandes référencent des produits, les produits appartiennent à des catégories. MongoDB te forcerait à dénormaliser, dupliquer des données et implémenter les jointures dans le code applicatif. Outrepasse en spécifiant PostgreSQL et en expliquant la structure relationnelle : clés étrangères, opérations JOIN et exigences de cohérence des données.',
+      },
+    },
+    {
+      type: 'compare',
+      title: 'Céder au consensus des agents vs appliquer l\'expertise du domaine',
+      body: 'Quand tous les agents sont d\'accord sur MongoDB pour tes données clairement relationnelles, vois la différence entre céder et appliquer ton propre jugement.',
+      left: {
+        label: 'Céder au consensus des agents',
+        content: 'Toi : "Quelle base de données utiliser ?"\n\nAgent 1 : MongoDB — s\'adapte horizontalement\nAgent 2 : MongoDB — schéma flexible\nAgent 3 : MongoDB — choix populaire\n\nToi : "OK, MongoDB alors."\n\nRésultat après 3 mois :\n- 47 pipelines d\'agrégation remplaçant des JOINs SQL\n- Duplication de données dans 6 collections\n- 3 bugs d\'incohérence de données en production\n- Les rapports prennent 8 secondes (vs 200ms avec SQL)\n- Migration vers PostgreSQL coûte 3 semaines',
+        language: 'text',
+        filename: 'ceder.txt',
+      },
+      right: {
+        label: 'Appliquer l\'expertise du domaine',
+        content: 'Toi : "Quelle base de données utiliser ?"\n\nAgent 1 : MongoDB — s\'adapte horizontalement\nAgent 2 : MongoDB — schéma flexible\nAgent 3 : MongoDB — choix populaire\n\nToi : "Outrepassé. Les données sont relationnelles :\n  utilisateurs -> commandes -> produits (JOINs).\n  Utilise PostgreSQL."\n\nRésultat après 3 mois :\n- Schéma normalisé propre, 12 tables\n- Contraintes de clé étrangère préviennent les mauvaises données\n- Zéro bug d\'incohérence de données\n- Les rapports tournent en 180ms avec des JOINs indexés\n- Les migrations de schéma sont simples',
+        language: 'text',
+        filename: 'expertise-domaine.txt',
+      },
+      question: 'Quelle approche mène à un meilleur résultat pour des données relationnelles ?',
+      correctSide: 'right',
+      explanation: 'Le consensus des agents avait tort parce que les trois agents puisaient dans le même biais d\'entraînement (MongoDB est fréquemment recommandé pour la « mise à l\'échelle »). Ton expertise du domaine — savoir que les utilisateurs, commandes et produits sont intrinsèquement relationnels — l\'emporte sur trois recommandations identiques. Le résultat à 3 mois le prouve : le chemin de l\'outrepassement a zéro bug d\'incohérence de données et des rapports rapides, tandis que céder crée 47 agrégations de contournement et 3 bugs en production.',
+    },
+
     // === PRACTICAL SCENARIOS ===
     {
       type: 'info',

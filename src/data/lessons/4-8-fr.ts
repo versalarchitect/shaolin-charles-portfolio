@@ -82,6 +82,62 @@ const content: LessonContent = {
       explanation: 'Chaque blanc rempli supprime une décision que l\'agent prendrait seul. Les choix technologiques empêchent la délibération sur le stack. Les limites de chemin empêchent le couplage inter-fonctionnalités. Les exclusions empêchent le scope creep. Plus c\'est spécifique, plus l\'agent exécute vite.',
     },
 
+    // === PROMPT-LAB: SPEC CONTRAINTE ===
+    {
+      type: 'prompt-lab',
+      instruction: 'Écris une spec contrainte pour un système de notifications. Spécifie la technologie, les limites de fichiers et ce qui est explicitement exclu. Plus tu ajoutes de contraintes, plus l\'agent exécutera vite.',
+      scenario: 'Tu as besoin d\'un système de notifications pour ton application. Il devrait utiliser Supabase Realtime pour les notifications in-app, être contenu dans un seul répertoire, et ne doit PAS inclure l\'intégration email, SMS ou push notification pour cette version. Écris une spec qui élimine toute délibération de l\'agent.',
+      starterPrompt: 'Construis les notifications.',
+      responses: [
+        {
+          triggerKeywords: ['Supabase', 'modifier seulement', 'pas d\'email', 'pas de SMS', 'pas de push', 'limite', 'exclure', 'temps de réponse', 'performance', 'ms', 'only modify', 'no email', 'no SMS'],
+          response: 'Spec claire reçue. Implémentation du système de notifications avec ces contraintes :\n\n1. Technologie : Abonnements Supabase Realtime uniquement\n2. Portée : src/features/notifications/ — tous les fichiers ici\n3. Exclu : email, SMS, push notifications, services tiers\n4. Interface : subscribe(userId) -> Observable<Notification>\n5. Stockage : table notifications dans Supabase\n\nDébut de l\'implémentation avec types, service et hook d\'abonnement.',
+          quality: 'excellent',
+          feedback: 'Remarquable. Tu as spécifié la technologie (Supabase Realtime), la limite de fichiers (un seul répertoire), les exclusions de portée (pas d\'email/SMS/push), et l\'agent peut exécuter immédiatement avec zéro question de suivi. Chaque contrainte a supprimé un point de décision.',
+        },
+        {
+          triggerKeywords: ['notification', 'in-app', 'temps réel', 'realtime', 'Supabase'],
+          response: 'Je vais construire un système de notifications in-app. Laisse-moi clarifier quelques points :\n- Dois-je aussi gérer les notifications par email ?\n- Et les push notifications pour le mobile ?\n- Dans quel répertoire ça devrait vivre ?\n\nUne fois confirmé, je commence l\'implémentation.',
+          quality: 'good',
+          feedback: 'Tu as mentionné la technologie mais laissé des lacunes qui ont causé des questions de suivi. Ajoute des exclusions explicites (« pas d\'email, pas de SMS, pas de push ») et des limites de fichiers (« modifier seulement src/features/notifications/ ») pour éliminer toute délibération.',
+        },
+      ],
+      fallbackResponse: {
+        response: 'Je vais construire un système de notifications. Laisse-moi explorer les options :\n- Notifications in-app via WebSocket ou polling ?\n- Notifications par email via SendGrid ou Resend ?\n- Push notifications via Firebase ?\n- Dois-je créer une page de préférences de notification ?\n- Où la logique de notification devrait-elle vivre ?\n\nC\'est une grosse fonctionnalité — laisse-moi d\'abord rédiger un doc d\'architecture.',
+        feedback: 'L\'agent a généré 5 questions et veut écrire un document de conception avant tout code. Ta spec était trop ouverte. Ajoute des contraintes : « Utilise Supabase Realtime uniquement. Modifier seulement src/lib/notifications.ts. Pas d\'intégration email. Pas de SMS. Pas de push notifications. Temps de réponse max 100ms. » Chaque contrainte supprime une question et te rapproche de l\'exécution immédiate.',
+      },
+    },
+    {
+      type: 'match',
+      instruction: 'Associe chaque type de contrainte à un exemple concret :',
+      leftItems: [
+        'Contrainte technologique',
+        'Limite de fichier',
+        'Exclusion de portée',
+        'Budget de performance',
+      ],
+      rightItems: [
+        'Utiliser Supabase Realtime uniquement',
+        'Modifier seulement src/lib/notifications.ts',
+        'Pas d\'intégration email',
+        'Temps de réponse max 100ms',
+      ],
+      correctPairs: { 0: 0, 1: 1, 2: 2, 3: 3 },
+      explanation: 'Chaque type de contrainte élimine une catégorie différente de délibération de l\'agent. Les contraintes technologiques empêchent l\'exploration de stack (l\'agent n\'évaluera pas 5 bibliothèques WebSocket). Les limites de fichiers empêchent les décisions architecturales (l\'agent sait exactement où écrire le code). Les exclusions de portée empêchent le scope creep (pas de temps perdu sur des templates d\'email). Les budgets de performance empêchent la sur-ingénierie (l\'agent n\'ajoutera pas de couches de cache pour une cible de 100ms).',
+    },
+    {
+      type: 'code-diff',
+      title: 'Resserrer une spec ouverte',
+      body: 'Voyez comment une spec ouverte est transformée en spec contrainte en ajoutant des contraintes spécifiques ligne par ligne.',
+      language: 'markdown',
+      filename: 'specs/notification-system.md',
+      before: "# Feature: Notification System\n\n## Description\nBuild a notification system for the app.\nUsers should be able to receive notifications.\n\n## Requirements\n- Users get notified about important events\n- Notifications should be reliable\n- Good user experience",
+      after: "# Feature: Notification System\n\n## Technology Constraints\n- Transport: Supabase Realtime subscriptions ONLY\n- Storage: notifications table in existing Supabase project\n- Frontend: React hook useNotifications() in src/hooks/\n\n## File Boundaries\n- Backend: src/lib/notifications.ts (single file)\n- Frontend: src/hooks/use-notifications.ts\n- Types: src/types/notifications.ts\n- NO new directories, NO new packages\n\n## Scope Exclusions (do NOT build)\n- No email notifications\n- No SMS or push notifications\n- No notification preferences UI\n- No notification grouping or batching\n- No read/unread tracking (v2)\n\n## Performance Budget\n- Notification delivery: < 500ms end-to-end\n- Hook re-render: < 16ms (one frame)\n- Max 50 notifications in memory per user",
+      question: 'Combien de points de décision ont été éliminés en ajoutant des contraintes ?',
+      highlightLines: [3, 4, 5, 8, 9, 10, 11, 14, 15, 16, 17, 18, 21, 22, 23],
+      explanation: 'La spec contrainte élimine au moins 12 points de décision : choix de transport, emplacement de stockage, patron frontend, emplacements de fichiers, structure de répertoires, support email, support SMS, support push, UI de préférences, logique de groupement, suivi lu/non lu et cibles de performance. Chaque ligne supprime une question que l\'agent poserait autrement ou un choix qu\'il ferait seul — potentiellement de manière incompatible avec ton système existant.',
+    },
+
     // === MONOREPO BOUNDARIES ===
     {
       type: 'info',

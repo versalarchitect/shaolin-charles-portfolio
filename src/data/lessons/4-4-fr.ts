@@ -193,6 +193,58 @@ const content: LessonContent = {
       message: 'Liste de vérification de revue construite !',
     },
 
+    // === NEW INTERACTIVE STEPS ===
+    {
+      type: 'prompt-lab',
+      instruction: 'Écrivez un prompt rejetant la suggestion d\'architecture de l\'agent. L\'agent a suggéré d\'ajouter du cache Redis à votre API avant tout profilage de performance. Repoussez avec un raisonnement basé sur les preuves.',
+      scenario: 'Votre API sert 200 requêtes par minute avec un temps de réponse moyen de 45ms. L\'agent dit : « Ajoutons du cache Redis pour améliorer les performances. Je vais configurer une instance Redis, ajouter la logique cache-aside à tous les endpoints de lecture et implémenter l\'invalidation du cache sur les écritures. » Il n\'y a aucune preuve d\'un problème de performance.',
+      starterPrompt: 'Bonne idée, vas-y.',
+      responses: [
+        {
+          triggerKeywords: ['profiler', 'prématuré', 'preuve', 'mesurer', 'pas de preuve', 'pas lent', 'profile', 'premature', 'evidence', 'measure'],
+          response: 'Vous avez raison — je ne devrais pas optimiser sans preuve. Les temps de réponse actuels sont de 45ms en moyenne, bien dans la plage acceptable. Je vais passer le cache Redis pour l\'instant. Si le profilage révèle plus tard un goulot d\'étranglement, on pourra ajouter du cache ciblé à ce moment-là.',
+          quality: 'excellent',
+          feedback: 'Excellente résistance. Vous avez identifié ceci comme une optimisation prématurée en citant les données de performance réelles (45ms en moyenne) et en exigeant des preuves avant d\'ajouter de la complexité. C\'est exactement l\'état d\'esprit d\'évaluateur — rejeter les suggestions plausibles qui résolvent des problèmes qui n\'existent pas.',
+        },
+        {
+          triggerKeywords: ['attendre', 'plus tard', 'pas encore', 'reporter', 'wait', 'later', 'not yet', 'defer'],
+          response: 'Je vais mettre Redis en pause pour l\'instant et y revenir plus tard quand on aura plus de trafic.',
+          quality: 'good',
+          feedback: 'Bon instinct de reporter, mais votre raisonnement est faible. Au lieu de « plus tard quand on aura plus de trafic », citez les preuves spécifiques : les temps de réponse actuels sont de 45ms (bien sous tout seuil), et ajouter Redis introduit une complexité opérationnelle (un service supplémentaire à maintenir, des bugs d\'invalidation de cache, une dépendance de déploiement). Le rejet doit être basé sur les preuves.',
+        },
+        {
+          triggerKeywords: ['bonne idée', 'oui', 'fais-le', 'vas-y', 'sounds good', 'yes', 'do it', 'go ahead'],
+          response: 'Je vais configurer Redis avec le patron cache-aside sur tous les endpoints de lecture, implémenter une expiration basée sur le TTL et ajouter des hooks d\'invalidation de cache sur chaque opération d\'écriture.',
+          quality: 'poor',
+          feedback: 'Vous avez accepté une optimisation prématurée sans la questionner. L\'API répond en 45ms — il n\'y a pas de problème de performance à résoudre. Ajouter Redis signifie : une nouvelle dépendance d\'infrastructure, une complexité d\'invalidation de cache, des bugs potentiels de données périmées et un surcoût opérationnel. Demandez toujours : « Quelle preuve avons-nous que c\'est lent ? » avant d\'accepter des suggestions d\'optimisation.',
+        },
+      ],
+      fallbackResponse: {
+        response: 'Je vais implémenter le cache Redis comme suggéré, avec le patron cache-aside et une invalidation basée sur le TTL sur tous les endpoints.',
+        feedback: 'Vous devez résister. L\'agent résout un problème qui n\'existe pas (les temps de réponse de 45ms sont rapides). Un rejet efficace inclut : (1) citer les métriques réelles — « les temps de réponse sont de 45ms, bien dans notre cible de 200ms », (2) nommer l\'anti-patron — « c\'est de l\'optimisation prématurée », (3) énoncer le coût — « Redis ajoute de la complexité d\'infrastructure et un risque d\'invalidation de cache », (4) définir le déclencheur — « profilez d\'abord, optimisez seulement les goulots d\'étranglement mesurés. »',
+      },
+    },
+    {
+      type: 'compare',
+      title: 'Accepter aveuglément vs évaluer critiquement les suggestions d\'agent',
+      body: 'L\'agent suggère d\'ajouter du cache Redis. Voyez la différence entre accepter sans preuve et résister avec des données.',
+      left: {
+        label: 'Acceptation aveugle',
+        content: 'Agent : « Ajouter du cache Redis »\nVous : « Bonne idée, vas-y »\n\nRésultat :\n- Serveur Redis ajouté à l\'infrastructure\n- Logique cache-aside dans chaque endpoint\n- Invalidation de cache sur chaque écriture\n- Gestion TTL sur 12 endpoints\n- Nouveau mode de défaillance : bugs de\n  données périmées\n- Nouvelle dépendance : Redis doit tourner\n- Surcoût DevOps : monitoring, sauvegardes\n- Coût total : ~40 heures de travail\n\nGain réel : 45ms → 8ms\nLes utilisateurs l\'ont remarqué ? Non.\nEst-ce que 45ms était un problème ? Non.',
+        language: 'text',
+        filename: 'blind-acceptance.txt',
+      },
+      right: {
+        label: 'Évaluation critique',
+        content: 'Agent : « Ajouter du cache Redis »\nVous : « Quelle preuve dit que c\'est lent ? »\n\nÉvaluation :\n- Réponse actuelle : 45ms en moyenne\n- SLA cible : 200ms p95\n- 45ms est 4,4x sous la cible\n- Aucune plainte utilisateur sur la vitesse\n- Profil montre : 90% du temps en requête DB\n\nVerdict : REJETER optimisation prématurée\n- Si la DB devient goulot : ajouter un index\n- Si ça ne suffit pas : ajouter un réplica\n- Si ça ne suffit pas : alors considérer le\n  cache\n\nCoût total : 5 minutes d\'évaluation\nRésultat : zéro complexité inutile',
+        language: 'text',
+        filename: 'critical-evaluation.txt',
+      },
+      question: 'Quelle approche prévient la complexité inutile tout en gardant l\'option d\'optimiser plus tard ?',
+      correctSide: 'right',
+      explanation: 'L\'évaluation critique coûte 5 minutes et prévient 40 heures de travail inutile. La clé est d\'exiger des preuves avant l\'optimisation : métriques actuelles (45ms), SLA cible (200ms), et un chemin d\'escalade basé sur le profilage (index, puis réplica, puis cache). L\'acceptation aveugle ajoute une complexité opérationnelle permanente pour résoudre un problème qui n\'existe pas.',
+    },
+
     // === OVERRIDE SCENARIOS ===
     {
       type: 'info',

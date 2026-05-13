@@ -204,6 +204,46 @@ const content: LessonContent = {
       message: 'Refactoring strategy mastered!',
     },
 
+    // === NEW INTERACTIVE STEPS ===
+    {
+      type: 'match',
+      instruction: 'Match each project structure concept to the benefit it provides for AI agents:',
+      leftItems: ['Feature-based directories', 'Colocation', 'Clear module boundaries', 'Index exports'],
+      rightItems: ['AI finds all related code in one listing', 'Tests live next to implementation', 'Agents can work in parallel without conflicts', 'Public API is explicit'],
+      correctPairs: { 0: 0, 1: 1, 2: 2, 3: 3 },
+      explanation: 'Feature-based directories mean one listing reveals all related files. Colocation keeps tests next to the code they validate. Clear module boundaries let agents work on separate features without touching the same files. Index exports define an explicit public API so agents know what is internal versus external.',
+    },
+    {
+      type: 'prompt-lab',
+      instruction: 'Write a prompt directing an AI agent to refactor from a layer-based directory structure to a feature-based structure.',
+      scenario: 'You have a Node.js project organized by technical layer: src/controllers/, src/services/, src/models/, src/validators/. There are 3 features: payments, users, and orders. Each feature has files scattered across all 4 directories. You want to reorganize into src/features/[domain]/ with colocated files.',
+      starterPrompt: 'Reorganize the project.',
+      responses: [
+        {
+          triggerKeywords: ['feature', 'move', 'colocate', 'domain'],
+          response: 'I will restructure the project into feature-based modules:\n\n1. Create src/features/payments/, src/features/users/, src/features/orders/\n2. Move each domain\'s controller, service, model, and validator into its feature directory\n3. Rename files to follow [domain].[role].ts convention\n4. Add index.ts to each feature exporting the public API\n5. Update all imports to use feature paths\n6. Colocate tests next to implementation files',
+          quality: 'excellent',
+          feedback: 'Excellent prompt. You specified the target structure (feature-based), the migration action (move and rename), and the conventions to follow (naming, index exports, colocated tests). An agent can execute this without ambiguity.',
+        },
+        {
+          triggerKeywords: ['restructure', 'organize', 'group'],
+          response: 'I\'ll reorganize the code by grouping related files together. I\'ll create new directories and move files around to improve the structure.',
+          quality: 'good',
+          feedback: 'Decent direction but lacks specifics. The agent understands the intent but might make different structural decisions than you expect. Specify the exact target structure (src/features/[domain]/), naming conventions, and that tests should be colocated.',
+        },
+        {
+          triggerKeywords: ['clean', 'improve', 'better'],
+          response: 'I\'ll clean up the project structure and make it more organized. Let me look at the codebase and suggest improvements.',
+          quality: 'poor',
+          feedback: 'Too vague. "Clean up" and "more organized" give the agent full latitude to make arbitrary decisions. You need to specify: feature-based grouping, the exact directory pattern, naming conventions, and what "organized" means in your context.',
+        },
+      ],
+      fallbackResponse: {
+        response: 'I\'ll look at the project and make some organizational changes based on best practices.',
+        feedback: 'Your prompt needs more direction. Include: (1) the target structure (feature-based modules at src/features/[domain]/), (2) the action (move domain-specific files out of layer directories), (3) naming conventions ([domain].[role].ts), and (4) colocation requirements (tests next to implementation).',
+      },
+    },
+
     // === PRACTICAL EVALUATION ===
     {
       type: 'info',

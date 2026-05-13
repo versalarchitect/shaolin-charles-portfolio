@@ -91,6 +91,68 @@ const content: LessonContent = {
       explanation: 'La notation révèle exactement où la constructibilité par agent se dégrade. Auth a de bonnes frontières (4/5) mais une mauvaise isolation (2/5) parce que chaque module en dépend. Commandes a des frontières terribles (2/5) parce que les fichiers sont dispersés. Paiements avec du code autonome et des patrons cohérents obtient un score agent-native. La fiche de scores dirige votre effort de refactoring vers les pires composants en premier.',
     },
     {
+      type: 'match',
+      instruction: 'Associez chaque facteur de préparation à l\'IA à ce qu\'il permet aux agents :',
+      leftItems: [
+        'Frontières de modules claires',
+        'Suite de tests complète',
+        'Interfaces typées',
+        'Documentation',
+      ],
+      rightItems: [
+        'Les agents peuvent travailler en isolation',
+        'Les agents peuvent vérifier leur propre sortie',
+        'Les agents comprennent les formes attendues',
+        'Les agents ont le contexte sans tout lire',
+      ],
+      correctPairs: { 0: 0, 1: 1, 2: 2, 3: 3 },
+      explanation: 'Chaque facteur de préparation débloque une capacité spécifique de l\'agent. Des frontières claires permettent aux agents de travailler sans toucher du code non relié. Les tests permettent aux agents de vérifier la justesse de façon autonome. Les types donnent aux agents la forme des données sans lire l\'implémentation. La documentation fournit le contexte qui nécessiterait sinon des connaissances tribales ou la lecture de toute la codebase.',
+    },
+    {
+      type: 'prompt-lab',
+      instruction: 'Écrivez un prompt dirigeant un agent pour évaluer la préparation à l\'IA d\'une codebase. Soyez précis sur ce que l\'agent doit évaluer.',
+      scenario: 'Vous avez hérité d\'un monolithe TypeScript de taille moyenne et vous voulez savoir s\'il est prêt pour le développement parallèle par agents. Écrivez un prompt qui dirige un agent pour effectuer une évaluation approfondie de la préparation à l\'IA.',
+      starterPrompt: 'Est-ce que cette codebase est prête pour l\'IA ?',
+      responses: [
+        {
+          triggerKeywords: ['frontières', 'modules', 'types', 'tests', 'typé', 'couverture', 'frontière de module', 'boundaries', 'typed'],
+          response: 'Excellent. J\'évaluerai selon les dimensions clés :\n\n1. **Frontières de modules** : Vérification des répertoires de fonctionnalités, APIs publiques index.ts, restrictions d\'import\n2. **Couverture de types** : Scan des usages de `any`, paramètres de fonctions non typés, types de retour manquants\n3. **Infrastructure de tests** : Mesure de la couverture, vérification des suites de tests isolées, patrons de mocking\n4. **Documentation** : Recherche de fichiers CLAUDE.md, docs de règles métier en ligne, contrats d\'API\n\nJe produirai une fiche de scores avec des notes 1-5 pour chaque dimension et des éléments de remédiation spécifiques pour tout ce qui est en dessous de 3.',
+          quality: 'excellent',
+          feedback: 'Remarquable. Vous avez spécifié des critères d\'évaluation concrets (frontières, types, tests, docs) qui correspondent directement aux facteurs de constructibilité par agent. L\'agent sait exactement quoi évaluer et comment rapporter ses conclusions.',
+        },
+        {
+          triggerKeywords: ['évaluer', 'vérifier', 'analyser', 'auditer', 'examiner', 'assess', 'check'],
+          response: 'Je vais examiner la structure de la codebase et fournir mon évaluation de sa préparation au développement assisté par IA. Laissez-moi regarder l\'architecture globale et la qualité du code.',
+          quality: 'poor',
+          feedback: 'Trop vague. « Examiner la structure de la codebase » ne donne à l\'agent aucun critère d\'évaluation. Spécifiez ce que signifie la préparation : frontières de modules, couverture de types, isolation des tests, qualité de la documentation. Sans facteurs spécifiques, l\'agent produira des observations génériques au lieu d\'une fiche de scores actionnable.',
+        },
+      ],
+      fallbackResponse: {
+        response: 'Je vais regarder la codebase et évaluer si elle est prête pour le développement par IA.',
+        feedback: 'Votre prompt a besoin de critères d\'évaluation spécifiques. Mentionnez les facteurs de préparation : frontières de modules (les agents peuvent-ils trouver tous les fichiers d\'une fonctionnalité ?), sécurité des types (les interfaces sont-elles typées ?), couverture de tests (les agents peuvent-ils vérifier leur travail ?), et documentation (les connaissances tribales sont-elles écrites ?). Des critères spécifiques produisent des évaluations actionnables.',
+      },
+    },
+    {
+      type: 'compare',
+      title: 'Codebase prête pour l\'IA vs hostile à l\'IA',
+      body: 'Voyez les différences structurelles entre une codebase dans laquelle les agents peuvent travailler efficacement et une qui les mettra en échec.',
+      left: {
+        label: 'Codebase hostile à l\'IA',
+        content: 'src/\n  utils.ts          (1200 lignes, responsabilités mélangées)\n  helpers.js        (non typé, pas de JSDoc)\n  app.ts            (point d\'entrée monolithique)\n  db.ts             (SQL brut, pas de types de schéma)\n  tests/\n    everything.test.ts (un seul fichier de test géant)\n\n// Pas de frontières de modules\nimport { calcTotal, sendEmail, authCheck,\n  formatDate, validateOrder } from \'../utils\'\n\n// Fonction non typée\nfunction processOrder(data) {\n  // règle métier : pas d\'annulation après expédition\n  // (documenté nulle part ailleurs)\n  if (data.status === \'shipped\') return\n  // ... 200 lignes de responsabilités mélangées\n}',
+        language: 'typescript',
+        filename: 'ai-hostile.ts',
+      },
+      right: {
+        label: 'Codebase prête pour l\'IA',
+        content: 'src/features/\n  orders/\n    orders.service.ts\n    orders.types.ts\n    orders.test.ts\n    CLAUDE.md          (règles métier)\n    index.ts           (API publique)\n  payments/\n    payments.service.ts\n    payments.types.ts\n    payments.test.ts\n    index.ts\n\n// Imports typés et bornés\nimport { placeOrder } from \'@/features/orders\'\nimport type { Order } from \'@/features/orders\'\n\n// Fonction typée avec règles documentées\nfunction processOrder(input: ProcessOrderInput): Result<Order> {\n  // La machine à états applique les transitions valides\n  return orderStateMachine.transition(input)\n}',
+        language: 'typescript',
+        filename: 'ai-ready.ts',
+      },
+      question: 'Quelle codebase permet aux agents de travailler sans connaissances tribales ?',
+      correctSide: 'right',
+      explanation: 'La codebase prête pour l\'IA a chaque facteur de préparation : frontières de modules claires (répertoires de fonctionnalités avec index.ts), interfaces typées (ProcessOrderInput, Result<Order>), contrats testables (tests colocalisés par module), et connaissances documentées (CLAUDE.md avec les règles métier). Un agent peut trouver tous les fichiers de commande dans un seul répertoire, comprendre l\'interface à partir des types seuls, vérifier son travail avec des tests isolés, et apprendre les règles métier depuis la documentation. La codebase hostile à l\'IA nécessite un humain pour expliquer où sont les choses, quels types attendre et quelles règles non documentées existent.',
+    },
+    {
       type: 'checkpoint',
       xp: 2,
       message: 'Vue d\'ensemble de la méthodologie complète !',

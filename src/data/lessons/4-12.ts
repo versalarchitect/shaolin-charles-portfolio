@@ -204,6 +204,47 @@ const content: LessonContent = {
       message: 'Phase 4 complete: redesign documented!',
     },
 
+    // === PHASE 4 INTERACTIVE EXERCISES ===
+    {
+      type: 'match',
+      instruction: 'Match each migration phase to its primary deliverable:',
+      leftItems: ['Foundation', 'Extraction', 'Integration', 'Verification'],
+      rightItems: ['Shared types + event bus', 'Module-specific implementations', 'Cross-module communication', 'End-to-end test suite'],
+      correctPairs: { 0: 0, 1: 1, 2: 2, 3: 3 },
+      explanation: 'Foundation delivers the shared infrastructure (types and event bus) everything else depends on. Extraction produces independent module implementations. Integration wires cross-module communication through the event bus. Verification confirms the decoupled system behaves identically to the monolith via end-to-end tests.',
+    },
+    {
+      type: 'compare',
+      title: 'Naive migration vs Phased migration',
+      body: 'Two approaches to migrating the ShopFlow monolith. One is tempting. The other actually works.',
+      left: {
+        label: 'Naive (Big Bang)',
+        content: 'Strategy: Rewrite everything at once\n\nWeek 1-4: Build all 6 packages simultaneously\nWeek 5: Big bang cutover — old system off, new on\n\nRisks:\n- No fallback if new system has bugs\n- ALL traffic affected by any single bug\n- Feature freeze on old system during build\n- Edge cases discovered only after cutover\n- Rollback = re-deploy entire monolith\n- Zero confidence until everything is done\n\nTeam experience: terrifying\nRollback time: hours to days\nSuccess rate in industry: ~30%',
+        language: 'text',
+        filename: 'naive-migration.txt',
+      },
+      right: {
+        label: 'Phased (Strangler Fig)',
+        content: 'Strategy: Gradual replacement with adapters\n\nWeek 1: Foundation (types + event bus)\nWeek 2: Extract 4 domains in parallel\nWeek 3: Strangler fig for Orders\nWeek 4: Admin rebuild + full verification\n\nRisks:\n- Each phase has instant rollback\n- Bugs affect only migrated traffic\n- Old system stays live throughout\n- Edge cases caught per-module\n- Rollback = flip one feature flag\n- Confidence builds incrementally\n\nTeam experience: controlled\nRollback time: < 5 minutes\nSuccess rate in industry: ~85%',
+        language: 'text',
+        filename: 'phased-migration.txt',
+      },
+      question: 'Which approach would you propose for the ShopFlow migration?',
+      correctSide: 'right',
+      explanation: 'The phased approach succeeds ~85% of the time vs ~30% for big bang rewrites. Each phase is independently verifiable and rollbackable. The old system stays live as a safety net. With agent fleets, the phased approach is also fast — 4 agents on 4 extractions simultaneously. You get the speed of a big bang with the safety of incremental migration.',
+    },
+    {
+      type: 'code-diff',
+      title: 'Before extraction vs after: the Orders domain',
+      body: 'See how the Orders module transforms from a tightly coupled monolith participant into an isolated, independently deployable package.',
+      language: 'typescript',
+      filename: 'orders/checkout.ts',
+      before: "// BEFORE: Monolithic — Orders reaches into every other domain\nimport { checkStock, reserveStock } from '../inventory/stock'\nimport { chargeCard } from '../payments/processor'\nimport { sendConfirmation } from '../notifications/email'\nimport { getUser } from '../auth/sessions'\n\nexport async function checkout(sessionId: string, cartId: string) {\n  const user = getUser(sessionId)\n  const cart = await loadCart(cartId)\n\n  // Direct coupling to inventory internals\n  for (const item of cart.items) {\n    if (!checkStock(item.sku, item.qty)) throw new Error('Out of stock')\n    reserveStock(item.sku, item.qty)\n  }\n\n  // Direct coupling to payments internals\n  const charge = await chargeCard(user.paymentMethod, cart.total)\n\n  // Direct coupling to notifications internals\n  await sendConfirmation(user.email, cart, charge.receiptId)\n}",
+      after: "// AFTER: Isolated — Orders publishes events, owns nothing else\nimport { eventBus } from '@shop/event-bus'\nimport type { OrderPlaced } from '@shop/shared-types'\n\nexport async function checkout(userId: string, cartId: string) {\n  const cart = await loadCart(cartId)\n\n  // Publish event — inventory, payments, notifications\n  // each subscribe and handle their own concerns\n  const event: OrderPlaced = {\n    type: 'OrderPlaced',\n    orderId: crypto.randomUUID(),\n    userId,\n    items: cart.items,\n    total: cart.total,\n    timestamp: new Date().toISOString(),\n  }\n\n  await eventBus.publish(event)\n\n  // Orders only manages order state — nothing else\n  return { orderId: event.orderId, status: 'processing' }\n}",
+      question: 'What is the key structural change between the two versions?',
+      explanation: 'The before version imports from 4 other domains — any change in inventory, payments, notifications, or auth can break checkout. The after version imports only from shared types and the event bus. It publishes an OrderPlaced event and lets each domain handle its own concerns. Orders no longer knows or cares how stock is checked, payments are processed, or emails are sent. This is true decoupling.',
+    },
+
     // === PHASE 4 CONTINUED: TASK GRAPH ===
     {
       type: 'info',
