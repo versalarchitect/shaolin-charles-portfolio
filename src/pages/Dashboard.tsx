@@ -138,7 +138,7 @@ function LeaderboardPreview() {
                 {entry.display_name || 'Anonymous'}
               </span>
               <span className="text-xs font-mono text-foreground/50">
-                {entry.total_xp.toLocaleString()} XP
+                {(entry.total_xp ?? 0).toLocaleString()} XP
               </span>
             </div>
           ))}

@@ -111,7 +111,7 @@ export function Leaderboard({ entries, currentUserId, title, loading }: Leaderbo
               initial={{ opacity: 0, y: 8 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.3, delay: index * 0.05 }}
-              aria-label={`Rank ${entry.rank}: ${entry.display_name}, ${entry.total_xp.toLocaleString()} XP${isCurrentUser ? ' (you)' : ''}`}
+              aria-label={`Rank ${entry.rank}: ${entry.display_name}, ${(entry.total_xp ?? 0).toLocaleString()} XP${isCurrentUser ? ' (you)' : ''}`}
               className={`flex items-center gap-2 sm:gap-3 px-3 sm:px-4 py-3 transition-colors list-none ${
                 isCurrentUser ? 'bg-foreground/[0.05]' : ''
               }`}
@@ -153,7 +153,7 @@ export function Leaderboard({ entries, currentUserId, title, loading }: Leaderbo
               {/* XP */}
               <span className="font-mono text-xs sm:text-sm text-foreground/60 tabular-nums flex items-center gap-1 shrink-0">
                 <Zap className="w-3 h-3" />
-                {entry.total_xp.toLocaleString()}
+                {(entry.total_xp ?? 0).toLocaleString()}
               </span>
             </motion.li>
           )
