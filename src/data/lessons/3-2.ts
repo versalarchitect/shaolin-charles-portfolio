@@ -306,6 +306,38 @@ Agents working with user data: include this field in your types.`,
       message: 'You can manage live context updates during fleet runs.',
     },
 
+    // === INTERACTIVE: COMPARE ===
+    {
+      type: 'compare',
+      title: 'Without vs with a coordination protocol',
+      body: 'When multiple agents work on the same codebase, consistency depends on shared rules.',
+      left: {
+        label: 'No CLAUDE.md',
+        content: 'Agent 1: uses camelCase functions\nAgent 2: uses snake_case functions\nAgent 1: throws Error("message")\nAgent 2: returns { error: "message" }\nAgent 1: uses Tailwind classes\nAgent 2: uses inline styles\n\nResult: inconsistent mess',
+        language: 'text',
+      },
+      right: {
+        label: 'Shared CLAUDE.md',
+        content: 'All agents read:\n  "Functions: camelCase"\n  "Errors: throw AppError(msg, code)"\n  "Styling: Tailwind only, no inline"\n\nAgent 1: follows rules ✓\nAgent 2: follows rules ✓\nAgent 3: follows rules ✓\n\nResult: consistent codebase',
+        language: 'text',
+      },
+    },
+
+    // === INTERACTIVE: CODE-FILL ===
+    {
+      type: 'code-fill',
+      instruction: 'Complete the CLAUDE.md coordination section that keeps all agents consistent:',
+      language: 'markdown',
+      template: '## Architecture Decisions (DO NOT DEVIATE)\n\n- **Naming**: All functions use {{naming}} style\n- **Error handling**: Always {{errorPattern}} with a code\n- **Styling**: {{stylingRule}} only. No CSS modules, no inline styles.\n- **Exports**: Use {{exportType}} exports only. No default exports.',
+      blanks: [
+        { id: 'naming', answer: 'camelCase', alternatives: ['camel-case', 'camel case'], placeholder: 'naming convention?', hint: 'The most common JS function naming style' },
+        { id: 'errorPattern', answer: 'throw AppError(msg, code)', alternatives: ['throw AppError', 'throw new AppError(msg, code)'], placeholder: 'error approach?', hint: 'Throw an error object, not return one' },
+        { id: 'stylingRule', answer: 'Tailwind CSS', alternatives: ['Tailwind', 'tailwind'], placeholder: 'CSS approach?', hint: 'Utility-first CSS framework' },
+        { id: 'exportType', answer: 'named', alternatives: ['Named'], placeholder: 'export style?', hint: 'Not default exports' },
+      ],
+      explanation: 'Each blank eliminates a category of divergence. Naming, errors, styling, and exports are the top four areas where agents make inconsistent choices without explicit guidance.',
+    },
+
     // === HANDS-ON EXERCISE ===
     {
       type: 'info',

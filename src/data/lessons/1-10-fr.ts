@@ -10,11 +10,11 @@ const content: LessonContent = {
       body: "C'est ici que tout se connecte. Tu vas combiner chaque compétence du Tier 1 — le prompting structuré, le développement itératif, la gestion du contexte, CLAUDE.md, les workflows multi-étapes — en un flux continu. Le projet : un Générateur de Messages de Commit. Une application web mono-page où les utilisateurs collent un git diff et obtiennent un message de commit conventionnel. Tu vas spécifier, diriger un agent pour le construire, vérifier la sortie et le déployer en ligne sur une URL publique. Un vrai outil utile, un vrai déploiement, une vraie pièce de portfolio.",
     },
 
-    // === PIPELINE DIAGRAM ===
+    // === PIPELINE DIAGRAM (INTERACTIF) ===
     {
-      type: 'diagram',
+      type: 'interactive-diagram',
       title: 'Le pipeline Spec-Build-Deploy',
-      body: 'Ton capstone suit ce pipeline en cinq étapes. Chaque étape exerce une compétence différente du Tier 1.',
+      body: 'Ton capstone suit ce pipeline en cinq étapes. Parcours chaque étape pour voir quelle compétence du Tier 1 elle exerce.',
       diagram: {
         direction: 'LR',
         nodes: [
@@ -31,6 +31,33 @@ const content: LessonContent = {
           { from: 'verify', to: 'deploy', label: 'livrer' },
         ],
       },
+      stages: [
+        {
+          highlightNodes: ['spec'],
+          highlightEdges: [],
+          explanation: 'Spec : Définir les exigences exactes, les contraintes et les limites hors périmètre. C\'est le prompting structuré — la compétence la plus importante du Tier 1.',
+        },
+        {
+          highlightNodes: ['spec', 'scaffold'],
+          highlightEdges: [{ from: 'spec', to: 'scaffold' }],
+          explanation: 'Scaffold : Prompter l\'agent pour créer la structure de fichiers uniquement — pas de logique encore. C\'est la gestion du contexte : garder chaque prompt focalisé sur une seule préoccupation.',
+        },
+        {
+          highlightNodes: ['scaffold', 'implement'],
+          highlightEdges: [{ from: 'scaffold', to: 'implement' }],
+          explanation: 'Implémenter : Construire la logique un composant à la fois. C\'est le développement itératif — réviser chaque pièce avant de construire la couche suivante par-dessus.',
+        },
+        {
+          highlightNodes: ['implement', 'verify'],
+          highlightEdges: [{ from: 'implement', to: 'verify' }],
+          explanation: 'Vérifier : Réviser la sortie de l\'agent pour les erreurs de logique, la conformité à la spec et la sécurité. Tu es la porte de qualité — l\'agent construit, tu valides.',
+        },
+        {
+          highlightNodes: ['verify', 'deploy'],
+          highlightEdges: [{ from: 'verify', to: 'deploy' }],
+          explanation: 'Déployer : Pousser en production avec les variables d\'env appropriées et la documentation CLAUDE.md. Le projet est en ligne, maintenable et prêt pour le portfolio.',
+        },
+      ],
     },
 
     // === PHASE 1: SPEC ===
@@ -65,6 +92,50 @@ const content: LessonContent = {
       type: 'checkpoint',
       xp: 5,
       message: 'Spec écrite — l\'agent a ses ordres de marche !',
+    },
+
+    // === INTERACTIF : PROMPT-LAB, COMPARE ===
+    {
+      type: 'prompt-lab',
+      instruction: 'Écris un prompt pour démarrer l\'implémentation du capstone. Inclus les éléments de spec que tu as appris dans ce tier.',
+      scenario: 'Tu as une spec pour un outil de raccourcissement d\'URL. Tu dois diriger Claude Code pour scaffolder le projet. La spec dit : Next.js App Router, TypeScript strict, SQLite via Drizzle ORM, Tailwind CSS, pas d\'auth nécessaire.',
+      starterPrompt: 'Build me a URL shortener.',
+      responses: [
+        {
+          triggerKeywords: ['next.js', 'typescript', 'sqlite', 'drizzle', 'tailwind'],
+          response: 'I\'ll scaffold the URL shortener with your exact stack.\n\nCreating:\n1. Next.js 15 App Router project with TypeScript strict\n2. Drizzle ORM + SQLite for the database\n3. Tailwind CSS for styling\n4. src/ directory structure\n\nStarting with the database schema...',
+          quality: 'excellent',
+          feedback: 'Tu as spécifié la stack technologique exacte de la spec. L\'agent n\'a pas besoin de prendre de décisions technologiques — il peut commencer à construire immédiatement.',
+        },
+        {
+          triggerKeywords: ['url', 'shortener', 'next'],
+          response: 'I\'ll build a URL shortener with Next.js! Should I use:\n- Prisma or Drizzle for the database?\n- PostgreSQL or SQLite?\n- Should I add authentication?\n\nLet me know your preferences.',
+          quality: 'good',
+          feedback: 'Tu as mentionné Next.js mais laissé les choix technologiques ouverts. L\'agent pose des questions de suivi au lieu de construire. Inclus toutes les contraintes de ta spec pour éliminer les points de décision.',
+        },
+      ],
+      fallbackResponse: {
+        response: 'Sure, I\'ll build a URL shortener. Let me set up a full-stack app with Express, React, PostgreSQL, Redis for caching, and Docker for deployment...',
+        feedback: 'Sans contraintes de spec, l\'agent a inventé sa propre stack. Inclus : framework, mode de langage, base de données, ORM et styling de ta spec pour obtenir exactement la sortie voulue.',
+      },
+    },
+    {
+      type: 'compare',
+      title: 'Tout d\'un coup vs construction phasée',
+      body: 'Deux approches pour construire un projet complet avec un agent IA.',
+      question: 'Quelle approche te donne plus de contrôle sur la sortie ?',
+      correctSide: 'right',
+      left: {
+        label: 'Tout d\'un coup',
+        content: 'Un seul prompt :\n"Build the entire URL shortener"\n\nRésultat :\n- 20+ fichiers créés d\'un coup\n- Difficile à réviser\n- Les erreurs s\'accumulent\n- Difficile à rediriger\n- Contexte épuisé rapidement',
+        language: 'text',
+      },
+      right: {
+        label: 'Phasé',
+        content: 'Quatre prompts focalisés :\n1. "Scaffold project structure"\n2. "Implement database schema + API"\n3. "Build the frontend UI"\n4. "Add tests and verify"\n\nRésultat :\n- Révision après chaque phase\n- Erreurs détectées tôt\n- Facile à rediriger\n- Contexte reste frais',
+        language: 'text',
+      },
+      explanation: 'La construction phasée te permet de vérifier chaque couche avant de construire la suivante. Si le schéma de base de données est faux, tu le détectes avant que le frontend soit construit par-dessus.',
     },
 
     // === PHASE 2: SCAFFOLD ===

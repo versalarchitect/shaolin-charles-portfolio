@@ -12,9 +12,9 @@ const content: LessonContent = {
 
     // === DIAGRAM 1: Read Then Generate ===
     {
-      type: 'diagram',
+      type: 'interactive-diagram',
       title: 'Lire puis générer',
-      body: 'Le workflow correct quand on dirige un agent pour modifier une codebase. Chaque étape avant « Écrire le prompt » sert à construire le contexte.',
+      body: 'Clique sur chaque étape pour suivre le workflow correct quand on dirige un agent pour modifier une codebase.',
       diagram: {
         direction: 'LR',
         nodes: [
@@ -33,6 +33,33 @@ const content: LessonContent = {
           { from: 'build', to: 'verified' },
         ],
       },
+      stages: [
+        {
+          highlightNodes: ['codebase'],
+          highlightEdges: [],
+          explanation: 'Commence par la codebase. Avant de taper un seul mot à l\'agent, le code a déjà des patterns, des conventions et des composants existants. Ton travail est de les découvrir.',
+        },
+        {
+          highlightNodes: ['codebase', 'read'],
+          highlightEdges: [{ from: 'codebase', to: 'read' }],
+          explanation: 'Lis les fichiers clés : package.json pour les dépendances, CLAUDE.md pour les règles du projet, et des composants existants similaires à ce que tu veux construire. Utilise cat, find et grep.',
+        },
+        {
+          highlightNodes: ['read', 'map'],
+          highlightEdges: [{ from: 'read', to: 'map' }],
+          explanation: 'Cartographie la structure : où vivent les pages ? Comment les composants sont-ils exportés ? Quelle approche de style est utilisée ? Quelle gestion d\'état existe ? Construis un modèle mental du projet.',
+        },
+        {
+          highlightNodes: ['map', 'prompt'],
+          highlightEdges: [{ from: 'map', to: 'prompt' }],
+          explanation: 'Maintenant écris un prompt qui référence des fichiers spécifiques, des patterns et des conventions que tu as découverts. L\'agent passe de la devinette au suivi d\'un plan.',
+        },
+        {
+          highlightNodes: ['prompt', 'build', 'verified'],
+          highlightEdges: [{ from: 'prompt', to: 'build' }, { from: 'build', to: 'verified' }],
+          explanation: 'L\'agent construit du code qui s\'intègre à ton projet du premier coup. Pas de patterns conflictuels, pas de conventions inventées, pas d\'itérations gaspillées. Vérifie et livre.',
+        },
+      ],
     },
 
     // === THE ANTI-PATTERN ===
@@ -193,6 +220,24 @@ const content: LessonContent = {
       type: 'checkpoint',
       xp: 3,
       message: 'Tu sais écrire des prompts contextualisés !',
+    },
+    {
+      type: 'compare',
+      title: 'Prompt aveugle vs prompt informé',
+      body: 'La même tâche produit des résultats très différents selon que tu lis la codebase d\'abord ou non.',
+      question: 'Quel prompt produira du code qui respecte les patterns existants du projet ?',
+      correctSide: 'right',
+      left: {
+        label: 'Aveugle',
+        content: '"Add a navbar component with links to Home, About, and Contact pages."',
+        language: 'text',
+      },
+      right: {
+        label: 'Informé',
+        content: '"Add a navbar component at src/components/navbar.tsx. Use the existing Button component from @/components/ui/button. Follow the project pattern of named exports. Route paths are /, /about, /contact as defined in src/routes.tsx."',
+        language: 'text',
+      },
+      explanation: 'Le prompt informé référence des fichiers spécifiques, des composants existants et des conventions du projet. L\'agent peut construire quelque chose qui s\'intègre à la codebase au lieu de deviner.',
     },
 
     // === PRACTICE: READING A PROJECT ===

@@ -36,6 +36,61 @@ const content: LessonContent = {
       },
     },
     {
+      type: 'interactive-diagram',
+      title: 'The Teardown Methodology',
+      body: 'Walk through all four phases of the teardown, understanding what each phase produces and how they connect.',
+      diagram: {
+        direction: 'LR',
+        nodes: [
+          { id: 'map', label: 'Phase 1: Map', sublabel: 'Component inventory', shape: 'rounded' },
+          { id: 'score', label: 'Phase 2: Score', sublabel: 'Agent-buildability per component', shape: 'rounded' },
+          { id: 'blockers', label: 'Phase 3: Blockers', sublabel: 'What prevents agent work', shape: 'rounded' },
+          { id: 'redesign', label: 'Phase 4: Redesign', sublabel: 'Targeted improvements', shape: 'rounded', highlight: true },
+        ],
+        edges: [
+          { from: 'map', to: 'score' },
+          { from: 'score', to: 'blockers' },
+          { from: 'blockers', to: 'redesign' },
+        ],
+      },
+      stages: [
+        {
+          highlightNodes: ['map'],
+          explanation: 'Phase 1: Map every component in the system. Document responsibility, dependencies, dependents, and data stores. A component is a cohesive unit that could theoretically be owned by one agent. Output: a complete component inventory with dependency graph.',
+        },
+        {
+          highlightNodes: ['map', 'score'],
+          highlightEdges: [{ from: 'map', to: 'score' }],
+          explanation: 'Phase 2: Score each component on 5 agent-buildability factors (1-5 each): Clear Boundaries, Consistent Patterns, Testable Contracts, No Tribal Knowledge, and Isolation. Total score 5-25. Below 10 means agent-hostile — redesign required.',
+        },
+        {
+          highlightNodes: ['score', 'blockers'],
+          highlightEdges: [{ from: 'score', to: 'blockers' }],
+          explanation: 'Phase 3: For each low-scoring component, identify specific, actionable blockers. Not vague observations like "it is complex" — but concrete findings: "Order files split across 4 directories" or "No defined interface between Orders and Payments." Each blocker becomes a fix task.',
+        },
+        {
+          highlightNodes: ['blockers', 'redesign'],
+          highlightEdges: [{ from: 'blockers', to: 'redesign' }],
+          explanation: 'Phase 4: Propose targeted fixes for each blocker, prioritized by impact. Boundary fixes unlock findability. Contract fixes unlock parallelism. Knowledge fixes unlock autonomy. Each fix has an effort estimate and projected score improvement. The output is an actionable redesign plan.',
+        },
+      ],
+    },
+    {
+      type: 'code-fill',
+      instruction: 'Complete this buildability scorecard. Fill in scores (1-5) and blocker descriptions for each component based on the clues provided.',
+      language: 'markdown',
+      template: '# Agent-Buildability Scorecard\n\n## Component: User Auth\n- Files in 1 directory, clear naming\n- Boundaries score: ___\n- All other modules depend on it for auth checks\n- Isolation score: ___\n\n## Component: Orders & Checkout\n- Files scattered across 4 directories\n- Boundaries score: ___\n- Primary blocker: ___\n\n## Component: Payments\n- Self-contained module, own directory, consistent patterns\n- Overall assessment: ___',
+      blanks: [
+        { id: 'auth-boundaries', answer: '4', alternatives: ['5'], hint: 'Files are in 1 directory with clear naming — that is good', placeholder: '1-5' },
+        { id: 'auth-isolation', answer: '2', alternatives: ['1', '3'], hint: 'ALL other modules depend on it — that makes isolation low', placeholder: '1-5' },
+        { id: 'orders-boundaries', answer: '2', alternatives: ['1'], hint: 'Files scattered across 4 directories is very poor', placeholder: '1-5' },
+        { id: 'orders-blocker', answer: 'files split across multiple directories', alternatives: ['scattered files', 'no feature directory', 'files in 4 directories', 'code spread across directories'], hint: 'The main issue with finding order-related files', placeholder: 'describe the blocker' },
+        { id: 'payments-assessment', answer: 'agent-native', alternatives: ['agent-friendly', 'high score', 'excellent', '23/25', 'agent native'], hint: 'Self-contained + own directory + consistent = top tier', placeholder: 'assessment' },
+      ],
+      filename: 'buildability-scorecard.md',
+      explanation: 'Scoring reveals exactly where agent-buildability breaks down. Auth has good boundaries (4/5) but poor isolation (2/5) because every module depends on it. Orders has terrible boundaries (2/5) because files are scattered. Payments with self-contained code and consistent patterns scores as agent-native. The scorecard directs your refactoring effort to the worst components first.',
+    },
+    {
       type: 'checkpoint',
       xp: 2,
       message: 'Methodology overview complete!',

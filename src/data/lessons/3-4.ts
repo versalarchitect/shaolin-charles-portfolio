@@ -216,6 +216,48 @@ const content: LessonContent = {
       explanation: 'Idle agents are wasted parallelism. Scan the task graph for any task whose dependencies are already met and assign the agent to it. This compresses the total timeline.',
     },
 
+    // === INTERACTIVE: MATCH ===
+    {
+      type: 'match',
+      instruction: 'Match each task relationship to its dependency type:',
+      leftItems: ['Auth system -> API routes need it', 'UI components (independent)', 'Payment system -> needs API types', 'Test suite -> needs all features'],
+      rightItems: ['Blocking dependency -- must complete first', 'Independent -- can run in parallel', 'Partial dependency -- needs interface contract only', 'Gate -- blocks final integration'],
+      correctPairs: { 0: 0, 1: 1, 2: 2, 3: 3 },
+      explanation: 'Blocking dependencies must finish first. Independent tasks run in parallel freely. Partial dependencies only need the interface (types), not the implementation. Gates require everything before they can run.',
+    },
+
+    // === INTERACTIVE: TASK GRAPH WITH CRITICAL PATH ===
+    {
+      type: 'interactive-diagram',
+      title: 'Simple Task Graph (Step Through)',
+      body: 'Step through this task graph to understand dependencies, parallelism, and the critical path.',
+      diagram: {
+        direction: 'TB',
+        nodes: [
+          { id: 'spec', label: 'Spec', shape: 'rounded', highlight: true },
+          { id: 'auth', label: 'Auth', sublabel: '2h', shape: 'rect' },
+          { id: 'db', label: 'Database', sublabel: '1h', shape: 'rect' },
+          { id: 'api', label: 'API', sublabel: '3h', shape: 'rect' },
+          { id: 'ui', label: 'UI', sublabel: '2h', shape: 'rect' },
+          { id: 'deploy', label: 'Deploy', sublabel: '0.5h', shape: 'pill' },
+        ],
+        edges: [
+          { from: 'spec', to: 'auth' },
+          { from: 'spec', to: 'db' },
+          { from: 'auth', to: 'api' },
+          { from: 'db', to: 'api', dashed: true },
+          { from: 'api', to: 'ui' },
+          { from: 'ui', to: 'deploy' },
+        ],
+      },
+      stages: [
+        { highlightNodes: ['spec'], explanation: 'Spec has no incoming edges — it is the starting point. Everything else waits for it.' },
+        { highlightNodes: ['spec', 'auth', 'db'], highlightEdges: [{ from: 'spec', to: 'auth' }, { from: 'spec', to: 'db' }], explanation: 'Fan-out: Auth (2h) and Database (1h) both depend only on Spec. They run in parallel — free speed.' },
+        { highlightNodes: ['auth', 'db', 'api'], highlightEdges: [{ from: 'auth', to: 'api' }, { from: 'db', to: 'api' }], explanation: 'Fan-in: API depends on both Auth and DB. It waits for whichever finishes last (Auth at 2h). DB finishes at 1h — it has 1h of slack.' },
+        { highlightNodes: ['auth', 'api', 'ui', 'deploy'], highlightEdges: [{ from: 'auth', to: 'api' }, { from: 'api', to: 'ui' }, { from: 'ui', to: 'deploy' }], explanation: 'Critical path: Auth(2h) -> API(3h) -> UI(2h) -> Deploy(0.5h) = 7.5h minimum. This is the longest chain — no parallelism can shorten it.' },
+      ],
+    },
+
     // === PRACTICE: DECOMPOSE A TODO APP ===
     {
       type: 'info',

@@ -17,9 +17,9 @@ const content: LessonContent = {
 
     // === THE DECISION FRAMEWORK ===
     {
-      type: 'diagram',
+      type: 'interactive-diagram',
       title: 'Refactor vs Rewrite Decision Framework',
-      body: 'Multiple factors feed into the decision. No single factor is decisive — the combination determines the right path.',
+      body: 'Click through each assessment criterion to understand how it influences the decision.',
       diagram: {
         direction: 'TB',
         nodes: [
@@ -45,6 +45,43 @@ const content: LessonContent = {
           { from: 'decision', to: 'rewrite', label: 'high coupling, low coverage', dashed: true },
         ],
       },
+      stages: [
+        {
+          highlightNodes: ['assess'],
+          highlightEdges: [],
+          explanation: 'Start by gathering metrics for the component under evaluation. You need objective data before making the refactor-vs-rewrite decision.',
+        },
+        {
+          highlightNodes: ['assess', 'coupling'],
+          highlightEdges: [{ from: 'assess', to: 'coupling' }],
+          explanation: 'Coupling score: How many other components depend on this one? High coupling (10+ dependents) favors refactoring because a rewrite requires updating every touchpoint simultaneously.',
+        },
+        {
+          highlightNodes: ['assess', 'coverage'],
+          highlightEdges: [{ from: 'assess', to: 'coverage' }],
+          explanation: 'Test coverage: High coverage (80%+) favors refactoring because tests catch regressions immediately. Low coverage favors rewriting with tests from scratch.',
+        },
+        {
+          highlightNodes: ['assess', 'debt'],
+          highlightEdges: [{ from: 'assess', to: 'debt' }],
+          explanation: 'Debt severity: Cosmetic debt (naming, callback style) is refactorable. Structural debt (circular dependencies, god objects) often requires a rewrite because the design itself is the problem.',
+        },
+        {
+          highlightNodes: ['assess', 'buildability'],
+          highlightEdges: [{ from: 'assess', to: 'buildability' }],
+          explanation: 'Agent buildability: Can an agent rebuild from a spec? If knowledge is ONLY in the code (undocumented edge cases), rewriting means losing it. This favors refactoring.',
+        },
+        {
+          highlightNodes: ['coupling', 'coverage', 'debt', 'buildability', 'decision'],
+          highlightEdges: [{ from: 'coupling', to: 'decision' }, { from: 'coverage', to: 'decision' }, { from: 'debt', to: 'decision' }, { from: 'buildability', to: 'decision' }],
+          explanation: 'All four factors feed the decision. No single factor is decisive. Low coupling + low coverage + structural debt + high buildability = rewrite. High coupling + high coverage + cosmetic debt = refactor.',
+        },
+        {
+          highlightNodes: ['decision', 'refactor', 'rewrite'],
+          highlightEdges: [{ from: 'decision', to: 'refactor' }, { from: 'decision', to: 'rewrite' }],
+          explanation: 'The decision branches: refactor for incremental improvement when you have a safety net, rewrite for clean replacement when the structure itself is broken and coupling is manageable.',
+        },
+      ],
     },
     {
       type: 'checkpoint',
@@ -158,6 +195,28 @@ const content: LessonContent = {
       type: 'checkpoint',
       xp: 5,
       message: 'Rewrite criteria locked in!',
+    },
+
+    // === COMPARE: STRANGLER FIG VS BIG BANG ===
+    {
+      type: 'compare',
+      title: 'Strangler fig vs Big bang rewrite',
+      body: 'Two migration strategies with very different risk profiles and timelines.',
+      left: {
+        label: 'Strangler Fig (Incremental)',
+        content: 'Week 1: Build new auth alongside old\nWeek 2: Route 20% of traffic to new\nWeek 3: Route 60% to new\nWeek 4: Route 100%, remove old\n\nRisk profile:\n- System stays live throughout\n- Rollback = flip traffic back\n- Bugs affect partial traffic only\n- Each step is independently verifiable\n- Old code serves as reference\n\nTimeline: 4 weeks, zero downtime\nRollback time: < 5 minutes',
+        language: 'text',
+        filename: 'strangler-fig.txt',
+      },
+      right: {
+        label: 'Big Bang Rewrite',
+        content: 'Week 1-3: Build entire new system\nWeek 4: Feature freeze old system\nWeek 5: Cutover weekend deploy\n\nRisk profile:\n- Old system frozen during build\n- Cutover is all-or-nothing\n- Bugs affect ALL traffic at once\n- No partial rollback possible\n- Old code diverges during freeze\n\nTimeline: 5 weeks + feature freeze\nRollback time: hours to days',
+        language: 'text',
+        filename: 'big-bang.txt',
+      },
+      question: 'Which approach is safer for production systems?',
+      correctSide: 'left',
+      explanation: 'The strangler fig keeps the old system running as a fallback. Traffic is gradually routed to new components. If anything breaks, you route back. The big bang rewrite requires a full cutover with no partial rollback. With agent fleets, the strangler fig is also FASTER because multiple agents can strangle multiple components simultaneously.',
     },
 
     // === CARRYING DEBT INTENTIONALLY ===

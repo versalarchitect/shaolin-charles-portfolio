@@ -27,9 +27,9 @@ const content: LessonContent = {
     },
 
     {
-      type: 'diagram',
+      type: 'interactive-diagram',
       title: 'The Deployment Pipeline',
-      body: 'Every change follows this path from your machine to the world.',
+      body: 'Every change follows this path from your machine to the world. Step through each stage to see what happens.',
       diagram: {
         direction: 'LR',
         nodes: [
@@ -48,6 +48,14 @@ const content: LessonContent = {
           { from: 'vc', to: 'live' },
         ],
       },
+      stages: [
+        { highlightNodes: ['edit'], explanation: 'You make changes to your code in VS Code or any editor. Nothing leaves your computer yet.' },
+        { highlightNodes: ['edit', 'commit'], highlightEdges: [{ from: 'edit', to: 'commit' }], explanation: 'Git commit saves a snapshot of your changes with a short description. Think of it as a save point you can return to.' },
+        { highlightNodes: ['commit', 'push'], highlightEdges: [{ from: 'commit', to: 'push' }], explanation: 'Git push sends your saved changes from your computer to GitHub. This is when your code leaves your machine.' },
+        { highlightNodes: ['push', 'gh'], highlightEdges: [{ from: 'push', to: 'gh' }], explanation: 'GitHub receives your code and stores it. It also notifies Vercel that something changed via a webhook.' },
+        { highlightNodes: ['gh', 'vc'], highlightEdges: [{ from: 'gh', to: 'vc' }], explanation: 'Vercel automatically pulls your code, builds your app, and prepares it for the internet. No manual steps needed.' },
+        { highlightNodes: ['vc', 'live'], highlightEdges: [{ from: 'vc', to: 'live' }], explanation: 'Your app is live! Anyone with the URL can visit it. The whole process takes under a minute.' },
+      ],
     },
 
     // === VERCEL ACCOUNT ===
@@ -276,6 +284,24 @@ const content: LessonContent = {
       type: 'checkpoint',
       xp: 1,
       message: 'Preview deploys understood! You know how to test safely.',
+    },
+    {
+      type: 'compare',
+      title: 'Production vs Preview deployments',
+      body: 'Every push triggers a deployment, but the type depends on which branch you push to.',
+      question: 'Which deployment type should you use to test changes before going live?',
+      correctSide: 'right',
+      left: {
+        label: 'Production',
+        content: 'Branch: main\nTrigger: push to main\nURL: your-app.vercel.app\nVisibility: Public, live to users\nRollback: Instant via Vercel dashboard',
+        language: 'text',
+      },
+      right: {
+        label: 'Preview',
+        content: 'Branch: any feature branch\nTrigger: push or PR\nURL: your-app-git-branch.vercel.app\nVisibility: Private, only you\nRollback: Not needed — just close the PR',
+        language: 'text',
+      },
+      explanation: 'Preview deployments let you test on a real URL without affecting live users. Push to a feature branch, verify everything works, then merge to main for production.',
     },
 
     // === FINAL ===

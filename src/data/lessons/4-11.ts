@@ -44,6 +44,28 @@ const content: LessonContent = {
       message: 'Translation framework established!',
     },
 
+    // === COMPARE: JARGON VS BUSINESS ===
+    {
+      type: 'compare',
+      title: 'Technical jargon vs Business translation',
+      body: 'The same decisions, communicated two different ways. One gets funded, the other gets blank stares.',
+      left: {
+        label: 'Technical Jargon',
+        content: '"We decoupled the monolith into\nmicroservices with an event bus"\n\n"We enforced module boundaries\nvia eslint rules and Nx tags"\n\n"We implemented strangler fig\npattern for legacy migration"\n\n"We added TypeScript strict mode\nwith zero any usage"\n\n"We deployed CLAUDE.md protocols\nper package for agent scoping"',
+        language: 'text',
+        filename: 'jargon.txt',
+      },
+      right: {
+        label: 'Business Translation',
+        content: '"We can now ship features\n3x faster without breaking\nunrelated parts of the app"\n\n"New team members are productive\nin hours instead of weeks"\n\n"We migrated to modern tech\nwith zero downtime and\nzero customer impact"\n\n"Our defect rate dropped 60%\nbecause errors are caught\nautomatically before release"\n\n"Development capacity scales\nwithout proportional hiring"',
+        language: 'text',
+        filename: 'business.txt',
+      },
+      question: 'Which framing would a VP of Engineering fund?',
+      correctSide: 'right',
+      explanation: 'Stakeholders fund outcomes, not mechanisms. "We decoupled the monolith" describes HOW. "We can ship 3x faster" describes WHY IT MATTERS. The business translation connects every technical decision to an outcome the stakeholder already cares about: speed, cost, quality, or risk reduction.',
+    },
+
     // === CONCRETE TRANSLATIONS ===
     {
       type: 'code-demo',
@@ -77,6 +99,23 @@ const content: LessonContent = {
       type: 'checkpoint',
       xp: 5,
       message: 'Translation skill developing!',
+    },
+
+    // === CODE-FILL: STAKEHOLDER TRANSLATION ===
+    {
+      type: 'code-fill',
+      instruction: 'Complete this stakeholder translation table by filling in the business outcome for each technical decision.',
+      language: 'markdown',
+      filename: 'docs/translation-table.md',
+      template: '# Technical Decision → Business Outcome\n\n| Technical Decision | Business Outcome |\n|---|---|\n| Module boundary enforcement | {{boundary_outcome}} |\n| Independent deploy pipelines | {{deploy_outcome}} |\n| Automated verification pipeline | {{verify_outcome}} |\n| API versioning between services | {{version_outcome}} |\n| Self-documenting packages (CLAUDE.md) | {{docs_outcome}} |',
+      blanks: [
+        { id: 'boundary_outcome', answer: 'Teams work in parallel without conflicts', alternatives: ['No cross-team conflicts', 'Parallel development without coordination', 'Zero coordination overhead between teams', 'developers work independently'], placeholder: 'what business outcome?', hint: 'What happens when teams cannot step on each other?' },
+        { id: 'deploy_outcome', answer: 'A billing change cannot break authentication', alternatives: ['Changes to one area cannot break another', 'Reduced blast radius of changes', 'Independent releases reduce risk', 'isolated deployments reduce risk'], placeholder: 'what business outcome?', hint: 'What happens when services deploy independently?' },
+        { id: 'verify_outcome', answer: 'Defects caught before reaching production', alternatives: ['94% of bugs caught pre-merge', 'Fewer production incidents', 'Automated quality gate catches issues early', 'bugs caught automatically'], placeholder: 'what business outcome?', hint: 'What does automated checking prevent?' },
+        { id: 'version_outcome', answer: 'Features ship without waiting on other teams', alternatives: ['No blocking between teams', 'Parallel feature development', 'Teams evolve at their own pace', 'independent evolution'], placeholder: 'what business outcome?', hint: 'What happens when APIs can evolve independently?' },
+        { id: 'docs_outcome', answer: 'New contributors productive in hours not weeks', alternatives: ['Fast onboarding', 'Faster onboarding for new team members', 'Reduced ramp-up time', 'instant developer onboarding'], placeholder: 'what business outcome?', hint: 'What does self-documentation enable for new people?' },
+      ],
+      explanation: 'Each technical decision maps to a business outcome that stakeholders care about. Leading with outcomes ("teams work in parallel") instead of mechanisms ("module boundary enforcement") makes the proposal resonate with non-technical decision-makers.',
     },
 
     // === DEFENDING UNDER SCRUTINY ===

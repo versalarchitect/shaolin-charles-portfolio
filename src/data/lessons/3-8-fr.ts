@@ -15,9 +15,9 @@ const content: LessonContent = {
       body: "C'est le principe non négociable : aucune sortie d'agent ne fusionne dans main sans passer le pipeline. Ça importe pas si l'agent dit que ça marche. Ça importe pas si ça a l'air correct. Si le pipeline échoue, le code ne fusionne pas. Cette seule règle prévient l'échec multi-agents le plus courant : livrer des intégrations cassées.",
     },
 
-    // === DIAGRAM 1: The Pipeline ===
+    // === DIAGRAM 1: The Pipeline (Interactif) ===
     {
-      type: 'diagram',
+      type: 'interactive-diagram',
       title: 'Étapes du pipeline de vérification',
       body: "Chaque étape attrape une classe différente d'erreurs. Elles s'exécutent dans l'ordre de vitesse — les vérifications les plus rapides en premier, les plus lentes en dernier. Si une étape précoce échoue, les suivantes ne s'exécutent pas. Ça donne du feedback rapide : tu sais en quelques secondes s'il y a une erreur de type, pas en minutes.",
       diagram: {
@@ -38,11 +38,90 @@ const content: LessonContent = {
           { from: 'int', to: 'pass', label: 'réussi' },
         ],
       },
+      stages: [
+        {
+          highlightNodes: ['push', 'type'],
+          highlightEdges: [{ from: 'push', to: 'type' }],
+          explanation: 'L\'agent pousse sa branche. Le pipeline commence par la vérification la plus rapide : le typage TypeScript (2-5 secondes). Ça détecte immédiatement les décalages de contrats entre les sorties des agents.',
+        },
+        {
+          highlightNodes: ['type', 'lint'],
+          highlightEdges: [{ from: 'type', to: 'lint' }],
+          explanation: 'Si les types passent, le linting s\'exécute ensuite. Ça enforce les conventions du CLAUDE.md : pas de `any`, pas d\'exports par défaut, pas de fichiers barrel. Attraper la dérive de conventions avant qu\'elle ne s\'accumule.',
+        },
+        {
+          highlightNodes: ['lint', 'unit'],
+          highlightEdges: [{ from: 'lint', to: 'unit' }],
+          explanation: 'Un lint propre signifie une structure de code propre. Maintenant les tests unitaires vérifient que l\'implémentation de l\'agent fonctionne vraiment — comportement correct, gestion d\'erreurs, cas limites.',
+        },
+        {
+          highlightNodes: ['unit', 'int'],
+          highlightEdges: [{ from: 'unit', to: 'int' }],
+          explanation: 'Les tests unitaires passent individuellement. Les tests d\'intégration vérifient que la sortie de cet agent fonctionne avec le reste du système — les imports se résolvent, les APIs se connectent, le build réussit.',
+        },
+        {
+          highlightNodes: ['int', 'pass'],
+          highlightEdges: [{ from: 'int', to: 'pass' }],
+          explanation: 'Les quatre portes sont passées. La branche est vérifiée et prête à fusionner. Pas besoin de revue humaine pour l\'exactitude mécanique — le pipeline la garantit.',
+        },
+      ],
     },
     {
       type: 'checkpoint',
       xp: 3,
       message: 'Tu vois le pipeline : vérif. types, lint, tests, intégration — dans cet ordre.',
+    },
+
+    // === CODE-FILL: tsconfig mode strict ===
+    {
+      type: 'code-fill',
+      instruction: 'Complète la configuration TypeScript stricte qui détecte les décalages de contrats entre les sorties des agents. Remplis les options clés du compilateur.',
+      language: 'json',
+      filename: 'tsconfig.json',
+      template: `{
+  "compilerOptions": {
+    "___BLANK_1___": true,
+    "noEmit": true,
+    "___BLANK_2___": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "___BLANK_3___": true,
+    "___BLANK_4___": true
+  },
+  "include": ["src/**/*.ts", "src/**/*.tsx"],
+  "exclude": ["node_modules", "dist"]
+}`,
+      blanks: [
+        {
+          id: 'BLANK_1',
+          answer: 'strict',
+          alternatives: ['"strict"'],
+          hint: 'L\'interrupteur principal qui active toutes les options strictes de vérification de types',
+          placeholder: 'flag du mode strict',
+        },
+        {
+          id: 'BLANK_2',
+          answer: 'noUncheckedIndexedAccess',
+          alternatives: ['"noUncheckedIndexedAccess"'],
+          hint: 'Ajoute undefined à tout accès indexé non vérifié (obj[key] pourrait être undefined)',
+          placeholder: 'sécurité d\'accès indexé',
+        },
+        {
+          id: 'BLANK_3',
+          answer: 'exactOptionalPropertyTypes',
+          alternatives: ['"exactOptionalPropertyTypes"'],
+          hint: 'Distingue entre définir une propriété à undefined et ne pas la définir du tout',
+          placeholder: 'rigueur des propriétés optionnelles',
+        },
+        {
+          id: 'BLANK_4',
+          answer: 'forceConsistentCasingInFileNames',
+          alternatives: ['"forceConsistentCasingInFileNames"'],
+          hint: 'Empêche les décalages de casse dans les chemins d\'import entre OS (macOS vs Linux CI)',
+          placeholder: 'application de la casse des fichiers',
+        },
+      ],
+      explanation: 'Ces options forment la config TypeScript la plus stricte pour le développement multi-agents. `strict` attrape les erreurs de types, `noUncheckedIndexedAccess` attrape les accès non sécurisés, `exactOptionalPropertyTypes` attrape l\'ambiguïté des contrats, et `forceConsistentCasingInFileNames` prévient les échecs CI sur Linux (sensible à la casse) en développant sur macOS.',
     },
 
     // === PIPELINE COMPONENTS ===

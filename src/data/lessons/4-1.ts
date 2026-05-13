@@ -77,6 +77,37 @@ const content: LessonContent = {
       body: "Tests live next to the code they test. Not in a separate __tests__/ directory tree that mirrors src/. When an agent modifies payments.service.ts, it needs to update payments.test.ts. If the test is in the same directory, it finds it immediately. If tests are in a parallel directory tree (__tests__/features/payments/payments.service.test.ts), the agent has to search, and it might find the wrong test file or miss related integration tests.",
     },
     {
+      type: 'compare',
+      title: 'Tangled vs feature-based structure',
+      body: 'Layer-based organization scatters related files across the tree. Feature-based colocation puts everything an agent needs in one place.',
+      left: {
+        label: 'Layer-Based (Tangled)',
+        content: 'src/\n  controllers/\n    paymentController.ts\n    userController.ts\n    orderController.ts\n  services/\n    paymentService.ts\n    userService.ts\n    orderService.ts\n  models/\n    Payment.ts\n    User.ts\n    Order.ts\n  validators/\n    paymentValidator.ts\n    userValidator.ts\n    orderValidator.ts\n  hooks/\n    usePayment.ts\n    useUser.ts\n    useOrder.ts\n  utils/\n    formatCurrency.ts\n    formatDate.ts\n    helpers.ts',
+        language: 'text',
+        filename: 'layer-based.txt',
+      },
+      right: {
+        label: 'Feature-Based (Colocated)',
+        content: 'src/features/\n  payments/\n    payments.handler.ts\n    payments.service.ts\n    payments.schema.ts\n    payments.test.ts\n    index.ts\n  users/\n    users.handler.ts\n    users.service.ts\n    users.schema.ts\n    users.test.ts\n    index.ts\n  orders/\n    orders.handler.ts\n    orders.service.ts\n    orders.schema.ts\n    orders.test.ts\n    index.ts\nsrc/shared/\n  database.ts\n  auth-middleware.ts',
+        language: 'text',
+        filename: 'feature-based.txt',
+      },
+      question: 'Which structure lets an agent find ALL payment-related files in a single directory listing?',
+      correctSide: 'right',
+      explanation: 'In the feature-based structure, an agent searching for "payments" finds one directory with every relevant file. In the layer-based structure, payment logic is scattered across controllers/, services/, models/, validators/, hooks/, and utils/ — requiring 6+ searches to locate everything.',
+    },
+    {
+      type: 'code-diff',
+      title: 'Before/after: from layers to features',
+      body: 'Refactoring a layer-based directory into a feature-based structure. Watch how scattered files converge into one location.',
+      language: 'text',
+      filename: 'directory-structure',
+      before: 'src/\n├── controllers/\n│   ├── paymentController.ts\n│   ├── userController.ts\n│   └── orderController.ts\n├── services/\n│   ├── paymentService.ts\n│   ├── userService.ts\n│   └── orderService.ts\n├── models/\n│   ├── Payment.ts\n│   ├── User.ts\n│   └── Order.ts\n├── validators/\n│   ├── paymentValidator.ts\n│   └── orderValidator.ts\n├── __tests__/\n│   ├── payment.test.ts\n│   └── order.test.ts\n└── utils/\n    ├── formatCurrency.ts\n    └── helpers.ts',
+      after: 'src/\n├── features/\n│   ├── payments/\n│   │   ├── payments.handler.ts\n│   │   ├── payments.service.ts\n│   │   ├── payments.schema.ts\n│   │   ├── payments.test.ts\n│   │   └── index.ts\n│   ├── users/\n│   │   ├── users.handler.ts\n│   │   ├── users.service.ts\n│   │   ├── users.test.ts\n│   │   └── index.ts\n│   └── orders/\n│       ├── orders.handler.ts\n│       ├── orders.service.ts\n│       ├── orders.schema.ts\n│       ├── orders.test.ts\n│       └── index.ts\n├── shared/\n│   ├── database.ts\n│   └── auth-middleware.ts\n└── app.ts',
+      question: 'How many directories does an agent need to search in the BEFORE structure to find all payment files?',
+      explanation: 'In the BEFORE structure, payment files are spread across controllers/, services/, models/, validators/, __tests__/, and utils/ — at least 5 directories. In the AFTER structure, everything is in features/payments/ — one directory, one search.',
+    },
+    {
       type: 'multiple-choice',
       question: 'An agent needs to add a new validation rule to the "orders" feature. Which structure lets it find ALL relevant files in one directory listing?',
       options: [

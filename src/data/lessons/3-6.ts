@@ -15,9 +15,9 @@ const content: LessonContent = {
       body: "When you build something, you develop blind spots. You know what you intended, so you see the intention rather than what's actually there. A second agent reads the code cold — no assumptions, no context bleed. It evaluates purely against the spec. This is the same principle as code review, but automated and systematic.",
     },
 
-    // === DIAGRAM 1: Build → Verify → Decide ===
+    // === DIAGRAM 1: Build → Verify → Decide (Interactive) ===
     {
-      type: 'diagram',
+      type: 'interactive-diagram',
       title: 'The Verification Loop',
       body: "The build agent produces output. The verify agent evaluates it against the spec. It returns a structured verdict: pass, fail with reasons, or partial pass with specific gaps. You make the final call.",
       diagram: {
@@ -39,11 +39,64 @@ const content: LessonContent = {
           { from: 'verdict', to: 'human' },
         ],
       },
+      stages: [
+        {
+          highlightNodes: ['spec', 'build'],
+          highlightEdges: [{ from: 'spec', to: 'build' }],
+          explanation: 'The builder agent receives the spec and implements the feature. It produces code based on the requirements.',
+        },
+        {
+          highlightNodes: ['build', 'output'],
+          highlightEdges: [{ from: 'build', to: 'output' }],
+          explanation: 'The builder generates output — a branch or PR containing the implementation.',
+        },
+        {
+          highlightNodes: ['spec', 'output', 'verify'],
+          highlightEdges: [{ from: 'spec', to: 'verify' }, { from: 'output', to: 'verify' }],
+          explanation: 'The verifier agent receives BOTH the spec and the output. It checks the output against every requirement — no shared context with the builder.',
+        },
+        {
+          highlightNodes: ['verify', 'verdict'],
+          highlightEdges: [{ from: 'verify', to: 'verdict' }],
+          explanation: 'The verifier returns a structured verdict: PASS, FAIL (with reasons), or PARTIAL (with specific gaps). No ambiguity.',
+        },
+        {
+          highlightNodes: ['verdict', 'human'],
+          highlightEdges: [{ from: 'verdict', to: 'human' }],
+          explanation: 'You make the final call based on the verdict. Fix small issues yourself, send corrections to the builder, or re-spec if the builder fundamentally misunderstood.',
+        },
+      ],
     },
     {
       type: 'checkpoint',
       xp: 3,
       message: 'You see the verification loop: build, verify, decide.',
+    },
+
+    // === PROMPT LAB: Write a Verification Prompt ===
+    {
+      type: 'prompt-lab',
+      instruction: 'Write a verification prompt that instructs a verifier agent to check the builder agent\'s auth implementation.',
+      scenario: 'A builder agent just implemented login/signup using Supabase Auth. You need a second agent to verify: correct RLS policies, no exposed service keys, proper session handling, and error states.',
+      starterPrompt: 'Check the auth code.',
+      responses: [
+        {
+          triggerKeywords: ['rls', 'service', 'key', 'session'],
+          response: 'Verification report for auth implementation:\n\n✅ RLS enabled on all user-facing tables\n✅ Service role key only used in server actions\n⚠️ Session refresh not implemented — tokens will expire\n❌ Missing error handling on signup — no duplicate email check\n\n2 issues found, 1 critical.',
+          quality: 'excellent',
+          feedback: 'Your prompt specified the exact verification domains: RLS policies, key exposure, session handling, and error states. The verifier agent knew exactly what to check.',
+        },
+        {
+          triggerKeywords: ['auth', 'check', 'security'],
+          response: 'I reviewed the auth code. It looks good overall. The login flow works and users can sign up. I\'d suggest adding some tests.\n\nVerdict: Approved.',
+          quality: 'poor',
+          feedback: 'Without specific verification criteria, the verifier just skimmed and approved. Specify exactly what to check: RLS policies, key exposure patterns, session lifecycle, and error handling.',
+        },
+      ],
+      fallbackResponse: {
+        response: 'What specifically should I check? The auth system has many components.',
+        feedback: 'Your prompt was too vague. A good verification prompt specifies: (1) which files to check, (2) what security properties to verify, (3) what patterns to grep for, and (4) what counts as a pass vs fail.',
+      },
     },
 
     // === WHAT VERIFICATION IS NOT ===

@@ -14,6 +14,24 @@ const content: LessonContent = {
       title: 'L\'écart de préparation à la production',
       body: "Les agents sont excellents pour écrire du code applicatif mais produisent fréquemment des déploiements avec des problèmes : des URLs en dur qui marchent sur localhost mais cassent en production, des variables d'environnement référencées mais jamais configurées, des clés API committées dans le dépôt, des headers CORS manquants, et des routes qui sautent l'authentification. Ton travail, c'est de savoir à quoi ressemble la préparation à la production et de diriger l'agent pour l'atteindre — pas d'espérer que l'agent s'en souvienne tout seul.",
     },
+    {
+      type: 'compare',
+      title: 'Variables d\'environnement : mauvais vs correct',
+      body: 'La façon dont tu gères les variables d\'environnement détermine si ton app fonctionne en production et si les secrets fuient.',
+      question: 'Quelle approche est sécuritaire pour la production ?',
+      correctSide: 'right',
+      left: {
+        label: 'Mauvais',
+        content: '// Hardcoded in code — exposed in bundle!\nconst API_URL = "https://api.example.com"\n\n// Service key in client — admin access!\nconst supabase = createClient(\n  "https://abc.supabase.co",\n  "eyJhbG...service_role_key"\n)',
+        language: 'typescript',
+      },
+      right: {
+        label: 'Correct',
+        content: '// Public vars use NEXT_PUBLIC_ prefix\nconst API_URL = process.env.NEXT_PUBLIC_API_URL\n\n// Secret keys stay server-side only\nconst supabase = createClient(\n  process.env.NEXT_PUBLIC_SUPABASE_URL!,\n  process.env.SUPABASE_SERVICE_ROLE_KEY!\n)',
+        language: 'typescript',
+      },
+      explanation: 'Les variables NEXT_PUBLIC_ sont sécuritaires pour le navigateur. Les variables sans ce préfixe restent sur le serveur. Ne mets jamais d\'URLs ou de clés en dur — elles changent par environnement et fuient dans l\'historique git.',
+    },
 
     // === VERCEL CONFIGURATION ===
     {
@@ -34,6 +52,20 @@ const content: LessonContent = {
       instruction: 'Dirige l\'agent pour créer un template .env.local approprié avec des valeurs de remplacement et un .env.example sécuritaire à committer.',
       expectedCommand: 'claude "Create two files: (1) .env.example with all environment variables listed with placeholder values like YOUR_SUPABASE_URL_HERE — this is committed to git as documentation. (2) .env.local with the actual structure matching .env.example but blank values. Verify .env.local is in .gitignore. Variables needed: NEXT_PUBLIC_APP_URL, NEXT_PUBLIC_SUPABASE_URL, NEXT_PUBLIC_SUPABASE_ANON_KEY, SUPABASE_SERVICE_ROLE_KEY, SESSION_SECRET."',
       hint: 'L\'agent devrait créer le fichier d\'exemple (sécuritaire à committer) et le fichier local (dans le gitignore).',
+    },
+    {
+      type: 'code-fill',
+      instruction: 'Complète le fichier .env.example. Les variables publiques utilisent le préfixe NEXT_PUBLIC_, les secrets non.',
+      language: 'shell',
+      filename: '.env.example',
+      template: '# Public (safe for browser)\n{{public_url}}=https://your-app.vercel.app\n{{public_supabase}}=https://abc.supabase.co\nNEXT_PUBLIC_SUPABASE_ANON_KEY=eyJ...\n\n# Secret (server only — NEVER prefix with NEXT_PUBLIC_)\n{{secret_service}}=eyJ...\n{{secret_webhook}}=whsec_...',
+      blanks: [
+        { id: 'public_url', answer: 'NEXT_PUBLIC_APP_URL', alternatives: ['NEXT_PUBLIC_URL', 'NEXT_PUBLIC_SITE_URL'], placeholder: 'variable URL publique ?', hint: 'Commence par NEXT_PUBLIC_' },
+        { id: 'public_supabase', answer: 'NEXT_PUBLIC_SUPABASE_URL', placeholder: 'variable Supabase publique ?', hint: 'Commence par NEXT_PUBLIC_' },
+        { id: 'secret_service', answer: 'SUPABASE_SERVICE_ROLE_KEY', alternatives: ['SUPABASE_SERVICE_KEY'], placeholder: 'variable Supabase secrète ?', hint: 'Pas de préfixe NEXT_PUBLIC_ — serveur seulement' },
+        { id: 'secret_webhook', answer: 'STRIPE_WEBHOOK_SECRET', alternatives: ['STRIPE_WEBHOOK_SIGNING_SECRET'], placeholder: 'variable Stripe secrète ?', hint: 'Secret de signature webhook Stripe' },
+      ],
+      explanation: 'Le .env.example documente toutes les variables requises sans valeurs réelles. Les variables publiques ont le préfixe NEXT_PUBLIC_. Les secrets jamais — ils sont invisibles pour le code côté client.',
     },
     {
       type: 'checkpoint',
@@ -80,9 +112,9 @@ const content: LessonContent = {
       body: "Ne déploie jamais directement en production sans prévisualisation. Vercel crée automatiquement des déploiements de prévisualisation pour chaque push sur une branche non-main. Le workflow : pousse sur une branche de fonctionnalité, obtiens un URL de prévisualisation, vérifie que le déploiement marche avec les vraies variables d'environnement (pas localhost), vérifie que les fonctionnalités côté serveur fonctionnent correctement, puis fusionne dans main pour la production. Les déploiements de prévisualisation attrapent les bugs spécifiques à l'environnement que localhost ne révèle jamais.",
     },
     {
-      type: 'diagram',
+      type: 'interactive-diagram',
       title: 'Pipeline de déploiement',
-      body: 'Chaque changement passe par des étapes de vérification avant d\'atteindre la production.',
+      body: 'Chaque changement passe par des étapes de vérification avant d\'atteindre la production. Clique sur chaque étape.',
       diagram: {
         direction: 'LR',
         nodes: [
@@ -100,6 +132,33 @@ const content: LessonContent = {
           { from: 'prod', to: 'rollback', label: 'ça casse', dashed: true },
         ],
       },
+      stages: [
+        {
+          highlightNodes: ['local'],
+          highlightEdges: [{ from: 'local', to: 'preview' }],
+          explanation: 'Le développement commence en local. Tu construis les fonctionnalités sur localhost, tu exécutes les tests, et tu vérifies que l\'app marche dans ton environnement de dev avant de pousser quoi que ce soit.',
+        },
+        {
+          highlightNodes: ['preview'],
+          highlightEdges: [{ from: 'preview', to: 'verify' }],
+          explanation: 'Pousser sur une branche de fonctionnalité déclenche un déploiement preview Vercel. C\'est la première fois que ton code roule avec les vraies variables d\'environnement, le vrai DNS, et les vraies fonctions serveur.',
+        },
+        {
+          highlightNodes: ['verify'],
+          highlightEdges: [{ from: 'verify', to: 'prod' }, { from: 'verify', to: 'local' }],
+          explanation: 'Vérifie le déploiement preview : les variables d\'env marchent, les fonctions serveur répondent, les flux d\'auth se complètent, et l\'UI s\'affiche correctement. Si des problèmes sont trouvés, corrige en local et pousse à nouveau.',
+        },
+        {
+          highlightNodes: ['prod'],
+          highlightEdges: [{ from: 'prod', to: 'rollback' }],
+          explanation: 'Fusionner dans main déclenche un déploiement en production. Ton app est live. Si quelque chose casse, pas de panique — utilise le chemin de rollback.',
+        },
+        {
+          highlightNodes: ['rollback'],
+          highlightEdges: [{ from: 'prod', to: 'rollback' }],
+          explanation: 'Le rollback promeut instantanément le déploiement précédent qui marchait. Ça restaure le service en quelques secondes. Puis débogue calmement sur une branche sans que les utilisateurs subissent l\'état cassé.',
+        },
+      ],
     },
     {
       type: 'terminal',

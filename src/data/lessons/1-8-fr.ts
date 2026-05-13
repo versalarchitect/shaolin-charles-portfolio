@@ -217,6 +217,46 @@ const content: LessonContent = {
       correctOrder: [1, 3, 0, 2, 4],
     },
 
+    // === INTERACTIF : COMPARE, MATCH, CODE-FILL ===
+    {
+      type: 'compare',
+      title: 'Instructions inline vs skills sauvegardés',
+      body: 'Tu peux taper la même instruction à chaque fois, ou la sauvegarder dans un fichier de skill réutilisable.',
+      question: 'Quelle approche passe mieux à l\'échelle entre les projets ?',
+      correctSide: 'right',
+      left: {
+        label: 'Inline (à chaque fois)',
+        content: '> claude "Review this PR for security issues.\n  Check for: hardcoded secrets, SQL injection,\n  XSS vulnerabilities, missing auth checks,\n  exposed API keys. Format as a checklist\n  with severity levels."',
+        language: 'text',
+      },
+      right: {
+        label: 'Skill sauvegardé',
+        content: '# .claude/commands/security-review.md\n\nReview the current diff for security issues.\n\nCheck for:\n- Hardcoded secrets or API keys\n- SQL injection vulnerabilities\n- XSS attack vectors\n- Missing authentication checks\n- Exposed internal endpoints\n\nFormat as a severity-ranked checklist.',
+        language: 'markdown',
+      },
+      explanation: 'Les skills sauvegardés sont cohérents, partageables et versionnés. Tu tapes /security-review au lieu de te souvenir du prompt complet. Toute l\'équipe utilise la même check-list.',
+    },
+    {
+      type: 'match',
+      instruction: 'Associe chaque type de hook à son rôle :',
+      leftItems: ['PreToolUse', 'PostToolUse', 'Notification'],
+      rightItems: ['Valider ou bloquer une action avant son exécution', 'Lancer un nettoyage ou des vérifications après une action', 'Réagir à des événements comme des erreurs ou des changements d\'état'],
+      correctPairs: { 0: 0, 1: 1, 2: 2 },
+      explanation: 'Les hooks PreToolUse agissent comme des garde-fous — ils peuvent empêcher les actions dangereuses. Les hooks PostToolUse s\'exécutent après coup pour la journalisation ou le nettoyage. Les hooks Notification réagissent aux événements système.',
+    },
+    {
+      type: 'code-fill',
+      instruction: 'Complète cette configuration de hook pour auto-linter chaque fichier que l\'agent écrit :',
+      language: 'json',
+      template: '{\n  "hooks": {\n    "{{event_type}}": [\n      {\n        "{{filter_key}}": "{{tool_name}}",\n        "command": "npx eslint --fix \\"$CLAUDE_FILE_PATH\\""\n      }\n    ]\n  }\n}',
+      blanks: [
+        { id: 'event_type', answer: 'PostToolUse', alternatives: ['postToolUse', 'posttooluse'], placeholder: 'événement du hook ?', hint: 'Ce hook se déclenche après qu\'un outil termine — Pre ou Post ?' },
+        { id: 'filter_key', answer: 'matcher', placeholder: 'champ de filtre ?', hint: 'La clé JSON qui filtre quel outil déclenche le hook' },
+        { id: 'tool_name', answer: 'Write', alternatives: ['write'], placeholder: 'quel outil ?', hint: 'L\'outil qui crée de nouveaux fichiers' },
+      ],
+      explanation: 'PostToolUse se déclenche après qu\'un outil termine. Le champ "matcher" filtre par nom d\'outil. "Write" cible la création de fichiers — donc chaque nouveau fichier est auto-linté.',
+    },
+
     // === FINAL EXERCISES ===
     {
       type: 'code-input',

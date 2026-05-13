@@ -48,6 +48,26 @@ const content: LessonContent = {
       message: 'Le contexte est structuré en couches : global, contrats, spécifications par module.',
     },
 
+    // === FLAT VS LAYERED COMPARE ===
+    {
+      type: 'compare',
+      title: 'CLAUDE.md plat vs architecture en couches',
+      body: 'Au fur et à mesure que ta flotte grandit, un seul CLAUDE.md devient un goulot d\'étranglement. Le contexte en couches résout ce problème.',
+      question: 'Quelle approche passe à l\'échelle pour 5+ agents travaillant sur différents modules ?',
+      correctSide: 'right',
+      left: {
+        label: 'Plat (un seul fichier)',
+        content: '# CLAUDE.md (racine)\n\n## Toutes les conventions\n- Auth: use bcrypt...\n- Payments: use Stripe...\n- API: use REST...\n- UI: use Tailwind...\n- Tests: use Vitest...\n\n(500+ lines, every agent reads all)',
+        language: 'markdown',
+      },
+      right: {
+        label: 'En couches (racine + modules)',
+        content: '# CLAUDE.md (root — shared rules)\n- TypeScript strict, camelCase\n- Error handling: throw AppError\n\n# payments/CLAUDE.md\n- Use Stripe SDK, webhook patterns\n- Idempotent fulfillment required\n\n# auth/CLAUDE.md  \n- Supabase Auth, RLS policies\n- Session: httpOnly cookies',
+        language: 'markdown',
+      },
+      explanation: 'Le contexte en couches signifie que chaque agent lit les règles racine (partagées) plus seulement les règles de son module (spécifiques). L\'agent de paiements ne lit jamais les conventions d\'auth. Ça économise des tokens et réduit la confusion.',
+    },
+
     // === WHAT GOES WHERE ===
     {
       type: 'info',
@@ -179,6 +199,34 @@ export interface TeamMember {
       type: 'checkpoint',
       xp: 5,
       message: 'Tu sais écrire des contrats d\'interface qui préviennent les incompatibilités entre agents.',
+    },
+
+    // === CODE-FILL: Module-specific CLAUDE.md ===
+    {
+      type: 'code-fill',
+      instruction: 'Complète ce CLAUDE.md spécifique au module pour un agent de paiements. Remplis les patrons Stripe, la règle d\'idempotence et la gestion des webhooks.',
+      language: 'markdown',
+      filename: 'payments/CLAUDE.md',
+      template: `# Payments Module Context
+
+## SDK
+- Use {{sdk_name}} for all payment operations
+- Never store raw card numbers — use tokenized payment methods
+
+## Idempotency
+- Every charge/refund MUST include {{idempotency_rule}}
+- Retries are safe because the key prevents duplicate charges
+
+## Webhooks
+- Verify webhook signatures using {{webhook_verify}}
+- Process events idempotently (check if already handled before acting)
+- Return 200 immediately, process async in background`,
+      blanks: [
+        { id: 'sdk_name', answer: 'Stripe SDK', alternatives: ['Stripe SDK', 'stripe', '@stripe/stripe-js', 'Stripe'], placeholder: 'quel SDK de paiement ?', hint: 'Le SDK de traitement de paiement dominant pour les applications web' },
+        { id: 'idempotency_rule', answer: 'an idempotency key', alternatives: ['an idempotency key', 'idempotency key', 'Idempotency-Key header', 'a unique idempotency key', 'une clé d\'idempotence'], placeholder: 'qu\'est-ce qui empêche les doubles facturations ?', hint: 'Une clé unique envoyée avec chaque requête pour que les réessais ne créent pas de charges en double' },
+        { id: 'webhook_verify', answer: 'stripe.webhooks.constructEvent', alternatives: ['stripe.webhooks.constructEvent', 'constructEvent', 'Stripe webhook signature verification', 'the webhook signing secret'], placeholder: 'comment vérifier l\'authenticité du webhook ?', hint: 'La méthode du SDK Stripe qui vérifie la signature du webhook' },
+      ],
+      explanation: 'Le contexte spécifique au module donne à l\'agent de paiements exactement ce dont il a besoin : choix du SDK, patrons d\'idempotence et gestion des webhooks. L\'agent d\'auth ne voit jamais ça — il a son propre contexte de module avec les patrons Supabase Auth.',
     },
 
     // === PER-MODULE SPECS ===

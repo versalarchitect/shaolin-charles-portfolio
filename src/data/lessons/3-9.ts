@@ -15,9 +15,29 @@ const content: LessonContent = {
       body: "Agents default to the simplest path: receive request, do work, return response. But what about sending a welcome email after signup? Processing a video upload? Syncing data with a third-party API that rate-limits you? These need background processing with failure handling — and agents won't build that unless you spec it explicitly.",
     },
 
-    // === DIAGRAM 1: Event Flow Architecture ===
+    // === COMPARE: Synchronous vs Event-Driven ===
     {
-      type: 'diagram',
+      type: 'compare',
+      title: 'Synchronous vs event-driven execution',
+      body: 'Background jobs can run synchronously (blocking) or event-driven (resilient).',
+      question: 'Which approach survives a server restart mid-execution?',
+      correctSide: 'right',
+      left: {
+        label: 'Synchronous',
+        content: 'async function processOrder(order) {\n  await chargePayment(order)  // step 1\n  await createInvoice(order)  // step 2\n  await sendEmail(order)      // step 3\n  await updateInventory(order)// step 4\n}\n// If server crashes at step 3:\n// ❌ Payment charged\n// ❌ Invoice created\n// ❌ No email sent\n// ❌ Inventory not updated\n// ❌ No way to resume',
+        language: 'typescript',
+      },
+      right: {
+        label: 'Event-driven',
+        content: 'const processOrder = inngest.createFunction(\n  { id: "process-order" },\n  { event: "order/created" },\n  async ({ step }) => {\n    await step.run("charge", () => chargePayment())\n    await step.run("invoice", () => createInvoice())\n    await step.run("email", () => sendEmail())\n    await step.run("inventory", () => updateInventory())\n  }\n)\n// If server crashes at step 3:\n// ✅ Steps 1-2 recorded\n// ✅ Resumes from step 3\n// ✅ No duplicate charges',
+        language: 'typescript',
+      },
+      explanation: 'Event-driven workflows record each step\'s completion. On crash, they resume from the last successful step instead of starting over. This prevents duplicate charges and lost work.',
+    },
+
+    // === DIAGRAM 1: Event Flow Architecture (Interactive) ===
+    {
+      type: 'interactive-diagram',
       title: 'Event-Driven Architecture Flow',
       body: "Every event-driven system follows this pattern. Events enter a queue, handlers process them, and failures route to retry logic or a dead letter queue for manual inspection. The key insight: no event is ever lost. It either succeeds, retries, or gets flagged for human review.",
       diagram: {
@@ -39,6 +59,38 @@ const content: LessonContent = {
           { from: 'retry', to: 'dlq', label: 'exhausted' },
         ],
       },
+      stages: [
+        {
+          highlightNodes: ['event', 'queue'],
+          highlightEdges: [{ from: 'event', to: 'queue' }],
+          explanation: 'An event is emitted (e.g., user.signup) and enters the durable queue. The queue persists the event — even if the server crashes right now, the event is safe.',
+        },
+        {
+          highlightNodes: ['queue', 'handler'],
+          highlightEdges: [{ from: 'queue', to: 'handler' }],
+          explanation: 'The queue delivers the event to a handler function. The handler processes it step by step — each step individually durable and retryable.',
+        },
+        {
+          highlightNodes: ['handler', 'success'],
+          highlightEdges: [{ from: 'handler', to: 'success' }],
+          explanation: 'Happy path: all steps complete successfully. The event is marked as processed and removed from the queue.',
+        },
+        {
+          highlightNodes: ['handler', 'retry'],
+          highlightEdges: [{ from: 'handler', to: 'retry' }],
+          explanation: 'A step fails (network timeout, API error). The event moves to retry logic. The system waits, then re-delivers the event to the handler.',
+        },
+        {
+          highlightNodes: ['retry', 'handler'],
+          highlightEdges: [{ from: 'retry', to: 'handler' }],
+          explanation: 'Retry attempts the handler again. With durable step functions, only the failed step re-runs — previously completed steps are skipped.',
+        },
+        {
+          highlightNodes: ['retry', 'dlq'],
+          highlightEdges: [{ from: 'retry', to: 'dlq' }],
+          explanation: 'After all retry attempts are exhausted (e.g., 3 failures), the event moves to the dead letter queue for manual inspection. No data is ever silently lost.',
+        },
+      ],
     },
     {
       type: 'checkpoint',

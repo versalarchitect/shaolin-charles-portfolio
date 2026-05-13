@@ -40,6 +40,48 @@ const content: LessonContent = {
       message: 'Constraint paradox understood!',
     },
 
+    // === COMPARE: OPEN-ENDED VS CONSTRAINED ===
+    {
+      type: 'compare',
+      title: 'Open-ended vs Constrained spec',
+      body: 'See how constraints eliminate deliberation and make agents execute immediately.',
+      left: {
+        label: 'Open-Ended',
+        content: 'Prompt: "Build auth for the app"\n\nAgent response:\n"I\'ll set up authentication. Let me explore options:\n- Should I use JWT or sessions?\n- OAuth providers or email/password?\n- What about magic links?\n- Should I add MFA?\n- Which library — Passport, Lucia, Auth.js?"\n\n→ 5 follow-up questions\n→ 3 round trips before any code\n→ Agent picks a stack you didn\'t want',
+        language: 'text',
+        filename: 'open-ended-spec.txt',
+      },
+      right: {
+        label: 'Constrained',
+        content: 'Prompt: "Use Supabase Auth, OAuth only\n(Google + GitHub), no custom JWT,\nno magic links, no MFA for v1"\n\nAgent response:\n"Setting up Supabase Auth with\nOAuth providers.\n\n1. Configure Google OAuth\n2. Configure GitHub OAuth\n3. Add auth callback handler\n4. Create protected route middleware\n\nStarting implementation..."\n\n→ 0 follow-up questions\n→ Immediate execution\n→ Exactly what you specified',
+        language: 'text',
+        filename: 'constrained-spec.txt',
+      },
+      question: 'Which spec leads to faster agent execution?',
+      correctSide: 'right',
+      explanation: 'The constrained spec eliminates every decision point. The agent does not ask about JWT vs sessions because you said "no custom JWT." It does not ask about magic links because you excluded them. Every constraint you add removes a question the agent would otherwise ask, turning deliberation into immediate execution.',
+    },
+
+    // === CODE-FILL: ADD CONSTRAINTS ===
+    {
+      type: 'code-fill',
+      instruction: 'Add constraints to this open-ended spec. Fill in the blanks with specific technology choices, boundaries, and exclusions to eliminate agent deliberation.',
+      language: 'markdown',
+      filename: 'specs/constrained-feature.md',
+      template: '# Feature: User Dashboard\n\n## Technology Constraints\n- Framework: {{framework}}\n- Styling: {{styling}}\n- Data fetching: {{data_fetching}}\n\n## Boundaries\n- This feature lives in {{feature_path}}\n- No imports from {{excluded_imports}}\n\n## Exclusions (do NOT build)\n- No {{exclusion_1}}\n- No {{exclusion_2}}\n- No {{exclusion_3}}',
+      blanks: [
+        { id: 'framework', answer: 'React', alternatives: ['Next.js', 'Vue', 'Svelte', 'react'], placeholder: 'which framework?', hint: 'The UI library you use' },
+        { id: 'styling', answer: 'Tailwind CSS', alternatives: ['tailwind', 'Tailwind', 'CSS modules', 'styled-components'], placeholder: 'which styling solution?' },
+        { id: 'data_fetching', answer: 'React Query', alternatives: ['TanStack Query', 'SWR', 'react-query', 'tRPC'], placeholder: 'which data fetching library?', hint: 'A popular server state library' },
+        { id: 'feature_path', answer: 'src/features/dashboard/', alternatives: ['src/pages/dashboard/', 'src/modules/dashboard/', 'packages/dashboard/'], placeholder: 'which directory?' },
+        { id: 'excluded_imports', answer: 'other feature directories', alternatives: ['other features', 'other modules', 'internal modules of other packages'], placeholder: 'what cannot be imported?', hint: 'Keep features isolated' },
+        { id: 'exclusion_1', answer: 'custom chart library', alternatives: ['custom charts', 'chart library', 'data visualization library', 'custom graphing'], placeholder: 'excluded scope item 1', hint: 'A common scope creep for dashboards' },
+        { id: 'exclusion_2', answer: 'real-time updates', alternatives: ['websockets', 'live updates', 'real-time', 'WebSocket connections'], placeholder: 'excluded scope item 2', hint: 'An expensive feature often added prematurely' },
+        { id: 'exclusion_3', answer: 'export to PDF', alternatives: ['PDF export', 'CSV export', 'data export', 'report generation'], placeholder: 'excluded scope item 3', hint: 'A feature that adds significant complexity' },
+      ],
+      explanation: 'Each filled blank removes a decision the agent would otherwise make on its own. Technology choices prevent stack deliberation. Path boundaries prevent cross-feature coupling. Exclusions prevent scope creep. The more specific, the faster the agent executes.',
+    },
+
     // === MONOREPO BOUNDARIES ===
     {
       type: 'info',

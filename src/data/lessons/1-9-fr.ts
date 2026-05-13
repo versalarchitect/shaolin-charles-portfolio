@@ -57,6 +57,85 @@ const content: LessonContent = {
       },
     },
 
+    // === INTERACTIF : COMPARE, CODE-FILL, INTERACTIVE-DIAGRAM ===
+    {
+      type: 'compare',
+      title: 'PR focalisée vs méga PR',
+      body: 'La taille de ta pull request affecte directement la qualité de la révision.',
+      question: 'Quelle PR est plus facile à réviser et plus sûre à merger ?',
+      correctSide: 'left',
+      left: {
+        label: 'Focalisée (3 fichiers)',
+        content: 'feat: add email validation to signup form\n\nChanged:\n- src/lib/validation.ts (new function)\n- src/components/signup-form.tsx (use validator)\n- src/components/signup-form.test.tsx (3 tests)\n\nReview time: ~5 minutes\nRisk: Low — isolated change',
+        language: 'text',
+      },
+      right: {
+        label: 'Méga (47 fichiers)',
+        content: 'feat: add auth, dashboard, settings, and API\n\nChanged:\n- 47 files across 12 directories\n- New auth system + session management\n- Dashboard with 8 widgets\n- Settings page with 5 forms\n- 14 new API routes\n\nReview time: ~2 hours\nRisk: High — impossible to review thoroughly',
+        language: 'text',
+      },
+      explanation: 'Les petites PR focalisées reçoivent des révisions approfondies. Les méga PR sont tamponnées parce que personne n\'a le temps de réviser 47 fichiers attentivement. Les bugs se cachent dans les parties que personne ne lit.',
+    },
+    {
+      type: 'code-fill',
+      instruction: 'Complète les commandes git en utilisant le nommage conventionnel de branches et le format de commit :',
+      language: 'shell',
+      template: 'git checkout -b {{branch_type}}/{{branch_name}}\n\n# ... make changes ...\n\ngit add src/lib/validation.ts\ngit commit -m "{{commit_type}}: {{commit_desc}}"',
+      blanks: [
+        { id: 'branch_type', answer: 'feat', alternatives: ['feature'], placeholder: 'préfixe de branche ?', hint: 'Type de travail : feat, fix, refactor' },
+        { id: 'branch_name', answer: 'add-email-validation', alternatives: ['email-validation', 'add-validation'], placeholder: 'description de branche ?', hint: 'Description en kebab-case du changement' },
+        { id: 'commit_type', answer: 'feat', alternatives: ['feature'], placeholder: 'type de commit ?' },
+        { id: 'commit_desc', answer: 'add email validation to signup form', placeholder: 'qu\'est-ce qui a changé ?', hint: 'Description courte commençant par un verbe' },
+      ],
+      explanation: 'Les noms de branches conventionnels (feat/, fix/, refactor/) et les types de commit rendent l\'historique git scannable. L\'agent suit ces patterns quand il les voit dans CLAUDE.md.',
+    },
+    {
+      type: 'interactive-diagram',
+      title: 'Workflow de branches agent — étape par étape',
+      body: 'Parcours comment plusieurs agents travaillent sur des branches séparées, avec une porte de révision humaine avant de merger dans main.',
+      diagram: {
+        direction: 'LR',
+        nodes: [
+          { id: 'main', label: 'main', sublabel: 'Protégée', shape: 'pill', highlight: true },
+          { id: 'feat1', label: 'feat/auth', sublabel: 'Agent 1', shape: 'rect' },
+          { id: 'feat2', label: 'feat/settings', sublabel: 'Agent 2', shape: 'rect' },
+          { id: 'feat3', label: 'fix/pagination', sublabel: 'Agent 3', shape: 'rect' },
+          { id: 'review', label: 'Révision PR', sublabel: 'Porte humaine', shape: 'rounded', highlight: true },
+        ],
+        edges: [
+          { from: 'main', to: 'feat1', label: 'branche' },
+          { from: 'main', to: 'feat2', label: 'branche' },
+          { from: 'main', to: 'feat3', label: 'branche' },
+          { from: 'feat1', to: 'review' },
+          { from: 'feat2', to: 'review' },
+          { from: 'feat3', to: 'review' },
+          { from: 'review', to: 'main', label: 'merge' },
+        ],
+      },
+      stages: [
+        {
+          highlightNodes: ['main'],
+          highlightEdges: [],
+          explanation: 'On part de la branche main protégée. Personne — humain ou agent — ne pousse directement ici.',
+        },
+        {
+          highlightNodes: ['main', 'feat1', 'feat2', 'feat3'],
+          highlightEdges: [{ from: 'main', to: 'feat1' }, { from: 'main', to: 'feat2' }, { from: 'main', to: 'feat3' }],
+          explanation: 'Chaque tâche d\'agent a sa propre branche. Plusieurs agents travaillent en parallèle sans interférer entre eux.',
+        },
+        {
+          highlightNodes: ['feat1', 'feat2', 'feat3', 'review'],
+          highlightEdges: [{ from: 'feat1', to: 'review' }, { from: 'feat2', to: 'review' }, { from: 'feat3', to: 'review' }],
+          explanation: 'Les agents poussent leurs branches et ouvrent des PR. Chaque changement doit passer par la porte de révision humaine.',
+        },
+        {
+          highlightNodes: ['review', 'main'],
+          highlightEdges: [{ from: 'review', to: 'main' }],
+          explanation: 'Après révision et approbation, les changements sont mergés dans main. L\'humain garde le contrôle de ce qui est livré.',
+        },
+      ],
+    },
+
     // === COMMIT HYGIENE ===
     {
       type: 'info',

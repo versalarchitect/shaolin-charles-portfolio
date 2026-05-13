@@ -267,6 +267,38 @@ claude --worktree ../worktree-realtime \
   "Follow specs/realtime-agent.md. Build WebSocket server and activity feed. Read contracts from src/contracts/."`,
     },
     {
+      type: 'code-fill',
+      instruction: 'Complete this fleet configuration script. Fill in the agent assignments, worktree paths, and merge order.',
+      language: 'bash',
+      filename: 'scripts/fleet-config.sh',
+      template: `#!/bin/bash
+# Fleet Configuration — Team Dashboard Sprint
+
+# Agent 1: Auth module
+AGENT1_WORKTREE="{{auth_path}}"
+AGENT1_SPEC="specs/auth-agent.md"
+AGENT1_SCOPE="src/auth/**"
+
+# Agent 2: API module
+AGENT2_WORKTREE="../worktree-api"
+AGENT2_SPEC="specs/api-agent.md"
+AGENT2_SCOPE="{{api_scope}}"
+
+# Agent 3: UI module
+AGENT3_WORKTREE="../worktree-ui"
+AGENT3_SPEC="specs/ui-agent.md"
+AGENT3_SCOPE="src/components/dashboard/**"
+
+# Merge order (dependency-first)
+MERGE_ORDER="{{merge_order}}"`,
+      blanks: [
+        { id: 'auth_path', answer: '../worktree-auth', alternatives: ['../worktree-auth'], placeholder: 'worktree path for auth', hint: 'Follow the same pattern as the other agents: ../worktree-{module}' },
+        { id: 'api_scope', answer: 'src/api/**', alternatives: ['src/api/**', 'src/api/*'], placeholder: 'API file ownership pattern', hint: 'Which directory does the API agent own? Use a glob pattern.' },
+        { id: 'merge_order', answer: 'auth api ui realtime', alternatives: ['auth api ui realtime', 'auth api ui rt', 'feat/auth feat/api feat/ui feat/realtime'], placeholder: 'dependency-first merge sequence', hint: 'Foundation (auth) first, then data layer (api), then consumers (ui, realtime)' },
+      ],
+      explanation: 'Fleet configuration captures the three critical decisions: where each agent works (worktree isolation), what it owns (file scope), and what order to merge (dependency-first). Getting merge order wrong compounds type errors across branches.',
+    },
+    {
       type: 'terminal',
       instruction: 'Launch the auth agent on its worktree (you would do this in a separate terminal):',
       expectedCommand: 'claude --worktree ../worktree-auth "Follow specs/auth-agent.md exactly. Build authentication with login, roles, and session management."',
@@ -421,19 +453,19 @@ done`,
       body: "Four branches, one main. Merge them one at a time in dependency order: Auth first (others may depend on it), then API, then UI, then Real-time. After each merge, run TypeScript check to catch any integration issues before they compound.",
     },
     {
-      type: 'diagram',
-      title: 'Merge Order Strategy',
-      body: "Merge in dependency order. Foundation modules first (auth), then data layer (API), then consumers (UI, real-time). Run type checks after each merge to catch issues before they compound.",
+      type: 'interactive-diagram',
+      title: 'Fleet Merge Order Strategy',
+      body: 'Click through each merge step to see the dependency-ordered integration timeline.',
       diagram: {
         direction: 'LR',
         nodes: [
-          { id: 'auth', label: '1. Merge Auth', shape: 'rect' },
+          { id: 'auth', label: '1. Merge Auth', sublabel: 'Foundation', shape: 'rect' },
           { id: 'check1', label: 'tsc check', shape: 'diamond' },
-          { id: 'api', label: '2. Merge API', shape: 'rect' },
+          { id: 'api', label: '2. Merge API', sublabel: 'Data layer', shape: 'rect' },
           { id: 'check2', label: 'tsc check', shape: 'diamond' },
-          { id: 'ui', label: '3. Merge UI', shape: 'rect' },
-          { id: 'rt', label: '4. Merge RT', shape: 'rect' },
-          { id: 'final', label: 'Final Check', shape: 'pill', highlight: true },
+          { id: 'ui', label: '3. Merge UI', sublabel: 'Consumer', shape: 'rect' },
+          { id: 'rt', label: '4. Merge RT', sublabel: 'Consumer', shape: 'rect' },
+          { id: 'final', label: 'Final Check', sublabel: 'Build + deploy', shape: 'pill', highlight: true },
         ],
         edges: [
           { from: 'auth', to: 'check1' },
@@ -444,6 +476,43 @@ done`,
           { from: 'rt', to: 'final' },
         ],
       },
+      stages: [
+        {
+          highlightNodes: ['auth'],
+          highlightEdges: [],
+          explanation: 'Merge Auth first. It is the foundation — session types, role definitions, and auth helpers that other modules depend on. Run: git merge feat/auth --no-ff',
+        },
+        {
+          highlightNodes: ['auth', 'check1'],
+          highlightEdges: [{ from: 'auth', to: 'check1' }],
+          explanation: 'Run npx tsc --noEmit after merging auth. If types are broken here, every subsequent merge will compound the errors. Fix any issues before continuing.',
+        },
+        {
+          highlightNodes: ['check1', 'api'],
+          highlightEdges: [{ from: 'check1', to: 'api' }],
+          explanation: 'Merge API next. It imports auth types for session validation and produces the response shapes that UI will consume. This is the data layer between auth and consumers.',
+        },
+        {
+          highlightNodes: ['api', 'check2'],
+          highlightEdges: [{ from: 'api', to: 'check2' }],
+          explanation: 'Another tsc check. The API module must type-check cleanly against the already-merged auth module. Any contract mismatches surface here — not after merging all four branches.',
+        },
+        {
+          highlightNodes: ['check2', 'ui'],
+          highlightEdges: [{ from: 'check2', to: 'ui' }],
+          explanation: 'Merge UI. It consumes API response types and auth session types. Because both producers are already merged, any type mismatches between UI expectations and actual API shapes are caught immediately.',
+        },
+        {
+          highlightNodes: ['ui', 'rt'],
+          highlightEdges: [{ from: 'ui', to: 'rt' }],
+          explanation: 'Merge Real-time last. It depends on activity event shapes and auth session types. Conflicts should be minimal — mostly shared config files like package.json.',
+        },
+        {
+          highlightNodes: ['rt', 'final'],
+          highlightEdges: [{ from: 'rt', to: 'final' }],
+          explanation: 'Final verification: npx tsc --noEmit, npm run lint, npm run build. All four modules compile together as a unified product. If this passes, you are ready to ship.',
+        },
+      ],
     },
     {
       type: 'terminal',

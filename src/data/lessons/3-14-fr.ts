@@ -267,6 +267,38 @@ claude --worktree ../worktree-realtime \
   "Follow specs/realtime-agent.md. Build WebSocket server and activity feed. Read contracts from src/contracts/."`,
     },
     {
+      type: 'code-fill',
+      instruction: 'Complète ce script de configuration de flotte. Remplis les assignations d\'agents, les chemins de worktrees et l\'ordre de fusion.',
+      language: 'bash',
+      filename: 'scripts/fleet-config.sh',
+      template: `#!/bin/bash
+# Fleet Configuration — Team Dashboard Sprint
+
+# Agent 1: Auth module
+AGENT1_WORKTREE="{{auth_path}}"
+AGENT1_SPEC="specs/auth-agent.md"
+AGENT1_SCOPE="src/auth/**"
+
+# Agent 2: API module
+AGENT2_WORKTREE="../worktree-api"
+AGENT2_SPEC="specs/api-agent.md"
+AGENT2_SCOPE="{{api_scope}}"
+
+# Agent 3: UI module
+AGENT3_WORKTREE="../worktree-ui"
+AGENT3_SPEC="specs/ui-agent.md"
+AGENT3_SCOPE="src/components/dashboard/**"
+
+# Merge order (dependency-first)
+MERGE_ORDER="{{merge_order}}"`,
+      blanks: [
+        { id: 'auth_path', answer: '../worktree-auth', alternatives: ['../worktree-auth'], placeholder: 'chemin du worktree pour auth', hint: 'Suis le même patron que les autres agents : ../worktree-{module}' },
+        { id: 'api_scope', answer: 'src/api/**', alternatives: ['src/api/**', 'src/api/*'], placeholder: 'patron de propriété de fichiers API', hint: 'Quel répertoire l\'agent API possède-t-il ? Utilise un patron glob.' },
+        { id: 'merge_order', answer: 'auth api ui realtime', alternatives: ['auth api ui realtime', 'auth api ui rt', 'feat/auth feat/api feat/ui feat/realtime'], placeholder: 'séquence de fusion dépendances-d\'abord', hint: 'Fondation (auth) d\'abord, puis couche de données (api), puis consommateurs (ui, realtime)' },
+      ],
+      explanation: 'La configuration de flotte capture les trois décisions critiques : où chaque agent travaille (isolation par worktree), ce qu\'il possède (portée des fichiers), et dans quel ordre fusionner (dépendances d\'abord). Se tromper dans l\'ordre de fusion amplifie les erreurs de types entre les branches.',
+    },
+    {
       type: 'terminal',
       instruction: 'Lance l\'agent auth sur son worktree (tu ferais ça dans un terminal séparé) :',
       expectedCommand: 'claude --worktree ../worktree-auth "Follow specs/auth-agent.md exactly. Build authentication with login, roles, and session management."',
@@ -421,19 +453,19 @@ done`,
       body: "Quatre branches, un main. Fusionne-les une à la fois dans l'ordre des dépendances : Auth d'abord (les autres peuvent en dépendre), puis API, puis UI, puis Temps réel. Après chaque fusion, lance une vérification TypeScript pour attraper les problèmes d'intégration avant qu'ils ne s'accumulent.",
     },
     {
-      type: 'diagram',
-      title: 'Stratégie d\'ordre de fusion',
-      body: "Fusionne dans l'ordre des dépendances. Les modules fondation d'abord (auth), puis la couche de données (API), puis les consommateurs (UI, temps réel). Lance des vérifications de types après chaque fusion pour attraper les problèmes avant qu'ils ne s'accumulent.",
+      type: 'interactive-diagram',
+      title: 'Stratégie d\'ordre de fusion de la flotte',
+      body: 'Clique sur chaque étape de fusion pour voir la chronologie d\'intégration ordonnée par dépendances.',
       diagram: {
         direction: 'LR',
         nodes: [
-          { id: 'auth', label: '1. Fusion Auth', shape: 'rect' },
+          { id: 'auth', label: '1. Fusion Auth', sublabel: 'Fondation', shape: 'rect' },
           { id: 'check1', label: 'vérif tsc', shape: 'diamond' },
-          { id: 'api', label: '2. Fusion API', shape: 'rect' },
+          { id: 'api', label: '2. Fusion API', sublabel: 'Couche de données', shape: 'rect' },
           { id: 'check2', label: 'vérif tsc', shape: 'diamond' },
-          { id: 'ui', label: '3. Fusion UI', shape: 'rect' },
-          { id: 'rt', label: '4. Fusion TR', shape: 'rect' },
-          { id: 'final', label: 'Vérif finale', shape: 'pill', highlight: true },
+          { id: 'ui', label: '3. Fusion UI', sublabel: 'Consommateur', shape: 'rect' },
+          { id: 'rt', label: '4. Fusion TR', sublabel: 'Consommateur', shape: 'rect' },
+          { id: 'final', label: 'Vérif finale', sublabel: 'Build + déploiement', shape: 'pill', highlight: true },
         ],
         edges: [
           { from: 'auth', to: 'check1' },
@@ -444,6 +476,43 @@ done`,
           { from: 'rt', to: 'final' },
         ],
       },
+      stages: [
+        {
+          highlightNodes: ['auth'],
+          highlightEdges: [],
+          explanation: 'Fusionne Auth en premier. C\'est la fondation — types de session, définitions de rôles et helpers d\'auth dont les autres modules dépendent. Lance : git merge feat/auth --no-ff',
+        },
+        {
+          highlightNodes: ['auth', 'check1'],
+          highlightEdges: [{ from: 'auth', to: 'check1' }],
+          explanation: 'Lance npx tsc --noEmit après avoir fusionné auth. Si les types sont cassés ici, chaque fusion suivante amplifiera les erreurs. Corrige tout problème avant de continuer.',
+        },
+        {
+          highlightNodes: ['check1', 'api'],
+          highlightEdges: [{ from: 'check1', to: 'api' }],
+          explanation: 'Fusionne l\'API ensuite. Elle importe les types auth pour la validation de session et produit les formes de réponses que l\'UI va consommer. C\'est la couche de données entre auth et consommateurs.',
+        },
+        {
+          highlightNodes: ['api', 'check2'],
+          highlightEdges: [{ from: 'api', to: 'check2' }],
+          explanation: 'Encore une vérif tsc. Le module API doit passer la vérification de types proprement contre le module auth déjà fusionné. Toute incompatibilité de contrat se révèle ici — pas après avoir fusionné les quatre branches.',
+        },
+        {
+          highlightNodes: ['check2', 'ui'],
+          highlightEdges: [{ from: 'check2', to: 'ui' }],
+          explanation: 'Fusionne l\'UI. Elle consomme les types de réponses API et les types de session auth. Comme les deux producteurs sont déjà fusionnés, toute incompatibilité entre les attentes de l\'UI et les formes API réelles est attrapée immédiatement.',
+        },
+        {
+          highlightNodes: ['ui', 'rt'],
+          highlightEdges: [{ from: 'ui', to: 'rt' }],
+          explanation: 'Fusionne le Temps réel en dernier. Il dépend des formes d\'événements d\'activité et des types de session auth. Les conflits devraient être minimaux — principalement des fichiers de config partagés comme package.json.',
+        },
+        {
+          highlightNodes: ['rt', 'final'],
+          highlightEdges: [{ from: 'rt', to: 'final' }],
+          explanation: 'Vérification finale : npx tsc --noEmit, npm run lint, npm run build. Les quatre modules compilent ensemble comme un produit unifié. Si ça passe, tu es prêt à livrer.',
+        },
+      ],
     },
     {
       type: 'terminal',

@@ -273,6 +273,55 @@ const content: LessonContent = {
       hint: 'Use git worktree remove <path>',
     },
 
+    // === INTERACTIVE: CODE-FILL ===
+    {
+      type: 'code-fill',
+      instruction: 'Complete the git worktree commands for setting up parallel agent workspaces:',
+      language: 'shell',
+      template: '# Create isolated worktrees for two agents\ngit worktree add ../{{dir1}} -b {{branch1}}\ngit worktree add ../{{dir2}} -b {{branch2}}\n\n# After agents finish, clean up\ngit worktree {{cleanup}} ../agent-auth\ngit worktree {{cleanup}} ../agent-api',
+      blanks: [
+        { id: 'dir1', answer: 'agent-auth', alternatives: ['wt-auth'], placeholder: 'directory name?', hint: 'Descriptive name for the auth agent workspace' },
+        { id: 'branch1', answer: 'feat/auth', alternatives: ['feature/auth', 'auth'], placeholder: 'branch name?', hint: 'Feature branch for auth work' },
+        { id: 'dir2', answer: 'agent-api', alternatives: ['wt-api'], placeholder: 'directory name?' },
+        { id: 'branch2', answer: 'feat/api', alternatives: ['feature/api', 'api'], placeholder: 'branch name?' },
+        { id: 'cleanup', answer: 'remove', alternatives: ['rm'], placeholder: 'cleanup command?', hint: 'Remove the worktree when done' },
+      ],
+      explanation: 'Each agent gets its own directory and branch. They work in complete isolation — no file conflicts. After merging, remove the worktrees to clean up.',
+    },
+
+    // === INTERACTIVE: WORKTREE LIFECYCLE DIAGRAM ===
+    {
+      type: 'interactive-diagram',
+      title: 'Worktree Lifecycle (Step Through)',
+      body: 'Step through each phase of the worktree lifecycle to understand what happens at every stage.',
+      diagram: {
+        direction: 'LR',
+        nodes: [
+          { id: 'create', label: 'Create', shape: 'rounded' },
+          { id: 'branch', label: 'Branch' },
+          { id: 'work', label: 'Work' },
+          { id: 'test', label: 'Test' },
+          { id: 'merge', label: 'Merge' },
+          { id: 'cleanup', label: 'Cleanup', shape: 'pill', highlight: true },
+        ],
+        edges: [
+          { from: 'create', to: 'branch' },
+          { from: 'branch', to: 'work' },
+          { from: 'work', to: 'test' },
+          { from: 'test', to: 'merge' },
+          { from: 'merge', to: 'cleanup' },
+        ],
+      },
+      stages: [
+        { highlightNodes: ['create'], explanation: 'Run `git worktree add ../agent-dir -b feat/task` to create an isolated directory with its own branch. Takes milliseconds.' },
+        { highlightNodes: ['create', 'branch'], highlightEdges: [{ from: 'create', to: 'branch' }], explanation: 'The new worktree checks out a fresh branch from your current HEAD. The agent now has its own filesystem sandbox.' },
+        { highlightNodes: ['branch', 'work'], highlightEdges: [{ from: 'branch', to: 'work' }], explanation: 'The agent works freely in its worktree — editing, creating, deleting files. No other agent is affected.' },
+        { highlightNodes: ['work', 'test'], highlightEdges: [{ from: 'work', to: 'test' }], explanation: 'Run tests inside the worktree to verify the agent\'s work before merging. Catch issues early.' },
+        { highlightNodes: ['test', 'merge'], highlightEdges: [{ from: 'test', to: 'merge' }], explanation: 'Switch to the main repo and `git merge feat/task`. If file ownership was exclusive, this merges cleanly.' },
+        { highlightNodes: ['merge', 'cleanup'], highlightEdges: [{ from: 'merge', to: 'cleanup' }], explanation: 'Run `git worktree remove ../agent-dir` and `git branch -d feat/task`. Clean slate for the next run.' },
+      ],
+    },
+
     // === ANTI-PATTERNS ===
     {
       type: 'info',

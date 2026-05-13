@@ -56,7 +56,7 @@ const content: LessonContent = {
       body: "Mettez vos décisions architecturales les plus importantes au début de la session quand le contexte est frais. Ne gardez pas les choses difficiles pour plus tard. Si votre schéma de base de données, votre design d'API et vos patterns de gestion d'erreurs sont établis dans les premiers 20% de la session, ils ont la meilleure chance de survivre à la compaction. L'agent construit un modèle mental à partir du contexte initial — assurez-vous que ce modèle contient vos patterns de plus haute priorité.",
     },
     {
-      type: 'diagram',
+      type: 'interactive-diagram',
       title: 'Décroissance du Contexte Durant une Session',
       body: 'Les décisions précoces sont compactées en premier. Structurez votre session pour que les patterns les plus critiques soient renforcés, pas juste énoncés une fois.',
       diagram: {
@@ -77,6 +77,33 @@ const content: LessonContent = {
           { from: 'late', to: 'degrade', dashed: true },
         ],
       },
+      stages: [
+        {
+          highlightNodes: ['start', 'arch'],
+          highlightEdges: [{ from: 'start', to: 'arch' }],
+          explanation: 'La session commence avec le contexte complet. Les décisions d\'architecture — schéma, patterns, types — sont établies avec une fidélité maximale.',
+        },
+        {
+          highlightNodes: ['arch', 'impl'],
+          highlightEdges: [{ from: 'arch', to: 'impl' }],
+          explanation: 'Les fonctionnalités sont construites en utilisant les patterns établis. Le contexte se remplit mais l\'agent a encore accès à toutes les décisions antérieures.',
+        },
+        {
+          highlightNodes: ['mid'],
+          highlightEdges: [{ from: 'impl', to: 'mid' }],
+          explanation: 'La fenêtre de contexte est pleine. Le système commence à compacter — résumant ou supprimant les anciens messages. Les décisions architecturales initiales perdent en détail.',
+        },
+        {
+          highlightNodes: ['late'],
+          highlightEdges: [{ from: 'mid', to: 'late' }],
+          explanation: 'Le contexte initial est perdu. L\'agent travaille à partir d\'un résumé avec pertes. Il peut ne plus se souvenir du pattern de gestion d\'erreurs ou de la convention de style du début.',
+        },
+        {
+          highlightNodes: ['degrade'],
+          highlightEdges: [{ from: 'late', to: 'degrade' }],
+          explanation: 'La qualité baisse visiblement. L\'agent contredit des décisions antérieures, re-pose des questions déjà répondues, et produit du code incohérent. Il est temps de démarrer une session fraîche.',
+        },
+      ],
     },
     {
       type: 'info',
@@ -153,6 +180,48 @@ const content: LessonContent = {
       type: 'checkpoint',
       xp: 4,
       message: 'Contexte persistant maîtrisé !',
+    },
+
+    // === EXERCICES INTERACTIFS ===
+    {
+      type: 'compare',
+      title: 'Planification de session : chaos vs contrôle',
+      body: 'Comment vous planifiez votre session détermine si l\'agent maintient la qualité tout au long.',
+      question: 'Quel plan de session garde l\'agent efficace plus longtemps ?',
+      correctSide: 'right',
+      left: {
+        label: 'Sans plan',
+        content: 'TODO:\n- Build auth\n- Build database\n- Build API\n- Build frontend\n- Build tests\n- Fix bugs\n- Deploy\n- Write docs\n- Add monitoring\n- Optimize performance',
+        language: 'text',
+      },
+      right: {
+        label: 'Plan découpé',
+        content: 'Session 1: Database + Auth\n  Done when: migrations run, login works\n  Then: update CLAUDE.md with decisions\n\nSession 2: API routes\n  Done when: all endpoints return correct data\n  Then: update CLAUDE.md with API patterns\n\nSession 3: Frontend\n  Done when: pages render with real data\n\nSession 4: Tests + Deploy\n  Done when: CI passes, live URL works',
+        language: 'text',
+      },
+      explanation: 'Les plans découpés donnent à chaque session un périmètre clair et des critères de complétion. La mise à jour de CLAUDE.md entre les sessions préserve les décisions pour que la session suivante démarre informée.',
+    },
+    {
+      type: 'match',
+      instruction: 'Associez chaque symptôme d\'épuisement de contexte à sa cause sous-jacente :',
+      leftItems: ['L\'agent contredit des décisions antérieures', 'L\'agent re-pose des questions déjà répondues', 'La qualité du code décline en milieu de session', 'L\'agent ignore les conventions du projet'],
+      rightItems: ['Les instructions antérieures ont été compressées hors du contexte', 'Vos réponses ont été perdues pendant la compaction du contexte', 'L\'attention est trop dispersée sur les tokens restants', 'Les conventions de CLAUDE.md ont été supprimées de la mémoire active'],
+      correctPairs: { 0: 0, 1: 1, 2: 2, 3: 3 },
+      explanation: 'Les quatre symptômes remontent aux limites de la fenêtre de contexte. La solution est la même : terminer la session, mettre à jour CLAUDE.md avec les décisions, et démarrer une session fraîche avec un contexte propre.',
+    },
+    {
+      type: 'code-fill',
+      instruction: 'Complétez cette section CLAUDE.md pour préserver les décisions entre les sessions :',
+      language: 'markdown',
+      filename: 'CLAUDE.md',
+      template: '## Architecture Decisions\n\n- Rendering: {{rendering}} components by default\n- Data fetching: use {{fetching}} (not API routes)\n- Auth: {{auth_provider}} with email/password\n- Database: {{database}} with row-level security\n\n## Completed\n- [x] Database schema and migrations\n- [x] Auth flow (login, signup, logout)\n- [ ] API routes\n- [ ] Frontend pages',
+      blanks: [
+        { id: 'rendering', answer: 'Server', alternatives: ['server', 'RSC', 'React Server'], placeholder: 'type de composant ?', hint: 'Next.js utilise ce mode de rendu par défaut' },
+        { id: 'fetching', answer: 'server actions', alternatives: ['Server Actions', 'server action'], placeholder: 'quel pattern ?', hint: 'Le pattern de mutation intégré de Next.js' },
+        { id: 'auth_provider', answer: 'Supabase Auth', alternatives: ['supabase auth', 'Supabase'], placeholder: 'quel fournisseur ?', hint: 'Le service d\'authentification dans la stack du projet' },
+        { id: 'database', answer: 'Supabase', alternatives: ['PostgreSQL', 'Postgres', 'supabase'], placeholder: 'quelle base de données ?', hint: 'Service Postgres managé' },
+      ],
+      explanation: 'Cette section CLAUDE.md sert de mémoire persistante. Quand vous démarrez une nouvelle session, l\'agent lit ceci et reprend là où la dernière session s\'est arrêtée — pas besoin de tout ré-expliquer.',
     },
 
     // === PRACTICAL WORKFLOW ===

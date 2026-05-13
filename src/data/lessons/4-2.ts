@@ -86,6 +86,44 @@ const content: LessonContent = {
       message: 'Content sections mastered!',
     },
 
+    {
+      type: 'compare',
+      title: 'Soft language vs imperative commands',
+      body: 'Agents interpret vague language as optional. Imperative commands get followed consistently.',
+      left: {
+        label: 'Soft Language (Ignored)',
+        content: '## Conventions\n\n- Try to use camelCase for variables\n- Consider using Zod for validation\n- We prefer feature-based directories\n- It would be nice to collocate tests\n- You might want to use AppError\n- Please avoid adding dependencies\n- Think about using the logger',
+        language: 'markdown',
+        filename: 'vague-claude.md',
+      },
+      right: {
+        label: 'Imperative Commands (Followed)',
+        content: '## Conventions\n\n- ALL variables use camelCase. No exceptions.\n- Use Zod for ALL validation. No other library.\n- New features go in src/features/[domain]/\n- Tests MUST be collocated: [domain].test.ts\n- ALL errors use AppError with domain codes\n- NEVER add dependencies without approval\n- Use structured logger. No console.log.',
+        language: 'markdown',
+        filename: 'imperative-claude.md',
+      },
+      question: 'Which style will consistently produce the same behavior across different agent sessions?',
+      correctSide: 'right',
+      explanation: '"Try to", "consider", "prefer", and "might want to" all give agents permission to deviate. Imperatives like "ALL", "MUST", "NEVER", and "No exceptions" leave zero ambiguity. The right side produces identical agent behavior across sessions because there is no interpretation required.',
+    },
+    {
+      type: 'code-fill',
+      instruction: 'Complete this CLAUDE.md template. Fill in the blanks with specific, imperative conventions that an agent must follow.',
+      language: 'markdown',
+      template: '# Project: Task Manager API\n\n## Conventions\n\n### Naming\n- Feature files: `___`\n- Test files: collocated, named `___`\n- NEVER use generic names: utils.ts, helpers.ts\n\n## Constraints\n\n### Technology\n- Validation: ___ (no other library permitted)\n- Testing: ___ (not Jest)\n\n### Forbidden Anti-Patterns\n- Never create a ___ file\n- Never ___ without explicit approval\n- Never use `___` type — use unknown and narrow',
+      blanks: [
+        { id: 'naming', answer: '[domain].[role].ts', alternatives: ['[domain].[type].ts', '[feature].[role].ts'], hint: 'Pattern: domain name + dot + role', placeholder: 'e.g., payments.handler.ts' },
+        { id: 'test-naming', answer: '[domain].test.ts', alternatives: ['[feature].test.ts', '[domain].spec.ts'], hint: 'Pattern: domain name + test extension', placeholder: 'e.g., payments.test.ts' },
+        { id: 'validation', answer: 'Zod', alternatives: ['zod', 'Zod schemas'], hint: 'The schema validation library from the lesson', placeholder: 'library name' },
+        { id: 'testing', answer: 'Vitest', alternatives: ['vitest'], hint: 'Modern Vite-native testing framework', placeholder: 'framework name' },
+        { id: 'forbidden-file', answer: 'shared/utils.ts', alternatives: ['utils.ts', 'helpers.ts', 'shared/helpers.ts', 'common.ts'], hint: 'The catch-all dumping ground file', placeholder: 'filename' },
+        { id: 'forbidden-action', answer: 'add a dependency', alternatives: ['add dependencies', 'install a dependency', 'add a new dependency', 'add new dependencies'], hint: 'Adding something to package.json', placeholder: 'action' },
+        { id: 'forbidden-type', answer: 'any', alternatives: ['Any'], hint: 'The TypeScript escape hatch type', placeholder: 'type name' },
+      ],
+      filename: 'CLAUDE.md',
+      explanation: 'A well-structured CLAUDE.md uses imperative language with specific patterns. Each blank has one clear answer that eliminates ambiguity for agents. The naming convention, technology constraints, and anti-patterns together form a coordination protocol that keeps all agents aligned.',
+    },
+
     // === CONSTRAINTS SECTION ===
     {
       type: 'code-demo',

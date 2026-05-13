@@ -17,7 +17,7 @@ const content: LessonContent = {
 
     // === PAYMENT FLOW SPEC ===
     {
-      type: 'diagram',
+      type: 'interactive-diagram',
       title: 'Flux Stripe Checkout',
       body: 'Le flux de paiement complet du clic utilisateur à la livraison. Chaque flèche est un point de défaillance potentiel.',
       diagram: {
@@ -39,6 +39,38 @@ const content: LessonContent = {
           { from: 'fulfill', to: 'confirm', dashed: true },
         ],
       },
+      stages: [
+        {
+          highlightNodes: ['click', 'session'],
+          highlightEdges: [{ from: 'click', to: 'session' }],
+          explanation: 'L\'utilisateur clique Payer. Votre serveur crée une Session Stripe Checkout avec le produit, le prix et les métadonnées. Une défaillance ici signifie que votre serveur est en panne — affichez une erreur sur le bouton.',
+        },
+        {
+          highlightNodes: ['session', 'stripe'],
+          highlightEdges: [{ from: 'session', to: 'stripe' }],
+          explanation: 'L\'utilisateur est redirigé vers la page de paiement hébergée par Stripe. Stripe gère la saisie de carte, la validation et 3D Secure. Vous n\'avez aucun contrôle ici — Stripe est propriétaire de cette étape.',
+        },
+        {
+          highlightNodes: ['stripe', 'confirm'],
+          highlightEdges: [{ from: 'stripe', to: 'confirm' }],
+          explanation: 'Après le paiement, Stripe redirige l\'utilisateur vers votre page de succès. Mais l\'utilisateur pourrait fermer le navigateur avant que la redirection ne se termine — donc ne livrez jamais sur le redirect seul.',
+        },
+        {
+          highlightNodes: ['stripe', 'webhook'],
+          highlightEdges: [{ from: 'stripe', to: 'webhook' }],
+          explanation: 'Stripe envoie un webhook de manière asynchrone. C\'est le chemin fiable — Stripe réessaie en cas d\'échec. Le webhook peut arriver avant ou après la redirection. Votre handler doit vérifier la signature.',
+        },
+        {
+          highlightNodes: ['webhook', 'fulfill'],
+          highlightEdges: [{ from: 'webhook', to: 'fulfill' }],
+          explanation: 'Le webhook déclenche la livraison : mise à jour de la base de données, envoi de l\'email de confirmation, provisionnement de l\'accès. Ceci doit être idempotent — Stripe peut envoyer le même webhook plusieurs fois.',
+        },
+        {
+          highlightNodes: ['fulfill', 'confirm'],
+          highlightEdges: [{ from: 'fulfill', to: 'confirm' }],
+          explanation: 'La page de succès affiche le statut de la commande. Si le webhook n\'est pas encore arrivé, affichez un état de chargement. Utilisez du polling ou du temps réel pour mettre à jour quand la livraison est terminée.',
+        },
+      ],
     },
     {
       type: 'code-demo',
@@ -131,6 +163,38 @@ const content: LessonContent = {
       ],
       correctIndex: 1,
       explanation: 'Les réessais Stripe utilisent le même ID d\'événement (evt_xxx). Quand Stripe réessaie une livraison de webhook échouée, il envoie le même objet événement avec le même ID. Ça en fait une clé d\'idempotence fiable. L\'ID de session checkout fonctionne aussi mais est moins granulaire si vous gérez plusieurs types d\'événements par session.',
+    },
+    {
+      type: 'compare',
+      title: 'Webhook sans vs avec idempotence',
+      body: 'Stripe envoie les webhooks au moins une fois — parfois plusieurs fois. Votre handler doit gérer les doublons.',
+      question: 'Quel handler est sûr quand Stripe réessaie le même webhook ?',
+      correctSide: 'right',
+      left: {
+        label: 'Non idempotent',
+        content: 'async function handleCheckout(session) {\n  // Danger: creates duplicate on retry!\n  await db.insert(orders).values({\n    userId: session.metadata.userId,\n    amount: session.amount_total,\n    status: "paid"\n  })\n  await sendConfirmationEmail(session)\n}',
+        language: 'typescript',
+      },
+      right: {
+        label: 'Idempotent',
+        content: 'async function handleCheckout(session) {\n  // Safe: check before creating\n  const existing = await db.query.orders\n    .findFirst({\n      where: eq(orders.sessionId, session.id)\n    })\n  if (existing) return // Already processed\n\n  await db.insert(orders).values({\n    sessionId: session.id,\n    userId: session.metadata.userId,\n    amount: session.amount_total,\n    status: "paid"\n  })\n  await sendConfirmationEmail(session)\n}',
+        language: 'typescript',
+      },
+      explanation: 'La version idempotente vérifie si la commande existe déjà en utilisant l\'ID de session Stripe comme clé unique. Si Stripe réessaie le webhook, le handler retourne immédiatement au lieu de créer un doublon.',
+    },
+    {
+      type: 'code-fill',
+      instruction: 'Complétez la logique de livraison idempotente :',
+      language: 'typescript',
+      filename: 'src/lib/fulfill-order.ts',
+      template: 'async function fulfillOrder(session: Stripe.Checkout.Session) {\n  const existing = await db.query.orders.findFirst({\n    where: eq(orders.{{unique_key}}, session.{{session_field}})\n  })\n  if ({{guard_check}}) return existing\n\n  return await db.insert(orders).values({\n    sessionId: session.id,\n    userId: session.metadata.userId,\n    status: "{{initial_status}}"\n  })\n}',
+      blanks: [
+        { id: 'unique_key', answer: 'sessionId', alternatives: ['session_id', 'stripeSessionId'], placeholder: 'quelle colonne ?', hint: 'La colonne qui stocke l\'identifiant de session Stripe' },
+        { id: 'session_field', answer: 'id', placeholder: 'quel champ ?', hint: 'L\'identifiant unique sur l\'objet session Stripe' },
+        { id: 'guard_check', answer: 'existing', alternatives: ['existing !== null', 'existing != null'], placeholder: 'que vérifier ?', hint: 'Si cette valeur est vraie, la commande a déjà été traitée' },
+        { id: 'initial_status', answer: 'paid', alternatives: ['completed', 'fulfilled'], placeholder: 'statut de commande ?' },
+      ],
+      explanation: 'L\'ID de session est la clé d\'idempotence. Si une commande avec cet ID de session existe, on saute — empêchant les doublons peu importe combien de fois Stripe réessaie.',
     },
 
     // === FAILURE VERIFICATION ===

@@ -48,6 +48,26 @@ const content: LessonContent = {
       message: 'Context is layered: global, contracts, per-module specs.',
     },
 
+    // === FLAT VS LAYERED COMPARE ===
+    {
+      type: 'compare',
+      title: 'Flat CLAUDE.md vs layered architecture',
+      body: 'As your fleet grows, a single CLAUDE.md becomes a bottleneck. Layered context solves this.',
+      question: 'Which approach scales to 5+ agents working on different modules?',
+      correctSide: 'right',
+      left: {
+        label: 'Flat (one file)',
+        content: '# CLAUDE.md (root)\n\n## All conventions\n- Auth: use bcrypt...\n- Payments: use Stripe...\n- API: use REST...\n- UI: use Tailwind...\n- Tests: use Vitest...\n\n(500+ lines, every agent reads all)',
+        language: 'markdown',
+      },
+      right: {
+        label: 'Layered (root + modules)',
+        content: '# CLAUDE.md (root — shared rules)\n- TypeScript strict, camelCase\n- Error handling: throw AppError\n\n# payments/CLAUDE.md\n- Use Stripe SDK, webhook patterns\n- Idempotent fulfillment required\n\n# auth/CLAUDE.md  \n- Supabase Auth, RLS policies\n- Session: httpOnly cookies',
+        language: 'markdown',
+      },
+      explanation: 'Layered context means each agent reads the root rules (shared) plus only its module rules (specific). The payments agent never reads auth conventions. This saves tokens and reduces confusion.',
+    },
+
     // === WHAT GOES WHERE ===
     {
       type: 'info',
@@ -179,6 +199,34 @@ export interface TeamMember {
       type: 'checkpoint',
       xp: 5,
       message: 'You can write interface contracts that prevent cross-agent mismatches.',
+    },
+
+    // === CODE-FILL: Module-specific CLAUDE.md ===
+    {
+      type: 'code-fill',
+      instruction: 'Complete this module-specific CLAUDE.md for a payments agent. Fill in the Stripe patterns, idempotency rule, and webhook handling.',
+      language: 'markdown',
+      filename: 'payments/CLAUDE.md',
+      template: `# Payments Module Context
+
+## SDK
+- Use {{sdk_name}} for all payment operations
+- Never store raw card numbers — use tokenized payment methods
+
+## Idempotency
+- Every charge/refund MUST include {{idempotency_rule}}
+- Retries are safe because the key prevents duplicate charges
+
+## Webhooks
+- Verify webhook signatures using {{webhook_verify}}
+- Process events idempotently (check if already handled before acting)
+- Return 200 immediately, process async in background`,
+      blanks: [
+        { id: 'sdk_name', answer: 'Stripe SDK', alternatives: ['Stripe SDK', 'stripe', '@stripe/stripe-js', 'Stripe'], placeholder: 'which payment SDK?', hint: 'The dominant payment processing SDK for web apps' },
+        { id: 'idempotency_rule', answer: 'an idempotency key', alternatives: ['an idempotency key', 'idempotency key', 'Idempotency-Key header', 'a unique idempotency key'], placeholder: 'what prevents duplicate charges?', hint: 'A unique key sent with each request so retries do not create duplicate charges' },
+        { id: 'webhook_verify', answer: 'stripe.webhooks.constructEvent', alternatives: ['stripe.webhooks.constructEvent', 'constructEvent', 'Stripe webhook signature verification', 'the webhook signing secret'], placeholder: 'how to verify webhook authenticity?', hint: 'The Stripe SDK method that verifies the webhook signature' },
+      ],
+      explanation: 'Module-specific context gives the payments agent exactly what it needs: SDK choice, idempotency patterns, and webhook handling. The auth agent never sees this — it has its own module context with Supabase Auth patterns.',
     },
 
     // === PER-MODULE SPECS ===

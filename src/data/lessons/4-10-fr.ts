@@ -17,9 +17,9 @@ const content: LessonContent = {
 
     // === THE DECISION FRAMEWORK ===
     {
-      type: 'diagram',
+      type: 'interactive-diagram',
       title: 'Cadre de décision : Refactoriser vs Réécrire',
-      body: 'Plusieurs facteurs alimentent la décision. Aucun facteur seul n\'est décisif — c\'est la combinaison qui détermine la bonne voie.',
+      body: 'Clique sur chaque critère d\'évaluation pour comprendre comment il influence la décision.',
       diagram: {
         direction: 'TB',
         nodes: [
@@ -45,6 +45,43 @@ const content: LessonContent = {
           { from: 'decision', to: 'rewrite', label: 'couplage élevé, couverture faible', dashed: true },
         ],
       },
+      stages: [
+        {
+          highlightNodes: ['assess'],
+          highlightEdges: [],
+          explanation: 'Commence par recueillir les métriques du composant à évaluer. Tu as besoin de données objectives avant de prendre la décision refactoriser-vs-réécrire.',
+        },
+        {
+          highlightNodes: ['assess', 'coupling'],
+          highlightEdges: [{ from: 'assess', to: 'coupling' }],
+          explanation: 'Score de couplage : combien d\'autres composants dépendent de celui-ci ? Un couplage élevé (10+ dépendants) favorise la refactorisation parce qu\'une réécriture exige de mettre à jour chaque point de contact simultanément.',
+        },
+        {
+          highlightNodes: ['assess', 'coverage'],
+          highlightEdges: [{ from: 'assess', to: 'coverage' }],
+          explanation: 'Couverture de tests : une couverture élevée (80%+) favorise la refactorisation parce que les tests attrapent les régressions immédiatement. Une faible couverture favorise la réécriture avec des tests dès le départ.',
+        },
+        {
+          highlightNodes: ['assess', 'debt'],
+          highlightEdges: [{ from: 'assess', to: 'debt' }],
+          explanation: 'Sévérité de la dette : la dette cosmétique (nommage, style callback) est refactorisable. La dette structurelle (dépendances circulaires, god objects) nécessite souvent une réécriture parce que le design lui-même est le problème.',
+        },
+        {
+          highlightNodes: ['assess', 'buildability'],
+          highlightEdges: [{ from: 'assess', to: 'buildability' }],
+          explanation: 'Constructibilité par agents : un agent peut-il reconstruire à partir d\'une spec ? Si la connaissance est UNIQUEMENT dans le code (cas limites non documentés), réécrire signifie la perdre. Ça favorise la refactorisation.',
+        },
+        {
+          highlightNodes: ['coupling', 'coverage', 'debt', 'buildability', 'decision'],
+          highlightEdges: [{ from: 'coupling', to: 'decision' }, { from: 'coverage', to: 'decision' }, { from: 'debt', to: 'decision' }, { from: 'buildability', to: 'decision' }],
+          explanation: 'Les quatre facteurs alimentent la décision. Aucun facteur seul n\'est décisif. Couplage faible + couverture faible + dette structurelle + haute constructibilité = réécriture. Couplage élevé + couverture élevée + dette cosmétique = refactorisation.',
+        },
+        {
+          highlightNodes: ['decision', 'refactor', 'rewrite'],
+          highlightEdges: [{ from: 'decision', to: 'refactor' }, { from: 'decision', to: 'rewrite' }],
+          explanation: 'La décision se divise : refactoriser pour une amélioration incrémentale quand tu as un filet de sécurité, réécrire pour un remplacement propre quand la structure elle-même est cassée et le couplage est gérable.',
+        },
+      ],
     },
     {
       type: 'checkpoint',
@@ -158,6 +195,28 @@ const content: LessonContent = {
       type: 'checkpoint',
       xp: 5,
       message: 'Critères de réécriture verrouillés !',
+    },
+
+    // === COMPARE: STRANGLER FIG VS BIG BANG ===
+    {
+      type: 'compare',
+      title: 'Strangler fig vs Réécriture big bang',
+      body: 'Deux stratégies de migration avec des profils de risque et des calendriers très différents.',
+      left: {
+        label: 'Strangler Fig (Incrémental)',
+        content: 'Semaine 1: Construire le nouveau auth à côté\nSemaine 2: Router 20 % du trafic vers le nouveau\nSemaine 3: Router 60 % vers le nouveau\nSemaine 4: Router 100 %, retirer l\'ancien\n\nProfil de risque :\n- Le système reste en ligne tout du long\n- Retour arrière = rediriger le trafic\n- Les bogues n\'affectent qu\'un trafic partiel\n- Chaque étape est vérifiable indépendamment\n- L\'ancien code sert de référence\n\nCalendrier : 4 semaines, zéro temps d\'arrêt\nTemps de retour arrière : < 5 minutes',
+        language: 'text',
+        filename: 'strangler-fig.txt',
+      },
+      right: {
+        label: 'Réécriture Big Bang',
+        content: 'Semaines 1-3: Construire le système entier\nSemaine 4: Gel des fonctionnalités\nSemaine 5: Bascule le week-end\n\nProfil de risque :\n- Ancien système gelé pendant la construction\n- La bascule est tout-ou-rien\n- Les bogues affectent TOUT le trafic d\'un coup\n- Pas de retour arrière partiel possible\n- L\'ancien code diverge pendant le gel\n\nCalendrier : 5 semaines + gel\nTemps de retour arrière : heures à jours',
+        language: 'text',
+        filename: 'big-bang.txt',
+      },
+      question: 'Quelle approche est plus sûre pour les systèmes en production ?',
+      correctSide: 'left',
+      explanation: 'Le strangler fig garde l\'ancien système en fonctionnement comme filet de sécurité. Le trafic est graduellement redirigé vers les nouveaux composants. Si quelque chose casse, tu redirige en arrière. La réécriture big bang exige une bascule complète sans retour arrière partiel. Avec les flottes d\'agents, le strangler fig est aussi PLUS RAPIDE parce que plusieurs agents peuvent étouffer plusieurs composants simultanément.',
     },
 
     // === CARRYING DEBT INTENTIONALLY ===

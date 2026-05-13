@@ -117,6 +117,47 @@ const content: LessonContent = {
       message: 'Instincts de révision de schéma aiguisés !',
     },
 
+    // === EXERCICES INTERACTIFS BASE DE DONNEES ===
+    {
+      type: 'compare',
+      title: 'Migration generee par agent : reperer les problemes',
+      body: 'Les agents generent du SQL techniquement valide qui manque souvent de garde-fous structurels.',
+      question: 'Quelle migration est plus sure a executer en production ?',
+      correctSide: 'right',
+      left: {
+        label: 'Garde-fous manquants',
+        content: 'CREATE TABLE tasks (\n  id SERIAL PRIMARY KEY,\n  title TEXT,\n  project_id INTEGER,\n  status TEXT,\n  assigned_to TEXT\n);\n\n-- Pas de contraintes NOT NULL\n-- Pas de FK vers la table projects\n-- Pas d\'index sur project_id\n-- status est du texte libre, pas un enum',
+        language: 'sql',
+      },
+      right: {
+        label: 'Pret pour la production',
+        content: 'CREATE TABLE tasks (\n  id SERIAL PRIMARY KEY,\n  title TEXT NOT NULL,\n  project_id INTEGER NOT NULL\n    REFERENCES projects(id) ON DELETE CASCADE,\n  status TEXT NOT NULL\n    CHECK (status IN (\'todo\',\'doing\',\'done\')),\n  assigned_to UUID REFERENCES auth.users(id)\n);\nCREATE INDEX idx_tasks_project\n  ON tasks(project_id);',
+        language: 'sql',
+      },
+      explanation: 'La version production ajoute : NOT NULL pour empecher les donnees vides, contrainte FK pour l\'integrite referentielle, contrainte CHECK pour les statuts valides, type UUID correct pour les references utilisateur, et un index pour la performance des requetes.',
+    },
+    {
+      type: 'code-fill',
+      instruction: 'Corrigez cette migration en ajoutant les contraintes manquantes :',
+      language: 'sql',
+      filename: 'supabase/migrations/002_fix_tasks.sql',
+      template: 'ALTER TABLE tasks\n  ALTER COLUMN title SET {{not_null}},\n  ADD CONSTRAINT fk_project\n    FOREIGN KEY (project_id) REFERENCES {{ref_table}}(id)\n    ON DELETE {{cascade_action}};',
+      blanks: [
+        { id: 'not_null', answer: 'NOT NULL', alternatives: ['not null'], placeholder: 'contrainte ?', hint: 'Empecher les valeurs vides' },
+        { id: 'ref_table', answer: 'projects', placeholder: 'quelle table ?', hint: 'La table parent des taches' },
+        { id: 'cascade_action', answer: 'CASCADE', alternatives: ['cascade'], placeholder: 'comportement de suppression ?', hint: 'Quand le projet est supprime, supprimer ses taches aussi' },
+      ],
+      explanation: 'NOT NULL empeche les donnees vides. FOREIGN KEY garantit que chaque tache appartient a un vrai projet. ON DELETE CASCADE supprime automatiquement les taches orphelines quand un projet est supprime.',
+    },
+    {
+      type: 'match',
+      instruction: 'Associez chaque comportement ON DELETE a la bonne relation :',
+      leftItems: ['CASCADE', 'SET NULL', 'RESTRICT'],
+      rightItems: ['L\'enfant n\'a pas de sens sans le parent (tache sans projet)', 'L\'enfant peut exister independamment (commentaire sans auteur)', 'La suppression devrait etre bloquee si des enfants existent (utilisateur avec commandes actives)'],
+      correctPairs: { 0: 0, 1: 1, 2: 2 },
+      explanation: 'CASCADE supprime les enfants automatiquement. SET NULL garde les enfants mais supprime le lien. RESTRICT empeche la suppression entierement. Choisissez en fonction de la relation reelle entre les donnees.',
+    },
+
     // === WORKFLOW DIAGRAM ===
     {
       type: 'diagram',

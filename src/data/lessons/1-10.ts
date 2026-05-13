@@ -10,11 +10,11 @@ const content: LessonContent = {
       body: "This is where everything clicks. You will combine every skill from Tier 1 — structured prompting, iterative development, context management, CLAUDE.md, multi-step workflows — into one continuous flow. The project: a Commit Message Generator. A single-page web app where users paste a git diff and get back a conventional commit message. You will spec it, direct an agent to build it, verify the output, and ship it live to a public URL. Real utility, real deployment, real portfolio piece.",
     },
 
-    // === PIPELINE DIAGRAM ===
+    // === PIPELINE DIAGRAM (INTERACTIVE) ===
     {
-      type: 'diagram',
+      type: 'interactive-diagram',
       title: 'The Spec-Build-Deploy Pipeline',
-      body: 'Your capstone follows this five-stage pipeline. Each stage exercises a different Tier 1 skill.',
+      body: 'Your capstone follows this five-stage pipeline. Step through each stage to see which Tier 1 skill it exercises.',
       diagram: {
         direction: 'LR',
         nodes: [
@@ -31,6 +31,33 @@ const content: LessonContent = {
           { from: 'verify', to: 'deploy', label: 'ship' },
         ],
       },
+      stages: [
+        {
+          highlightNodes: ['spec'],
+          highlightEdges: [],
+          explanation: 'Spec: Define exact requirements, constraints, and out-of-scope boundaries. This is structured prompting — the most important skill from Tier 1.',
+        },
+        {
+          highlightNodes: ['spec', 'scaffold'],
+          highlightEdges: [{ from: 'spec', to: 'scaffold' }],
+          explanation: 'Scaffold: Prompt the agent to create the file structure only — no logic yet. This is context management: keeping each prompt focused on one concern.',
+        },
+        {
+          highlightNodes: ['scaffold', 'implement'],
+          highlightEdges: [{ from: 'scaffold', to: 'implement' }],
+          explanation: 'Implement: Build logic one component at a time. This is iterative development — review each piece before building the next layer on top.',
+        },
+        {
+          highlightNodes: ['implement', 'verify'],
+          highlightEdges: [{ from: 'implement', to: 'verify' }],
+          explanation: 'Verify: Review agent output for logic errors, spec compliance, and security. You are the quality gate — the agent builds, you validate.',
+        },
+        {
+          highlightNodes: ['verify', 'deploy'],
+          highlightEdges: [{ from: 'verify', to: 'deploy' }],
+          explanation: 'Deploy: Push to production with proper env vars and CLAUDE.md documentation. The project is live, maintainable, and portfolio-ready.',
+        },
+      ],
     },
 
     // === PHASE 1: SPEC ===
@@ -65,6 +92,50 @@ const content: LessonContent = {
       type: 'checkpoint',
       xp: 5,
       message: 'Spec written! Your AI agent knows exactly what to build.',
+    },
+
+    // === INTERACTIVE: PROMPT-LAB, COMPARE ===
+    {
+      type: 'prompt-lab',
+      instruction: 'Write a prompt to start the capstone implementation. Include spec elements you learned in this tier.',
+      scenario: 'You have a spec for a URL shortener tool. You need to direct Claude Code to scaffold the project. The spec says: Next.js App Router, TypeScript strict, SQLite via Drizzle ORM, Tailwind CSS, no auth needed.',
+      starterPrompt: 'Build me a URL shortener.',
+      responses: [
+        {
+          triggerKeywords: ['next.js', 'typescript', 'sqlite', 'drizzle', 'tailwind'],
+          response: 'I\'ll scaffold the URL shortener with your exact stack.\n\nCreating:\n1. Next.js 15 App Router project with TypeScript strict\n2. Drizzle ORM + SQLite for the database\n3. Tailwind CSS for styling\n4. src/ directory structure\n\nStarting with the database schema...',
+          quality: 'excellent',
+          feedback: 'You specified the exact technology stack from the spec. The agent doesn\'t need to make any technology decisions — it can start building immediately.',
+        },
+        {
+          triggerKeywords: ['url', 'shortener', 'next'],
+          response: 'I\'ll build a URL shortener with Next.js! Should I use:\n- Prisma or Drizzle for the database?\n- PostgreSQL or SQLite?\n- Should I add authentication?\n\nLet me know your preferences.',
+          quality: 'good',
+          feedback: 'You mentioned Next.js but left technology choices open. The agent is asking follow-up questions instead of building. Include all constraints from your spec to eliminate decision points.',
+        },
+      ],
+      fallbackResponse: {
+        response: 'Sure, I\'ll build a URL shortener. Let me set up a full-stack app with Express, React, PostgreSQL, Redis for caching, and Docker for deployment...',
+        feedback: 'Without spec constraints, the agent invented its own stack. Include: framework, language mode, database, ORM, and styling from your spec to get the exact output you want.',
+      },
+    },
+    {
+      type: 'compare',
+      title: 'All-at-once vs phased build',
+      body: 'Two approaches to building a complete project with an AI agent.',
+      question: 'Which approach gives you more control over the output?',
+      correctSide: 'right',
+      left: {
+        label: 'All at once',
+        content: 'One prompt:\n"Build the entire URL shortener"\n\nResult:\n- 20+ files created at once\n- Hard to review\n- Errors compound\n- Difficult to redirect\n- Context exhausted quickly',
+        language: 'text',
+      },
+      right: {
+        label: 'Phased',
+        content: 'Four focused prompts:\n1. "Scaffold project structure"\n2. "Implement database schema + API"\n3. "Build the frontend UI"\n4. "Add tests and verify"\n\nResult:\n- Review after each phase\n- Catch errors early\n- Easy to redirect\n- Context stays fresh',
+        language: 'text',
+      },
+      explanation: 'Phased builds let you verify each layer before building the next. If the database schema is wrong, you catch it before the frontend is built on top of it.',
     },
 
     // === PHASE 2: SCAFFOLD ===

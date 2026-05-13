@@ -40,6 +40,48 @@ const content: LessonContent = {
       message: 'Paradoxe des contraintes compris!',
     },
 
+    // === COMPARE: OUVERT VS CONTRAINT ===
+    {
+      type: 'compare',
+      title: 'Spec ouverte vs Spec contrainte',
+      body: 'Vois comment les contraintes éliminent la délibération et font exécuter les agents immédiatement.',
+      left: {
+        label: 'Ouverte',
+        content: 'Prompt : "Construis l\'auth pour l\'app"\n\nRéponse de l\'agent :\n"Je vais configurer l\'authentification.\nLaisse-moi explorer les options :\n- JWT ou sessions ?\n- Fournisseurs OAuth ou email/mdp ?\n- Et les magic links ?\n- Je devrais ajouter le MFA ?\n- Quelle lib — Passport, Lucia, Auth.js ?"\n\n→ 5 questions de suivi\n→ 3 allers-retours avant tout code\n→ L\'agent choisit un stack que tu voulais pas',
+        language: 'text',
+        filename: 'spec-ouverte.txt',
+      },
+      right: {
+        label: 'Contrainte',
+        content: 'Prompt : "Utilise Supabase Auth, OAuth\nseulement (Google + GitHub), pas de JWT\ncustom, pas de magic links, pas de MFA\npour la v1"\n\nRéponse de l\'agent :\n"Configuration de Supabase Auth avec\nles fournisseurs OAuth.\n\n1. Configurer Google OAuth\n2. Configurer GitHub OAuth\n3. Ajouter le handler de callback auth\n4. Créer le middleware de route protégée\n\nDébut de l\'implémentation..."\n\n→ 0 question de suivi\n→ Exécution immédiate\n→ Exactement ce que tu as spécifié',
+        language: 'text',
+        filename: 'spec-contrainte.txt',
+      },
+      question: 'Quelle spec mène à une exécution plus rapide de l\'agent ?',
+      correctSide: 'right',
+      explanation: 'La spec contrainte élimine chaque point de décision. L\'agent ne demande pas JWT vs sessions parce que tu as dit « pas de JWT custom ». Il ne demande pas les magic links parce que tu les as exclus. Chaque contrainte que tu ajoutes supprime une question que l\'agent poserait autrement, transformant la délibération en exécution immédiate.',
+    },
+
+    // === CODE-FILL: AJOUTER DES CONTRAINTES ===
+    {
+      type: 'code-fill',
+      instruction: 'Ajoute des contraintes à cette spec ouverte. Remplis les blancs avec des choix technologiques spécifiques, des limites et des exclusions pour éliminer la délibération de l\'agent.',
+      language: 'markdown',
+      filename: 'specs/constrained-feature.md',
+      template: '# Feature: User Dashboard\n\n## Technology Constraints\n- Framework: {{framework}}\n- Styling: {{styling}}\n- Data fetching: {{data_fetching}}\n\n## Boundaries\n- This feature lives in {{feature_path}}\n- No imports from {{excluded_imports}}\n\n## Exclusions (do NOT build)\n- No {{exclusion_1}}\n- No {{exclusion_2}}\n- No {{exclusion_3}}',
+      blanks: [
+        { id: 'framework', answer: 'React', alternatives: ['Next.js', 'Vue', 'Svelte', 'react'], placeholder: 'quel framework ?', hint: 'La bibliothèque UI que tu utilises' },
+        { id: 'styling', answer: 'Tailwind CSS', alternatives: ['tailwind', 'Tailwind', 'CSS modules', 'styled-components'], placeholder: 'quelle solution de style ?' },
+        { id: 'data_fetching', answer: 'React Query', alternatives: ['TanStack Query', 'SWR', 'react-query', 'tRPC'], placeholder: 'quelle lib de data fetching ?', hint: 'Une bibliothèque populaire d\'état serveur' },
+        { id: 'feature_path', answer: 'src/features/dashboard/', alternatives: ['src/pages/dashboard/', 'src/modules/dashboard/', 'packages/dashboard/'], placeholder: 'quel répertoire ?' },
+        { id: 'excluded_imports', answer: 'other feature directories', alternatives: ['other features', 'other modules', 'internal modules of other packages'], placeholder: 'quoi ne pas importer ?', hint: 'Garder les fonctionnalités isolées' },
+        { id: 'exclusion_1', answer: 'custom chart library', alternatives: ['custom charts', 'chart library', 'data visualization library', 'custom graphing'], placeholder: 'exclusion 1', hint: 'Un scope creep courant pour les tableaux de bord' },
+        { id: 'exclusion_2', answer: 'real-time updates', alternatives: ['websockets', 'live updates', 'real-time', 'WebSocket connections'], placeholder: 'exclusion 2', hint: 'Une fonctionnalité coûteuse souvent ajoutée prématurément' },
+        { id: 'exclusion_3', answer: 'export to PDF', alternatives: ['PDF export', 'CSV export', 'data export', 'report generation'], placeholder: 'exclusion 3', hint: 'Une fonctionnalité qui ajoute une complexité significative' },
+      ],
+      explanation: 'Chaque blanc rempli supprime une décision que l\'agent prendrait seul. Les choix technologiques empêchent la délibération sur le stack. Les limites de chemin empêchent le couplage inter-fonctionnalités. Les exclusions empêchent le scope creep. Plus c\'est spécifique, plus l\'agent exécute vite.',
+    },
+
     // === MONOREPO BOUNDARIES ===
     {
       type: 'info',

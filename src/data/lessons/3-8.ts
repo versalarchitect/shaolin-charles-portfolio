@@ -15,9 +15,9 @@ const content: LessonContent = {
       body: "This is the non-negotiable principle: no agent output merges into main without passing the pipeline. It doesn't matter if the agent says it works. It doesn't matter if it looks correct. If the pipeline fails, the code doesn't merge. This single rule prevents the most common multi-agent failure: shipping broken integrations.",
     },
 
-    // === DIAGRAM 1: The Pipeline ===
+    // === DIAGRAM 1: The Pipeline (Interactive) ===
     {
-      type: 'diagram',
+      type: 'interactive-diagram',
       title: 'Verification Pipeline Stages',
       body: "Each stage catches a different class of error. They run in order of speed — fastest checks first, slowest last. If an early stage fails, later stages don't run. This gives fast feedback: you know within seconds if there's a type error, not minutes.",
       diagram: {
@@ -38,11 +38,90 @@ const content: LessonContent = {
           { from: 'int', to: 'pass', label: 'pass' },
         ],
       },
+      stages: [
+        {
+          highlightNodes: ['push', 'type'],
+          highlightEdges: [{ from: 'push', to: 'type' }],
+          explanation: 'The agent pushes its branch. The pipeline starts with the fastest check: TypeScript type checking (2-5 seconds). This catches contract mismatches between agent outputs immediately.',
+        },
+        {
+          highlightNodes: ['type', 'lint'],
+          highlightEdges: [{ from: 'type', to: 'lint' }],
+          explanation: 'If types pass, linting runs next. This enforces CLAUDE.md conventions: no `any`, no default exports, no barrel files. Catching convention drift before it compounds.',
+        },
+        {
+          highlightNodes: ['lint', 'unit'],
+          highlightEdges: [{ from: 'lint', to: 'unit' }],
+          explanation: 'Clean lint means clean code structure. Now unit tests verify the agent\'s implementation actually works — correct behavior, error handling, edge cases.',
+        },
+        {
+          highlightNodes: ['unit', 'int'],
+          highlightEdges: [{ from: 'unit', to: 'int' }],
+          explanation: 'Unit tests pass individually. Integration tests verify that this agent\'s output works with the rest of the system — imports resolve, APIs connect, the build succeeds.',
+        },
+        {
+          highlightNodes: ['int', 'pass'],
+          highlightEdges: [{ from: 'int', to: 'pass' }],
+          explanation: 'All four gates passed. The branch is verified and ready to merge. No human review needed for mechanical correctness — the pipeline guarantees it.',
+        },
+      ],
     },
     {
       type: 'checkpoint',
       xp: 3,
       message: 'You see the pipeline: typecheck, lint, test, integration — in that order.',
+    },
+
+    // === CODE-FILL: tsconfig strict mode ===
+    {
+      type: 'code-fill',
+      instruction: 'Complete the strict TypeScript configuration that catches contract mismatches between agent outputs. Fill in the key compiler options.',
+      language: 'json',
+      filename: 'tsconfig.json',
+      template: `{
+  "compilerOptions": {
+    "___BLANK_1___": true,
+    "noEmit": true,
+    "___BLANK_2___": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "___BLANK_3___": true,
+    "___BLANK_4___": true
+  },
+  "include": ["src/**/*.ts", "src/**/*.tsx"],
+  "exclude": ["node_modules", "dist"]
+}`,
+      blanks: [
+        {
+          id: 'BLANK_1',
+          answer: 'strict',
+          alternatives: ['"strict"'],
+          hint: 'The master switch that enables all strict type-checking options',
+          placeholder: 'strict mode flag',
+        },
+        {
+          id: 'BLANK_2',
+          answer: 'noUncheckedIndexedAccess',
+          alternatives: ['"noUncheckedIndexedAccess"'],
+          hint: 'Adds undefined to any un-checked indexed access (obj[key] might be undefined)',
+          placeholder: 'indexed access safety',
+        },
+        {
+          id: 'BLANK_3',
+          answer: 'exactOptionalPropertyTypes',
+          alternatives: ['"exactOptionalPropertyTypes"'],
+          hint: 'Distinguishes between setting a property to undefined vs not setting it at all',
+          placeholder: 'optional property strictness',
+        },
+        {
+          id: 'BLANK_4',
+          answer: 'forceConsistentCasingInFileNames',
+          alternatives: ['"forceConsistentCasingInFileNames"'],
+          hint: 'Prevents import path casing mismatches across OS (macOS vs Linux CI)',
+          placeholder: 'file casing enforcement',
+        },
+      ],
+      explanation: 'These options form the strictest TypeScript config for multi-agent development. `strict` catches type errors, `noUncheckedIndexedAccess` catches unsafe lookups, `exactOptionalPropertyTypes` catches contract ambiguity, and `forceConsistentCasingInFileNames` prevents CI failures on case-sensitive Linux when developing on macOS.',
     },
 
     // === PIPELINE COMPONENTS ===

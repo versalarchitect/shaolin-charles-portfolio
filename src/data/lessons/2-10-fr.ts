@@ -14,6 +14,24 @@ const content: LessonContent = {
       title: 'Pourquoi limiter le scope améliore la sortie',
       body: "Trois mécanismes expliquent pourquoi un scope plus étroit produit de meilleurs résultats. Premièrement : l'attention. L'attention du transformer est limitée — plus il y a de contexte qui compétitionne pour la pertinence, plus les détails critiques risquent d'être dilués. Deuxièmement : la cohérence. Les tâches étroites produisent une sortie auto-cohérente parce qu'il y a moins de décisions à garder alignées. Troisièmement : la vérifiabilité. Tu peux évaluer « est-ce que ce formulaire de connexion marche ? » immédiatement. Tu ne peux pas évaluer « est-ce que tout le système d'auth marche ? » sans le décomposer en parties de toute façon. Contraindre le scope en amont te sauve du travail de décomposition plus tard.",
     },
+    {
+      type: 'compare',
+      title: 'Scope large vs tâches ciblées',
+      body: 'La largeur de ton prompt affecte directement la qualité de la sortie.',
+      question: 'Quelle approche produit du code de meilleure qualité ?',
+      correctSide: 'right',
+      left: {
+        label: 'Large (un prompt)',
+        content: '« Construis le système d\'authentification complet :\nconnexion, inscription, réinitialisation du\nmot de passe, OAuth, gestion des sessions,\nroutes protégées, accès par rôle et panel admin. »\n\nRésultat : 30+ fichiers, patterns incohérents,\ncas limites manquants, contexte épuisé',
+        language: 'text',
+      },
+      right: {
+        label: 'Ciblé (quatre prompts)',
+        content: 'Prompt 1 : « Crée le schéma de base de données\n  pour users et sessions. Touche uniquement src/db/ »\nPrompt 2 : « Ajoute les server actions login/signup.\n  Modifie uniquement src/actions/auth.ts »\nPrompt 3 : « Construis la page de connexion à /login\n  en utilisant les composants Button et Input existants »\nPrompt 4 : « Ajoute le middleware de vérification de session.\n  Modifie uniquement src/middleware.ts »',
+        language: 'text',
+      },
+      explanation: 'Les prompts ciblés contraignent le scope avec des limites de fichiers (« touche uniquement src/db/ ») et des cibles de sortie spécifiques. Chaque prompt obtient toute l\'attention de l\'agent au lieu de la diviser entre 8 préoccupations.',
+    },
 
     // === SCOPE DEGRADATION DIAGRAM ===
     {
@@ -94,6 +112,19 @@ const content: LessonContent = {
       ],
       correctIndex: 1,
       explanation: 'Les agents ont un biais vers l\'aide maximale. Sans une section « Ne PAS implémenter » explicite, l\'agent va anticiper tes prochaines étapes et les pré-construire. La contrainte de scope doit inclure à la fois ce qu\'il faut faire ET ce qu\'il ne faut pas faire.',
+    },
+    {
+      type: 'code-fill',
+      instruction: 'Complétez ce prompt à scope étroit avec les bonnes limites de fichiers et de scope :',
+      language: 'text',
+      template: 'Implémente la fonction validateSession.\n\nLIMITES :\n- Crée/modifie uniquement les fichiers dans {{allowed_dir}}\n- Ne PAS toucher {{forbidden_1}} ou {{forbidden_2}}\n- Utilise la fonction existante {{existing_fn}} de src/lib/auth.ts\n\nCRITÈRES D\'ACCEPTATION :\n- Retourne l\'objet utilisateur si la session est valide\n- Retourne null si la session est expirée ou invalide\n- Lève une exception en cas d\'échec de connexion à la base de données',
+      blanks: [
+        { id: 'allowed_dir', answer: 'src/lib/', alternatives: ['src/lib', 'src/lib/auth.ts'], placeholder: 'quel répertoire ?', hint: 'Où vit la logique d\'auth ?' },
+        { id: 'forbidden_1', answer: 'src/components/', alternatives: ['src/components', 'components'], placeholder: 'ne pas toucher quoi ?', hint: 'La couche UI' },
+        { id: 'forbidden_2', answer: 'src/db/', alternatives: ['src/db', 'database', 'migrations'], placeholder: 'autre zone interdite ?', hint: 'La couche base de données' },
+        { id: 'existing_fn', answer: 'getSessionToken', alternatives: ['parseToken', 'getToken', 'verifyToken'], placeholder: 'quelle fonction existante ?', hint: 'Une fonction qui extrait le token' },
+      ],
+      explanation: 'Les limites de fichiers empêchent l\'agent de modifier « gentiment » les composants ou le code de base de données en implémentant une fonction utilitaire. Ça garde les changements révisables et réversibles.',
     },
 
     // === TOKEN BUDGETS ===
@@ -207,6 +238,30 @@ const content: LessonContent = {
       type: 'info',
       title: 'L\'état d\'esprit de la contrainte',
       body: "Contraindre le scope semble contre-intuitif quand les agents promettent de « tout faire ». Mais le chemin le plus rapide vers un système fonctionnel, c'est une séquence de sous-tâches ciblées et de haute qualité — pas une tentative tentaculaire qui nécessite un débogage extensif. Chaque minute que tu passes à définir le scope en sauve cinq à corriger des incohérences. Chaque limite que tu établis est une décision que t'auras pas à défaire. Les meilleurs directeurs ne sont pas ceux qui demandent le plus — ce sont ceux qui demandent exactement la bonne chose au bon moment.",
+    },
+    {
+      type: 'prompt-lab',
+      instruction: 'Écrivez un prompt à scope étroit qui dirige l\'agent pour implémenter uniquement la fonction validateSession.',
+      scenario: 'Vous avez besoin d\'une fonction qui vérifie si la session d\'un utilisateur est encore valide. Elle doit utiliser le helper existant getSessionToken() de src/lib/auth.ts, interroger la table sessions, et retourner l\'objet utilisateur ou null. Vous ne voulez PAS que l\'agent touche d\'autres fichiers.',
+      starterPrompt: 'Ajoute la validation de session à l\'app.',
+      responses: [
+        {
+          triggerKeywords: ['uniquement', 'src/lib', 'ne pas', 'getSessionToken'],
+          response: 'Je vais implémenter validateSession dans src/lib/auth.ts en utilisant le helper getSessionToken existant.\n\nScope : modification de src/lib/auth.ts uniquement\n\nImplémentation :\n1. Appeler getSessionToken() pour extraire le token\n2. Requêter la table sessions pour un token correspondant\n3. Vérifier l\'expiration\n4. Retourner l\'objet utilisateur ou null\n\nJe commence...',
+          quality: 'excellent',
+          feedback: 'Votre prompt a spécifié : quel fichier modifier, quelle fonction existante utiliser, ce qu\'il ne faut PAS toucher, et des critères d\'acceptation clairs. L\'agent peut exécuter sans poser de questions.',
+        },
+        {
+          triggerKeywords: ['session', 'valider', 'utilisateur'],
+          response: 'Je vais ajouter la validation de session ! Je vais :\n1. Créer un middleware pour les routes protégées\n2. Ajouter un composant de vérification de session\n3. Mettre à jour le flux de connexion pour créer des sessions\n4. Ajouter un cron job de nettoyage de sessions\n\nJe commence par le middleware...',
+          quality: 'poor',
+          feedback: 'Sans limites de scope, l\'agent a étendu au middleware, composants, flux de connexion et cron jobs. Vous avez demandé une seule fonction — ajoutez des limites de fichiers et des contraintes « ne PAS toucher ».',
+        },
+      ],
+      fallbackResponse: {
+        response: 'Je vais mettre en place la validation de session dans l\'app. Par où je commence ?',
+        feedback: 'Votre prompt était trop ouvert. Spécifiez : (1) la fonction exacte à implémenter, (2) quel fichier modifier, (3) quels utilitaires existants réutiliser, et (4) ce qu\'il ne faut PAS toucher.',
+      },
     },
     {
       type: 'checklist',

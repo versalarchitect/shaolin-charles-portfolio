@@ -260,6 +260,29 @@ const content: LessonContent = {
       message: 'SSH est connecté! Vous pouvez maintenant communiquer de façon sécurisée avec GitHub.',
     },
 
+    // === REVUE INTERACTIVE ===
+    {
+      type: 'match',
+      instruction: 'Associez chaque outil à son rôle dans votre environnement de développement :',
+      leftItems: ['Node.js', 'Bun', 'Git', 'VS Code', 'Clé SSH'],
+      rightItems: ['Runtime JavaScript pour exécuter du code', 'Gestionnaire de paquets et bundler rapide', 'Contrôle de version pour suivre les changements', 'Éditeur de code avec extensions', 'Authentification sécurisée avec GitHub'],
+      correctPairs: { 0: 0, 1: 1, 2: 2, 3: 3, 4: 4 },
+      explanation: 'Chaque outil a un rôle précis. Node.js exécute le JavaScript, Bun gère les paquets rapidement, Git suit l\'historique du code, VS Code est votre éditeur, et les clés SSH vous authentifient avec GitHub sans mot de passe.',
+    },
+    {
+      type: 'code-fill',
+      instruction: 'Complétez les paramètres VS Code pour activer le formatage automatique à la sauvegarde :',
+      language: 'json',
+      filename: '.vscode/settings.json',
+      template: '{\n  "editor.{{setting1}}": {{value1}},\n  "editor.{{setting2}}": "esbenp.prettier-vscode"\n}',
+      blanks: [
+        { id: 'setting1', answer: 'formatOnSave', alternatives: ['format_on_save'], placeholder: 'quel paramètre?', hint: 'Deux mots en anglais : format + on + save' },
+        { id: 'value1', answer: 'true', placeholder: 'true ou false?' },
+        { id: 'setting2', answer: 'defaultFormatter', alternatives: ['default_formatter'], placeholder: 'quel paramètre de formatage?', hint: 'Quel est le formateur par défaut?' },
+      ],
+      explanation: 'formatOnSave exécute automatiquement Prettier chaque fois que vous sauvegardez. defaultFormatter indique à VS Code quelle extension utiliser pour le formatage.',
+    },
+
     // === VERIFICATION ===
     {
       type: 'checklist',

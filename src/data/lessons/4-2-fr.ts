@@ -86,6 +86,44 @@ const content: LessonContent = {
       message: 'Sections de contenu maîtrisées !',
     },
 
+    {
+      type: 'compare',
+      title: 'Langage doux vs commandes impératives',
+      body: 'Les agents interprètent le langage vague comme optionnel. Les commandes impératives sont suivies systématiquement.',
+      left: {
+        label: 'Langage doux (Ignoré)',
+        content: '## Conventions\n\n- Essayez d\'utiliser le camelCase pour les variables\n- Considérez utiliser Zod pour la validation\n- On préfère les répertoires par fonctionnalité\n- Ce serait bien de colocaliser les tests\n- Vous pourriez vouloir utiliser AppError\n- S\'il vous plaît, évitez d\'ajouter des dépendances\n- Pensez à utiliser le logger',
+        language: 'markdown',
+        filename: 'vague-claude.md',
+      },
+      right: {
+        label: 'Commandes impératives (Suivies)',
+        content: '## Conventions\n\n- TOUTES les variables utilisent le camelCase. Sans exception.\n- Utilisez Zod pour TOUTE validation. Aucune autre bibliothèque.\n- Les nouvelles fonctionnalités vont dans src/features/[domaine]/\n- Les tests DOIVENT être colocalisés : [domaine].test.ts\n- TOUTES les erreurs utilisent AppError avec des codes domaine\n- JAMAIS ajouter de dépendances sans approbation\n- Utilisez le logger structuré. Pas de console.log.',
+        language: 'markdown',
+        filename: 'imperative-claude.md',
+      },
+      question: 'Quel style produira systématiquement le même comportement dans différentes sessions d\'agent ?',
+      correctSide: 'right',
+      explanation: '« Essayez de », « considérez », « on préfère » et « vous pourriez » donnent tous la permission aux agents de dévier. Les impératifs comme « TOUTES », « DOIVENT », « JAMAIS » et « Sans exception » ne laissent aucune ambiguïté. Le côté droit produit un comportement d\'agent identique entre les sessions parce qu\'il n\'y a pas d\'interprétation nécessaire.',
+    },
+    {
+      type: 'code-fill',
+      instruction: 'Complétez ce template CLAUDE.md. Remplissez les blancs avec des conventions spécifiques et impératives qu\'un agent doit suivre.',
+      language: 'markdown',
+      template: '# Project: Task Manager API\n\n## Conventions\n\n### Nommage\n- Fichiers de fonctionnalité : `___`\n- Fichiers de test : colocalisés, nommés `___`\n- JAMAIS de noms génériques : utils.ts, helpers.ts\n\n## Contraintes\n\n### Technologie\n- Validation : ___ (aucune autre bibliothèque permise)\n- Tests : ___ (pas Jest)\n\n### Anti-patrons interdits\n- Ne jamais créer un fichier ___\n- Ne jamais ___ sans approbation explicite\n- Ne jamais utiliser le type `___` — utiliser unknown et affiner',
+      blanks: [
+        { id: 'naming', answer: '[domain].[role].ts', alternatives: ['[domain].[type].ts', '[feature].[role].ts', '[domaine].[role].ts'], hint: 'Patron : nom du domaine + point + rôle', placeholder: 'ex: payments.handler.ts' },
+        { id: 'test-naming', answer: '[domain].test.ts', alternatives: ['[feature].test.ts', '[domain].spec.ts', '[domaine].test.ts'], hint: 'Patron : nom du domaine + extension de test', placeholder: 'ex: payments.test.ts' },
+        { id: 'validation', answer: 'Zod', alternatives: ['zod', 'Zod schemas'], hint: 'La bibliothèque de validation de schémas de la leçon', placeholder: 'nom de la bibliothèque' },
+        { id: 'testing', answer: 'Vitest', alternatives: ['vitest'], hint: 'Framework de test natif Vite moderne', placeholder: 'nom du framework' },
+        { id: 'forbidden-file', answer: 'shared/utils.ts', alternatives: ['utils.ts', 'helpers.ts', 'shared/helpers.ts', 'common.ts'], hint: 'Le fichier fourre-tout', placeholder: 'nom de fichier' },
+        { id: 'forbidden-action', answer: 'ajouter une dépendance', alternatives: ['ajouter des dépendances', 'installer une dépendance', 'add a dependency', 'add dependencies'], hint: 'Ajouter quelque chose au package.json', placeholder: 'action' },
+        { id: 'forbidden-type', answer: 'any', alternatives: ['Any'], hint: 'Le type d\'échappement TypeScript', placeholder: 'nom du type' },
+      ],
+      filename: 'CLAUDE.md',
+      explanation: 'Un CLAUDE.md bien structuré utilise un langage impératif avec des patrons spécifiques. Chaque blanc a une seule réponse claire qui élimine l\'ambiguïté pour les agents. La convention de nommage, les contraintes technologiques et les anti-patrons forment ensemble un protocole de coordination qui garde tous les agents alignés.',
+    },
+
     // === CONSTRAINTS SECTION ===
     {
       type: 'code-demo',

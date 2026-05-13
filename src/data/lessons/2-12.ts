@@ -15,9 +15,9 @@ const content: LessonContent = {
       body: "A real product with real utility. Users submit feedback items (title + description). Other users vote on items to indicate priority. An admin can change item status (new, in progress, done, declined). Items display in a public board sorted by votes. This is not a toy — it has authentication, database persistence, role-based access, and a responsive interface. Companies like Canny and Nolt charge $79-$400/month for this. You will build it in 75 minutes of directed work.",
     },
     {
-      type: 'diagram',
+      type: 'interactive-diagram',
       title: 'Capstone Phases',
-      body: 'Six phases from spec to ship. Each phase uses a specific skill from Tier 2.',
+      body: 'Six phases from spec to ship. Each phase uses a specific skill from Tier 2. Click through each phase.',
       diagram: {
         direction: 'LR',
         nodes: [
@@ -37,6 +37,37 @@ const content: LessonContent = {
           { from: 'verify', to: 'core', label: 'fix', dashed: true },
         ],
       },
+      stages: [
+        {
+          highlightNodes: ['spec'],
+          highlightEdges: [{ from: 'spec', to: 'auth' }],
+          explanation: 'Phase 1: Write the complete product spec with all five sections — Goal, Constraints, Acceptance Criteria, Technical Boundaries, and Out of Scope. This is the execution contract for the entire build.',
+        },
+        {
+          highlightNodes: ['auth'],
+          highlightEdges: [{ from: 'auth', to: 'core' }],
+          explanation: 'Phase 2: Direct the agent to build auth and the database schema as two scoped sub-tasks. The agent builds the foundation without touching app features — separation of concerns.',
+        },
+        {
+          highlightNodes: ['core'],
+          highlightEdges: [{ from: 'core', to: 'ui' }],
+          explanation: 'Phase 3: Direct three core features — feedback submission, voting, and admin status — each as a separate scoped prompt. Apply iterative direction if the first output misses something.',
+        },
+        {
+          highlightNodes: ['ui'],
+          highlightEdges: [{ from: 'ui', to: 'verify' }],
+          explanation: 'Phase 4: Compose all components into a cohesive interface. Apply visual constraints — spacing, hierarchy, responsive behavior — and evaluate output with your taste filter.',
+        },
+        {
+          highlightNodes: ['verify'],
+          highlightEdges: [{ from: 'verify', to: 'ship' }, { from: 'verify', to: 'core' }],
+          explanation: 'Phase 5: Verify everything — functional tests against acceptance criteria, security audit (secrets, auth, data exposure), and visual evaluation. If verification fails, loop back to fix.',
+        },
+        {
+          highlightNodes: ['ship'],
+          explanation: 'Phase 6: Deploy to Vercel, verify the production deployment, and document the project. Environment variables, build verification, rollback plan, and a README that covers setup to deploy.',
+        },
+      ],
     },
     {
       type: 'checkpoint',
@@ -57,6 +88,19 @@ const content: LessonContent = {
       language: 'markdown',
       filename: 'SPEC.md',
       code: "# Feedback Board — Agent Spec\n\n## Goal\nA public feedback board where users submit ideas, vote on them,\nand an admin manages item status. Live at a production URL.\n\n## Constraints\n- Next.js 15 with App Router\n- TypeScript strict mode\n- Supabase for auth (magic link) and database (Postgres)\n- Tailwind CSS + shadcn/ui components\n- Deployed on Vercel\n- Mobile-first responsive design\n\n## Acceptance Criteria\n- [ ] Users can sign in via magic link (email)\n- [ ] Signed-in users can submit feedback (title + description)\n- [ ] Signed-in users can upvote/remove vote on any item (one vote per user per item)\n- [ ] All users (including anonymous) can view the public board\n- [ ] Board displays items sorted by vote count (descending)\n- [ ] Admin can change item status: new | in-progress | done | declined\n- [ ] Items show their status as a colored badge\n- [ ] Board is filterable by status\n- [ ] Responsive: single column mobile, two-column desktop\n- [ ] App runs locally with `npm run dev` after `npm install`\n- [ ] App deploys to Vercel without errors\n\n## Technical Boundaries\n- Use Supabase Row Level Security for access control\n- Server components for data fetching, server actions for mutations\n- All database logic through Supabase client (no raw SQL in app code)\n- Keep components in src/components/, pages in src/app/\n- Admin role determined by a role column in the users/profiles table\n\n## Out of Scope\n- Comments/replies on items\n- Categories or tags\n- Email notifications\n- Public API\n- Custom domain configuration\n- Analytics or tracking\n- Dark mode (ship light-only for MVP)",
+    },
+    {
+      type: 'code-fill',
+      instruction: 'Complete the Out of Scope section of the Feedback Board spec to prevent scope creep:',
+      language: 'markdown',
+      filename: 'SPEC.md',
+      template: '## Out of Scope\n- {{scope1}}\n- Email notifications on new feedback\n- {{scope2}}\n- Analytics dashboard\n- {{scope3}}',
+      blanks: [
+        { id: 'scope1', answer: 'User profiles or settings page', alternatives: ['User profiles', 'Profile page', 'Settings page', 'User settings'], placeholder: 'what user feature?', hint: 'A common feature agents add that isn\'t needed for a feedback board' },
+        { id: 'scope2', answer: 'Markdown or rich text formatting', alternatives: ['Rich text editor', 'Markdown support', 'Text formatting'], placeholder: 'what content feature?', hint: 'A text formatting feature that would add complexity' },
+        { id: 'scope3', answer: 'Deployment or CI/CD configuration', alternatives: ['Docker', 'CI/CD', 'Deployment config', 'Infrastructure'], placeholder: 'what infrastructure?', hint: 'Something the agent might helpfully add for shipping' },
+      ],
+      explanation: 'Each exclusion prevents a specific type of scope creep. Without these, agents commonly add profile pages, rich text editors, and Docker configs to simple projects.',
     },
     {
       type: 'terminal',
@@ -200,6 +244,15 @@ const content: LessonContent = {
       type: 'checkpoint',
       xp: 10,
       message: 'Phase 6 complete — deployed and documented!',
+    },
+
+    {
+      type: 'match',
+      instruction: 'Match each Tier 2 skill to the capstone phase where you use it:',
+      leftItems: ['Spec writing (2-1)', 'Auth security audit (2-3)', 'Scope discipline (2-10)', 'Code verification (2-8)', 'Deployment (2-11)'],
+      rightItems: ['Phase 1: Write the product spec', 'Phase 2: Direct auth + database', 'Phase 3: Direct core features', 'Phase 5: Verify everything', 'Phase 6: Deploy + document'],
+      correctPairs: { 0: 0, 1: 1, 2: 2, 3: 3, 4: 4 },
+      explanation: 'The capstone synthesizes every Tier 2 lesson. Spec writing defines what to build. Auth audit ensures security. Scope discipline keeps each phase focused. Verification catches errors. Deployment ships it live.',
     },
 
     // === REFLECTION ===

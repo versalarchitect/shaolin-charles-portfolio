@@ -14,6 +14,24 @@ const content: LessonContent = {
       title: 'The production readiness gap',
       body: "Agents are excellent at writing application code but frequently produce deployments with issues: hardcoded URLs that work on localhost but break in production, environment variables referenced but never configured, API keys committed to the repository, missing CORS headers, and routes that skip authentication. Your job is to know what production readiness looks like and direct the agent to achieve it — not hope the agent remembers on its own.",
     },
+    {
+      type: 'compare',
+      title: 'Environment variables: wrong vs right',
+      body: 'How you handle environment variables determines whether your app works in production and whether secrets leak.',
+      question: 'Which approach is safe for production?',
+      correctSide: 'right',
+      left: {
+        label: 'Wrong',
+        content: '// Hardcoded in code — exposed in bundle!\nconst API_URL = "https://api.example.com"\n\n// Service key in client — admin access!\nconst supabase = createClient(\n  "https://abc.supabase.co",\n  "eyJhbG...service_role_key"\n)',
+        language: 'typescript',
+      },
+      right: {
+        label: 'Right',
+        content: '// Public vars use NEXT_PUBLIC_ prefix\nconst API_URL = process.env.NEXT_PUBLIC_API_URL\n\n// Secret keys stay server-side only\nconst supabase = createClient(\n  process.env.NEXT_PUBLIC_SUPABASE_URL!,\n  process.env.SUPABASE_SERVICE_ROLE_KEY!\n)',
+        language: 'typescript',
+      },
+      explanation: 'NEXT_PUBLIC_ vars are safe to expose in the browser. Vars without that prefix stay on the server. Never hardcode URLs or keys — they change per environment and leak in git history.',
+    },
 
     // === VERCEL CONFIGURATION ===
     {
@@ -34,6 +52,20 @@ const content: LessonContent = {
       instruction: 'Direct the agent to create a proper .env.local template with placeholder values and a .env.example that is safe to commit.',
       expectedCommand: 'claude "Create two files: (1) .env.example with all environment variables listed with placeholder values like YOUR_SUPABASE_URL_HERE — this is committed to git as documentation. (2) .env.local with the actual structure matching .env.example but blank values. Verify .env.local is in .gitignore. Variables needed: NEXT_PUBLIC_APP_URL, NEXT_PUBLIC_SUPABASE_URL, NEXT_PUBLIC_SUPABASE_ANON_KEY, SUPABASE_SERVICE_ROLE_KEY, SESSION_SECRET."',
       hint: 'The agent should create the example file (safe to commit) and the local file (gitignored).',
+    },
+    {
+      type: 'code-fill',
+      instruction: 'Complete the .env.example file. Public vars use NEXT_PUBLIC_ prefix, secrets do not.',
+      language: 'shell',
+      filename: '.env.example',
+      template: '# Public (safe for browser)\n{{public_url}}=https://your-app.vercel.app\n{{public_supabase}}=https://abc.supabase.co\nNEXT_PUBLIC_SUPABASE_ANON_KEY=eyJ...\n\n# Secret (server only — NEVER prefix with NEXT_PUBLIC_)\n{{secret_service}}=eyJ...\n{{secret_webhook}}=whsec_...',
+      blanks: [
+        { id: 'public_url', answer: 'NEXT_PUBLIC_APP_URL', alternatives: ['NEXT_PUBLIC_URL', 'NEXT_PUBLIC_SITE_URL'], placeholder: 'public URL var?', hint: 'Starts with NEXT_PUBLIC_' },
+        { id: 'public_supabase', answer: 'NEXT_PUBLIC_SUPABASE_URL', placeholder: 'public Supabase var?', hint: 'Starts with NEXT_PUBLIC_' },
+        { id: 'secret_service', answer: 'SUPABASE_SERVICE_ROLE_KEY', alternatives: ['SUPABASE_SERVICE_KEY'], placeholder: 'secret Supabase var?', hint: 'No NEXT_PUBLIC_ prefix — server only' },
+        { id: 'secret_webhook', answer: 'STRIPE_WEBHOOK_SECRET', alternatives: ['STRIPE_WEBHOOK_SIGNING_SECRET'], placeholder: 'secret Stripe var?', hint: 'Stripe webhook signing secret' },
+      ],
+      explanation: 'The .env.example documents all required variables without actual values. Public vars get NEXT_PUBLIC_ prefix. Secrets never do — they are invisible to client-side code.',
     },
     {
       type: 'checkpoint',
@@ -80,9 +112,9 @@ const content: LessonContent = {
       body: "Never deploy directly to production without a preview. Vercel automatically creates preview deployments for every push to a non-main branch. The workflow: push to a feature branch, get a preview URL, verify the deployment works with real environment variables (not localhost), check that server-side features function correctly, then merge to main for production. Preview deployments catch environment-specific bugs that localhost never reveals.",
     },
     {
-      type: 'diagram',
+      type: 'interactive-diagram',
       title: 'Deployment Pipeline',
-      body: 'Every change flows through verification gates before reaching production.',
+      body: 'Every change flows through verification gates before reaching production. Click through each stage.',
       diagram: {
         direction: 'LR',
         nodes: [
@@ -100,6 +132,33 @@ const content: LessonContent = {
           { from: 'prod', to: 'rollback', label: 'breaks', dashed: true },
         ],
       },
+      stages: [
+        {
+          highlightNodes: ['local'],
+          highlightEdges: [{ from: 'local', to: 'preview' }],
+          explanation: 'Development starts locally. You build features on localhost, run tests, and verify the app works in your dev environment before pushing anything.',
+        },
+        {
+          highlightNodes: ['preview'],
+          highlightEdges: [{ from: 'preview', to: 'verify' }],
+          explanation: 'Push to a feature branch triggers a Vercel preview deployment. This is the first time your code runs with real environment variables, real DNS, and real server functions.',
+        },
+        {
+          highlightNodes: ['verify'],
+          highlightEdges: [{ from: 'verify', to: 'prod' }, { from: 'verify', to: 'local' }],
+          explanation: 'Verify the preview deployment: check env vars work, server functions respond, auth flows complete, and the UI renders correctly. If issues are found, fix locally and push again.',
+        },
+        {
+          highlightNodes: ['prod'],
+          highlightEdges: [{ from: 'prod', to: 'rollback' }],
+          explanation: 'Merge to main triggers a production deployment. Your app is live. If something breaks, do not panic — use the rollback path.',
+        },
+        {
+          highlightNodes: ['rollback'],
+          highlightEdges: [{ from: 'prod', to: 'rollback' }],
+          explanation: 'Rollback instantly promotes the previous working deployment. This restores service in seconds. Then debug calmly on a branch without users experiencing the broken state.',
+        },
+      ],
     },
     {
       type: 'terminal',

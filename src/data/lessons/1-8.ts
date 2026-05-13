@@ -217,6 +217,46 @@ const content: LessonContent = {
       correctOrder: [1, 3, 0, 2, 4],
     },
 
+    // === INTERACTIVE: COMPARE, MATCH, CODE-FILL ===
+    {
+      type: 'compare',
+      title: 'Inline instructions vs saved skills',
+      body: 'You can type the same instruction every time, or save it as a reusable skill file.',
+      question: 'Which approach scales better across projects?',
+      correctSide: 'right',
+      left: {
+        label: 'Inline (every time)',
+        content: '> claude "Review this PR for security issues.\n  Check for: hardcoded secrets, SQL injection,\n  XSS vulnerabilities, missing auth checks,\n  exposed API keys. Format as a checklist\n  with severity levels."',
+        language: 'text',
+      },
+      right: {
+        label: 'Saved skill',
+        content: '# .claude/commands/security-review.md\n\nReview the current diff for security issues.\n\nCheck for:\n- Hardcoded secrets or API keys\n- SQL injection vulnerabilities\n- XSS attack vectors\n- Missing authentication checks\n- Exposed internal endpoints\n\nFormat as a severity-ranked checklist.',
+        language: 'markdown',
+      },
+      explanation: 'Saved skills are consistent, shareable, and version-controlled. You type /security-review instead of remembering the full prompt. The whole team uses the same checklist.',
+    },
+    {
+      type: 'match',
+      instruction: 'Match each hook type to its purpose:',
+      leftItems: ['PreToolUse', 'PostToolUse', 'Notification'],
+      rightItems: ['Validate or block an action before it runs', 'Run cleanup or checks after an action completes', 'React to events like errors or status changes'],
+      correctPairs: { 0: 0, 1: 1, 2: 2 },
+      explanation: 'PreToolUse hooks act as guardrails — they can prevent dangerous actions. PostToolUse hooks run after the fact for logging or cleanup. Notification hooks react to system events.',
+    },
+    {
+      type: 'code-fill',
+      instruction: 'Complete this hook configuration to auto-lint every file the agent writes:',
+      language: 'json',
+      template: '{\n  "hooks": {\n    "{{event_type}}": [\n      {\n        "{{filter_key}}": "{{tool_name}}",\n        "command": "npx eslint --fix \\"$CLAUDE_FILE_PATH\\""\n      }\n    ]\n  }\n}',
+      blanks: [
+        { id: 'event_type', answer: 'PostToolUse', alternatives: ['postToolUse', 'posttooluse'], placeholder: 'hook event?', hint: 'This hook fires after a tool finishes — Pre or Post?' },
+        { id: 'filter_key', answer: 'matcher', placeholder: 'filter field?', hint: 'The JSON key that filters which tool triggers the hook' },
+        { id: 'tool_name', answer: 'Write', alternatives: ['write'], placeholder: 'which tool?', hint: 'The tool that creates new files' },
+      ],
+      explanation: 'PostToolUse fires after a tool completes. The "matcher" field filters by tool name. "Write" targets file creation — so every new file gets auto-linted.',
+    },
+
     // === FINAL EXERCISES ===
     {
       type: 'code-input',

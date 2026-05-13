@@ -211,9 +211,9 @@ const content: LessonContent = {
       body: "You cannot redesign the entire system at once. The task graph defines the order of operations — which migrations can run in parallel and which have dependencies. The critical path runs through the event bus (everything depends on it) and the shared types package (everything imports from it). Once those exist, all six domain extractions can happen in parallel.",
     },
     {
-      type: 'diagram',
+      type: 'interactive-diagram',
       title: 'Migration Task Graph',
-      body: 'The critical path is vertical. Parallel work branches horizontally after the foundation is laid.',
+      body: 'Click through each phase to understand the refactoring sequence and why it must happen in this order.',
       diagram: {
         direction: 'TB',
         nodes: [
@@ -241,6 +241,38 @@ const content: LessonContent = {
           { from: 'admin', to: 'verify' },
         ],
       },
+      stages: [
+        {
+          highlightNodes: ['types'],
+          highlightEdges: [],
+          explanation: 'Phase 1: Create the shared types package. All domain events and API contracts are defined here. This is the single source of truth that every package will depend on. Without it, agents would invent incompatible interfaces.',
+        },
+        {
+          highlightNodes: ['types', 'bus'],
+          highlightEdges: [{ from: 'types', to: 'bus' }],
+          explanation: 'Phase 2: Implement the event bus using Redis Streams. This is the communication backbone. Domains will publish and subscribe to events instead of importing each other directly. The bus depends on shared types for event definitions.',
+        },
+        {
+          highlightNodes: ['bus', 'auth', 'payments', 'inventory', 'notifications'],
+          highlightEdges: [{ from: 'bus', to: 'auth' }, { from: 'bus', to: 'payments' }, { from: 'bus', to: 'inventory' }, { from: 'bus', to: 'notifications' }],
+          explanation: 'Phase 3: Four parallel extractions. Each agent works independently on one domain. Auth (7/10 buildability) is easiest. Notifications (1/10) gets a full rewrite as event-driven. All four can happen simultaneously because they only depend on the event bus, not on each other.',
+        },
+        {
+          highlightNodes: ['auth', 'payments', 'inventory', 'orders'],
+          highlightEdges: [{ from: 'auth', to: 'orders' }, { from: 'payments', to: 'orders' }, { from: 'inventory', to: 'orders' }],
+          explanation: 'Phase 4: Strangler fig for Orders. This is last because Orders depends on Auth, Payments, and Inventory. Those must have stable, independent interfaces before Orders can decouple from their internals. Each endpoint is migrated individually with an adapter.',
+        },
+        {
+          highlightNodes: ['orders', 'admin'],
+          highlightEdges: [{ from: 'orders', to: 'admin' }],
+          explanation: 'Phase 5: Rebuild Admin as a pure API consumer. Admin is last because it needs stable APIs from every other domain to call. Once all domains are extracted, Admin becomes a thin UI layer over versioned APIs.',
+        },
+        {
+          highlightNodes: ['admin', 'verify'],
+          highlightEdges: [{ from: 'admin', to: 'verify' }],
+          explanation: 'Phase 6: Full system verification. End-to-end tests validate that the decoupled system behaves identically to the monolith. Shadow mode compares outputs. Only after verification passes do you remove the legacy adapters.',
+        },
+      ],
     },
     {
       type: 'multiple-choice',
@@ -258,6 +290,53 @@ const content: LessonContent = {
       type: 'checkpoint',
       xp: 15,
       message: 'Task graph designed!',
+    },
+
+    // === CODE-FILL: MIGRATION SPEC ===
+    {
+      type: 'code-fill',
+      instruction: 'Complete this migration spec with phase descriptions, agent assignments, and interface contracts.',
+      language: 'markdown',
+      filename: 'docs/migration-spec.md',
+      template: '# ShopFlow Migration Spec\n\n## Phase 1: Foundation\n- Create {{foundation_package}} with all event type definitions\n- Implement event bus using {{bus_technology}}\n\n## Phase 2: Parallel Extractions\n- Agent A: Extract {{agent_a_domain}} (highest buildability score)\n- Agent B: Extract {{agent_b_domain}} (clear domain boundary)\n- Agent C: Rewrite {{agent_c_domain}} as event-driven\n\n## Phase 3: Core Domain\n- Migrate Orders using {{migration_pattern}} pattern\n- Each endpoint gets its own {{adapter_type}}\n\n## Interface Contract\n- Cross-domain communication via {{comm_method}} only\n- All events typed in {{types_package}}',
+      blanks: [
+        { id: 'foundation_package', answer: '@shop/shared-types', alternatives: ['shared-types', '@shop/types', 'shared types package'], placeholder: 'package name?', hint: 'The shared contract package' },
+        { id: 'bus_technology', answer: 'Redis Streams', alternatives: ['Redis', 'redis streams', 'Redis Pub/Sub', 'message queue'], placeholder: 'which technology?', hint: 'A popular message streaming technology' },
+        { id: 'agent_a_domain', answer: 'Auth', alternatives: ['auth', 'Authentication', 'authentication'], placeholder: 'which domain?', hint: 'Scored 7/10 in buildability' },
+        { id: 'agent_b_domain', answer: 'Payments', alternatives: ['payments', 'Payment', 'Billing', 'billing'], placeholder: 'which domain?', hint: 'Scored 6/10 in buildability' },
+        { id: 'agent_c_domain', answer: 'Notifications', alternatives: ['notifications', 'Notification'], placeholder: 'which domain?', hint: 'Scored 1/10 — needs a full rewrite' },
+        { id: 'migration_pattern', answer: 'strangler fig', alternatives: ['strangler', 'strangler fig pattern', 'incremental replacement'], placeholder: 'which pattern?', hint: 'Gradual replacement while old system runs' },
+        { id: 'adapter_type', answer: 'adapter', alternatives: ['adapter layer', 'compatibility adapter', 'legacy adapter', 'wrapper'], placeholder: 'what wraps old/new?', hint: 'Bridges old and new interfaces' },
+        { id: 'comm_method', answer: 'event bus or typed HTTP API', alternatives: ['events and APIs', 'event bus', 'HTTP API', 'typed API', 'events or HTTP'], placeholder: 'communication method?', hint: 'Two approved communication channels' },
+        { id: 'types_package', answer: '@shop/shared-types', alternatives: ['shared-types', '@shop/types', 'the shared types package'], placeholder: 'where are types defined?' },
+      ],
+      explanation: 'A complete migration spec eliminates ambiguity for every agent in the fleet. Phase ordering, agent assignments, and interface contracts mean each agent knows exactly what to build, what to depend on, and what not to touch.',
+    },
+
+    // === PROMPT-LAB: AGENT PROMPTS FOR MIGRATION ===
+    {
+      type: 'prompt-lab',
+      instruction: 'Write a prompt to assign an agent to one domain extraction in the ShopFlow migration. Include enough specificity that the agent can execute immediately.',
+      scenario: 'You are assigning an agent to extract the Payments domain from the ShopFlow monolith into an independent package. The event bus and @shop/shared-types are already in place. The agent needs clear scope, constraints, and verification steps.',
+      starterPrompt: 'Refactor the app.',
+      responses: [
+        {
+          triggerKeywords: ['payments', 'event', 'shared-types', 'scope', 'test'],
+          response: 'I\'ll extract the Payments domain into an independent package.\n\nPlan:\n1. Create packages/payments/ with its own tsconfig and build target\n2. Move all payment-related source files from the monolith\n3. Replace direct imports with event bus subscriptions (OrderPlaced, OrderCancelled)\n4. Publish PaymentProcessed, RefundIssued events via @shop/shared-types\n5. Create adapter for legacy consumers during migration\n6. Verify: package tests pass in isolation, build succeeds independently\n\nStarting extraction...',
+          quality: 'excellent',
+          feedback: 'Your prompt included domain scope, event contracts, dependency constraints, and verification criteria. The agent can execute the full extraction without asking follow-up questions. This is production-grade agent direction.',
+        },
+        {
+          triggerKeywords: ['payments', 'package', 'extract'],
+          response: 'I\'ll extract payments into its own package. Should I:\n- Use the existing database schema or create a new one?\n- Keep the current Stripe integration or refactor it?\n- How should payments communicate with orders?\n\nLet me know before I start.',
+          quality: 'good',
+          feedback: 'You specified the domain and the action, which is better than "refactor the app." But the agent still needs to ask about communication patterns, database ownership, and integration approach. Add constraints about event bus usage and schema ownership to eliminate these questions.',
+        },
+      ],
+      fallbackResponse: {
+        response: 'I\'ll start refactoring the app. Let me analyze the full codebase first... this is a 120K line monolith, so I\'ll need to understand all the dependencies before making changes. This might take a while.\n\nShould I start with the most complex module or the simplest?',
+        feedback: 'Without scope, the agent tries to analyze the entire 120K line codebase. It asks about strategy instead of executing. A good prompt specifies: which domain (Payments), what action (extract to package), what constraints (event bus only, own schema), and how to verify (tests pass in isolation).',
+      },
     },
 
     // === PHASE 5: PROFESSIONAL PRESENTATION ===

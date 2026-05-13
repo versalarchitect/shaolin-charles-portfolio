@@ -58,9 +58,9 @@ const content: LessonContent = {
 
     // === MCP ARCHITECTURE ===
     {
-      type: 'diagram',
+      type: 'interactive-diagram',
       title: 'How Claude Code connects to external tools',
-      body: 'MCP (Model Context Protocol) is like a universal adapter. It lets Claude Code plug into databases, websites, and other services through a standard connection. You do not need to understand the technical details — just know that MCP is how Claude Code gains new abilities beyond reading and writing files.',
+      body: 'MCP (Model Context Protocol) is like a universal adapter. It lets Claude Code plug into databases, websites, and other services through a standard connection. Step through to see how a request flows.',
       diagram: {
         direction: 'TB',
         nodes: [
@@ -77,6 +77,13 @@ const content: LessonContent = {
           { from: 'server', to: 'resource', label: 'read' },
         ],
       },
+      stages: [
+        { highlightNodes: ['claude'], explanation: 'You ask Claude Code to do something — like query a database or check a deployment. Claude Code decides which tool to use.' },
+        { highlightNodes: ['claude', 'mcp'], highlightEdges: [{ from: 'claude', to: 'mcp' }], explanation: 'Claude Code sends the request through the MCP protocol using JSON-RPC — a standard message format. This is the universal adapter.' },
+        { highlightNodes: ['mcp', 'server'], highlightEdges: [{ from: 'mcp', to: 'server' }], explanation: 'The MCP server receives the request. Each server is a small program that knows how to talk to one specific service.' },
+        { highlightNodes: ['server', 'tool'], highlightEdges: [{ from: 'server', to: 'tool' }], explanation: 'The server executes the tool — running a database query, calling an API, or performing an action. The result flows back to Claude Code.' },
+        { highlightNodes: ['server', 'resource'], highlightEdges: [{ from: 'server', to: 'resource' }], explanation: 'The server can also read resources — fetching data like deployment status, file contents, or configuration. Resources are read-only.' },
+      ],
     },
     {
       type: 'info',
@@ -151,6 +158,14 @@ const content: LessonContent = {
       type: 'checkpoint',
       xp: 3,
       message: 'Skills and hooks are set up! You now have reusable instructions and automatic actions.',
+    },
+    {
+      type: 'match',
+      instruction: 'Match each Claude Code capability to what it does:',
+      leftItems: ['Read tool', 'Edit tool', 'Bash tool', 'Agent tool', 'MCP servers'],
+      rightItems: ['View file contents without modifying', 'Make precise changes to existing files', 'Run shell commands and scripts', 'Delegate complex tasks to sub-agents', 'Connect to external tools and APIs'],
+      correctPairs: { 0: 0, 1: 1, 2: 2, 3: 3, 4: 4 },
+      explanation: 'Claude Code uses different tools for different tasks. Read views files, Edit modifies them, Bash runs commands, Agent delegates work, and MCP servers extend capabilities to external systems.',
     },
 
     // === YOUR AI TOOLING STACK ===

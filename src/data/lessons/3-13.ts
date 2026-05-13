@@ -149,17 +149,18 @@ const content: LessonContent = {
       body: "In a swarm, agents pull tasks from a shared pool. No central coordinator assigns work — agents self-select. When an agent finishes, it grabs the next task. This is the most autonomous pattern and the hardest to set up. Every task must be independent, well-defined, and roughly equal in scope. Strengths: maximum parallelism, no bottleneck, agents never idle. Weakness: tasks must be truly independent, and you need extremely clear task definitions since there's nobody to clarify ambiguity.",
     },
     {
-      type: 'diagram',
-      title: 'Swarm',
-      body: 'Agents self-select tasks from a shared pool. Most autonomous pattern — no central coordinator needed.',
+      type: 'interactive-diagram',
+      title: 'Swarm Scaling',
+      body: 'Click through to see how agents self-select tasks from a shared pool and scale horizontally.',
       diagram: {
         direction: 'TB',
         nodes: [
-          { id: 'pool', label: 'Task Pool', shape: 'rounded', highlight: true },
+          { id: 'pool', label: 'Task Pool', sublabel: '12 tasks', shape: 'rounded', highlight: true },
           { id: 'a', label: 'Agent A', shape: 'rect' },
           { id: 'b', label: 'Agent B', shape: 'rect' },
           { id: 'c', label: 'Agent C', shape: 'rect' },
           { id: 'd', label: 'Agent D', shape: 'rect' },
+          { id: 'done', label: 'Done', sublabel: 'All tasks complete', shape: 'pill' },
         ],
         edges: [
           { from: 'pool', to: 'a', label: 'task' },
@@ -170,8 +171,34 @@ const content: LessonContent = {
           { from: 'b', to: 'pool', label: 'next task', dashed: true },
           { from: 'c', to: 'pool', label: 'next task', dashed: true },
           { from: 'd', to: 'pool', label: 'next task', dashed: true },
+          { from: 'a', to: 'done', dashed: true },
+          { from: 'b', to: 'done', dashed: true },
+          { from: 'c', to: 'done', dashed: true },
+          { from: 'd', to: 'done', dashed: true },
         ],
       },
+      stages: [
+        {
+          highlightNodes: ['pool'],
+          highlightEdges: [],
+          explanation: 'The task pool contains 12 independent, well-defined tasks. Each task is self-contained — no task depends on another. This is the prerequisite for swarm pattern.',
+        },
+        {
+          highlightNodes: ['pool', 'a', 'b', 'c', 'd'],
+          highlightEdges: [{ from: 'pool', to: 'a' }, { from: 'pool', to: 'b' }, { from: 'pool', to: 'c' }, { from: 'pool', to: 'd' }],
+          explanation: 'Round 1: All 4 agents pull their first task simultaneously. No coordinator assigns work — agents self-select. 4 tasks now in progress, 8 remaining.',
+        },
+        {
+          highlightNodes: ['a', 'b', 'pool'],
+          highlightEdges: [{ from: 'a', to: 'pool' }, { from: 'b', to: 'pool' }],
+          explanation: 'Agents A and B finish first and immediately pull the next task. No waiting for a coordinator. Agents C and D are still working on their first task. 6 tasks done or in progress.',
+        },
+        {
+          highlightNodes: ['a', 'b', 'c', 'd', 'done'],
+          highlightEdges: [{ from: 'a', to: 'done' }, { from: 'b', to: 'done' }, { from: 'c', to: 'done' }, { from: 'd', to: 'done' }],
+          explanation: 'All 12 tasks completed. Faster agents naturally pick up more tasks — no load balancing needed. Total time is determined by the slowest individual task, not the total count. Maximum throughput.',
+        },
+      ],
     },
     {
       type: 'code-demo',
@@ -185,6 +212,16 @@ const content: LessonContent = {
       type: 'checkpoint',
       xp: 4,
       message: 'Swarm pattern understood!',
+    },
+
+    // === MATCH: Scaling patterns → use cases ===
+    {
+      type: 'match',
+      instruction: 'Match each fleet pattern to its best use case:',
+      leftItems: ['Hub-and-spoke', 'Pipeline', 'Swarm'],
+      rightItems: ['Sequential data processing with stage handoffs', 'Central coordinator directing specialist agents', 'Many identical agents working independently on similar tasks'],
+      correctPairs: { 0: 1, 1: 0, 2: 2 },
+      explanation: 'Hub-and-spoke uses a central orchestrator to coordinate specialists. Pipeline chains stages sequentially. Swarm runs identical workers in parallel on independent tasks.',
     },
 
     // === CHOOSING THE RIGHT PATTERN ===

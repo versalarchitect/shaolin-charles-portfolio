@@ -22,9 +22,9 @@ const content: LessonContent = {
 
     // === DEBUGGING DECISION TREE DIAGRAM ===
     {
-      type: 'diagram',
+      type: 'interactive-diagram',
       title: 'Arbre de décision de débogage',
-      body: 'Suis ce chemin chaque fois que tu rencontres une erreur. Pas de raccourcis.',
+      body: 'Clique sur chaque étape pour suivre le chemin systématique de débogage.',
       diagram: {
         direction: 'TB',
         nodes: [
@@ -44,6 +44,38 @@ const content: LessonContent = {
           { from: 'search', to: 'verify' },
         ],
       },
+      stages: [
+        {
+          highlightNodes: ['err'],
+          highlightEdges: [],
+          explanation: 'Une erreur survient. Quelque chose est rouge dans ton terminal ou ta console navigateur. Résiste à l\'envie de commencer à modifier le code immédiatement.',
+        },
+        {
+          highlightNodes: ['err', 'read'],
+          highlightEdges: [{ from: 'err', to: 'read' }],
+          explanation: 'Lis le message d\'erreur au complet. Pas juste la première ligne — le type, le message, le chemin du fichier, le numéro de ligne et le stack trace. Parse les quatre parties avant de faire quoi que ce soit.',
+        },
+        {
+          highlightNodes: ['read', 'rec'],
+          highlightEdges: [{ from: 'read', to: 'rec' }],
+          explanation: 'Est-ce que tu reconnais cette erreur ? Un TypeError sur "undefined" signifie des données null. Un SyntaxError signifie une structure cassée. Un ReferenceError signifie que quelque chose manque. Classifie-la.',
+        },
+        {
+          highlightNodes: ['rec', 'fix'],
+          highlightEdges: [{ from: 'rec', to: 'fix' }],
+          explanation: 'Si tu reconnais l\'erreur, applique le correctif connu directement. Tu as déjà vu "Cannot read properties of undefined" — tu sais qu\'il faut vérifier si les données sont chargées avant d\'y accéder.',
+        },
+        {
+          highlightNodes: ['rec', 'search'],
+          highlightEdges: [{ from: 'rec', to: 'search' }],
+          explanation: 'Si l\'erreur est inconnue, cherche-la. Colle le message exact dans ton agent ou un moteur de recherche. Inclus le type d\'erreur et la phrase clé, pas le stack trace entier.',
+        },
+        {
+          highlightNodes: ['fix', 'search', 'verify'],
+          highlightEdges: [{ from: 'fix', to: 'verify' }, { from: 'search', to: 'verify' }],
+          explanation: 'Vérifie toujours. Fais UN seul changement, puis teste. L\'erreur a-t-elle disparu ? Une nouvelle est-elle apparue ? Un changement par cycle t\'empêche d\'introduire de nouveaux problèmes en corrigeant les anciens.',
+        },
+      ],
     },
 
     // === ERROR ANATOMY ===
@@ -145,6 +177,32 @@ const content: LessonContent = {
       type: 'checkpoint',
       xp: 3,
       message: 'Catégories d\'erreurs verrouillées !',
+    },
+    {
+      type: 'match',
+      instruction: 'Associe chaque type d\'erreur à la bonne approche d\'investigation :',
+      leftItems: ['SyntaxError', 'TypeError', 'ReferenceError', 'Erreur de logique'],
+      rightItems: ['Vérifier les typos, crochets manquants ou syntaxe invalide', 'Vérifier les types de données — une valeur est-elle null, undefined ou de mauvaise forme ?', 'Vérifier si la variable ou l\'import existe dans ce scope', 'Vérifier la sortie attendue vs réelle — le code tourne mais produit de mauvais résultats'],
+      correctPairs: { 0: 0, 1: 1, 2: 2, 3: 3 },
+      explanation: 'Chaque type d\'erreur pointe vers une cause profonde différente. Les erreurs de syntaxe sont structurelles, les erreurs de type concernent la forme des données, les erreurs de référence concernent le scope, et les erreurs de logique nécessitent de comparer le comportement attendu vs réel.',
+    },
+    {
+      type: 'compare',
+      title: 'Correctif de symptôme vs correctif de cause profonde',
+      body: 'Quand un agent rencontre une erreur, il peut corriger le symptôme au lieu de la cause.',
+      question: 'Quel correctif résout réellement le problème ?',
+      correctSide: 'right',
+      left: {
+        label: 'Correctif de symptôme',
+        content: '// "TypeError: Cannot read property name of null"\n\n// Fix: wrap everything in try-catch\ntry {\n  const name = user.name\n  displayGreeting(name)\n} catch (e) {\n  // silently ignore\n}',
+        language: 'typescript',
+      },
+      right: {
+        label: 'Correctif de cause profonde',
+        content: '// "TypeError: Cannot read property name of null"\n\n// Fix: handle the null user case\nif (!user) {\n  redirect("/login")\n  return\n}\nconst name = user.name\ndisplayGreeting(name)',
+        language: 'typescript',
+      },
+      explanation: 'Le correctif de symptôme cache l\'erreur avec un try-catch, mais l\'utilisateur voit toujours une page cassée. Le correctif de cause profonde traite POURQUOI user est null et le gère correctement.',
     },
 
     // === CLASSIFY REAL ERRORS ===

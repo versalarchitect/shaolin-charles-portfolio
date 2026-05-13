@@ -15,9 +15,9 @@ const content: LessonContent = {
       body: "Un seul agent qui échoue, c'est agaçant. Un agent dans une flotte qui échoue, c'est dangereux — s'il corrompt des fichiers partagés, pousse des types cassés vers une interface partagée, ou monopolise les ressources, ça peut cascader et faire tomber toute la flotte. La compétence clé n'est pas d'empêcher tous les échecs (impossible), c'est de les détecter vite et de les isoler avant qu'ils se propagent.",
     },
 
-    // === DIAGRAM 1: Fleet Failure Detection ===
+    // === DIAGRAM 1: Fleet Failure Detection (Interactif) ===
     {
-      type: 'diagram',
+      type: 'interactive-diagram',
       title: 'Cycle de vie d\'un échec de flotte',
       body: "Chaque échec de flotte suit ce cycle de vie. Plus tu détectes et isoles vite, moins les dégâts se propagent. L'objectif : moins de 2 minutes entre l'échec et l'isolation. La récupération peut prendre plus de temps — l'important c'est que les agents en santé continuent de tourner sans perturbation.",
       diagram: {
@@ -26,21 +26,80 @@ const content: LessonContent = {
           { id: 'running', label: 'Flotte en marche', sublabel: '4 agents', shape: 'rounded' },
           { id: 'detect', label: 'Détecter', sublabel: 'Signaux', shape: 'diamond', highlight: true },
           { id: 'isolate', label: 'Isoler', sublabel: 'Contenir', shape: 'rect' },
+          { id: 'analyze', label: 'Analyser', sublabel: 'Cause racine', shape: 'rect' },
           { id: 'recover', label: 'Récupérer', sublabel: 'Nouvel agent', shape: 'rect' },
           { id: 'continue', label: 'La flotte continue', shape: 'pill', highlight: true },
         ],
         edges: [
           { from: 'running', to: 'detect', label: 'anomalie' },
           { from: 'detect', to: 'isolate', label: 'confirmé' },
-          { from: 'isolate', to: 'recover' },
+          { from: 'isolate', to: 'analyze' },
+          { from: 'analyze', to: 'recover' },
           { from: 'recover', to: 'continue' },
         ],
       },
+      stages: [
+        {
+          highlightNodes: ['running'],
+          explanation: 'La flotte tourne normalement — 4 agents travaillent en parallèle sur des worktrees séparés. Des scripts de vérification de santé surveillent chaque agent toutes les 2-3 minutes.',
+        },
+        {
+          highlightNodes: ['running', 'detect'],
+          highlightEdges: [{ from: 'running', to: 'detect' }],
+          explanation: 'Une anomalie est détectée : remous élevé de fichiers sans commits, erreurs TypeScript qui s\'accumulent, ou l\'agent qui édite le même fichier à répétition. Le check de santé le signale.',
+        },
+        {
+          highlightNodes: ['detect', 'isolate'],
+          highlightEdges: [{ from: 'detect', to: 'isolate' }],
+          explanation: 'Échec confirmé. Isoler immédiatement : arrêter le processus de l\'agent, stasher ses modifications pour analyse, et réinitialiser le worktree. Les 3 autres agents continuent sans perturbation.',
+        },
+        {
+          highlightNodes: ['isolate', 'analyze'],
+          highlightEdges: [{ from: 'isolate', to: 'analyze' }],
+          explanation: 'Analyser la cause racine depuis le travail stashé. Était-ce du scope creep (fichiers modifiés hors de son domaine) ? Des éditions circulaires (même fichier modifié à répétition) ? Une mauvaise abstraction (spec mal comprise) ?',
+        },
+        {
+          highlightNodes: ['analyze', 'recover'],
+          highlightEdges: [{ from: 'analyze', to: 'recover' }],
+          explanation: 'Écrire une spec améliorée avec des contraintes explicites apprises de l\'échec. Lancer un nouvel agent de récupération sur le worktree propre avec des limites plus strictes.',
+        },
+        {
+          highlightNodes: ['recover', 'continue'],
+          highlightEdges: [{ from: 'recover', to: 'continue' }],
+          explanation: 'L\'agent de récupération complète le travail dans ses limites. La flotte continue avec les 4 agents qui produisent du résultat. Un échec n\'a pas cascadé en perturbation de toute la flotte.',
+        },
+      ],
     },
     {
       type: 'checkpoint',
       xp: 3,
       message: 'Détecter vite, isoler immédiatement, récupérer à ton rythme.',
+    },
+
+    // === PROMPT LAB: Écrire une directive de récupération ===
+    {
+      type: 'prompt-lab',
+      instruction: 'L\'agent d\'authentification est coincé dans une boucle, éditant le même fichier à répétition. Écris une directive de récupération.',
+      scenario: 'Ta flotte de 4 agents construit une app SaaS. L\'agent auth tourne depuis 20 minutes et son git log montre que le même fichier (src/lib/auth.ts) a été édité 15 fois avec des modifications contradictoires. Les 3 autres agents fonctionnent bien.',
+      starterPrompt: 'Fix the auth agent.',
+      responses: [
+        {
+          triggerKeywords: ['stash', 'reset', 'constraint', 'only'],
+          response: 'Recovery plan:\n1. Stashing the agent\'s changes for analysis\n2. Resetting to last known good state\n3. Restarting with tighter constraints\n\nRoot cause: the agent was trying to satisfy conflicting requirements in the spec. Adding explicit "DO NOT modify session.ts" boundary to prevent the loop.\n\nRestarting agent with focused scope...',
+          quality: 'excellent',
+          feedback: 'Tu as identifié le besoin de : (1) préserver le travail pour analyse, (2) réinitialiser à un état propre, et (3) ajouter des contraintes pour prévenir la récurrence. C\'est le pattern de récupération standard.',
+        },
+        {
+          triggerKeywords: ['stop', 'restart'],
+          response: 'I\'ll stop the auth agent and restart it. Should I use the same spec or modify it?',
+          quality: 'good',
+          feedback: 'Arrêter et redémarrer est nécessaire, mais sans analyser pourquoi il a bouclé et ajouter des contraintes, il va probablement re-boucler. Ajoute stash-puis-analyser et des limites de scope plus strictes.',
+        },
+      ],
+      fallbackResponse: {
+        response: 'Which agent is having issues? Can you share more details about the problem?',
+        feedback: 'Ta directive était trop vague. Spécifie : (1) stasher ou sauver les modifications actuelles, (2) réinitialiser à un état connu et bon, (3) quelles contraintes ajouter pour prévenir la boucle, et (4) quel scope restreindre.',
+      },
     },
 
     // === DETECTION SIGNALS ===

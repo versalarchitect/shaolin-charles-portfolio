@@ -15,9 +15,9 @@ const content: LessonContent = {
       body: "Quand tu construis quelque chose, tu développes des angles morts. Tu sais ce que tu voulais faire, alors tu vois l'intention plutôt que ce qui est vraiment là. Un deuxième agent lit le code à froid — sans présupposés, sans contamination de contexte. Il évalue purement par rapport au cahier des charges. C'est le même principe que la revue de code, mais automatisé et systématique.",
     },
 
-    // === DIAGRAM 1: Build → Verify → Decide ===
+    // === DIAGRAM 1: Build → Verify → Decide (Interactif) ===
     {
-      type: 'diagram',
+      type: 'interactive-diagram',
       title: 'La boucle de vérification',
       body: "L'agent de construction produit une sortie. L'agent de vérification l'évalue par rapport au cahier des charges. Il retourne un verdict structuré : réussite, échec avec raisons, ou réussite partielle avec les écarts précis. Tu prends la décision finale.",
       diagram: {
@@ -39,11 +39,64 @@ const content: LessonContent = {
           { from: 'verdict', to: 'human' },
         ],
       },
+      stages: [
+        {
+          highlightNodes: ['spec', 'build'],
+          highlightEdges: [{ from: 'spec', to: 'build' }],
+          explanation: 'L\'agent constructeur reçoit le cahier des charges et implémente la fonctionnalité. Il produit du code basé sur les exigences.',
+        },
+        {
+          highlightNodes: ['build', 'output'],
+          highlightEdges: [{ from: 'build', to: 'output' }],
+          explanation: 'Le constructeur génère une sortie — une branche ou PR contenant l\'implémentation.',
+        },
+        {
+          highlightNodes: ['spec', 'output', 'verify'],
+          highlightEdges: [{ from: 'spec', to: 'verify' }, { from: 'output', to: 'verify' }],
+          explanation: 'L\'agent vérificateur reçoit le cahier des charges ET la sortie. Il vérifie la sortie contre chaque exigence — aucun contexte partagé avec le constructeur.',
+        },
+        {
+          highlightNodes: ['verify', 'verdict'],
+          highlightEdges: [{ from: 'verify', to: 'verdict' }],
+          explanation: 'Le vérificateur retourne un verdict structuré : RÉUSSITE, ÉCHEC (avec raisons), ou PARTIEL (avec les écarts précis). Aucune ambiguïté.',
+        },
+        {
+          highlightNodes: ['verdict', 'human'],
+          highlightEdges: [{ from: 'verdict', to: 'human' }],
+          explanation: 'Tu prends la décision finale basée sur le verdict. Corrige les petits problèmes toi-même, envoie des corrections au constructeur, ou re-spécifie si le constructeur a fondamentalement mal compris.',
+        },
+      ],
     },
     {
       type: 'checkpoint',
       xp: 3,
       message: 'Tu vois la boucle de vérification : construire, vérifier, décider.',
+    },
+
+    // === PROMPT LAB: Écrire un prompt de vérification ===
+    {
+      type: 'prompt-lab',
+      instruction: 'Écris un prompt de vérification qui demande à un agent vérificateur de contrôler l\'implémentation d\'authentification de l\'agent constructeur.',
+      scenario: 'Un agent constructeur vient d\'implémenter login/signup avec Supabase Auth. Tu as besoin d\'un second agent pour vérifier : politiques RLS correctes, aucune clé de service exposée, gestion de session correcte, et états d\'erreur.',
+      starterPrompt: 'Check the auth code.',
+      responses: [
+        {
+          triggerKeywords: ['rls', 'service', 'key', 'session'],
+          response: 'Verification report for auth implementation:\n\n✅ RLS enabled on all user-facing tables\n✅ Service role key only used in server actions\n⚠️ Session refresh not implemented — tokens will expire\n❌ Missing error handling on signup — no duplicate email check\n\n2 issues found, 1 critical.',
+          quality: 'excellent',
+          feedback: 'Ton prompt a spécifié les domaines de vérification exacts : politiques RLS, exposition de clés, gestion de session, et états d\'erreur. L\'agent vérificateur savait exactement quoi vérifier.',
+        },
+        {
+          triggerKeywords: ['auth', 'check', 'security'],
+          response: 'I reviewed the auth code. It looks good overall. The login flow works and users can sign up. I\'d suggest adding some tests.\n\nVerdict: Approved.',
+          quality: 'poor',
+          feedback: 'Sans critères de vérification spécifiques, le vérificateur a juste survolé et approuvé. Spécifie exactement quoi vérifier : politiques RLS, patterns d\'exposition de clés, cycle de vie des sessions, et gestion d\'erreurs.',
+        },
+      ],
+      fallbackResponse: {
+        response: 'What specifically should I check? The auth system has many components.',
+        feedback: 'Ton prompt était trop vague. Un bon prompt de vérification spécifie : (1) quels fichiers vérifier, (2) quelles propriétés de sécurité contrôler, (3) quels patterns chercher, et (4) ce qui constitue une réussite vs un échec.',
+      },
     },
 
     // === WHAT VERIFICATION IS NOT ===

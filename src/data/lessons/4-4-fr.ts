@@ -43,6 +43,62 @@ const content: LessonContent = {
       },
     },
     {
+      type: 'interactive-diagram',
+      title: 'Flux d\'évaluation des suggestions d\'agent',
+      body: 'Parcourez étape par étape le processus d\'évaluation de toute suggestion architecturale d\'un agent.',
+      diagram: {
+        direction: 'TB',
+        nodes: [
+          { id: 'suggestion', label: 'Suggestion de l\'agent', sublabel: '« Utilisez des microservices »', shape: 'pill' },
+          { id: 'fit', label: 'Correspond aux besoins ?', sublabel: 'Résout-il le vrai problème ?', shape: 'diamond' },
+          { id: 'constraints', label: 'Contraintes respectées ?', sublabel: 'Taille d\'équipe, calendrier, budget ops', shape: 'diamond' },
+          { id: 'simpler', label: 'Alternative plus simple ?', sublabel: 'Pourrait-on faire moins et quand même gagner ?', shape: 'diamond' },
+          { id: 'accept', label: 'Accepter', shape: 'rounded', highlight: true },
+          { id: 'modify', label: 'Modifier', sublabel: 'Prendre le noyau, simplifier', shape: 'rounded' },
+          { id: 'reject', label: 'Rejeter', sublabel: 'Trop complexe pour le contexte', shape: 'rounded' },
+        ],
+        edges: [
+          { from: 'suggestion', to: 'fit' },
+          { from: 'fit', to: 'constraints', label: 'oui' },
+          { from: 'fit', to: 'reject', label: 'non' },
+          { from: 'constraints', to: 'simpler', label: 'oui' },
+          { from: 'constraints', to: 'modify', label: 'partiellement' },
+          { from: 'simpler', to: 'accept', label: 'pas plus simple' },
+          { from: 'simpler', to: 'modify', label: 'plus simple existe' },
+        ],
+      },
+      stages: [
+        {
+          highlightNodes: ['suggestion', 'fit'],
+          highlightEdges: [{ from: 'suggestion', to: 'fit' }],
+          explanation: 'Chaque suggestion d\'agent entre dans le pipeline d\'évaluation. Première porte : est-ce que ça résout un problème RÉEL et MESURÉ ? Pas un problème futur imaginé, pas un scénario « et si on scale ». Si le problème n\'existe pas aujourd\'hui, la suggestion échoue immédiatement.',
+        },
+        {
+          highlightNodes: ['fit', 'reject'],
+          highlightEdges: [{ from: 'fit', to: 'reject' }],
+          explanation: 'Si la suggestion ne correspond pas aux besoins réels, rejetez-la net. Exemple : l\'agent suggère l\'event sourcing pour des « besoins de piste d\'audit » — mais vous avez 50 utilisateurs et aucune exigence d\'audit. Techniquement valide, pratiquement faux.',
+        },
+        {
+          highlightNodes: ['fit', 'constraints'],
+          highlightEdges: [{ from: 'fit', to: 'constraints' }],
+          explanation: 'Si ça correspond aux besoins, vérifiez les contraintes : votre équipe de 2 peut-elle maintenir ça ? Est-ce que ça rentre dans votre calendrier de 3 mois ? Pouvez-vous l\'opérer ? Le budget le permet ? Si les contraintes ne sont que partiellement remplies, dirigez vers Modifier.',
+        },
+        {
+          highlightNodes: ['constraints', 'simpler', 'accept', 'modify'],
+          highlightEdges: [{ from: 'constraints', to: 'simpler' }, { from: 'simpler', to: 'accept' }, { from: 'simpler', to: 'modify' }],
+          explanation: 'Dernière porte : existe-t-il une alternative plus simple ? Les microservices pourraient devenir un monolithe modulaire. L\'event sourcing pourrait devenir une table de logs en append-only. S\'il n\'y a pas de façon plus simple, acceptez. Si plus simple existe, modifiez — prenez l\'idée centrale et réduisez la complexité.',
+        },
+      ],
+    },
+    {
+      type: 'match',
+      instruction: 'Associez chaque anti-patron IA au problème qu\'il cause dans votre codebase.',
+      leftItems: ['God object', 'Sur-abstraction', 'Optimisation prématurée', 'Couplage serré'],
+      rightItems: ['Point de défaillance unique', 'Complexité inutile', 'Effort gaspillé sur des non-goulots', 'Les changements se propagent entre modules'],
+      correctPairs: { 0: 0, 1: 1, 2: 2, 3: 3 },
+      explanation: 'Les god objects deviennent des points de défaillance uniques parce que tout en dépend — modifiez le god object et tout le système est en danger. La sur-abstraction crée de la complexité inutile via des interfaces, factories et couches qui n\'ont qu\'un seul consommateur. L\'optimisation prématurée gaspille l\'effort sur des non-goulots parce que vous optimisez du code qui n\'a jamais été mesuré comme lent. Le couplage serré fait que les changements se propagent parce que modifier un module force des changements dans chaque module qui dépend de ses entrailles.',
+    },
+    {
       type: 'info',
       title: 'Question 1 : Est-ce que ça correspond aux besoins réels ?',
       body: "Pas les besoins futurs imaginés. Pas les besoins « et si on scale à 10M d'utilisateurs ». Les besoins réels, actuels, prouvés. Un agent suggère l'event sourcing parce que « vous pourriez vouloir une piste d'audit plus tard. » Mais vous avez 50 utilisateurs et aucune exigence d'audit. La suggestion est techniquement valide mais ne correspond pas à ce dont vous avez réellement besoin aujourd'hui. Architecturez pour les besoins actuels avec des points d'extension pour demain — pas une architecture pour des lendemains imaginés.",

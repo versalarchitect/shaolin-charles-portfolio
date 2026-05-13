@@ -129,7 +129,49 @@ const content: LessonContent = {
       message: 'Fondamentaux RLS verrouillés !',
     },
 
-    // === VERIFICATION METHODOLOGY ===
+    // === EXERCICES RLS INTERACTIFS ===
+    {
+      type: 'compare',
+      title: 'Politique RLS dangereuse vs securisee',
+      body: 'Les politiques Row-Level Security determinent qui peut acceder a quelles donnees. Une seule erreur expose tout.',
+      question: 'Quelle politique restreint correctement l\'acces au proprietaire de la ligne ?',
+      correctSide: 'right',
+      left: {
+        label: 'Dangereuse',
+        content: 'CREATE POLICY "users_read"\n  ON profiles FOR SELECT\n  USING (true);\n\n-- Probleme : CHAQUE utilisateur peut lire\n-- les donnees de CHAQUE autre utilisateur',
+        language: 'sql',
+      },
+      right: {
+        label: 'Securisee',
+        content: 'CREATE POLICY "users_read_own"\n  ON profiles FOR SELECT\n  USING (auth.uid() = id);\n\n-- Seul le proprietaire du profil\n-- peut lire ses propres donnees',
+        language: 'sql',
+      },
+      explanation: 'USING (true) signifie « autoriser tout le monde » — c\'est l\'erreur RLS la plus courante des agents. Utilisez toujours auth.uid() = id pour restreindre les lignes a leur proprietaire.',
+    },
+    {
+      type: 'code-fill',
+      instruction: 'Completez les politiques RLS pour une table comments. Les utilisateurs peuvent lire tous les commentaires, mais seulement inserer et supprimer les leurs.',
+      language: 'sql',
+      filename: 'supabase/migrations/003_rls_comments.sql',
+      template: 'ALTER TABLE comments ENABLE ROW LEVEL SECURITY;\n\nCREATE POLICY "anyone_can_read" ON comments\n  FOR {{read_op}}\n  USING ({{read_condition}});\n\nCREATE POLICY "own_comments_insert" ON comments\n  FOR INSERT\n  WITH CHECK ({{insert_check}});\n\nCREATE POLICY "own_comments_delete" ON comments\n  FOR DELETE\n  USING ({{delete_condition}});',
+      blanks: [
+        { id: 'read_op', answer: 'SELECT', alternatives: ['select'], placeholder: 'quelle operation ?', hint: 'Lire des donnees = quelle operation SQL ?' },
+        { id: 'read_condition', answer: 'true', placeholder: 'autoriser qui ?', hint: 'Tout le monde peut lire — quelle valeur booleenne autorise tous ?' },
+        { id: 'insert_check', answer: 'auth.uid() = user_id', alternatives: ['auth.uid() = author_id'], placeholder: 'verification de propriete ?', hint: 'Verifier que l\'utilisateur authentifie correspond au proprietaire de la ligne' },
+        { id: 'delete_condition', answer: 'auth.uid() = user_id', alternatives: ['auth.uid() = author_id'], placeholder: 'verification de propriete ?', hint: 'Meme pattern que l\'insertion — supprimer seulement les siens' },
+      ],
+      explanation: 'SELECT utilise USING (true) car tous les commentaires sont publics. INSERT utilise WITH CHECK pour verifier la propriete a la creation. DELETE utilise USING pour verifier la propriete avant la suppression.',
+    },
+    {
+      type: 'match',
+      instruction: 'Associez chaque faille de securite a ce qu\'elle expose :',
+      leftItems: ['RLS non active sur la table', 'Politique utilise USING (true)', 'WITH CHECK manquant sur INSERT', 'Cle service role dans le code client'],
+      rightItems: ['N\'importe qui peut inserer des lignes en tant que n\'importe quel utilisateur', 'Toutes les lignes visibles par tous les utilisateurs', 'Contournement complet de la table — aucune securite', 'Acces admin complet depuis la console du navigateur'],
+      correctPairs: { 0: 2, 1: 1, 2: 0, 3: 3 },
+      explanation: 'Chaque faille a une severite differente. Pas de RLS est la pire — contournement complet. USING (true) fuit les lectures. WITH CHECK manquant permet l\'usurpation sur les ecritures. La cle de service dans le client donne un acces admin a tous.',
+    },
+
+    // === METHODOLOGIE DE VERIFICATION ===
     {
       type: 'info',
       title: 'Méthodologie de vérification : tester chaque chemin',

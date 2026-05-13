@@ -14,9 +14,9 @@ const content: LessonContent = {
       body: 'Pense à ça comme un tableau blanc avec une surface fixe. Le tableau blanc de Claude fait 200 000 tokens — environ 150 000 mots ou 500 pages de texte. Ça semble énorme, mais ça se remplit plus vite que tu ne le penses. Les prompts système, les fichiers CLAUDE.md et le contexte de code peuvent consommer 30-50 % de la fenêtre avant même que tu tapes un seul mot.',
     },
     {
-      type: 'diagram',
+      type: 'interactive-diagram',
       title: 'Budget de la fenêtre de contexte',
-      body: 'Chaque partie d\'une conversation consomme des tokens du même budget fixe. Voici comment une session typique de Claude Code remplit la fenêtre.',
+      body: 'Clique sur chaque étape pour voir comment une session typique de Claude Code remplit la fenêtre de contexte.',
       diagram: {
         direction: 'TB',
         nodes: [
@@ -35,6 +35,38 @@ const content: LessonContent = {
           { from: 'window', to: 'response', label: 'ce qui reste' },
         ],
       },
+      stages: [
+        {
+          highlightNodes: ['window'],
+          highlightEdges: [],
+          explanation: 'Tu commences avec une fenêtre de contexte vierge de 200 000 tokens. Pense à ça comme un tableau blanc vide. Tout ce qui se passe dans cette session doit tenir sur cette surface.',
+        },
+        {
+          highlightNodes: ['sys', 'window'],
+          highlightEdges: [{ from: 'sys', to: 'window' }],
+          explanation: 'Le prompt système est chargé en premier, consommant environ 2 000 tokens. Il contient les instructions de base et les capacités de Claude. Tu ne le vois jamais, mais il est toujours là.',
+        },
+        {
+          highlightNodes: ['claude', 'window'],
+          highlightEdges: [{ from: 'claude', to: 'window' }],
+          explanation: 'Ton fichier CLAUDE.md est injecté automatiquement ensuite, utilisant 1 000 à 5 000 tokens. C\'est la mémoire persistante de ton projet — règles d\'architecture, conventions, décisions.',
+        },
+        {
+          highlightNodes: ['code', 'window'],
+          highlightEdges: [{ from: 'code', to: 'window' }],
+          explanation: 'Au fur et à mesure que l\'agent lit des fichiers, chacun remplit la fenêtre. Cinq fichiers peuvent facilement consommer 10 000 à 50 000 tokens. C\'est généralement le plus gros consommateur après l\'historique de conversation.',
+        },
+        {
+          highlightNodes: ['prompt', 'window'],
+          highlightEdges: [{ from: 'prompt', to: 'window' }],
+          explanation: 'Tes prompts sont relativement petits — 500 à 2 000 tokens chacun. Mais ils s\'accumulent au fil de la session. Après 20 échanges, ça monte vite.',
+        },
+        {
+          highlightNodes: ['window', 'response'],
+          highlightEdges: [{ from: 'window', to: 'response' }],
+          explanation: 'Les tokens restants sont disponibles pour la réponse du modèle. Au début d\'une session il y a amplement de place. Après 30 minutes, la fenêtre peut être presque pleine, et la qualité des réponses se dégrade.',
+        },
+      ],
     },
     {
       type: 'checkpoint',
@@ -168,6 +200,29 @@ const content: LessonContent = {
       type: 'checkpoint',
       xp: 2,
       message: 'Patterns d\'épuisement reconnus !',
+    },
+    {
+      type: 'compare',
+      title: 'Session fraîche vs session épuisée',
+      body: 'Le même agent se comporte très différemment selon la quantité de contexte déjà consommée.',
+      left: {
+        label: 'Fraîche (début de session)',
+        content: 'Available: 200,000 tokens\nSystem prompt: loaded\nCLAUDE.md: loaded\nYour code: not yet read\n\nAgent behavior:\n✓ Follows all instructions\n✓ Consistent style\n✓ Remembers constraints',
+        language: 'text',
+      },
+      right: {
+        label: 'Épuisée (30 min après)',
+        content: 'Available: ~12,000 tokens\nSystem prompt: compressed\nCLAUDE.md: partially lost\nYour code: fragments remain\n\nAgent behavior:\n✗ Forgets earlier decisions\n✗ Contradicts itself\n✗ Ignores constraints',
+        language: 'text',
+      },
+    },
+    {
+      type: 'match',
+      instruction: 'Associe chaque consommateur de contexte à son coût approximatif en tokens :',
+      leftItems: ['Prompt système', 'Fichier CLAUDE.md', 'Gros fichier de code (500 lignes)', 'Historique de conversation (30 min)'],
+      rightItems: ['~2 000 tokens', '1 000–5 000 tokens', '5 000–15 000 tokens', '20 000–80 000 tokens'],
+      correctPairs: { 0: 0, 1: 1, 2: 2, 3: 3 },
+      explanation: 'L\'historique de conversation est de loin le plus gros consommateur. Une session de 30 minutes peut engloutir 20K à 80K tokens en allers-retours, laissant peu de place pour le travail réel.',
     },
 
     // === STRATEGIES ===

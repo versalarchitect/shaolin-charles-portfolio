@@ -306,7 +306,39 @@ Agents working with user data: include this field in your types.`,
       message: 'Vous pouvez gérer les mises à jour de contexte en direct pendant les exécutions de flotte.',
     },
 
-    // === HANDS-ON EXERCISE ===
+    // === INTERACTIF : COMPARE ===
+    {
+      type: 'compare',
+      title: 'Sans vs avec un protocole de coordination',
+      body: 'Quand plusieurs agents travaillent sur le même codebase, la cohérence dépend de règles partagées.',
+      left: {
+        label: 'Sans CLAUDE.md',
+        content: 'Agent 1: uses camelCase functions\nAgent 2: uses snake_case functions\nAgent 1: throws Error("message")\nAgent 2: returns { error: "message" }\nAgent 1: uses Tailwind classes\nAgent 2: uses inline styles\n\nResult: inconsistent mess',
+        language: 'text',
+      },
+      right: {
+        label: 'CLAUDE.md partagé',
+        content: 'All agents read:\n  "Functions: camelCase"\n  "Errors: throw AppError(msg, code)"\n  "Styling: Tailwind only, no inline"\n\nAgent 1: follows rules ✓\nAgent 2: follows rules ✓\nAgent 3: follows rules ✓\n\nResult: consistent codebase',
+        language: 'text',
+      },
+    },
+
+    // === INTERACTIF : CODE-FILL ===
+    {
+      type: 'code-fill',
+      instruction: 'Complétez la section de coordination CLAUDE.md qui garde tous les agents cohérents :',
+      language: 'markdown',
+      template: '## Architecture Decisions (DO NOT DEVIATE)\n\n- **Naming**: All functions use {{naming}} style\n- **Error handling**: Always {{errorPattern}} with a code\n- **Styling**: {{stylingRule}} only. No CSS modules, no inline styles.\n- **Exports**: Use {{exportType}} exports only. No default exports.',
+      blanks: [
+        { id: 'naming', answer: 'camelCase', alternatives: ['camel-case', 'camel case'], placeholder: 'convention de nommage ?', hint: 'Le style de nommage JS le plus courant' },
+        { id: 'errorPattern', answer: 'throw AppError(msg, code)', alternatives: ['throw AppError', 'throw new AppError(msg, code)'], placeholder: 'approche d\'erreur ?', hint: 'Lancer un objet erreur, pas le retourner' },
+        { id: 'stylingRule', answer: 'Tailwind CSS', alternatives: ['Tailwind', 'tailwind'], placeholder: 'approche CSS ?', hint: 'Framework CSS utilitaire' },
+        { id: 'exportType', answer: 'named', alternatives: ['Named'], placeholder: 'style d\'export ?', hint: 'Pas les exports par défaut' },
+      ],
+      explanation: 'Chaque blanc élimine une catégorie de divergence. Le nommage, les erreurs, le styling et les exports sont les quatre domaines principaux où les agents font des choix incohérents sans guidance explicite.',
+    },
+
+    // === EXERCICE PRATIQUE ===
     {
       type: 'info',
       title: 'Exercice : Écrire un CLAUDE.md multi-agent',

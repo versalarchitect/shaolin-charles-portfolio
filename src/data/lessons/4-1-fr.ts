@@ -77,6 +77,37 @@ const content: LessonContent = {
       body: "Les tests vivent à côté du code qu'ils testent. Pas dans un arbre __tests__/ séparé qui reflète src/. Quand un agent modifie payments.service.ts, il doit mettre à jour payments.test.ts. Si le test est dans le même répertoire, il le trouve immédiatement. Si les tests sont dans un arbre de répertoires parallèle (__tests__/features/payments/payments.service.test.ts), l'agent doit chercher, et il pourrait trouver le mauvais fichier de test ou manquer des tests d'intégration connexes.",
     },
     {
+      type: 'compare',
+      title: 'Structure en couches vs par fonctionnalité',
+      body: 'L\'organisation en couches disperse les fichiers liés dans tout l\'arbre. La colocalisation par fonctionnalité met tout ce dont un agent a besoin au même endroit.',
+      left: {
+        label: 'Par couche (Emmêlé)',
+        content: 'src/\n  controllers/\n    paymentController.ts\n    userController.ts\n    orderController.ts\n  services/\n    paymentService.ts\n    userService.ts\n    orderService.ts\n  models/\n    Payment.ts\n    User.ts\n    Order.ts\n  validators/\n    paymentValidator.ts\n    userValidator.ts\n    orderValidator.ts\n  hooks/\n    usePayment.ts\n    useUser.ts\n    useOrder.ts\n  utils/\n    formatCurrency.ts\n    formatDate.ts\n    helpers.ts',
+        language: 'text',
+        filename: 'layer-based.txt',
+      },
+      right: {
+        label: 'Par fonctionnalité (Colocalisé)',
+        content: 'src/features/\n  payments/\n    payments.handler.ts\n    payments.service.ts\n    payments.schema.ts\n    payments.test.ts\n    index.ts\n  users/\n    users.handler.ts\n    users.service.ts\n    users.schema.ts\n    users.test.ts\n    index.ts\n  orders/\n    orders.handler.ts\n    orders.service.ts\n    orders.schema.ts\n    orders.test.ts\n    index.ts\nsrc/shared/\n  database.ts\n  auth-middleware.ts',
+        language: 'text',
+        filename: 'feature-based.txt',
+      },
+      question: 'Quelle structure permet à un agent de trouver TOUS les fichiers liés aux paiements en un seul listing de répertoire ?',
+      correctSide: 'right',
+      explanation: 'Dans la structure par fonctionnalité, un agent qui cherche « payments » trouve un seul répertoire avec tous les fichiers pertinents. Dans la structure par couche, la logique de paiement est dispersée dans controllers/, services/, models/, validators/, hooks/ et utils/ — nécessitant 6+ recherches pour tout localiser.',
+    },
+    {
+      type: 'code-diff',
+      title: 'Avant/après : des couches aux fonctionnalités',
+      body: 'Refactoring d\'une structure par couches vers une structure par fonctionnalité. Voyez comment les fichiers dispersés convergent en un seul endroit.',
+      language: 'text',
+      filename: 'directory-structure',
+      before: 'src/\n├── controllers/\n│   ├── paymentController.ts\n│   ├── userController.ts\n│   └── orderController.ts\n├── services/\n│   ├── paymentService.ts\n│   ├── userService.ts\n│   └── orderService.ts\n├── models/\n│   ├── Payment.ts\n│   ├── User.ts\n│   └── Order.ts\n├── validators/\n│   ├── paymentValidator.ts\n│   └── orderValidator.ts\n├── __tests__/\n│   ├── payment.test.ts\n│   └── order.test.ts\n└── utils/\n    ├── formatCurrency.ts\n    └── helpers.ts',
+      after: 'src/\n├── features/\n│   ├── payments/\n│   │   ├── payments.handler.ts\n│   │   ├── payments.service.ts\n│   │   ├── payments.schema.ts\n│   │   ├── payments.test.ts\n│   │   └── index.ts\n│   ├── users/\n│   │   ├── users.handler.ts\n│   │   ├── users.service.ts\n│   │   ├── users.test.ts\n│   │   └── index.ts\n│   └── orders/\n│       ├── orders.handler.ts\n│       ├── orders.service.ts\n│       ├── orders.schema.ts\n│       ├── orders.test.ts\n│       └── index.ts\n├── shared/\n│   ├── database.ts\n│   └── auth-middleware.ts\n└── app.ts',
+      question: 'Dans combien de répertoires un agent doit-il chercher dans la structure AVANT pour trouver tous les fichiers de paiement ?',
+      explanation: 'Dans la structure AVANT, les fichiers de paiement sont dispersés dans controllers/, services/, models/, validators/, __tests__/ et utils/ — au moins 5 répertoires. Dans la structure APRÈS, tout est dans features/payments/ — un seul répertoire, une seule recherche.',
+    },
+    {
       type: 'multiple-choice',
       question: 'Un agent doit ajouter une nouvelle règle de validation à la fonctionnalité « orders ». Quelle structure lui permet de trouver TOUS les fichiers pertinents en un seul listing de répertoire ?',
       options: [

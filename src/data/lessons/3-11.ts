@@ -15,30 +15,62 @@ const content: LessonContent = {
       body: "Agents don't make random mistakes. They make systematic ones — predictable classes of bugs that emerge from how agents process instructions. Once you know the patterns, you can (1) catch them in review before deploy, (2) set up monitoring tuned to detect them, and (3) improve specs to prevent them. This lesson covers all three.",
     },
 
-    // === DIAGRAM 1: The Feedback Loop ===
+    // === DIAGRAM 1: The Feedback Loop (interactive) ===
     {
-      type: 'diagram',
+      type: 'interactive-diagram',
       title: 'The Agent Production Feedback Loop',
-      body: "Production errors aren't just bugs to fix — they're data that improves your agent specs. Every error that reaches production should feed back into your specification process. This loop is how you get better at directing agents over time.",
+      body: 'Click through each stage to see how production errors flow back into better specs.',
       diagram: {
         direction: 'TB',
         nodes: [
-          { id: 'prod', label: 'Production', sublabel: 'Live users', shape: 'rounded' },
-          { id: 'error', label: 'Error Detected', sublabel: 'Sentry/logs', shape: 'diamond', highlight: true },
-          { id: 'trace', label: 'Trace to Source', sublabel: 'Which agent session?', shape: 'rect' },
-          { id: 'classify', label: 'Classify', sublabel: 'Bug pattern', shape: 'rect' },
-          { id: 'fix', label: 'Fix in Prod', sublabel: 'Hotfix', shape: 'rect' },
-          { id: 'spec', label: 'Improve Spec', sublabel: 'Prevent recurrence', shape: 'pill', highlight: true },
+          { id: 'deploy', label: 'Deploy', sublabel: 'Ship to prod', shape: 'rounded' },
+          { id: 'monitor', label: 'Monitor', sublabel: 'Sentry + logs', shape: 'rect' },
+          { id: 'errors', label: 'Errors Detected', sublabel: 'Alerts fire', shape: 'diamond', highlight: true },
+          { id: 'analyze', label: 'Analyze Patterns', sublabel: 'Classify bug type', shape: 'rect' },
+          { id: 'improve', label: 'Improve Spec', sublabel: 'Prevent recurrence', shape: 'pill', highlight: true },
+          { id: 'redeploy', label: 'Redeploy', sublabel: 'Ship the fix', shape: 'rounded' },
         ],
         edges: [
-          { from: 'prod', to: 'error' },
-          { from: 'error', to: 'trace' },
-          { from: 'trace', to: 'classify' },
-          { from: 'classify', to: 'fix' },
-          { from: 'classify', to: 'spec' },
-          { from: 'spec', to: 'prod', label: 'next deploy', dashed: true },
+          { from: 'deploy', to: 'monitor' },
+          { from: 'monitor', to: 'errors' },
+          { from: 'errors', to: 'analyze' },
+          { from: 'analyze', to: 'improve' },
+          { from: 'improve', to: 'redeploy' },
+          { from: 'redeploy', to: 'monitor', label: 'loop continues', dashed: true },
         ],
       },
+      stages: [
+        {
+          highlightNodes: ['deploy'],
+          highlightEdges: [],
+          explanation: 'The fleet shipped code to production. Four agents built different modules — auth, API, payments, UI — all merged and deployed. Users are now hitting the live system.',
+        },
+        {
+          highlightNodes: ['deploy', 'monitor'],
+          highlightEdges: [{ from: 'deploy', to: 'monitor' }],
+          explanation: 'Sentry, application logs, and uptime monitors watch the deployed code. Error rates, latency spikes, and unhandled exceptions are tracked in real time.',
+        },
+        {
+          highlightNodes: ['monitor', 'errors'],
+          highlightEdges: [{ from: 'monitor', to: 'errors' }],
+          explanation: 'An alert fires: 500 errors spike at 2am. Sentry captures a TypeError in code an agent wrote three days ago. The stack trace points to a specific file and line number.',
+        },
+        {
+          highlightNodes: ['errors', 'analyze'],
+          highlightEdges: [{ from: 'errors', to: 'analyze' }],
+          explanation: 'You classify the bug: missing null check (Pattern 2). Git blame reveals which agent session produced it. The commit maps to a specific spec version that was missing nullable field handling.',
+        },
+        {
+          highlightNodes: ['analyze', 'improve'],
+          highlightEdges: [{ from: 'analyze', to: 'improve' }],
+          explanation: 'You add "all API response fields may be null — handle with defaults" to the spec requirements checklist. A lint rule is added to catch property access without optional chaining.',
+        },
+        {
+          highlightNodes: ['improve', 'redeploy'],
+          highlightEdges: [{ from: 'improve', to: 'redeploy' }],
+          explanation: 'The hotfix ships. More importantly, the improved spec ensures future agent sessions never produce this class of bug again. The loop continues — every error makes the next deployment better.',
+        },
+      ],
     },
     {
       type: 'checkpoint',
@@ -201,6 +233,44 @@ export function reportAgentBug(error: Error, context: {
       instruction: 'Install Sentry for your React + Node.js project:',
       expectedCommand: 'npm install @sentry/react @sentry/node',
       hint: 'Install both @sentry/react (frontend) and @sentry/node (backend)',
+    },
+    {
+      type: 'code-fill',
+      instruction: 'Complete the Sentry configuration for agent-built code monitoring. Fill in the DSN, environment, and sample rate settings.',
+      language: 'typescript',
+      filename: 'src/lib/monitoring.ts',
+      template: `import * as Sentry from '@sentry/react'
+
+Sentry.init({
+  dsn: {{dsn_value}},
+  environment: {{env_value}},
+
+  release: process.env.COMMIT_SHA,
+
+  initialScope: {
+    tags: {
+      fleet_run: process.env.FLEET_RUN_ID || 'manual',
+      deployed_at: new Date().toISOString(),
+    },
+  },
+
+  integrations: [
+    Sentry.browserTracingIntegration(),
+    Sentry.replayIntegration({
+      maskAllText: false,
+      blockAllMedia: false,
+    }),
+  ],
+
+  tracesSampleRate: {{traces_rate}},
+  replaysOnErrorSampleRate: 1.0,
+})`,
+      blanks: [
+        { id: 'dsn_value', answer: 'process.env.SENTRY_DSN', alternatives: ['process.env.SENTRY_DSN', 'process.env.NEXT_PUBLIC_SENTRY_DSN'], placeholder: 'env variable for DSN', hint: 'The DSN should come from an environment variable, not be hardcoded' },
+        { id: 'env_value', answer: 'process.env.NODE_ENV', alternatives: ['process.env.NODE_ENV', "process.env.VERCEL_ENV || 'development'"], placeholder: 'env variable for environment', hint: 'Which standard env var holds "production", "development", etc.?' },
+        { id: 'traces_rate', answer: '0.1', alternatives: ['0.1', '0.10'], placeholder: 'sample rate (0-1)', hint: 'Sample 10% of transactions to balance cost and visibility' },
+      ],
+      explanation: 'The DSN and environment must come from environment variables — hardcoding them is one of the top agent mistakes. A 10% transaction sample rate balances observability cost with coverage. Error replays at 100% capture every error session for debugging.',
     },
 
     // === TRACING ERRORS TO AGENT SESSIONS ===

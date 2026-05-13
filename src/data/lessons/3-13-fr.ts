@@ -149,17 +149,18 @@ const content: LessonContent = {
       body: "Dans un essaim, les agents piochent des tâches depuis un pool partagé. Aucun coordinateur central n'assigne le travail — les agents se sélectionnent eux-mêmes. Quand un agent termine, il prend la tâche suivante. C'est le patron le plus autonome et le plus difficile à mettre en place. Chaque tâche doit être indépendante, bien définie, et d'envergure à peu près égale. Forces : parallélisme maximum, pas de goulot d'étranglement, les agents ne sont jamais inactifs. Faiblesse : les tâches doivent être véritablement indépendantes, et tu as besoin de définitions de tâches extrêmement claires puisqu'il n'y a personne pour clarifier les ambiguïtés.",
     },
     {
-      type: 'diagram',
-      title: 'Essaim',
-      body: 'Les agents se sélectionnent eux-mêmes des tâches depuis un pool partagé. Le patron le plus autonome — aucun coordinateur central nécessaire.',
+      type: 'interactive-diagram',
+      title: 'Passage à l\'échelle de l\'essaim',
+      body: 'Clique pour voir comment les agents se sélectionnent des tâches depuis un pool partagé et passent à l\'échelle horizontalement.',
       diagram: {
         direction: 'TB',
         nodes: [
-          { id: 'pool', label: 'Pool de tâches', shape: 'rounded', highlight: true },
+          { id: 'pool', label: 'Pool de tâches', sublabel: '12 tâches', shape: 'rounded', highlight: true },
           { id: 'a', label: 'Agent A', shape: 'rect' },
           { id: 'b', label: 'Agent B', shape: 'rect' },
           { id: 'c', label: 'Agent C', shape: 'rect' },
           { id: 'd', label: 'Agent D', shape: 'rect' },
+          { id: 'done', label: 'Terminé', sublabel: 'Toutes les tâches complétées', shape: 'pill' },
         ],
         edges: [
           { from: 'pool', to: 'a', label: 'tâche' },
@@ -170,8 +171,34 @@ const content: LessonContent = {
           { from: 'b', to: 'pool', label: 'tâche suivante', dashed: true },
           { from: 'c', to: 'pool', label: 'tâche suivante', dashed: true },
           { from: 'd', to: 'pool', label: 'tâche suivante', dashed: true },
+          { from: 'a', to: 'done', dashed: true },
+          { from: 'b', to: 'done', dashed: true },
+          { from: 'c', to: 'done', dashed: true },
+          { from: 'd', to: 'done', dashed: true },
         ],
       },
+      stages: [
+        {
+          highlightNodes: ['pool'],
+          highlightEdges: [],
+          explanation: 'Le pool de tâches contient 12 tâches indépendantes et bien définies. Chaque tâche est autonome — aucune tâche ne dépend d\'une autre. C\'est le prérequis pour le patron essaim.',
+        },
+        {
+          highlightNodes: ['pool', 'a', 'b', 'c', 'd'],
+          highlightEdges: [{ from: 'pool', to: 'a' }, { from: 'pool', to: 'b' }, { from: 'pool', to: 'c' }, { from: 'pool', to: 'd' }],
+          explanation: 'Tour 1 : Les 4 agents piochent leur première tâche simultanément. Aucun coordinateur n\'assigne le travail — les agents se sélectionnent eux-mêmes. 4 tâches en cours, 8 restantes.',
+        },
+        {
+          highlightNodes: ['a', 'b', 'pool'],
+          highlightEdges: [{ from: 'a', to: 'pool' }, { from: 'b', to: 'pool' }],
+          explanation: 'Les Agents A et B finissent en premier et piochent immédiatement la tâche suivante. Pas d\'attente pour un coordinateur. Les Agents C et D travaillent encore sur leur première tâche. 6 tâches terminées ou en cours.',
+        },
+        {
+          highlightNodes: ['a', 'b', 'c', 'd', 'done'],
+          highlightEdges: [{ from: 'a', to: 'done' }, { from: 'b', to: 'done' }, { from: 'c', to: 'done' }, { from: 'd', to: 'done' }],
+          explanation: 'Les 12 tâches sont complétées. Les agents plus rapides prennent naturellement plus de tâches — pas besoin d\'équilibrage de charge. Le temps total est déterminé par la tâche individuelle la plus lente, pas par le nombre total. Débit maximum.',
+        },
+      ],
     },
     {
       type: 'code-demo',
@@ -185,6 +212,16 @@ const content: LessonContent = {
       type: 'checkpoint',
       xp: 4,
       message: 'Patron essaim compris !',
+    },
+
+    // === MATCH: Patrons de scaling → cas d'utilisation ===
+    {
+      type: 'match',
+      instruction: 'Associe chaque patron de flotte à son meilleur cas d\'utilisation :',
+      leftItems: ['Moyeu-et-rayons', 'Pipeline', 'Essaim'],
+      rightItems: ['Traitement séquentiel de données avec transferts entre étapes', 'Coordinateur central dirigeant des agents spécialistes', 'De nombreux agents identiques travaillant indépendamment sur des tâches similaires'],
+      correctPairs: { 0: 1, 1: 0, 2: 2 },
+      explanation: 'Le moyeu-et-rayons utilise un orchestrateur central pour coordonner les spécialistes. Le pipeline enchaîne les étapes séquentiellement. L\'essaim fait tourner des travailleurs identiques en parallèle sur des tâches indépendantes.',
     },
 
     // === CHOOSING THE RIGHT PATTERN ===

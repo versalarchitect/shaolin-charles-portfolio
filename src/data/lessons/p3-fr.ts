@@ -58,9 +58,9 @@ const content: LessonContent = {
 
     // === MCP ARCHITECTURE ===
     {
-      type: 'diagram',
+      type: 'interactive-diagram',
       title: 'Architecture MCP',
-      body: 'Le Model Context Protocol permet à Claude Code de se connecter à des outils et sources de données externes via une interface standard.',
+      body: 'Le Model Context Protocol permet à Claude Code de se connecter à des outils et sources de données externes via une interface standard. Parcourez chaque étape pour voir comment une requête circule.',
       diagram: {
         direction: 'TB',
         nodes: [
@@ -77,6 +77,13 @@ const content: LessonContent = {
           { from: 'server', to: 'resource', label: 'lire' },
         ],
       },
+      stages: [
+        { highlightNodes: ['claude'], explanation: 'Vous demandez à Claude Code de faire quelque chose — comme interroger une base de données ou vérifier un déploiement. Claude Code décide quel outil utiliser.' },
+        { highlightNodes: ['claude', 'mcp'], highlightEdges: [{ from: 'claude', to: 'mcp' }], explanation: 'Claude Code envoie la requête via le protocole MCP en utilisant JSON-RPC — un format de message standard. C\'est l\'adaptateur universel.' },
+        { highlightNodes: ['mcp', 'server'], highlightEdges: [{ from: 'mcp', to: 'server' }], explanation: 'Le serveur MCP reçoit la requête. Chaque serveur est un petit programme qui sait comment communiquer avec un service spécifique.' },
+        { highlightNodes: ['server', 'tool'], highlightEdges: [{ from: 'server', to: 'tool' }], explanation: 'Le serveur exécute l\'outil — lancer une requête de base de données, appeler une API, ou effectuer une action. Le résultat revient à Claude Code.' },
+        { highlightNodes: ['server', 'resource'], highlightEdges: [{ from: 'server', to: 'resource' }], explanation: 'Le serveur peut aussi lire des ressources — récupérer des données comme le statut de déploiement, le contenu de fichiers, ou la configuration. Les ressources sont en lecture seule.' },
+      ],
     },
     {
       type: 'info',
@@ -151,6 +158,14 @@ const content: LessonContent = {
       type: 'checkpoint',
       xp: 3,
       message: 'Skills et hooks configurés!',
+    },
+    {
+      type: 'match',
+      instruction: 'Associez chaque capacité de Claude Code à ce qu\'elle fait :',
+      leftItems: ['Outil Read', 'Outil Edit', 'Outil Bash', 'Outil Agent', 'Serveurs MCP'],
+      rightItems: ['Voir le contenu des fichiers sans les modifier', 'Faire des changements précis aux fichiers existants', 'Exécuter des commandes shell et des scripts', 'Déléguer des tâches complexes à des sous-agents', 'Se connecter à des outils et APIs externes'],
+      correctPairs: { 0: 0, 1: 1, 2: 2, 3: 3, 4: 4 },
+      explanation: 'Claude Code utilise différents outils pour différentes tâches. Read affiche les fichiers, Edit les modifie, Bash exécute des commandes, Agent délègue du travail, et les serveurs MCP étendent les capacités aux systèmes externes.',
     },
 
     // === YOUR AI TOOLING STACK ===

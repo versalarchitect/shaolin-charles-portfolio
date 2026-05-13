@@ -285,6 +285,56 @@ echo "Integration verified. Fleet output is clean."`,
       message: 'You can merge fleet outputs and verify integration.',
     },
 
+    // === INTERACTIVE: CODE-FILL ===
+    {
+      type: 'code-fill',
+      instruction: 'Complete the fleet launch script to set up parallel agent workspaces:',
+      language: 'bash',
+      filename: 'launch-fleet.sh',
+      template: '#!/bin/bash\nAGENTS=("{{agent1}}" "{{agent2}}" "ui" "tests")\n\nfor agent in "${AGENTS[@]}"; do\n  git worktree add ../fleet-$agent -b {{branchPrefix}}/$agent\ndone\n\n# Launch agents in parallel\ncd ../{{worktree1}} && claude "Implement JWT auth" &\ncd ../{{worktree2}} && claude "Build REST endpoints" &\nwait\necho "Fleet complete."',
+      blanks: [
+        { id: 'agent1', answer: 'auth', alternatives: ['authentication'], placeholder: 'first agent name?', hint: 'The agent responsible for login/signup' },
+        { id: 'agent2', answer: 'api', alternatives: ['backend', 'server'], placeholder: 'second agent name?', hint: 'The agent that builds endpoints' },
+        { id: 'branchPrefix', answer: 'feat', alternatives: ['feature'], placeholder: 'branch prefix?', hint: 'Convention for feature branches' },
+        { id: 'worktree1', answer: 'fleet-auth', alternatives: ['fleet-authentication'], placeholder: 'auth worktree path?', hint: 'Matches the pattern ../fleet-$agent' },
+        { id: 'worktree2', answer: 'fleet-api', alternatives: ['fleet-backend'], placeholder: 'api worktree path?' },
+      ],
+      explanation: 'The script creates a worktree per agent with a feature branch, then launches agents in the background with &. The `wait` command blocks until all background processes finish.',
+    },
+
+    // === INTERACTIVE: FLEET LIFECYCLE DIAGRAM ===
+    {
+      type: 'interactive-diagram',
+      title: 'Complete Fleet Lifecycle (Step Through)',
+      body: 'Step through the full fleet lifecycle from preparation to shipping.',
+      diagram: {
+        direction: 'LR',
+        nodes: [
+          { id: 'prep', label: 'Prep', sublabel: '5-10 min', shape: 'rounded' },
+          { id: 'exec', label: 'Execute', sublabel: 'Parallel', shape: 'rect', highlight: true },
+          { id: 'monitor', label: 'Monitor', sublabel: 'Track fleet', shape: 'rect' },
+          { id: 'merge', label: 'Merge', sublabel: 'Serial', shape: 'rect' },
+          { id: 'verify', label: 'Verify', sublabel: 'CI Pipeline', shape: 'rect' },
+          { id: 'ship', label: 'Ship', shape: 'pill', highlight: true },
+        ],
+        edges: [
+          { from: 'prep', to: 'exec' },
+          { from: 'exec', to: 'monitor' },
+          { from: 'monitor', to: 'merge' },
+          { from: 'merge', to: 'verify' },
+          { from: 'verify', to: 'ship' },
+        ],
+      },
+      stages: [
+        { highlightNodes: ['prep'], explanation: 'Write CLAUDE.md, define contracts, create worktrees, write per-agent task specs. This is your 5-10 minute investment that saves hours.' },
+        { highlightNodes: ['prep', 'exec'], highlightEdges: [{ from: 'prep', to: 'exec' }], explanation: 'Launch all agents in parallel. Each runs in its own worktree on its own branch. Total time = slowest agent, not sum of all.' },
+        { highlightNodes: ['exec', 'monitor'], highlightEdges: [{ from: 'exec', to: 'monitor' }], explanation: 'Check `git status` in each worktree every 2-3 minutes. Watch for stuck agents (no files after 10 min) or scope creep.' },
+        { highlightNodes: ['monitor', 'merge'], highlightEdges: [{ from: 'monitor', to: 'merge' }], explanation: 'Merge branches sequentially: most independent first, most shared-code last. Use --no-ff to preserve branch history.' },
+        { highlightNodes: ['merge', 'verify'], highlightEdges: [{ from: 'merge', to: 'verify' }], explanation: 'Run the full CI pipeline: typecheck, lint, test, build. This is the integration test for your fleet\'s output.' },
+        { highlightNodes: ['verify', 'ship'], highlightEdges: [{ from: 'verify', to: 'ship' }], explanation: 'Everything passes — ship it. Clean up worktrees. The fleet run is complete.' },
+      ],
+    },
+
     // === CLEANUP ===
     {
       type: 'info',

@@ -5,7 +5,82 @@ const content: LessonContent = {
   steps: [
     { type: 'info', title: 'Au-delà du requête-réponse : systèmes événementiels', body: "Vos agents peuvent construire des endpoints CRUD toute la journée. Mais les vrais produits ont besoin de tâches en arrière-plan, de webhooks, de tâches planifiées et de workflows durables qui survivent aux crashs. Aujourd'hui vous apprenez à diriger les agents pour construire une architecture événementielle — des systèmes où les choses arrivent de façon asynchrone, réessaient en cas d'échec, et ne perdent jamais de données." },
     { type: 'info', title: 'Pourquoi les agents ont du mal avec l\'async par défaut', body: "Les agents prennent le chemin le plus simple par défaut : recevoir la requête, faire le travail, retourner la réponse. Mais qu'en est-il d'envoyer un email de bienvenue après l'inscription ? Traiter un upload vidéo ? Synchroniser des données avec une API tierce qui vous limite le débit ? Ces cas nécessitent du traitement en arrière-plan avec gestion d'erreurs — et les agents ne construiront pas ça sauf si vous le spécifiez explicitement." },
-    { type: 'diagram', title: 'Flux d\'architecture événementielle', body: "Chaque système événementiel suit ce patron. Les événements entrent dans une file, les handlers les traitent, et les échecs sont routés vers une logique de réessai ou une file de lettres mortes pour inspection manuelle. L'insight clé : aucun événement n'est jamais perdu. Il réussit, réessaie, ou est signalé pour revue humaine.", diagram: { direction: 'LR', nodes: [{ id: 'event', label: 'Événement', sublabel: 'user.signup', shape: 'rounded' }, { id: 'queue', label: 'File', sublabel: 'Durable', shape: 'rect' }, { id: 'handler', label: 'Handler', sublabel: 'Traitement', shape: 'rect', highlight: true }, { id: 'success', label: 'Succès', shape: 'pill', highlight: true }, { id: 'retry', label: 'Réessai', sublabel: '3 tentatives', shape: 'diamond' }, { id: 'dlq', label: 'Lettres mortes', sublabel: 'Revue manuelle', shape: 'rect' }], edges: [{ from: 'event', to: 'queue' }, { from: 'queue', to: 'handler' }, { from: 'handler', to: 'success', label: 'ok' }, { from: 'handler', to: 'retry', label: 'échec' }, { from: 'retry', to: 'handler', label: 'réessai' }, { from: 'retry', to: 'dlq', label: 'épuisé' }] } },
+    // === COMPARE: Synchrone vs événementiel ===
+    {
+      type: 'compare',
+      title: 'Exécution synchrone vs événementielle',
+      body: 'Les tâches en arrière-plan peuvent s\'exécuter de façon synchrone (bloquante) ou événementielle (résiliente).',
+      question: 'Quelle approche survit à un redémarrage serveur en pleine exécution ?',
+      correctSide: 'right',
+      left: {
+        label: 'Synchrone',
+        content: 'async function processOrder(order) {\n  await chargePayment(order)  // step 1\n  await createInvoice(order)  // step 2\n  await sendEmail(order)      // step 3\n  await updateInventory(order)// step 4\n}\n// If server crashes at step 3:\n// ❌ Payment charged\n// ❌ Invoice created\n// ❌ No email sent\n// ❌ Inventory not updated\n// ❌ No way to resume',
+        language: 'typescript',
+      },
+      right: {
+        label: 'Événementiel',
+        content: 'const processOrder = inngest.createFunction(\n  { id: "process-order" },\n  { event: "order/created" },\n  async ({ step }) => {\n    await step.run("charge", () => chargePayment())\n    await step.run("invoice", () => createInvoice())\n    await step.run("email", () => sendEmail())\n    await step.run("inventory", () => updateInventory())\n  }\n)\n// If server crashes at step 3:\n// ✅ Steps 1-2 recorded\n// ✅ Resumes from step 3\n// ✅ No duplicate charges',
+        language: 'typescript',
+      },
+      explanation: 'Les workflows événementiels enregistrent la complétion de chaque étape. En cas de crash, ils reprennent depuis la dernière étape réussie au lieu de recommencer. Ça empêche les doubles facturations et le travail perdu.',
+    },
+    // === DIAGRAM 1: Flux événementiel (Interactif) ===
+    {
+      type: 'interactive-diagram',
+      title: 'Flux d\'architecture événementielle',
+      body: "Chaque système événementiel suit ce patron. Les événements entrent dans une file, les handlers les traitent, et les échecs sont routés vers une logique de réessai ou une file de lettres mortes pour inspection manuelle. L'insight clé : aucun événement n'est jamais perdu. Il réussit, réessaie, ou est signalé pour revue humaine.",
+      diagram: {
+        direction: 'LR',
+        nodes: [
+          { id: 'event', label: 'Événement', sublabel: 'user.signup', shape: 'rounded' },
+          { id: 'queue', label: 'File', sublabel: 'Durable', shape: 'rect' },
+          { id: 'handler', label: 'Handler', sublabel: 'Traitement', shape: 'rect', highlight: true },
+          { id: 'success', label: 'Succès', shape: 'pill', highlight: true },
+          { id: 'retry', label: 'Réessai', sublabel: '3 tentatives', shape: 'diamond' },
+          { id: 'dlq', label: 'Lettres mortes', sublabel: 'Revue manuelle', shape: 'rect' },
+        ],
+        edges: [
+          { from: 'event', to: 'queue' },
+          { from: 'queue', to: 'handler' },
+          { from: 'handler', to: 'success', label: 'ok' },
+          { from: 'handler', to: 'retry', label: 'échec' },
+          { from: 'retry', to: 'handler', label: 'réessai' },
+          { from: 'retry', to: 'dlq', label: 'épuisé' },
+        ],
+      },
+      stages: [
+        {
+          highlightNodes: ['event', 'queue'],
+          highlightEdges: [{ from: 'event', to: 'queue' }],
+          explanation: 'Un événement est émis (ex: user.signup) et entre dans la file durable. La file persiste l\'événement — même si le serveur crash maintenant, l\'événement est en sécurité.',
+        },
+        {
+          highlightNodes: ['queue', 'handler'],
+          highlightEdges: [{ from: 'queue', to: 'handler' }],
+          explanation: 'La file délivre l\'événement à une fonction handler. Le handler le traite étape par étape — chaque étape individuellement durable et réessayable.',
+        },
+        {
+          highlightNodes: ['handler', 'success'],
+          highlightEdges: [{ from: 'handler', to: 'success' }],
+          explanation: 'Chemin heureux : toutes les étapes se terminent avec succès. L\'événement est marqué comme traité et retiré de la file.',
+        },
+        {
+          highlightNodes: ['handler', 'retry'],
+          highlightEdges: [{ from: 'handler', to: 'retry' }],
+          explanation: 'Une étape échoue (timeout réseau, erreur API). L\'événement passe à la logique de réessai. Le système attend, puis re-délivre l\'événement au handler.',
+        },
+        {
+          highlightNodes: ['retry', 'handler'],
+          highlightEdges: [{ from: 'retry', to: 'handler' }],
+          explanation: 'Le réessai relance le handler. Avec les fonctions à étapes durables, seule l\'étape échouée se relance — les étapes déjà complétées sont ignorées.',
+        },
+        {
+          highlightNodes: ['retry', 'dlq'],
+          highlightEdges: [{ from: 'retry', to: 'dlq' }],
+          explanation: 'Après épuisement de toutes les tentatives (ex: 3 échecs), l\'événement passe dans la file de lettres mortes pour inspection manuelle. Aucune donnée n\'est jamais silencieusement perdue.',
+        },
+      ],
+    },
     { type: 'checkpoint', xp: 3, message: 'Vous voyez le flux : événement → file → traiter → réessai ou lettres mortes. Pas de perte de données.' },
     { type: 'info', title: 'L\'outil : Inngest pour les fonctions durables', body: "Inngest (ou Vercel Workflow) vous donne des fonctions à étapes durables. Chaque étape est individuellement réessayable — si l'étape 3 de 5 échoue, elle réessaie depuis l'étape 3, pas l'étape 1. C'est ce qui sépare les systèmes d'événements de production des tâches cron fragiles. Vos agents doivent comprendre ce patron pour construire un traitement en arrière-plan fiable." },
     { type: 'code-demo', title: 'Anatomie d\'une fonction à étapes Inngest', body: "C'est ce que vous voulez que votre agent produise. Chaque `step.run()` est individuellement réessayable et idempotent. Si `send-welcome-email` échoue, il réessaie juste cette étape — l'enregistrement utilisateur et le client Stripe sont déjà créés et ne seront pas dupliqués.", language: 'typescript', filename: 'src/inngest/functions/user-signup.ts', code: "import { inngest } from '../client'\n\nexport const handleUserSignup = inngest.createFunction(\n  { id: 'user-signup', retries: 3 },\n  { event: 'user/signup' },\n  async ({ event, step }) => {\n    // Step 1: Create user record (idempotent via email unique constraint)\n    const user = await step.run('create-user-record', async () => {\n      return await db.users.upsert({\n        where: { email: event.data.email },\n        create: { email: event.data.email, name: event.data.name },\n        update: {},\n      })\n    })\n\n    // Step 2: Create Stripe customer (idempotent via idempotency key)\n    const customer = await step.run('create-stripe-customer', async () => {\n      return await stripe.customers.create(\n        { email: user.email, name: user.name },\n        { idempotencyKey: `signup-${user.id}` }\n      )\n    })\n\n    // Step 3: Send welcome email (retryable independently)\n    await step.run('send-welcome-email', async () => {\n      await resend.emails.send({\n        to: user.email,\n        subject: 'Welcome!',\n        template: 'welcome',\n        data: { name: user.name },\n      })\n    })\n\n    return { userId: user.id, customerId: customer.id }\n  }\n)" },

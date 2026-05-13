@@ -44,6 +44,28 @@ const content: LessonContent = {
       message: 'Cadre de traduction établi !',
     },
 
+    // === COMPARE: JARGON VS MÉTIER ===
+    {
+      type: 'compare',
+      title: 'Jargon technique vs Traduction métier',
+      body: 'Les mêmes décisions, communiquées de deux façons différentes. L\'une obtient du financement, l\'autre des regards vides.',
+      left: {
+        label: 'Jargon technique',
+        content: '"On a découplé le monolithe en\nmicroservices avec un bus d\'événements"\n\n"On a renforcé les frontières de modules\nvia des règles eslint et des tags Nx"\n\n"On a implémenté le patron strangler fig\npour la migration du legacy"\n\n"On a ajouté TypeScript en mode strict\navec zéro usage de any"\n\n"On a déployé des protocoles CLAUDE.md\npar package pour le cadrage des agents"',
+        language: 'text',
+        filename: 'jargon.txt',
+      },
+      right: {
+        label: 'Traduction métier',
+        content: '"On peut maintenant livrer des\nfonctionnalités 3x plus vite sans\ncasser des parties non liées de l\'app"\n\n"Les nouveaux membres de l\'équipe sont\nproductifs en heures au lieu de semaines"\n\n"On a migré vers une technologie moderne\navec zéro temps d\'arrêt et\nzéro impact client"\n\n"Notre taux de défauts a baissé de 60 %\nparce que les erreurs sont attrapées\nautomatiquement avant la mise en prod"\n\n"La capacité de développement augmente\nsans embauche proportionnelle"',
+        language: 'text',
+        filename: 'metier.txt',
+      },
+      question: 'Quel cadrage un VP d\'ingénierie financerait-il ?',
+      correctSide: 'right',
+      explanation: 'Les parties prenantes financent des résultats, pas des mécanismes. « On a découplé le monolithe » décrit COMMENT. « On peut livrer 3x plus vite » décrit POURQUOI C\'EST IMPORTANT. La traduction métier connecte chaque décision technique à un résultat que la partie prenante valorise déjà : vitesse, coût, qualité ou réduction des risques.',
+    },
+
     // === CONCRETE TRANSLATIONS ===
     {
       type: 'code-demo',
@@ -77,6 +99,23 @@ const content: LessonContent = {
       type: 'checkpoint',
       xp: 5,
       message: 'Compétence de traduction en développement !',
+    },
+
+    // === CODE-FILL: TRADUCTION PARTIES PRENANTES ===
+    {
+      type: 'code-fill',
+      instruction: 'Complète ce tableau de traduction pour les parties prenantes en remplissant le résultat métier de chaque décision technique.',
+      language: 'markdown',
+      filename: 'docs/translation-table.md',
+      template: '# Technical Decision → Business Outcome\n\n| Technical Decision | Business Outcome |\n|---|---|\n| Module boundary enforcement | {{boundary_outcome}} |\n| Independent deploy pipelines | {{deploy_outcome}} |\n| Automated verification pipeline | {{verify_outcome}} |\n| API versioning between services | {{version_outcome}} |\n| Self-documenting packages (CLAUDE.md) | {{docs_outcome}} |',
+      blanks: [
+        { id: 'boundary_outcome', answer: 'Teams work in parallel without conflicts', alternatives: ['No cross-team conflicts', 'Parallel development without coordination', 'Zero coordination overhead between teams', 'developers work independently'], placeholder: 'quel résultat métier ?', hint: 'Que se passe-t-il quand les équipes ne peuvent pas se marcher sur les pieds ?' },
+        { id: 'deploy_outcome', answer: 'A billing change cannot break authentication', alternatives: ['Changes to one area cannot break another', 'Reduced blast radius of changes', 'Independent releases reduce risk', 'isolated deployments reduce risk'], placeholder: 'quel résultat métier ?', hint: 'Que se passe-t-il quand les services se déploient indépendamment ?' },
+        { id: 'verify_outcome', answer: 'Defects caught before reaching production', alternatives: ['94% of bugs caught pre-merge', 'Fewer production incidents', 'Automated quality gate catches issues early', 'bugs caught automatically'], placeholder: 'quel résultat métier ?', hint: 'Que prévient la vérification automatisée ?' },
+        { id: 'version_outcome', answer: 'Features ship without waiting on other teams', alternatives: ['No blocking between teams', 'Parallel feature development', 'Teams evolve at their own pace', 'independent evolution'], placeholder: 'quel résultat métier ?', hint: 'Que se passe-t-il quand les API peuvent évoluer indépendamment ?' },
+        { id: 'docs_outcome', answer: 'New contributors productive in hours not weeks', alternatives: ['Fast onboarding', 'Faster onboarding for new team members', 'Reduced ramp-up time', 'instant developer onboarding'], placeholder: 'quel résultat métier ?', hint: 'Qu\'est-ce que l\'auto-documentation permet pour les nouvelles personnes ?' },
+      ],
+      explanation: 'Chaque décision technique correspond à un résultat métier qui intéresse les parties prenantes. Mener avec les résultats (« les équipes travaillent en parallèle ») au lieu des mécanismes (« application des frontières de modules ») fait résonner la proposition auprès des décideurs non techniques.',
     },
 
     // === DEFENDING UNDER SCRUTINY ===

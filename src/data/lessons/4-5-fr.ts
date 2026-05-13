@@ -36,6 +36,61 @@ const content: LessonContent = {
       },
     },
     {
+      type: 'interactive-diagram',
+      title: 'La méthodologie Teardown',
+      body: 'Parcourez les quatre phases du teardown, en comprenant ce que chaque phase produit et comment elles se connectent.',
+      diagram: {
+        direction: 'LR',
+        nodes: [
+          { id: 'map', label: 'Phase 1 : Cartographier', sublabel: 'Inventaire des composants', shape: 'rounded' },
+          { id: 'score', label: 'Phase 2 : Noter', sublabel: 'Constructibilité par composant', shape: 'rounded' },
+          { id: 'blockers', label: 'Phase 3 : Blocages', sublabel: 'Ce qui empêche le travail d\'agent', shape: 'rounded' },
+          { id: 'redesign', label: 'Phase 4 : Refonte', sublabel: 'Améliorations ciblées', shape: 'rounded', highlight: true },
+        ],
+        edges: [
+          { from: 'map', to: 'score' },
+          { from: 'score', to: 'blockers' },
+          { from: 'blockers', to: 'redesign' },
+        ],
+      },
+      stages: [
+        {
+          highlightNodes: ['map'],
+          explanation: 'Phase 1 : Cartographiez chaque composant du système. Documentez la responsabilité, les dépendances, les dépendants et les entrepôts de données. Un composant est une unité cohésive qui pourrait théoriquement être possédée par un seul agent. Sortie : un inventaire complet des composants avec graphe de dépendances.',
+        },
+        {
+          highlightNodes: ['map', 'score'],
+          highlightEdges: [{ from: 'map', to: 'score' }],
+          explanation: 'Phase 2 : Notez chaque composant sur 5 facteurs de constructibilité par agent (1-5 chacun) : Frontières claires, Patrons cohérents, Contrats testables, Pas de connaissances tribales et Isolation. Score total 5-25. En dessous de 10 signifie hostile aux agents — refonte nécessaire.',
+        },
+        {
+          highlightNodes: ['score', 'blockers'],
+          highlightEdges: [{ from: 'score', to: 'blockers' }],
+          explanation: 'Phase 3 : Pour chaque composant mal noté, identifiez des blocages spécifiques et actionnables. Pas d\'observations vagues comme « c\'est complexe » — mais des constatations concrètes : « Fichiers de commande dispersés dans 4 répertoires » ou « Pas d\'interface définie entre Commandes et Paiements. » Chaque blocage devient une tâche de correction.',
+        },
+        {
+          highlightNodes: ['blockers', 'redesign'],
+          highlightEdges: [{ from: 'blockers', to: 'redesign' }],
+          explanation: 'Phase 4 : Proposez des correctifs ciblés pour chaque blocage, priorisés par impact. Les correctifs de frontières débloquent la trouvabilité. Les correctifs de contrats débloquent le parallélisme. Les correctifs de connaissances débloquent l\'autonomie. Chaque correctif a une estimation d\'effort et une amélioration de score projetée. La sortie est un plan de refonte actionnable.',
+        },
+      ],
+    },
+    {
+      type: 'code-fill',
+      instruction: 'Complétez cette fiche de scores de constructibilité. Remplissez les scores (1-5) et les descriptions de blocages pour chaque composant selon les indices fournis.',
+      language: 'markdown',
+      template: '# Fiche de constructibilité par agent\n\n## Composant : Auth utilisateur\n- Fichiers dans 1 répertoire, nommage clair\n- Score frontières : ___\n- Tous les autres modules en dépendent pour les vérifications d\'auth\n- Score isolation : ___\n\n## Composant : Commandes & Checkout\n- Fichiers dispersés dans 4 répertoires\n- Score frontières : ___\n- Blocage principal : ___\n\n## Composant : Paiements\n- Module autonome, propre répertoire, patrons cohérents\n- Évaluation globale : ___',
+      blanks: [
+        { id: 'auth-boundaries', answer: '4', alternatives: ['5'], hint: 'Les fichiers sont dans 1 répertoire avec un nommage clair — c\'est bon', placeholder: '1-5' },
+        { id: 'auth-isolation', answer: '2', alternatives: ['1', '3'], hint: 'TOUS les autres modules en dépendent — ça rend l\'isolation basse', placeholder: '1-5' },
+        { id: 'orders-boundaries', answer: '2', alternatives: ['1'], hint: 'Fichiers dispersés dans 4 répertoires c\'est très mauvais', placeholder: '1-5' },
+        { id: 'orders-blocker', answer: 'fichiers dispersés dans plusieurs répertoires', alternatives: ['fichiers éparpillés', 'pas de répertoire de fonctionnalité', 'fichiers dans 4 répertoires', 'code dispersé dans les répertoires', 'files split across multiple directories'], hint: 'Le problème principal pour trouver les fichiers de commande', placeholder: 'décrivez le blocage' },
+        { id: 'payments-assessment', answer: 'agent-native', alternatives: ['agent-natif', 'favorable aux agents', 'score élevé', 'excellent', '23/25'], hint: 'Autonome + propre répertoire + cohérent = niveau supérieur', placeholder: 'évaluation' },
+      ],
+      filename: 'buildability-scorecard.md',
+      explanation: 'La notation révèle exactement où la constructibilité par agent se dégrade. Auth a de bonnes frontières (4/5) mais une mauvaise isolation (2/5) parce que chaque module en dépend. Commandes a des frontières terribles (2/5) parce que les fichiers sont dispersés. Paiements avec du code autonome et des patrons cohérents obtient un score agent-native. La fiche de scores dirige votre effort de refactoring vers les pires composants en premier.',
+    },
+    {
       type: 'checkpoint',
       xp: 2,
       message: 'Vue d\'ensemble de la méthodologie complète !',

@@ -22,6 +22,24 @@ const content: LessonContent = {
       body: "Quand vous dirigez un scaffold, spécifiez : le framework et la version (Next.js 15, App Router), la structure de routing (quelles pages existent), les besoins en données par route (quelles pages nécessitent des données côté serveur), les layouts partagés (qu'est-ce qui enveloppe quoi), et les packages clés (ORM, styling, auth). Ne spécifiez PAS : les conventions de nommage de fichiers (l'agent connaît les conventions Next.js), l'organisation interne des dossiers de composants, l'ordre des imports, ni le config boilerplate. Laissez l'agent gérer ce qu'il sait déjà.",
     },
     {
+      type: 'compare',
+      title: 'Quoi specifier vs quoi laisser a l\'agent',
+      body: 'Un prompt de scaffold devrait contraindre les decisions couteuses a changer, mais laisser les details d\'implementation a l\'agent.',
+      question: 'Quel cote contient les bonnes choses a specifier ?',
+      correctSide: 'left',
+      left: {
+        label: 'Specifier ceux-ci',
+        content: '✓ Strategie de rendu (Serveur vs Client)\n✓ Hierarchie des layouts (quelles pages s\'imbriquent)\n✓ Organisation des composants (par fonctionnalite)\n✓ Pattern de recuperation de donnees (server actions)\n✓ Approche de gestion d\'etat',
+        language: 'text',
+      },
+      right: {
+        label: 'Laisser a l\'agent',
+        content: '✗ Noms exacts de classes CSS\n✗ Nommage des variables dans les composants\n✗ Ordre des imports\n✗ Arrow function ou syntaxe function\n✗ Placement des commentaires',
+        language: 'text',
+      },
+      explanation: 'Les decisions architecturales (gauche) sont couteuses a changer apres la construction du scaffold. Les details d\'implementation (droite) sont bon marche a ajuster plus tard. Concentrez votre spec sur les decisions couteuses.',
+    },
+    {
       type: 'code-demo',
       title: 'Un bon prompt de scaffold',
       body: 'Ce prompt donne assez d\'infos à Claude Code pour scaffolder correctement sans micro-gérer les noms de fichiers ou le boilerplate.',
@@ -87,16 +105,16 @@ const content: LessonContent = {
 
     // === WORKFLOW DIAGRAM ===
     {
-      type: 'diagram',
+      type: 'interactive-diagram',
       title: 'Diriger un Scaffold',
-      body: 'La boucle de révision : vous spécifiez, l\'agent construit, vous évaluez, et vous redirigez ou acceptez.',
+      body: 'La boucle de revision : vous specifiez, l\'agent construit, vous evaluez, et vous redirigez ou acceptez. Cliquez a travers chaque etape.',
       diagram: {
         direction: 'LR',
         nodes: [
-          { id: 'spec', label: 'Exigences Spec', sublabel: 'Routes, layouts, données', shape: 'pill' },
+          { id: 'spec', label: 'Exigences Spec', sublabel: 'Routes, layouts, donnees', shape: 'pill' },
           { id: 'scaffold', label: 'L\'Agent Scaffolde', sublabel: 'Fichiers + config', shape: 'rect', highlight: true },
-          { id: 'review', label: 'Vous Révisez', sublabel: 'Vérif. structure', shape: 'diamond' },
-          { id: 'redirect', label: 'Rediriger', sublabel: 'Corriger les décisions', shape: 'rect' },
+          { id: 'review', label: 'Vous Revisez', sublabel: 'Verif. structure', shape: 'diamond' },
+          { id: 'redirect', label: 'Rediriger', sublabel: 'Corriger les decisions', shape: 'rect' },
           { id: 'accept', label: 'Accepter', sublabel: 'Avancer', shape: 'pill', highlight: true },
         ],
         edges: [
@@ -107,6 +125,32 @@ const content: LessonContent = {
           { from: 'redirect', to: 'scaffold' },
         ],
       },
+      stages: [
+        {
+          highlightNodes: ['spec'],
+          highlightEdges: [{ from: 'spec', to: 'scaffold' }],
+          explanation: 'Commencez par votre spec : routes, layouts, strategie de rendu, et packages cles. C\'est votre input pour l\'agent.',
+        },
+        {
+          highlightNodes: ['scaffold'],
+          highlightEdges: [{ from: 'scaffold', to: 'review' }],
+          explanation: 'L\'agent genere la structure du projet — dossiers, fichiers de config, composants de page, hierarchie de layouts. Ca se fait en secondes.',
+        },
+        {
+          highlightNodes: ['review'],
+          explanation: 'Vous revisez la structure generee par rapport a votre spec. Verifiez la strategie de rendu, l\'imbrication des layouts, et la justesse des routes.',
+        },
+        {
+          highlightNodes: ['review', 'accept'],
+          highlightEdges: [{ from: 'review', to: 'accept' }],
+          explanation: 'Si la structure correspond a votre spec, acceptez-la et passez a l\'implementation. Aucun changement necessaire.',
+        },
+        {
+          highlightNodes: ['review', 'redirect', 'scaffold'],
+          highlightEdges: [{ from: 'review', to: 'redirect' }, { from: 'redirect', to: 'scaffold' }],
+          explanation: 'Si vous trouvez des problemes (mauvais type de composant, layouts manquants, mauvais pattern de donnees), redirigez avec une correction precise. L\'agent reconstruit et vous revisez a nouveau.',
+        },
+      ],
     },
 
     // === REDIRECTING THE AGENT ===

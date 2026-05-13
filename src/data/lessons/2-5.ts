@@ -56,7 +56,7 @@ const content: LessonContent = {
       body: "Put your most important architectural decisions early in the session when context is fresh. Do not save the hard stuff for later. If your database schema, API design, and error handling patterns are established in the first 20% of the session, they have the best chance of surviving compaction. The agent builds a mental model from early context — make sure that model contains your highest-priority patterns.",
     },
     {
-      type: 'diagram',
+      type: 'interactive-diagram',
       title: 'Context Decay Over a Session',
       body: 'Early decisions get compacted first. Structure your session so the most critical patterns are reinforced, not just stated once.',
       diagram: {
@@ -77,6 +77,33 @@ const content: LessonContent = {
           { from: 'late', to: 'degrade', dashed: true },
         ],
       },
+      stages: [
+        {
+          highlightNodes: ['start', 'arch'],
+          highlightEdges: [{ from: 'start', to: 'arch' }],
+          explanation: 'Session begins with full context. Architecture decisions — schema, patterns, types — are established with maximum fidelity.',
+        },
+        {
+          highlightNodes: ['arch', 'impl'],
+          highlightEdges: [{ from: 'arch', to: 'impl' }],
+          explanation: 'Features are built using the established patterns. Context is filling up but the agent still has access to all prior decisions.',
+        },
+        {
+          highlightNodes: ['mid'],
+          highlightEdges: [{ from: 'impl', to: 'mid' }],
+          explanation: 'The context window is full. The system begins compacting — summarizing or dropping older messages. Early architectural decisions start losing detail.',
+        },
+        {
+          highlightNodes: ['late'],
+          highlightEdges: [{ from: 'mid', to: 'late' }],
+          explanation: 'Early context is gone. The agent works from a lossy summary. It may not remember the error handling pattern or styling convention from the start.',
+        },
+        {
+          highlightNodes: ['degrade'],
+          highlightEdges: [{ from: 'late', to: 'degrade' }],
+          explanation: 'Quality drops visibly. The agent contradicts earlier decisions, re-asks answered questions, and produces inconsistent code. Time to start a fresh session.',
+        },
+      ],
     },
     {
       type: 'info',
@@ -153,6 +180,48 @@ const content: LessonContent = {
       type: 'checkpoint',
       xp: 4,
       message: 'Persistent context mastered!',
+    },
+
+    // === INTERACTIVE EXERCISES ===
+    {
+      type: 'compare',
+      title: 'Session planning: chaos vs control',
+      body: 'How you plan your session determines whether the agent maintains quality throughout.',
+      question: 'Which session plan keeps the agent effective longer?',
+      correctSide: 'right',
+      left: {
+        label: 'No plan',
+        content: 'TODO:\n- Build auth\n- Build database\n- Build API\n- Build frontend\n- Build tests\n- Fix bugs\n- Deploy\n- Write docs\n- Add monitoring\n- Optimize performance',
+        language: 'text',
+      },
+      right: {
+        label: 'Chunked plan',
+        content: 'Session 1: Database + Auth\n  Done when: migrations run, login works\n  Then: update CLAUDE.md with decisions\n\nSession 2: API routes\n  Done when: all endpoints return correct data\n  Then: update CLAUDE.md with API patterns\n\nSession 3: Frontend\n  Done when: pages render with real data\n\nSession 4: Tests + Deploy\n  Done when: CI passes, live URL works',
+        language: 'text',
+      },
+      explanation: 'Chunked plans give each session a clear scope and completion criteria. The CLAUDE.md update between sessions preserves decisions so the next session starts informed.',
+    },
+    {
+      type: 'match',
+      instruction: 'Match each symptom of context exhaustion to its underlying cause:',
+      leftItems: ['Agent contradicts earlier decisions', 'Agent re-asks questions you already answered', 'Code quality declines mid-session', 'Agent ignores project conventions'],
+      rightItems: ['Earlier instructions were compressed out of context', 'Your answers were lost during context compaction', 'Attention spread too thin across remaining tokens', 'CLAUDE.md conventions dropped from active memory'],
+      correctPairs: { 0: 0, 1: 1, 2: 2, 3: 3 },
+      explanation: 'All four symptoms trace back to context window limits. The fix is the same: end the session, update CLAUDE.md with decisions, and start a fresh session with clean context.',
+    },
+    {
+      type: 'code-fill',
+      instruction: 'Complete this CLAUDE.md section to preserve decisions across sessions:',
+      language: 'markdown',
+      filename: 'CLAUDE.md',
+      template: '## Architecture Decisions\n\n- Rendering: {{rendering}} components by default\n- Data fetching: use {{fetching}} (not API routes)\n- Auth: {{auth_provider}} with email/password\n- Database: {{database}} with row-level security\n\n## Completed\n- [x] Database schema and migrations\n- [x] Auth flow (login, signup, logout)\n- [ ] API routes\n- [ ] Frontend pages',
+      blanks: [
+        { id: 'rendering', answer: 'Server', alternatives: ['server', 'RSC', 'React Server'], placeholder: 'component type?', hint: 'Next.js defaults to this rendering mode' },
+        { id: 'fetching', answer: 'server actions', alternatives: ['Server Actions', 'server action'], placeholder: 'data pattern?', hint: 'Next.js built-in mutation pattern' },
+        { id: 'auth_provider', answer: 'Supabase Auth', alternatives: ['supabase auth', 'Supabase'], placeholder: 'which provider?', hint: 'The auth service in the project stack' },
+        { id: 'database', answer: 'Supabase', alternatives: ['PostgreSQL', 'Postgres', 'supabase'], placeholder: 'which database?', hint: 'Managed Postgres service' },
+      ],
+      explanation: 'This CLAUDE.md section serves as persistent memory. When you start a new session, the agent reads this and picks up where the last session left off — no re-explaining needed.',
     },
 
     // === PRACTICAL WORKFLOW ===

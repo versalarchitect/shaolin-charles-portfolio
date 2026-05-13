@@ -14,6 +14,24 @@ const content: LessonContent = {
       title: 'Why scope limits improve output',
       body: "Three mechanisms explain why narrower scope produces better results. First: attention. Transformer attention is finite — the more context competing for relevance, the more likely critical details get diluted. Second: coherence. Narrow tasks produce self-consistent output because there are fewer decisions to keep aligned. Third: verifiability. You can evaluate 'does this login form work?' immediately. You cannot evaluate 'does this entire auth system work?' without breaking it into parts anyway. Constraining scope up front saves you decomposition work later.",
     },
+    {
+      type: 'compare',
+      title: 'Broad scope vs focused tasks',
+      body: 'The width of your prompt directly affects output quality.',
+      question: 'Which approach produces higher-quality code?',
+      correctSide: 'right',
+      left: {
+        label: 'Broad (one prompt)',
+        content: '"Build the complete authentication system:\nlogin, signup, password reset, OAuth,\nsession management, protected routes,\nrole-based access, and admin panel."\n\nResult: 30+ files, inconsistent patterns,\nmissing edge cases, context exhausted',
+        language: 'text',
+      },
+      right: {
+        label: 'Focused (four prompts)',
+        content: 'Prompt 1: "Create database schema for users\n  and sessions. Only touch src/db/"\nPrompt 2: "Add login/signup server actions.\n  Only modify src/actions/auth.ts"\nPrompt 3: "Build login page at /login using\n  existing Button and Input components"\nPrompt 4: "Add session check middleware.\n  Only modify src/middleware.ts"',
+        language: 'text',
+      },
+      explanation: 'Focused prompts constrain scope with file boundaries ("only touch src/db/") and specific output targets. Each prompt gets the agent\'s full attention instead of splitting it across 8 concerns.',
+    },
 
     // === SCOPE DEGRADATION DIAGRAM ===
     {
@@ -94,6 +112,19 @@ const content: LessonContent = {
       ],
       correctIndex: 1,
       explanation: 'Agents are biased toward helpfulness. Without an explicit "Do NOT implement" section, the agent will anticipate your next steps and pre-build them. The scope constraint must include both what to do AND what not to do.',
+    },
+    {
+      type: 'code-fill',
+      instruction: 'Complete this narrowly-scoped prompt with proper file and scope boundaries:',
+      language: 'text',
+      template: 'Implement the validateSession function.\n\nBOUNDARIES:\n- Only create/modify files in {{allowed_dir}}\n- Do NOT touch {{forbidden_1}} or {{forbidden_2}}\n- Use the existing {{existing_fn}} from src/lib/auth.ts\n\nACCEPTANCE CRITERIA:\n- Returns user object if session valid\n- Returns null if session expired or invalid\n- Throws on database connection failure',
+      blanks: [
+        { id: 'allowed_dir', answer: 'src/lib/', alternatives: ['src/lib', 'src/lib/auth.ts'], placeholder: 'which directory?', hint: 'Where does auth logic live?' },
+        { id: 'forbidden_1', answer: 'src/components/', alternatives: ['src/components', 'components'], placeholder: "don't touch what?", hint: 'The UI layer' },
+        { id: 'forbidden_2', answer: 'src/db/', alternatives: ['src/db', 'database', 'migrations'], placeholder: 'another off-limits area?', hint: 'The database layer' },
+        { id: 'existing_fn', answer: 'getSessionToken', alternatives: ['parseToken', 'getToken', 'verifyToken'], placeholder: 'which existing function?', hint: 'A function that extracts the token' },
+      ],
+      explanation: 'File boundaries prevent the agent from "helpfully" modifying components or database code while implementing a utility function. This keeps changes reviewable and reversible.',
     },
 
     // === TOKEN BUDGETS ===
@@ -207,6 +238,30 @@ const content: LessonContent = {
       type: 'info',
       title: 'The constraint mindset',
       body: "Constraining scope feels counterintuitive when agents promise to 'do everything.' But the fastest path to a working system is a sequence of focused, high-quality sub-tasks — not one sprawling attempt that requires extensive debugging. Every minute you spend defining scope saves five minutes fixing inconsistencies. Every boundary you set is a decision you will not have to undo. The best directors are not the ones who ask for the most — they are the ones who ask for exactly the right thing at the right time.",
+    },
+    {
+      type: 'prompt-lab',
+      instruction: 'Write a narrowly-scoped prompt that directs the agent to implement only the validateSession function.',
+      scenario: 'You need a function that checks if a user\'s session is still valid. It should use the existing getSessionToken() helper from src/lib/auth.ts, query the sessions table, and return the user object or null. You do NOT want the agent to touch any other files.',
+      starterPrompt: 'Add session validation to the app.',
+      responses: [
+        {
+          triggerKeywords: ['only', 'src/lib', 'do not', 'getSessionToken'],
+          response: 'I\'ll implement validateSession in src/lib/auth.ts using the existing getSessionToken helper.\n\nScope: only modifying src/lib/auth.ts\n\nImplementation:\n1. Call getSessionToken() to extract token\n2. Query sessions table for matching token\n3. Check expiration\n4. Return user object or null\n\nStarting...',
+          quality: 'excellent',
+          feedback: 'Your prompt specified: which file to modify, which existing function to use, what NOT to touch, and clear acceptance criteria. The agent can execute without questions.',
+        },
+        {
+          triggerKeywords: ['session', 'validate', 'user'],
+          response: 'I\'ll add session validation! Let me:\n1. Create a middleware for protected routes\n2. Add a session check component\n3. Update the login flow to create sessions\n4. Add session cleanup cron job\n\nStarting with the middleware...',
+          quality: 'poor',
+          feedback: 'Without scope boundaries, the agent expanded to middleware, components, login flow, and cron jobs. You asked for one function — add file boundaries and "do NOT touch" constraints.',
+        },
+      ],
+      fallbackResponse: {
+        response: 'I\'ll set up session validation across the app. Where should I start?',
+        feedback: 'Your prompt was too open-ended. Specify: (1) the exact function to implement, (2) which file to modify, (3) which existing utilities to reuse, and (4) what NOT to touch.',
+      },
     },
     {
       type: 'checklist',

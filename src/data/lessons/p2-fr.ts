@@ -27,9 +27,9 @@ const content: LessonContent = {
     },
 
     {
-      type: 'diagram',
+      type: 'interactive-diagram',
       title: 'Le pipeline de déploiement',
-      body: 'Chaque changement suit ce chemin de votre machine jusqu\'au monde entier.',
+      body: 'Chaque changement suit ce chemin de votre machine jusqu\'au monde entier. Parcourez chaque étape pour voir ce qui se passe.',
       diagram: {
         direction: 'LR',
         nodes: [
@@ -48,6 +48,14 @@ const content: LessonContent = {
           { from: 'vc', to: 'live' },
         ],
       },
+      stages: [
+        { highlightNodes: ['edit'], explanation: 'Vous faites des changements dans votre code avec VS Code ou n\'importe quel éditeur. Rien ne quitte votre ordinateur pour le moment.' },
+        { highlightNodes: ['edit', 'commit'], highlightEdges: [{ from: 'edit', to: 'commit' }], explanation: 'Git commit sauvegarde un instantané de vos changements avec une courte description. Pensez-y comme un point de sauvegarde auquel vous pouvez revenir.' },
+        { highlightNodes: ['commit', 'push'], highlightEdges: [{ from: 'commit', to: 'push' }], explanation: 'Git push envoie vos changements sauvegardés de votre ordinateur vers GitHub. C\'est à ce moment que votre code quitte votre machine.' },
+        { highlightNodes: ['push', 'gh'], highlightEdges: [{ from: 'push', to: 'gh' }], explanation: 'GitHub reçoit votre code et le stocke. Il notifie aussi Vercel qu\'il y a eu un changement via un webhook.' },
+        { highlightNodes: ['gh', 'vc'], highlightEdges: [{ from: 'gh', to: 'vc' }], explanation: 'Vercel récupère automatiquement votre code, construit votre app et la prépare pour internet. Aucune étape manuelle nécessaire.' },
+        { highlightNodes: ['vc', 'live'], highlightEdges: [{ from: 'vc', to: 'live' }], explanation: 'Votre app est en ligne! N\'importe qui avec l\'URL peut la visiter. Le processus complet prend moins d\'une minute.' },
+      ],
     },
 
     // === VERCEL ACCOUNT ===
@@ -276,6 +284,24 @@ const content: LessonContent = {
       type: 'checkpoint',
       xp: 1,
       message: 'Les déploiements d\'aperçu sont compris! Vous savez comment tester en toute sécurité.',
+    },
+    {
+      type: 'compare',
+      title: 'Déploiements Production vs Aperçu',
+      body: 'Chaque push déclenche un déploiement, mais le type dépend de la branche vers laquelle vous poussez.',
+      question: 'Quel type de déploiement devriez-vous utiliser pour tester des changements avant la mise en ligne?',
+      correctSide: 'right',
+      left: {
+        label: 'Production',
+        content: 'Branche : main\nDéclencheur : push vers main\nURL : votre-app.vercel.app\nVisibilité : Public, en ligne pour les utilisateurs\nRetour arrière : Instantané via le tableau de bord Vercel',
+        language: 'text',
+      },
+      right: {
+        label: 'Aperçu',
+        content: 'Branche : n\'importe quelle branche de fonctionnalité\nDéclencheur : push ou PR\nURL : votre-app-git-branche.vercel.app\nVisibilité : Privé, juste vous\nRetour arrière : Pas nécessaire — fermez juste le PR',
+        language: 'text',
+      },
+      explanation: 'Les déploiements d\'aperçu vous permettent de tester sur une vraie URL sans affecter les utilisateurs. Poussez vers une branche de fonctionnalité, vérifiez que tout marche, puis fusionnez vers main pour la production.',
     },
 
     // === FINAL ===

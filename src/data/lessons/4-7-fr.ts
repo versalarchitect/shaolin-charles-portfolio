@@ -22,26 +22,52 @@ const content: LessonContent = {
       body: "Premièrement : les problèmes nouveaux. Si personne n'a écrit sur ton ensemble de contraintes spécifiques sur Internet, les agents interpolent à partir d'exemples adjacents — mal. Deuxièmement : les cas limites de ton domaine. L'agent ne sait pas que ton SLA est de 50 ms, que ta base de données tourne sur un serveur de 2015 avec 4 Go de RAM, ou que ton équipe de conformité refuse tout ce qui touche aux données personnelles. Troisièmement : les contraintes organisationnelles. Les réalités politiques, les compétences de l'équipe, les budgets de migration et le contexte de dette technique qu'aucun modèle ne peut déduire d'un prompt.",
     },
     {
-      type: 'diagram',
-      title: 'Consensus des agents vs Ton jugement',
-      body: 'Quand plusieurs agents sont d\'accord, ton évaluation est le point de contrôle critique.',
+      type: 'interactive-diagram',
+      title: 'Flux de décision d\'outrepassement',
+      body: 'Parcours chaque étape de l\'évaluation d\'une recommandation d\'agent. Clique pour voir comment la décision se déroule.',
       diagram: {
         direction: 'LR',
         nodes: [
-          { id: 'agents', label: 'Consensus des agents', sublabel: '5/5 d\'accord', shape: 'rect' },
-          { id: 'eval', label: 'Ton évaluation', sublabel: 'Contexte + expérience', shape: 'diamond', highlight: true },
-          { id: 'accept', label: 'Accepter', sublabel: 'Procéder tel que conseillé', shape: 'pill' },
+          { id: 'recommend', label: 'L\'agent recommande', sublabel: 'Suggestion confiante', shape: 'rect' },
+          { id: 'evidence', label: 'Évaluer les preuves', sublabel: 'Vérifier sources + raisonnement', shape: 'diamond' },
+          { id: 'domain', label: 'Vérifier le savoir du domaine', sublabel: 'Ton contexte + expérience', shape: 'diamond', highlight: true },
           { id: 'override', label: 'Outrepasser', sublabel: 'Ton jugement l\'emporte', shape: 'pill', highlight: true },
-          { id: 'doc', label: 'Documenter la décision', sublabel: 'Suivre le résultat', shape: 'rounded' },
+          { id: 'accept', label: 'Accepter', sublabel: 'Procéder tel que conseillé', shape: 'pill' },
         ],
         edges: [
-          { from: 'agents', to: 'eval' },
-          { from: 'eval', to: 'accept', label: 'les agents ont le contexte' },
-          { from: 'eval', to: 'override', label: 'tu as le contexte' },
-          { from: 'override', to: 'doc' },
-          { from: 'accept', to: 'doc' },
+          { from: 'recommend', to: 'evidence' },
+          { from: 'evidence', to: 'domain', label: 'preuves vérifiées' },
+          { from: 'domain', to: 'override', label: 'tu as le contexte manquant' },
+          { from: 'domain', to: 'accept', label: 'l\'agent a le tableau complet' },
         ],
       },
+      stages: [
+        {
+          highlightNodes: ['recommend'],
+          highlightEdges: [],
+          explanation: 'L\'agent livre une recommandation avec haute confiance. Ça sonne autoritaire et cite les meilleures pratiques. Mais la confiance n\'est pas la même chose que la justesse.',
+        },
+        {
+          highlightNodes: ['recommend', 'evidence'],
+          highlightEdges: [{ from: 'recommend', to: 'evidence' }],
+          explanation: 'Évalue les preuves. La recommandation est-elle basée sur une bonne pratique générale ou une analyse spécifique de TA codebase ? Les conseils généraux échouent à l\'échelle spécifique.',
+        },
+        {
+          highlightNodes: ['evidence', 'domain'],
+          highlightEdges: [{ from: 'evidence', to: 'domain' }],
+          explanation: 'Vérifie contre ton savoir du domaine. L\'agent connaît-il la taille de ton équipe, tes exigences de SLA, tes contraintes de conformité et ton environnement de déploiement ? Ton expérience vécue est une donnée que le modèle n\'a pas.',
+        },
+        {
+          highlightNodes: ['domain', 'override'],
+          highlightEdges: [{ from: 'domain', to: 'override' }],
+          explanation: 'Chemin d\'outrepassement : l\'agent manque de contexte critique. Ton équipe de 4 personnes, tes exigences de conformité ou tes contraintes de déploiement rendent la recommandation mauvaise pour TA situation.',
+        },
+        {
+          highlightNodes: ['domain', 'accept'],
+          highlightEdges: [{ from: 'domain', to: 'accept' }],
+          explanation: 'Chemin d\'acceptation : après vérification, l\'agent a le tableau complet. Sa recommandation s\'aligne avec tes contraintes et ton savoir du domaine. Procède tel que conseillé et documente la décision.',
+        },
+      ],
     },
     {
       type: 'checkpoint',
@@ -103,6 +129,24 @@ const content: LessonContent = {
       ],
       correctIndex: 2,
       explanation: 'Les paiements sont un domaine à forts enjeux et fortement réglementé. Tes 8 ans de connaissance du domaine sont un contexte critique. Mais tu devrais quand même évaluer la recommandation spécifique — peut-être que c\'EST un patron plus récent conforme à PCI. L\'essentiel, c\'est que ton expérience crée une barre haute que l\'agent doit franchir, pas que tu l\'ignores complètement.',
+    },
+
+    // === MATCH: SCÉNARIOS D'OUTREPASSEMENT ===
+    {
+      type: 'match',
+      instruction: 'Associe chaque scénario d\'outrepassement à la bonne décision et son raisonnement :',
+      leftItems: [
+        'L\'agent choisit NoSQL pour des données relationnelles',
+        'L\'agent suggère d\'ajouter du cache avant de profiler',
+        'L\'agent recommande des microservices pour une petite équipe',
+      ],
+      rightItems: [
+        'Outrepasser — les données relationnelles ont besoin de SQL',
+        'Outrepasser — optimisation prématurée',
+        'Outrepasser — les microservices ajoutent de la complexité pour les petites équipes',
+      ],
+      correctPairs: { 0: 0, 1: 1, 2: 2 },
+      explanation: 'Chaque scénario représente un cas où l\'agent optimise pour une bonne pratique générale en ignorant des contraintes spécifiques. NoSQL pour des données relationnelles ignore les besoins de structure de données. Le cache avant le profilage, c\'est de l\'optimisation prématurée. Les microservices pour une équipe de 3 ajoutent de la surcharge de coordination qui tue la vélocité.',
     },
 
     // === PRACTICAL SCENARIOS ===

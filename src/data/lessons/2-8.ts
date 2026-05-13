@@ -30,6 +30,16 @@ const content: LessonContent = {
       code: "// Agent-generated code — looks clean, but fragile\nexport async function getUser(id: string) {\n  const response = await fetch(`/api/users/${id}`)\n  const data = await response.json()\n  return data.user\n}\n\n// What you should verify exists:\nexport async function getUserVerified(id: string) {\n  const response = await fetch(`/api/users/${id}`)\n\n  if (!response.ok) {\n    throw new Error(`Failed to fetch user: ${response.status}`)\n  }\n\n  const data = await response.json()\n\n  if (!data.user) {\n    return null // Explicit null instead of undefined access\n  }\n\n  return data.user\n}",
     },
     {
+      type: 'code-diff',
+      title: 'Before and after: adding error handling',
+      body: 'The agent generated a data fetching function without error handling. Here is the fix.',
+      language: 'typescript',
+      filename: 'src/actions/get-user.ts',
+      before: 'export async function getUser(id: string) {\n  const response = await fetch(`/api/users/${id}`)\n  const data = await response.json()\n  return data.user\n}',
+      after: 'export async function getUser(id: string) {\n  const response = await fetch(`/api/users/${id}`)\n  if (!response.ok) {\n    throw new Error(`Failed to fetch user: ${response.status}`)\n  }\n  const data = await response.json()\n  if (!data.user) {\n    throw new Error(`User not found: ${id}`)\n  }\n  return data.user\n}',
+      explanation: 'Two checks added: response.ok catches HTTP errors (404, 500). The null check on data.user prevents "Cannot read property of undefined" errors downstream.',
+    },
+    {
       type: 'info',
       title: 'Mistake 2: Wrong assumptions about data',
       body: "The agent assumes data is always present, always the right shape, always in the expected range. It writes `user.profile.avatar.url` without checking if profile or avatar exist. It uses `items[0]` without checking if the array is empty. It parses dates assuming ISO format when your API returns Unix timestamps. Every property access chain is a potential crash site.",
@@ -64,7 +74,7 @@ const content: LessonContent = {
       body: "A verification checklist is a systematic scan you run on every piece of agent-generated code before committing. It is not about reading every line — it is about checking specific categories of issues that agents commonly produce. You will internalize this over time, but start by running through it deliberately.",
     },
     {
-      type: 'diagram',
+      type: 'interactive-diagram',
       title: 'Verification Categories',
       body: 'Scan agent code in this order. Each category catches a different class of bug.',
       diagram: {
@@ -85,6 +95,45 @@ const content: LessonContent = {
           { from: 'data', to: 'async' },
         ],
       },
+      stages: [
+        {
+          highlightNodes: ['errors'],
+          highlightEdges: [{ from: 'errors', to: 'null' }],
+          explanation: 'Start with error handling: check every fetch, DB call, and file read for try/catch and response.ok checks. This catches the most common agent mistake.',
+        },
+        {
+          highlightNodes: ['null'],
+          highlightEdges: [{ from: 'null', to: 'edge' }],
+          explanation: 'Next, check null safety: look for missing optional chaining (?.), absent fallback defaults, and unchecked array access like items[0] without length checks.',
+        },
+        {
+          highlightNodes: ['edge'],
+          highlightEdges: [{ from: 'edge', to: 'security' }],
+          explanation: 'Then scan for edge cases: empty arrays, missing optional fields, concurrent updates, and boundary values the agent did not consider.',
+        },
+        {
+          highlightNodes: ['security'],
+          highlightEdges: [{ from: 'security', to: 'data' }],
+          explanation: 'Security scan: check for missing auth on API routes, unsanitized input, hardcoded secrets, and raw SQL string concatenation.',
+        },
+        {
+          highlightNodes: ['data'],
+          highlightEdges: [{ from: 'data', to: 'async' }],
+          explanation: 'Data integrity: verify unique constraints, foreign key cascades, timestamp auto-updates, and that partial updates preserve existing data.',
+        },
+        {
+          highlightNodes: ['async'],
+          explanation: 'Finally, async correctness: look for missing await, unbounded Promise.all, sequential queries that should be parallel, and operations that need transactions.',
+        },
+      ],
+    },
+    {
+      type: 'match',
+      instruction: 'Match each verification category to the pattern you should search for:',
+      leftItems: ['Error handling gaps', 'Null safety issues', 'Security vulnerabilities', 'Async correctness'],
+      rightItems: ['grep for Promise.all with unbounded arrays, missing await', 'grep for .env, hardcoded keys, innerHTML, as any', 'grep for missing try/catch around fetch, db calls', 'grep for missing ?. optional chaining, no fallback defaults'],
+      correctPairs: { 0: 2, 1: 3, 2: 1, 3: 0 },
+      explanation: 'Each category has telltale patterns in code. Error handling: missing try/catch. Null safety: missing optional chaining. Security: hardcoded secrets. Async: unbounded Promise.all.',
     },
     {
       type: 'code-demo',

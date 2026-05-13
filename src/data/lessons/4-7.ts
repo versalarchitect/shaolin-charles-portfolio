@@ -22,26 +22,52 @@ const content: LessonContent = {
       body: "First: novel problems. If no one has written about your specific constraint set on the internet, agents interpolate from adjacent examples — badly. Second: edge cases in your domain. The agent does not know your SLA is 50ms, your database is on a 2015 server with 4GB RAM, or your compliance team vetoes anything touching PII. Third: organizational constraints. Political realities, team skills, migration budgets, and technical debt context that no model can infer from a prompt.",
     },
     {
-      type: 'diagram',
-      title: 'Agent Consensus vs Your Judgment',
-      body: 'When multiple agents agree, your evaluation is the critical gate.',
+      type: 'interactive-diagram',
+      title: 'Override Decision Flow',
+      body: 'Walk through each stage of evaluating an agent recommendation. Click through to see how the decision unfolds.',
       diagram: {
         direction: 'LR',
         nodes: [
-          { id: 'agents', label: 'Agent Consensus', sublabel: '5/5 agree', shape: 'rect' },
-          { id: 'eval', label: 'Your Evaluation', sublabel: 'Context + experience', shape: 'diamond', highlight: true },
-          { id: 'accept', label: 'Accept', sublabel: 'Proceed as advised', shape: 'pill' },
+          { id: 'recommend', label: 'Agent Recommends', sublabel: 'Confident suggestion', shape: 'rect' },
+          { id: 'evidence', label: 'Evaluate Evidence', sublabel: 'Check sources + reasoning', shape: 'diamond' },
+          { id: 'domain', label: 'Check Domain Knowledge', sublabel: 'Your context + experience', shape: 'diamond', highlight: true },
           { id: 'override', label: 'Override', sublabel: 'Your judgment wins', shape: 'pill', highlight: true },
-          { id: 'doc', label: 'Document Decision', sublabel: 'Track outcome', shape: 'rounded' },
+          { id: 'accept', label: 'Accept', sublabel: 'Proceed as advised', shape: 'pill' },
         ],
         edges: [
-          { from: 'agents', to: 'eval' },
-          { from: 'eval', to: 'accept', label: 'agents have context' },
-          { from: 'eval', to: 'override', label: 'you have context' },
-          { from: 'override', to: 'doc' },
-          { from: 'accept', to: 'doc' },
+          { from: 'recommend', to: 'evidence' },
+          { from: 'evidence', to: 'domain', label: 'evidence checked' },
+          { from: 'domain', to: 'override', label: 'you have missing context' },
+          { from: 'domain', to: 'accept', label: 'agent has full picture' },
         ],
       },
+      stages: [
+        {
+          highlightNodes: ['recommend'],
+          highlightEdges: [],
+          explanation: 'The agent delivers a recommendation with high confidence. It sounds authoritative and cites best practices. But confidence is not the same as correctness.',
+        },
+        {
+          highlightNodes: ['recommend', 'evidence'],
+          highlightEdges: [{ from: 'recommend', to: 'evidence' }],
+          explanation: 'Evaluate the evidence. Is the recommendation based on general best practice or specific analysis of YOUR codebase? General advice fails at specific scale.',
+        },
+        {
+          highlightNodes: ['evidence', 'domain'],
+          highlightEdges: [{ from: 'evidence', to: 'domain' }],
+          explanation: 'Check against your domain knowledge. Does the agent know about your team size, SLA requirements, compliance constraints, and deployment environment? Your lived experience is data the model does not have.',
+        },
+        {
+          highlightNodes: ['domain', 'override'],
+          highlightEdges: [{ from: 'domain', to: 'override' }],
+          explanation: 'Override path: the agent lacks critical context. Your 4-person team, your compliance requirements, or your deployment constraints make the recommendation wrong for YOUR situation.',
+        },
+        {
+          highlightNodes: ['domain', 'accept'],
+          highlightEdges: [{ from: 'domain', to: 'accept' }],
+          explanation: 'Accept path: after checking, the agent has the full picture. Its recommendation aligns with your constraints and domain knowledge. Proceed as advised and document the decision.',
+        },
+      ],
     },
     {
       type: 'checkpoint',
@@ -103,6 +129,24 @@ const content: LessonContent = {
       ],
       correctIndex: 2,
       explanation: 'Payments is high-stakes and heavily regulated. Your 8 years of domain knowledge is critical context. But you should still evaluate the specific recommendation — maybe it IS a newer PCI-compliant pattern. The key is that your experience creates a high bar the agent must clear, not that you ignore it completely.',
+    },
+
+    // === MATCH: OVERRIDE SCENARIOS ===
+    {
+      type: 'match',
+      instruction: 'Match each override scenario to the correct decision and reasoning:',
+      leftItems: [
+        'Agent picks NoSQL for relational data',
+        'Agent suggests adding caching before profiling',
+        'Agent recommends microservices for small team',
+      ],
+      rightItems: [
+        'Override — relational data needs SQL',
+        'Override — premature optimization',
+        'Override — microservices add complexity for small teams',
+      ],
+      correctPairs: { 0: 0, 1: 1, 2: 2 },
+      explanation: 'Each scenario represents a case where the agent optimizes for a general best practice while ignoring specific constraints. NoSQL for relational data ignores data structure needs. Caching before profiling is premature optimization. Microservices for a 3-person team adds coordination overhead that kills velocity.',
     },
 
     // === PRACTICAL SCENARIOS ===

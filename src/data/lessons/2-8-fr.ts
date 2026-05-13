@@ -30,6 +30,16 @@ const content: LessonContent = {
       code: "// Agent-generated code — looks clean, but fragile\nexport async function getUser(id: string) {\n  const response = await fetch(`/api/users/${id}`)\n  const data = await response.json()\n  return data.user\n}\n\n// What you should verify exists:\nexport async function getUserVerified(id: string) {\n  const response = await fetch(`/api/users/${id}`)\n\n  if (!response.ok) {\n    throw new Error(`Failed to fetch user: ${response.status}`)\n  }\n\n  const data = await response.json()\n\n  if (!data.user) {\n    return null // Explicit null instead of undefined access\n  }\n\n  return data.user\n}",
     },
     {
+      type: 'code-diff',
+      title: 'Avant et après : ajout de la gestion d\'erreurs',
+      body: 'L\'agent a généré une fonction de récupération de données sans gestion d\'erreurs. Voici la correction.',
+      language: 'typescript',
+      filename: 'src/actions/get-user.ts',
+      before: 'export async function getUser(id: string) {\n  const response = await fetch(`/api/users/${id}`)\n  const data = await response.json()\n  return data.user\n}',
+      after: 'export async function getUser(id: string) {\n  const response = await fetch(`/api/users/${id}`)\n  if (!response.ok) {\n    throw new Error(`Failed to fetch user: ${response.status}`)\n  }\n  const data = await response.json()\n  if (!data.user) {\n    throw new Error(`User not found: ${id}`)\n  }\n  return data.user\n}',
+      explanation: 'Deux vérifications ajoutées : response.ok attrape les erreurs HTTP (404, 500). La vérification null sur data.user empêche les erreurs "Cannot read property of undefined" en aval.',
+    },
+    {
       type: 'info',
       title: 'Erreur 2 : Fausses suppositions sur les données',
       body: "L'agent suppose que les données sont toujours présentes, toujours de la bonne forme, toujours dans la plage attendue. Il écrit `user.profile.avatar.url` sans vérifier si profile ou avatar existent. Il utilise `items[0]` sans vérifier si le tableau est vide. Il parse des dates en supposant le format ISO quand votre API retourne des timestamps Unix. Chaque chaîne d'accès de propriété est un site de crash potentiel.",
@@ -64,7 +74,7 @@ const content: LessonContent = {
       body: "Une checklist de vérification est un scan systématique que vous exécutez sur chaque morceau de code généré par un agent avant de commiter. Il ne s'agit pas de lire chaque ligne — il s'agit de vérifier des catégories spécifiques de problèmes que les agents produisent couramment. Vous l'internaliserez avec le temps, mais commencez par le parcourir délibérément.",
     },
     {
-      type: 'diagram',
+      type: 'interactive-diagram',
       title: 'Catégories de Vérification',
       body: 'Scannez le code de l\'agent dans cet ordre. Chaque catégorie attrape une classe différente de bug.',
       diagram: {
@@ -85,6 +95,45 @@ const content: LessonContent = {
           { from: 'data', to: 'async' },
         ],
       },
+      stages: [
+        {
+          highlightNodes: ['errors'],
+          highlightEdges: [{ from: 'errors', to: 'null' }],
+          explanation: 'Commencez par la gestion d\'erreurs : vérifiez chaque fetch, appel BD et lecture de fichier pour les try/catch et les vérifications response.ok. Ça attrape l\'erreur d\'agent la plus courante.',
+        },
+        {
+          highlightNodes: ['null'],
+          highlightEdges: [{ from: 'null', to: 'edge' }],
+          explanation: 'Ensuite, vérifiez la sécurité null : cherchez le chaînage optionnel (?.) manquant, les fallbacks absents et les accès de tableau non vérifiés comme items[0] sans vérification de longueur.',
+        },
+        {
+          highlightNodes: ['edge'],
+          highlightEdges: [{ from: 'edge', to: 'security' }],
+          explanation: 'Puis scannez les cas limites : tableaux vides, champs optionnels manquants, mises à jour concurrentes et valeurs limites que l\'agent n\'a pas considérées.',
+        },
+        {
+          highlightNodes: ['security'],
+          highlightEdges: [{ from: 'security', to: 'data' }],
+          explanation: 'Scan de sécurité : vérifiez les routes API sans auth, les entrées non assainies, les secrets codés en dur et la concaténation de chaînes SQL brutes.',
+        },
+        {
+          highlightNodes: ['data'],
+          highlightEdges: [{ from: 'data', to: 'async' }],
+          explanation: 'Intégrité des données : vérifiez les contraintes d\'unicité, les cascades de clés étrangères, les mises à jour automatiques de timestamps et que les mises à jour partielles préservent les données existantes.',
+        },
+        {
+          highlightNodes: ['async'],
+          explanation: 'Finalement, la justesse async : cherchez les await manquants, les Promise.all non bornés, les requêtes séquentielles qui devraient être parallèles et les opérations qui nécessitent des transactions.',
+        },
+      ],
+    },
+    {
+      type: 'match',
+      instruction: 'Associez chaque catégorie de vérification au pattern à rechercher :',
+      leftItems: ['Lacunes de gestion d\'erreurs', 'Problèmes de sécurité null', 'Vulnérabilités de sécurité', 'Justesse async'],
+      rightItems: ['grep pour Promise.all avec tableaux non bornés, await manquant', 'grep pour .env, clés codées en dur, innerHTML, as any', 'grep pour try/catch manquant autour de fetch, appels BD', 'grep pour ?. chaînage optionnel manquant, pas de fallbacks par défaut'],
+      correctPairs: { 0: 2, 1: 3, 2: 1, 3: 0 },
+      explanation: 'Chaque catégorie a des patterns révélateurs dans le code. Gestion d\'erreurs : try/catch manquant. Sécurité null : chaînage optionnel manquant. Sécurité : secrets codés en dur. Async : Promise.all non borné.',
     },
     {
       type: 'code-demo',

@@ -15,9 +15,9 @@ const content: LessonContent = {
       body: "A single agent failing is annoying. An agent in a fleet failing is dangerous — if it corrupts shared files, pushes broken types to a shared interface, or monopolizes resources, it can cascade and take down the entire fleet. The key skill isn't preventing all failures (impossible), it's detecting them fast and isolating them before they spread.",
     },
 
-    // === DIAGRAM 1: Fleet Failure Detection ===
+    // === DIAGRAM 1: Fleet Failure Detection (Interactive) ===
     {
-      type: 'diagram',
+      type: 'interactive-diagram',
       title: 'Fleet Failure Lifecycle',
       body: "Every fleet failure follows this lifecycle. The faster you detect and isolate, the less damage spreads. The goal: under 2 minutes from failure to isolation. Recovery can take longer — the important thing is that healthy agents keep running undisturbed.",
       diagram: {
@@ -26,21 +26,80 @@ const content: LessonContent = {
           { id: 'running', label: 'Fleet Running', sublabel: '4 agents', shape: 'rounded' },
           { id: 'detect', label: 'Detect', sublabel: 'Signals', shape: 'diamond', highlight: true },
           { id: 'isolate', label: 'Isolate', sublabel: 'Contain', shape: 'rect' },
+          { id: 'analyze', label: 'Analyze', sublabel: 'Root cause', shape: 'rect' },
           { id: 'recover', label: 'Recover', sublabel: 'Fresh agent', shape: 'rect' },
           { id: 'continue', label: 'Fleet Continues', shape: 'pill', highlight: true },
         ],
         edges: [
           { from: 'running', to: 'detect', label: 'anomaly' },
           { from: 'detect', to: 'isolate', label: 'confirmed' },
-          { from: 'isolate', to: 'recover' },
+          { from: 'isolate', to: 'analyze' },
+          { from: 'analyze', to: 'recover' },
           { from: 'recover', to: 'continue' },
         ],
       },
+      stages: [
+        {
+          highlightNodes: ['running'],
+          explanation: 'The fleet is running normally — 4 agents working in parallel on separate worktrees. Health check scripts monitor each agent every 2-3 minutes.',
+        },
+        {
+          highlightNodes: ['running', 'detect'],
+          highlightEdges: [{ from: 'running', to: 'detect' }],
+          explanation: 'An anomaly is detected: high file churn without commits, TypeScript errors accumulating, or the agent editing the same file repeatedly. The health check flags it.',
+        },
+        {
+          highlightNodes: ['detect', 'isolate'],
+          highlightEdges: [{ from: 'detect', to: 'isolate' }],
+          explanation: 'Confirmed failure. Immediately isolate: stop the agent process, stash its changes for analysis, and reset the worktree. The other 3 agents keep running undisturbed.',
+        },
+        {
+          highlightNodes: ['isolate', 'analyze'],
+          highlightEdges: [{ from: 'isolate', to: 'analyze' }],
+          explanation: 'Analyze the root cause from the stashed work. Was it scope creep (modified files outside its domain)? Circular edits (same file changed repeatedly)? Wrong abstraction (misunderstood the spec)?',
+        },
+        {
+          highlightNodes: ['analyze', 'recover'],
+          highlightEdges: [{ from: 'analyze', to: 'recover' }],
+          explanation: 'Write an improved spec with explicit constraints learned from the failure. Launch a fresh recovery agent on the clean worktree with tighter boundaries.',
+        },
+        {
+          highlightNodes: ['recover', 'continue'],
+          highlightEdges: [{ from: 'recover', to: 'continue' }],
+          explanation: 'The recovery agent completes the work within bounds. The fleet continues with all 4 agents producing output. One failure did not cascade into fleet-wide disruption.',
+        },
+      ],
     },
     {
       type: 'checkpoint',
       xp: 3,
       message: 'Detect fast, isolate immediately, recover at your pace.',
+    },
+
+    // === PROMPT LAB: Write a Recovery Directive ===
+    {
+      type: 'prompt-lab',
+      instruction: 'The auth agent is stuck in a loop, editing the same file repeatedly. Write a recovery directive.',
+      scenario: 'Your fleet of 4 agents is building a SaaS app. The auth agent has been running for 20 minutes and its git log shows the same file (src/lib/auth.ts) being edited 15 times with contradictory changes. The other 3 agents are working fine.',
+      starterPrompt: 'Fix the auth agent.',
+      responses: [
+        {
+          triggerKeywords: ['stash', 'reset', 'constraint', 'only'],
+          response: 'Recovery plan:\n1. Stashing the agent\'s changes for analysis\n2. Resetting to last known good state\n3. Restarting with tighter constraints\n\nRoot cause: the agent was trying to satisfy conflicting requirements in the spec. Adding explicit "DO NOT modify session.ts" boundary to prevent the loop.\n\nRestarting agent with focused scope...',
+          quality: 'excellent',
+          feedback: 'You identified the need to: (1) preserve work for analysis, (2) reset to clean state, and (3) add constraints to prevent recurrence. This is the textbook recovery pattern.',
+        },
+        {
+          triggerKeywords: ['stop', 'restart'],
+          response: 'I\'ll stop the auth agent and restart it. Should I use the same spec or modify it?',
+          quality: 'good',
+          feedback: 'Stopping and restarting is necessary, but without analyzing why it looped and adding constraints, it will likely loop again. Add stash-then-analyze and tighter scope boundaries.',
+        },
+      ],
+      fallbackResponse: {
+        response: 'Which agent is having issues? Can you share more details about the problem?',
+        feedback: 'Your directive was too vague. Specify: (1) stash or save the current changes, (2) reset to known good state, (3) what constraints to add to prevent the loop, and (4) what scope to restrict.',
+      },
     },
 
     // === DETECTION SIGNALS ===

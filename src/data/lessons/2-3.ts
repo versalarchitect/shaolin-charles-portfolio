@@ -129,6 +129,48 @@ const content: LessonContent = {
       message: 'RLS fundamentals locked in!',
     },
 
+    // === INTERACTIVE RLS EXERCISES ===
+    {
+      type: 'compare',
+      title: 'Dangerous vs secure RLS policy',
+      body: 'Row-Level Security policies determine who can access what data. One mistake exposes everything.',
+      question: 'Which policy correctly restricts access to the row owner?',
+      correctSide: 'right',
+      left: {
+        label: 'Dangerous',
+        content: 'CREATE POLICY "users_read"\n  ON profiles FOR SELECT\n  USING (true);\n\n-- Problem: EVERY user can read\n-- EVERY other user\'s profile data',
+        language: 'sql',
+      },
+      right: {
+        label: 'Secure',
+        content: 'CREATE POLICY "users_read_own"\n  ON profiles FOR SELECT\n  USING (auth.uid() = id);\n\n-- Only the profile owner\n-- can read their own data',
+        language: 'sql',
+      },
+      explanation: 'USING (true) means "allow everyone" — it is the most common RLS mistake agents make. Always use auth.uid() = id to restrict rows to their owner.',
+    },
+    {
+      type: 'code-fill',
+      instruction: 'Complete the RLS policies for a comments table. Users can read all comments, but only insert and delete their own.',
+      language: 'sql',
+      filename: 'supabase/migrations/003_rls_comments.sql',
+      template: 'ALTER TABLE comments ENABLE ROW LEVEL SECURITY;\n\nCREATE POLICY "anyone_can_read" ON comments\n  FOR {{read_op}}\n  USING ({{read_condition}});\n\nCREATE POLICY "own_comments_insert" ON comments\n  FOR INSERT\n  WITH CHECK ({{insert_check}});\n\nCREATE POLICY "own_comments_delete" ON comments\n  FOR DELETE\n  USING ({{delete_condition}});',
+      blanks: [
+        { id: 'read_op', answer: 'SELECT', alternatives: ['select'], placeholder: 'which operation?', hint: 'Reading data = which SQL operation?' },
+        { id: 'read_condition', answer: 'true', placeholder: 'allow who?', hint: 'Everyone can read — what boolean value allows all?' },
+        { id: 'insert_check', answer: 'auth.uid() = user_id', alternatives: ['auth.uid() = author_id'], placeholder: 'ownership check?', hint: 'Verify the authenticated user matches the row owner' },
+        { id: 'delete_condition', answer: 'auth.uid() = user_id', alternatives: ['auth.uid() = author_id'], placeholder: 'ownership check?', hint: 'Same pattern as insert — only delete your own' },
+      ],
+      explanation: 'SELECT uses USING (true) because all comments are public. INSERT uses WITH CHECK to verify ownership at creation time. DELETE uses USING to verify ownership before removal.',
+    },
+    {
+      type: 'match',
+      instruction: 'Match each security gap to what it exposes:',
+      leftItems: ['RLS not enabled on table', 'Policy uses USING (true)', 'Missing WITH CHECK on INSERT', 'Service role key in client code'],
+      rightItems: ['Anyone can insert rows as any user', 'All rows visible to all users', 'Complete table bypass — no security at all', 'Full admin access from the browser console'],
+      correctPairs: { 0: 2, 1: 1, 2: 0, 3: 3 },
+      explanation: 'Each gap has a different severity. No RLS is the worst — complete bypass. USING (true) leaks reads. Missing WITH CHECK allows impersonation on writes. Service key in client gives admin access to anyone.',
+    },
+
     // === VERIFICATION METHODOLOGY ===
     {
       type: 'info',

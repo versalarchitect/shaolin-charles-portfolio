@@ -57,6 +57,85 @@ const content: LessonContent = {
       },
     },
 
+    // === INTERACTIVE: COMPARE, CODE-FILL, INTERACTIVE-DIAGRAM ===
+    {
+      type: 'compare',
+      title: 'Focused PR vs mega PR',
+      body: 'The size of your pull request directly affects review quality.',
+      question: 'Which PR is easier to review and safer to merge?',
+      correctSide: 'left',
+      left: {
+        label: 'Focused (3 files)',
+        content: 'feat: add email validation to signup form\n\nChanged:\n- src/lib/validation.ts (new function)\n- src/components/signup-form.tsx (use validator)\n- src/components/signup-form.test.tsx (3 tests)\n\nReview time: ~5 minutes\nRisk: Low — isolated change',
+        language: 'text',
+      },
+      right: {
+        label: 'Mega (47 files)',
+        content: 'feat: add auth, dashboard, settings, and API\n\nChanged:\n- 47 files across 12 directories\n- New auth system + session management\n- Dashboard with 8 widgets\n- Settings page with 5 forms\n- 14 new API routes\n\nReview time: ~2 hours\nRisk: High — impossible to review thoroughly',
+        language: 'text',
+      },
+      explanation: 'Small, focused PRs get thorough reviews. Mega PRs get rubber-stamped because nobody has time to review 47 files carefully. Bugs hide in the parts nobody reads.',
+    },
+    {
+      type: 'code-fill',
+      instruction: 'Complete the git commands using conventional branch naming and commit format:',
+      language: 'shell',
+      template: 'git checkout -b {{branch_type}}/{{branch_name}}\n\n# ... make changes ...\n\ngit add src/lib/validation.ts\ngit commit -m "{{commit_type}}: {{commit_desc}}"',
+      blanks: [
+        { id: 'branch_type', answer: 'feat', alternatives: ['feature'], placeholder: 'branch prefix?', hint: 'Type of work: feat, fix, refactor' },
+        { id: 'branch_name', answer: 'add-email-validation', alternatives: ['email-validation', 'add-validation'], placeholder: 'branch description?', hint: 'Kebab-case description of the change' },
+        { id: 'commit_type', answer: 'feat', alternatives: ['feature'], placeholder: 'commit type?' },
+        { id: 'commit_desc', answer: 'add email validation to signup form', placeholder: 'what changed?', hint: 'Short description starting with a verb' },
+      ],
+      explanation: 'Conventional branch names (feat/, fix/, refactor/) and commit types make git history scannable. The agent follows these patterns when it sees them in CLAUDE.md.',
+    },
+    {
+      type: 'interactive-diagram',
+      title: 'Agent Branch Workflow — Step by Step',
+      body: 'Walk through how multiple agents work on separate branches, with a human review gate before merging to main.',
+      diagram: {
+        direction: 'LR',
+        nodes: [
+          { id: 'main', label: 'main', sublabel: 'Protected', shape: 'pill', highlight: true },
+          { id: 'feat1', label: 'feat/auth', sublabel: 'Agent 1', shape: 'rect' },
+          { id: 'feat2', label: 'feat/settings', sublabel: 'Agent 2', shape: 'rect' },
+          { id: 'feat3', label: 'fix/pagination', sublabel: 'Agent 3', shape: 'rect' },
+          { id: 'review', label: 'PR Review', sublabel: 'Human gate', shape: 'rounded', highlight: true },
+        ],
+        edges: [
+          { from: 'main', to: 'feat1', label: 'branch' },
+          { from: 'main', to: 'feat2', label: 'branch' },
+          { from: 'main', to: 'feat3', label: 'branch' },
+          { from: 'feat1', to: 'review' },
+          { from: 'feat2', to: 'review' },
+          { from: 'feat3', to: 'review' },
+          { from: 'review', to: 'main', label: 'merge' },
+        ],
+      },
+      stages: [
+        {
+          highlightNodes: ['main'],
+          highlightEdges: [],
+          explanation: 'Start from the protected main branch. No one — human or agent — pushes directly here.',
+        },
+        {
+          highlightNodes: ['main', 'feat1', 'feat2', 'feat3'],
+          highlightEdges: [{ from: 'main', to: 'feat1' }, { from: 'main', to: 'feat2' }, { from: 'main', to: 'feat3' }],
+          explanation: 'Each agent task gets its own branch. Multiple agents work in parallel without interfering with each other.',
+        },
+        {
+          highlightNodes: ['feat1', 'feat2', 'feat3', 'review'],
+          highlightEdges: [{ from: 'feat1', to: 'review' }, { from: 'feat2', to: 'review' }, { from: 'feat3', to: 'review' }],
+          explanation: 'Agents push their branches and open PRs. Every change must pass through the human review gate.',
+        },
+        {
+          highlightNodes: ['review', 'main'],
+          highlightEdges: [{ from: 'review', to: 'main' }],
+          explanation: 'After review and approval, changes merge to main. The human stays in control of what ships.',
+        },
+      ],
+    },
+
     // === COMMIT HYGIENE ===
     {
       type: 'info',

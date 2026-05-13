@@ -15,30 +15,62 @@ const content: LessonContent = {
       body: "Les agents ne font pas d'erreurs aléatoires. Ils font des erreurs systématiques — des classes prévisibles de bogues qui émergent de la façon dont les agents traitent les instructions. Une fois que tu connais les patrons, tu peux (1) les attraper en révision avant le déploiement, (2) mettre en place une surveillance ajustée pour les détecter, et (3) améliorer les specs pour les prévenir. Cette leçon couvre les trois.",
     },
 
-    // === DIAGRAM 1: The Feedback Loop ===
+    // === DIAGRAM 1: The Feedback Loop (interactive) ===
     {
-      type: 'diagram',
+      type: 'interactive-diagram',
       title: 'La boucle de rétroaction en production',
-      body: "Les erreurs de production ne sont pas juste des bogues à corriger — ce sont des données qui améliorent tes specs d'agent. Chaque erreur qui atteint la production devrait alimenter ton processus de spécification. Cette boucle est la façon dont tu deviens meilleur à diriger des agents au fil du temps.",
+      body: 'Clique sur chaque étape pour voir comment les erreurs de production alimentent de meilleures specs.',
       diagram: {
         direction: 'TB',
         nodes: [
-          { id: 'prod', label: 'Production', sublabel: 'Utilisateurs actifs', shape: 'rounded' },
-          { id: 'error', label: 'Erreur détectée', sublabel: 'Sentry/journaux', shape: 'diamond', highlight: true },
-          { id: 'trace', label: 'Remonter à la source', sublabel: 'Quelle session agent ?', shape: 'rect' },
-          { id: 'classify', label: 'Classifier', sublabel: 'Patron de bogue', shape: 'rect' },
-          { id: 'fix', label: 'Corriger en prod', sublabel: 'Correctif urgent', shape: 'rect' },
-          { id: 'spec', label: 'Améliorer la spec', sublabel: 'Prévenir la récurrence', shape: 'pill', highlight: true },
+          { id: 'deploy', label: 'Déployer', sublabel: 'Mettre en prod', shape: 'rounded' },
+          { id: 'monitor', label: 'Surveiller', sublabel: 'Sentry + journaux', shape: 'rect' },
+          { id: 'errors', label: 'Erreurs détectées', sublabel: 'Alertes déclenchées', shape: 'diamond', highlight: true },
+          { id: 'analyze', label: 'Analyser les patrons', sublabel: 'Classifier le type de bogue', shape: 'rect' },
+          { id: 'improve', label: 'Améliorer la spec', sublabel: 'Prévenir la récurrence', shape: 'pill', highlight: true },
+          { id: 'redeploy', label: 'Redéployer', sublabel: 'Livrer le correctif', shape: 'rounded' },
         ],
         edges: [
-          { from: 'prod', to: 'error' },
-          { from: 'error', to: 'trace' },
-          { from: 'trace', to: 'classify' },
-          { from: 'classify', to: 'fix' },
-          { from: 'classify', to: 'spec' },
-          { from: 'spec', to: 'prod', label: 'prochain déploiement', dashed: true },
+          { from: 'deploy', to: 'monitor' },
+          { from: 'monitor', to: 'errors' },
+          { from: 'errors', to: 'analyze' },
+          { from: 'analyze', to: 'improve' },
+          { from: 'improve', to: 'redeploy' },
+          { from: 'redeploy', to: 'monitor', label: 'la boucle continue', dashed: true },
         ],
       },
+      stages: [
+        {
+          highlightNodes: ['deploy'],
+          highlightEdges: [],
+          explanation: 'La flotte a livré du code en production. Quatre agents ont construit différents modules — auth, API, paiements, UI — tout fusionné et déployé. Les utilisateurs accèdent maintenant au système en ligne.',
+        },
+        {
+          highlightNodes: ['deploy', 'monitor'],
+          highlightEdges: [{ from: 'deploy', to: 'monitor' }],
+          explanation: 'Sentry, les journaux d\'application et les moniteurs de disponibilité surveillent le code déployé. Les taux d\'erreur, les pics de latence et les exceptions non gérées sont suivis en temps réel.',
+        },
+        {
+          highlightNodes: ['monitor', 'errors'],
+          highlightEdges: [{ from: 'monitor', to: 'errors' }],
+          explanation: 'Une alerte se déclenche : les erreurs 500 explosent à 2h du matin. Sentry capture un TypeError dans du code qu\'un agent a écrit il y a trois jours. La trace de pile pointe vers un fichier et un numéro de ligne spécifiques.',
+        },
+        {
+          highlightNodes: ['errors', 'analyze'],
+          highlightEdges: [{ from: 'errors', to: 'analyze' }],
+          explanation: 'Tu classifies le bogue : vérification de null manquante (Patron 2). Git blame révèle quelle session d\'agent l\'a produit. Le commit correspond à une version de spec spécifique qui ne gérait pas les champs nullable.',
+        },
+        {
+          highlightNodes: ['analyze', 'improve'],
+          highlightEdges: [{ from: 'analyze', to: 'improve' }],
+          explanation: 'Tu ajoutes « tous les champs de réponse API peuvent être null — gérer avec des valeurs par défaut » à la liste de vérification des exigences de spec. Une règle de lint est ajoutée pour attraper les accès de propriétés sans chaînage optionnel.',
+        },
+        {
+          highlightNodes: ['improve', 'redeploy'],
+          highlightEdges: [{ from: 'improve', to: 'redeploy' }],
+          explanation: 'Le correctif est livré. Plus important encore, la spec améliorée garantit que les futures sessions d\'agent ne produiront plus jamais cette classe de bogue. La boucle continue — chaque erreur rend le prochain déploiement meilleur.',
+        },
+      ],
     },
     {
       type: 'checkpoint',
@@ -201,6 +233,44 @@ export function reportAgentBug(error: Error, context: {
       instruction: 'Installe Sentry pour ton projet React + Node.js :',
       expectedCommand: 'npm install @sentry/react @sentry/node',
       hint: 'Installe @sentry/react (frontend) et @sentry/node (backend)',
+    },
+    {
+      type: 'code-fill',
+      instruction: 'Complète la configuration Sentry pour la surveillance du code construit par agents. Remplis le DSN, l\'environnement et les paramètres de taux d\'échantillonnage.',
+      language: 'typescript',
+      filename: 'src/lib/monitoring.ts',
+      template: `import * as Sentry from '@sentry/react'
+
+Sentry.init({
+  dsn: {{dsn_value}},
+  environment: {{env_value}},
+
+  release: process.env.COMMIT_SHA,
+
+  initialScope: {
+    tags: {
+      fleet_run: process.env.FLEET_RUN_ID || 'manual',
+      deployed_at: new Date().toISOString(),
+    },
+  },
+
+  integrations: [
+    Sentry.browserTracingIntegration(),
+    Sentry.replayIntegration({
+      maskAllText: false,
+      blockAllMedia: false,
+    }),
+  ],
+
+  tracesSampleRate: {{traces_rate}},
+  replaysOnErrorSampleRate: 1.0,
+})`,
+      blanks: [
+        { id: 'dsn_value', answer: 'process.env.SENTRY_DSN', alternatives: ['process.env.SENTRY_DSN', 'process.env.NEXT_PUBLIC_SENTRY_DSN'], placeholder: 'variable d\'env pour le DSN', hint: 'Le DSN doit venir d\'une variable d\'environnement, pas codé en dur' },
+        { id: 'env_value', answer: 'process.env.NODE_ENV', alternatives: ['process.env.NODE_ENV', "process.env.VERCEL_ENV || 'development'"], placeholder: 'variable d\'env pour l\'environnement', hint: 'Quelle variable d\'env standard contient "production", "development", etc. ?' },
+        { id: 'traces_rate', answer: '0.1', alternatives: ['0.1', '0.10'], placeholder: 'taux d\'échantillonnage (0-1)', hint: 'Échantillonner 10% des transactions pour équilibrer coût et visibilité' },
+      ],
+      explanation: 'Le DSN et l\'environnement doivent venir de variables d\'environnement — les coder en dur est une des erreurs d\'agent les plus courantes. Un taux d\'échantillonnage de transactions à 10% équilibre le coût d\'observabilité avec la couverture. Les replays d\'erreurs à 100% capturent chaque session d\'erreur pour le débogage.',
     },
 
     // === TRACING ERRORS TO AGENT SESSIONS ===

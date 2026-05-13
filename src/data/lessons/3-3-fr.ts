@@ -273,7 +273,56 @@ const content: LessonContent = {
       hint: 'Utilisez git worktree remove <chemin>',
     },
 
-    // === ANTI-PATTERNS ===
+    // === INTERACTIF : CODE-FILL ===
+    {
+      type: 'code-fill',
+      instruction: 'Complétez les commandes git worktree pour configurer des espaces de travail parallèles :',
+      language: 'shell',
+      template: '# Create isolated worktrees for two agents\ngit worktree add ../{{dir1}} -b {{branch1}}\ngit worktree add ../{{dir2}} -b {{branch2}}\n\n# After agents finish, clean up\ngit worktree {{cleanup}} ../agent-auth\ngit worktree {{cleanup}} ../agent-api',
+      blanks: [
+        { id: 'dir1', answer: 'agent-auth', alternatives: ['wt-auth'], placeholder: 'nom du répertoire ?', hint: 'Nom descriptif pour l\'espace de travail de l\'agent auth' },
+        { id: 'branch1', answer: 'feat/auth', alternatives: ['feature/auth', 'auth'], placeholder: 'nom de branche ?', hint: 'Branche de fonctionnalité pour le travail auth' },
+        { id: 'dir2', answer: 'agent-api', alternatives: ['wt-api'], placeholder: 'nom du répertoire ?' },
+        { id: 'branch2', answer: 'feat/api', alternatives: ['feature/api', 'api'], placeholder: 'nom de branche ?' },
+        { id: 'cleanup', answer: 'remove', alternatives: ['rm'], placeholder: 'commande de nettoyage ?', hint: 'Supprimer le worktree quand c\'est fini' },
+      ],
+      explanation: 'Chaque agent obtient son propre répertoire et sa propre branche. Ils travaillent en isolation complète — aucun conflit de fichier. Après la fusion, supprimez les worktrees pour nettoyer.',
+    },
+
+    // === INTERACTIF : DIAGRAMME CYCLE DE VIE WORKTREE ===
+    {
+      type: 'interactive-diagram',
+      title: 'Cycle de vie du worktree (étape par étape)',
+      body: 'Parcourez chaque phase du cycle de vie du worktree pour comprendre ce qui se passe à chaque étape.',
+      diagram: {
+        direction: 'LR',
+        nodes: [
+          { id: 'create', label: 'Créer', shape: 'rounded' },
+          { id: 'branch', label: 'Brancher' },
+          { id: 'work', label: 'Travailler' },
+          { id: 'test', label: 'Tester' },
+          { id: 'merge', label: 'Fusionner' },
+          { id: 'cleanup', label: 'Nettoyer', shape: 'pill', highlight: true },
+        ],
+        edges: [
+          { from: 'create', to: 'branch' },
+          { from: 'branch', to: 'work' },
+          { from: 'work', to: 'test' },
+          { from: 'test', to: 'merge' },
+          { from: 'merge', to: 'cleanup' },
+        ],
+      },
+      stages: [
+        { highlightNodes: ['create'], explanation: 'Exécutez `git worktree add ../agent-dir -b feat/task` pour créer un répertoire isolé avec sa propre branche. Prend des millisecondes.' },
+        { highlightNodes: ['create', 'branch'], highlightEdges: [{ from: 'create', to: 'branch' }], explanation: 'Le nouveau worktree extrait une branche fraîche depuis votre HEAD actuel. L\'agent a maintenant son propre bac à sable de fichiers.' },
+        { highlightNodes: ['branch', 'work'], highlightEdges: [{ from: 'branch', to: 'work' }], explanation: 'L\'agent travaille librement dans son worktree — modification, création, suppression de fichiers. Aucun autre agent n\'est affecté.' },
+        { highlightNodes: ['work', 'test'], highlightEdges: [{ from: 'work', to: 'test' }], explanation: 'Exécutez les tests dans le worktree pour vérifier le travail de l\'agent avant la fusion. Détectez les problèmes tôt.' },
+        { highlightNodes: ['test', 'merge'], highlightEdges: [{ from: 'test', to: 'merge' }], explanation: 'Revenez au dépôt principal et faites `git merge feat/task`. Si la propriété des fichiers était exclusive, ça fusionne proprement.' },
+        { highlightNodes: ['merge', 'cleanup'], highlightEdges: [{ from: 'merge', to: 'cleanup' }], explanation: 'Exécutez `git worktree remove ../agent-dir` et `git branch -d feat/task`. Ardoise propre pour la prochaine exécution.' },
+      ],
+    },
+
+    // === ANTI-PATRONS ===
     {
       type: 'info',
       title: 'Erreurs courantes à éviter',

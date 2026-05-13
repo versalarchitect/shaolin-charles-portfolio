@@ -22,9 +22,9 @@ const content: LessonContent = {
 
     // === DEBUGGING DECISION TREE DIAGRAM ===
     {
-      type: 'diagram',
+      type: 'interactive-diagram',
       title: 'Debugging Decision Tree',
-      body: 'Follow this path every time you hit an error. No skipping steps.',
+      body: 'Click through each stage to follow the systematic debugging path.',
       diagram: {
         direction: 'TB',
         nodes: [
@@ -44,6 +44,38 @@ const content: LessonContent = {
           { from: 'search', to: 'verify' },
         ],
       },
+      stages: [
+        {
+          highlightNodes: ['err'],
+          highlightEdges: [],
+          explanation: 'An error occurs. Something is red in your terminal or browser console. Resist the urge to start changing code immediately.',
+        },
+        {
+          highlightNodes: ['err', 'read'],
+          highlightEdges: [{ from: 'err', to: 'read' }],
+          explanation: 'Read the full error message. Not just the first line — the type, the message, the file path, line number, and stack trace. Parse all four parts before doing anything.',
+        },
+        {
+          highlightNodes: ['read', 'rec'],
+          highlightEdges: [{ from: 'read', to: 'rec' }],
+          explanation: 'Do you recognize this error? A TypeError about "undefined" means null data. A SyntaxError means broken structure. A ReferenceError means something is missing. Classify it.',
+        },
+        {
+          highlightNodes: ['rec', 'fix'],
+          highlightEdges: [{ from: 'rec', to: 'fix' }],
+          explanation: 'If you recognize the error, apply the known fix directly. You have seen "Cannot read properties of undefined" before — you know to check if the data loaded before accessing it.',
+        },
+        {
+          highlightNodes: ['rec', 'search'],
+          highlightEdges: [{ from: 'rec', to: 'search' }],
+          explanation: 'If the error is unfamiliar, search it. Paste the exact message into your agent or a search engine. Include the error type and the key phrase, not the full stack trace.',
+        },
+        {
+          highlightNodes: ['fix', 'search', 'verify'],
+          highlightEdges: [{ from: 'fix', to: 'verify' }, { from: 'search', to: 'verify' }],
+          explanation: 'Always verify. Make ONE change, then test. Did the error disappear? Did a new one appear? One change per cycle keeps you from introducing new problems while fixing old ones.',
+        },
+      ],
     },
 
     // === ERROR ANATOMY ===
@@ -145,6 +177,32 @@ const content: LessonContent = {
       type: 'checkpoint',
       xp: 3,
       message: 'You know the three types of errors. That is half the battle.',
+    },
+    {
+      type: 'match',
+      instruction: 'Match each error type to the correct investigation approach:',
+      leftItems: ['SyntaxError', 'TypeError', 'ReferenceError', 'Logic error'],
+      rightItems: ['Check for typos, missing brackets, or invalid syntax', 'Check data types — is a value null, undefined, or the wrong shape?', 'Check if the variable or import exists in this scope', 'Check expected vs actual output — the code runs but produces wrong results'],
+      correctPairs: { 0: 0, 1: 1, 2: 2, 3: 3 },
+      explanation: 'Each error type points to a different root cause. Syntax errors are structural, type errors are about data shape, reference errors are about scope, and logic errors require comparing expected vs actual behavior.',
+    },
+    {
+      type: 'compare',
+      title: 'Symptom fix vs root cause fix',
+      body: 'When an agent encounters an error, it might fix the symptom instead of the cause.',
+      question: 'Which fix actually solves the problem?',
+      correctSide: 'right',
+      left: {
+        label: 'Symptom fix',
+        content: '// "TypeError: Cannot read property name of null"\n\n// Fix: wrap everything in try-catch\ntry {\n  const name = user.name\n  displayGreeting(name)\n} catch (e) {\n  // silently ignore\n}',
+        language: 'typescript',
+      },
+      right: {
+        label: 'Root cause fix',
+        content: '// "TypeError: Cannot read property name of null"\n\n// Fix: handle the null user case\nif (!user) {\n  redirect("/login")\n  return\n}\nconst name = user.name\ndisplayGreeting(name)',
+        language: 'typescript',
+      },
+      explanation: 'The symptom fix hides the error with a try-catch, but the user still sees a broken page. The root cause fix addresses WHY user is null and handles it properly.',
     },
 
     // === CLASSIFY REAL ERRORS ===

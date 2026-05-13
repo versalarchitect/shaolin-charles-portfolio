@@ -260,6 +260,29 @@ const content: LessonContent = {
       message: 'SSH is connected! You can now securely communicate with GitHub.',
     },
 
+    // === INTERACTIVE REVIEW ===
+    {
+      type: 'match',
+      instruction: 'Match each tool to its purpose in your development setup:',
+      leftItems: ['Node.js', 'Bun', 'Git', 'VS Code', 'SSH Key'],
+      rightItems: ['JavaScript runtime for running code', 'Fast package manager and bundler', 'Version control for tracking changes', 'Code editor with extensions', 'Secure authentication with GitHub'],
+      correctPairs: { 0: 0, 1: 1, 2: 2, 3: 3, 4: 4 },
+      explanation: 'Each tool serves a specific role. Node.js runs JavaScript, Bun manages packages fast, Git tracks code history, VS Code is your editor, and SSH keys authenticate you with GitHub without passwords.',
+    },
+    {
+      type: 'code-fill',
+      instruction: 'Complete the VS Code settings to enable automatic formatting on save:',
+      language: 'json',
+      filename: '.vscode/settings.json',
+      template: '{\n  "editor.{{setting1}}": {{value1}},\n  "editor.{{setting2}}": "esbenp.prettier-vscode"\n}',
+      blanks: [
+        { id: 'setting1', answer: 'formatOnSave', alternatives: ['format_on_save'], placeholder: 'which setting?', hint: 'Two words: format + on + save' },
+        { id: 'value1', answer: 'true', placeholder: 'true or false?' },
+        { id: 'setting2', answer: 'defaultFormatter', alternatives: ['default_formatter'], placeholder: 'which formatter setting?', hint: 'What is the default formatter?' },
+      ],
+      explanation: 'formatOnSave automatically runs Prettier every time you save. defaultFormatter tells VS Code which extension to use for formatting.',
+    },
+
     // === VERIFICATION ===
     {
       type: 'checklist',

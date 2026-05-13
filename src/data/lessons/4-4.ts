@@ -43,6 +43,62 @@ const content: LessonContent = {
       },
     },
     {
+      type: 'interactive-diagram',
+      title: 'Agent suggestion evaluation flow',
+      body: 'Step through the evaluation process for any architectural suggestion from an agent.',
+      diagram: {
+        direction: 'TB',
+        nodes: [
+          { id: 'suggestion', label: 'Agent Suggestion', sublabel: '"Use microservices"', shape: 'pill' },
+          { id: 'fit', label: 'Requirements Fit?', sublabel: 'Does it solve the actual problem?', shape: 'diamond' },
+          { id: 'constraints', label: 'Constraints Honored?', sublabel: 'Team size, timeline, ops budget', shape: 'diamond' },
+          { id: 'simpler', label: 'Simpler Alternative?', sublabel: 'Could we do less and still win?', shape: 'diamond' },
+          { id: 'accept', label: 'Accept', shape: 'rounded', highlight: true },
+          { id: 'modify', label: 'Modify', sublabel: 'Take the kernel, simplify', shape: 'rounded' },
+          { id: 'reject', label: 'Reject', sublabel: 'Too complex for context', shape: 'rounded' },
+        ],
+        edges: [
+          { from: 'suggestion', to: 'fit' },
+          { from: 'fit', to: 'constraints', label: 'yes' },
+          { from: 'fit', to: 'reject', label: 'no' },
+          { from: 'constraints', to: 'simpler', label: 'yes' },
+          { from: 'constraints', to: 'modify', label: 'partially' },
+          { from: 'simpler', to: 'accept', label: 'no simpler way' },
+          { from: 'simpler', to: 'modify', label: 'simpler exists' },
+        ],
+      },
+      stages: [
+        {
+          highlightNodes: ['suggestion', 'fit'],
+          highlightEdges: [{ from: 'suggestion', to: 'fit' }],
+          explanation: 'Every agent suggestion enters the evaluation pipeline. First gate: does this solve a REAL, MEASURED problem? Not an imagined future problem, not a "what if we scale" scenario. If the problem does not exist today, the suggestion fails immediately.',
+        },
+        {
+          highlightNodes: ['fit', 'reject'],
+          highlightEdges: [{ from: 'fit', to: 'reject' }],
+          explanation: 'If the suggestion does not fit actual requirements, reject it outright. Example: agent suggests event sourcing for "audit trail needs" — but you have 50 users and no audit requirement. Technically valid, practically wrong.',
+        },
+        {
+          highlightNodes: ['fit', 'constraints'],
+          highlightEdges: [{ from: 'fit', to: 'constraints' }],
+          explanation: 'If it fits requirements, check constraints: can your team of 2 maintain this? Does it fit your 3-month timeline? Can you operate it? Budget allows? If constraints are only partially met, route to Modify.',
+        },
+        {
+          highlightNodes: ['constraints', 'simpler', 'accept', 'modify'],
+          highlightEdges: [{ from: 'constraints', to: 'simpler' }, { from: 'simpler', to: 'accept' }, { from: 'simpler', to: 'modify' }],
+          explanation: 'Final gate: is there a simpler alternative? Microservices might become a modular monolith. Event sourcing might become an append-only log table. If no simpler way exists, accept. If simpler exists, modify — take the kernel idea and reduce complexity.',
+        },
+      ],
+    },
+    {
+      type: 'match',
+      instruction: 'Match each AI anti-pattern to the problem it causes in your codebase.',
+      leftItems: ['God object', 'Over-abstraction', 'Premature optimization', 'Tight coupling'],
+      rightItems: ['Single point of failure', 'Unnecessary complexity', 'Wasted effort on non-bottlenecks', 'Changes cascade across modules'],
+      correctPairs: { 0: 0, 1: 1, 2: 2, 3: 3 },
+      explanation: 'God objects become single points of failure because everything depends on them — modify the god object and the entire system is at risk. Over-abstraction creates unnecessary complexity through interfaces, factories, and layers that only have one consumer. Premature optimization wastes effort on non-bottlenecks because you are optimizing code that was never measured as slow. Tight coupling makes changes cascade because modifying one module forces changes in every module that depends on its internals.',
+    },
+    {
       type: 'info',
       title: 'Question 1: Does it fit the actual requirements?',
       body: "Not the imagined future requirements. Not the \"what if we scale to 10M users\" requirements. The actual, current, proven requirements. An agent suggests event sourcing because \"you might want an audit trail later.\" But you have 50 users and no audit requirement. The suggestion is technically valid but does not fit what you actually need today. Architecture for current needs with extension points for tomorrow — not architecture for imagined tomorrows.",

@@ -117,6 +117,47 @@ const content: LessonContent = {
       message: 'Schema review instincts sharpened!',
     },
 
+    // === INTERACTIVE DATABASE EXERCISES ===
+    {
+      type: 'compare',
+      title: 'Agent-generated migration: spot the problems',
+      body: 'Agents generate technically valid SQL that often misses structural safeguards.',
+      question: 'Which migration is safer to run in production?',
+      correctSide: 'right',
+      left: {
+        label: 'Missing safeguards',
+        content: 'CREATE TABLE tasks (\n  id SERIAL PRIMARY KEY,\n  title TEXT,\n  project_id INTEGER,\n  status TEXT,\n  assigned_to TEXT\n);\n\n-- No NOT NULL constraints\n-- No FK to projects table\n-- No index on project_id\n-- status is free text, not enum',
+        language: 'sql',
+      },
+      right: {
+        label: 'Production-ready',
+        content: 'CREATE TABLE tasks (\n  id SERIAL PRIMARY KEY,\n  title TEXT NOT NULL,\n  project_id INTEGER NOT NULL\n    REFERENCES projects(id) ON DELETE CASCADE,\n  status TEXT NOT NULL\n    CHECK (status IN (\'todo\',\'doing\',\'done\')),\n  assigned_to UUID REFERENCES auth.users(id)\n);\nCREATE INDEX idx_tasks_project\n  ON tasks(project_id);',
+        language: 'sql',
+      },
+      explanation: 'The production version adds: NOT NULL to prevent empty data, FK constraint for referential integrity, CHECK constraint for valid statuses, proper UUID type for user references, and an index for query performance.',
+    },
+    {
+      type: 'code-fill',
+      instruction: 'Fix this migration by adding the missing constraints:',
+      language: 'sql',
+      filename: 'supabase/migrations/002_fix_tasks.sql',
+      template: 'ALTER TABLE tasks\n  ALTER COLUMN title SET {{not_null}},\n  ADD CONSTRAINT fk_project\n    FOREIGN KEY (project_id) REFERENCES {{ref_table}}(id)\n    ON DELETE {{cascade_action}};',
+      blanks: [
+        { id: 'not_null', answer: 'NOT NULL', alternatives: ['not null'], placeholder: 'constraint?', hint: 'Prevent empty values' },
+        { id: 'ref_table', answer: 'projects', placeholder: 'which table?', hint: 'The parent table for tasks' },
+        { id: 'cascade_action', answer: 'CASCADE', alternatives: ['cascade'], placeholder: 'delete behavior?', hint: 'When the project is deleted, delete its tasks too' },
+      ],
+      explanation: 'NOT NULL prevents empty data. FOREIGN KEY ensures every task belongs to a real project. ON DELETE CASCADE automatically removes orphaned tasks when a project is deleted.',
+    },
+    {
+      type: 'match',
+      instruction: 'Match each ON DELETE behavior to the right relationship:',
+      leftItems: ['CASCADE', 'SET NULL', 'RESTRICT'],
+      rightItems: ['Child is meaningless without parent (task without project)', 'Child can exist independently (comment without author)', 'Deletion should be blocked if children exist (user with active orders)'],
+      correctPairs: { 0: 0, 1: 1, 2: 2 },
+      explanation: 'CASCADE deletes children automatically. SET NULL keeps children but removes the link. RESTRICT prevents deletion entirely. Choose based on the real-world relationship between the data.',
+    },
+
     // === WORKFLOW DIAGRAM ===
     {
       type: 'diagram',

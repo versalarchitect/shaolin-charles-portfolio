@@ -211,9 +211,9 @@ const content: LessonContent = {
       body: "Tu ne peux pas repenser le système entier d'un coup. Le graphe de tâches définit l'ordre des opérations — quelles migrations peuvent tourner en parallèle et lesquelles ont des dépendances. Le chemin critique passe par le bus d'événements (tout en dépend) et le package de types partagés (tout l'importe). Une fois que ceux-ci existent, les six extractions de domaines peuvent se faire en parallèle.",
     },
     {
-      type: 'diagram',
+      type: 'interactive-diagram',
       title: 'Graphe de tâches de migration',
-      body: 'Le chemin critique est vertical. Le travail parallèle se ramifie horizontalement une fois les fondations posées.',
+      body: 'Clique sur chaque phase pour comprendre la séquence de refactorisation et pourquoi elle doit se faire dans cet ordre.',
       diagram: {
         direction: 'TB',
         nodes: [
@@ -241,6 +241,38 @@ const content: LessonContent = {
           { from: 'admin', to: 'verify' },
         ],
       },
+      stages: [
+        {
+          highlightNodes: ['types'],
+          highlightEdges: [],
+          explanation: 'Phase 1 : Créer le package de types partagés. Tous les événements de domaine et contrats API sont définis ici. C\'est la source de vérité unique dont chaque package dépendra. Sans ça, les agents inventeraient des interfaces incompatibles.',
+        },
+        {
+          highlightNodes: ['types', 'bus'],
+          highlightEdges: [{ from: 'types', to: 'bus' }],
+          explanation: 'Phase 2 : Implémenter le bus d\'événements avec Redis Streams. C\'est l\'épine dorsale de communication. Les domaines publieront et s\'abonneront à des événements au lieu de s\'importer mutuellement. Le bus dépend des types partagés pour les définitions d\'événements.',
+        },
+        {
+          highlightNodes: ['bus', 'auth', 'payments', 'inventory', 'notifications'],
+          highlightEdges: [{ from: 'bus', to: 'auth' }, { from: 'bus', to: 'payments' }, { from: 'bus', to: 'inventory' }, { from: 'bus', to: 'notifications' }],
+          explanation: 'Phase 3 : Quatre extractions en parallèle. Chaque agent travaille indépendamment sur un domaine. Auth (7/10 constructibilité) est le plus facile. Notifications (1/10) est entièrement réécrit en événementiel. Les quatre peuvent se faire simultanément car ils ne dépendent que du bus d\'événements, pas les uns des autres.',
+        },
+        {
+          highlightNodes: ['auth', 'payments', 'inventory', 'orders'],
+          highlightEdges: [{ from: 'auth', to: 'orders' }, { from: 'payments', to: 'orders' }, { from: 'inventory', to: 'orders' }],
+          explanation: 'Phase 4 : Strangler fig pour Commandes. C\'est en dernier parce que Commandes dépend d\'Auth, Paiements et Inventaire. Ceux-ci doivent avoir des interfaces stables et indépendantes avant que Commandes puisse se découpler de leurs internals. Chaque endpoint est migré individuellement avec un adaptateur.',
+        },
+        {
+          highlightNodes: ['orders', 'admin'],
+          highlightEdges: [{ from: 'orders', to: 'admin' }],
+          explanation: 'Phase 5 : Reconstruire Admin comme un pur consommateur d\'API. Admin est en dernier parce qu\'il a besoin d\'API stables de chaque autre domaine à appeler. Une fois tous les domaines extraits, Admin devient une mince couche d\'UI par-dessus des API versionnées.',
+        },
+        {
+          highlightNodes: ['admin', 'verify'],
+          highlightEdges: [{ from: 'admin', to: 'verify' }],
+          explanation: 'Phase 6 : Vérification système complète. Les tests de bout en bout valident que le système découplé se comporte de façon identique au monolithe. Le mode shadow compare les sorties. C\'est seulement après que la vérification passe qu\'on retire les adaptateurs legacy.',
+        },
+      ],
     },
     {
       type: 'multiple-choice',
@@ -258,6 +290,53 @@ const content: LessonContent = {
       type: 'checkpoint',
       xp: 15,
       message: 'Graphe de tâches conçu !',
+    },
+
+    // === CODE-FILL: SPEC DE MIGRATION ===
+    {
+      type: 'code-fill',
+      instruction: 'Complète cette spec de migration avec les descriptions de phases, les assignations d\'agents et les contrats d\'interface.',
+      language: 'markdown',
+      filename: 'docs/migration-spec.md',
+      template: '# ShopFlow Migration Spec\n\n## Phase 1: Foundation\n- Create {{foundation_package}} with all event type definitions\n- Implement event bus using {{bus_technology}}\n\n## Phase 2: Parallel Extractions\n- Agent A: Extract {{agent_a_domain}} (highest buildability score)\n- Agent B: Extract {{agent_b_domain}} (clear domain boundary)\n- Agent C: Rewrite {{agent_c_domain}} as event-driven\n\n## Phase 3: Core Domain\n- Migrate Orders using {{migration_pattern}} pattern\n- Each endpoint gets its own {{adapter_type}}\n\n## Interface Contract\n- Cross-domain communication via {{comm_method}} only\n- All events typed in {{types_package}}',
+      blanks: [
+        { id: 'foundation_package', answer: '@shop/shared-types', alternatives: ['shared-types', '@shop/types', 'shared types package'], placeholder: 'nom du package ?', hint: 'Le package de contrat partagé' },
+        { id: 'bus_technology', answer: 'Redis Streams', alternatives: ['Redis', 'redis streams', 'Redis Pub/Sub', 'message queue'], placeholder: 'quelle technologie ?', hint: 'Une technologie populaire de streaming de messages' },
+        { id: 'agent_a_domain', answer: 'Auth', alternatives: ['auth', 'Authentication', 'authentication'], placeholder: 'quel domaine ?', hint: 'Score de 7/10 en constructibilité' },
+        { id: 'agent_b_domain', answer: 'Payments', alternatives: ['payments', 'Payment', 'Billing', 'billing', 'Paiements'], placeholder: 'quel domaine ?', hint: 'Score de 6/10 en constructibilité' },
+        { id: 'agent_c_domain', answer: 'Notifications', alternatives: ['notifications', 'Notification'], placeholder: 'quel domaine ?', hint: 'Score de 1/10 — nécessite une réécriture complète' },
+        { id: 'migration_pattern', answer: 'strangler fig', alternatives: ['strangler', 'strangler fig pattern', 'incremental replacement'], placeholder: 'quel patron ?', hint: 'Remplacement graduel pendant que l\'ancien système tourne' },
+        { id: 'adapter_type', answer: 'adapter', alternatives: ['adapter layer', 'compatibility adapter', 'legacy adapter', 'wrapper', 'adaptateur'], placeholder: 'quoi enveloppe ancien/nouveau ?', hint: 'Fait le pont entre les anciennes et nouvelles interfaces' },
+        { id: 'comm_method', answer: 'event bus or typed HTTP API', alternatives: ['events and APIs', 'event bus', 'HTTP API', 'typed API', 'events or HTTP'], placeholder: 'méthode de communication ?', hint: 'Deux canaux de communication approuvés' },
+        { id: 'types_package', answer: '@shop/shared-types', alternatives: ['shared-types', '@shop/types', 'the shared types package'], placeholder: 'où sont définis les types ?' },
+      ],
+      explanation: 'Une spec de migration complète élimine l\'ambiguïté pour chaque agent de la flotte. L\'ordre des phases, les assignations d\'agents et les contrats d\'interface signifient que chaque agent sait exactement quoi construire, de quoi dépendre, et quoi ne pas toucher.',
+    },
+
+    // === PROMPT-LAB: PROMPTS D'AGENTS POUR LA MIGRATION ===
+    {
+      type: 'prompt-lab',
+      instruction: 'Écris un prompt pour assigner un agent à l\'extraction d\'un domaine dans la migration ShopFlow. Inclus assez de spécificité pour que l\'agent puisse exécuter immédiatement.',
+      scenario: 'Tu assignes un agent pour extraire le domaine Paiements du monolithe ShopFlow en un package indépendant. Le bus d\'événements et @shop/shared-types sont déjà en place. L\'agent a besoin d\'un cadre clair, de contraintes et d\'étapes de vérification.',
+      starterPrompt: 'Refactor the app.',
+      responses: [
+        {
+          triggerKeywords: ['payments', 'event', 'shared-types', 'scope', 'test'],
+          response: 'I\'ll extract the Payments domain into an independent package.\n\nPlan:\n1. Create packages/payments/ with its own tsconfig and build target\n2. Move all payment-related source files from the monolith\n3. Replace direct imports with event bus subscriptions (OrderPlaced, OrderCancelled)\n4. Publish PaymentProcessed, RefundIssued events via @shop/shared-types\n5. Create adapter for legacy consumers during migration\n6. Verify: package tests pass in isolation, build succeeds independently\n\nStarting extraction...',
+          quality: 'excellent',
+          feedback: 'Ton prompt incluait le cadre du domaine, les contrats d\'événements, les contraintes de dépendances et les critères de vérification. L\'agent peut exécuter l\'extraction complète sans poser de questions de suivi. C\'est de la direction d\'agents de qualité production.',
+        },
+        {
+          triggerKeywords: ['payments', 'package', 'extract'],
+          response: 'I\'ll extract payments into its own package. Should I:\n- Use the existing database schema or create a new one?\n- Keep the current Stripe integration or refactor it?\n- How should payments communicate with orders?\n\nLet me know before I start.',
+          quality: 'good',
+          feedback: 'Tu as spécifié le domaine et l\'action, ce qui est mieux que « refactoriser l\'app ». Mais l\'agent a encore besoin de demander les patrons de communication, la propriété de la base de données et l\'approche d\'intégration. Ajoute des contraintes sur l\'utilisation du bus d\'événements et la propriété du schéma pour éliminer ces questions.',
+        },
+      ],
+      fallbackResponse: {
+        response: 'I\'ll start refactoring the app. Let me analyze the full codebase first... this is a 120K line monolith, so I\'ll need to understand all the dependencies before making changes. This might take a while.\n\nShould I start with the most complex module or the simplest?',
+        feedback: 'Sans cadre, l\'agent essaie d\'analyser toute la base de code de 120K lignes. Il demande des questions de stratégie au lieu d\'exécuter. Un bon prompt spécifie : quel domaine (Paiements), quelle action (extraire en package), quelles contraintes (bus d\'événements seulement, schéma propre), et comment vérifier (tests passent en isolation).',
+      },
     },
 
     // === PHASE 5: PROFESSIONAL PRESENTATION ===

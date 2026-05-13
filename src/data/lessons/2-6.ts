@@ -17,7 +17,7 @@ const content: LessonContent = {
 
     // === PAYMENT FLOW SPEC ===
     {
-      type: 'diagram',
+      type: 'interactive-diagram',
       title: 'Stripe Checkout Flow',
       body: 'The full payment flow from user click to fulfillment. Every arrow is a potential failure point.',
       diagram: {
@@ -39,6 +39,38 @@ const content: LessonContent = {
           { from: 'fulfill', to: 'confirm', dashed: true },
         ],
       },
+      stages: [
+        {
+          highlightNodes: ['click', 'session'],
+          highlightEdges: [{ from: 'click', to: 'session' }],
+          explanation: 'User clicks Pay. Your server creates a Stripe Checkout Session with the product, price, and metadata. Failure here means your server is down — show an error on the button.',
+        },
+        {
+          highlightNodes: ['session', 'stripe'],
+          highlightEdges: [{ from: 'session', to: 'stripe' }],
+          explanation: 'User is redirected to Stripe\'s hosted payment page. Stripe handles card entry, validation, and 3D Secure. You have no control here — Stripe owns this step.',
+        },
+        {
+          highlightNodes: ['stripe', 'confirm'],
+          highlightEdges: [{ from: 'stripe', to: 'confirm' }],
+          explanation: 'After payment, Stripe redirects the user to your success page. But the user might close the browser before the redirect completes — so never fulfill on redirect alone.',
+        },
+        {
+          highlightNodes: ['stripe', 'webhook'],
+          highlightEdges: [{ from: 'stripe', to: 'webhook' }],
+          explanation: 'Stripe sends a webhook asynchronously. This is the reliable path — Stripe retries on failure. The webhook may arrive before or after the redirect. Your handler must verify the signature.',
+        },
+        {
+          highlightNodes: ['webhook', 'fulfill'],
+          highlightEdges: [{ from: 'webhook', to: 'fulfill' }],
+          explanation: 'The webhook triggers fulfillment: update the database, send confirmation email, provision access. This must be idempotent — Stripe may send the same webhook multiple times.',
+        },
+        {
+          highlightNodes: ['fulfill', 'confirm'],
+          highlightEdges: [{ from: 'fulfill', to: 'confirm' }],
+          explanation: 'The success page shows the order status. If the webhook has not arrived yet, show a loading/processing state. Poll or use realtime to update when fulfillment completes.',
+        },
+      ],
     },
     {
       type: 'code-demo',
@@ -131,6 +163,38 @@ const content: LessonContent = {
       ],
       correctIndex: 1,
       explanation: 'Stripe retries use the same event ID (evt_xxx). When Stripe retries a failed webhook delivery, it sends the same event object with the same ID. This makes it a reliable idempotency key. The checkout session ID also works but is less granular if you handle multiple event types per session.',
+    },
+    {
+      type: 'compare',
+      title: 'Webhook without vs with idempotency',
+      body: 'Stripe sends webhooks at least once — sometimes multiple times. Your handler must handle duplicates.',
+      question: 'Which handler is safe when Stripe retries the same webhook?',
+      correctSide: 'right',
+      left: {
+        label: 'Not idempotent',
+        content: 'async function handleCheckout(session) {\n  // Danger: creates duplicate on retry!\n  await db.insert(orders).values({\n    userId: session.metadata.userId,\n    amount: session.amount_total,\n    status: "paid"\n  })\n  await sendConfirmationEmail(session)\n}',
+        language: 'typescript',
+      },
+      right: {
+        label: 'Idempotent',
+        content: 'async function handleCheckout(session) {\n  // Safe: check before creating\n  const existing = await db.query.orders\n    .findFirst({\n      where: eq(orders.sessionId, session.id)\n    })\n  if (existing) return // Already processed\n\n  await db.insert(orders).values({\n    sessionId: session.id,\n    userId: session.metadata.userId,\n    amount: session.amount_total,\n    status: "paid"\n  })\n  await sendConfirmationEmail(session)\n}',
+        language: 'typescript',
+      },
+      explanation: 'The idempotent version checks if the order already exists using the Stripe session ID as a unique key. If Stripe retries the webhook, the handler returns early instead of creating a duplicate.',
+    },
+    {
+      type: 'code-fill',
+      instruction: 'Complete the idempotent fulfillment logic:',
+      language: 'typescript',
+      filename: 'src/lib/fulfill-order.ts',
+      template: 'async function fulfillOrder(session: Stripe.Checkout.Session) {\n  const existing = await db.query.orders.findFirst({\n    where: eq(orders.{{unique_key}}, session.{{session_field}})\n  })\n  if ({{guard_check}}) return existing\n\n  return await db.insert(orders).values({\n    sessionId: session.id,\n    userId: session.metadata.userId,\n    status: "{{initial_status}}"\n  })\n}',
+      blanks: [
+        { id: 'unique_key', answer: 'sessionId', alternatives: ['session_id', 'stripeSessionId'], placeholder: 'which column?', hint: 'The column that stores the Stripe session identifier' },
+        { id: 'session_field', answer: 'id', placeholder: 'which field?', hint: 'The unique identifier on the Stripe session object' },
+        { id: 'guard_check', answer: 'existing', alternatives: ['existing !== null', 'existing != null'], placeholder: 'what to check?', hint: 'If this value is truthy, the order was already processed' },
+        { id: 'initial_status', answer: 'paid', alternatives: ['completed', 'fulfilled'], placeholder: 'order status?' },
+      ],
+      explanation: 'The session ID is the idempotency key. If an order with that session ID exists, we skip — preventing duplicates no matter how many times Stripe retries.',
     },
 
     // === FAILURE VERIFICATION ===

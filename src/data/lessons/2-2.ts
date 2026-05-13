@@ -22,6 +22,24 @@ const content: LessonContent = {
       body: "When directing a scaffold, specify: the framework and version (Next.js 15, App Router), the routing structure (what pages exist), data requirements per route (which pages need server-side data), shared layouts (what wraps what), and key packages (ORM, styling, auth). Do NOT specify: file naming conventions (the agent knows Next.js conventions), internal folder organization within components, import ordering, or boilerplate config. Let the agent handle what it already knows.",
     },
     {
+      type: 'compare',
+      title: 'What to specify vs what to leave to the agent',
+      body: 'A scaffold prompt should constrain decisions that are expensive to change later, but leave implementation details to the agent.',
+      question: 'Which side contains the right things to specify?',
+      correctSide: 'left',
+      left: {
+        label: 'Specify these',
+        content: '✓ Rendering strategy (Server vs Client)\n✓ Layout hierarchy (which pages nest)\n✓ Component organization (feature-based)\n✓ Data fetching pattern (server actions)\n✓ State management approach',
+        language: 'text',
+      },
+      right: {
+        label: 'Leave to the agent',
+        content: '✗ Exact CSS class names\n✗ Variable naming in components\n✗ Import ordering\n✗ Whether to use arrow or function syntax\n✗ Comment placement',
+        language: 'text',
+      },
+      explanation: 'Architectural decisions (left) are expensive to change after the scaffold is built. Implementation details (right) are cheap to adjust later. Focus your spec on the expensive decisions.',
+    },
+    {
       type: 'code-demo',
       title: 'A good scaffold prompt',
       body: 'This prompt gives Claude Code enough to scaffold correctly without micromanaging file names or boilerplate.',
@@ -87,9 +105,9 @@ const content: LessonContent = {
 
     // === WORKFLOW DIAGRAM ===
     {
-      type: 'diagram',
+      type: 'interactive-diagram',
       title: 'Directing a Scaffold',
-      body: 'The review loop: you specify, the agent builds, you evaluate, and you redirect or accept.',
+      body: 'The review loop: you specify, the agent builds, you evaluate, and you redirect or accept. Click through each stage.',
       diagram: {
         direction: 'LR',
         nodes: [
@@ -107,6 +125,32 @@ const content: LessonContent = {
           { from: 'redirect', to: 'scaffold' },
         ],
       },
+      stages: [
+        {
+          highlightNodes: ['spec'],
+          highlightEdges: [{ from: 'spec', to: 'scaffold' }],
+          explanation: 'Start with your spec: routes, layouts, rendering strategy, and key packages. This is your input to the agent.',
+        },
+        {
+          highlightNodes: ['scaffold'],
+          highlightEdges: [{ from: 'scaffold', to: 'review' }],
+          explanation: 'The agent generates the project structure — folders, config files, page components, layout hierarchy. This happens in seconds.',
+        },
+        {
+          highlightNodes: ['review'],
+          explanation: 'You review the generated structure against your spec. Check rendering strategy, layout nesting, and route correctness.',
+        },
+        {
+          highlightNodes: ['review', 'accept'],
+          highlightEdges: [{ from: 'review', to: 'accept' }],
+          explanation: 'If the structure matches your spec, accept it and move to implementation. No changes needed.',
+        },
+        {
+          highlightNodes: ['review', 'redirect', 'scaffold'],
+          highlightEdges: [{ from: 'review', to: 'redirect' }, { from: 'redirect', to: 'scaffold' }],
+          explanation: 'If you find problems (wrong component type, missing layouts, bad data pattern), redirect with a precise correction. The agent rebuilds and you review again.',
+        },
+      ],
     },
 
     // === REDIRECTING THE AGENT ===
