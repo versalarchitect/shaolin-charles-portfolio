@@ -64,11 +64,16 @@ const content: LessonContent = {
 
     // === THE ANTI-PATTERN ===
     {
-      type: 'code-demo',
-      title: 'Génération à l\'aveugle : l\'anti-pattern',
-      body: "Voici ce qui arrive quand tu sautes l'étape de lecture. L'agent n'a aucun contexte sur ton projet, alors il fait des suppositions — et ces suppositions sont presque toujours fausses.",
+      type: 'code-fill',
+      instruction: 'Voici ce qui arrive quand tu sautes la lecture. L\'agent n\'a aucun contexte et fait des suppositions fausses. Remplis ce que ton projet utilise vraiment vs ce que l\'agent a supposé.',
       language: 'text',
-      code: '# You type:\n"Add a login page to my app"\n\n# The agent assumes:\n- React Router (your app uses TanStack Router)\n- Tailwind CSS (your app uses styled-components)\n- A new AuthContext (your app already has one in src/providers/)\n- fetch() for API calls (your app uses axios with interceptors)\n\n# Result: a "working" component that breaks everything',
+      template: '# You type:\n"Add a login page to my app"\n\n# The agent assumes:\n- React Router (your app uses {{actual_router}})\n- Tailwind CSS (your app uses {{actual_css}})\n- A new AuthContext (your app already has one in {{auth_path}})\n- fetch() for API calls (your app uses axios with interceptors)\n\n# Result: a "working" component that breaks everything',
+      blanks: [
+        { id: 'actual_router', answer: 'TanStack Router', alternatives: ['tanstack router', 'tanstack-router', 'TanStack router'], placeholder: '______', hint: 'Une bibliothèque de routage React populaire et type-safe' },
+        { id: 'actual_css', answer: 'styled-components', alternatives: ['Styled Components', 'styled components'], placeholder: '______', hint: 'Bibliothèque CSS-in-JS utilisant des template literals' },
+        { id: 'auth_path', answer: 'src/providers/', alternatives: ['src/providers', 'src/providers/*'], placeholder: '______', hint: 'Où vivent généralement les providers de contexte React' },
+      ],
+      explanation: 'Sans lire la codebase d\'abord, l\'agent comble les lacunes avec les patterns les plus courants de ses données d\'entraînement — pas les patterns de ton projet. Chaque mauvaise supposition crée plus de travail que tu n\'en as économisé.',
     },
     {
       type: 'multiple-choice',
@@ -90,17 +95,29 @@ const content: LessonContent = {
 
     // === THE EXPLORATION WORKFLOW ===
     {
-      type: 'info',
-      title: 'Le workflow d\'exploration',
-      body: "Avant de toucher au code, lance trois types de reconnaissance : find (quels fichiers existent), grep (quels patterns sont utilisés), et read (comment fonctionnent des fichiers spécifiques). Pense à ça comme un chirurgien qui étudie les scans avant d'opérer — tu dois connaître l'anatomie avant de couper.",
+      type: 'multiple-choice',
+      question: 'Avant de demander à un agent IA de modifier du code, quels trois types de reconnaissance devrais-tu lancer ?',
+      options: [
+        'build, test, deploy',
+        'find (quels fichiers existent), grep (quels patterns sont utilisés), read (comment fonctionnent les fichiers)',
+        'install, configure, run',
+        'commit, push, merge',
+      ],
+      correctIndex: 1,
+      explanation: 'Avant de toucher au code, lance trois types de reconnaissance : find (quels fichiers existent), grep (quels patterns sont utilisés), et read (comment fonctionnent des fichiers spécifiques). Pense à ça comme un chirurgien qui étudie les scans avant d\'opérer — tu dois connaître l\'anatomie avant de couper.',
     },
     {
-      type: 'code-demo',
-      title: 'Étape 1 : Find — découvrir la structure',
-      body: "Commence par cartographier ce qui existe. La commande find te montre l'arborescence des fichiers du projet pour savoir où les choses se trouvent.",
+      type: 'code-fill',
+      instruction: 'Complète ces commandes find pour cartographier la structure du projet. La commande find te montre quels fichiers existent et où ils se trouvent.',
       language: 'bash',
       filename: 'terminal',
-      code: '# See all TypeScript/React files\nfind . -name "*.tsx" | head -20\n\n# Find component files specifically\nfind ./src/components -name "*.tsx"\n\n# Find config files at the root\nfind . -maxdepth 1 -name "*.config.*"\n\n# Find test files\nfind . -name "*.test.*" -o -name "*.spec.*"',
+      template: '# See all TypeScript/React files\nfind . -name "{{tsx_pattern}}" | head -20\n\n# Find component files specifically\nfind ./src/{{components_dir}} -name "*.tsx"\n\n# Find config files at the root\nfind . -maxdepth 1 -name "{{config_pattern}}"\n\n# Find test files\nfind . -name "*.test.*" -o -name "*.spec.*"',
+      blanks: [
+        { id: 'tsx_pattern', answer: '*.tsx', alternatives: ['*.TSX'], placeholder: '______', hint: 'Le pattern glob pour les fichiers TypeScript React' },
+        { id: 'components_dir', answer: 'components', alternatives: ['Components'], placeholder: '______', hint: 'Le répertoire standard pour les composants React' },
+        { id: 'config_pattern', answer: '*.config.*', alternatives: ['*.config.ts', '*.config.js'], placeholder: '______', hint: 'Pattern glob correspondant à vite.config.ts, tailwind.config.js, etc.' },
+      ],
+      explanation: 'La commande find est ton premier outil de reconnaissance. Utilise-la pour découvrir quels fichiers existent, où vivent les composants, et quels fichiers de config contrôlent le projet. Ça te donne une carte du projet avant de demander à l\'agent de changer quoi que ce soit.',
     },
     {
       type: 'terminal',
@@ -109,12 +126,17 @@ const content: LessonContent = {
       hint: 'Utilise find avec -name pour matcher l\'extension .tsx, redirige vers head pour limiter la sortie',
     },
     {
-      type: 'code-demo',
-      title: 'Étape 2 : Grep — découvrir les patterns',
-      body: "Une fois que tu sais quels fichiers existent, grep te dit comment ils fonctionnent. Cherche les patterns d'export, d'import et les signatures de fonctions clés pour comprendre les conventions.",
+      type: 'code-fill',
+      instruction: 'Complète ces commandes grep pour découvrir les patterns du projet. Une fois que tu sais quels fichiers existent, grep te dit comment ils fonctionnent.',
       language: 'bash',
       filename: 'terminal',
-      code: '# How are components exported?\ngrep -r "export default" src/components/ | head -10\ngrep -r "export function" src/components/ | head -10\n\n# What routing library is used?\ngrep -r "import.*from.*router" src/ | head -5\n\n# What state management exists?\ngrep -r "createContext\\|useContext\\|zustand\\|redux" src/ | head -10\n\n# What API client is used?\ngrep -r "fetch(\\|axios\\|useSWR\\|useQuery" src/ | head -5',
+      template: '# How are components exported?\ngrep -r "{{export_pattern}}" src/components/ | head -10\ngrep -r "export function" src/components/ | head -10\n\n# What routing library is used?\ngrep -r "import.*from.*{{router_search}}" src/ | head -5\n\n# What state management exists?\ngrep -r "createContext\\|useContext\\|zustand\\|{{state_lib}}" src/ | head -10',
+      blanks: [
+        { id: 'export_pattern', answer: 'export default', alternatives: ['export default function'], placeholder: '______', hint: 'La combinaison de mots-clés pour les exports par défaut' },
+        { id: 'router_search', answer: 'router', alternatives: ['Router'], placeholder: '______', hint: 'Mot-clé trouvé dans les chemins d\'import des bibliothèques de routage' },
+        { id: 'state_lib', answer: 'redux', alternatives: ['Redux', 'jotai', 'recoil'], placeholder: '______', hint: 'Une bibliothèque populaire de gestion d\'état pour React' },
+      ],
+      explanation: 'Grep est ton deuxième outil de reconnaissance. Il révèle les conventions que suit ton projet : comment les composants sont exportés, quelles bibliothèques sont utilisées pour le routage et l\'état, et quels patterns existent. C\'est du contexte essentiel pour écrire des prompts informés.',
     },
     {
       type: 'terminal',
@@ -123,12 +145,17 @@ const content: LessonContent = {
       hint: 'Utilise grep -r pour chercher récursivement dans le répertoire des composants',
     },
     {
-      type: 'code-demo',
-      title: 'Étape 3 : Read — comprendre les détails',
-      body: "Maintenant, lis les fichiers clés qui définissent les conventions du projet. Ces fichiers d'ancrage t'en disent plus sur le projet que toute autre source.",
+      type: 'code-fill',
+      instruction: 'Complète ces commandes de lecture. Ces fichiers d\'ancrage t\'en disent plus sur le projet que toute autre source.',
       language: 'bash',
       filename: 'terminal',
-      code: '# Project dependencies and scripts\ncat package.json\n\n# Project-specific AI instructions\ncat CLAUDE.md\n\n# Routing configuration\ncat src/routes.tsx\n\n# An existing component (to match its pattern)\ncat src/components/Dashboard.tsx\n\n# Global styles and theme\ncat src/globals.css',
+      template: '# Project dependencies and scripts\ncat {{deps_file}}\n\n# Project-specific AI instructions\ncat {{ai_file}}\n\n# Routing configuration\ncat src/routes.tsx\n\n# An existing component (to match its pattern)\ncat src/components/Dashboard.tsx\n\n# Global styles and theme\ncat src/{{styles_file}}',
+      blanks: [
+        { id: 'deps_file', answer: 'package.json', alternatives: ['Package.json'], placeholder: '______', hint: 'Le fichier qui liste les dépendances et scripts du projet' },
+        { id: 'ai_file', answer: 'CLAUDE.md', alternatives: ['claude.md'], placeholder: '______', hint: 'Le fichier d\'instructions IA spécifiques au projet' },
+        { id: 'styles_file', answer: 'globals.css', alternatives: ['global.css', 'index.css', 'app.css'], placeholder: '______', hint: 'La feuille de style globale du projet' },
+      ],
+      explanation: 'Lire les fichiers d\'ancrage est ton troisième outil de reconnaissance. package.json révèle la stack technique, CLAUDE.md contient les règles spécifiques au projet, et les composants existants montrent les patterns que tu dois reproduire. Lis avant de prompter.',
     },
     {
       type: 'checkpoint',
@@ -165,9 +192,9 @@ const content: LessonContent = {
 
     // === DIAGRAM 2: Blind vs Informed ===
     {
-      type: 'diagram',
+      type: 'interactive-diagram',
       title: 'Génération aveugle vs informée',
-      body: 'La même tâche produit des résultats très différents selon que tu lis la codebase d\'abord ou non.',
+      body: 'Clique pour voir comment la même tâche produit des résultats très différents selon que tu lis la codebase d\'abord ou non.',
       diagram: {
         direction: 'TB',
         nodes: [
@@ -182,13 +209,42 @@ const content: LessonContent = {
           { from: 'decision', to: 'informed', label: 'lu d\'abord' },
         ],
       },
+      stages: [
+        {
+          highlightNodes: ['task'],
+          highlightEdges: [],
+          explanation: 'Tu as une tâche : « Ajoute une page de paramètres. » La même tâche produira des résultats radicalement différents selon ce que tu fais ensuite.',
+        },
+        {
+          highlightNodes: ['task', 'decision'],
+          highlightEdges: [{ from: 'task', to: 'decision' }],
+          explanation: 'Le fork critique : lis-tu la codebase d\'abord, ou sautes-tu directement au prompting ? Cette seule décision détermine si la sortie de l\'agent s\'intègre à ton projet ou le combat.',
+        },
+        {
+          highlightNodes: ['decision', 'blind'],
+          highlightEdges: [{ from: 'decision', to: 'blind' }],
+          explanation: 'Sauter la lecture : l\'agent devine. Il choisit React Router (tu utilises TanStack), Tailwind (tu utilises styled-components), crée un nouveau AuthContext (tu en as déjà un). Résultat : conflits, bugs, temps perdu à corriger des suppositions.',
+        },
+        {
+          highlightNodes: ['decision', 'informed'],
+          highlightEdges: [{ from: 'decision', to: 'informed' }],
+          explanation: 'Lire d\'abord : l\'agent suit ton plan. Il utilise ton routeur, ton approche de style, ton contexte d\'auth existant, tes patterns de composants. Résultat : du code propre qui s\'intègre du premier coup.',
+        },
+      ],
     },
 
     // === CONTEXT-AWARE PROMPTS ===
     {
-      type: 'info',
-      title: 'Écrire des prompts contextualisés',
-      body: "Une fois que tu as lu la codebase, tu injectes ces connaissances dans ton prompt. Un prompt contextualisé dit à l'agent quels patterns suivre, quels composants réutiliser et quelles conventions respecter. L'agent passe de la devinette au suivi d'un plan.",
+      type: 'multiple-choice',
+      question: 'Qu\'est-ce qui rend un « prompt contextualisé » différent d\'un prompt ordinaire ?',
+      options: [
+        'Il utilise un langage plus poli',
+        'Il référence des fichiers spécifiques, des patterns et des conventions découverts en lisant la codebase',
+        'Il fait plus de 500 mots',
+        'Il inclut le code source entier du projet',
+      ],
+      correctIndex: 1,
+      explanation: 'Une fois que tu as lu la codebase, tu injectes ces connaissances dans ton prompt. Un prompt contextualisé dit à l\'agent quels patterns suivre, quels composants réutiliser et quelles conventions respecter. L\'agent passe de la devinette au suivi d\'un plan.',
     },
     {
       type: 'code-demo',

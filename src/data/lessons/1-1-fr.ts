@@ -17,9 +17,16 @@ const content: LessonContent = {
 
     // === TOKENIZATION ===
     {
-      type: 'info',
-      title: 'Les tokens : les atomes de l\'IA',
-      body: "Les modèles ne lisent pas des mots — ils lisent des tokens. Un token est un morceau de texte, généralement un fragment de mot, pas un mot complet. Le mot \"tokenization\" devient deux tokens : \"token\" et \"ization\". Les mots courants comme \"the\" sont des tokens uniques. Les mots rares sont découpés en plus de morceaux. Les espaces et la ponctuation sont aussi des tokens.",
+      type: 'multiple-choice',
+      question: 'Comment l\'IA lit-elle votre texte?',
+      options: [
+        'Elle lit des phrases complètes comme des unités',
+        'Elle lit des caractères individuels un à la fois',
+        'Elle lit des "tokens" — de petits morceaux de texte, pas des mots entiers',
+        'Elle convertit le texte en images d\'abord, puis lit les images',
+      ],
+      correctIndex: 2,
+      explanation: 'Les modèles ne lisent pas des mots — ils lisent des tokens. Un token est un morceau de texte, généralement un fragment de mot. Le mot "tokenization" devient deux tokens : "token" et "ization". Les mots courants comme "the" sont des tokens uniques. Les espaces et la ponctuation sont aussi des tokens. C\'est important parce que l\'IA facture au token et il y a une limite de tokens qu\'elle peut gérer.',
     },
     {
       type: 'multiple-choice',
@@ -34,11 +41,22 @@ const content: LessonContent = {
       explanation: 'Les tokenizers découpent les mots en sous-mots appris. Les préfixes courants ("un"), les racines ("happi") et les suffixes ("ness") deviennent chacun des tokens séparés. Ça permet au modèle de comprendre des mots qu\'il n\'a jamais vus en entier en analysant leurs parties.',
     },
     {
-      type: 'code-demo',
+      type: 'compare',
       title: 'Le nombre de tokens affecte le coût et les limites',
-      body: "Chaque appel API est facturé au token — en entrée et en sortie. Les modèles ont aussi une fenêtre de contexte mesurée en tokens (ex. : 200K tokens pour Claude). Une règle approximative : 1 token fait environ 4 caractères en anglais, soit à peu près 3/4 d'un mot.",
-      language: 'text',
-      code: 'Prompt: "Explain recursion in Python"  →  ~5 tokens\nPrompt: "Explain recursion in Python with 3 examples, edge cases, and performance analysis"  →  ~16 tokens\n\nMore tokens in = higher cost + less room for the response',
+      body: 'Chaque appel API est facturé au token — en entrée et en sortie. Règle approximative : 1 token fait environ 4 caractères en anglais, soit à peu près 3/4 d\'un mot.',
+      question: 'Quel prompt utilise plus de tokens et coûte plus cher?',
+      correctSide: 'right',
+      left: {
+        label: 'Prompt court (~5 tokens)',
+        content: '"Explain recursion in Python"\n\nCoût plus bas\nPlus de place pour la réponse\nSortie moins spécifique',
+        language: 'text',
+      },
+      right: {
+        label: 'Prompt détaillé (~16 tokens)',
+        content: '"Explain recursion in Python with 3 examples, edge cases, and performance analysis"\n\nCoût plus élevé\nMoins de place pour la réponse\nSortie plus spécifique',
+        language: 'text',
+      },
+      explanation: 'Plus de tokens en entrée = coût plus élevé et moins de place pour la réponse. Claude peut gérer environ 200 000 tokens à la fois. Le compromis : des prompts détaillés donnent de meilleurs résultats mais utilisent plus de votre budget de tokens.',
     },
     {
       type: 'terminal',
@@ -54,9 +72,16 @@ const content: LessonContent = {
 
     // === EMBEDDINGS ===
     {
-      type: 'info',
-      title: 'Les embeddings : le sens comme coordonnées',
-      body: "Une fois le texte tokenisé, chaque token est converti en un embedding — une longue liste de nombres (un vecteur) qui représente son sens. Pense à ça comme des coordonnées GPS dans un « espace de sens ». Les mots avec des significations similaires se retrouvent proches l'un de l'autre : \"dog\" est proche de \"puppy\" mais loin de \"algebra\". C'est comme ça que le modèle comprend que les synonymes sont reliés, sans que personne ne l'ait programmé explicitement.",
+      type: 'multiple-choice',
+      question: 'Que sont les embeddings et comment fonctionnent-ils?',
+      options: [
+        'Les embeddings sont des images que l\'IA crée à partir du texte',
+        'Les embeddings sont des listes de nombres représentant le sens — les mots similaires obtiennent des nombres similaires',
+        'Les embeddings sont les mots de passe que l\'IA utilise pour accéder aux bases de données',
+        'Les embeddings sont le code HTML qui fait afficher du texte aux sites web',
+      ],
+      correctIndex: 1,
+      explanation: 'Une fois le texte tokenisé, chaque token est converti en un embedding — une longue liste de nombres (un vecteur) qui représente son sens. Pense à ça comme des coordonnées GPS dans un espace de sens. Les mots avec des significations similaires se retrouvent proches : "dog" est proche de "puppy" mais loin de "algebra". C\'est comme ça que le modèle comprend que les synonymes sont reliés.',
     },
     {
       type: 'multiple-choice',
@@ -130,9 +155,16 @@ const content: LessonContent = {
 
     // === ATTENTION ===
     {
-      type: 'info',
-      title: 'L\'attention : le projecteur du modèle',
-      body: "L'attention est le mécanisme qui permet au modèle de décider quelles parties de l'entrée comptent le plus pour générer chaque mot de la sortie. Quand tu écris « Le chat s'est assis sur le tapis parce qu'il était fatigué », le modèle utilise l'attention pour comprendre que « il » réfère à « chat », pas à « tapis ». Il fait ça en calculant un score de pertinence entre chaque paire de tokens. Les paires avec des scores élevés s'influencent mutuellement davantage.",
+      type: 'multiple-choice',
+      question: 'Dans la phrase "Le chat s\'est assis sur le tapis parce qu\'il était fatigué", que permet le mécanisme d\'attention de comprendre?',
+      options: [
+        'Que la phrase est en français',
+        'Que "il" réfère à "chat", pas à "tapis"',
+        'Combien de mots il y a dans la phrase',
+        'L\'orthographe correcte de chaque mot',
+      ],
+      correctIndex: 1,
+      explanation: 'L\'attention est le mécanisme qui permet au modèle de décider quelles parties de l\'entrée comptent le plus pour générer chaque mot de la sortie. Il compare chaque mot à tous les autres et donne plus d\'importance aux paires les plus pertinentes. Dans ce cas, il comprend que "il" réfère à "chat" grâce aux indices contextuels comme "fatigué".',
     },
     {
       type: 'compare',
@@ -171,9 +203,12 @@ const content: LessonContent = {
 
     // === TEMPERATURE ===
     {
-      type: 'info',
-      title: 'Température : contrôler le hasard',
-      body: "Après l'attention, le modèle produit une distribution de probabilités sur tous les tokens possibles. La température contrôle comment cette distribution est échantillonnée. À température 0, le modèle choisit toujours le token le plus probable (déterministe). À température 1, il échantillonne proportionnellement (créatif). Au-dessus de 1, les sorties deviennent de plus en plus aléatoires et chaotiques. Pour les tâches d'agent, une température basse (0-0.3) est presque toujours mieux — tu veux de la fiabilité, pas de la créativité.",
+      type: 'match',
+      instruction: 'Associe chaque réglage de température à son meilleur cas d\'utilisation :',
+      leftItems: ['Température 0', 'Température 0.3', 'Température 0.7', 'Température 1.0+'],
+      rightItems: ['Refactoring de code et extraction de données', 'Courriels d\'affaires et docs techniques', 'Écriture créative et brainstorming', 'Génération de texte expérimentale et artistique'],
+      correctPairs: { 0: 0, 1: 1, 2: 2, 3: 3 },
+      explanation: 'La température contrôle le niveau de créativité vs fiabilité. À 0, le modèle choisit toujours le token le plus probable — parfait pour le code. À 0.3, principalement fiable avec une légère variation — idéal pour l\'écriture d\'affaires. À 0.7, créativité équilibrée. À 1.0+, variété maximale — bon pour le brainstorming mais risqué pour la production.',
     },
     {
       type: 'multiple-choice',
@@ -190,14 +225,21 @@ const content: LessonContent = {
 
     // === HALLUCINATION ===
     {
-      type: 'info',
-      title: 'Quand les modèles hallucinent',
-      body: "L'hallucination se produit quand un modèle génère du texte qui sonne vrai mais qui est factuellement faux. Ça arrive parce que le modèle prédit toujours le token le plus probable — il n'a aucun concept de vérité, seulement de probabilité. Trois déclencheurs courants : (1) le sujet est en dehors des données d'entraînement, (2) le prompt est ambigu, laissant le modèle combler les trous avec des détails plausibles mais faux, (3) des questions orientées qui biaisent le modèle vers une réponse spécifique (incorrecte).",
+      type: 'multiple-choice',
+      question: 'Pourquoi l\'IA écrit-elle parfois des informations qui sonnent convaincantes mais qui sont fausses (hallucination)?',
+      options: [
+        'Parce que l\'IA ment intentionnellement',
+        'Parce qu\'elle prédit toujours le token le plus probable — elle n\'a aucun concept de vérité, seulement de probabilité',
+        'Parce que la connexion internet est lente',
+        'Parce que l\'IA manque de mémoire',
+      ],
+      correctIndex: 1,
+      explanation: 'L\'hallucination se produit quand un modèle génère du texte qui sonne vrai mais qui est factuellement faux. Ça arrive parce que le modèle prédit toujours le token le plus probable — il n\'a aucun concept de vérité. Trois déclencheurs : (1) le sujet est hors des données d\'entraînement, (2) le prompt est ambigu, (3) des questions orientées qui biaisent le modèle.',
     },
     {
-      type: 'diagram',
+      type: 'interactive-diagram',
       title: 'Quand les modèles hallucinent',
-      body: 'La fiabilité du modèle dépend de si l\'entrée tombe dans sa distribution d\'entraînement. Les prompts ambigus augmentent le risque même pour les sujets connus.',
+      body: 'La fiabilité du modèle dépend de si l\'entrée tombe dans sa distribution d\'entraînement. Parcourez les étapes pour voir l\'arbre de décision.',
       diagram: {
         direction: 'TB',
         nodes: [
@@ -216,13 +258,32 @@ const content: LessonContent = {
           { from: 'ambiguous', to: 'risky', label: 'Oui', dashed: true },
         ],
       },
+      stages: [
+        { highlightNodes: ['input'], explanation: 'Tout commence par ton prompt. La question est : le modèle a-t-il des données d\'entraînement fiables sur ce sujet?' },
+        { highlightNodes: ['input', 'trained'], highlightEdges: [{ from: 'input', to: 'trained' }], explanation: 'Première vérification : le modèle a-t-il été entraîné sur ce sujet? Sinon, il n\'a rien de fiable à utiliser et va probablement halluciner.' },
+        { highlightNodes: ['trained', 'hallucinate'], highlightEdges: [{ from: 'trained', to: 'hallucinate' }], explanation: 'Pas de données d\'entraînement = territoire d\'hallucination. Le modèle va générer du texte plausible basé sur des patterns, pas des faits. Exemple : demander des événements après sa date de coupure.' },
+        { highlightNodes: ['trained', 'ambiguous'], highlightEdges: [{ from: 'trained', to: 'ambiguous' }], explanation: 'Si des données d\'entraînement existent, prochaine vérification : ton prompt est-il clair ou ambigu? Des instructions vagues laissent de la place au modèle pour combler les trous incorrectement.' },
+        { highlightNodes: ['ambiguous', 'reliable'], highlightEdges: [{ from: 'ambiguous', to: 'reliable' }], explanation: 'Prompt clair + bonnes données d\'entraînement = sortie fiable. C\'est le point idéal. Sois spécifique, fournis du contexte, et reste sur des sujets bien connus.' },
+        { highlightNodes: ['ambiguous', 'risky'], highlightEdges: [{ from: 'ambiguous', to: 'risky' }], explanation: 'Prompt ambigu + données d\'entraînement = risqué. Le modèle connaît le sujet mais tes instructions vagues le laissent combler des détails qui peuvent être faux. Solution : rends ton prompt plus spécifique.' },
+      ],
     },
     {
-      type: 'code-demo',
+      type: 'compare',
       title: 'Détecter le risque d\'hallucination',
-      body: "Apprends à reconnaître les prompts susceptibles de produire des hallucinations. La solution est généralement d'ajouter des contraintes, de fournir du matériel de référence, ou de demander au modèle de dire « je ne sais pas » quand il n'est pas sûr.",
-      language: 'text',
-      code: '# High hallucination risk:\n"What did the CEO of Acme Corp say in their Q3 2025 earnings call?"\n→ Model may invent quotes it has never seen\n\n# Lower risk — grounded prompt:\n"Based on the following transcript [paste text], summarize what the CEO said about revenue."\n→ Model works from provided context, not memory',
+      body: 'Apprends à reconnaître les prompts susceptibles de produire des hallucinations vs ceux qui gardent le modèle ancré.',
+      question: 'Quel prompt est plus sûr et moins susceptible de causer une hallucination?',
+      correctSide: 'right',
+      left: {
+        label: 'Haut risque (non ancré)',
+        content: '"What did the CEO of Acme Corp say in their Q3 2025 earnings call?"\n\nLe modèle peut inventer des citations qu\'il n\'a jamais vues\nAucun matériel de référence fourni\nDemande des faits spécifiques de mémoire',
+        language: 'text',
+      },
+      right: {
+        label: 'Risque plus bas (ancré)',
+        content: '"Based on the following transcript [paste text], summarize what the CEO said about revenue."\n\nLe modèle travaille à partir du contexte fourni, pas de la mémoire\nLe matériel de référence ancre la réponse\nTâche claire et spécifique avec des contraintes',
+        language: 'text',
+      },
+      explanation: 'La solution aux hallucinations est généralement d\'ajouter des contraintes, de fournir du matériel de référence, ou de demander au modèle de dire "je ne sais pas" quand il n\'est pas sûr. Les prompts ancrés donnent au modèle des données réelles avec lesquelles travailler.',
     },
     {
       type: 'multiple-choice',
@@ -253,16 +314,17 @@ const content: LessonContent = {
 
     // === PUTTING IT TOGETHER ===
     {
-      type: 'checklist',
-      title: 'Modèles mentaux clés à retenir',
+      type: 'order',
+      instruction: 'Mets le pipeline de traitement de l\'IA dans le bon ordre, de ton entrée à la réponse finale :',
       items: [
-        'Les tokens sont des morceaux de mots, pas des mots — "tokenization" fait 2 tokens',
-        'Les embeddings placent le sens dans un espace géométrique — les concepts similaires se regroupent',
-        'L\'attention pèse chaque token par rapport à tous les autres — la position et la structure comptent',
-        'Température 0 pour la fiabilité, plus haut pour la créativité',
-        'Les hallucinations viennent de lacunes dans les données d\'entraînement, de prompts ambigus ou de questions orientées',
-        'Ancre tes prompts avec du contexte pour réduire le risque d\'hallucination',
+        'Ton texte entre sous forme de caractères bruts',
+        'Le tokenizer découpe le texte en fragments de sous-mots',
+        'Chaque token est converti en un vecteur d\'embedding',
+        'L\'attention pèse chaque token par rapport à tous les autres',
+        'Le modèle prédit le token suivant le plus probable',
+        'La réponse est assemblée token par token',
       ],
+      correctOrder: [0, 1, 2, 3, 4, 5],
     },
     {
       type: 'terminal',

@@ -60,9 +60,16 @@ const content: LessonContent = {
 
     // === VERCEL ACCOUNT ===
     {
-      type: 'info',
-      title: 'Step 1: Create a Vercel account',
-      body: 'Go to vercel.com and sign up for a free account. Click "Continue with GitHub" — this automatically connects your GitHub projects to Vercel, saving you a setup step later.',
+      type: 'multiple-choice',
+      question: 'When creating a Vercel account, which signup method should you use and why?',
+      options: [
+        'Email signup — it is more secure',
+        'Continue with GitHub — it auto-connects your repos for automatic deployments',
+        'Google signup — it syncs your calendar',
+        'Any method works the same way',
+      ],
+      correctIndex: 1,
+      explanation: 'Go to vercel.com and sign up for a free account. Click "Continue with GitHub" — this automatically connects your GitHub projects to Vercel, saving you a setup step later. Your repos become instantly available for deployment.',
     },
     {
       type: 'multiple-choice',
@@ -77,13 +84,14 @@ const content: LessonContent = {
       explanation: 'Signing up with GitHub lets Vercel see your projects automatically and publish updates every time you push new code. One less thing to configure.',
     },
     {
-      type: 'checklist',
-      title: 'Vercel setup:',
+      type: 'order',
+      instruction: 'Put the Vercel account setup steps in the correct order:',
       items: [
-        'Went to vercel.com',
-        'Signed up with GitHub',
-        'Selected the Hobby (free) plan',
+        'Go to vercel.com',
+        'Click "Continue with GitHub"',
+        'Select the Hobby (free) plan',
       ],
+      correctOrder: [0, 1, 2],
     },
     {
       type: 'checkpoint',
@@ -93,9 +101,16 @@ const content: LessonContent = {
 
     // === CREATE PROJECT ===
     {
-      type: 'info',
-      title: 'Step 2: Create your first project',
-      body: "We will use Next.js, a popular framework (a pre-built foundation) for building web apps. Let us create one now. You do not need to understand everything it sets up — the AI agent will handle the details.",
+      type: 'multiple-choice',
+      question: 'What is Next.js and why are we using it?',
+      options: [
+        'A database tool for storing user information',
+        'A popular framework (pre-built foundation) for building web apps',
+        'A replacement for Git version control',
+        'An AI agent that writes code for you',
+      ],
+      correctIndex: 1,
+      explanation: 'Next.js is a popular framework (a pre-built foundation) for building web apps. You do not need to understand everything it sets up — the AI agent will handle the details. We are using it because it works seamlessly with Vercel deployment.',
     },
     {
       type: 'terminal',
@@ -114,9 +129,16 @@ const content: LessonContent = {
       expectedCommand: 'bun dev',
     },
     {
-      type: 'info',
-      title: 'Check it',
-      body: 'Open http://localhost:3000 in your browser. You should see the Next.js welcome page. If you see it — your project works locally.',
+      type: 'multiple-choice',
+      question: 'After running bun dev, what URL should you open to see your project running locally?',
+      options: [
+        'http://vercel.com/preview',
+        'http://localhost:3000',
+        'http://github.com/my-project',
+        'http://nextjs.org/demo',
+      ],
+      correctIndex: 1,
+      explanation: 'When you run bun dev, Next.js starts a local development server at http://localhost:3000. Open this URL in your browser and you should see the Next.js welcome page. If you see it — your project works locally.',
     },
     {
       type: 'checkpoint',
@@ -126,9 +148,16 @@ const content: LessonContent = {
 
     // === PUSH TO GITHUB ===
     {
-      type: 'info',
-      title: 'Step 3: Push to GitHub',
-      body: "Now let us put your code on GitHub so Vercel can see it. Go to github.com/new in your browser. Name the repository my-first-deploy. Do not check any boxes (no README, no .gitignore) — the project already has those files.",
+      type: 'multiple-choice',
+      question: 'When creating a new GitHub repository for your project, why should you NOT check "Add a README" or "Add .gitignore"?',
+      options: [
+        'GitHub charges extra for those files',
+        'The project already has those files — adding them would create conflicts',
+        'README files slow down deployments',
+        'Vercel ignores repositories with README files',
+      ],
+      correctIndex: 1,
+      explanation: 'When you created the project with create-next-app, it already generated README and .gitignore files. If GitHub also creates them, you get a conflict on your first push. Go to github.com/new, name it my-first-deploy, and leave all boxes unchecked.',
     },
     {
       type: 'terminal',
@@ -161,20 +190,28 @@ const content: LessonContent = {
 
     // === DEPLOY ===
     {
-      type: 'info',
-      title: 'Step 4: Deploy to Vercel',
-      body: 'Go to vercel.com/new in your browser. You will see your GitHub projects listed. Find my-first-deploy, click Import, and hit Deploy. Vercel automatically detects that it is a Next.js project — just leave all settings as they are.',
+      type: 'order',
+      instruction: 'Put the Vercel deployment steps in the correct order:',
+      items: [
+        'Go to vercel.com/new in your browser',
+        'Find my-first-deploy in your GitHub project list',
+        'Click Import on the project',
+        'Leave all settings as defaults (Next.js auto-detected)',
+        'Click Deploy and wait for your live URL',
+      ],
+      correctOrder: [0, 1, 2, 3, 4],
     },
     {
-      type: 'checklist',
-      title: 'Deploy checklist:',
-      items: [
-        'Went to vercel.com/new',
-        'Found and imported my-first-deploy',
-        'Left settings as defaults (Next.js auto-detected)',
-        'Clicked Deploy',
-        'Got a live .vercel.app URL',
+      type: 'multiple-choice',
+      question: 'After deploying your first project, what kind of URL do you get from Vercel?',
+      options: [
+        'A localhost URL that only works on your computer',
+        'A .vercel.app URL that anyone on the internet can visit',
+        'A .github.io URL hosted by GitHub',
+        'No URL — you need to set up a custom domain first',
       ],
+      correctIndex: 1,
+      explanation: 'After clicking Deploy, Vercel gives you a live .vercel.app URL that anyone on the internet can visit. This is your production URL. You can add a custom domain later, but the .vercel.app URL works immediately.',
     },
     {
       type: 'checkpoint',
@@ -184,16 +221,28 @@ const content: LessonContent = {
 
     // === AUTO DEPLOY ===
     {
-      type: 'info',
-      title: 'Step 5: Auto-deploy on push',
-      body: "Here is the magic: every time you push code to GitHub, Vercel automatically publishes the update. No manual steps. Let us test this by making a small change to your homepage file:",
+      type: 'multiple-choice',
+      question: 'What happens when you push code to GitHub after connecting Vercel?',
+      options: [
+        'Nothing — you need to manually click Deploy each time',
+        'GitHub sends you an email asking to approve the deployment',
+        'Vercel automatically detects the push and publishes the update',
+        'You need to run a separate deploy command in your terminal',
+      ],
+      correctIndex: 2,
+      explanation: 'Here is the magic: every time you push code to GitHub, Vercel automatically publishes the update. No manual steps needed. Let us test this by making a small change to your homepage file.',
     },
     {
-      type: 'code-demo',
-      body: 'Replace src/app/page.tsx with:',
+      type: 'code-fill',
+      instruction: 'Complete the homepage component to display a centered "Hello, Vercel." heading:',
       language: 'tsx',
       filename: 'src/app/page.tsx',
-      code: 'export default function Home() {\n  return (\n    <main className="flex min-h-screen items-center justify-center">\n      <h1 className="text-4xl font-bold">Hello, Vercel.</h1>\n    </main>\n  )\n}',
+      template: 'export default function {{funcName}}() {\n  return (\n    <main className="flex min-h-screen items-center justify-center">\n      <{{tag}} className="text-4xl font-bold">Hello, Vercel.</{{tag}}>\n    </main>\n  )\n}',
+      blanks: [
+        { id: 'funcName', answer: 'Home', alternatives: ['home'], placeholder: 'component name?', hint: 'The main page component in Next.js' },
+        { id: 'tag', answer: 'h1', placeholder: 'HTML tag?', hint: 'The main heading tag in HTML' },
+      ],
+      explanation: 'Next.js pages export a default function component. The main page uses the name Home. For the primary heading, we use h1 — the most important heading level in HTML.',
     },
     {
       type: 'terminal',
@@ -212,9 +261,16 @@ const content: LessonContent = {
       expectedCommand: 'git push',
     },
     {
-      type: 'info',
-      title: 'Watch it deploy',
-      body: 'Check your Vercel dashboard — you will see a new deployment building. In under a minute, your live site updates automatically. From now on, every time you push code, your site updates. No manual work needed.',
+      type: 'multiple-choice',
+      question: 'How long does a typical Vercel deployment take after pushing code?',
+      options: [
+        'About 30 minutes',
+        'Under a minute for most projects',
+        'It depends on how many files you changed — usually 10-15 minutes',
+        'Deployments only happen once per day',
+      ],
+      correctIndex: 1,
+      explanation: 'Check your Vercel dashboard — you will see a new deployment building. In under a minute, your live site updates automatically. From now on, every time you push code, your site updates. No manual work needed.',
     },
     {
       type: 'checkpoint',
@@ -224,9 +280,9 @@ const content: LessonContent = {
 
     // === PREVIEW VS PRODUCTION ===
     {
-      type: 'diagram',
+      type: 'interactive-diagram',
       title: 'Preview vs Production',
-      body: 'Which branch you push to determines whether your changes go live to users or just create a test version for you to preview first.',
+      body: 'Which branch you push to determines whether your changes go live to users or just create a test version. Step through to see how it works.',
       diagram: {
         direction: 'TB',
         nodes: [
@@ -245,11 +301,12 @@ const content: LessonContent = {
           { from: 'feature', to: 'prev' },
         ],
       },
-    },
-    {
-      type: 'info',
-      title: 'Step 6: Preview vs. Production',
-      body: 'Vercel has two deployment types: production (what your users see) and preview (a private test version). Understanding this keeps you safe.',
+      stages: [
+        { highlightNodes: ['push'], explanation: 'Every deployment starts with a git push. But where your code goes depends on which branch you push to.' },
+        { highlightNodes: ['push', 'branch'], highlightEdges: [{ from: 'push', to: 'branch' }], explanation: 'Vercel checks which branch received the push. This single decision determines your deployment type.' },
+        { highlightNodes: ['branch', 'main', 'prod'], highlightEdges: [{ from: 'branch', to: 'main' }, { from: 'main', to: 'prod' }], explanation: 'Push to main = Production deployment. Your live site updates. Real users see the changes immediately.' },
+        { highlightNodes: ['branch', 'feature', 'prev'], highlightEdges: [{ from: 'branch', to: 'feature' }, { from: 'feature', to: 'prev' }], explanation: 'Push to any other branch = Preview deployment. A private test URL only you can see. Your live site stays untouched.' },
+      ],
     },
     {
       type: 'multiple-choice',
@@ -276,9 +333,16 @@ const content: LessonContent = {
       hint: 'Push the branch name you just created',
     },
     {
-      type: 'info',
-      title: 'Preview = safety net',
-      body: 'Preview deployments are your safety net. You test changes on a private URL before they go live. Your real site stays untouched. This habit prevents you from accidentally breaking something your users see.',
+      type: 'multiple-choice',
+      question: 'Why are preview deployments important?',
+      options: [
+        'They make your site load faster for users',
+        'They let you test changes on a private URL before going live, preventing accidental breakage',
+        'They are required by Vercel for all projects',
+        'They save money on hosting costs',
+      ],
+      correctIndex: 1,
+      explanation: 'Preview deployments are your safety net. You test changes on a private URL before they go live. Your real site stays untouched. This habit prevents you from accidentally breaking something your users see.',
     },
     {
       type: 'checkpoint',
@@ -312,16 +376,12 @@ const content: LessonContent = {
       correctOrder: [0, 1, 2, 3, 4],
     },
     {
-      type: 'checklist',
-      title: 'Final verification:',
-      items: [
-        'Vercel account linked to GitHub',
-        'Next.js project runs locally',
-        'Code pushed to GitHub',
-        'Production deployment live',
-        'Auto-deploy works on push',
-        'Preview deployment created from branch',
-      ],
+      type: 'match',
+      instruction: 'Match each step in the deployment pipeline to what it accomplishes:',
+      leftItems: ['Link Vercel to GitHub', 'Run bun dev', 'git push -u origin main', 'Push to a feature branch'],
+      rightItems: ['Enables automatic deployments on push', 'Tests your project locally before deploying', 'Triggers a production deployment', 'Creates a preview deployment for safe testing'],
+      correctPairs: { 0: 0, 1: 1, 2: 2, 3: 3 },
+      explanation: 'Each step serves a specific purpose. Linking Vercel enables auto-deploys. Running dev tests locally. Pushing to main goes to production. Feature branches create safe previews.',
     },
     {
       type: 'checkpoint',

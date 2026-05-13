@@ -100,23 +100,16 @@ const content: LessonContent = {
 
     // === INNGEST INTRODUCTION ===
     {
-      type: 'info',
-      title: 'The tool: Inngest for durable functions',
-      body: "Inngest (or Vercel Workflow) gives you durable step functions. Each step is individually retryable — if step 3 of 5 fails, it retries from step 3, not step 1. This is what separates production event systems from fragile cron jobs. Your agents need to understand this pattern to build reliable background processing.",
-    },
-    {
-      type: 'code-demo',
-      title: 'Inngest step function anatomy',
-      body: "This is what you want your agent to produce. Each `step.run()` is individually retryable and idempotent. If `send-welcome-email` fails, it retries just that step — the user record and Stripe customer are already created and won't be duplicated.",
+      type: 'code-fill',
+      instruction: 'Complete the Inngest durable step function for user signup. Each step.run() is individually retryable. Fill in the function config, event trigger, and idempotency key.',
       language: 'typescript',
       filename: 'src/inngest/functions/user-signup.ts',
-      code: `import { inngest } from '../client'
+      template: `import { inngest } from '../client'
 
 export const handleUserSignup = inngest.createFunction(
-  { id: 'user-signup', retries: 3 },
-  { event: 'user/signup' },
+  { id: 'user-signup', retries: ___BLANK_1___ },
+  { event: '___BLANK_2___' },
   async ({ event, step }) => {
-    // Step 1: Create user record (idempotent via email unique constraint)
     const user = await step.run('create-user-record', async () => {
       return await db.users.upsert({
         where: { email: event.data.email },
@@ -125,15 +118,13 @@ export const handleUserSignup = inngest.createFunction(
       })
     })
 
-    // Step 2: Create Stripe customer (idempotent via idempotency key)
     const customer = await step.run('create-stripe-customer', async () => {
       return await stripe.customers.create(
         { email: user.email, name: user.name },
-        { idempotencyKey: \`signup-\${user.id}\` }
+        { idempotencyKey: \`___BLANK_3___\` }
       )
     })
 
-    // Step 3: Send welcome email (retryable independently)
     await step.run('send-welcome-email', async () => {
       await resend.emails.send({
         to: user.email,
@@ -146,6 +137,30 @@ export const handleUserSignup = inngest.createFunction(
     return { userId: user.id, customerId: customer.id }
   }
 )`,
+      blanks: [
+        {
+          id: 'BLANK_1',
+          answer: '3',
+          alternatives: ['3'],
+          hint: 'A reasonable number of retry attempts before giving up',
+          placeholder: 'retry count',
+        },
+        {
+          id: 'BLANK_2',
+          answer: 'user/signup',
+          alternatives: ['user/signup', '"user/signup"'],
+          hint: 'The event name that triggers this function — follows namespace/action convention',
+          placeholder: 'event name',
+        },
+        {
+          id: 'BLANK_3',
+          answer: 'signup-${user.id}',
+          alternatives: ['signup-${user.id}'],
+          hint: 'A unique key combining the operation type and user ID to prevent duplicate Stripe customers',
+          placeholder: 'idempotency key pattern',
+        },
+      ],
+      explanation: 'Inngest durable step functions give you individually retryable steps. 3 retries is standard. The event name `user/signup` follows namespace/action convention. The idempotency key `signup-${user.id}` prevents duplicate Stripe customers on retry — same key always returns the same result.',
     },
     {
       type: 'multiple-choice',
@@ -162,39 +177,64 @@ export const handleUserSignup = inngest.createFunction(
 
     // === SPECIFYING EVENT FLOWS FOR AGENTS ===
     {
-      type: 'info',
-      title: 'How to spec event flows for agents',
-      body: "The critical insight: agents don't know they should build event-driven systems unless you tell them. Your spec must explicitly define: (1) which actions trigger events, (2) what each handler does step by step, (3) what happens on failure at each step, and (4) idempotency requirements. Without this, agents build fragile synchronous code.",
+      type: 'multiple-choice',
+      question: 'What four things must your spec explicitly define so agents build event-driven (not synchronous) systems?',
+      options: [
+        'Database schema, API endpoints, UI components, deployment config',
+        'Which actions trigger events, handler steps, failure handling per step, and idempotency requirements',
+        'Event names, queue technology, retry count, monitoring dashboard',
+        'Handler code, test files, CI config, and documentation',
+      ],
+      correctIndex: 1,
+      explanation: "Agents default to synchronous code unless told otherwise. Your spec must define: (1) which actions trigger events, (2) what each handler does step by step, (3) what happens on failure at each step, and (4) idempotency requirements. Without these four elements, agents build happy-path-only implementations that break in production.",
     },
     {
-      type: 'code-demo',
-      title: 'Agent spec for event-driven work',
-      body: "This is how you spec background processing for an agent. Notice the explicit failure requirements — without these, the agent will build a happy-path-only implementation that breaks in production.",
+      type: 'code-fill',
+      instruction: 'Complete the agent spec for an event-driven order processing job. Fill in the trigger event, idempotency strategy, and failure handling for the critical payment step.',
       language: 'markdown',
       filename: 'specs/agent-background-jobs.md',
-      code: `## Background Job: Order Processing
+      template: `## Background Job: Order Processing
 
 ### Trigger
-Event: \`order/placed\` — fired when checkout completes
+Event: \`___BLANK_1___\` -- fired when checkout completes
 
 ### Steps (each independently retryable)
 1. Validate inventory (check stock, reserve items)
-2. Charge payment (Stripe, use idempotency key: \`order-{orderId}\`)
+2. Charge payment (Stripe, use idempotency key: \`___BLANK_2___\`)
 3. Send confirmation email
 4. Notify warehouse (webhook to fulfillment API)
 5. Update analytics (increment daily_orders counter)
 
 ### Failure Requirements
 - Step 1 fails: Cancel order, notify user. DO NOT proceed.
-- Step 2 fails: Release inventory reservation. Notify user.
+- Step 2 fails: ___BLANK_3___. Notify user.
 - Step 3 fails: Retry 3x, then log to dead letter. Order still valid.
 - Step 4 fails: Retry 5x (warehouse API is flaky). Alert ops after 3rd.
-- Step 5 fails: Retry silently. Analytics lag is acceptable.
-
-### Idempotency
-- Payment: Stripe idempotency key prevents double-charge
-- Inventory: Check reservation exists before creating new one
-- Email: Deduplicate by order_id + email_type composite key`,
+- Step 5 fails: Retry silently. Analytics lag is acceptable.`,
+      blanks: [
+        {
+          id: 'BLANK_1',
+          answer: 'order/placed',
+          alternatives: ['order/placed', '"order/placed"'],
+          hint: 'The event name following namespace/action convention for when a checkout completes',
+          placeholder: 'event name',
+        },
+        {
+          id: 'BLANK_2',
+          answer: 'order-{orderId}',
+          alternatives: ['order-{orderId}', 'order-${orderId}'],
+          hint: 'Combine the operation type with the unique order ID to prevent duplicate charges',
+          placeholder: 'idempotency key',
+        },
+        {
+          id: 'BLANK_3',
+          answer: 'Release inventory reservation',
+          alternatives: ['Release inventory reservation', 'Release inventory', 'Release reservation'],
+          hint: 'If payment fails, what previously reserved resource needs to be freed?',
+          placeholder: 'compensation action',
+        },
+      ],
+      explanation: 'The event name `order/placed` follows namespace/action convention. The idempotency key `order-{orderId}` prevents double-charging on retry. If payment fails, you must release the inventory reservation from step 1 — this is compensation logic that agents never build unless you specify it explicitly.',
     },
     {
       type: 'checkpoint',
@@ -204,37 +244,34 @@ Event: \`order/placed\` — fired when checkout completes
 
     // === IDEMPOTENCY DEEP DIVE ===
     {
-      type: 'info',
-      title: 'Idempotency: the non-negotiable requirement',
-      body: "In event-driven systems, handlers WILL be called multiple times — network timeouts, deployment restarts, retry logic. Every handler must produce the same result whether called once or ten times. This is idempotency, and it's the #1 thing agents get wrong if you don't specify it. Always tell the agent: 'This handler must be idempotent.'",
+      type: 'multiple-choice',
+      question: 'In event-driven systems, handlers will be called multiple times. What property must every handler have?',
+      options: [
+        'Atomicity — all steps succeed or all fail together',
+        'Idempotency — producing the same result whether called once or ten times',
+        'Immutability — never modifying existing data',
+        'Concurrency — handling multiple events simultaneously',
+      ],
+      correctIndex: 1,
+      explanation: "Idempotency is the #1 thing agents get wrong. Network timeouts, deployment restarts, and retry logic mean handlers WILL be called multiple times. Every handler must produce the same result whether called once or ten times. Always tell the agent: 'This handler must be idempotent.'",
     },
     {
-      type: 'code-demo',
-      title: 'Idempotency patterns for agents to implement',
-      body: "Give your agent these patterns as reference. The idempotency key pattern works for payments and external APIs. The upsert pattern works for database writes. The check-before-act pattern works for side effects like sending emails.",
-      language: 'typescript',
-      filename: 'src/lib/idempotency-patterns.ts',
-      code: `// Pattern 1: Idempotency key (for external APIs)
-await stripe.charges.create(
-  { amount: 2000, currency: 'usd', customer: customerId },
-  { idempotencyKey: \`charge-order-\${orderId}\` }  // Same key = same result
-)
-
-// Pattern 2: Upsert (for database writes)
-await db.subscription.upsert({
-  where: { userId_planId: { userId, planId } },
-  create: { userId, planId, status: 'active' },
-  update: { status: 'active' },  // Re-running is a no-op
-})
-
-// Pattern 3: Check-before-act (for side effects)
-const alreadySent = await db.emailLog.findFirst({
-  where: { orderId, type: 'confirmation' }
-})
-if (!alreadySent) {
-  await sendEmail(order.email, 'confirmation', order)
-  await db.emailLog.create({ data: { orderId, type: 'confirmation' } })
-}`,
+      type: 'compare',
+      title: 'Idempotency patterns: database writes vs external APIs',
+      body: 'Different contexts require different idempotency strategies.',
+      question: 'Which pattern should you use when writing to your own database?',
+      correctSide: 'left',
+      left: {
+        label: 'Upsert (database writes)',
+        content: '// Pattern: Upsert — insert or update\n// Safe to call multiple times\nawait db.subscription.upsert({\n  where: {\n    userId_planId: { userId, planId }\n  },\n  create: {\n    userId, planId, status: "active"\n  },\n  update: {\n    status: "active"  // Re-running is a no-op\n  },\n})\n\n// Also: check-before-act for side effects\nconst sent = await db.emailLog.findFirst({\n  where: { orderId, type: "confirmation" }\n})\nif (!sent) {\n  await sendEmail(order.email, "confirmation")\n  await db.emailLog.create({ data: { orderId, type: "confirmation" } })\n}',
+        language: 'typescript',
+      },
+      right: {
+        label: 'Idempotency key (external APIs)',
+        content: '// Pattern: Idempotency key — same key = same result\n// Stripe, payment processors, etc.\nawait stripe.charges.create(\n  {\n    amount: 2000,\n    currency: "usd",\n    customer: customerId\n  },\n  {\n    // Same key guarantees same outcome\n    idempotencyKey: `charge-order-${orderId}`\n  }\n)\n\n// The API provider stores the result\n// Calling again with same key returns\n// the cached result, no duplicate charge',
+        language: 'typescript',
+      },
+      explanation: 'For your own database, use upsert (insert-or-update) or check-before-act patterns — you control the logic. For external APIs like Stripe, use idempotency keys — the provider handles deduplication. Give agents both patterns as reference in the spec.',
     },
     {
       type: 'code-input',
@@ -246,9 +283,16 @@ if (!alreadySent) {
 
     // === PARTIAL FAILURE HANDLING ===
     {
-      type: 'info',
-      title: 'Partial failure: the scenario agents never handle',
-      body: "Step 1 succeeds, step 2 succeeds, step 3 fails. Now what? You have a user record and a Stripe customer but no welcome email. This is partial failure, and it's the default state of distributed systems. Your spec must tell the agent what 'partially complete' means and whether to compensate (undo steps 1-2) or continue (retry step 3 later).",
+      type: 'multiple-choice',
+      question: 'Step 1 succeeds, step 2 succeeds, step 3 fails. You have a user record and a Stripe customer but no welcome email. What is this scenario called?',
+      options: [
+        'Complete failure — the entire function should be rolled back',
+        'Partial failure — some steps succeeded, one failed mid-flow',
+        'Transient error — just retry the entire function',
+        'Data inconsistency — the database is corrupted',
+      ],
+      correctIndex: 1,
+      explanation: "This is partial failure, the default state of distributed systems. Your spec must tell the agent what 'partially complete' means and whether to compensate (undo steps 1-2) or continue (retry step 3 later). Agents never handle this scenario unless you specify it explicitly.",
     },
     {
       type: 'multiple-choice',
@@ -263,9 +307,9 @@ if (!alreadySent) {
       explanation: "You can't un-send an email or easily refund a charge for a valid order. The correct approach is forward recovery: mark the state, retry the failed step. The order is valid — the warehouse just hasn't been told yet. Spec this explicitly or agents will implement fragile rollback logic.",
     },
     {
-      type: 'diagram',
+      type: 'interactive-diagram',
       title: 'Forward Recovery vs Rollback',
-      body: "Two strategies for partial failure. Forward recovery (preferred): keep completed steps, retry the failed one. Rollback (compensation): undo previous steps. Forward recovery is almost always better for async workflows because many side effects are irreversible.",
+      body: "Two strategies for partial failure. Forward recovery (preferred): keep completed steps, retry the failed one. Rollback (compensation): undo previous steps.",
       diagram: {
         direction: 'TB',
         nodes: [
@@ -282,6 +326,32 @@ if (!alreadySent) {
           { from: 'rollback', to: 'compensate' },
         ],
       },
+      stages: [
+        {
+          highlightNodes: ['fail'],
+          explanation: 'Step 3 fails. Steps 1 and 2 already completed successfully. You now have a partially complete workflow. Two strategies are available.',
+        },
+        {
+          highlightNodes: ['fail', 'forward'],
+          highlightEdges: [{ from: 'fail', to: 'forward' }],
+          explanation: 'Forward recovery (preferred): keep the completed steps, retry only the failed step. This works because steps 1 and 2 are already durable — their results are persisted.',
+        },
+        {
+          highlightNodes: ['forward', 'resume'],
+          highlightEdges: [{ from: 'forward', to: 'resume' }],
+          explanation: 'After retry succeeds, the flow continues normally. No data was lost, no work was duplicated. This is the preferred approach for async workflows.',
+        },
+        {
+          highlightNodes: ['fail', 'rollback'],
+          highlightEdges: [{ from: 'fail', to: 'rollback' }],
+          explanation: 'Rollback (use only when required): undo previous steps. This is needed when step 3 failure makes steps 1-2 meaningless (e.g., inventory reserved but payment declined).',
+        },
+        {
+          highlightNodes: ['rollback', 'compensate'],
+          highlightEdges: [{ from: 'rollback', to: 'compensate' }],
+          explanation: 'Compensation means reversing side effects: refunding charges, deleting records, releasing reservations. Many side effects are irreversible (sent emails), making rollback difficult. Forward recovery is almost always better.',
+        },
+      ],
     },
     {
       type: 'checkpoint',
@@ -297,25 +367,47 @@ if (!alreadySent) {
       hint: 'Use npm install inngest (or bun add inngest)',
     },
     {
-      type: 'code-demo',
-      title: 'Inngest client setup',
-      body: "The Inngest client is the foundation. It defines your event types (type-safe event payloads) and creates the client instance that all functions use. Direct your agent to create this first — every other function imports from it.",
+      type: 'code-fill',
+      instruction: 'Complete the Inngest client setup with type-safe event definitions. This is the foundation that all functions import from.',
       language: 'typescript',
       filename: 'src/inngest/client.ts',
-      code: `import { Inngest } from 'inngest'
+      template: `import { Inngest } from 'inngest'
 
-// Type-safe event definitions
 type Events = {
-  'user/signup': { data: { email: string; name: string } }
+  '___BLANK_1___': { data: { email: string; name: string } }
   'order/placed': { data: { orderId: string; userId: string; amount: number } }
-  'order/fulfilled': { data: { orderId: string; trackingNumber: string } }
-  'webhook/received': { data: { source: string; payload: unknown } }
+  '___BLANK_2___': { data: { orderId: string; trackingNumber: string } }
+  'webhook/received': { data: { source: string; payload: ___BLANK_3___ } }
 }
 
 export const inngest = new Inngest({
   id: 'my-app',
   schemas: new EventSchemas().fromRecord<Events>(),
 })`,
+      blanks: [
+        {
+          id: 'BLANK_1',
+          answer: 'user/signup',
+          alternatives: ['user/signup', '"user/signup"'],
+          hint: 'The event name for when a user signs up — follows namespace/action convention',
+          placeholder: 'signup event name',
+        },
+        {
+          id: 'BLANK_2',
+          answer: 'order/fulfilled',
+          alternatives: ['order/fulfilled', '"order/fulfilled"'],
+          hint: 'The event for when an order is shipped — same namespace as order/placed',
+          placeholder: 'fulfillment event name',
+        },
+        {
+          id: 'BLANK_3',
+          answer: 'unknown',
+          alternatives: ['unknown'],
+          hint: 'The safest type for an unstructured webhook payload — not `any`',
+          placeholder: 'safe type for unknown data',
+        },
+      ],
+      explanation: 'Event names follow namespace/action convention: `user/signup`, `order/placed`, `order/fulfilled`. Using `unknown` instead of `any` for the webhook payload forces handlers to validate the data before using it — a critical safety measure that agents often skip.',
     },
     {
       type: 'terminal',
@@ -326,9 +418,16 @@ export const inngest = new Inngest({
 
     // === VERIFICATION CHECKLIST ===
     {
-      type: 'info',
-      title: 'Verifying agent-built event systems',
-      body: "After an agent builds your event-driven code, you need to verify it meets production requirements. Agents frequently miss: retry configuration, idempotency on external calls, proper error classification (transient vs permanent), and dead letter handling. Use this checklist on every event handler the agent produces.",
+      type: 'multiple-choice',
+      question: 'After an agent builds event-driven code, which of these does it MOST frequently miss?',
+      options: [
+        'Function naming conventions and code formatting',
+        'Retry configuration, idempotency on external calls, and dead letter handling',
+        'Import statements and module resolution',
+        'TypeScript type definitions and interfaces',
+      ],
+      correctIndex: 1,
+      explanation: "Agents frequently miss production requirements in event-driven code: retry configuration, idempotency on external calls, proper error classification (transient vs permanent), and dead letter handling. Use a verification checklist on every event handler the agent produces.",
     },
     {
       type: 'checklist',
@@ -349,27 +448,21 @@ export const inngest = new Inngest({
 
     // === ADVANCED: COMPOSING EVENT CHAINS ===
     {
-      type: 'info',
-      title: 'Event chains: one handler triggers the next',
-      body: "Real systems have cascading events. User signs up → triggers onboarding flow → triggers team creation → triggers notification. Each is a separate function, triggered by the previous one emitting an event. This keeps handlers small, testable, and independently deployable. Spec these chains explicitly for agents.",
-    },
-    {
-      type: 'code-demo',
-      title: 'Chained events pattern',
-      body: "Handler A completes and emits a new event that triggers Handler B. This decouples the handlers — you can change, disable, or add new handlers to any event without modifying existing code. Direct agents to emit events at the end of handlers, not to call other handlers directly.",
+      type: 'code-fill',
+      instruction: 'Complete the chained event handlers. Handler A emits an event that triggers Handler B. Fill in the event names and the step that emits the downstream event.',
       language: 'typescript',
       filename: 'src/inngest/functions/onboarding-chain.ts',
-      code: `// Handler 1: Signup triggers onboarding
+      template: `// Handler 1: Signup triggers onboarding
 export const onSignup = inngest.createFunction(
   { id: 'signup-handler' },
-  { event: 'user/signup' },
+  { event: '___BLANK_1___' },
   async ({ event, step }) => {
     const user = await step.run('create-user', async () => {
       return await createUser(event.data)
     })
 
     // Emit next event in the chain
-    await step.sendEvent('trigger-onboarding', {
+    await step.___BLANK_2___('trigger-onboarding', {
       name: 'user/onboarding.start',
       data: { userId: user.id, plan: 'free' },
     })
@@ -379,7 +472,7 @@ export const onSignup = inngest.createFunction(
 // Handler 2: Onboarding creates workspace
 export const onOnboardingStart = inngest.createFunction(
   { id: 'onboarding-handler' },
-  { event: 'user/onboarding.start' },
+  { event: '___BLANK_3___' },
   async ({ event, step }) => {
     await step.run('create-workspace', async () => {
       return await createWorkspace(event.data.userId)
@@ -395,6 +488,30 @@ export const onOnboardingStart = inngest.createFunction(
     })
   }
 )`,
+      blanks: [
+        {
+          id: 'BLANK_1',
+          answer: 'user/signup',
+          alternatives: ['user/signup', '"user/signup"'],
+          hint: 'The event that starts the chain — when a user signs up',
+          placeholder: 'trigger event',
+        },
+        {
+          id: 'BLANK_2',
+          answer: 'sendEvent',
+          alternatives: ['sendEvent'],
+          hint: 'The Inngest step method that emits a new event to trigger downstream handlers',
+          placeholder: 'event emission method',
+        },
+        {
+          id: 'BLANK_3',
+          answer: 'user/onboarding.start',
+          alternatives: ['user/onboarding.start', '"user/onboarding.start"'],
+          hint: 'The event emitted by Handler 1 that triggers this handler',
+          placeholder: 'downstream event name',
+        },
+      ],
+      explanation: 'Event chains decouple handlers — Handler A emits `user/onboarding.start` via `step.sendEvent()`, which triggers Handler B. You can add, remove, or modify downstream handlers without touching upstream code. This is the Open-Closed Principle applied to workflows. Direct agents to emit events at the end of handlers, not to call other handlers directly.',
     },
     {
       type: 'multiple-choice',

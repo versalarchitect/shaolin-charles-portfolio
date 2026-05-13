@@ -91,24 +91,52 @@ const content: LessonContent = {
 
     // === THE METRICS ===
     {
-      type: 'info',
-      title: 'Facteur 1 : Score de couplage',
-      body: "Combien d'autres composants dépendent de celui-ci ? Une fonction utilitaire utilisée à 3 endroits peut être réécrite facilement — on change l'import, c'est fait. Un module d'auth que 47 composants importent, que le middleware référence, que 3 services appellent via HTTP — ça, c'est un couplage élevé. Un couplage élevé favorise la refactorisation parce qu'une réécriture exige de mettre à jour chaque point de contact simultanément. Même avec des agents, coordonner 47 changements de fichiers lors d'une réécriture est source d'erreurs. Le patron strangler fig (refactoriser par remplacement graduel) gère bien mieux le couplage élevé.",
+      type: 'multiple-choice',
+      question: 'Un module d\'auth est importé par 47 composants, référencé par le middleware et appelé par 3 services via HTTP. Cela favorise-t-il la refactorisation ou la réécriture ?',
+      options: [
+        'Réécriture — repartir de zéro avec une implémentation propre',
+        'Refactorisation — un couplage élevé signifie qu\'une réécriture exige de mettre à jour 47 fichiers simultanément, ce qui est source d\'erreurs même avec des agents. Le patron strangler fig gère ça mieux.',
+        'Aucun des deux — le laisser tranquille',
+        'Réécriture avec une couche d\'adaptation',
+      ],
+      correctIndex: 1,
+      explanation: "Facteur 1 : Score de couplage. Un couplage élevé favorise la refactorisation parce qu'une réécriture exige de mettre à jour chaque point de contact simultanément. Même avec des agents, coordonner 47 changements de fichiers est source d'erreurs. Le patron strangler fig gère bien mieux le couplage élevé.",
     },
     {
-      type: 'info',
-      title: 'Facteur 2 : Couverture de tests',
-      body: "Une couverture de tests élevée favorise la refactorisation. Si le composant a 90 % de couverture, tu peux refactoriser agressivement — les tests attrapent les régressions immédiatement. Un agent peut faire des changements audacieux en sachant que la suite de tests va crier si quelque chose casse. À l'inverse, une faible couverture de tests favorise la réécriture : si tu ne peux pas modifier le code en toute sécurité (pas de tests pour valider le comportement), il vaut peut-être mieux écrire la nouvelle version avec des tests dès le départ plutôt que d'essayer d'ajouter des tests à du code que tu ne comprends pas complètement.",
+      type: 'multiple-choice',
+      question: 'Un composant a 90 % de couverture de tests mais du code laid (callbacks, nommage incohérent). Un autre a 10 % de couverture mais une architecture propre. Lequel favorise la refactorisation vs la réécriture ?',
+      options: [
+        'Les deux devraient être refactorisés',
+        'Le composant à 90 % de couverture favorise la refactorisation (les tests attrapent les régressions). Le composant à 10 % favorise la réécriture (pas de filet de sécurité pour les modifications).',
+        'Les deux devraient être réécrits',
+        'La couverture n\'a pas d\'importance pour cette décision',
+      ],
+      correctIndex: 1,
+      explanation: "Facteur 2 : Couverture de tests. Une couverture élevée favorise la refactorisation — les tests attrapent les régressions immédiatement. Une faible couverture favorise la réécriture : si tu ne peux pas modifier le code en toute sécurité, écris la nouvelle version avec des tests dès le départ.",
     },
     {
-      type: 'info',
-      title: 'Facteur 3 : Sévérité de la dette',
-      body: "La dette est-elle structurelle ou cosmétique ? La dette cosmétique — nommage incohérent, async en style callback, types manquants — est refactorisable. Un agent peut moderniser le code sans changer son architecture. La dette structurelle — dépendances circulaires, god objects, violation de chaque principe SOLID, impossibilité de tester de façon isolée — nécessite souvent une réécriture parce que la structure elle-même est le problème. Tu ne peux pas refactoriser une dépendance circulaire en un DAG propre sans fondamentalement repenser les relations entre modules.",
+      type: 'multiple-choice',
+      question: 'Un module a des dépendances circulaires et des god objects (dette structurelle). Un autre a un nommage incohérent et du async en style callback (dette cosmétique). Lequel nécessite une réécriture ?',
+      options: [
+        'Les deux ont besoin de réécritures',
+        'Le module à dette structurelle nécessite une réécriture (le design lui-même est le problème). Le module à dette cosmétique peut être refactorisé de façon incrémentale sans changer l\'architecture.',
+        'Aucun n\'a besoin de réécriture — les deux peuvent être refactorisés',
+        'Le cosmétique est pire parce qu\'il affecte la lisibilité',
+      ],
+      correctIndex: 1,
+      explanation: "Facteur 3 : Sévérité de la dette. La dette cosmétique est refactorisable. La dette structurelle nécessite souvent une réécriture parce que la structure elle-même est le problème. Tu ne peux pas refactoriser une dépendance circulaire en un DAG propre sans fondamentalement repenser les relations entre modules.",
     },
     {
-      type: 'info',
-      title: 'Facteur 4 : Constructibilité par agents',
-      body: "Un agent peut-il reconstruire ça à partir d'une spec claire ? Certains composants sont de la logique métier pure avec des entrées et sorties bien définies — hautement constructibles par agents. D'autres encodent des années de gestion de cas limites appris à travers des incidents en production — documentés nulle part sauf dans le code lui-même. Si la connaissance est UNIQUEMENT dans le code et ne peut pas être extraite dans une spec, réécrire signifie perdre cette connaissance. Ça favorise la refactorisation : garder la connaissance, améliorer la structure autour.",
+      type: 'multiple-choice',
+      question: 'Un composant encode des années de gestion de cas limites appris en production, documentés nulle part sauf dans le code. Devrais-tu le réécrire ?',
+      options: [
+        'Oui — les agents peuvent tout reconstruire à partir d\'une spec',
+        'Non — si la connaissance est UNIQUEMENT dans le code et ne peut pas être extraite dans une spec, réécrire signifie perdre cette connaissance. Refactorise plutôt : garder la connaissance, améliorer la structure autour.',
+        'Oui, mais copie tous les commentaires d\'abord',
+        'Oui, si tu as une couverture de tests élevée',
+      ],
+      correctIndex: 1,
+      explanation: "Facteur 4 : Constructibilité par agents. Certains composants sont de la logique métier pure avec des entrées et sorties bien définies. D'autres encodent des années de gestion de cas limites documentés nulle part. Si la connaissance est UNIQUEMENT dans le code, réécrire signifie la perdre. La refactorisation garde la connaissance en améliorant la structure.",
     },
     {
       type: 'multiple-choice',
@@ -130,17 +158,29 @@ const content: LessonContent = {
 
     // === THE STRANGLER FIG PATTERN ===
     {
-      type: 'info',
-      title: 'Le strangler fig avec des agents',
-      body: "Le patron strangler fig — construire le nouveau système autour de l'ancien, rediriger graduellement le trafic vers les nouveaux composants jusqu'à ce que l'ancien système puisse être retiré — a toujours été la voie de migration la plus sûre. Avec des agents, c'est aussi la plus rapide. Assigne un agent par remplacement de composant. Chaque agent construit la nouvelle version, ajoute une couche d'adaptation, et l'ancien composant se réduit à mesure que les consommateurs migrent. Cinq agents peuvent étouffer cinq composants simultanément. L'ancien système meurt gracieusement, pas violemment.",
+      type: 'multiple-choice',
+      question: 'Le patron strangler fig construit le nouveau système autour de l\'ancien. Pourquoi est-il particulièrement puissant avec les flottes d\'agents ?',
+      options: [
+        'Les agents préfèrent le travail incrémental',
+        'Assigne un agent par remplacement de composant — cinq agents peuvent étouffer cinq composants simultanément pendant que l\'ancien système reste en ligne. L\'ancien meurt gracieusement, pas violemment.',
+        'Les agents ne peuvent pas faire de grandes réécritures',
+        'Le patron a été conçu pour les systèmes IA',
+      ],
+      correctIndex: 1,
+      explanation: "Le patron strangler fig a toujours été la voie de migration la plus sûre. Avec des agents, c'est aussi la plus rapide. Assigne un agent par remplacement de composant. Chaque agent construit la nouvelle version, ajoute une couche d'adaptation, et l'ancien composant se réduit à mesure que les consommateurs migrent.",
     },
     {
-      type: 'code-demo',
-      title: 'Patron d\'adaptation strangler fig',
-      body: 'L\'adaptateur permet aux anciens consommateurs de continuer à fonctionner pendant que les nouveaux consommateurs utilisent directement la version réécrite. Les agents peuvent construire les deux chemins en parallèle.',
+      type: 'code-fill',
+      instruction: 'Complète cet adaptateur strangler fig. Remplis la fonction d\'adaptation qui enveloppe l\'implémentation async moderne dans l\'ancienne interface callback.',
       language: 'typescript',
       filename: 'packages/auth/src/adapter.ts',
-      code: "// Old interface (callback-based, used by 12 consumers)\nexport interface LegacyAuth {\n  authenticate(token: string, cb: (err: Error | null, user?: User) => void): void\n  authorize(user: User, permission: string, cb: (err: Error | null, allowed?: boolean) => void): void\n}\n\n// New interface (async, clean)\nexport interface ModernAuth {\n  authenticate(token: string): Promise<User>\n  authorize(user: User, permission: string): Promise<boolean>\n}\n\n// Adapter: wraps new implementation in old interface\n// Consumers migrate at their own pace\nexport function createLegacyAdapter(modern: ModernAuth): LegacyAuth {\n  return {\n    authenticate(token, cb) {\n      modern.authenticate(token)\n        .then(user => cb(null, user))\n        .catch(err => cb(err))\n    },\n    authorize(user, permission, cb) {\n      modern.authorize(user, permission)\n        .then(allowed => cb(null, allowed))\n        .catch(err => cb(err))\n    },\n  }\n}\n\n// Migration tracker: when all consumers use ModernAuth directly,\n// remove the adapter and the old interface\nexport const migrationStatus = {\n  totalConsumers: 12,\n  migratedToModern: 7, // Update as consumers switch\n  remainingLegacy: 5,\n}",
+      template: "// Old interface (callback-based, used by 12 consumers)\nexport interface LegacyAuth {\n  authenticate(token: string, cb: (err: Error | null, user?: User) => void): void\n}\n\n// New interface (async, clean)\nexport interface ModernAuth {\n  authenticate(token: string): Promise<User>\n}\n\n// Adapter: wraps new implementation in old interface\nexport function {{adapter_name}}(modern: ModernAuth): LegacyAuth {\n  return {\n    authenticate(token, cb) {\n      modern.authenticate(token)\n        .then(user => cb({{success_args}}))\n        .catch(err => cb({{error_args}}))\n    },\n  }\n}",
+      blanks: [
+        { id: 'adapter_name', answer: 'createLegacyAdapter', alternatives: ['createAdapter', 'legacyAdapter', 'wrapModern'], placeholder: 'nom de la fonction d\'adaptation ?', hint: 'Une fonction qui crée un wrapper compatible avec l\'ancien' },
+        { id: 'success_args', answer: 'null, user', alternatives: ['null, user', 'null,user'], placeholder: 'args callback succès ?', hint: 'Convention callback Node.js : erreur d\'abord (null en cas de succès), puis résultat' },
+        { id: 'error_args', answer: 'err', alternatives: ['err', 'error'], placeholder: 'args callback erreur ?', hint: 'Convention callback Node.js : passer l\'erreur comme premier argument' },
+      ],
+      explanation: 'L\'adaptateur permet aux anciens consommateurs de continuer à fonctionner pendant que les nouveaux consommateurs utilisent directement la version réécrite. Les consommateurs migrent à leur propre rythme.',
     },
     {
       type: 'multiple-choice',
@@ -197,14 +237,28 @@ const content: LessonContent = {
 
     // === WHEN TO ACTUALLY REWRITE ===
     {
-      type: 'info',
-      title: 'Quand la réécriture EST le bon choix',
-      body: "Réécris quand tout ceci est vrai : (1) le composant est mal testé donc tu ne peux pas refactoriser en toute sécurité, (2) la logique métier est bien comprise et peut être spécifiée complètement, (3) le couplage est assez faible pour faire l'échange sans changements en cascade, et (4) la dette structurelle rend l'amélioration incrémentale impossible — c'est le design entier qui est mauvais, pas juste le style du code. Quand ces quatre conditions s'alignent, une réécriture est plus rapide, plus sûre, et produit un meilleur résultat que d'essayer de réparer ce qui ne peut pas être réparé de façon incrémentale.",
+      type: 'multiple-choice',
+      question: 'Les quatre conditions doivent être vraies pour justifier une réécriture : (1) mal testé, (2) logique métier bien comprise, (3) couplage faible, (4) dette structurelle. Un module a 92 % de couverture mais des callbacks laids. Devrais-tu réécrire ?',
+      options: [
+        'Oui — les callbacks sont dépassés',
+        'Non — la condition 1 échoue (bien testé). La couverture élevée signifie que tu PEUX refactoriser en sécurité. Ne réécris que quand tu NE PEUX PAS refactoriser.',
+        'Oui, si les agents peuvent le faire vite',
+        'Ça dépend du couplage seul',
+      ],
+      correctIndex: 1,
+      explanation: "Réécris quand toutes les conditions sont vraies : mal testé, logique bien comprise, couplage faible, et dette structurelle. Quand même une condition échoue — comme avoir une couverture élevée — la refactorisation est le meilleur chemin.",
     },
     {
-      type: 'info',
-      title: 'La liste de vérification pour la réécriture',
-      body: "Avant d'approuver une réécriture : Peux-tu écrire une spec complète qui capture chaque cas limite que l'ancien code gère ? Sinon, tu vas perdre des comportements. As-tu des tests d'intégration qui valident le comportement externe indépendamment de l'implémentation interne ? Sinon, tu ne peux pas vérifier que la réécriture est équivalente. Le composant est-il assez isolé pour que le remplacement ne nécessite pas de changements dans plus de 3 autres fichiers ? Sinon, le coût de coordination peut dépasser le bénéfice de la réécriture.",
+      type: 'multiple-choice',
+      question: 'Avant d\'approuver une réécriture, tu dois vérifier : peux-tu écrire une spec complète capturant chaque cas limite ? Tu trouves 15 cas limites documentés uniquement en commentaires de code, sans spec externe. Que dit cela ?',
+      options: [
+        'Le code est bien documenté, procède à la réécriture',
+        'Tu vas perdre des comportements — si la connaissance est uniquement dans le code, réécrire à partir d\'une spec manquera ces 15 cas limites. Extrais la connaissance d\'abord ou refactorise plutôt.',
+        'Les commentaires suffisent pour la spec',
+        'Les cas limites ne comptent pas dans une réécriture',
+      ],
+      correctIndex: 1,
+      explanation: "Avant d'approuver une réécriture : Peux-tu écrire une spec complète qui capture chaque cas limite ? Sinon, tu perdras des comportements. As-tu des tests d'intégration ? Sinon, tu ne peux pas vérifier l'équivalence. Le composant est-il assez isolé ? Sinon, le coût de coordination peut dépasser le bénéfice.",
     },
     {
       type: 'code-demo',
@@ -256,9 +310,16 @@ const content: LessonContent = {
 
     // === CARRYING DEBT INTENTIONALLY ===
     {
-      type: 'info',
-      title: 'Quand la dette vaut la peine d\'être portée',
-      body: "Pas toute la dette technique a besoin d'être remboursée. Certaines dettes sont peu coûteuses à porter : le module d'auth laid-mais-fonctionnel ne te coûte rien au quotidien. Le code est stable. Personne ne le modifie. Sa laideur est invisible pour les utilisateurs. Le corriger ferait du bien mais n'apporterait aucune valeur métier. Le porter intentionnellement — en documentant POURQUOI tu ne le corriges pas — est une décision d'ingénierie légitime. La question n'est jamais « est-ce que ce code est parfait ? » C'est « est-ce que corriger ce code vaut plus que la prochaine fonctionnalité que je pourrais construire à la place ? »",
+      type: 'multiple-choice',
+      question: 'Un module d\'auth laid-mais-fonctionnel n\'a aucun bogue, personne ne le modifie, et les utilisateurs ne voient jamais son code. Devrais-tu le corriger ?',
+      options: [
+        'Oui — le code laid devrait toujours être nettoyé',
+        'Non — certaines dettes sont peu coûteuses à porter. La question n\'est jamais « est-ce que ce code est parfait ? » mais « est-ce que le corriger vaut plus que la prochaine fonctionnalité ? » Porte la dette intentionnellement et documente POURQUOI.',
+        'Oui, mais seulement pendant un sprint dédié à la dette technique',
+        'Demande aux agents de le corriger pendant les temps morts',
+      ],
+      correctIndex: 1,
+      explanation: "Pas toute la dette technique a besoin d'être remboursée. Certaines dettes sont peu coûteuses à porter. Le code est stable, personne ne le modifie, et sa laideur est invisible pour les utilisateurs. Le corriger ferait du bien mais n'apporterait aucune valeur métier. Le porter intentionnellement — en documentant POURQUOI — est une décision d'ingénierie légitime.",
     },
     {
       type: 'multiple-choice',
@@ -275,9 +336,16 @@ const content: LessonContent = {
 
     // === DATA-DRIVEN DECISIONS ===
     {
-      type: 'info',
-      title: 'Les métriques qui éclairent la décision',
-      body: "Ne décide pas sur l'instinct seul. Mesure : Lignes de code (le module est-il disproportionnellement gros pour ce qu'il fait ?). Complexité cyclomatique (y a-t-il trop de branches pour raisonner clairement ?). Couplage (combien d'autres modules importent de celui-ci ?). Fréquence de changement (est-il modifié souvent, rendant la dette coûteuse, ou jamais, rendant la dette gratuite ?). Couverture de tests (peux-tu le modifier en toute sécurité ?). Ces chiffres ne prennent pas la décision à ta place — mais ils ancrent la conversation dans la réalité plutôt que dans le ressenti.",
+      type: 'multiple-choice',
+      question: 'Un module a 0 commits en 6 mois et 0 bogue. Un autre a 45 commits en 6 mois et 12 bogues. La dette technique de quel module est la PLUS coûteuse à porter ?',
+      options: [
+        'Le premier — zéro activité signifie qu\'il est abandonné et risqué',
+        'Le deuxième — une fréquence de changement élevée rend la dette coûteuse car chaque modification risque des régressions. La dette du premier module est gratuite car personne ne le touche.',
+        'Les deux sont aussi coûteux',
+        'Aucun — la dette devrait toujours être corrigée',
+      ],
+      correctIndex: 1,
+      explanation: "Ne décide pas sur l'instinct seul. Mesure la fréquence de changement : est-il modifié souvent (rendant la dette coûteuse) ou jamais (rendant la dette gratuite) ? Mesure aussi les LOC, la complexité cyclomatique, le couplage et la couverture de tests. Ces chiffres ne prennent pas la décision à ta place — mais ils ancrent la conversation dans la réalité.",
     },
     {
       type: 'code-demo',

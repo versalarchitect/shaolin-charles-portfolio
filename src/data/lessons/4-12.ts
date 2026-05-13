@@ -22,14 +22,27 @@ const content: LessonContent = {
 
     // === PHASE 1: MAP THE SYSTEM ===
     {
-      type: 'info',
-      title: 'Phase 1: Map all components and dependencies',
-      body: "Before redesigning, you must understand. ShopFlow has 6 major domains: Orders (cart, checkout, fulfillment), Inventory (stock levels, warehouses, reorder triggers), Payments (processing, refunds, subscriptions), Notifications (email, SMS, push, in-app), Admin (dashboard, reports, user management), and Auth (login, sessions, permissions). They are all in one codebase with extensive cross-imports. Your first job: map what depends on what.",
+      type: 'multiple-choice',
+      question: 'ShopFlow has 6 domains in a monolith with extensive cross-imports. What is your FIRST job before redesigning?',
+      options: [
+        'Start extracting the simplest module immediately',
+        'Map all components and their dependencies to understand coupling',
+        'Rewrite the system from scratch with a clean architecture',
+        'Add tests to the most critical paths',
+      ],
+      correctIndex: 1,
+      explanation: 'Before redesigning, you must understand what depends on what. ShopFlow has 6 domains: Orders, Inventory, Payments, Notifications, Admin, and Auth — all in one codebase with extensive cross-imports. Mapping dependencies reveals which extractions are safe and which require careful sequencing.',
     },
     {
-      type: 'diagram',
+      type: 'interactive-diagram',
       title: 'ShopFlow: Current Architecture (Tangled)',
-      body: 'Every domain imports from every other domain. This is why a change to payments can break notifications.',
+      body: 'Click through to see how coupling cascades across domains.',
+      stages: [
+        { highlightNodes: ['orders'], highlightEdges: [{ from: 'orders', to: 'inventory' }, { from: 'orders', to: 'payments' }, { from: 'orders', to: 'notifications' }, { from: 'orders', to: 'auth' }], explanation: 'Orders reaches into 4 other domains. A change to any of them can break checkout.' },
+        { highlightNodes: ['inventory', 'orders'], highlightEdges: [{ from: 'inventory', to: 'orders' }, { from: 'orders', to: 'inventory' }], explanation: 'Bidirectional coupling: Orders checks stock, Inventory reserves stock for orders. Neither can be extracted alone.' },
+        { highlightNodes: ['notifications', 'orders', 'payments', 'inventory'], highlightEdges: [{ from: 'orders', to: 'notifications' }, { from: 'payments', to: 'notifications' }, { from: 'inventory', to: 'notifications' }], explanation: 'Notifications is called by 3 domains. Change how emails are sent and you break orders, payments, AND inventory.' },
+        { highlightNodes: ['admin', 'orders', 'inventory', 'payments', 'auth'], highlightEdges: [{ from: 'admin', to: 'orders' }, { from: 'admin', to: 'inventory' }, { from: 'admin', to: 'payments' }, { from: 'admin', to: 'auth' }], explanation: 'Admin depends on everything. It is the last to extract because it needs stable APIs from all other domains.' },
+      ],
       diagram: {
         direction: 'TB',
         nodes: [
@@ -77,17 +90,31 @@ const content: LessonContent = {
 
     // === PHASE 2: SCORE AGENT-BUILDABILITY ===
     {
-      type: 'info',
-      title: 'Phase 2: Score each component for agent-buildability',
-      body: "Agent-buildability measures how effectively an agent fleet can work on a component in parallel with other work. High buildability means: clear boundaries, independent testing, low coupling, well-defined interface. Low buildability means: tangled imports, shared mutable state, no tests to verify correctness, unclear scope. Score each domain 0-10 based on: isolation (0-3), testability (0-3), interface clarity (0-2), and documentation (0-2).",
+      type: 'multiple-choice',
+      question: 'Agent-buildability scores a component on 4 dimensions. Which of these is NOT one of them?',
+      options: [
+        'Isolation: can this domain be modified without touching others?',
+        'Testability: can an agent verify correctness independently?',
+        'Popularity: how many developers work on this domain?',
+        'Interface clarity: is the public API well-defined?',
+      ],
+      correctIndex: 2,
+      explanation: 'The 4 dimensions are: Isolation (0-3), Testability (0-3), Interface clarity (0-2), and Documentation (0-2). Popularity is irrelevant — buildability measures how effectively an agent fleet can work on a component in parallel, not how many humans use it. High buildability = clear boundaries, independent testing, low coupling, well-defined interface.',
     },
     {
-      type: 'code-demo',
-      title: 'Agent-buildability scoring',
-      body: 'Apply this scoring rubric to each domain. The scores reveal where architectural investment will have the highest return.',
+      type: 'code-fill',
+      instruction: 'Complete the buildability assessment by filling in the scores and analysis based on the rubric: Isolation (0-3), Testability (0-3), Interface (0-2), Documentation (0-2).',
       language: 'markdown',
       filename: 'docs/buildability-assessment.md',
-      code: "# ShopFlow Agent-Buildability Assessment\n\n## Scoring Rubric\n- Isolation (0-3): Can this domain be modified without touching others?\n- Testability (0-3): Can an agent verify correctness independently?\n- Interface clarity (0-2): Is the public API well-defined?\n- Documentation (0-2): Can an agent understand scope from docs alone?\n\n## Scores\n\n| Domain | Isolation | Testability | Interface | Docs | Total |\n|--------|-----------|-------------|-----------|------|-------|\n| Orders | 0 | 1 | 0 | 1 | 2/10 |\n| Inventory | 1 | 2 | 1 | 1 | 5/10 |\n| Payments | 1 | 2 | 1 | 2 | 6/10 |\n| Notifications | 1 | 0 | 0 | 0 | 1/10 |\n| Admin | 0 | 1 | 1 | 1 | 3/10 |\n| Auth | 2 | 2 | 2 | 1 | 7/10 |\n\n## Analysis\n- Auth (7/10): Best candidate for first extraction — already semi-isolated\n- Payments (6/10): Good candidate — clear domain, decent tests\n- Notifications (1/10): Worst buildability — no tests, no clear interface,\n  imported by everything. Highest priority for redesign.\n- Orders (2/10): Core domain but deeply entangled. Needs strangler fig.",
+      template: '# ShopFlow Agent-Buildability Assessment\n\n| Domain | Isolation | Testability | Interface | Docs | Total |\n|--------|-----------|-------------|-----------|------|-------|\n| Orders | 0 | 1 | 0 | 1 | 2/10 |\n| Inventory | 1 | 2 | 1 | 1 | 5/10 |\n| Payments | 1 | 2 | 1 | 2 | {{payments_score}}/10 |\n| Notifications | 1 | 0 | 0 | 0 | {{notif_score}}/10 |\n| Auth | 2 | 2 | 2 | 1 | {{auth_score}}/10 |\n\n## Best extraction candidate: {{best_candidate}}\n## Worst buildability (needs redesign): {{worst_candidate}}',
+      blanks: [
+        { id: 'payments_score', answer: '6', placeholder: 'total?', hint: '1+2+1+2' },
+        { id: 'notif_score', answer: '1', placeholder: 'total?', hint: '1+0+0+0' },
+        { id: 'auth_score', answer: '7', placeholder: 'total?', hint: '2+2+2+1' },
+        { id: 'best_candidate', answer: 'Auth', alternatives: ['auth'], placeholder: 'which domain?', hint: 'Highest score' },
+        { id: 'worst_candidate', answer: 'Notifications', alternatives: ['notifications'], placeholder: 'which domain?', hint: 'Lowest score at 1/10' },
+      ],
+      explanation: 'Auth scores highest (7/10) because it is already semi-isolated with good tests and clear interface. Notifications scores lowest (1/10) with no tests, no clear interface, and imports from everywhere. Extraction order follows buildability scores: start with the easiest wins.',
     },
     {
       type: 'order',
@@ -109,24 +136,32 @@ const content: LessonContent = {
 
     // === PHASE 3: IDENTIFY BLOCKERS ===
     {
-      type: 'info',
-      title: 'Phase 3: Identify the top 3 architectural blockers',
-      body: "Now that you have scores, identify the structural problems that CAUSE low scores. These are not symptoms (low test coverage) but root causes (circular dependencies that make testing impossible). A blocker is something that, if resolved, would improve buildability scores across multiple domains simultaneously. Fix the blockers and the individual domain problems become tractable.",
+      type: 'multiple-choice',
+      question: 'You have buildability scores. What should you identify next?',
+      options: [
+        'Start fixing the lowest-scoring module',
+        'Identify the structural ROOT CAUSES that make scores low — blockers that, if fixed, improve multiple domains',
+        'Add tests to bring coverage up across the board',
+        'Hire more engineers to work on the worst modules',
+      ],
+      correctIndex: 1,
+      explanation: 'Focus on root causes, not symptoms. Low test coverage is a symptom. Circular dependencies that make testing impossible are the root cause. A blocker is something that, if resolved, improves buildability scores across multiple domains simultaneously.',
     },
     {
-      type: 'info',
-      title: 'Blocker 1: Bidirectional coupling between Orders and Inventory',
-      body: "Orders imports Inventory to check stock. Inventory imports Orders to reserve stock for an order. This circular dependency means neither can be extracted independently. The fix: introduce an event bus. Orders publishes 'OrderPlaced' events. Inventory subscribes and handles stock reservation. The dependency becomes unidirectional: both depend on event definitions, neither depends on the other's internals.",
-    },
-    {
-      type: 'info',
-      title: 'Blocker 2: Notifications as an implicit dependency',
-      body: "Every domain directly calls notification functions: orders sends confirmation emails, payments sends receipts, inventory sends low-stock alerts. This makes Notifications a hidden coupling point — change how emails are sent and you break four other domains. The fix: Notifications becomes a standalone service that SUBSCRIBES to domain events. Domains publish events. Notifications decides what to send. Zero coupling from domains to Notifications.",
-    },
-    {
-      type: 'info',
-      title: 'Blocker 3: Shared database with no schema boundaries',
-      body: "All 6 domains query the same database with no schema separation. Orders queries the inventory table directly. Admin queries everything. This makes any schema change potentially breaking for every domain. The fix: schema boundaries. Each domain owns its tables. Cross-domain data access is via API calls, not direct queries. This is the hardest change but enables true independent deployment.",
+      type: 'match',
+      instruction: 'Match each architectural blocker to its fix:',
+      leftItems: [
+        'Bidirectional coupling (Orders ↔ Inventory)',
+        'Notifications as implicit dependency',
+        'Shared database with no schema boundaries',
+      ],
+      rightItems: [
+        'Each domain owns its tables; cross-domain access via API',
+        'Event bus: publish OrderPlaced, subscribe to handle stock',
+        'Notifications subscribes to domain events instead of being called',
+      ],
+      correctPairs: { 0: 1, 1: 2, 2: 0 },
+      explanation: 'Bidirectional coupling is fixed by the event bus (both depend on events, not each other). Notification coupling is fixed by making it a subscriber (domains publish, notifications listens). Database coupling is fixed by schema ownership (each domain owns tables, access via API). Each fix converts tight coupling into loose coupling.',
     },
     {
       type: 'multiple-choice',
@@ -148,14 +183,27 @@ const content: LessonContent = {
 
     // === PHASE 4: THE REDESIGN ===
     {
-      type: 'info',
-      title: 'Phase 4: The agent-buildable redesign',
-      body: "Now you design the target architecture. The goal: every domain scores 8+ on agent-buildability. Every domain can be worked on by an independent agent with zero coordination. The system deploys any domain independently. A change to payments cannot break orders. This is not a theoretical exercise — you are writing the actual CLAUDE.md protocols, task graph, and verification pipeline that would govern the migration.",
+      type: 'multiple-choice',
+      question: 'What is the target for every domain in the redesigned architecture?',
+      options: [
+        'All code in one repository with shared imports',
+        '8+ agent-buildability score: independent work, independent deploy, zero cross-domain coupling',
+        'Maximum test coverage above 90%',
+        'Microservices with separate databases',
+      ],
+      correctIndex: 1,
+      explanation: 'The goal: every domain scores 8+ on buildability. Every domain can be worked on by an independent agent with zero coordination. The system deploys any domain independently. A change to payments cannot break orders. You are writing actual CLAUDE.md protocols, task graphs, and verification pipelines.',
     },
     {
-      type: 'diagram',
+      type: 'interactive-diagram',
       title: 'ShopFlow: Proposed Architecture (Decoupled)',
-      body: 'Domains communicate through an event bus and typed API contracts. No direct cross-domain imports.',
+      body: 'Click through to see how the decoupled architecture enables parallel agent work.',
+      stages: [
+        { highlightNodes: ['types', 'events'], highlightEdges: [], explanation: 'Foundation: shared types and event bus. This is the only cross-cut — every package depends on these two, nothing else.' },
+        { highlightNodes: ['orders', 'events', 'types'], highlightEdges: [{ from: 'orders', to: 'events' }, { from: 'orders', to: 'types' }], explanation: 'Orders publishes events (OrderPlaced, OrderCancelled) and depends only on shared types. No imports from inventory, payments, or notifications.' },
+        { highlightNodes: ['payments', 'inventory', 'notifications', 'events'], highlightEdges: [{ from: 'payments', to: 'events' }, { from: 'inventory', to: 'events' }, { from: 'notifications', to: 'events' }], explanation: 'Each domain subscribes to events it cares about. Payments subscribes to OrderPlaced. Notifications subscribes to everything. None import from each other.' },
+        { highlightNodes: ['admin', 'types'], highlightEdges: [{ from: 'admin', to: 'types' }], explanation: 'Admin is a pure API consumer. It calls typed HTTP APIs defined in shared types. It owns no business logic — just UI over other domains\' APIs.' },
+      ],
       diagram: {
         direction: 'TB',
         nodes: [
@@ -183,20 +231,33 @@ const content: LessonContent = {
       },
     },
     {
-      type: 'code-demo',
-      title: 'Root CLAUDE.md: System-level protocol',
-      body: 'This governs every agent working anywhere in the system. It is the constitution — individual package CLAUDE.md files add rules but cannot override these.',
+      type: 'code-fill',
+      instruction: 'Complete the root CLAUDE.md protocol that governs every agent in the system. This is the constitution — package-level CLAUDE.md files add rules but cannot override these.',
       language: 'markdown',
       filename: 'CLAUDE.md',
-      code: "# ShopFlow — Agent Protocol\n\n## System Rules (ALL agents, ALL packages)\n1. **No cross-package imports** except from @shop/shared-types\n2. **Communication between domains**: Event bus OR typed HTTP API only\n3. **Database**: Each package owns its schema. No cross-schema queries.\n4. **Testing**: Package tests must pass with no other package running\n5. **Deployment**: Each package deploys independently via its own pipeline\n\n## Shared Types Contract\nAll domain events and API request/response types live in @shop/shared-types.\nThis is the ONLY cross-cut. Changes here require review.\n\n## Event Bus Protocol\n- Events are immutable facts: OrderPlaced, PaymentProcessed, StockReserved\n- Publishers do not know who subscribes\n- Subscribers do not know who publishes\n- Events are typed in @shop/shared-types\n\n## Verification (every agent, every task)\n1. `bun run typecheck` — must pass\n2. `bun run test --filter={package}` — must pass\n3. `bun run build --filter={package}` — must produce artifact\n4. No lint errors introduced\n\n## Task Assignment Protocol\nEach agent receives: one package, one task, one CLAUDE.md.\nAgent scope = package scope. Never cross the boundary.",
+      template: '# ShopFlow — Agent Protocol\n\n## System Rules (ALL agents, ALL packages)\n1. **No cross-package imports** except from {{shared_package}}\n2. **Communication between domains**: {{comm_method}} only\n3. **Database**: Each package owns its schema. No {{forbidden_queries}}.\n4. **Testing**: Package tests must pass with {{test_isolation}}\n5. **Deployment**: Each package deploys {{deploy_mode}}\n\n## Verification (every agent, every task)\n1. `bun run typecheck` — must pass\n2. `bun run test --filter={package}` — must pass\n3. `bun run build --filter={package}` — must produce artifact',
+      blanks: [
+        { id: 'shared_package', answer: '@shop/shared-types', alternatives: ['shared-types'], placeholder: 'which package?', hint: 'The shared types contract package' },
+        { id: 'comm_method', answer: 'Event bus OR typed HTTP API', alternatives: ['event bus or typed HTTP API', 'events or API', 'event bus or API'], placeholder: 'allowed communication?', hint: 'Two approved channels' },
+        { id: 'forbidden_queries', answer: 'cross-schema queries', alternatives: ['cross schema queries', 'direct queries to other schemas'], placeholder: 'what is forbidden?', hint: 'Querying another domain\'s tables directly' },
+        { id: 'test_isolation', answer: 'no other package running', alternatives: ['in isolation', 'independently', 'without other packages'], placeholder: 'isolation level?', hint: 'Tests must work without any other domain' },
+        { id: 'deploy_mode', answer: 'independently via its own pipeline', alternatives: ['independently', 'via its own pipeline', 'on its own'], placeholder: 'how?', hint: 'Each package has its own deploy pipeline' },
+      ],
+      explanation: 'The root CLAUDE.md is the constitution of the system. No cross-package imports (except shared types), event bus for communication, schema ownership for data, isolated testing, and independent deployment. Every agent reads this before touching any code.',
     },
     {
-      type: 'code-demo',
-      title: 'Package-level CLAUDE.md example: Payments',
-      body: 'Each domain has its own CLAUDE.md scoping agent work precisely. An agent assigned to payments literally cannot affect orders.',
+      type: 'code-fill',
+      instruction: 'Complete the payments package CLAUDE.md. Each domain has its own protocol scoping agent work precisely — an agent assigned to payments literally cannot affect orders.',
       language: 'markdown',
       filename: 'packages/payments/CLAUDE.md',
-      code: "# Payments Package\n\n## Scope\nAll payment processing: charges, refunds, subscriptions, webhooks.\n\n## Owns\n- packages/payments/src/ (all source)\n- packages/payments/prisma/ (own schema + migrations)\n- packages/payments/tests/\n\n## Publishes Events\n- PaymentProcessed { orderId, amount, status }\n- RefundIssued { orderId, amount, reason }\n- SubscriptionChanged { userId, planId, action }\n\n## Subscribes To\n- OrderPlaced → initiate payment processing\n- OrderCancelled → initiate refund\n\n## External Dependencies\n- Stripe SDK (payment processing)\n- @shop/shared-types (event + API contracts)\n\n## Off-Limits\n- Do NOT import from any other package\n- Do NOT query tables outside payments schema\n- Do NOT send notifications directly (publish event, let notifications handle)\n\n## Testing\n- Unit: mock Stripe, test business logic\n- Integration: test against Stripe test mode\n- Contract: verify published events match @shop/shared-types\n\n## Run\n- Dev: `bun run dev --filter=payments`\n- Test: `bun run test --filter=payments`\n- Build: `bun run build --filter=payments`",
+      template: '# Payments Package\n\n## Scope\nAll payment processing: charges, refunds, subscriptions, webhooks.\n\n## Publishes Events\n- {{event_1}} { orderId, amount, status }\n- RefundIssued { orderId, amount, reason }\n\n## Subscribes To\n- {{subscribe_1}} → initiate payment processing\n- OrderCancelled → initiate refund\n\n## Off-Limits\n- Do NOT import from {{off_limits}}\n- Do NOT query tables outside payments schema\n- Do NOT send {{no_direct}} directly (publish event instead)',
+      blanks: [
+        { id: 'event_1', answer: 'PaymentProcessed', alternatives: ['payment_processed', 'PaymentCompleted'], placeholder: 'event name?', hint: 'What event fires when a payment succeeds?' },
+        { id: 'subscribe_1', answer: 'OrderPlaced', alternatives: ['order_placed', 'OrderCreated'], placeholder: 'subscribe to what?', hint: 'What event triggers payment processing?' },
+        { id: 'off_limits', answer: 'any other package', alternatives: ['other packages', 'other domains'], placeholder: 'what is off-limits?', hint: 'No cross-package imports' },
+        { id: 'no_direct', answer: 'notifications', alternatives: ['emails', 'alerts'], placeholder: 'what not to send directly?', hint: 'Let another domain handle these via events' },
+      ],
+      explanation: 'Each package CLAUDE.md defines: what events it publishes, what it subscribes to, and what is off-limits. An agent assigned to payments knows its exact scope and boundaries. It cannot accidentally modify orders, inventory, or notifications.',
     },
     {
       type: 'checkpoint',
@@ -247,9 +308,16 @@ const content: LessonContent = {
 
     // === PHASE 4 CONTINUED: TASK GRAPH ===
     {
-      type: 'info',
-      title: 'The migration task graph',
-      body: "You cannot redesign the entire system at once. The task graph defines the order of operations — which migrations can run in parallel and which have dependencies. The critical path runs through the event bus (everything depends on it) and the shared types package (everything imports from it). Once those exist, all six domain extractions can happen in parallel.",
+      type: 'multiple-choice',
+      question: 'What defines the critical path in the migration task graph?',
+      options: [
+        'The domain with the most code (Orders, 28K LOC)',
+        'The shared infrastructure everything depends on: shared types package + event bus',
+        'The domain with the lowest test coverage (Notifications, 8%)',
+        'The team\'s sprint capacity',
+      ],
+      correctIndex: 1,
+      explanation: 'The critical path runs through the event bus and shared types — everything depends on them. Once those exist, all six domain extractions can run in parallel. The task graph sequences work by dependency, not by size or complexity.',
     },
     {
       type: 'interactive-diagram',
@@ -382,25 +450,49 @@ const content: LessonContent = {
 
     // === PHASE 5: PROFESSIONAL PRESENTATION ===
     {
-      type: 'info',
-      title: 'Phase 5: Present as a professional document',
-      body: "The redesign is complete in your head. Now you must communicate it. A professional architecture redesign document has: an executive summary (one paragraph for leadership), a current state assessment (with evidence), the proposed architecture (with diagrams), a migration plan (with timeline and risk), success metrics (how you will know it worked), and a cost estimate. This is the document you hand to a CTO or VP and say: this is what I recommend.",
+      type: 'order',
+      instruction: 'Order the sections of a professional architecture redesign document from first to last:',
+      items: [
+        'Executive summary (one paragraph for leadership)',
+        'Migration plan (timeline, phases, risk mitigation)',
+        'Current state assessment (coupling analysis, buildability scores)',
+        'Success metrics (how you measure if it worked)',
+        'Proposed architecture (diagrams, CLAUDE.md protocols, task graph)',
+      ],
+      correctOrder: [0, 2, 4, 1, 3],
     },
     {
-      type: 'code-demo',
-      title: 'Executive summary',
-      body: 'One paragraph. This is what the CTO reads. If this paragraph does not compel them, they will not read the rest.',
+      type: 'code-fill',
+      instruction: 'Complete the executive summary. One paragraph. This is what the CTO reads — if it does not compel them, they will not read the rest.',
       language: 'markdown',
       filename: 'docs/architecture-redesign.md',
-      code: "# ShopFlow Architecture Redesign Proposal\n\n## Executive Summary\n\nShopFlow's monolithic architecture limits development velocity to 2 deploys/week\ndue to cross-domain coupling that makes every change a potential system-wide risk.\nThis proposal restructures the system into 6 independently deployable packages\ncommunicating through a typed event bus, enabling parallel development by\nmultiple agents/developers with zero coordination overhead. Estimated migration:\n4 weeks with a 3-person team + agent fleet. Expected outcome: 10x deploy\nfrequency, 60% reduction in production incidents, and the ability to scale\ndevelopment capacity without proportional hiring.",
+      template: '# ShopFlow Architecture Redesign Proposal\n\n## Executive Summary\n\nShopFlow\'s monolithic architecture limits development velocity to {{current_deploys}}\ndue to cross-domain coupling that makes every change a potential system-wide risk.\nThis proposal restructures the system into {{package_count}} independently deployable packages\ncommunicating through a {{comm_infra}}, enabling parallel development with\nzero coordination overhead. Estimated migration: {{timeline}} with a 3-person team.\nExpected outcome: {{deploy_improvement}} deploy frequency and {{incident_reduction}} reduction\nin production incidents.',
+      blanks: [
+        { id: 'current_deploys', answer: '2 deploys/week', alternatives: ['2x weekly', 'twice per week', '2 deploys per week'], placeholder: 'current rate?', hint: 'How often ShopFlow currently deploys' },
+        { id: 'package_count', answer: '6', placeholder: 'how many?', hint: 'One per domain' },
+        { id: 'comm_infra', answer: 'typed event bus', alternatives: ['event bus', 'typed event bus and HTTP APIs'], placeholder: 'communication method?', hint: 'The backbone for cross-domain communication' },
+        { id: 'timeline', answer: '4 weeks', alternatives: ['4 weeks', 'one month'], placeholder: 'how long?', hint: 'The estimated migration duration' },
+        { id: 'deploy_improvement', answer: '10x', alternatives: ['10x', 'ten times'], placeholder: 'multiplier?', hint: 'From 2/week to 4+/day' },
+        { id: 'incident_reduction', answer: '60%', alternatives: ['60 percent'], placeholder: 'percentage?', hint: 'More than half of incidents eliminated' },
+      ],
+      explanation: 'An executive summary must include: the problem (2 deploys/week due to coupling), the solution (6 independent packages via event bus), the cost (4 weeks), and the expected return (10x velocity, 60% fewer incidents). Every number must be defensible from your assessment data.',
     },
     {
-      type: 'code-demo',
-      title: 'Migration timeline and risk assessment',
-      body: 'Stakeholders need to know: how long, what could go wrong, and how you mitigate risk.',
+      type: 'code-fill',
+      instruction: 'Complete the migration timeline. Stakeholders need: how long, what could go wrong, and how you mitigate risk.',
       language: 'markdown',
       filename: 'docs/migration-plan.md',
-      code: "# Migration Plan\n\n## Timeline (4 weeks)\n\n### Week 1: Foundation\n- Create @shop/shared-types with all event definitions\n- Implement event bus (Redis Streams)\n- Set up monorepo tooling (Nx, per-package CI)\n- Risk: Low (additive, no existing code modified)\n\n### Week 2: First Extractions (parallel)\n- Agent A: Extract Auth package\n- Agent B: Extract Payments package\n- Agent C: Extract Inventory package\n- Agent D: Rewrite Notifications (event-driven)\n- Risk: Medium (strangler adapters keep old system live)\n\n### Week 3: Core Domain\n- Strangler fig for Orders (gradual migration)\n- Each endpoint migrated individually with adapter\n- Old + new run simultaneously (shadow mode)\n- Risk: Highest (core domain, most coupling)\n\n### Week 4: Integration & Admin\n- Rebuild Admin as pure API consumer\n- Full end-to-end testing\n- Remove legacy adapters\n- Risk: Low (verification-heavy, no new logic)\n\n## Risk Mitigation\n- Strangler fig: old system remains live until new passes all tests\n- Feature flags: route traffic to new/old per endpoint\n- Rollback: revert to monolith by disabling feature flags (< 5 min)\n- Shadow mode: new system processes in parallel, compare outputs\n\n## Success Metrics (measured at 30 days post-migration)\n- Deploy frequency: >2x daily (from 2x weekly)\n- Mean time to recovery: <15 min (from 2-4 hours)\n- Production incidents: <2/month (from 8/month)\n- Developer satisfaction: measured via survey\n- Agent buildability score: all domains >8/10",
+      template: '# Migration Plan — Timeline (4 weeks)\n\n### Week 1: Foundation\n- Create @shop/shared-types\n- Implement event bus ({{bus_tech}})\n- Risk: {{week1_risk}} (additive, no existing code modified)\n\n### Week 2: First Extractions (parallel)\n- 4 agents extract Auth, Payments, Inventory, Notifications\n- Risk: {{week2_risk}} (adapters keep old system live)\n\n### Week 3: Core Domain\n- {{migration_pattern}} for Orders\n- Old + new run simultaneously ({{verification_mode}})\n- Risk: {{week3_risk}} (core domain, most coupling)\n\n### Week 4: Integration & Admin\n- Risk: Low (verification-heavy, no new logic)\n\n## Rollback: revert by disabling feature flags (< {{rollback_time}})',
+      blanks: [
+        { id: 'bus_tech', answer: 'Redis Streams', alternatives: ['Redis', 'redis streams'], placeholder: 'technology?', hint: 'Message streaming infrastructure' },
+        { id: 'week1_risk', answer: 'Low', alternatives: ['low'], placeholder: 'risk level?' },
+        { id: 'week2_risk', answer: 'Medium', alternatives: ['medium'], placeholder: 'risk level?' },
+        { id: 'migration_pattern', answer: 'Strangler fig', alternatives: ['strangler fig', 'Strangler fig pattern'], placeholder: 'which pattern?', hint: 'Gradual replacement' },
+        { id: 'verification_mode', answer: 'shadow mode', alternatives: ['Shadow mode'], placeholder: 'verification approach?', hint: 'Run both and compare outputs' },
+        { id: 'week3_risk', answer: 'Highest', alternatives: ['High', 'highest', 'high'], placeholder: 'risk level?' },
+        { id: 'rollback_time', answer: '5 min', alternatives: ['5 minutes', '5min', 'five minutes'], placeholder: 'how fast?', hint: 'Very fast — just a feature flag flip' },
+      ],
+      explanation: 'A migration timeline with risk levels at each phase builds stakeholder confidence. Week 1 is low risk (additive). Week 2 is medium (adapters as safety net). Week 3 is highest (core domain). Week 4 is low (just verification). The rollback path (< 5 min via feature flags) addresses the #1 stakeholder concern.',
     },
     {
       type: 'multiple-choice',
@@ -422,9 +514,16 @@ const content: LessonContent = {
 
     // === FINAL SYNTHESIS ===
     {
-      type: 'info',
-      title: 'What you just did',
-      body: "You mapped a complex system. Scored its components for agent-buildability. Identified structural blockers. Designed a decoupled target architecture with CLAUDE.md protocols. Created a task graph for parallel migration. And presented it as a professional document. This is the complete skill set of an agent-system architect. You do not just USE agents — you DESIGN systems that make agent fleets maximally effective. Your judgment is the moat.",
+      type: 'multiple-choice',
+      question: 'What separates an agent USER from an agent-system ARCHITECT?',
+      options: [
+        'An architect uses more expensive AI models',
+        'An architect writes longer prompts',
+        'An architect designs systems that make agent fleets maximally effective — task graphs, CLAUDE.md protocols, verification pipelines, and decoupled architectures',
+        'An architect has more experience with AI tools',
+      ],
+      correctIndex: 2,
+      explanation: 'You just demonstrated the full architect skill set: system mapping, buildability scoring, blocker identification, architecture design, protocol authoring, task graph sequencing, verification pipelines, and professional communication. You do not just USE agents — you DESIGN systems that make them maximally effective. Your judgment is the moat.',
     },
     {
       type: 'checklist',

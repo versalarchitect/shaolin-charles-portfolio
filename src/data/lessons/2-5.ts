@@ -17,19 +17,34 @@ const content: LessonContent = {
 
     // === SYMPTOMS ===
     {
-      type: 'info',
-      title: 'Symptom 1: Contradicting earlier decisions',
-      body: "The agent set up a Zustand store in step 3, then in step 15 creates a React Context for the same state. It chose Tailwind classes for spacing early on, then starts using inline styles. These contradictions are the clearest signal of context exhaustion — the agent has lost access to its earlier reasoning.",
+      type: 'compare',
+      title: 'Symptom: contradicting earlier decisions',
+      body: 'The agent makes choices early in a session, then makes opposite choices later. This is not indecision — it is memory loss.',
+      question: 'Which side shows context exhaustion?',
+      correctSide: 'right',
+      left: {
+        label: 'Early session (step 3)',
+        content: "// Agent sets up Zustand store\nimport { create } from 'zustand'\n\nconst useAuthStore = create((set) => ({\n  user: null,\n  setUser: (user) => set({ user }),\n}))\n\n// Uses Tailwind for spacing\n<div className=\"p-6 mt-4 gap-3\">",
+        language: 'typescript',
+      },
+      right: {
+        label: 'Late session (step 15)',
+        content: "// Agent creates React Context for SAME state\nconst AuthContext = createContext(null)\n\nfunction AuthProvider({ children }) {\n  const [user, setUser] = useState(null)\n  // ...\n}\n\n// Now using inline styles\n<div style={{ padding: 24, marginTop: 16 }}>",
+        language: 'typescript',
+      },
+      explanation: 'The agent set up Zustand and Tailwind early, then switched to React Context and inline styles later. It did not change its mind — it lost access to those earlier decisions. This contradiction is the clearest signal of context exhaustion.',
     },
     {
-      type: 'info',
-      title: 'Symptom 2: Re-asking questions it already answered',
-      body: "The agent asks \"what database are you using?\" when it already set up Drizzle with SQLite an hour ago. Or it proposes a file structure you already agreed on. When the agent asks questions whose answers exist earlier in the conversation, the earlier context has been compacted away.",
-    },
-    {
-      type: 'info',
-      title: 'Symptom 3: Declining code quality',
-      body: "Error handling becomes inconsistent. Types that were strict become loose `any` casts. Functions that were well-documented earlier get no comments. The agent is not being lazy — it has lost the stylistic context from the early session where those patterns were established.",
+      type: 'multiple-choice',
+      question: 'The agent asks "what database are you using?" after it already set up Drizzle with SQLite an hour ago. What does this indicate?',
+      options: [
+        'The agent wants to confirm your choice before proceeding',
+        'The agent is suggesting you might want to switch databases',
+        'Context exhaustion — the earlier setup conversation has been compacted away',
+        'The agent is testing your knowledge of the project',
+      ],
+      correctIndex: 2,
+      explanation: 'When the agent re-asks questions whose answers exist earlier in the conversation, the earlier context has been compacted. Combined with declining code quality (strict types becoming loose `any` casts, missing error handling), these are the three key symptoms: contradictions, repeated questions, and quality decline.',
     },
     {
       type: 'multiple-choice',
@@ -51,9 +66,16 @@ const content: LessonContent = {
 
     // === STRUCTURING TASKS ===
     {
-      type: 'info',
-      title: 'Strategy: front-load critical decisions',
-      body: "Put your most important architectural decisions early in the session when context is fresh. Do not save the hard stuff for later. If your database schema, API design, and error handling patterns are established in the first 20% of the session, they have the best chance of surviving compaction. The agent builds a mental model from early context — make sure that model contains your highest-priority patterns.",
+      type: 'multiple-choice',
+      question: 'When should you establish your most important architectural decisions in an agent session?',
+      options: [
+        'In the middle of the session when the agent has warmed up',
+        'At the very end so they are freshest in context',
+        'In the first 20% of the session when context is fullest and most detailed',
+        'It does not matter — the agent remembers everything equally',
+      ],
+      correctIndex: 2,
+      explanation: 'Front-load critical decisions. Database schema, API design, and error handling patterns established in the first 20% of the session have the best chance of surviving context compaction. The agent builds its mental model from early context — make sure that model contains your highest-priority patterns before the window fills up.',
     },
     {
       type: 'interactive-diagram',
@@ -106,17 +128,30 @@ const content: LessonContent = {
       ],
     },
     {
-      type: 'info',
-      title: 'Strategy: work in focused chunks',
-      body: "Instead of one marathon session, break the build into logical chunks: \"Set up the database layer\", \"Build the API endpoints\", \"Wire up the frontend\". Each chunk should be completable within a context-comfortable window. When a chunk is done, commit the work, then start fresh for the next chunk. The code on disk becomes the source of truth, not the conversation history.",
+      type: 'multiple-choice',
+      question: 'Why should you break a build into chunks across fresh sessions instead of one marathon session?',
+      options: [
+        'Agents work faster in shorter sessions',
+        'It reduces your API costs',
+        'Code on disk becomes the source of truth — conversation history gets compacted but committed code persists',
+        'The agent refuses to work on long sessions',
+      ],
+      correctIndex: 2,
+      explanation: 'Each chunk produces committed, working code. When you start a fresh session, the agent reads your codebase and CLAUDE.md — not the compacted conversation. The code on disk is always the authoritative source of truth, immune to context window limits.',
     },
     {
-      type: 'code-demo',
-      title: 'Chunking a build session',
-      body: 'Plan your prompts as discrete, completable units. Each chunk should produce committed, working code.',
+      type: 'code-fill',
+      instruction: 'Complete this session plan with the right completion criteria for each chunk:',
       language: 'markdown',
       filename: 'session-plan.md',
-      code: "# Build Plan: Invoice Generator\n\n## Chunk 1 (fresh session)\n- Set up project: Next.js + Drizzle + SQLite\n- Define schema: invoices, line_items, clients\n- Seed with test data\n- Commit when: `bun run db:push` works + seed runs\n\n## Chunk 2 (fresh session)\n- CRUD API for invoices (all endpoints)\n- Error handling pattern: { success, data, error }\n- Commit when: all endpoints tested via curl\n\n## Chunk 3 (fresh session)\n- Invoice PDF generation\n- Email sending via Resend\n- Commit when: PDF renders correctly + email sends\n\n## Chunk 4 (fresh session)\n- Frontend: invoice list, create form, detail view\n- Commit when: full flow works in browser",
+      template: '# Build Plan: Invoice Generator\n\n## Chunk 1 (fresh session)\n- Set up project: Next.js + Drizzle + SQLite\n- Define schema: invoices, line_items, clients\n- Commit when: `{{chunk1_done}}` works + seed runs\n\n## Chunk 2 (fresh session)\n- CRUD API for invoices (all endpoints)\n- Error handling pattern: { success, data, error }\n- Commit when: all endpoints tested via {{chunk2_tool}}\n\n## Chunk 3 (fresh session)\n- Invoice PDF generation + email via {{email_service}}\n- Commit when: PDF renders correctly + email sends\n\n## Chunk 4 (fresh session)\n- Frontend: invoice list, create form, detail view\n- Commit when: full flow works in {{chunk4_where}}',
+      blanks: [
+        { id: 'chunk1_done', answer: 'bun run db:push', alternatives: ['npm run db:push', 'npx drizzle-kit push'], placeholder: 'what command?', hint: 'The command that applies schema to the database' },
+        { id: 'chunk2_tool', answer: 'curl', alternatives: ['Postman', 'httpie', 'insomnia'], placeholder: 'testing tool?', hint: 'Command-line HTTP client' },
+        { id: 'email_service', answer: 'Resend', alternatives: ['resend', 'SendGrid', 'sendgrid'], placeholder: 'which service?', hint: 'Modern email API service' },
+        { id: 'chunk4_where', answer: 'browser', alternatives: ['the browser', 'Browser'], placeholder: 'where?', hint: 'Where end users interact with the frontend' },
+      ],
+      explanation: 'Each chunk has a clear completion criterion — a verifiable test that proves the work is done. This prevents half-finished chunks from bleeding into the next session and gives you confidence the code is solid before moving on.',
     },
     {
       type: 'checkpoint',
@@ -126,9 +161,16 @@ const content: LessonContent = {
 
     // === WHEN TO START FRESH ===
     {
-      type: 'info',
-      title: 'When to start fresh vs. continue',
-      body: "Start fresh when: (1) the agent contradicts earlier decisions, (2) you notice quality decline, (3) you are about to context-switch to a different area of the codebase, (4) the conversation has exceeded ~50 back-and-forth exchanges. Continue when: the agent is mid-task and producing consistent output, you are iterating on a single file or function, the session is still young. The cost of starting fresh is low — the agent reads your CLAUDE.md and codebase files at session start. The cost of continuing in an exhausted context is high — bad code that looks plausible.",
+      type: 'multiple-choice',
+      question: 'At what point should you definitely start a fresh session?',
+      options: [
+        'After every 10 messages to be safe',
+        'Only when the agent explicitly tells you the context is full',
+        'When you see contradictions, quality decline, or you are about to switch to a different codebase area (especially past ~50 exchanges)',
+        'Never — longer sessions are always better for continuity',
+      ],
+      correctIndex: 2,
+      explanation: 'Start fresh when the agent contradicts earlier decisions, quality declines, you are context-switching to a different area, or the conversation exceeds ~50 exchanges. The cost of starting fresh is low (agent reads CLAUDE.md at session start). The cost of continuing in exhausted context is high — plausible-looking bad code.',
     },
     {
       type: 'terminal',
@@ -151,30 +193,48 @@ const content: LessonContent = {
 
     // === CLAUDE.MD AS PERSISTENT CONTEXT ===
     {
-      type: 'info',
-      title: 'CLAUDE.md: your persistent memory',
-      body: "CLAUDE.md is read at the start of every session. Unlike conversation history, it never gets compacted. This makes it the perfect place for decisions that must survive across sessions: tech stack choices, coding patterns, file structure conventions, naming rules. Anything you find yourself repeating to the agent belongs in CLAUDE.md. Think of it as session-persistent context that transcends individual conversations.",
+      type: 'multiple-choice',
+      question: 'Why is CLAUDE.md the best place for architectural decisions?',
+      options: [
+        'It is the only file the agent can read',
+        'It is read at session start and never gets compacted — unlike conversation history which is lossy',
+        'It is automatically synced to the cloud',
+        'The agent prioritizes it over all other code files',
+      ],
+      correctIndex: 1,
+      explanation: 'CLAUDE.md is read at the start of every session. Unlike conversation history, it never gets compacted. This makes it the perfect place for decisions that must survive across sessions: tech stack choices, coding patterns, file structure conventions, naming rules. Anything you repeat to the agent belongs in CLAUDE.md.',
     },
     {
-      type: 'code-demo',
-      title: 'CLAUDE.md as context anchor',
-      body: 'Key patterns and decisions go here so the agent never loses them, regardless of session length.',
+      type: 'code-fill',
+      instruction: 'Complete this CLAUDE.md to anchor critical decisions across sessions:',
       language: 'markdown',
       filename: 'CLAUDE.md',
-      code: "# Invoice Generator\n\n## Architecture Decisions (DO NOT DEVIATE)\n- All API responses: `{ success: boolean, data?: T, error?: string }`\n- Error handling: try/catch in every server action, never throw to client\n- Styling: Tailwind only — no CSS modules, no inline styles\n- State: Zustand for client state, server actions for mutations\n- Files: kebab-case, one component per file\n\n## Completed\n- [x] Database schema + migrations\n- [x] CRUD API with proper error responses\n- [ ] PDF generation\n- [ ] Frontend views\n\n## Current Conventions\n- Toast notifications via sonner (already installed)\n- Form validation via zod schemas in `src/schemas/`\n- All dates stored as ISO strings, displayed via date-fns",
+      template: '# Invoice Generator\n\n## Architecture Decisions (DO NOT DEVIATE)\n- All API responses: `{ success: boolean, data?: T, error?: string }`\n- Error handling: {{error_pattern}} in every server action, never throw to client\n- Styling: {{styling_tool}} only — no CSS modules, no inline styles\n- State: {{state_lib}} for client state, server actions for mutations\n- Files: {{naming_convention}}, one component per file',
+      blanks: [
+        { id: 'error_pattern', answer: 'try/catch', alternatives: ['try-catch', 'try catch'], placeholder: 'error pattern?', hint: 'The standard JS error handling mechanism' },
+        { id: 'styling_tool', answer: 'Tailwind', alternatives: ['tailwind', 'TailwindCSS', 'Tailwind CSS'], placeholder: 'which tool?', hint: 'Utility-first CSS framework' },
+        { id: 'state_lib', answer: 'Zustand', alternatives: ['zustand'], placeholder: 'which library?', hint: 'Lightweight React state management library' },
+        { id: 'naming_convention', answer: 'kebab-case', alternatives: ['kebab case', 'kebab_case'], placeholder: 'naming style?', hint: 'words-separated-by-dashes' },
+      ],
+      explanation: 'These decisions in CLAUDE.md serve as persistent memory. When the agent starts a new session, it reads this and immediately knows the project conventions — no re-explaining needed, no risk of context compaction losing them.',
     },
     {
-      type: 'info',
-      title: 'Spec files as context supplements',
-      body: "For larger projects, CLAUDE.md links to spec files. You can tell the agent: \"Read SPEC.md before starting.\" These files are read on demand — they consume context but provide the agent with full specifications when needed. Keep specs modular: one file per feature area. The agent reads only what it needs for the current task.",
-    },
-    {
-      type: 'code-demo',
-      title: 'Referencing specs from CLAUDE.md',
-      body: 'Link to detailed specs so the agent can load them on demand without bloating every session.',
-      language: 'markdown',
-      filename: 'CLAUDE.md',
-      code: "# Project Specs\n\nBefore working on a feature, read the relevant spec:\n- Payment flow: `specs/payments.md`\n- Email templates: `specs/emails.md`\n- PDF generation: `specs/pdf.md`\n\nAlways check the spec before making architectural decisions\nin that feature area.",
+      type: 'compare',
+      title: 'Monolithic spec vs modular specs',
+      body: 'For larger projects, how you organize specs affects context consumption.',
+      question: 'Which approach uses context more efficiently?',
+      correctSide: 'right',
+      left: {
+        label: 'Everything in CLAUDE.md',
+        content: '# CLAUDE.md (2000 lines)\n\n## Payment Flow\n[500 lines of payment spec...]\n\n## Email Templates\n[400 lines of email spec...]\n\n## PDF Generation\n[300 lines of PDF spec...]\n\n## Auth Flow\n[400 lines of auth spec...]\n\n// Agent reads ALL of this at session start\n// Even if working on just one feature\n// Wastes context on irrelevant specs',
+        language: 'markdown',
+      },
+      right: {
+        label: 'Modular spec files',
+        content: '# CLAUDE.md (50 lines)\n\nBefore working on a feature, read its spec:\n- Payment: `specs/payments.md`\n- Email: `specs/emails.md`\n- PDF: `specs/pdf.md`\n\n// Agent reads only CLAUDE.md at start\n// Loads specific spec on demand:\n// "Read specs/payments.md before starting"\n// Context used only for relevant feature',
+        language: 'markdown',
+      },
+      explanation: 'Modular specs let the agent load only what it needs. A 2000-line CLAUDE.md wastes context on every session. Keep CLAUDE.md short (decisions, conventions) and link to detailed spec files the agent reads on demand for specific features.',
     },
     {
       type: 'checkpoint',
@@ -226,9 +286,16 @@ const content: LessonContent = {
 
     // === PRACTICAL WORKFLOW ===
     {
-      type: 'info',
-      title: 'The session hygiene workflow',
-      body: "Before starting: update CLAUDE.md with completed work from last session. At session start: verify the agent has correct context by asking it to summarize its understanding. Mid-session: if you notice drift, try a targeted reminder first. If drift persists across multiple patterns, commit what works, then start fresh. At session end: commit all working code, update CLAUDE.md with new decisions made, note what is left to do.",
+      type: 'multiple-choice',
+      question: 'What should you do FIRST when starting a new agent session?',
+      options: [
+        'Start coding immediately to save time',
+        'Ask the agent to read every file in the project',
+        'Update CLAUDE.md with completed work from last session, then verify agent understanding',
+        'Delete the conversation history from the previous session',
+      ],
+      correctIndex: 2,
+      explanation: 'Before starting: update CLAUDE.md with completed work. At session start: verify agent context by asking it to summarize its understanding. Mid-session: try targeted reminders for drift. If drift persists, commit and start fresh. At session end: commit working code and update CLAUDE.md with new decisions.',
     },
     {
       type: 'order',

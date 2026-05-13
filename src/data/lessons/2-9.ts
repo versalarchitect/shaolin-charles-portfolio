@@ -17,17 +17,22 @@ const content: LessonContent = {
 
     // === WRITING VISUAL SPECS ===
     {
-      type: 'info',
+      type: 'compare',
       title: 'Writing visual specs that constrain without micromanaging',
-      body: "The same anti-patterns from Lesson 2-1 apply here. Too vague: 'make it look modern.' Too prescriptive: 'use p-4 gap-3 text-sm font-medium.' The sweet spot is a design system constraint — you define the spacing scale, the component hierarchy, the responsive strategy — and let the agent choose specific values within those boundaries. Think of it as handing the agent a ruler and a palette, not a pixel-perfect mockup.",
-    },
-    {
-      type: 'code-demo',
-      title: 'Visual spec: design system constraints',
-      body: 'This constrains visual decisions without dictating every class. The agent has a system to work within.',
-      language: 'markdown',
-      filename: 'SPEC.md',
-      code: "## Visual Design Constraints\n\n### Responsive Strategy\n- Mobile-first: design for 375px, then enhance for 768px+\n- Single column on mobile, max 2 columns on tablet, 3 on desktop\n- No horizontal scrolling at any breakpoint\n\n### Component Hierarchy\n- Page title → Section headings → Card titles → Body text\n- Max 3 levels of visual nesting\n- Cards are the primary content container\n\n### Spacing System\n- Use Tailwind's default scale (4px increments)\n- Section padding: py-12 to py-16\n- Card padding: p-4 to p-6\n- Inter-card gap: gap-4 to gap-6\n- Never less than p-3 inside interactive elements\n\n### Color & Contrast\n- Monochromatic palette (grays + one accent)\n- Text must meet WCAG AA contrast (4.5:1 body, 3:1 large text)\n- Interactive elements must have visible focus states",
+      body: 'The same anti-patterns from Lesson 2-1 apply to visual specs. Find the sweet spot.',
+      question: 'Which approach gives the agent enough guidance to produce good design?',
+      correctSide: 'right',
+      left: {
+        label: 'Too vague / too prescriptive',
+        content: 'TOO VAGUE:\n"Make it look modern."\n"Use good spacing."\n\nTOO PRESCRIPTIVE:\n"Use p-4 gap-3 text-sm font-medium\non every card. Header must be exactly\n64px with a #1a1a1a background."',
+        language: 'text',
+      },
+      right: {
+        label: 'Design system constraints',
+        content: 'SPACING SYSTEM:\n- Section padding: py-12 to py-16\n- Card padding: p-4 to p-6\n- Inter-card gap: gap-4 to gap-6\n\nHIERARCHY:\n- Page title > Section heading > Card title\n- Max 3 levels of visual nesting\n\nRESPONSIVE:\n- Mobile-first, single column on mobile\n- No horizontal scrolling at any breakpoint',
+        language: 'text',
+      },
+      explanation: 'The sweet spot is a design system constraint — you define the spacing scale, the component hierarchy, the responsive strategy — and let the agent choose specific values within those boundaries. Think of it as handing the agent a ruler and a palette, not a pixel-perfect mockup.',
     },
     {
       type: 'checkpoint',
@@ -37,14 +42,21 @@ const content: LessonContent = {
 
     // === EVALUATING OUTPUT ===
     {
-      type: 'info',
-      title: 'Evaluating agent UI output',
-      body: "The agent delivers a working interface. Your evaluation has two layers. Layer 1: Does it satisfy the spec? Check responsive behavior, component hierarchy, spacing scale compliance. This is objective. Layer 2: Does it look right? This is subjective — and it is where your taste matters. Does the eye flow naturally? Is there enough breathing room? Do related elements feel grouped? Does the page have a clear focal point? Layer 2 cannot be automated. It requires you.",
+      type: 'multiple-choice',
+      question: 'Your evaluation of agent UI output has two layers. What is Layer 2?',
+      options: [
+        'Does it pass TypeScript type checks?',
+        'Does it satisfy the spec? (responsive behavior, spacing scale)',
+        'Does it look right? (visual flow, breathing room, grouping, focal point)',
+        'Does it render without console errors?',
+      ],
+      correctIndex: 2,
+      explanation: "Layer 1 is objective: does it satisfy the spec? Layer 2 is subjective: does it look right? Does the eye flow naturally? Is there enough breathing room? Do related elements feel grouped? Does the page have a clear focal point? Layer 2 cannot be automated. It requires your taste. This is where your value as a director lives.",
     },
     {
-      type: 'diagram',
+      type: 'interactive-diagram',
       title: 'The Taste Filter',
-      body: 'Every agent-generated interface passes through your visual judgment before it ships.',
+      body: 'Every agent-generated interface passes through your visual judgment before it ships. Click through the stages.',
       diagram: {
         direction: 'LR',
         nodes: [
@@ -62,6 +74,32 @@ const content: LessonContent = {
           { from: 'redirect', to: 'agent', dashed: true },
         ],
       },
+      stages: [
+        {
+          highlightNodes: ['spec'],
+          highlightEdges: [{ from: 'spec', to: 'agent' }],
+          explanation: 'Start with your visual spec: spacing scale, typography hierarchy, responsive strategy, and color constraints. This is the rulebook the agent works within.',
+        },
+        {
+          highlightNodes: ['agent'],
+          highlightEdges: [{ from: 'agent', to: 'eval' }],
+          explanation: 'The agent implements the structure. It will satisfy the spec requirements but may produce tight spacing, flat hierarchy, or broken mobile layouts.',
+        },
+        {
+          highlightNodes: ['eval'],
+          highlightEdges: [{ from: 'eval', to: 'accept' }, { from: 'eval', to: 'redirect' }],
+          explanation: 'You evaluate on two layers: Layer 1 (spec compliance) is objective. Layer 2 (taste) is subjective — does it look right? This is where your value lives.',
+        },
+        {
+          highlightNodes: ['accept'],
+          explanation: 'If both layers pass, ship it. Do not chase pixel-perfection if the user experience is solid.',
+        },
+        {
+          highlightNodes: ['redirect'],
+          highlightEdges: [{ from: 'redirect', to: 'agent' }],
+          explanation: 'If it needs work, redirect with specific feedback: name the element, the property, and the desired change. Vague feedback wastes iterations.',
+        },
+      ],
     },
     {
       type: 'multiple-choice',
@@ -83,9 +121,15 @@ const content: LessonContent = {
 
     // === SPECIFIC VISUAL FEEDBACK ===
     {
-      type: 'info',
-      title: 'Giving specific visual feedback',
-      body: "Vague feedback wastes iterations. 'The layout feels off' gives the agent nothing to work with. It will make random adjustments hoping to satisfy you. Specific feedback names the property, the element, and the direction of change. Compare: 'make the header bigger' versus 'increase the page title from text-2xl to text-3xl and add mb-8 below it to separate it from the content grid.' The second is one iteration. The first is three.",
+      type: 'order',
+      instruction: 'Order these visual feedback statements from worst (vaguest) to best (most actionable):',
+      items: [
+        'Increase the page title from text-2xl to text-3xl and add mb-8 below it to separate it from the content grid',
+        'Make the header bigger',
+        'The layout feels off',
+        'The header needs more visual weight — try increasing font size and adding bottom spacing',
+      ],
+      correctOrder: [2, 1, 3, 0],
     },
     {
       type: 'compare',
@@ -106,12 +150,18 @@ const content: LessonContent = {
       explanation: 'Specific feedback names the element, the property, and the value. The agent executes it in one edit. Vague feedback requires the agent to guess what "better" means — and it will guess wrong.',
     },
     {
-      type: 'code-demo',
-      title: 'Bad vs good visual feedback',
-      body: 'Every piece of visual feedback should reference a specific element, property, and desired change.',
+      type: 'code-fill',
+      instruction: 'Rewrite this vague visual feedback into specific, actionable directives:',
       language: 'text',
-      filename: 'feedback-examples.txt',
-      code: "❌ BAD FEEDBACK (vague, multi-interpretation)\n\"The cards look weird\"\n\"Make it more spacious\"\n\"The page feels cluttered\"\n\"Fix the alignment\"\n\"Make it look more professional\"\n\n✅ GOOD FEEDBACK (specific, actionable)\n\"Increase card padding from p-2 to p-5\"\n\"The sidebar is 320px — reduce to 256px so content area breathes\"\n\"Add a border-b border-gray-200 below the nav to separate it from content\"\n\"The CTA button is the same size as secondary actions — make it h-12 px-8 vs h-9 px-4\"\n\"Move the filter bar above the grid, not inside the sidebar — it's a primary action\"",
+      filename: 'feedback-fix.txt',
+      template: '# Original: "The cards look weird and cramped"\n# Rewritten:\nIncrease card padding from p-2 to {{card_padding}}.\nAdd {{gap_value}} between the stat cards.\nMake the page title {{title_classes}}.\nAdd a {{separator}} separator between sections.',
+      blanks: [
+        { id: 'card_padding', answer: 'p-5', alternatives: ['p-6', 'p-4'], placeholder: 'new padding?', hint: 'Generous padding in the p-4 to p-6 range' },
+        { id: 'gap_value', answer: 'gap-4', alternatives: ['gap-5', 'gap-6'], placeholder: 'gap value?', hint: 'Standard inter-card spacing' },
+        { id: 'title_classes', answer: 'text-2xl font-bold', alternatives: ['text-3xl font-bold', 'text-xl font-semibold'], placeholder: 'title size + weight?', hint: 'Large and bold to establish hierarchy' },
+        { id: 'separator', answer: 'border-b border-foreground/10', alternatives: ['border-b border-gray-200', 'border-b border-foreground/5'], placeholder: 'border separator?', hint: 'A subtle horizontal line' },
+      ],
+      explanation: 'Every piece of visual feedback should reference a specific element, property, and desired change. Specific feedback is one iteration. Vague feedback is three.',
     },
     {
       type: 'multiple-choice',
@@ -128,17 +178,29 @@ const content: LessonContent = {
 
     // === COMMON VISUAL ISSUES ===
     {
-      type: 'info',
-      title: 'The six visual issues agents produce most often',
-      body: "After reviewing hundreds of agent-generated interfaces, six problems recur. (1) Tight padding — agents default to minimal spacing. (2) Flat hierarchy — all text is similar size and weight. (3) Missing group separation — related items are not visually clustered. (4) Overloaded layouts — too many elements competing for attention. (5) Inconsistent interactive states — some buttons have hover effects, others do not. (6) Broken responsive flow — stacks awkwardly on mobile. Train yourself to scan for these six issues first.",
+      type: 'multiple-choice',
+      question: 'Which of these six common agent UI issues is the MOST impactful on usability?',
+      options: [
+        'Tight padding (minimal spacing)',
+        'Flat hierarchy (all text similar size and weight)',
+        'Inconsistent interactive states (some buttons have hover, others do not)',
+        'Broken responsive flow (stacks awkwardly on mobile)',
+      ],
+      correctIndex: 1,
+      explanation: "Flat hierarchy is the most impactful because it destroys the user's ability to scan and navigate. When page titles, section headings, and card titles all look the same, users cannot distinguish structure. The other five issues (tight padding, missing grouping, overloaded layouts, inconsistent states, broken responsive) also recur but hierarchy is the foundation of visual communication.",
     },
     {
-      type: 'code-demo',
-      title: 'Fixing flat hierarchy',
-      body: 'Agents often make page titles, section titles, and card titles too similar in size. Enforce a clear typographic scale.',
+      type: 'code-fill',
+      instruction: 'Fix this flat typographic hierarchy. Each heading level needs distinct size, weight, and style:',
       language: 'tsx',
       filename: 'hierarchy-fix.tsx',
-      code: "// BEFORE: Flat hierarchy — everything looks the same weight\n<h1 className=\"text-xl font-medium\">Dashboard</h1>\n<h2 className=\"text-lg font-medium\">Recent Activity</h2>\n<h3 className=\"text-base font-medium\">Card Title</h3>\n\n// AFTER: Clear hierarchy — distinct size + weight at each level\n<h1 className=\"text-3xl font-bold tracking-tight\">Dashboard</h1>\n<h2 className=\"text-xl font-semibold text-muted-foreground\">Recent Activity</h2>\n<h3 className=\"text-sm font-medium uppercase tracking-wide\">Card Title</h3>",
+      template: '// Clear hierarchy — distinct size + weight at each level\n<h1 className="{{h1_classes}}">Dashboard</h1>\n<h2 className="{{h2_classes}}">Recent Activity</h2>\n<h3 className="{{h3_classes}}">Card Title</h3>',
+      blanks: [
+        { id: 'h1_classes', answer: 'text-3xl font-bold tracking-tight', alternatives: ['text-3xl font-bold', 'text-4xl font-bold tracking-tight'], placeholder: 'page title classes?', hint: 'Largest and boldest — the page title' },
+        { id: 'h2_classes', answer: 'text-xl font-semibold text-muted-foreground', alternatives: ['text-xl font-semibold', 'text-lg font-semibold text-muted-foreground'], placeholder: 'section heading classes?', hint: 'Medium size, slightly muted to show it is secondary' },
+        { id: 'h3_classes', answer: 'text-sm font-medium uppercase tracking-wide', alternatives: ['text-sm font-medium uppercase', 'text-xs font-semibold uppercase tracking-wide'], placeholder: 'card title classes?', hint: 'Small, uppercase, and wide-tracked for a label feel' },
+      ],
+      explanation: 'Hierarchy comes from contrast between levels. Page title: large and bold. Section heading: medium and muted. Card title: small, uppercase, tracked. Agents default to similar sizing at every level — your job is to enforce distinct visual weight.',
     },
     {
       type: 'match',
@@ -171,9 +233,12 @@ const content: LessonContent = {
 
     // === GOOD-ENOUGH VS PIXEL-PERFECT ===
     {
-      type: 'info',
-      title: 'When to accept good-enough vs push for pixel-perfect',
-      body: "Taste is important. Perfectionism is expensive. The question is not 'is this perfect?' but 'will fixing this noticeably improve the user experience?' A 2px padding difference — probably not. A missing visual hierarchy that confuses navigation — absolutely. Your time has a cost. Each iteration burns tokens, context, and your attention. The rule: if a visual issue would make you hesitate to show this to a user, fix it. If you only notice it because you are staring at it, ship it.",
+      type: 'match',
+      instruction: 'Match each visual issue to whether you should fix it or ship it:',
+      leftItems: ['Card border is rounded-lg instead of rounded-xl', 'Primary CTA looks identical to a destructive Delete button', 'Gap is gap-4 when gap-5 might look slightly better', 'Navigation hierarchy is completely flat — users cannot find key actions'],
+      rightItems: ['FIX: Usability problem, users cannot distinguish safe from dangerous', 'SHIP: Preference difference, not a user experience impact', 'SHIP: Marginal improvement, not worth an iteration', 'FIX: Navigation confusion will cause real user friction'],
+      correctPairs: { 0: 1, 1: 0, 2: 2, 3: 3 },
+      explanation: "The rule: if a visual issue would make you hesitate to show this to a user, fix it. If you only notice it because you are staring at it, ship it. Taste is important, but perfectionism is expensive. Each iteration burns tokens, context, and your attention.",
     },
     {
       type: 'multiple-choice',
@@ -215,9 +280,16 @@ const content: LessonContent = {
 
     // === RESPONSIVE EVALUATION ===
     {
-      type: 'info',
-      title: 'Evaluating responsive behavior',
-      body: "Agents often get desktop right and ignore mobile. Or they stack everything vertically on mobile without considering thumb reach, text truncation, or touch targets. Your visual spec should define breakpoint behavior, but you still need to verify it. Open dev tools, resize to 375px wide, and check: Does content overflow? Are tap targets at least 44px? Does the most important action remain visible without scrolling? These are not cosmetic issues — they are functional failures on mobile.",
+      type: 'multiple-choice',
+      question: 'You open dev tools and resize to 375px. Which of these is a FUNCTIONAL failure, not just a cosmetic issue?',
+      options: [
+        'Cards are in a single column instead of the desktop 3-column grid',
+        'Font sizes are slightly smaller than desktop',
+        'Tap targets (buttons, links) are smaller than 44px and difficult to press',
+        'The sidebar is hidden behind a hamburger menu',
+      ],
+      correctIndex: 2,
+      explanation: "Agents often get desktop right and ignore mobile. Tap targets below 44px are functional failures — users physically cannot tap them reliably. Content overflow, missing CTAs above the fold, and text truncation are also functional, not cosmetic. Single-column layout and hidden sidebars are correct mobile adaptations, not failures.",
     },
     {
       type: 'multiple-choice',
@@ -234,9 +306,16 @@ const content: LessonContent = {
 
     // === SYNTHESIS ===
     {
-      type: 'info',
-      title: 'Your role: the taste layer',
-      body: "Agents will get faster and more capable at generating interfaces. But taste — the judgment of what looks right, what feels balanced, what communicates hierarchy — remains human. Your value in directing agent-built interfaces is not checking boxes. It is the visual judgment that turns a compliant interface into one that users actually enjoy using. Develop this muscle: look at interfaces critically, name what bothers you specifically, and direct corrections with precision.",
+      type: 'multiple-choice',
+      question: 'As AI agents get more capable at generating interfaces, what skill becomes MORE valuable, not less?',
+      options: [
+        'Writing CSS from scratch',
+        'Memorizing Tailwind class names',
+        'Visual taste — judging what looks right, feels balanced, and communicates hierarchy',
+        'Speed-typing HTML markup',
+      ],
+      correctIndex: 2,
+      explanation: "Agents will get faster at generating interfaces. But taste — the judgment of what looks right, what feels balanced, what communicates hierarchy — remains human. Your value is not checking boxes. It is the visual judgment that turns a compliant interface into one users enjoy. Develop this muscle: look at interfaces critically, name what bothers you specifically, and direct corrections with precision.",
     },
     {
       type: 'checklist',

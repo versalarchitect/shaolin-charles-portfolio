@@ -17,9 +17,16 @@ const content: LessonContent = {
 
     // === WHAT A SPEC IS NOT ===
     {
-      type: 'info',
-      title: 'What a spec is NOT',
-      body: "A spec is not a novel. It is not a product requirements document with stakeholder analysis and market research. It is not a 20-page PRD. Those documents are written for humans who need organizational context. Your agent does not need to know why the business wants this feature. It needs to know exactly what to build, what inputs it receives, what outputs it produces, and when to stop.",
+      type: 'multiple-choice',
+      question: 'What does an AI agent NOT need in a spec?',
+      options: [
+        'Acceptance criteria it can verify',
+        'Specific inputs and outputs',
+        'Business context about why stakeholders want the feature',
+        'Clear constraints on what not to build',
+      ],
+      correctIndex: 2,
+      explanation: 'A spec is not a product requirements document with stakeholder analysis and market research. Your agent does not need to know why the business wants this feature. It needs to know exactly what to build, what inputs it receives, what outputs it produces, and when to stop.',
     },
     {
       type: 'multiple-choice',
@@ -36,16 +43,23 @@ const content: LessonContent = {
 
     // === WHAT A SPEC IS ===
     {
-      type: 'info',
-      title: 'What a spec IS',
-      body: "A spec is a short document -- typically 20-60 lines of markdown -- with five sections: Title, Goal (one sentence), Inputs, Outputs, Constraints, and Acceptance Criteria. That is it. Each section is concrete and specific. The goal is one sentence. Inputs list exactly what data the feature receives. Outputs describe exactly what the feature produces. Constraints are the guardrails. Acceptance criteria are the checklist that determines done vs. not done.",
+      type: 'multiple-choice',
+      question: 'How many sections does a good agent spec have, and what are they?',
+      options: [
+        '3 sections: Title, Description, Code Examples',
+        '5 sections: Title/Goal, Inputs, Outputs, Constraints, Acceptance Criteria',
+        '2 sections: Requirements and Timeline',
+        '7 sections: Executive Summary, Background, Requirements, Design, Timeline, Budget, Appendix',
+      ],
+      correctIndex: 1,
+      explanation: 'A spec is a short document -- typically 20-60 lines of markdown -- with five sections: Title, Goal (one sentence), Inputs, Outputs, Constraints, and Acceptance Criteria. Each section is concrete and specific. The goal is one sentence. Constraints are the guardrails. Acceptance criteria determine done vs. not done.',
     },
 
     // === DIAGRAM 2: ANATOMY OF A SPEC ===
     {
-      type: 'diagram',
+      type: 'interactive-diagram',
       title: 'Anatomy of a Spec',
-      body: 'A spec has a clear hierarchy. The spec document decomposes into three parallel concerns -- inputs, outputs, and constraints -- which together define the acceptance criteria.',
+      body: 'Click through each layer to understand how a spec decomposes into parallel concerns that together define the acceptance criteria.',
       diagram: {
         direction: 'TB',
         nodes: [
@@ -64,6 +78,23 @@ const content: LessonContent = {
           { from: 'constraints', to: 'criteria' },
         ],
       },
+      stages: [
+        {
+          highlightNodes: ['spec'],
+          highlightEdges: [],
+          explanation: 'Start with the Title and Goal. The goal is exactly one sentence describing what this feature does. If you cannot state it in one sentence, the scope is too large -- break it down.',
+        },
+        {
+          highlightNodes: ['spec', 'inputs', 'outputs', 'constraints'],
+          highlightEdges: [{ from: 'spec', to: 'inputs' }, { from: 'spec', to: 'outputs' }, { from: 'spec', to: 'constraints' }],
+          explanation: 'The spec decomposes into three parallel concerns: Inputs (what data comes in, what format, what types), Outputs (what the feature produces and where it goes), and Constraints (technology restrictions, what NOT to build).',
+        },
+        {
+          highlightNodes: ['inputs', 'outputs', 'constraints', 'criteria'],
+          highlightEdges: [{ from: 'inputs', to: 'criteria' }, { from: 'outputs', to: 'criteria' }, { from: 'constraints', to: 'criteria' }],
+          explanation: 'All three concerns flow into Acceptance Criteria: the binary pass/fail checklist that determines when the work is done. Each criterion should be specific enough that you can test it immediately. "Works" is not a criterion. "Form validates email format and shows inline error" is.',
+        },
+      ],
     },
     {
       type: 'checkpoint',
@@ -73,12 +104,17 @@ const content: LessonContent = {
 
     // === THE TEMPLATE ===
     {
-      type: 'code-demo',
-      title: 'The spec template',
-      body: 'This is the template you will use for every feature you direct an agent to build. Copy this structure and fill in the blanks. Notice how every section is concrete -- no room for interpretation.',
+      type: 'code-fill',
+      instruction: 'Complete the spec template by filling in the section headers. This is the structure you will use for every feature you direct an agent to build.',
       language: 'markdown',
       filename: 'spec-template.md',
-      code: '# Feature: [Title]\n\n## Goal\n[One sentence describing what this feature does.]\n\n## Inputs\n- [What data does this feature receive?]\n- [What format? What types?]\n- [Where does the data come from?]\n\n## Outputs\n- [What does this feature produce?]\n- [What format? What types?]\n- [Where does the output go?]\n\n## Constraints\n- [Technology restrictions]\n- [Performance requirements]\n- [What this feature must NOT do]\n- [Dependencies or compatibility rules]\n\n## Acceptance Criteria\n- [ ] [Criterion 1 -- specific and verifiable]\n- [ ] [Criterion 2 -- specific and verifiable]\n- [ ] [Criterion 3 -- specific and verifiable]',
+      template: '# Feature: [Title]\n\n## {{section_1}}\n[One sentence describing what this feature does.]\n\n## Inputs\n- [What data does this feature receive?]\n- [What format? What types?]\n\n## {{section_2}}\n- [What does this feature produce?]\n- [Where does the output go?]\n\n## Constraints\n- [Technology restrictions]\n- [What this feature must NOT do]\n\n## {{section_3}}\n- [ ] [Criterion 1 -- specific and verifiable]\n- [ ] [Criterion 2 -- specific and verifiable]\n- [ ] [Criterion 3 -- specific and verifiable]',
+      blanks: [
+        { id: 'section_1', answer: 'Goal', alternatives: ['goal', 'Objective', 'objective'], placeholder: '______', hint: 'One sentence describing the purpose' },
+        { id: 'section_2', answer: 'Outputs', alternatives: ['outputs', 'Output', 'output'], placeholder: '______', hint: 'What the feature produces' },
+        { id: 'section_3', answer: 'Acceptance Criteria', alternatives: ['acceptance criteria', 'Acceptance criteria', 'Definition of Done', 'definition of done'], placeholder: '______', hint: 'The binary pass/fail checklist' },
+      ],
+      explanation: 'The five sections are: Goal (one sentence), Inputs (what goes in), Outputs (what comes out), Constraints (guardrails), and Acceptance Criteria (definition of done). Every section is concrete -- no room for interpretation.',
     },
 
     // === COMPARE: VAGUE VS SPECIFIC ===
@@ -103,17 +139,29 @@ const content: LessonContent = {
 
     // === REAL EXAMPLE ===
     {
-      type: 'info',
-      title: 'Example: User Settings Page',
-      body: "Let us walk through a real spec. You want an agent to build a user settings page. Without a spec, you might say \"build me a settings page\" and get back a page with random fields, no validation, and data saving to who-knows-where. With a spec, you define exactly what fields appear, what validation rules apply, and where the data persists.",
+      type: 'multiple-choice',
+      question: 'You ask an agent to "build me a settings page" without a spec. What is the most likely outcome?',
+      options: [
+        'A perfectly matching settings page on the first try',
+        'A page with random fields, no validation, and data saving to an unknown location',
+        'An error message saying the agent needs more information',
+        'The agent will ask you for a spec before starting',
+      ],
+      correctIndex: 1,
+      explanation: 'Without a spec, the agent guesses on every decision: which fields to show, what validation to apply, where to save data. You might get a page that "works" but has random fields, no validation, and saves to who-knows-where. A spec eliminates all of that guesswork.',
     },
     {
-      type: 'code-demo',
-      title: 'A real spec: User Settings Page',
-      body: 'Study this spec carefully. Every line removes ambiguity. The agent knows exactly what to build and, critically, what NOT to build.',
+      type: 'code-fill',
+      instruction: 'Study this real spec and fill in the key constraints. Every line removes ambiguity. The agent knows exactly what to build and, critically, what NOT to build.',
       language: 'markdown',
       filename: 'specs/user-settings.md',
-      code: '# Feature: User Settings Page\n\n## Goal\nLet users update their display name, email, and notification preferences.\n\n## Inputs\n- Current user profile from Supabase auth (id, email, display_name)\n- User form input: display_name (string), email (string), notify_email (bool)\n\n## Outputs\n- Updated user record in Supabase `profiles` table\n- Toast notification on success/failure\n- No page reload -- optimistic UI update\n\n## Constraints\n- React + TypeScript only, no new dependencies\n- Use existing Button, Input components from @/components/ui\n- Display name: 2-50 chars, alphanumeric + spaces only\n- Email: must pass standard email regex\n- Save to Supabase `profiles` table via existing client\n- Must NOT add password change (separate feature)\n- Must NOT add avatar upload (separate feature)\n\n## Acceptance Criteria\n- [ ] Settings page renders at /settings route\n- [ ] Form loads current values from user profile\n- [ ] Display name validates 2-50 chars\n- [ ] Email validates standard format\n- [ ] Invalid input shows inline error, submit disabled\n- [ ] Save calls Supabase update on profiles table\n- [ ] Success shows toast, updates UI without reload\n- [ ] Failure shows error toast, form retains input',
+      template: '# Feature: User Settings Page\n\n## Goal\nLet users update their display name, email, and notification preferences.\n\n## Inputs\n- Current user profile from Supabase auth (id, email, display_name)\n- User form input: display_name (string), email (string), notify_email (bool)\n\n## Outputs\n- Updated user record in Supabase `{{output_table}}` table\n- Toast notification on success/failure\n- No page reload -- optimistic UI update\n\n## Constraints\n- React + TypeScript only, no new dependencies\n- Display name: {{name_validation}} chars, alphanumeric + spaces only\n- Must NOT add {{exclusion_1}} (separate feature)\n- Must NOT add avatar upload (separate feature)\n\n## Acceptance Criteria\n- [ ] Settings page renders at /settings route\n- [ ] Form loads current values from user profile\n- [ ] Invalid input shows inline error, submit disabled',
+      blanks: [
+        { id: 'output_table', answer: 'profiles', alternatives: ['profile', 'users'], placeholder: '______', hint: 'The Supabase table that stores user data' },
+        { id: 'name_validation', answer: '2-50', alternatives: ['2 to 50', '2–50'], placeholder: '____', hint: 'Min and max character length for display name' },
+        { id: 'exclusion_1', answer: 'password change', alternatives: ['password', 'password reset', 'change password'], placeholder: '______', hint: 'A common settings feature that should be a separate feature' },
+      ],
+      explanation: 'Every line in this spec removes a decision the agent would otherwise make on its own. The explicit exclusions ("Must NOT add password change") prevent scope creep. The validation rules ("2-50 chars") prevent guessing. The table name tells the agent exactly where data goes.',
     },
     {
       type: 'multiple-choice',
@@ -135,16 +183,23 @@ const content: LessonContent = {
 
     // === HOW SPECS PREVENT SCOPE CREEP ===
     {
-      type: 'info',
-      title: 'How specs prevent scope creep',
-      body: "Without constraints, agents are eager to help. They will add error boundaries you did not ask for, create utility functions \"just in case,\" add extra UI states, and refactor adjacent code to be \"consistent.\" Each addition seems reasonable in isolation, but together they bloat the output, introduce untested code, and make review harder. A spec with clear acceptance criteria gives the agent a stopping condition. When all criteria are checked, the work is done.",
+      type: 'multiple-choice',
+      question: 'Without constraints in a spec, agents tend to:',
+      options: [
+        'Produce minimal, incomplete output',
+        'Add extra features, utility functions, and refactors you did not ask for',
+        'Refuse to start until given more detail',
+        'Produce exactly what you asked for, nothing more',
+      ],
+      correctIndex: 1,
+      explanation: 'Without constraints, agents are eager to help. They will add error boundaries you did not ask for, create utility functions "just in case," add extra UI states, and refactor adjacent code to be "consistent." Each addition seems reasonable in isolation, but together they bloat the output, introduce untested code, and make review harder. A spec with acceptance criteria gives the agent a stopping condition.',
     },
 
     // === DIAGRAM 1: SPEC-DRIVEN WORKFLOW ===
     {
-      type: 'diagram',
+      type: 'interactive-diagram',
       title: 'Spec-Driven Workflow',
-      body: 'The spec sits at the start of an iterative loop. If the output does not match, you refine the spec -- not the code. This keeps the source of truth in the document, not in scattered prompt corrections.',
+      body: 'Click through the iterative loop. If the output does not match, you refine the spec -- not the code.',
       diagram: {
         direction: 'LR',
         nodes: [
@@ -164,18 +219,54 @@ const content: LessonContent = {
           { from: 'refine', to: 'build', dashed: true },
         ],
       },
+      stages: [
+        {
+          highlightNodes: ['write', 'build'],
+          highlightEdges: [{ from: 'write', to: 'build' }],
+          explanation: 'Start by writing the spec, then hand it to the agent. The spec is your single source of truth -- everything the agent needs to know is in this document.',
+        },
+        {
+          highlightNodes: ['build', 'review', 'match'],
+          highlightEdges: [{ from: 'build', to: 'review' }, { from: 'review', to: 'match' }],
+          explanation: 'Review the output by walking through each acceptance criterion. Check each one off as pass or fail. This is binary -- no "close enough." If any criterion fails, the output is not done.',
+        },
+        {
+          highlightNodes: ['match', 'ship'],
+          highlightEdges: [{ from: 'match', to: 'ship' }],
+          explanation: 'All criteria pass? Ship it. The spec gave the agent a clear stopping condition, and you verified it against that same spec. No ambiguity, no guesswork.',
+        },
+        {
+          highlightNodes: ['match', 'refine', 'build'],
+          highlightEdges: [{ from: 'match', to: 'refine' }, { from: 'refine', to: 'build' }],
+          explanation: 'Criteria failed? Refine the spec -- not the code. Add the missing constraint, clarify the ambiguous output, then hand the updated spec back to the agent. This keeps the source of truth in the document, not in scattered prompt corrections.',
+        },
+      ],
     },
     {
-      type: 'info',
-      title: 'Refine the spec, not the code',
-      body: "When agent output does not match your expectations, resist the urge to manually edit the code or pile on follow-up prompts. Instead, update the spec. Add the missing constraint. Clarify the ambiguous output. Then hand the updated spec back to the agent. This keeps a single source of truth and avoids the context-eating spiral of correction after correction.",
+      type: 'multiple-choice',
+      question: 'The agent produced code that does not match your spec. What should you do?',
+      options: [
+        'Manually edit the generated code to fix it',
+        'Send a follow-up prompt with corrections',
+        'Update the spec with the missing constraint, then hand it back to the agent',
+        'Accept the output and move on',
+      ],
+      correctIndex: 2,
+      explanation: 'When agent output does not match your expectations, resist the urge to manually edit the code or pile on follow-up prompts. Instead, update the spec. Add the missing constraint. Clarify the ambiguous output. Then hand the updated spec back to the agent. This keeps a single source of truth and avoids the context-eating spiral of correction after correction.',
     },
 
     // === REVIEWING AGAINST A SPEC ===
     {
-      type: 'info',
-      title: 'How to review agent output',
-      body: "Do not review agent output by asking \"does it look right?\" Review it by walking through each acceptance criterion and checking it off. This is binary -- each criterion either passes or fails. There is no \"close enough.\" If a criterion fails, the output is not done. This discipline prevents you from accepting code that works in the happy path but misses edge cases.",
+      type: 'multiple-choice',
+      question: 'How should you review agent output against a spec?',
+      options: [
+        'Ask "does it look right?" and trust your gut',
+        'Walk through each acceptance criterion and mark it pass or fail -- binary, no "close enough"',
+        'Run the code once and if it works, ship it',
+        'Ask the agent if it followed the spec correctly',
+      ],
+      correctIndex: 1,
+      explanation: 'Do not review agent output by asking "does it look right?" Review it by walking through each acceptance criterion and checking it off. This is binary -- each criterion either passes or fails. There is no "close enough." If a criterion fails, the output is not done. This discipline prevents you from accepting code that works in the happy path but misses edge cases.',
     },
     {
       type: 'order',

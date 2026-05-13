@@ -62,12 +62,17 @@ const content: LessonContent = {
 
     // === PHASE 1: SPEC ===
     {
-      type: 'code-demo',
-      title: 'Phase 1: Write the spec',
-      body: "A spec is the most important prompt you will write. It is not a vague wish list — it is a precise contract: the exact user flow, technical constraints, acceptance criteria, and out-of-scope boundaries. The agent cannot read your mind. The spec is your mind, externalized.",
+      type: 'code-fill',
+      instruction: 'A spec is the most important prompt you will write. It is not a vague wish list — it is a precise contract. Complete the missing sections of this spec for the Commit Message Generator.',
       language: 'markdown',
       filename: 'SPEC.md',
-      code: "# Commit Message Generator — Spec\n\n## Overview\nSingle-page web tool. User pastes a git diff, gets a conventional commit message.\n\n## User Flow\n1. User lands on page — sees a textarea labeled \"Paste your git diff\"\n2. User pastes diff, clicks \"Generate\"\n3. Loading state shows while API processes\n4. Result appears in a readonly output box with a \"Copy\" button\n5. User can edit the diff and regenerate\n\n## Technical Constraints\n- Framework: Vite + React + TypeScript\n- Styling: Tailwind CSS\n- API: Single serverless function (Vercel API route)\n- LLM: Anthropic Claude API (claude-sonnet-4-20250514)\n- No database, no auth, no state persistence\n\n## Acceptance Criteria\n- [ ] Generates valid conventional commit format (type: description)\n- [ ] Handles empty input gracefully (error message, not crash)\n- [ ] Loading state visible during generation\n- [ ] Copy button works on all browsers\n- [ ] Deployed to a public Vercel URL\n- [ ] Responsive on mobile\n\n## Out of Scope\n- User accounts or history\n- Multiple LLM providers\n- Syntax highlighting in the diff input\n- Rate limiting (for now)",
+      template: '# Commit Message Generator — Spec\n\n## Overview\nSingle-page web tool. User pastes a git diff, gets a conventional commit message.\n\n## User Flow\n1. User lands on page — sees a textarea labeled "Paste your git diff"\n2. User pastes diff, clicks "Generate"\n3. Loading state shows while API processes\n4. Result appears in a readonly output box with a "Copy" button\n5. User can edit the diff and regenerate\n\n## Technical Constraints\n- Framework: {{framework}}\n- Styling: {{styling}}\n- API: Single serverless function (Vercel API route)\n- LLM: Anthropic Claude API (claude-sonnet-4-20250514)\n- No database, no auth, no state persistence\n\n## Acceptance Criteria\n- [ ] Generates valid conventional commit format (type: description)\n- [ ] Handles empty input gracefully (error message, not crash)\n- [ ] Loading state visible during generation\n- [ ] Copy button works on all browsers\n\n## Out of Scope\n- {{out_of_scope_1}}\n- Multiple LLM providers\n- Syntax highlighting in the diff input',
+      blanks: [
+        { id: 'framework', answer: 'Vite + React + TypeScript', alternatives: ['React + TypeScript', 'Vite + React + TS'], placeholder: 'which framework stack?', hint: 'The project uses a fast build tool + React + type safety' },
+        { id: 'styling', answer: 'Tailwind CSS', alternatives: ['Tailwind', 'tailwindcss'], placeholder: 'which CSS framework?', hint: 'Utility-first CSS framework' },
+        { id: 'out_of_scope_1', answer: 'User accounts or history', alternatives: ['User accounts', 'Authentication', 'User auth', 'No auth'], placeholder: 'what user feature to exclude?', hint: 'The spec says no auth and no state persistence' },
+      ],
+      explanation: 'The spec constrains the exact framework, styling, and scope boundaries. Each blank eliminates a decision the agent would otherwise make on its own.',
     },
     {
       type: 'multiple-choice',
@@ -152,19 +157,24 @@ const content: LessonContent = {
       hint: 'Two packages as dev dependencies: tailwindcss and @tailwindcss/vite',
     },
     {
-      type: 'code-demo',
-      title: 'Prompt Claude Code to scaffold the structure',
-      body: 'Give the agent a single focused instruction referencing your spec. Scaffold only — no logic yet.',
+      type: 'code-fill',
+      instruction: 'Give the agent a single focused instruction referencing your spec. Complete the scaffold prompt — specify the files you want created.',
       language: 'text',
       filename: 'prompt-to-claude-code.txt',
-      code: "You: Read SPEC.md, then create the project file structure.\n     Scaffold only — no implementation yet. I want:\n     - src/App.tsx (empty component shell)\n     - src/components/DiffInput.tsx\n     - src/components/CommitOutput.tsx\n     - api/generate.ts (Vercel serverless function stub)\n     - vercel.json (route the API)\n     Do not write any logic. Just the file skeletons with\n     TypeScript interfaces for the props.",
+      template: 'You: Read SPEC.md, then create the project file structure.\n     Scaffold only — no implementation yet. I want:\n     - src/{{main_component}} (empty component shell)\n     - src/components/{{input_component}}\n     - src/components/CommitOutput.tsx\n     - {{api_file}} (Vercel serverless function stub)\n     - vercel.json (route the API)\n     Do not write any logic. Just the file skeletons with\n     TypeScript interfaces for the props.',
+      blanks: [
+        { id: 'main_component', answer: 'App.tsx', alternatives: ['app.tsx'], placeholder: 'main component file?', hint: 'The root React component file' },
+        { id: 'input_component', answer: 'DiffInput.tsx', alternatives: ['DiffInput.tsx', 'diff-input.tsx'], placeholder: 'input component?', hint: 'The component where users paste their git diff' },
+        { id: 'api_file', answer: 'api/generate.ts', alternatives: ['api/generate.ts'], placeholder: 'API route path?', hint: 'Vercel serverless functions live in the api/ directory' },
+      ],
+      explanation: 'A scaffold prompt names every file you expect. The agent creates exactly this structure — no more, no less. This is context management: one concern per prompt.',
     },
 
-    // === PROJECT STRUCTURE DIAGRAM ===
+    // === PROJECT STRUCTURE DIAGRAM (INTERACTIVE) ===
     {
-      type: 'diagram',
+      type: 'interactive-diagram',
       title: 'Project File Structure',
-      body: 'Clean separation: frontend in src/, serverless API at the root, config at top level.',
+      body: 'Clean separation: frontend in src/, serverless API at the root. Step through each layer to understand the architecture.',
       diagram: {
         direction: 'TB',
         nodes: [
@@ -185,16 +195,43 @@ const content: LessonContent = {
           { from: 'api', to: 'generate' },
         ],
       },
+      stages: [
+        {
+          highlightNodes: ['root'],
+          highlightEdges: [],
+          explanation: 'The project root contains two key directories: src/ for frontend code and api/ for serverless functions. Config files (vercel.json, package.json) live here too.',
+        },
+        {
+          highlightNodes: ['root', 'src', 'app'],
+          highlightEdges: [{ from: 'root', to: 'src' }, { from: 'src', to: 'app' }],
+          explanation: 'App.tsx is the main page component. It wires together DiffInput and CommitOutput, manages state (diff text, generated message, loading, error), and calls the API.',
+        },
+        {
+          highlightNodes: ['src', 'diff', 'output'],
+          highlightEdges: [{ from: 'src', to: 'diff' }, { from: 'src', to: 'output' }],
+          explanation: 'Two focused UI components: DiffInput handles the textarea and Generate button. CommitOutput displays the result with a Copy button. Clean separation of concerns.',
+        },
+        {
+          highlightNodes: ['root', 'api', 'generate'],
+          highlightEdges: [{ from: 'root', to: 'api' }, { from: 'api', to: 'generate' }],
+          explanation: 'The api/ directory is auto-detected by Vercel as serverless functions. generate.ts is the single endpoint that calls the Anthropic API and returns a commit message.',
+        },
+      ],
     },
 
     // === PHASE 3: IMPLEMENT ===
     {
-      type: 'code-demo',
-      title: 'Prompt: implement the API route',
-      body: 'This prompt gives Claude Code exactly what to build for the serverless function. It specifies the model, the system prompt, and the response format — no ambiguity.',
+      type: 'code-fill',
+      instruction: 'This prompt gives Claude Code exactly what to build for the serverless function. Complete the key requirements — model name, error handling, and environment variable usage.',
       language: 'text',
       filename: 'prompt-api-route.txt',
-      code: "You: Implement api/generate.ts as a Vercel serverless function.\n\n     Requirements:\n     - POST endpoint, accepts JSON body: { diff: string }\n     - Validate that diff is non-empty, return 400 if missing\n     - Call Anthropic API with claude-sonnet-4-20250514\n     - System prompt: \"You are a commit message generator.\n       Given a git diff, produce a single conventional commit\n       message. Format: type(scope): description. Types:\n       feat, fix, refactor, docs, test, chore. Keep under\n       72 chars. No explanation, just the message.\"\n     - Return JSON: { message: string }\n     - Handle API errors, return 500 with { error: string }\n     - Use ANTHROPIC_API_KEY from process.env",
+      template: 'You: Implement api/generate.ts as a Vercel serverless function.\n\n     Requirements:\n     - POST endpoint, accepts JSON body: { diff: string }\n     - Validate that diff is non-empty, return {{error_code}} if missing\n     - Call Anthropic API with {{model_name}}\n     - System prompt: "You are a commit message generator.\n       Given a git diff, produce a single conventional commit\n       message. Format: type(scope): description."\n     - Return JSON: { message: string }\n     - Handle API errors, return 500 with { error: string }\n     - Use ANTHROPIC_API_KEY from {{env_source}}',
+      blanks: [
+        { id: 'error_code', answer: '400', alternatives: ['400'], placeholder: 'HTTP status code?', hint: 'The standard HTTP status for a bad client request' },
+        { id: 'model_name', answer: 'claude-sonnet-4-20250514', alternatives: ['claude-sonnet-4-20250514'], placeholder: 'which Claude model?', hint: 'The spec specifies this Sonnet model' },
+        { id: 'env_source', answer: 'process.env', alternatives: ['process.env'], placeholder: 'where to read env vars?', hint: 'Server-side Node.js environment variable access' },
+      ],
+      explanation: 'Specifying the exact model prevents the agent from choosing a different one. Using process.env (not import.meta.env) keeps the API key server-side only. 400 is the correct status for validation errors.',
     },
     {
       type: 'multiple-choice',
@@ -288,12 +325,17 @@ const content: LessonContent = {
       hint: 'Chain git init, git add, and git commit with &&',
     },
     {
-      type: 'code-demo',
-      title: 'Deploy to Vercel',
-      body: 'Set your API key as an environment variable (never in git), then deploy. The api/ directory is automatically detected as serverless functions.',
+      type: 'code-fill',
+      instruction: 'Set your API key as an environment variable (never in git), then deploy. Complete the deployment commands with the correct Vercel CLI syntax.',
       language: 'bash',
       filename: 'deploy.sh',
-      code: "# First deploy — links project to Vercel\nvercel deploy\n\n# Set the API key for production environment\nvercel env add ANTHROPIC_API_KEY production\n# Paste your key when prompted\n\n# Deploy to production\nvercel deploy --prod\n\n# Verify it's live\ncurl -X POST https://your-app.vercel.app/api/generate \\\n  -H 'Content-Type: application/json' \\\n  -d '{\"diff\": \"+ console.log(hello)\"}'",
+      template: '# First deploy — links project to Vercel\nvercel deploy\n\n# Set the API key for production environment\nvercel env add {{env_var_name}} {{env_scope}}\n# Paste your key when prompted\n\n# Deploy to production\nvercel deploy {{prod_flag}}\n\n# Verify it is live\ncurl -X POST https://your-app.vercel.app/api/generate \\\n  -H "Content-Type: application/json" \\\n  -d \'{"diff": "+ console.log(hello)"}\'',
+      blanks: [
+        { id: 'env_var_name', answer: 'ANTHROPIC_API_KEY', alternatives: ['ANTHROPIC_API_KEY'], placeholder: 'which env var?', hint: 'The API key name from your spec' },
+        { id: 'env_scope', answer: 'production', alternatives: ['production', 'Production'], placeholder: 'which environment?', hint: 'You are deploying to the live site' },
+        { id: 'prod_flag', answer: '--prod', alternatives: ['--prod', '--production'], placeholder: 'which flag?', hint: 'The Vercel CLI flag for production deployment' },
+      ],
+      explanation: 'Environment variables must be scoped to the correct Vercel environment (production, preview, development). The --prod flag deploys to the live production URL instead of a preview.',
     },
     {
       type: 'multiple-choice',

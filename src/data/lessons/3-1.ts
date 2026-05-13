@@ -17,9 +17,9 @@ const content: LessonContent = {
 
     // === DIAGRAM 1: Serial vs Parallel ===
     {
-      type: 'diagram',
+      type: 'interactive-diagram',
       title: 'Serial vs Parallel Execution',
-      body: "This is the core mental model shift. Serial execution is safe but slow — each task waits for the previous one. Parallel execution runs independent tasks simultaneously. The orchestrator (you) replaces the single agent as the coordinator.",
+      body: "This is the core mental model shift. Serial execution is safe but slow — each task waits for the previous one. Parallel execution runs independent tasks simultaneously. Step through to see how the orchestrator coordinates.",
       diagram: {
         direction: 'TB',
         nodes: [
@@ -40,6 +40,27 @@ const content: LessonContent = {
           { from: 'merge', to: 'done' },
         ],
       },
+      stages: [
+        {
+          highlightNodes: ['orch'],
+          explanation: 'You are the orchestrator. Instead of directing one agent through every task sequentially, you decompose the work and dispatch multiple agents simultaneously.',
+        },
+        {
+          highlightNodes: ['orch', 'a', 'b', 'c'],
+          highlightEdges: [{ from: 'orch', to: 'a' }, { from: 'orch', to: 'b' }, { from: 'orch', to: 'c' }],
+          explanation: 'Fan-out: three agents start at the same time, each on an independent task. Auth, API, and UI all run in parallel because they do not depend on each other.',
+        },
+        {
+          highlightNodes: ['a', 'b', 'c', 'merge'],
+          highlightEdges: [{ from: 'a', to: 'merge' }, { from: 'b', to: 'merge' }, { from: 'c', to: 'merge' }],
+          explanation: 'Fan-in: when all agents finish, their work converges at the merge step. This is where you integrate the pieces and resolve any interface mismatches.',
+        },
+        {
+          highlightNodes: ['merge', 'done'],
+          highlightEdges: [{ from: 'merge', to: 'done' }],
+          explanation: 'After integration, the project is complete. Wall-clock time: the duration of the slowest agent plus merge time. Much faster than sequential.',
+        },
+      ],
     },
     {
       type: 'checkpoint',
@@ -49,9 +70,16 @@ const content: LessonContent = {
 
     // === TASK DECOMPOSITION ===
     {
-      type: 'info',
-      title: 'Task decomposition and file ownership',
-      body: "Task decomposition is breaking a product into agent-sized work units. Each unit should have clear boundaries, own specific files, and be testable independently. The golden rule: if two agents need to write to the same file, your decomposition is wrong. Shared file access is the number one cause of multi-agent failures.",
+      type: 'multiple-choice',
+      question: 'Task decomposition means breaking a product into agent-sized work units. What is the golden rule of multi-agent file ownership?',
+      options: [
+        'Each agent should work on the smallest possible files',
+        'Agents should share files to stay aware of each other\'s changes',
+        'If two agents need to write to the same file, your decomposition is wrong',
+        'File ownership does not matter as long as agents work on different features',
+      ],
+      correctIndex: 2,
+      explanation: 'Shared file access is the number one cause of multi-agent failures. If two agents need to write to the same file, restructure so each agent owns its files exclusively. Each work unit should have clear boundaries, own specific files, and be testable independently.',
     },
     {
       type: 'multiple-choice',
@@ -80,9 +108,9 @@ const content: LessonContent = {
 
     // === DIAGRAM 2: Task Dependency Graph ===
     {
-      type: 'diagram',
+      type: 'interactive-diagram',
       title: 'Task Dependency Graph',
-      body: "A real SaaS product decomposed into parallel work streams. Auth and API can start immediately — they're independent. UI depends on the API contract (needs response shapes). Payments depend on Auth (needs user context). Everything merges at integration.",
+      body: "A real SaaS product decomposed into parallel work streams. Step through to see which tasks can run in parallel and which must wait.",
       diagram: {
         direction: 'TB',
         nodes: [
@@ -106,6 +134,27 @@ const content: LessonContent = {
           { from: 'int', to: 'deploy' },
         ],
       },
+      stages: [
+        {
+          highlightNodes: ['spec'],
+          highlightEdges: [{ from: 'spec', to: 'auth' }, { from: 'spec', to: 'api' }],
+          explanation: 'Step 0: You define the spec and shared contracts first. This takes 5 minutes and enables everything that follows. Types, API shapes, database schema.',
+        },
+        {
+          highlightNodes: ['auth', 'api'],
+          explanation: 'Step 1: Auth and API can start immediately in parallel — they are independent. Each owns its own files and works against the shared contracts.',
+        },
+        {
+          highlightNodes: ['ui', 'pay'],
+          highlightEdges: [{ from: 'api', to: 'ui' }, { from: 'auth', to: 'pay' }],
+          explanation: 'Step 2: UI depends on the API contract (needs response shapes). Payments depend on Auth (needs user context). These start after their dependencies finish.',
+        },
+        {
+          highlightNodes: ['int', 'deploy'],
+          highlightEdges: [{ from: 'int', to: 'deploy' }],
+          explanation: 'Step 3: Integration merges all pieces. You wire routes, test interfaces, resolve any mismatches. Then deploy the unified product.',
+        },
+      ],
     },
     {
       type: 'multiple-choice',
@@ -127,35 +176,30 @@ const content: LessonContent = {
 
     // === THE SPEC / CONTRACTS STEP ===
     {
-      type: 'info',
-      title: 'Step zero: define contracts',
-      body: "Before any agent starts coding, you define the contracts — the interfaces between components. API response shapes, auth token format, component props, database schema. This takes 5 minutes and prevents hours of integration pain. Every agent works against the same shared types. No agent modifies the contract file.",
+      type: 'multiple-choice',
+      question: 'Before any agent starts coding, you define shared contracts (interfaces, API shapes, types). Why is this step critical for parallel work?',
+      options: [
+        'It makes the TypeScript compiler happy',
+        'It prevents agents from making reasonable but incompatible assumptions about data shapes',
+        'It gives agents something to read while waiting for their turn',
+        'It is only necessary for teams larger than 3 agents',
+      ],
+      correctIndex: 1,
+      explanation: 'Without shared contracts, Agent A might define a User with a "name" field while Agent B expects "firstName" and "lastName". The contract file is written once by you, imported by every agent, and modified by none. It takes 5 minutes and prevents hours of integration pain.',
     },
     {
-      type: 'code-demo',
-      title: 'A shared contract file',
-      body: "This types file is written first, before any agent starts. Every agent imports from it. No agent modifies it. It's the single source of truth that makes parallel work possible.",
+      type: 'code-fill',
+      instruction: 'Complete this shared contract file that all agents will import. No agent modifies it — you write it before they start:',
       language: 'typescript',
       filename: 'src/types/contracts.ts',
-      code: `// Written by YOU before agents start
-// Every agent imports from this file — none modify it
-
-export interface User {
-  id: string
-  email: string
-  role: 'admin' | 'member'
-}
-
-export interface ApiResponse<T> {
-  data: T
-  error: string | null
-}
-
-export interface DashboardStats {
-  revenue: number
-  users: number
-  churn: number
-}`,
+      template: '// Written by YOU before agents start\n// Every agent imports from this file — none modify it\n\nexport interface User {\n  id: {{idType}}\n  email: string\n  role: {{roleType}}\n}\n\nexport interface ApiResponse<T> {\n  data: T\n  error: {{errorType}}\n}\n\nexport interface DashboardStats {\n  revenue: number\n  users: number\n  churn: {{churnType}}\n}',
+      blanks: [
+        { id: 'idType', answer: 'string', alternatives: ['String'], placeholder: 'what type for IDs?', hint: 'UUIDs are represented as this type in TypeScript' },
+        { id: 'roleType', answer: "'admin' | 'member'", alternatives: ['"admin" | "member"', "'admin'|'member'", '"admin"|"member"'], placeholder: 'what union type?', hint: 'A union of string literal types for the two roles' },
+        { id: 'errorType', answer: 'string | null', alternatives: ['string|null', 'null | string'], placeholder: 'error or no error?', hint: 'The error field is a string when present, or absent' },
+        { id: 'churnType', answer: 'number', alternatives: ['Number'], placeholder: 'what type for metrics?', hint: 'Churn rate is a numeric value like revenue and users' },
+      ],
+      explanation: 'Every field type is a decision that prevents divergence. If you leave the User.role type unspecified, one agent might use strings while another uses an enum. The contract file is the single source of truth.',
     },
     {
       type: 'code-input',
@@ -167,27 +211,19 @@ export interface DashboardStats {
 
     // === AGENT DISPATCH PATTERN ===
     {
-      type: 'code-demo',
-      title: 'Dispatching parallel agents',
-      body: "In Claude Code, you dispatch parallel agents by batching independent tool calls or using the Agent tool. Each agent gets its own context, file scope, and task description. Notice how each task owns specific directories — no overlap.",
+      type: 'code-fill',
+      instruction: 'Complete this CLAUDE.md dispatch plan that assigns parallel agents with exclusive file ownership:',
       language: 'markdown',
       filename: 'CLAUDE.md',
-      code: `## Parallel Tasks — Run Simultaneously
-
-### Agent 1: Auth (owns src/auth/*)
-Build login, signup, and password reset.
-Use the User type from src/types/contracts.ts.
-Write tests in src/auth/__tests__/.
-
-### Agent 2: API (owns src/api/*)
-Build REST endpoints for dashboard stats.
-Use ApiResponse<T> from src/types/contracts.ts.
-Write tests in src/api/__tests__/.
-
-### Agent 3: Landing Page (owns src/marketing/*)
-Build the marketing landing page.
-No dependencies on other agents.
-Static content only.`,
+      template: '## Parallel Tasks — Run Simultaneously\n\n### Agent 1: Auth (owns {{authDir}})\nBuild login, signup, and password reset.\nUse the User type from src/types/contracts.ts.\nWrite tests in src/auth/__tests__/.\n\n### Agent 2: API (owns {{apiDir}})\nBuild REST endpoints for dashboard stats.\nUse {{responseType}} from src/types/contracts.ts.\nWrite tests in src/api/__tests__/.\n\n### Agent 3: Landing Page (owns {{marketingDir}})\nBuild the marketing landing page.\nNo dependencies on other agents.\n{{staticNote}}.',
+      blanks: [
+        { id: 'authDir', answer: 'src/auth/*', alternatives: ['src/auth'], placeholder: 'which directory?', hint: 'The auth agent owns all files under src/auth/' },
+        { id: 'apiDir', answer: 'src/api/*', alternatives: ['src/api'], placeholder: 'which directory?', hint: 'The API agent owns all files under src/api/' },
+        { id: 'responseType', answer: 'ApiResponse<T>', alternatives: ['ApiResponse', 'ApiResponse<T> type'], placeholder: 'which shared type?', hint: 'The generic response wrapper from the contracts file' },
+        { id: 'marketingDir', answer: 'src/marketing/*', alternatives: ['src/marketing'], placeholder: 'which directory?', hint: 'The landing page agent owns all files under src/marketing/' },
+        { id: 'staticNote', answer: 'Static content only', alternatives: ['Static content', 'static content only'], placeholder: 'what kind of content?', hint: 'The landing page has no dependencies — it is purely static' },
+      ],
+      explanation: 'Each agent has exclusive file ownership (no overlap), imports from a shared contract (read-only), and has a clear one-sentence scope. This is the dispatch pattern that makes parallel work safe.',
     },
     {
       type: 'checkpoint',
@@ -197,9 +233,9 @@ Static content only.`,
 
     // === DIAGRAM 3: When NOT to Parallelize ===
     {
-      type: 'diagram',
+      type: 'interactive-diagram',
       title: 'When NOT to Parallelize',
-      body: "Not every task benefits from parallel execution. Use this decision tree before dispatching agents. If tasks share state or files, run them serially. If they touch independent files with no shared state, parallelize confidently.",
+      body: "Not every task benefits from parallel execution. Step through this decision tree to learn when to parallelize and when to serialize.",
       diagram: {
         direction: 'TB',
         nodes: [
@@ -218,6 +254,33 @@ Static content only.`,
           { from: 'files', to: 'coord', label: 'no' },
         ],
       },
+      stages: [
+        {
+          highlightNodes: ['task'],
+          highlightEdges: [{ from: 'task', to: 'state' }],
+          explanation: 'Start with a new task you want to parallelize. The first question to ask: does this task share mutable state with another task?',
+        },
+        {
+          highlightNodes: ['state', 'serial'],
+          highlightEdges: [{ from: 'state', to: 'serial' }],
+          explanation: 'If tasks share state (same database table, same Zustand store, same config file), run them serially. Shared state is the most dangerous category for parallel work.',
+        },
+        {
+          highlightNodes: ['state', 'files'],
+          highlightEdges: [{ from: 'state', to: 'files' }],
+          explanation: 'If tasks do NOT share state, ask next: do they each own their own files with no overlap?',
+        },
+        {
+          highlightNodes: ['files', 'parallel'],
+          highlightEdges: [{ from: 'files', to: 'parallel' }],
+          explanation: 'If each task owns its files exclusively — parallelize with confidence. No shared state, no shared files, no conflicts.',
+        },
+        {
+          highlightNodes: ['files', 'coord'],
+          highlightEdges: [{ from: 'files', to: 'coord' }],
+          explanation: 'If tasks touch overlapping files, restructure first. Extract shared code into a module, create a config pattern, or split the file. Then parallelize.',
+        },
+      ],
     },
     {
       type: 'multiple-choice',
@@ -245,9 +308,16 @@ Static content only.`,
       correctOrder: [0, 1, 2, 3],
     },
     {
-      type: 'info',
-      title: 'Preventing each failure mode',
-      body: "Shared file conflicts: enforce exclusive file ownership per agent. Inconsistent assumptions: define shared contracts before starting. Integration failures: plan the merge step explicitly and test interfaces early. Duplicate work: give each agent a clear, non-overlapping scope in the prompt.",
+      type: 'multiple-choice',
+      question: 'How do you prevent agents from making inconsistent assumptions (e.g., Agent A expects User.name while Agent B expects User.firstName)?',
+      options: [
+        'Let agents decide individually and reconcile at merge time',
+        'Define shared contracts (types, interfaces) before any agent starts',
+        'Use the same AI model for all agents so they make the same assumptions',
+        'Have each agent read the other agents\' code first',
+      ],
+      correctIndex: 1,
+      explanation: 'Shared contracts defined before agents start are the prevention. Shared file conflicts are prevented by exclusive ownership. Integration failures by planning the merge step. Duplicate work by giving non-overlapping scope.',
     },
     {
       type: 'checkpoint',
@@ -327,9 +397,16 @@ Static content only.`,
 
     // === HANDS-ON EXERCISE ===
     {
-      type: 'info',
-      title: 'Exercise: Decompose a project',
-      body: "Time to practice. You're building a task management app with: user authentication (email/password), a Kanban board UI, a REST API for CRUD operations on tasks, and real-time updates via WebSocket. Decompose this into agent-sized tasks and identify dependencies.",
+      type: 'multiple-choice',
+      question: 'You are building a task management app with auth, a Kanban board UI, a REST API, and real-time WebSocket updates. Which tasks can start in parallel from the beginning?',
+      options: [
+        'Auth, API, UI, and WebSocket — all four are independent',
+        'Auth, API, and WebSocket — the Kanban UI needs API response shapes first',
+        'Only Auth and API — everything else depends on them',
+        'None — they must all run sequentially',
+      ],
+      correctIndex: 1,
+      explanation: 'Auth, API, and WebSocket are independent and can start in parallel. The Kanban UI needs to know the shape of task objects returned by the API (title, status, assignee, etc.). Without that contract, the UI agent would be guessing at data structures.',
     },
     {
       type: 'code-input',
@@ -357,32 +434,31 @@ Static content only.`,
       hint: 'Use mkdir -p to create auth, api, board, and realtime directories under src/',
     },
     {
-      type: 'code-demo',
-      title: 'Your decomposition as a task graph',
-      body: "Here's how you'd document this decomposition in your CLAUDE.md. Notice the explicit file ownership and dependency notes.",
+      type: 'code-fill',
+      instruction: 'Complete this task graph documentation that assigns agents to phases with clear ownership and dependencies:',
       language: 'markdown',
       filename: 'CLAUDE.md',
-      code: `## Task Graph
-
-### Phase 1 — Contracts (you, 5 min)
-Define types in src/types/task.ts
-
-### Phase 2 — Parallel Agents
-- Agent A: Auth → src/auth/* (independent)
-- Agent B: API → src/api/* (independent)
-- Agent C: WebSocket → src/realtime/* (independent)
-
-### Phase 3 — Dependent Work
-- Agent D: Kanban UI → src/board/*
-  (after API contract is defined)
-
-### Phase 4 — Integration
-- Wire routes, test end-to-end`,
+      template: '## Task Graph\n\n### Phase 1 — Contracts (you, 5 min)\nDefine types in {{typesFile}}\n\n### Phase 2 — Parallel Agents\n- Agent A: Auth → {{authOwnership}} (independent)\n- Agent B: API → {{apiOwnership}} (independent)\n- Agent C: WebSocket → {{wsOwnership}} (independent)\n\n### Phase 3 — Dependent Work\n- Agent D: Kanban UI → src/board/*\n  (after {{dependency}} is defined)',
+      blanks: [
+        { id: 'typesFile', answer: 'src/types/task.ts', alternatives: ['src/types/contracts.ts', 'src/types/task'], placeholder: 'which file?', hint: 'The shared types file for the task management app' },
+        { id: 'authOwnership', answer: 'src/auth/*', alternatives: ['src/auth'], placeholder: 'which directory?', hint: 'Agent A owns all auth files' },
+        { id: 'apiOwnership', answer: 'src/api/*', alternatives: ['src/api'], placeholder: 'which directory?', hint: 'Agent B owns all API files' },
+        { id: 'wsOwnership', answer: 'src/realtime/*', alternatives: ['src/realtime', 'src/websocket/*'], placeholder: 'which directory?', hint: 'Agent C owns all realtime/WebSocket files' },
+        { id: 'dependency', answer: 'API contract', alternatives: ['api contract', 'the API contract', 'API response shapes'], placeholder: 'what dependency?', hint: 'The Kanban UI needs to know the data shapes from the API' },
+      ],
+      explanation: 'Each agent gets exclusive file ownership, works against the shared types, and dependencies are explicit. The Kanban UI waits for the API contract so it can type its components correctly.',
     },
     {
-      type: 'info',
-      title: 'Maximizing parallelism with contracts',
-      body: "Here's the advanced move: if you define the API contract upfront (the response shapes, endpoint paths, status codes), the UI agent CAN start in parallel with the API agent. Both work against the contract — the API implements it, the UI consumes it. This is how you go from 3 parallel agents to 4.",
+      type: 'multiple-choice',
+      question: 'The Kanban UI depends on the API response shapes. How can you make the UI agent start in parallel with the API agent instead of waiting?',
+      options: [
+        'Have the UI agent guess the response shapes and fix them later',
+        'Define the API contract (response shapes, endpoint paths) upfront so both agents work against the same contract',
+        'Give the UI agent access to the API agent\'s worktree so it can read the code',
+        'Start the UI agent with mock data and never connect it to the real API',
+      ],
+      correctIndex: 1,
+      explanation: 'If you define the API contract upfront, the UI agent CAN start in parallel with the API agent. Both work against the contract — the API implements it, the UI consumes it. This is how you go from 3 parallel agents to 4.',
     },
     {
       type: 'checklist',

@@ -17,9 +17,16 @@ const content: LessonContent = {
 
     // === FAILURE MODES ===
     {
-      type: 'info',
-      title: 'Three categories where agents fail',
-      body: "First: novel problems. If no one has written about your specific constraint set on the internet, agents interpolate from adjacent examples — badly. Second: edge cases in your domain. The agent does not know your SLA is 50ms, your database is on a 2015 server with 4GB RAM, or your compliance team vetoes anything touching PII. Third: organizational constraints. Political realities, team skills, migration budgets, and technical debt context that no model can infer from a prompt.",
+      type: 'multiple-choice',
+      question: 'An agent recommends a caching strategy for your system. It does not know your SLA is 50ms, your database runs on a 2015 server with 4GB RAM, and your compliance team vetoes anything touching PII. Which failure category does this represent?',
+      options: [
+        'Novel problem — no one has written about this scenario',
+        'Edge case in your domain — the agent lacks critical context about your specific constraints',
+        'Organizational constraint — the agent cannot infer political realities',
+        'Training bias — the agent is drawing from skewed data',
+      ],
+      correctIndex: 1,
+      explanation: "Agents fail in three categories. First: novel problems where no one has written about your specific constraint set. Second: edge cases in your domain — the agent does not know your SLA, server specs, or compliance rules. Third: organizational constraints like team skills, migration budgets, and political realities. This scenario is a domain edge case: the agent's recommendation ignores hardware limitations, performance requirements, and compliance rules it was never told about.",
     },
     {
       type: 'interactive-diagram',
@@ -77,17 +84,29 @@ const content: LessonContent = {
 
     // === OVERRIDE CRITERIA ===
     {
-      type: 'info',
-      title: 'Building override criteria',
-      body: "You need a framework, not vibes. Ask four questions. One: does the agent have access to the constraint that matters most? If you have not told it about your 4-person team or your compliance requirements, its recommendation is based on incomplete data — override. Two: is the recommendation based on general best practice or specific analysis of your codebase? General advice fails at specific scale. Three: have you seen this pattern fail in similar contexts? Your lived experience is data the model does not have. Four: what is the cost of being wrong? If reversible, try the agent's way. If irreversible, trust your gut.",
+      type: 'multiple-choice',
+      question: 'You are building override criteria. An agent recommends PostgreSQL read replicas but does not know your ops team is one person. Which of the four override questions does this fail?',
+      options: [
+        'Is the recommendation based on specific analysis of your codebase?',
+        'Does the agent have access to the constraint that matters most?',
+        'Have you seen this pattern fail in similar contexts?',
+        'What is the cost of being wrong?',
+      ],
+      correctIndex: 1,
+      explanation: "You need a framework, not vibes. Ask four questions. One: does the agent have access to the constraint that matters most? If you have not told it about your 4-person team or compliance requirements, its recommendation is based on incomplete data — override. Two: is the recommendation based on general best practice or specific analysis? Three: have you seen this pattern fail? Four: what is the cost of being wrong — if reversible, try the agent's way; if irreversible, trust your gut. This scenario fails question one: the agent lacks the critical constraint (one-person ops team).",
     },
     {
-      type: 'code-demo',
-      title: 'Override decision log',
-      body: 'Track every override decision and its outcome. This calibrates your judgment over time — you learn when you were right to override and when you should have listened.',
+      type: 'code-fill',
+      instruction: 'Complete this override decision log. Fill in the blanks to document each override with its rationale and outcome — this calibrates your judgment over time.',
       language: 'markdown',
       filename: 'OVERRIDE_LOG.md',
-      code: "# Override Decision Log\n\n## 2026-04-28: Database choice\n- **Agent recommendation**: PostgreSQL with read replicas\n- **My override**: SQLite with Litestream replication\n- **Rationale**: Single-server deployment, <1000 concurrent users,\n  ops team is one person (me). Postgres overhead not justified.\n- **Outcome (30 days)**: Correct. Zero ops incidents. p99 latency 12ms.\n  Agent's recommendation would have added 3 services to maintain.\n\n## 2026-04-15: API design\n- **Agent recommendation**: REST with OpenAPI spec\n- **My override**: tRPC with end-to-end types\n- **Rationale**: Full-stack TypeScript, no external consumers,\n  team already knows tRPC. OpenAPI overhead adds no value here.\n- **Outcome (30 days)**: Correct. Ship velocity 2x what REST would allow.\n\n## 2026-04-02: State management\n- **Agent recommendation**: Zustand for client state\n- **My override**: React Query + URL state only\n- **Outcome (30 days)**: Partially wrong. Needed local UI state for\n  a complex form wizard. Added Zustand in week 3. Should have listened.",
+      template: '# Override Decision Log\n\n## 2026-04-28: Database choice\n- **Agent recommendation**: PostgreSQL with read replicas\n- **My override**: {{db_override}}\n- **Rationale**: Single-server deployment, <1000 concurrent users,\n  ops team is one person (me). Postgres overhead not justified.\n- **Outcome (30 days)**: {{db_outcome}}\n\n## 2026-04-15: API design\n- **Agent recommendation**: REST with OpenAPI spec\n- **My override**: {{api_override}}\n- **Rationale**: Full-stack TypeScript, no external consumers,\n  team already knows tRPC. OpenAPI overhead adds no value here.\n- **Outcome (30 days)**: Correct. Ship velocity 2x what REST would allow.',
+      blanks: [
+        { id: 'db_override', answer: 'SQLite with Litestream replication', alternatives: ['SQLite', 'sqlite', 'SQLite with Litestream', 'Litestream'], placeholder: 'your database choice?', hint: 'A lightweight embedded database with streaming replication' },
+        { id: 'db_outcome', answer: 'Correct. Zero ops incidents. p99 latency 12ms.', alternatives: ['Correct', 'correct', 'Zero ops incidents', 'zero incidents'], placeholder: 'what happened after 30 days?', hint: 'The override was validated — zero operational issues' },
+        { id: 'api_override', answer: 'tRPC with end-to-end types', alternatives: ['tRPC', 'trpc', 'tRPC with types', 'end-to-end typed RPC'], placeholder: 'your API choice?', hint: 'A TypeScript-first RPC framework with full type safety' },
+      ],
+      explanation: 'Tracking every override decision and its outcome calibrates your judgment over time. You learn when you were right to override (database choice, API design) and when you should have listened. The log creates a feedback loop that makes your future overrides more accurate.',
     },
     {
       type: 'multiple-choice',
@@ -109,14 +128,24 @@ const content: LessonContent = {
 
     // === THE PARADOX ===
     {
-      type: 'info',
-      title: 'The override paradox',
-      body: "Here is the tension: you need agents to be useful. If you override every recommendation, why use them? The answer is asymmetry. Agents are right 90% of the time on implementation details — how to structure a component, which API to call, how to write a test. They are wrong 30-40% of the time on architectural decisions that depend on context they cannot see. Your job is to know which category you are in. Let agents handle implementation. Override on architecture, strategy, and anything that requires context about your team, timeline, or constraints.",
-    },
-    {
-      type: 'info',
-      title: 'Confidence calibration',
-      body: "Agent confidence does not correlate with correctness on novel problems. A model will state 'the best approach is X' with the same linguistic confidence whether X is well-established or a hallucinated extrapolation. You cannot use the agent's confidence level as signal. Instead, use your own confidence: if you have direct experience with the problem domain and the agent's recommendation contradicts that experience, your experience wins. If you are in unfamiliar territory and the agent cites specific, verifiable reasoning, lean toward the agent.",
+      type: 'compare',
+      title: 'The override paradox: when to trust vs when to override',
+      body: 'Agents are right 90% on implementation, wrong 30-40% on architecture. Your job is knowing which category you are in.',
+      left: {
+        label: 'Trust the Agent (Implementation)',
+        content: 'Agent is RIGHT 90% of the time on:\n\n- How to structure a component\n- Which API to call\n- How to write a test\n- Syntax and patterns\n- Library-specific usage\n\nWhy: These are well-documented,\nwidely covered in training data.\nThe agent has seen thousands of\nexamples and can pattern-match\naccurately.\n\nYour role: accept and move fast.',
+        language: 'text',
+        filename: 'trust-agent.txt',
+      },
+      right: {
+        label: 'Override the Agent (Architecture)',
+        content: 'Agent is WRONG 30-40% on:\n\n- Architecture decisions\n- Technology choices for YOUR context\n- Team/timeline/constraint tradeoffs\n- Build vs buy decisions\n- When to NOT build something\n\nWhy: These depend on context the\nagent cannot see — team size, SLAs,\ncompliance, budget, political\nreality. Training data skews toward\n"best practice" not YOUR practice.\n\nYour role: evaluate and override.',
+        language: 'text',
+        filename: 'override-agent.txt',
+      },
+      question: 'When should you lean toward overriding?',
+      correctSide: 'right',
+      explanation: "The override paradox: you need agents to be useful, but you must know when to ignore them. The answer is asymmetry. Trust agents on implementation details. Override on architecture, strategy, and anything requiring context about your team, timeline, or constraints. Agent confidence does not correlate with correctness on novel problems — use YOUR confidence, not theirs, as the deciding signal.",
     },
     {
       type: 'multiple-choice',
@@ -197,9 +226,16 @@ const content: LessonContent = {
 
     // === PRACTICAL SCENARIOS ===
     {
-      type: 'info',
-      title: 'Scenario: the refactor that should not happen',
-      body: "Your agent fleet analyzes your codebase and recommends refactoring your authentication module. The code is ugly, uses callbacks instead of async/await, and has no tests. By every objective metric, it needs refactoring. But you know: this code has not had a bug in 18 months. It handles 50K auth requests daily. The compliance team approved this exact implementation. Refactoring introduces risk with zero user-facing benefit. The agents cannot know that stability and compliance approval are more valuable than code aesthetics here.",
+      type: 'multiple-choice',
+      question: 'Your agent fleet recommends refactoring an ugly auth module (callbacks, no tests). But this code has had zero bugs in 18 months, handles 50K daily requests, and compliance approved this exact implementation. What do you do?',
+      options: [
+        'Refactor — the code quality metrics clearly show it needs improvement',
+        'Override — stability and compliance approval outweigh code aesthetics when there is zero user-facing benefit to changing it',
+        'Refactor but keep the old code as backup',
+        'Ask the agents to add tests first, then refactor',
+      ],
+      correctIndex: 1,
+      explanation: "The agents cannot know that stability and compliance approval are more valuable than code aesthetics here. By every objective metric the code needs refactoring — it is ugly, uses callbacks, and has no tests. But your domain knowledge tells you: 18 months of zero bugs, 50K daily requests handled reliably, and compliance has approved this exact implementation. Refactoring introduces risk with zero user-facing benefit. Override.",
     },
     {
       type: 'multiple-choice',
@@ -214,9 +250,16 @@ const content: LessonContent = {
       explanation: 'This is a textbook override scenario. The agents recommend microservices because that is the dominant pattern in their training data for "scaling" systems. But your system does not have a scaling problem — it has a shipping velocity advantage that microservices would destroy for a team of two.',
     },
     {
-      type: 'info',
-      title: 'Scenario: the technology choice that looks wrong',
-      body: "You choose SQLite for a production web app. Every agent tells you this is wrong — use PostgreSQL, it scales better, it has better concurrency. But you know: your app serves 500 users, runs on a single $20/month VPS, and SQLite with WAL mode handles 10x your expected load. The operational simplicity of zero database servers, zero connection pooling, zero backup scripts (just copy a file) is worth more than theoretical scalability you will never need. The agents optimize for the general case. You optimize for YOUR case.",
+      type: 'multiple-choice',
+      question: 'You choose SQLite for a production web app. Every agent says use PostgreSQL for better scaling and concurrency. Your app serves 500 users on a $20/month VPS. SQLite with WAL handles 10x your load. Who is right?',
+      options: [
+        'The agents — PostgreSQL is objectively better for production',
+        'You — operational simplicity (zero DB servers, zero connection pooling, backup = copy a file) outweighs theoretical scalability you will never need',
+        'Compromise — use PostgreSQL but on the same VPS',
+        'Neither — use a managed database service instead',
+      ],
+      correctIndex: 1,
+      explanation: "The agents optimize for the general case. You optimize for YOUR case. Your app serves 500 users, runs on one server, and SQLite with WAL mode handles 10x your expected load. The operational simplicity of zero database servers, zero connection pooling, and backup-by-file-copy is worth more than theoretical scalability you will never need. This is a textbook override: the agents lack context about your specific constraints.",
     },
     {
       type: 'checkpoint',
@@ -226,17 +269,30 @@ const content: LessonContent = {
 
     // === DOCUMENTING OVERRIDES ===
     {
-      type: 'info',
-      title: 'Why documentation matters',
-      body: "Override decisions are invisible by default. Six months from now, a new team member (or you, having forgotten) will look at your SQLite choice and think it is a mistake. Without documentation, they will 'fix' it — introducing the exact complexity you avoided. Every override needs three things: what was recommended, why you overrode it, and what outcome you expect. Then revisit at 30, 60, and 90 days. This creates a feedback loop that calibrates your judgment over time.",
+      type: 'multiple-choice',
+      question: 'Six months from now, a new team member sees your SQLite choice and thinks it is a mistake. Without documentation, what happens?',
+      options: [
+        'Nothing — they will ask you about it',
+        'They "fix" it by migrating to PostgreSQL, introducing the exact complexity you avoided',
+        'They improve it by adding connection pooling',
+        'They write tests for the SQLite code',
+      ],
+      correctIndex: 1,
+      explanation: "Override decisions are invisible by default. Without documentation, someone will 'fix' your intentional choice — introducing the exact complexity you avoided. Every override needs three things: what was recommended, why you overrode it, and what outcome you expect. Then revisit at 30, 60, and 90 days. This creates a feedback loop that calibrates your judgment over time.",
     },
     {
-      type: 'code-demo',
-      title: 'Architecture Decision Record with override context',
-      body: 'ADRs are the standard format. Adding an "Agent Override" section makes the reasoning explicit and reviewable.',
+      type: 'code-fill',
+      instruction: 'Complete this Architecture Decision Record. Fill in the override rationale and expected outcomes to make the reasoning explicit and reviewable.',
       language: 'markdown',
       filename: 'docs/adr/003-database-choice.md',
-      code: "# ADR-003: SQLite for production database\n\n## Status: Accepted\n\n## Context\nWe need a database for user data (~500 users, ~10K records).\n\n## Agent Recommendation\nAll consulted agents recommended PostgreSQL citing:\n- Better concurrency model\n- Broader ecosystem (extensions, tooling)\n- Industry standard for production web apps\n\n## Decision: Override — Use SQLite with WAL mode\n\n## Rationale for Override\n1. **Agents lack deployment context**: Single VPS, no container\n   orchestration, one-person ops team\n2. **Agents optimize for scale we do not have**: 500 users is\n   well within SQLite's capabilities (tested to 10K concurrent reads)\n3. **Operational simplicity**: No connection pooling, no separate\n   backup system, no version management\n4. **Cost**: $0/month vs $15-50/month for managed Postgres\n\n## Expected Outcome\n- Zero database-related ops incidents in first 6 months\n- Sub-10ms query times for all operations\n- Backup = copy one file to S3\n\n## Revisit: 2026-10-28 (6 months)\n## Escalation trigger: >2000 concurrent users OR write contention",
+      template: '# ADR-003: SQLite for production database\n\n## Status: Accepted\n\n## Context\nWe need a database for user data (~500 users, ~10K records).\n\n## Agent Recommendation\nAll consulted agents recommended PostgreSQL.\n\n## Decision: Override — Use SQLite with WAL mode\n\n## Rationale for Override\n1. **Agents lack context**: {{context_gap}}\n2. **Agents optimize for scale we do not have**: {{scale_reality}}\n3. **Operational simplicity**: {{ops_benefit}}\n\n## Expected Outcome\n- {{expected_metric}}\n- Backup = copy one file to S3\n\n## Revisit: 2026-10-28 (6 months)',
+      blanks: [
+        { id: 'context_gap', answer: 'Single VPS, one-person ops team', alternatives: ['single server', 'one person ops', 'no container orchestration', 'single VPS, no orchestration'], placeholder: 'what context are agents missing?', hint: 'Your deployment and team constraints' },
+        { id: 'scale_reality', answer: '500 users is well within SQLite capabilities', alternatives: ['500 users', 'well within SQLite limits', 'SQLite handles our scale', 'we only have 500 users'], placeholder: 'why is scale not an issue?', hint: 'Your actual user count vs SQLite capacity' },
+        { id: 'ops_benefit', answer: 'No connection pooling, no separate backup system', alternatives: ['no connection pooling', 'zero operational overhead', 'no separate database server', 'no backup scripts needed'], placeholder: 'what operational complexity do you avoid?', hint: 'What infrastructure does SQLite eliminate?' },
+        { id: 'expected_metric', answer: 'Zero database-related ops incidents in 6 months', alternatives: ['zero ops incidents', 'no database incidents', 'zero incidents in 6 months', 'sub-10ms query times'], placeholder: 'what measurable outcome do you expect?', hint: 'A specific metric to validate the override' },
+      ],
+      explanation: 'ADRs with an "Agent Override" section make your reasoning explicit and reviewable. They protect against future team members "fixing" your intentional choice, and they create a record for calibrating your override judgment over time.',
     },
     {
       type: 'order',
@@ -253,9 +309,16 @@ const content: LessonContent = {
 
     // === CALIBRATION OVER TIME ===
     {
-      type: 'info',
-      title: 'Calibrating your override instinct',
-      body: "Track your overrides. After 20-30 logged decisions, patterns emerge. Maybe you override correctly on infrastructure decisions 85% of the time but incorrectly on frontend architecture 60% of the time. That data tells you where your judgment is strong (keep overriding) and where it is weak (listen to agents more). The goal is not to override more or less — it is to override accurately. Your override log is your calibration instrument.",
+      type: 'multiple-choice',
+      question: 'After logging 25 override decisions, you find you override correctly on infrastructure 85% of the time but incorrectly on frontend architecture 60% of the time. What does this data tell you?',
+      options: [
+        'You should stop overriding entirely',
+        'You should override more often to build experience',
+        'Your judgment is strong on infrastructure (keep overriding) and weak on frontend (listen to agents more in that domain)',
+        'The agents are better at everything frontend-related',
+      ],
+      correctIndex: 2,
+      explanation: "Track your overrides. After 20-30 logged decisions, patterns emerge. The data tells you where your judgment is strong (keep overriding) and where it is weak (listen to agents more). The goal is not to override more or less — it is to override accurately. Your override log is your calibration instrument. Domain-specific accuracy matters more than overall override frequency.",
     },
     {
       type: 'multiple-choice',
@@ -277,9 +340,16 @@ const content: LessonContent = {
 
     // === SYNTHESIS ===
     {
-      type: 'info',
-      title: 'The meta-skill',
-      body: "Override judgment is the skill that separates an agent operator from an agent architect. Operators take what agents give them. Architects evaluate, filter, and occasionally reject — not from ego, but from hard-won context that no model can access. Your experience, your knowledge of your team, your understanding of your constraints — these are not bugs in the process. They ARE the process. The agent is a powerful advisor. You are the decision-maker. Never abdicate that role, no matter how confident the advisor sounds.",
+      type: 'multiple-choice',
+      question: 'What is the key difference between an "agent operator" and an "agent architect"?',
+      options: [
+        'Operators use more agents than architects',
+        'Architects write better prompts than operators',
+        'Operators take what agents give them; architects evaluate, filter, and occasionally reject based on hard-won context no model can access',
+        'Architects build their own AI models',
+      ],
+      correctIndex: 2,
+      explanation: "Override judgment is the meta-skill that separates operators from architects. Operators take what agents give them. Architects evaluate, filter, and occasionally reject — not from ego, but from context that no model can access. Your experience, your knowledge of your team, your understanding of your constraints — these are not bugs in the process. They ARE the process. The agent is a powerful advisor. You are the decision-maker.",
     },
     {
       type: 'checklist',

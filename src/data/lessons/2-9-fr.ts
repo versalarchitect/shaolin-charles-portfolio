@@ -17,17 +17,22 @@ const content: LessonContent = {
 
     // === WRITING VISUAL SPECS ===
     {
-      type: 'info',
+      type: 'compare',
       title: 'Écrire des specs visuelles qui contraignent sans micro-gérer',
-      body: "Les mêmes anti-patterns de la leçon 2-1 s'appliquent ici. Trop vague : « fais-le paraître moderne ». Trop prescriptif : « utilise p-4 gap-3 text-sm font-medium ». Le juste milieu est une contrainte de design system — vous définissez l'échelle d'espacement, la hiérarchie des composants, la stratégie responsive — et laissez l'agent choisir des valeurs spécifiques dans ces limites. Voyez ça comme remettre à l'agent une règle et une palette, pas un mockup au pixel près.",
-    },
-    {
-      type: 'code-demo',
-      title: 'Spec visuelle : contraintes de design system',
-      body: 'Ceci contraint les décisions visuelles sans dicter chaque classe. L\'agent a un système dans lequel travailler.',
-      language: 'markdown',
-      filename: 'SPEC.md',
-      code: "## Visual Design Constraints\n\n### Responsive Strategy\n- Mobile-first: design for 375px, then enhance for 768px+\n- Single column on mobile, max 2 columns on tablet, 3 on desktop\n- No horizontal scrolling at any breakpoint\n\n### Component Hierarchy\n- Page title → Section headings → Card titles → Body text\n- Max 3 levels of visual nesting\n- Cards are the primary content container\n\n### Spacing System\n- Use Tailwind's default scale (4px increments)\n- Section padding: py-12 to py-16\n- Card padding: p-4 to p-6\n- Inter-card gap: gap-4 to gap-6\n- Never less than p-3 inside interactive elements\n\n### Color & Contrast\n- Monochromatic palette (grays + one accent)\n- Text must meet WCAG AA contrast (4.5:1 body, 3:1 large text)\n- Interactive elements must have visible focus states",
+      body: 'Les mêmes anti-patterns de la leçon 2-1 s\'appliquent aux specs visuelles. Trouvez le juste milieu.',
+      question: 'Quelle approche donne assez de guidance à l\'agent pour produire un bon design ?',
+      correctSide: 'right',
+      left: {
+        label: 'Trop vague / trop prescriptif',
+        content: 'TROP VAGUE :\n« Fais-le paraître moderne. »\n« Utilise un bon espacement. »\n\nTROP PRESCRIPTIF :\n« Utilise p-4 gap-3 text-sm font-medium\nsur chaque carte. Le header doit faire\nexactement 64px avec un fond #1a1a1a. »',
+        language: 'text',
+      },
+      right: {
+        label: 'Contraintes de design system',
+        content: 'SYSTÈME D\'ESPACEMENT :\n- Padding de section : py-12 à py-16\n- Padding de carte : p-4 à p-6\n- Gap inter-cartes : gap-4 à gap-6\n\nHIÉRARCHIE :\n- Titre de page > Titre de section > Titre de carte\n- Max 3 niveaux d\'imbrication visuelle\n\nRESPONSIVE :\n- Mobile-first, colonne unique sur mobile\n- Pas de défilement horizontal à aucun breakpoint',
+        language: 'text',
+      },
+      explanation: 'Le juste milieu est une contrainte de design system — vous définissez l\'échelle d\'espacement, la hiérarchie des composants, la stratégie responsive — et laissez l\'agent choisir des valeurs spécifiques dans ces limites. Voyez ça comme remettre à l\'agent une règle et une palette, pas un mockup au pixel près.',
     },
     {
       type: 'checkpoint',
@@ -37,14 +42,21 @@ const content: LessonContent = {
 
     // === EVALUATING OUTPUT ===
     {
-      type: 'info',
-      title: 'Évaluer le résultat UI de l\'agent',
-      body: "L'agent livre une interface fonctionnelle. Votre évaluation a deux couches. Couche 1 : Est-ce que ça satisfait la spec ? Vérifiez le comportement responsive, la hiérarchie des composants, la conformité à l'échelle d'espacement. C'est objectif. Couche 2 : Est-ce que ça a l'air bien ? C'est subjectif — et c'est là que votre goût compte. Est-ce que l'oeil circule naturellement ? Y a-t-il assez d'espace pour respirer ? Les éléments liés semblent-ils groupés ? La page a-t-elle un point focal clair ? La couche 2 ne peut pas être automatisée. Elle vous nécessite.",
+      type: 'multiple-choice',
+      question: 'Votre évaluation du résultat UI de l\'agent a deux couches. Qu\'est-ce que la Couche 2 ?',
+      options: [
+        'Est-ce que ça passe les vérifications de types TypeScript ?',
+        'Est-ce que ça satisfait la spec ? (comportement responsive, échelle d\'espacement)',
+        'Est-ce que ça a l\'air bien ? (flux visuel, espace pour respirer, groupement, point focal)',
+        'Est-ce que ça se rend sans erreurs console ?',
+      ],
+      correctIndex: 2,
+      explanation: "La Couche 1 est objective : est-ce que ça satisfait la spec ? La Couche 2 est subjective : est-ce que ça a l'air bien ? Est-ce que l'oeil circule naturellement ? Y a-t-il assez d'espace pour respirer ? Les éléments liés semblent-ils groupés ? La page a-t-elle un point focal clair ? La Couche 2 ne peut pas être automatisée. Elle nécessite votre goût. C'est là que vit votre valeur en tant que directeur.",
     },
     {
-      type: 'diagram',
+      type: 'interactive-diagram',
       title: 'Le Filtre de Goût',
-      body: 'Chaque interface générée par l\'agent passe par votre jugement visuel avant d\'être livrée.',
+      body: 'Chaque interface générée par l\'agent passe par votre jugement visuel avant d\'être livrée. Cliquez sur chaque étape.',
       diagram: {
         direction: 'LR',
         nodes: [
@@ -62,6 +74,32 @@ const content: LessonContent = {
           { from: 'redirect', to: 'agent', dashed: true },
         ],
       },
+      stages: [
+        {
+          highlightNodes: ['spec'],
+          highlightEdges: [{ from: 'spec', to: 'agent' }],
+          explanation: 'Commencez par votre spec visuelle : échelle d\'espacement, hiérarchie typographique, stratégie responsive, et contraintes de couleur. C\'est le livre de règles dans lequel l\'agent travaille.',
+        },
+        {
+          highlightNodes: ['agent'],
+          highlightEdges: [{ from: 'agent', to: 'eval' }],
+          explanation: 'L\'agent implémente la structure. Il satisfera les exigences de la spec mais peut produire un espacement serré, une hiérarchie plate, ou des mises en page mobile cassées.',
+        },
+        {
+          highlightNodes: ['eval'],
+          highlightEdges: [{ from: 'eval', to: 'accept' }, { from: 'eval', to: 'redirect' }],
+          explanation: 'Vous évaluez sur deux couches : la Couche 1 (conformité spec) est objective. La Couche 2 (goût) est subjective — est-ce que ça a l\'air bien ? C\'est là que vit votre valeur.',
+        },
+        {
+          highlightNodes: ['accept'],
+          explanation: 'Si les deux couches passent, livrez. Ne chassez pas la perfection pixel si l\'expérience utilisateur est solide.',
+        },
+        {
+          highlightNodes: ['redirect'],
+          highlightEdges: [{ from: 'redirect', to: 'agent' }],
+          explanation: 'Si ça a besoin de travail, redirigez avec un feedback spécifique : nommez l\'élément, la propriété, et le changement désiré. Un feedback vague gaspille des itérations.',
+        },
+      ],
     },
     {
       type: 'multiple-choice',
@@ -83,9 +121,15 @@ const content: LessonContent = {
 
     // === SPECIFIC VISUAL FEEDBACK ===
     {
-      type: 'info',
-      title: 'Donner un feedback visuel spécifique',
-      body: "Un feedback vague gaspille des itérations. « La mise en page semble décalée » ne donne rien à l'agent pour travailler. Il fera des ajustements aléatoires en espérant vous satisfaire. Un feedback spécifique nomme la propriété, l'élément, et la direction du changement. Comparez : « rends l'en-tête plus gros » versus « augmente le titre de page de text-2xl à text-3xl et ajoute mb-8 en dessous pour le séparer de la grille de contenu ». Le second, c'est une itération. Le premier, c'en est trois.",
+      type: 'order',
+      instruction: 'Ordonnez ces feedbacks visuels du pire (le plus vague) au meilleur (le plus actionnable) :',
+      items: [
+        'Augmente le titre de page de text-2xl à text-3xl et ajoute mb-8 en dessous pour le séparer de la grille de contenu',
+        'Rends l\'en-tête plus gros',
+        'La mise en page semble décalée',
+        'L\'en-tête a besoin de plus de poids visuel — essaie d\'augmenter la taille de police et d\'ajouter un espacement en bas',
+      ],
+      correctOrder: [2, 1, 3, 0],
     },
     {
       type: 'compare',
@@ -106,12 +150,18 @@ const content: LessonContent = {
       explanation: 'Un feedback spécifique nomme l\'élément, la propriété et la valeur. L\'agent l\'exécute en une seule modification. Un feedback vague oblige l\'agent à deviner ce que « mieux » signifie — et il devinera mal.',
     },
     {
-      type: 'code-demo',
-      title: 'Mauvais vs bon feedback visuel',
-      body: 'Chaque feedback visuel devrait référencer un élément spécifique, une propriété et un changement désiré.',
+      type: 'code-fill',
+      instruction: 'Réécrivez ce feedback visuel vague en directives spécifiques et actionnables :',
       language: 'text',
-      filename: 'feedback-examples.txt',
-      code: "❌ BAD FEEDBACK (vague, multi-interpretation)\n\"The cards look weird\"\n\"Make it more spacious\"\n\"The page feels cluttered\"\n\"Fix the alignment\"\n\"Make it look more professional\"\n\n✅ GOOD FEEDBACK (specific, actionable)\n\"Increase card padding from p-2 to p-5\"\n\"The sidebar is 320px — reduce to 256px so content area breathes\"\n\"Add a border-b border-gray-200 below the nav to separate it from content\"\n\"The CTA button is the same size as secondary actions — make it h-12 px-8 vs h-9 px-4\"\n\"Move the filter bar above the grid, not inside the sidebar — it's a primary action\"",
+      filename: 'feedback-fix.txt',
+      template: '# Original : « Les cartes font bizarres et étriquées »\n# Réécrit :\nAugmenter le padding des cartes de p-2 à {{card_padding}}.\nAjouter {{gap_value}} entre les cartes de stats.\nMettre le titre de page en {{title_classes}}.\nAjouter un {{separator}} séparateur entre les sections.',
+      blanks: [
+        { id: 'card_padding', answer: 'p-5', alternatives: ['p-6', 'p-4'], placeholder: 'nouveau padding ?', hint: 'Padding généreux dans la plage p-4 à p-6' },
+        { id: 'gap_value', answer: 'gap-4', alternatives: ['gap-5', 'gap-6'], placeholder: 'valeur de gap ?', hint: 'Espacement standard inter-cartes' },
+        { id: 'title_classes', answer: 'text-2xl font-bold', alternatives: ['text-3xl font-bold', 'text-xl font-semibold'], placeholder: 'taille + poids du titre ?', hint: 'Grand et gras pour établir la hiérarchie' },
+        { id: 'separator', answer: 'border-b border-foreground/10', alternatives: ['border-b border-gray-200', 'border-b border-foreground/5'], placeholder: 'bordure séparatrice ?', hint: 'Une ligne horizontale subtile' },
+      ],
+      explanation: 'Chaque feedback visuel devrait référencer un élément spécifique, une propriété et un changement désiré. Un feedback spécifique, c\'est une itération. Un feedback vague, c\'en est trois.',
     },
     {
       type: 'multiple-choice',
@@ -128,17 +178,29 @@ const content: LessonContent = {
 
     // === COMMON VISUAL ISSUES ===
     {
-      type: 'info',
-      title: 'Les six problèmes visuels que les agents produisent le plus souvent',
-      body: "Après avoir révisé des centaines d'interfaces générées par des agents, six problèmes reviennent. (1) Padding serré — les agents utilisent un espacement minimal par défaut. (2) Hiérarchie plate — tout le texte est de taille et poids similaires. (3) Séparation de groupes manquante — les éléments liés ne sont pas visuellement regroupés. (4) Mises en page surchargées — trop d'éléments en compétition pour l'attention. (5) États interactifs incohérents — certains boutons ont des effets de survol, d'autres non. (6) Flux responsive cassé — s'empile maladroitement sur mobile. Entraînez-vous à scanner ces six problèmes en premier.",
+      type: 'multiple-choice',
+      question: 'Parmi ces six problèmes visuels courants des agents, lequel a le PLUS d\'impact sur l\'utilisabilité ?',
+      options: [
+        'Padding serré (espacement minimal)',
+        'Hiérarchie plate (tout le texte de taille et poids similaires)',
+        'États interactifs incohérents (certains boutons ont des effets de survol, d\'autres non)',
+        'Flux responsive cassé (s\'empile maladroitement sur mobile)',
+      ],
+      correctIndex: 1,
+      explanation: "La hiérarchie plate a le plus d'impact parce qu'elle détruit la capacité de l'utilisateur à scanner et naviguer. Quand les titres de page, de section et de carte se ressemblent tous, les utilisateurs ne peuvent pas distinguer la structure. Les cinq autres problèmes (padding serré, groupement manquant, mises en page surchargées, états incohérents, responsive cassé) reviennent aussi, mais la hiérarchie est la fondation de la communication visuelle.",
     },
     {
-      type: 'code-demo',
-      title: 'Corriger la hiérarchie plate',
-      body: 'Les agents rendent souvent les titres de page, de section et de carte trop similaires en taille. Imposez une échelle typographique claire.',
+      type: 'code-fill',
+      instruction: 'Corrigez cette hiérarchie typographique plate. Chaque niveau de titre a besoin d\'une taille, d\'un poids et d\'un style distincts :',
       language: 'tsx',
       filename: 'hierarchy-fix.tsx',
-      code: "// BEFORE: Flat hierarchy — everything looks the same weight\n<h1 className=\"text-xl font-medium\">Dashboard</h1>\n<h2 className=\"text-lg font-medium\">Recent Activity</h2>\n<h3 className=\"text-base font-medium\">Card Title</h3>\n\n// AFTER: Clear hierarchy — distinct size + weight at each level\n<h1 className=\"text-3xl font-bold tracking-tight\">Dashboard</h1>\n<h2 className=\"text-xl font-semibold text-muted-foreground\">Recent Activity</h2>\n<h3 className=\"text-sm font-medium uppercase tracking-wide\">Card Title</h3>",
+      template: '// Hiérarchie claire — taille + poids distincts à chaque niveau\n<h1 className="{{h1_classes}}">Dashboard</h1>\n<h2 className="{{h2_classes}}">Recent Activity</h2>\n<h3 className="{{h3_classes}}">Card Title</h3>',
+      blanks: [
+        { id: 'h1_classes', answer: 'text-3xl font-bold tracking-tight', alternatives: ['text-3xl font-bold', 'text-4xl font-bold tracking-tight'], placeholder: 'classes du titre de page ?', hint: 'Le plus grand et le plus gras — le titre de page' },
+        { id: 'h2_classes', answer: 'text-xl font-semibold text-muted-foreground', alternatives: ['text-xl font-semibold', 'text-lg font-semibold text-muted-foreground'], placeholder: 'classes du titre de section ?', hint: 'Taille moyenne, légèrement atténuée pour montrer qu\'il est secondaire' },
+        { id: 'h3_classes', answer: 'text-sm font-medium uppercase tracking-wide', alternatives: ['text-sm font-medium uppercase', 'text-xs font-semibold uppercase tracking-wide'], placeholder: 'classes du titre de carte ?', hint: 'Petit, majuscules, espacement large pour un effet d\'étiquette' },
+      ],
+      explanation: 'La hiérarchie vient du contraste entre les niveaux. Titre de page : grand et gras. Titre de section : moyen et atténué. Titre de carte : petit, majuscules, espacé. Les agents mettent des tailles similaires à chaque niveau — votre travail est d\'imposer un poids visuel distinct.',
     },
     {
       type: 'match',
@@ -171,9 +233,12 @@ const content: LessonContent = {
 
     // === GOOD-ENOUGH VS PIXEL-PERFECT ===
     {
-      type: 'info',
-      title: 'Quand accepter « assez bien » vs pousser vers le pixel-perfect',
-      body: "Le goût est important. Le perfectionnisme est coûteux. La question n'est pas « est-ce parfait ? » mais « corriger ça améliorera-t-il notablement l'expérience utilisateur ? » Une différence de 2px de padding — probablement pas. Une hiérarchie visuelle manquante qui embrouille la navigation — absolument. Votre temps a un coût. Chaque itération brûle des tokens, du contexte et votre attention. La règle : si un problème visuel vous ferait hésiter à montrer ça à un utilisateur, corrigez-le. Si vous ne le remarquez que parce que vous le fixez, livrez-le.",
+      type: 'match',
+      instruction: 'Associez chaque problème visuel à la décision : corriger ou livrer :',
+      leftItems: ['Le border radius des cartes est rounded-lg au lieu de rounded-xl', 'Le CTA principal est visuellement identique au bouton Supprimer destructif', 'Le gap est gap-4 quand gap-5 pourrait être légèrement mieux', 'La hiérarchie de navigation est complètement plate — les utilisateurs ne trouvent pas les actions clés'],
+      rightItems: ['CORRIGER : Problème d\'utilisabilité, les utilisateurs ne distinguent pas le sûr du dangereux', 'LIVRER : Différence de préférence, pas d\'impact sur l\'expérience utilisateur', 'LIVRER : Amélioration marginale, pas la peine d\'une itération', 'CORRIGER : La confusion de navigation causera de la friction réelle chez les utilisateurs'],
+      correctPairs: { 0: 1, 1: 0, 2: 2, 3: 3 },
+      explanation: "La règle : si un problème visuel vous ferait hésiter à montrer ça à un utilisateur, corrigez-le. Si vous ne le remarquez que parce que vous le fixez, livrez-le. Le goût est important, mais le perfectionnisme est coûteux. Chaque itération brûle des tokens, du contexte et votre attention.",
     },
     {
       type: 'multiple-choice',
@@ -215,9 +280,16 @@ const content: LessonContent = {
 
     // === RESPONSIVE EVALUATION ===
     {
-      type: 'info',
-      title: 'Évaluer le comportement responsive',
-      body: "Les agents réussissent souvent le desktop et ignorent le mobile. Ou ils empilent tout verticalement sur mobile sans considérer la portée du pouce, la troncature du texte, ou les zones de toucher. Votre spec visuelle devrait définir le comportement par breakpoint, mais vous devez quand même le vérifier. Ouvrez les outils de dev, redimensionnez à 375px de large, et vérifiez : Le contenu déborde-t-il ? Les zones de toucher font-elles au moins 44px ? L'action la plus importante reste-t-elle visible sans défiler ? Ce ne sont pas des problèmes cosmétiques — ce sont des défaillances fonctionnelles sur mobile.",
+      type: 'multiple-choice',
+      question: 'Vous ouvrez les outils de dev et redimensionnez à 375px. Lequel de ces problèmes est une défaillance FONCTIONNELLE, pas juste cosmétique ?',
+      options: [
+        'Les cartes sont en colonne unique au lieu de la grille à 3 colonnes du desktop',
+        'Les tailles de police sont légèrement plus petites que sur desktop',
+        'Les zones de toucher (boutons, liens) font moins de 44px et sont difficiles à presser',
+        'La barre latérale est cachée derrière un menu hamburger',
+      ],
+      correctIndex: 2,
+      explanation: "Les agents réussissent souvent le desktop et ignorent le mobile. Les zones de toucher sous 44px sont des défaillances fonctionnelles — les utilisateurs ne peuvent physiquement pas les toucher de manière fiable. Le débordement de contenu, les CTAs manquants au-dessus du pli, et la troncature de texte sont aussi fonctionnels, pas cosmétiques. La mise en page en colonne unique et la barre latérale cachée sont des adaptations mobiles correctes, pas des défaillances.",
     },
     {
       type: 'multiple-choice',
@@ -234,9 +306,16 @@ const content: LessonContent = {
 
     // === SYNTHESIS ===
     {
-      type: 'info',
-      title: 'Votre rôle : la couche de goût',
-      body: "Les agents vont devenir plus rapides et plus capables de générer des interfaces. Mais le goût — le jugement de ce qui a l'air bien, ce qui semble équilibré, ce qui communique la hiérarchie — reste humain. Votre valeur dans la direction d'interfaces construites par agent n'est pas de cocher des cases. C'est le jugement visuel qui transforme une interface conforme en une interface que les utilisateurs apprécient vraiment utiliser. Développez ce muscle : regardez les interfaces de manière critique, nommez ce qui vous dérange spécifiquement, et dirigez les corrections avec précision.",
+      type: 'multiple-choice',
+      question: 'À mesure que les agents IA deviennent plus capables de générer des interfaces, quelle compétence devient PLUS précieuse, pas moins ?',
+      options: [
+        'Écrire du CSS à la main',
+        'Mémoriser les noms de classes Tailwind',
+        'Le goût visuel — juger ce qui a l\'air bien, semble équilibré, et communique la hiérarchie',
+        'Taper rapidement du markup HTML',
+      ],
+      correctIndex: 2,
+      explanation: "Les agents vont devenir plus rapides à générer des interfaces. Mais le goût — le jugement de ce qui a l'air bien, ce qui semble équilibré, ce qui communique la hiérarchie — reste humain. Votre valeur n'est pas de cocher des cases. C'est le jugement visuel qui transforme une interface conforme en une interface que les utilisateurs apprécient. Développez ce muscle : regardez les interfaces de manière critique, nommez ce qui vous dérange spécifiquement, et dirigez les corrections avec précision.",
     },
     {
       type: 'checklist',

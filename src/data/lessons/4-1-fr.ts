@@ -246,9 +246,16 @@ const content: LessonContent = {
 
     // === PRACTICAL EVALUATION ===
     {
-      type: 'info',
-      title: 'Exécuter l\'audit de navigabilité',
-      body: "Voici comment noter votre propre codebase. Choisissez 5 tâches récentes d'agents — fonctionnalités ajoutées, bugs corrigés, refactors effectués. Pour chaque tâche, comptez combien de recherches de fichiers l'agent a eu besoin pour trouver tous les fichiers pertinents. Faites la moyenne de ces nombres. Sous 2,5 en moyenne : excellente navigabilité. 2,5-4,0 en moyenne : acceptable mais avec des points de friction. Au-dessus de 4,0 : votre structure lutte activement contre les agents. Concentrez-vous sur les pires cas — ce sont vos cibles de refactoring les plus rentables.",
+      type: 'multiple-choice',
+      question: 'Vous effectuez un audit de navigabilité sur 5 tâches récentes d\'agents avec ces comptes de recherches : 2, 1, 5, 3, 4. Quelle est la moyenne et que signifie-t-elle ?',
+      options: [
+        'Moyenne 3,0 — excellente navigabilité, aucune action nécessaire',
+        'Moyenne 3,0 — acceptable mais avec des points de friction ; concentrez-vous sur les tâches qui ont nécessité 4-5 recherches',
+        'Moyenne 3,0 — votre structure lutte activement contre les agents ; réécriture complète nécessaire',
+        'Moyenne 3,0 — sans signification ; il faut au moins 20 tâches pour tirer des conclusions',
+      ],
+      correctIndex: 1,
+      explanation: 'La moyenne est (2+1+5+3+4)/5 = 3,0. Sous 2,5 c\'est excellent, 2,5-4,0 c\'est acceptable mais avec des points de friction, au-dessus de 4,0 signifie que votre structure lutte activement contre les agents. À 3,0, vous êtes dans la zone acceptable, mais vous devriez vous concentrer sur les pires cas (les tâches à 5 et 4 recherches) comme cibles de refactoring les plus rentables.',
     },
     {
       type: 'multiple-choice',
@@ -263,19 +270,32 @@ const content: LessonContent = {
       explanation: 'Ciblez les pires délinquants en premier — ils ont les comptes de recherche les plus élevés, ce qui veut dire que les agents perdent le plus de temps à les naviguer. Auth (7) et notifications (6) offrent la plus grande amélioration par effort de refactoring. Paiements est déjà correct. Tout faire en même temps est risqué et inutile.',
     },
     {
-      type: 'code-demo',
-      title: 'Structure auto-documentée pour les agents',
-      body: 'Une structure de projet complète conçue pour la navigabilité des agents. Remarquez : aucune ambiguïté sur l\'emplacement de quoi que ce soit.',
+      type: 'code-fill',
+      instruction: 'Complétez cette structure de projet idéale. Remplissez les noms de répertoires qui rendent la codebase auto-documentée pour les agents.',
       language: 'text',
       filename: 'ideal-structure',
-      code: "project-root/\n├── CLAUDE.md                        # Agent coordination protocol\n├── src/\n│   ├── features/                    # Domain logic (one dir per feature)\n│   │   ├── payments/\n│   │   │   ├── payments.handler.ts\n│   │   │   ├── payments.service.ts\n│   │   │   ├── payments.schema.ts\n│   │   │   ├── payments.test.ts\n│   │   │   └── index.ts\n│   │   ├── users/\n│   │   ├── orders/\n│   │   └── notifications/\n│   ├── infrastructure/              # Cross-cutting (DB, cache, queue)\n│   │   ├── database.ts\n│   │   ├── cache.ts\n│   │   └── queue.ts\n│   ├── middleware/                  # HTTP middleware (auth, logging)\n│   │   ├── auth.ts\n│   │   └── logging.ts\n│   └── app.ts                       # Composition root\n├── scripts/                         # Operational scripts\n│   ├── migrate.ts\n│   └── seed.ts\n└── package.json",
+      template: 'project-root/\n├── CLAUDE.md                        # Protocole de coordination des agents\n├── src/\n│   ├── {{domain_dir}}/              # Logique domaine (un rép. par fonctionnalité)\n│   │   ├── payments/\n│   │   │   ├── payments.handler.ts\n│   │   │   ├── payments.service.ts\n│   │   │   ├── payments.schema.ts\n│   │   │   ├── payments.test.ts\n│   │   │   └── index.ts\n│   │   ├── users/\n│   │   ├── orders/\n│   │   └── notifications/\n│   ├── {{infra_dir}}/               # Transversal (DB, cache, file d\'attente)\n│   │   ├── database.ts\n│   │   ├── cache.ts\n│   │   └── queue.ts\n│   ├── {{middleware_dir}}/          # Middleware HTTP (auth, logging)\n│   │   ├── auth.ts\n│   │   └── logging.ts\n│   └── {{entry_file}}               # Racine de composition\n├── scripts/\n│   ├── migrate.ts\n│   └── seed.ts\n└── package.json',
+      blanks: [
+        { id: 'domain_dir', answer: 'features', alternatives: ['features'], placeholder: '________', hint: 'Le répertoire qui regroupe tous les modules domaine, un sous-répertoire par fonctionnalité' },
+        { id: 'infra_dir', answer: 'infrastructure', alternatives: ['infra', 'shared'], placeholder: '________', hint: 'Préoccupations transversales comme la base de données, le cache et la file d\'attente — pas spécifiques au domaine' },
+        { id: 'middleware_dir', answer: 'middleware', alternatives: ['middlewares'], placeholder: '________', hint: 'Préoccupations au niveau HTTP comme l\'auth et le logging qui enveloppent les requêtes' },
+        { id: 'entry_file', answer: 'app.ts', alternatives: ['app.ts', 'index.ts', 'main.ts'], placeholder: '________', hint: 'La racine de composition qui relie tout ensemble' },
+      ],
+      explanation: 'Une structure auto-documentée utilise des noms de répertoires qui communiquent leur objectif. "features/" dit à l\'agent où vit la logique domaine. "infrastructure/" signale les préoccupations transversales. "middleware/" est le câblage au niveau HTTP. Aucune ambiguïté sur l\'emplacement de quoi que ce soit.',
     },
 
     // === SYNTHESIS ===
     {
-      type: 'info',
-      title: 'Le principe de navigabilité',
-      body: "Architecturer pour la navigabilité des agents ne consiste pas à suivre un patron unique de façon dogmatique. C'est suivre un seul principe : réduire le nombre de recherches qu'un agent a besoin pour trouver et modifier du code connexe. Les modules par fonctionnalité y parviennent par la colocalisation. Le nommage cohérent y parvient par la prédictibilité. Les API publiques claires y parviennent en éliminant l'ambiguïté entre ce qui est interne et externe. Chaque décision structurelle devrait être évaluée à travers ce prisme : est-ce que ça rend plus facile ou plus difficile pour un agent frais de trouver ce dont il a besoin ?",
+      type: 'multiple-choice',
+      question: 'Quel est le principe unique contre lequel toutes les décisions d\'architecture adaptées aux agents devraient être évaluées ?',
+      options: [
+        'Minimiser le nombre total de fichiers dans le projet',
+        'Suivre les conventions du framework le plus populaire, quel que soit le contexte',
+        'Réduire le nombre de recherches qu\'un agent a besoin pour trouver et modifier du code connexe',
+        'S\'assurer que chaque fichier a des commentaires de documentation exhaustifs',
+      ],
+      correctIndex: 2,
+      explanation: 'Architecturer pour la navigabilité des agents ne consiste pas à suivre un patron unique de façon dogmatique. C\'est suivre un seul principe : réduire le nombre de recherches qu\'un agent a besoin pour trouver et modifier du code connexe. Les modules par fonctionnalité y parviennent par la colocalisation. Le nommage cohérent y parvient par la prédictibilité. Les API publiques claires y parviennent en éliminant l\'ambiguïté entre ce qui est interne et externe. Chaque décision structurelle devrait être évaluée à travers ce prisme.',
     },
     {
       type: 'checklist',

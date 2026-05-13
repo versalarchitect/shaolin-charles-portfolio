@@ -10,12 +10,24 @@ const content: LessonContent = {
       body: "Running 2 agents in parallel feels manageable. You check on one, switch to the other, merge their work. But add a third and something shifts — you're juggling context switches, resolving merge conflicts, and losing track of who's doing what. This isn't a skill problem — it's a math problem. Communication lines between agents grow as n*(n-1)/2. With 2 agents, that's 1 connection. With 5, it's 10. With 10, it's 45. The solution isn't \"try harder\" — it's choosing a coordination pattern that reduces the number of active connections.",
     },
     {
-      type: 'code-demo',
-      title: 'Connection growth',
-      body: "The number of potential conflicts grows much faster than the number of agents. This is why \"just add more agents\" doesn't scale without structure.",
+      type: 'code-fill',
+      instruction: 'Fill in the missing connection counts using the formula n*(n-1)/2. This shows why coordination overhead grows explosively.',
       language: 'text',
       filename: 'coordination-overhead.txt',
-      code: "Agents    Connections    Overhead\n──────    ───────────    ────────\n  2            1         Trivial\n  3            3         Manageable\n  4            6         Needs structure\n  5           10         Needs a pattern\n  7           21         Needs automation\n 10           45         Needs a framework",
+      template: `Agents    Connections    Overhead
+──────    ───────────    ────────
+  2            1         Trivial
+  3            {{three_agents}}         Manageable
+  4            6         Needs structure
+  5           {{five_agents}}         Needs a pattern
+  7           21         Needs automation
+ 10           {{ten_agents}}         Needs a framework`,
+      blanks: [
+        { id: 'three_agents', answer: '3', alternatives: ['3'], placeholder: '?', hint: '3*(3-1)/2 = 3*2/2' },
+        { id: 'five_agents', answer: '10', alternatives: ['10'], placeholder: '?', hint: '5*(5-1)/2 = 5*4/2' },
+        { id: 'ten_agents', answer: '45', alternatives: ['45'], placeholder: '?', hint: '10*(10-1)/2 = 10*9/2' },
+      ],
+      explanation: "The number of potential conflicts grows much faster than the number of agents. This is why \"just add more agents\" doesn't scale without structure.",
     },
     {
       type: 'multiple-choice',
@@ -37,14 +49,21 @@ const content: LessonContent = {
 
     // === PATTERN 1: HUB AND SPOKE ===
     {
-      type: 'info',
-      title: 'Pattern 1: Hub and Spoke',
-      body: "In hub-and-spoke, you are the hub. Every agent reports to you and only to you. Agents never communicate with each other. You assign tasks, collect results, and handle integration. This is the most intuitive pattern — you're already the one launching the agents. Strengths: simple mental model, no inter-agent conflicts, easy to debug. Weakness: you are the bottleneck. Every decision, every merge, every clarification goes through you.",
+      type: 'multiple-choice',
+      question: 'In the hub-and-spoke pattern, how do agents communicate?',
+      options: [
+        'Agents communicate directly with each other through shared files',
+        'Every agent reports to you (the hub) only — no inter-agent communication',
+        'Agents pass outputs to the next agent in a chain',
+        'Agents self-select tasks from a shared pool',
+      ],
+      correctIndex: 1,
+      explanation: "In hub-and-spoke, you are the hub. Every agent reports to you and only to you. Agents never communicate with each other. You assign tasks, collect results, and handle integration. Strengths: simple mental model, no inter-agent conflicts, easy to debug. Weakness: you are the bottleneck.",
     },
     {
-      type: 'diagram',
+      type: 'interactive-diagram',
       title: 'Hub and Spoke',
-      body: 'You coordinate everything. Agents work independently and report back to you. No inter-agent communication.',
+      body: 'Click through to see how you coordinate everything as the central hub.',
       diagram: {
         direction: 'TB',
         nodes: [
@@ -62,14 +81,48 @@ const content: LessonContent = {
           { from: 'c', to: 'you', label: 'result' },
         ],
       },
+      stages: [
+        {
+          highlightNodes: ['you'],
+          highlightEdges: [],
+          explanation: 'You are the hub — the central coordinator. You write specs, assign tasks, and make all decisions. This is the starting point for every fleet operation.',
+        },
+        {
+          highlightNodes: ['you', 'a', 'b', 'c'],
+          highlightEdges: [{ from: 'you', to: 'a' }, { from: 'you', to: 'b' }, { from: 'you', to: 'c' }],
+          explanation: 'You assign independent tasks to each agent. They work in parallel, each in their own worktree. No agent knows what the others are doing.',
+        },
+        {
+          highlightNodes: ['you', 'a', 'b', 'c'],
+          highlightEdges: [{ from: 'a', to: 'you' }, { from: 'b', to: 'you' }, { from: 'c', to: 'you' }],
+          explanation: 'Agents report results back to you. You review, merge, and handle integration. The bottleneck: everything flows through you.',
+        },
+      ],
     },
     {
-      type: 'code-demo',
-      title: 'Hub-and-spoke in practice',
-      body: 'Each agent gets a separate worktree and an independent task. You launch them, check on them, and merge their work.',
+      type: 'code-fill',
+      instruction: 'Complete this hub-and-spoke setup. Fill in the worktree commands and merge sequence.',
       language: 'bash',
       filename: 'hub-and-spoke.sh',
-      code: "# You are the hub — assign independent features to separate worktrees\ngit worktree add ../feature-auth feat/auth\ngit worktree add ../feature-dashboard feat/dashboard\ngit worktree add ../feature-settings feat/settings\n\n# Launch agents in parallel (each in its own worktree)\n# Agent A: auth system\n# Agent B: dashboard UI\n# Agent C: settings page\n\n# You check on each, resolve any issues, merge results\ngit merge feat/auth\ngit merge feat/dashboard\ngit merge feat/settings",
+      template: `# You are the hub — assign independent features to separate worktrees
+git worktree add ../feature-auth {{auth_branch}}
+git worktree add ../feature-dashboard feat/dashboard
+git worktree add ../feature-settings feat/settings
+
+# Launch agents in parallel (each in its own worktree)
+# Agent A: auth system
+# Agent B: dashboard UI
+# Agent C: settings page
+
+# You check on each, resolve any issues, merge results
+git merge {{first_merge}}
+git merge feat/dashboard
+git merge feat/settings`,
+      blanks: [
+        { id: 'auth_branch', answer: 'feat/auth', alternatives: ['feat/auth', '-b feat/auth'], placeholder: 'branch name', hint: 'Follow the naming convention: feat/ prefix + feature name' },
+        { id: 'first_merge', answer: 'feat/auth', alternatives: ['feat/auth'], placeholder: 'which branch first?', hint: 'Auth is the foundation — merge it first since others may depend on session types' },
+      ],
+      explanation: 'Each agent gets a separate worktree and an independent task. You launch them, check on them, and merge their work. As the hub, you control the merge order.',
     },
     {
       type: 'multiple-choice',
@@ -91,14 +144,21 @@ const content: LessonContent = {
 
     // === PATTERN 2: PIPELINE ===
     {
-      type: 'info',
-      title: 'Pattern 2: Pipeline',
-      body: "In a pipeline, agents are arranged in sequence. Each agent specializes in one stage and passes its output to the next. Agent A builds, Agent B reviews, Agent C tests, Agent D deploys. No agent needs to know what the others do — they just consume input and produce output. Strengths: clear separation of concerns, quality improves at each stage. Weakness: it's serial — Agent D is idle while Agent A works, and total time is the sum of all stages.",
+      type: 'multiple-choice',
+      question: 'In a pipeline pattern, how do agents relate to each other?',
+      options: [
+        'All agents work on the same task simultaneously',
+        'Agents are arranged in sequence — each specializes in one stage and passes output to the next',
+        'Agents communicate freely and divide work dynamically',
+        'One agent coordinates all others from the center',
+      ],
+      correctIndex: 1,
+      explanation: "In a pipeline, agents are arranged in sequence. Agent A builds, Agent B reviews, Agent C tests, Agent D deploys. Each agent specializes in one stage and passes its output to the next. Strengths: clear separation of concerns, quality improves at each stage. Weakness: it's serial — total time is the sum of all stages.",
     },
     {
-      type: 'diagram',
+      type: 'interactive-diagram',
       title: 'Pipeline',
-      body: "Sequential stages with specialized agents. Each agent's output feeds the next. One direction, no backflow.",
+      body: 'Click through to see how each stage feeds the next in a sequential pipeline.',
       diagram: {
         direction: 'LR',
         nodes: [
@@ -115,14 +175,53 @@ const content: LessonContent = {
           { from: 'deploy', to: 'done', label: 'live' },
         ],
       },
+      stages: [
+        {
+          highlightNodes: ['build'],
+          highlightEdges: [],
+          explanation: 'Stage 1: The build agent writes the feature. All other agents are idle, waiting for input. This is the pipeline\'s main cost — serialization.',
+        },
+        {
+          highlightNodes: ['build', 'review'],
+          highlightEdges: [{ from: 'build', to: 'review' }],
+          explanation: 'Stage 2: Build output passes to the review agent. It checks for security issues, style violations, and logic errors. Quality improves at each stage.',
+        },
+        {
+          highlightNodes: ['review', 'test'],
+          highlightEdges: [{ from: 'review', to: 'test' }],
+          explanation: 'Stage 3: Reviewed code passes to the test agent. It writes and runs tests, fixing any failures. Each stage only consumes input and produces output.',
+        },
+        {
+          highlightNodes: ['test', 'deploy', 'done'],
+          highlightEdges: [{ from: 'test', to: 'deploy' }, { from: 'deploy', to: 'done' }],
+          explanation: 'Stage 4: Passing code ships to production. Total time = sum of all stages. The pipeline guarantees quality but sacrifices parallelism.',
+        },
+      ],
     },
     {
-      type: 'code-demo',
-      title: 'Pipeline in Claude Code',
-      body: 'Each stage completes before the next begins. Agents are specialized — the build agent never tests, the test agent never deploys.',
+      type: 'code-fill',
+      instruction: 'Complete this pipeline script. Fill in the stage-specific agent prompts.',
       language: 'bash',
       filename: 'pipeline.sh',
-      code: "# Stage 1: Build agent writes the feature\nclaude -p \"Implement the user profile API endpoint in src/api/profile.ts.\\\n  Follow existing route patterns. Include input validation.\"\n\n# Stage 2: Review agent checks quality\nclaude -p \"Review src/api/profile.ts for security issues,\\\n  error handling gaps, and style violations. Fix any issues found.\"\n\n# Stage 3: Test agent verifies behavior\nclaude -p \"Write and run tests for src/api/profile.ts.\\\n  Cover happy path, validation errors, and auth failures.\\\n  Fix any failing tests.\"\n\n# Stage 4: Deploy agent ships it\nclaude -p \"Run the full build, verify all tests pass,\\\n  commit with a descriptive message, and push to main.\"",
+      template: `# Stage 1: Build agent writes the feature
+claude -p "Implement the user profile API endpoint in src/api/profile.ts.\\
+  Follow existing route patterns. Include input validation."
+
+# Stage 2: Review agent checks quality
+claude -p "{{review_prompt}}"
+
+# Stage 3: Test agent verifies behavior
+claude -p "Write and run tests for src/api/profile.ts.\\
+  Cover happy path, validation errors, and auth failures.\\
+  Fix any failing tests."
+
+# Stage 4: Deploy agent ships it
+claude -p "{{deploy_prompt}}"`,
+      blanks: [
+        { id: 'review_prompt', answer: 'Review src/api/profile.ts for security issues, error handling gaps, and style violations. Fix any issues found.', alternatives: ['Review src/api/profile.ts for security issues, error handling gaps, and style violations. Fix any issues found.'], placeholder: 'review agent instruction', hint: 'The review agent checks for security issues, error handling gaps, and style violations in the built file' },
+        { id: 'deploy_prompt', answer: 'Run the full build, verify all tests pass, commit with a descriptive message, and push to main.', alternatives: ['Run the full build, verify all tests pass, commit with a descriptive message, and push to main.'], placeholder: 'deploy agent instruction', hint: 'Build, verify tests, commit, and push — the final stage that ships to production' },
+      ],
+      explanation: 'Each stage completes before the next begins. Agents are specialized — the build agent never tests, the test agent never deploys. This is the pipeline pattern in action.',
     },
     {
       type: 'multiple-choice',
@@ -144,9 +243,16 @@ const content: LessonContent = {
 
     // === PATTERN 3: SWARM ===
     {
-      type: 'info',
-      title: 'Pattern 3: Swarm',
-      body: "In a swarm, agents pull tasks from a shared pool. No central coordinator assigns work — agents self-select. When an agent finishes, it grabs the next task. This is the most autonomous pattern and the hardest to set up. Every task must be independent, well-defined, and roughly equal in scope. Strengths: maximum parallelism, no bottleneck, agents never idle. Weakness: tasks must be truly independent, and you need extremely clear task definitions since there's nobody to clarify ambiguity.",
+      type: 'multiple-choice',
+      question: 'What is the key prerequisite for the swarm pattern to work?',
+      options: [
+        'A powerful central coordinator to assign tasks dynamically',
+        'Agents that can communicate with each other in real-time',
+        'Every task must be independent, well-defined, and roughly equal in scope',
+        'At least 10 agents running simultaneously',
+      ],
+      correctIndex: 2,
+      explanation: "In a swarm, agents pull tasks from a shared pool with no central coordinator. When an agent finishes, it grabs the next task. Every task must be independent, well-defined, and roughly equal in scope. Strengths: maximum parallelism, no bottleneck, agents never idle. Weakness: tasks must be truly independent, and you need extremely clear task definitions.",
     },
     {
       type: 'interactive-diagram',
@@ -201,12 +307,26 @@ const content: LessonContent = {
       ],
     },
     {
-      type: 'code-demo',
-      title: 'Swarm task pool with GitHub Issues',
-      body: 'Use GitHub Issues as your task pool. Each agent claims an issue, works it, submits a PR, then grabs the next.',
+      type: 'code-fill',
+      instruction: 'Complete this swarm task pool setup using GitHub Issues. Fill in the task definitions that are self-contained and independent.',
       language: 'bash',
       filename: 'swarm-tasks.sh',
-      code: "# Create the task pool — each issue is a self-contained unit of work\ngh issue create --title \"Add email validation to signup\" --label \"swarm\"\ngh issue create --title \"Add rate limiting to /api/search\" --label \"swarm\"\ngh issue create --title \"Add loading skeleton to profile\" --label \"swarm\"\ngh issue create --title \"Add retry logic to payment webhook\" --label \"swarm\"\ngh issue create --title \"Add cache headers to static assets\" --label \"swarm\"\ngh issue create --title \"Add input sanitization to comments\" --label \"swarm\"\n\n# Each agent picks the next open issue and works it\n# Agent claims issue → creates branch → implements → opens PR → picks next\n# No coordinator needed — agents work at their own pace",
+      template: `# Create the task pool — each issue is a self-contained unit of work
+gh issue create --title "Add email validation to signup" --label "{{swarm_label}}"
+gh issue create --title "Add rate limiting to /api/search" --label "{{swarm_label}}"
+gh issue create --title "Add loading skeleton to profile" --label "{{swarm_label}}"
+gh issue create --title "{{webhook_task}}" --label "{{swarm_label}}"
+gh issue create --title "Add cache headers to static assets" --label "{{swarm_label}}"
+gh issue create --title "Add input sanitization to comments" --label "{{swarm_label}}"
+
+# Each agent picks the next open issue and works it
+# Agent claims issue → creates branch → implements → opens PR → picks next
+# No coordinator needed — agents work at their own pace`,
+      blanks: [
+        { id: 'swarm_label', answer: 'swarm', alternatives: ['swarm', '"swarm"'], placeholder: 'label for swarm tasks', hint: 'A label that identifies tasks belonging to this swarm pool' },
+        { id: 'webhook_task', answer: 'Add retry logic to payment webhook', alternatives: ['Add retry logic to payment webhook'], placeholder: 'another independent task', hint: 'A self-contained task related to payment webhook reliability' },
+      ],
+      explanation: 'Use GitHub Issues as your task pool. Each agent claims an issue, works it, submits a PR, then grabs the next. The key: every issue must be fully independent — no task depends on another.',
     },
     {
       type: 'checkpoint',
@@ -264,17 +384,45 @@ const content: LessonContent = {
 
     // === MEASURING FLEET THROUGHPUT ===
     {
-      type: 'info',
-      title: 'Fleet throughput, not agent speed',
-      body: "Individual agent speed doesn't matter. What matters is fleet throughput: total tasks completed per hour across all agents. A swarm of 5 agents each completing 2 tasks/hour = 10 tasks/hour. A pipeline of 4 agents completing 1 task every 40 minutes = 1.5 tasks/hour. The pattern you choose determines your throughput ceiling. Every pattern also has coordination overhead — hub-and-spoke costs review time, pipeline costs idle time, swarm costs task definition time. The goal is choosing the pattern where overhead grows slowest for your workload.",
+      type: 'multiple-choice',
+      question: 'A swarm of 5 agents each completing 2 tasks/hour achieves what fleet throughput?',
+      options: [
+        '2 tasks/hour (limited by individual agent speed)',
+        '5 tasks/hour (one per agent)',
+        '10 tasks/hour (5 agents x 2 tasks each)',
+        '7 tasks/hour (average of agents and tasks)',
+      ],
+      correctIndex: 2,
+      explanation: "Individual agent speed doesn't matter — fleet throughput does. 5 agents x 2 tasks/hour each = 10 tasks/hour total. The pattern you choose determines your throughput ceiling. Every pattern has coordination overhead: hub-and-spoke costs review time, pipeline costs idle time, swarm costs task definition time.",
     },
     {
-      type: 'code-demo',
-      title: 'Throughput comparison',
-      body: 'Same 5 agents, same 10 tasks. Pattern choice determines total completion time.',
+      type: 'code-fill',
+      instruction: 'Fill in the throughput calculations for each coordination pattern. Same 5 agents, same 10 tasks, ~15 min per task.',
       language: 'text',
       filename: 'throughput-comparison.txt',
-      code: "Scenario: 10 independent tasks, 5 agents, ~15 min per task\n\nHub-and-spoke:\n  Round 1: 5 tasks in parallel → 15 min\n  Round 2: 5 tasks in parallel → 15 min\n  + Your review time between rounds → ~5 min\n  Total: ~35 min | Throughput: ~17 tasks/hr\n\nPipeline (build→review→test):\n  Each task passes through 3 stages → 45 min per task\n  Agents idle between stages\n  Total: ~90 min | Throughput: ~7 tasks/hr\n\nSwarm:\n  All agents pull from pool continuously\n  No coordinator delay between tasks\n  Total: ~30 min | Throughput: ~20 tasks/hr",
+      template: `Scenario: 10 independent tasks, 5 agents, ~15 min per task
+
+Hub-and-spoke:
+  Round 1: 5 tasks in parallel → 15 min
+  Round 2: 5 tasks in parallel → 15 min
+  + Your review time between rounds → ~5 min
+  Total: ~35 min | Throughput: ~{{hub_throughput}} tasks/hr
+
+Pipeline (build→review→test):
+  Each task passes through 3 stages → 45 min per task
+  Agents idle between stages
+  Total: ~90 min | Throughput: ~{{pipeline_throughput}} tasks/hr
+
+Swarm:
+  All agents pull from pool continuously
+  No coordinator delay between tasks
+  Total: ~{{swarm_time}} min | Throughput: ~20 tasks/hr`,
+      blanks: [
+        { id: 'hub_throughput', answer: '17', alternatives: ['17', '~17'], placeholder: '?', hint: '10 tasks in ~35 min. Scale to hourly: 10/35*60' },
+        { id: 'pipeline_throughput', answer: '7', alternatives: ['7', '~7'], placeholder: '?', hint: '10 tasks in ~90 min. Scale to hourly: 10/90*60' },
+        { id: 'swarm_time', answer: '30', alternatives: ['30', '~30'], placeholder: '?', hint: '10 tasks / 5 agents = 2 rounds of ~15 min each, no delay between rounds' },
+      ],
+      explanation: 'Same agents, same tasks — the pattern determines throughput. Swarm wins for independent tasks (no coordinator overhead). Pipeline is worst for independent tasks (forced serialization). Hub-and-spoke falls in between.',
     },
     {
       type: 'checkpoint',

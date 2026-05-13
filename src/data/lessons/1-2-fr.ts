@@ -76,9 +76,16 @@ const content: LessonContent = {
 
     // === TOKEN COUNTING ===
     {
-      type: 'info',
-      title: 'Comment fonctionnent les tokens',
-      body: 'Les tokens ne sont ni des caractères ni des mots — ce sont des morceaux de texte que le modèle traite comme des unités individuelles. En prose anglaise, 1 token fait environ 4 caractères ou 0,75 mot. Mais le code est plus dense : les noms de variables, les crochets et l\'indentation consomment tous des tokens. Un fichier TypeScript de 200 lignes peut faire entre 2 000 et 4 000 tokens selon la complexité.',
+      type: 'multiple-choice',
+      question: 'Qu\'est-ce qu\'un "token" dans le contexte des modèles de langage IA ?',
+      options: [
+        'Un seul caractère de texte',
+        'Un morceau de texte que le modèle traite comme une seule unité, environ 4 caractères en anglais',
+        'Un mot complet, toujours séparé par des espaces',
+        'Une ligne de code',
+      ],
+      correctIndex: 1,
+      explanation: 'Les tokens ne sont ni des caractères ni des mots — ce sont des morceaux de texte que le modèle traite comme des unités individuelles. En prose anglaise, 1 token fait environ 4 caractères ou 0,75 mot. Le code est plus dense : les noms de variables, les crochets et l\'indentation consomment tous des tokens. Un fichier TypeScript de 200 lignes peut faire entre 2 000 et 4 000 tokens selon la complexité.',
     },
     {
       type: 'multiple-choice',
@@ -93,12 +100,17 @@ const content: LessonContent = {
       explanation: '44 caractères / ~4 caractères par token = environ 10-11 tokens. L\'heuristique de 1 token pour 4 caractères anglais est une estimation rapide fiable.',
     },
     {
-      type: 'code-demo',
-      title: 'Heuristiques d\'estimation des tokens',
-      body: 'Utilise ces règles empiriques pour estimer rapidement la consommation de tokens sans aucun outil.',
+      type: 'code-fill',
+      instruction: 'Complète les heuristiques d\'estimation de tokens. Ces règles empiriques te permettent d\'estimer rapidement la consommation de tokens sans aucun outil.',
       language: 'text',
       filename: 'token-heuristics.txt',
-      code: 'English prose:  1 token ≈ 4 characters ≈ 0.75 words\nCode (JS/TS):   1 token ≈ 3 characters (denser)\nJSON/config:    1 token ≈ 2.5 characters (very dense)\n\nQuick estimates:\n- Short prompt (2 sentences):     ~30-50 tokens\n- Detailed prompt (paragraph):    ~150-300 tokens\n- CLAUDE.md (typical):            ~1,000-5,000 tokens\n- 100-line TypeScript file:       ~1,000-2,000 tokens\n- Full React component (300 LOC): ~3,000-6,000 tokens\n- npm package.json:               ~500-1,500 tokens',
+      template: 'English prose:  1 token ≈ {{chars_prose}} characters ≈ 0.75 words\nCode (JS/TS):   1 token ≈ {{chars_code}} characters (denser)\nJSON/config:    1 token ≈ 2.5 characters (very dense)\n\nQuick estimates:\n- Short prompt (2 sentences):     ~30-50 tokens\n- Detailed prompt (paragraph):    ~150-300 tokens\n- CLAUDE.md (typical):            ~{{claudemd_tokens}} tokens\n- 100-line TypeScript file:       ~1,000-2,000 tokens\n- Full React component (300 LOC): ~3,000-6,000 tokens',
+      blanks: [
+        { id: 'chars_prose', answer: '4', alternatives: ['four'], placeholder: '?', hint: 'Combien de caractères par token en texte anglais ?' },
+        { id: 'chars_code', answer: '3', alternatives: ['three'], placeholder: '?', hint: 'Le code est plus dense que la prose' },
+        { id: 'claudemd_tokens', answer: '1,000-5,000', alternatives: ['1000-5000', '1,000–5,000', '1000–5000'], placeholder: '?', hint: 'Un CLAUDE.md typique va de 1K à 5K' },
+      ],
+      explanation: 'La prose anglaise fait en moyenne 4 caractères par token. Le code est plus dense à environ 3 caractères par token à cause des crochets, opérateurs et noms de variables courts. Le JSON/config est encore plus dense à 2,5. Ces heuristiques te permettent d\'estimer les coûts de tokens de tête.',
     },
     {
       type: 'code-input',
@@ -115,9 +127,16 @@ const content: LessonContent = {
 
     // === WHAT FILLS THE WINDOW ===
     {
-      type: 'info',
-      title: 'Ce qui remplit la fenêtre dans Claude Code',
-      body: 'Quand tu démarres une session Claude Code, la fenêtre de contexte n\'est pas vide. Le prompt système est injecté automatiquement. Ton CLAUDE.md est chargé. Au fur et à mesure que l\'agent travaille, il lit des fichiers, exécute des commandes, et chaque appel d\'outil et son résultat s\'ajoutent à la fenêtre. Un simple « lis ce fichier et refactorise-le » peut consommer 10 000+ tokens entre le contenu du fichier, l\'analyse du modèle et le code réécrit.',
+      type: 'multiple-choice',
+      question: 'Quand tu démarres une session Claude Code, la fenêtre de contexte n\'est pas vide. Quelle affirmation décrit le mieux ce qui est déjà chargé avant que tu tapes quoi que ce soit ?',
+      options: [
+        'Seul le prompt système est chargé — tout le reste attend ton premier message',
+        'Le prompt système et CLAUDE.md sont auto-injectés, consommant des tokens avant que tu tapes un mot',
+        'Toute la codebase est pré-chargée dans la fenêtre au démarrage de la session',
+        'Rien n\'est chargé — les 200K tokens complets sont disponibles pour ta conversation',
+      ],
+      correctIndex: 1,
+      explanation: 'Quand tu démarres une session Claude Code, le prompt système est injecté automatiquement et ton CLAUDE.md est chargé. Au fur et à mesure que l\'agent travaille, il lit des fichiers, exécute des commandes, et chaque appel d\'outil et son résultat s\'ajoutent à la fenêtre. Un simple « lis ce fichier et refactorise-le » peut consommer 10 000+ tokens entre le contenu du fichier, l\'analyse du modèle et le code réécrit.',
     },
     {
       type: 'order',
@@ -138,12 +157,17 @@ const content: LessonContent = {
       hint: 'wc -c <chemin_du_fichier>',
     },
     {
-      type: 'code-demo',
-      title: 'Estimer un budget de session',
-      body: 'Avant de commencer une tâche complexe, esquisse ton budget de tokens pour voir si ça tient dans une seule session.',
+      type: 'code-fill',
+      instruction: 'Avant de commencer une tâche complexe, esquisse ton budget de tokens. Remplis les valeurs manquantes pour voir si la session a encore de la place.',
       language: 'text',
       filename: 'session-budget.txt',
-      code: 'Context Window:           200,000 tokens\n─────────────────────────────────────\nSystem prompt:             -2,000\nCLAUDE.md:                 -3,000\nFiles to read (5 files):  -15,000\nConversation so far:      -20,000\nYour next prompt:            -500\n─────────────────────────────────────\nRemaining for response:   159,500 tokens  ✓ Plenty\n\n--- After 30 minutes of back-and-forth ---\n\nConversation history:    -140,000\nFiles read this session:  -40,000\nSystem + CLAUDE.md:        -5,000\n─────────────────────────────────────\nRemaining for response:    15,000 tokens  ⚠ Getting tight\nRemaining after next read: ~5,000 tokens  ✗ Danger zone',
+      template: 'Context Window:           {{window_size}} tokens\n─────────────────────────────────────\nSystem prompt:             -2,000\nCLAUDE.md:                 -3,000\nFiles to read (5 files):  -15,000\nConversation so far:      -20,000\nYour next prompt:            -500\n─────────────────────────────────────\nRemaining for response:   {{remaining}} tokens  ✓ Plenty\n\n--- After 30 minutes of back-and-forth ---\n\nConversation history:    -140,000\nFiles read this session:  -40,000\nSystem + CLAUDE.md:        -5,000\n─────────────────────────────────────\nRemaining for response:    {{danger_remaining}} tokens  ⚠ Getting tight',
+      blanks: [
+        { id: 'window_size', answer: '200,000', alternatives: ['200000', '200k', '200K'], placeholder: '???', hint: 'La taille totale de la fenêtre de contexte de Claude' },
+        { id: 'remaining', answer: '159,500', alternatives: ['159500'], placeholder: '???', hint: '200 000 moins tous les éléments ci-dessus' },
+        { id: 'danger_remaining', answer: '15,000', alternatives: ['15000', '15k', '15K'], placeholder: '???', hint: '200 000 moins 140K + 40K + 5K' },
+      ],
+      explanation: 'Le calcul est simple : 200K moins tous les consommateurs. Au début d\'une session tu as 159 500 tokens restants — amplement. Mais après 30 minutes d\'échanges intenses, tu descends à 15 000 tokens. C\'est la zone de danger où la qualité se dégrade.',
     },
     {
       type: 'checkpoint',
@@ -153,9 +177,16 @@ const content: LessonContent = {
 
     // === CONTEXT EXHAUSTION ===
     {
-      type: 'info',
-      title: 'Quand la fenêtre se remplit',
-      body: 'L\'épuisement du contexte est réel et ses symptômes sont subtils. Le modèle ne plante pas — il se dégrade. Il commence à répéter des instructions que tu as déjà données. Il oublie des contraintes du début de la conversation. La qualité du code baisse. Il relit des fichiers qu\'il a déjà lus. Tu pourrais penser que le modèle « est nul », mais il a littéralement perdu la mémoire de tes messages précédents.',
+      type: 'multiple-choice',
+      question: 'Tu discutes avec Claude Code depuis 30 minutes et il commence à répéter des instructions que tu as déjà données. Quelle est la cause la plus probable ?',
+      options: [
+        'Un bug dans le modèle IA',
+        'Ta connexion internet est instable',
+        'Épuisement de la fenêtre de contexte — les anciens messages ont été perdus ou compressés',
+        'Le modèle est confus par ton code',
+      ],
+      correctIndex: 2,
+      explanation: 'L\'épuisement du contexte est réel et ses symptômes sont subtils. Le modèle ne plante pas — il se dégrade. Il commence à répéter des instructions que tu as déjà données, oublie des contraintes du début de la conversation, et la qualité du code baisse. Tu pourrais penser que le modèle « est nul », mais il a littéralement perdu la mémoire de tes messages précédents.',
     },
     {
       type: 'multiple-choice',
@@ -170,9 +201,9 @@ const content: LessonContent = {
       explanation: 'Le modèle ne refuse pas de répondre — il continue, mais avec une qualité dégradée. Il perd silencieusement l\'ancien contexte, ce qui rend les symptômes plus difficiles à repérer qu\'une erreur franche.',
     },
     {
-      type: 'diagram',
+      type: 'interactive-diagram',
       title: 'Épuisement du contexte',
-      body: 'Quand la fenêtre de contexte se remplit, Claude Code déclenche la compaction pour libérer de l\'espace — mais certaines informations sont inévitablement perdues.',
+      body: 'Clique sur chaque étape pour voir ce qui se passe quand la fenêtre de contexte se remplit et que la compaction se déclenche.',
       diagram: {
         direction: 'TB',
         nodes: [
@@ -190,11 +221,40 @@ const content: LessonContent = {
           { from: 'kept', to: 'resume' },
         ],
       },
+      stages: [
+        {
+          highlightNodes: ['full'],
+          highlightEdges: [],
+          explanation: 'La fenêtre de contexte a atteint sa limite — les 200 000 tokens sont consommés par le prompt système, CLAUDE.md, les fichiers de code et l\'historique de conversation. Le modèle ne peut pas accepter plus d\'entrée sans perdre quelque chose.',
+        },
+        {
+          highlightNodes: ['full', 'compact'],
+          highlightEdges: [{ from: 'full', to: 'compact' }],
+          explanation: 'Claude Code détecte le seuil et déclenche la compaction automatique. Le système doit décider quoi garder et quoi abandonner pour libérer de l\'espace et permettre à la conversation de continuer.',
+        },
+        {
+          highlightNodes: ['compact', 'lost', 'kept'],
+          highlightEdges: [{ from: 'compact', to: 'lost' }, { from: 'compact', to: 'kept' }],
+          explanation: 'Le contenu de basse priorité (anciens messages, sorties d\'outils verbeuses) est résumé ou abandonné. Le contenu de haute priorité (tâche en cours, chemins de fichiers, décisions récentes) est préservé. La formulation exacte des anciens échanges est perdue.',
+        },
+        {
+          highlightNodes: ['lost', 'kept', 'resume'],
+          highlightEdges: [{ from: 'lost', to: 'resume' }, { from: 'kept', to: 'resume' }],
+          explanation: 'Le modèle reprend avec un contexte compressé. Il continue de travailler, mais sa mémoire du début de la conversation est maintenant un résumé, pas un transcript. C\'est pourquoi tu peux le voir oublier des contraintes ou répéter du travail déjà fait.',
+        },
+      ],
     },
     {
-      type: 'info',
-      title: 'Comment fonctionne la compaction',
-      body: 'Claude Code compacte automatiquement la conversation quand la fenêtre de contexte approche sa limite. Il résume les anciens messages sous une forme compressée, en préservant les détails les plus importants — chemins de fichiers, décisions clés, tâche en cours — tout en abandonnant la formulation exacte des échanges précédents. C\'est pourquoi tu vois parfois « [conversation compacted] » dans ta session. Le modèle continue de travailler, mais sa mémoire du début de la conversation devient un résumé, pas un transcript.',
+      type: 'multiple-choice',
+      question: 'Que préserve Claude Code quand il compacte la conversation ?',
+      options: [
+        'La formulation exacte de chaque message de la session',
+        'Seulement les 5 derniers messages, en abandonnant tout le reste',
+        'Les chemins de fichiers, les décisions clés et la tâche en cours — en résumant les anciens échanges',
+        'Rien — il recommence la conversation de zéro',
+      ],
+      correctIndex: 2,
+      explanation: 'Claude Code compacte automatiquement la conversation quand la fenêtre de contexte approche sa limite. Il résume les anciens messages sous une forme compressée, en préservant les détails les plus importants — chemins de fichiers, décisions clés, tâche en cours — tout en abandonnant la formulation exacte des échanges précédents. C\'est pourquoi tu vois parfois « [conversation compacted] » dans ta session.',
     },
     {
       type: 'checkpoint',
@@ -205,6 +265,8 @@ const content: LessonContent = {
       type: 'compare',
       title: 'Session fraîche vs session épuisée',
       body: 'Le même agent se comporte très différemment selon la quantité de contexte déjà consommée.',
+      question: 'Quel état de session est le plus susceptible de produire du code fiable et de haute qualité ?',
+      correctSide: 'left',
       left: {
         label: 'Fraîche (début de session)',
         content: 'Available: 200,000 tokens\nSystem prompt: loaded\nCLAUDE.md: loaded\nYour code: not yet read\n\nAgent behavior:\n✓ Follows all instructions\n✓ Consistent style\n✓ Remembers constraints',
@@ -215,6 +277,7 @@ const content: LessonContent = {
         content: 'Available: ~12,000 tokens\nSystem prompt: compressed\nCLAUDE.md: partially lost\nYour code: fragments remain\n\nAgent behavior:\n✗ Forgets earlier decisions\n✗ Contradicts itself\n✗ Ignores constraints',
         language: 'text',
       },
+      explanation: 'Une session fraîche dispose de la fenêtre complète de 200K, toutes les instructions chargées, et un comportement cohérent. Une session épuisée a perdu la majeure partie de son contexte, menant à des contradictions, des contraintes oubliées et une qualité de code dégradée. C\'est pourquoi démarrer une nouvelle session est souvent la meilleure solution.',
     },
     {
       type: 'match',
@@ -227,22 +290,41 @@ const content: LessonContent = {
 
     // === STRATEGIES ===
     {
-      type: 'info',
-      title: 'Stratégie 1 : Démarrer de nouvelles sessions',
-      body: 'La stratégie la plus efficace est de savoir quand démarrer une nouvelle session. Si tu fais des allers-retours depuis 20+ messages, ou si le modèle montre des symptômes d\'épuisement, démarre une nouvelle conversation. Tu ne perds rien — les changements de code sont déjà sauvegardés sur le disque. La nouvelle session démarre avec une fenêtre propre de 200K.',
+      type: 'multiple-choice',
+      question: 'Tu as échangé 25 messages avec Claude Code et tu remarques qu\'il oublie des décisions précédentes. Quelle est la chose la plus efficace à faire ?',
+      options: [
+        'Répéter toutes tes instructions dans le prochain message',
+        'Démarrer une nouvelle session — les changements de code sont déjà sauvegardés sur le disque',
+        'Attendre quelques minutes et réessayer',
+        'Passer à un autre modèle IA',
+      ],
+      correctIndex: 1,
+      explanation: 'La stratégie la plus efficace est de savoir quand démarrer une nouvelle session. Si tu fais des allers-retours depuis 20+ messages, ou si le modèle montre des symptômes d\'épuisement, démarre une nouvelle conversation. Tu ne perds rien — les changements de code sont déjà sauvegardés sur le disque. La nouvelle session démarre avec une fenêtre propre de 200K.',
     },
     {
-      type: 'info',
-      title: 'Stratégie 2 : CLAUDE.md comme mémoire externe',
-      body: 'Ton fichier CLAUDE.md est chargé à neuf au début de chaque session. Mets-y les décisions persistantes, les règles d\'architecture et les conventions du projet au lieu de les répéter dans chaque prompt. C\'est une mémoire externe qui survit aux réinitialisations de contexte. Pense à ça comme le stockage à long terme du modèle, tandis que la fenêtre de contexte est le court terme.',
+      type: 'multiple-choice',
+      question: 'Pourquoi CLAUDE.md est-il efficace comme « mémoire externe » pour l\'agent IA ?',
+      options: [
+        'Il est stocké dans le cloud et jamais supprimé',
+        'Il est chargé à neuf au début de chaque session, survivant aux réinitialisations de contexte',
+        'Il utilise un format de compression spécial que le modèle lit plus vite',
+        'C\'est le seul fichier que le modèle peut lire',
+      ],
+      correctIndex: 1,
+      explanation: 'Ton fichier CLAUDE.md est chargé à neuf au début de chaque session. Mets-y les décisions persistantes, les règles d\'architecture et les conventions du projet au lieu de les répéter dans chaque prompt. C\'est une mémoire externe qui survit aux réinitialisations de contexte — le stockage à long terme du modèle, tandis que la fenêtre de contexte est le court terme.',
     },
     {
-      type: 'code-demo',
-      title: 'Stratégie 3 : Des fichiers de spec pour les tâches complexes',
-      body: 'Pour les grosses tâches, écris un fichier de spec que l\'agent peut consulter. Ça garde les détails critiques disponibles même après la compaction.',
+      type: 'code-fill',
+      instruction: 'Complète ce fichier de spec pour une tâche complexe. Un fichier de spec vit sur le disque pour que l\'agent puisse le relire après la compaction — contrairement à un long prompt qui est résumé et perdu.',
       language: 'markdown',
       filename: 'specs/refactor-auth.md',
-      code: '# Auth Refactor Spec\n\n## Goal\nReplace session-based auth with JWT tokens.\n\n## Files to modify\n- src/middleware/auth.ts\n- src/routes/login.ts\n- src/routes/protected.ts\n- src/lib/jwt.ts (new)\n\n## Constraints\n- Must be backward compatible with existing sessions\n- Token expiry: 24 hours\n- Refresh tokens: 7 days\n\n## Definition of done\n- [ ] All protected routes accept Bearer tokens\n- [ ] Login returns JWT + refresh token\n- [ ] Old session cookies still work (migration period)',
+      template: '# Auth Refactor Spec\n\n## Goal\nReplace {{old_auth}} auth with JWT tokens.\n\n## Files to modify\n- src/middleware/auth.ts\n- src/routes/login.ts\n- src/routes/protected.ts\n- src/lib/jwt.ts (new)\n\n## Constraints\n- Must be backward compatible with existing sessions\n- Token expiry: {{token_expiry}}\n- Refresh tokens: 7 days\n\n## Definition of done\n- [ ] All protected routes accept {{auth_header}} tokens\n- [ ] Login returns JWT + refresh token\n- [ ] Old session cookies still work (migration period)',
+      blanks: [
+        { id: 'old_auth', answer: 'session-based', alternatives: ['session based', 'session'], placeholder: '______', hint: 'Quel type d\'auth est remplacé ? (indice : utilise des cookies)' },
+        { id: 'token_expiry', answer: '24 hours', alternatives: ['24h', '24 hrs', '1 day'], placeholder: '______', hint: 'Une durée de vie courante pour un token JWT d\'accès' },
+        { id: 'auth_header', answer: 'Bearer', alternatives: ['bearer'], placeholder: '______', hint: 'Le schéma d\'autorisation HTTP standard pour les tokens JWT' },
+      ],
+      explanation: 'Un fichier de spec garde les détails critiques disponibles sur le disque même après la compaction du contexte. L\'agent peut le relire à tout moment. C\'est bien plus durable que d\'inclure tous ces détails dans un prompt, qui serait compressé lors de la compaction.',
     },
     {
       type: 'multiple-choice',

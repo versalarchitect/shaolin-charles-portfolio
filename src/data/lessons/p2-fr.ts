@@ -60,9 +60,16 @@ const content: LessonContent = {
 
     // === VERCEL ACCOUNT ===
     {
-      type: 'info',
-      title: 'Étape 1 : Créer un compte Vercel',
-      body: 'Allez sur vercel.com et inscrivez-vous pour un compte gratuit. Cliquez sur "Continue with GitHub" — ça connecte automatiquement vos projets GitHub à Vercel, ce qui vous sauve une étape de configuration plus tard.',
+      type: 'multiple-choice',
+      question: 'Lors de la création d\'un compte Vercel, quelle méthode d\'inscription devriez-vous utiliser et pourquoi?',
+      options: [
+        'Inscription par courriel — c\'est plus sécuritaire',
+        'Continuer avec GitHub — ça connecte automatiquement vos repos pour les déploiements automatiques',
+        'Inscription Google — ça synchronise votre calendrier',
+        'N\'importe quelle méthode fonctionne pareil',
+      ],
+      correctIndex: 1,
+      explanation: 'Allez sur vercel.com et inscrivez-vous pour un compte gratuit. Cliquez sur "Continue with GitHub" — ça connecte automatiquement vos projets GitHub à Vercel, ce qui vous sauve une étape de configuration plus tard. Vos repos deviennent instantanément disponibles pour le déploiement.',
     },
     {
       type: 'multiple-choice',
@@ -77,13 +84,14 @@ const content: LessonContent = {
       explanation: 'S\'inscrire avec GitHub permet à Vercel de voir vos projets automatiquement et de publier les mises à jour chaque fois que vous poussez du nouveau code. Une chose de moins à configurer.',
     },
     {
-      type: 'checklist',
-      title: 'Configuration Vercel :',
+      type: 'order',
+      instruction: 'Mettez les étapes de configuration du compte Vercel dans le bon ordre :',
       items: [
-        'Allé sur vercel.com',
-        'Inscrit avec GitHub',
-        'Sélectionné le plan Hobby (gratuit)',
+        'Aller sur vercel.com',
+        'Cliquer "Continue with GitHub"',
+        'Sélectionner le plan Hobby (gratuit)',
       ],
+      correctOrder: [0, 1, 2],
     },
     {
       type: 'checkpoint',
@@ -93,9 +101,16 @@ const content: LessonContent = {
 
     // === CREATE PROJECT ===
     {
-      type: 'info',
-      title: 'Étape 2 : Créer votre premier projet',
-      body: "On va utiliser Next.js, un framework populaire (une fondation pré-construite) pour bâtir des apps web. Créons-en un maintenant. Vous n'avez pas besoin de tout comprendre ce qu'il met en place — l'agent IA va s'occuper des détails.",
+      type: 'multiple-choice',
+      question: 'Qu\'est-ce que Next.js et pourquoi l\'utilise-t-on?',
+      options: [
+        'Un outil de base de données pour stocker les informations des utilisateurs',
+        'Un framework populaire (fondation pré-construite) pour bâtir des apps web',
+        'Un remplacement pour Git comme contrôle de version',
+        'Un agent IA qui écrit du code pour vous',
+      ],
+      correctIndex: 1,
+      explanation: 'Next.js est un framework populaire (une fondation pré-construite) pour bâtir des apps web. Vous n\'avez pas besoin de tout comprendre ce qu\'il met en place — l\'agent IA va s\'occuper des détails. On l\'utilise parce qu\'il fonctionne parfaitement avec Vercel.',
     },
     {
       type: 'terminal',
@@ -114,9 +129,16 @@ const content: LessonContent = {
       expectedCommand: 'bun dev',
     },
     {
-      type: 'info',
-      title: 'Vérifiez',
-      body: 'Ouvrez http://localhost:3000 dans votre navigateur. Vous devriez voir la page d\'accueil de Next.js. Si vous la voyez — votre projet fonctionne localement.',
+      type: 'multiple-choice',
+      question: 'Après avoir exécuté bun dev, quelle URL devriez-vous ouvrir pour voir votre projet rouler localement?',
+      options: [
+        'http://vercel.com/preview',
+        'http://localhost:3000',
+        'http://github.com/my-project',
+        'http://nextjs.org/demo',
+      ],
+      correctIndex: 1,
+      explanation: 'Quand vous exécutez bun dev, Next.js démarre un serveur de développement local à http://localhost:3000. Ouvrez cette URL dans votre navigateur et vous devriez voir la page d\'accueil de Next.js. Si vous la voyez — votre projet fonctionne localement.',
     },
     {
       type: 'checkpoint',
@@ -126,9 +148,16 @@ const content: LessonContent = {
 
     // === PUSH TO GITHUB ===
     {
-      type: 'info',
-      title: 'Étape 3 : Pousser vers GitHub',
-      body: "Maintenant, mettons votre code sur GitHub pour que Vercel puisse le voir. Allez sur github.com/new dans votre navigateur. Nommez le dépôt my-first-deploy. Ne cochez aucune case (pas de README, pas de .gitignore) — le projet a déjà ces fichiers.",
+      type: 'multiple-choice',
+      question: 'En créant un nouveau dépôt GitHub pour votre projet, pourquoi ne devriez-vous PAS cocher "Add a README" ou "Add .gitignore"?',
+      options: [
+        'GitHub facture un supplément pour ces fichiers',
+        'Le projet a déjà ces fichiers — les ajouter créerait des conflits',
+        'Les fichiers README ralentissent les déploiements',
+        'Vercel ignore les dépôts avec des fichiers README',
+      ],
+      correctIndex: 1,
+      explanation: 'Quand vous avez créé le projet avec create-next-app, il a déjà généré les fichiers README et .gitignore. Si GitHub les crée aussi, vous aurez un conflit lors de votre premier push. Allez sur github.com/new, nommez-le my-first-deploy, et laissez toutes les cases décochées.',
     },
     {
       type: 'terminal',
@@ -161,20 +190,28 @@ const content: LessonContent = {
 
     // === DEPLOY ===
     {
-      type: 'info',
-      title: 'Étape 4 : Déployer sur Vercel',
-      body: 'Allez sur vercel.com/new dans votre navigateur. Vous allez voir vos projets GitHub listés. Trouvez my-first-deploy, cliquez Import, et appuyez sur Deploy. Vercel détecte automatiquement que c\'est un projet Next.js — laissez tous les paramètres tels quels.',
+      type: 'order',
+      instruction: 'Mettez les étapes de déploiement Vercel dans le bon ordre :',
+      items: [
+        'Aller sur vercel.com/new dans votre navigateur',
+        'Trouver my-first-deploy dans la liste de vos projets GitHub',
+        'Cliquer Import sur le projet',
+        'Laisser les paramètres par défaut (Next.js auto-détecté)',
+        'Cliquer Deploy et attendre votre URL en ligne',
+      ],
+      correctOrder: [0, 1, 2, 3, 4],
     },
     {
-      type: 'checklist',
-      title: 'Liste de vérification du déploiement :',
-      items: [
-        'Allé sur vercel.com/new',
-        'Trouvé et importé my-first-deploy',
-        'Laissé les paramètres par défaut (Next.js auto-détecté)',
-        'Cliqué Deploy',
-        'Obtenu une URL .vercel.app en ligne',
+      type: 'multiple-choice',
+      question: 'Après avoir déployé votre premier projet, quel type d\'URL obtenez-vous de Vercel?',
+      options: [
+        'Une URL localhost qui fonctionne seulement sur votre ordinateur',
+        'Une URL .vercel.app que n\'importe qui sur internet peut visiter',
+        'Une URL .github.io hébergée par GitHub',
+        'Aucune URL — vous devez d\'abord configurer un domaine personnalisé',
       ],
+      correctIndex: 1,
+      explanation: 'Après avoir cliqué Deploy, Vercel vous donne une URL .vercel.app en ligne que n\'importe qui sur internet peut visiter. C\'est votre URL de production. Vous pouvez ajouter un domaine personnalisé plus tard, mais l\'URL .vercel.app fonctionne immédiatement.',
     },
     {
       type: 'checkpoint',
@@ -184,16 +221,28 @@ const content: LessonContent = {
 
     // === AUTO DEPLOY ===
     {
-      type: 'info',
-      title: 'Étape 5 : Déploiement automatique au push',
-      body: "Voici la magie : chaque fois que vous poussez du code vers GitHub, Vercel publie automatiquement la mise à jour. Aucune étape manuelle. Testons ça en faisant un petit changement à votre fichier de page d'accueil :",
+      type: 'multiple-choice',
+      question: 'Que se passe-t-il quand vous poussez du code vers GitHub après avoir connecté Vercel?',
+      options: [
+        'Rien — vous devez cliquer Deploy manuellement chaque fois',
+        'GitHub vous envoie un courriel demandant d\'approuver le déploiement',
+        'Vercel détecte automatiquement le push et publie la mise à jour',
+        'Vous devez exécuter une commande de déploiement séparée dans votre terminal',
+      ],
+      correctIndex: 2,
+      explanation: 'Voici la magie : chaque fois que vous poussez du code vers GitHub, Vercel publie automatiquement la mise à jour. Aucune étape manuelle. Testons ça en faisant un petit changement à votre fichier de page d\'accueil.',
     },
     {
-      type: 'code-demo',
-      body: 'Remplacez src/app/page.tsx par :',
+      type: 'code-fill',
+      instruction: 'Complétez le composant de page d\'accueil pour afficher un titre centré "Hello, Vercel." :',
       language: 'tsx',
       filename: 'src/app/page.tsx',
-      code: 'export default function Home() {\n  return (\n    <main className="flex min-h-screen items-center justify-center">\n      <h1 className="text-4xl font-bold">Hello, Vercel.</h1>\n    </main>\n  )\n}',
+      template: 'export default function {{funcName}}() {\n  return (\n    <main className="flex min-h-screen items-center justify-center">\n      <{{tag}} className="text-4xl font-bold">Hello, Vercel.</{{tag}}>\n    </main>\n  )\n}',
+      blanks: [
+        { id: 'funcName', answer: 'Home', alternatives: ['home'], placeholder: 'nom du composant?', hint: 'Le composant principal de page dans Next.js' },
+        { id: 'tag', answer: 'h1', placeholder: 'balise HTML?', hint: 'La balise de titre principal en HTML' },
+      ],
+      explanation: 'Les pages Next.js exportent un composant fonction par défaut. La page principale utilise le nom Home. Pour le titre principal, on utilise h1 — le niveau de titre le plus important en HTML.',
     },
     {
       type: 'terminal',
@@ -212,9 +261,16 @@ const content: LessonContent = {
       expectedCommand: 'git push',
     },
     {
-      type: 'info',
-      title: 'Regardez le déploiement',
-      body: 'Vérifiez votre tableau de bord Vercel — vous allez voir un nouveau déploiement en construction. En moins d\'une minute, votre site en ligne se met à jour automatiquement. À partir de maintenant, chaque fois que vous poussez du code, votre site se met à jour. Aucun travail manuel nécessaire.',
+      type: 'multiple-choice',
+      question: 'Combien de temps prend un déploiement Vercel typique après avoir poussé du code?',
+      options: [
+        'Environ 30 minutes',
+        'Moins d\'une minute pour la plupart des projets',
+        'Ça dépend du nombre de fichiers modifiés — habituellement 10-15 minutes',
+        'Les déploiements ne se font qu\'une fois par jour',
+      ],
+      correctIndex: 1,
+      explanation: 'Vérifiez votre tableau de bord Vercel — vous allez voir un nouveau déploiement en construction. En moins d\'une minute, votre site en ligne se met à jour automatiquement. À partir de maintenant, chaque fois que vous poussez du code, votre site se met à jour. Aucun travail manuel nécessaire.',
     },
     {
       type: 'checkpoint',
@@ -224,9 +280,9 @@ const content: LessonContent = {
 
     // === PREVIEW VS PRODUCTION ===
     {
-      type: 'diagram',
+      type: 'interactive-diagram',
       title: 'Aperçu vs Production',
-      body: 'La branche vers laquelle vous poussez détermine si vos changements vont en ligne pour les utilisateurs ou créent juste une version test pour que vous la prévisualisiez.',
+      body: 'La branche vers laquelle vous poussez détermine si vos changements vont en ligne pour les utilisateurs ou créent une version test. Parcourez les étapes pour voir comment ça fonctionne.',
       diagram: {
         direction: 'TB',
         nodes: [
@@ -245,11 +301,12 @@ const content: LessonContent = {
           { from: 'feature', to: 'prev' },
         ],
       },
-    },
-    {
-      type: 'info',
-      title: 'Étape 6 : Aperçu vs Production',
-      body: 'Vercel a deux types de déploiement : production (ce que vos utilisateurs voient) et aperçu (une version test privée). Comprendre ça vous garde en sécurité.',
+      stages: [
+        { highlightNodes: ['push'], explanation: 'Chaque déploiement commence par un git push. Mais la destination de votre code dépend de la branche vers laquelle vous poussez.' },
+        { highlightNodes: ['push', 'branch'], highlightEdges: [{ from: 'push', to: 'branch' }], explanation: 'Vercel vérifie quelle branche a reçu le push. Cette seule décision détermine votre type de déploiement.' },
+        { highlightNodes: ['branch', 'main', 'prod'], highlightEdges: [{ from: 'branch', to: 'main' }, { from: 'main', to: 'prod' }], explanation: 'Pousser vers main = déploiement en Production. Votre site en ligne se met à jour. Les vrais utilisateurs voient les changements immédiatement.' },
+        { highlightNodes: ['branch', 'feature', 'prev'], highlightEdges: [{ from: 'branch', to: 'feature' }, { from: 'feature', to: 'prev' }], explanation: 'Pousser vers n\'importe quelle autre branche = déploiement d\'Aperçu. Une URL test privée que vous seul pouvez voir. Votre site en ligne reste intact.' },
+      ],
     },
     {
       type: 'multiple-choice',
@@ -276,9 +333,16 @@ const content: LessonContent = {
       hint: 'Poussez le nom de la branche que vous venez de créer',
     },
     {
-      type: 'info',
-      title: 'Aperçu = filet de sécurité',
-      body: 'Les déploiements d\'aperçu sont votre filet de sécurité. Vous testez les changements sur une URL privée avant qu\'ils soient en ligne. Votre vrai site reste intact. Cette habitude vous empêche de briser accidentellement quelque chose que vos utilisateurs voient.',
+      type: 'multiple-choice',
+      question: 'Pourquoi les déploiements d\'aperçu sont-ils importants?',
+      options: [
+        'Ils rendent votre site plus rapide pour les utilisateurs',
+        'Ils vous permettent de tester les changements sur une URL privée avant la mise en ligne, empêchant les bris accidentels',
+        'Ils sont requis par Vercel pour tous les projets',
+        'Ils économisent sur les coûts d\'hébergement',
+      ],
+      correctIndex: 1,
+      explanation: 'Les déploiements d\'aperçu sont votre filet de sécurité. Vous testez les changements sur une URL privée avant qu\'ils soient en ligne. Votre vrai site reste intact. Cette habitude vous empêche de briser accidentellement quelque chose que vos utilisateurs voient.',
     },
     {
       type: 'checkpoint',
@@ -312,16 +376,12 @@ const content: LessonContent = {
       correctOrder: [0, 1, 2, 3, 4],
     },
     {
-      type: 'checklist',
-      title: 'Vérification finale :',
-      items: [
-        'Compte Vercel lié à GitHub',
-        'Projet Next.js roule localement',
-        'Code poussé vers GitHub',
-        'Déploiement en production en ligne',
-        'Déploiement automatique fonctionne au push',
-        'Déploiement d\'aperçu créé depuis une branche',
-      ],
+      type: 'match',
+      instruction: 'Associez chaque étape du pipeline de déploiement à ce qu\'elle accomplit :',
+      leftItems: ['Lier Vercel à GitHub', 'Exécuter bun dev', 'git push -u origin main', 'Pousser vers une branche de fonctionnalité'],
+      rightItems: ['Active les déploiements automatiques au push', 'Teste votre projet localement avant le déploiement', 'Déclenche un déploiement en production', 'Crée un déploiement d\'aperçu pour tester en sécurité'],
+      correctPairs: { 0: 0, 1: 1, 2: 2, 3: 3 },
+      explanation: 'Chaque étape a un but précis. Lier Vercel active les déploiements automatiques. Exécuter dev teste localement. Pousser vers main va en production. Les branches de fonctionnalité créent des aperçus sûrs.',
     },
     {
       type: 'checkpoint',

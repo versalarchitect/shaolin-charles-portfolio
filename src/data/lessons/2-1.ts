@@ -17,14 +17,21 @@ const content: LessonContent = {
 
     // === SPEC STRUCTURE ===
     {
-      type: 'info',
-      title: 'The five sections of a good spec',
-      body: "Every effective spec has five sections. Goal: one sentence describing what exists when the agent is done. Constraints: technology choices, style requirements, performance budgets — the guardrails. Acceptance Criteria: specific, testable conditions that prove the work is complete. Technical Boundaries: what the agent is allowed to touch (files, packages, APIs) and what is off-limits. Out of Scope: things the agent might reasonably assume are included but are explicitly excluded. Each section serves a different purpose in keeping the agent on track.",
+      type: 'multiple-choice',
+      question: 'A good agent spec has five sections. Which of the following is NOT one of them?',
+      options: [
+        'Goal: one sentence describing what exists when the agent is done',
+        'User Stories: narrative descriptions of how different personas interact with the product',
+        'Acceptance Criteria: specific, testable conditions that prove the work is complete',
+        'Out of Scope: things explicitly excluded that the agent might otherwise build',
+      ],
+      correctIndex: 1,
+      explanation: 'User Stories belong in a PRD (written for humans), not an agent spec. The five sections are: Goal, Constraints (technology guardrails), Acceptance Criteria (testable proof), Technical Boundaries (what the agent can touch), and Out of Scope (explicit exclusions). An agent does not need narrative context — it needs precise boundaries.',
     },
     {
-      type: 'diagram',
+      type: 'interactive-diagram',
       title: 'Spec Structure',
-      body: 'The five sections form a funnel from broad vision to precise boundaries.',
+      body: 'The five sections form a funnel from broad vision to precise boundaries. Step through each to understand its role.',
       diagram: {
         direction: 'TB',
         nodes: [
@@ -41,6 +48,33 @@ const content: LessonContent = {
           { from: 'boundaries', to: 'oos' },
         ],
       },
+      stages: [
+        {
+          highlightNodes: ['goal'],
+          highlightEdges: [],
+          explanation: 'Goal: One sentence describing what exists when the agent is done. "A working web app where users can save, tag, search, and delete bookmarks." This anchors everything that follows.',
+        },
+        {
+          highlightNodes: ['goal', 'constraints'],
+          highlightEdges: [{ from: 'goal', to: 'constraints' }],
+          explanation: 'Constraints: Technology choices, style requirements, performance budgets. These are guardrails — they prevent the agent from making unauthorized technology decisions.',
+        },
+        {
+          highlightNodes: ['constraints', 'acceptance'],
+          highlightEdges: [{ from: 'constraints', to: 'acceptance' }],
+          explanation: 'Acceptance Criteria: Specific, testable conditions that prove the work is complete. Each criterion is a checkbox the agent (and you) can verify.',
+        },
+        {
+          highlightNodes: ['acceptance', 'boundaries'],
+          highlightEdges: [{ from: 'acceptance', to: 'boundaries' }],
+          explanation: 'Technical Boundaries: What the agent is allowed to touch — files, packages, APIs — and what is off-limits. This prevents unintended side effects.',
+        },
+        {
+          highlightNodes: ['boundaries', 'oos'],
+          highlightEdges: [{ from: 'boundaries', to: 'oos' }],
+          explanation: 'Out of Scope: Things the agent might reasonably assume are included but are explicitly excluded. Without this, eager agents will over-build.',
+        },
+      ],
     },
     {
       type: 'checkpoint',
@@ -50,17 +84,17 @@ const content: LessonContent = {
 
     // === REAL EXAMPLE ===
     {
-      type: 'info',
-      title: 'A real spec: bookmark manager',
-      body: "Let us walk through a concrete example. You have a product idea: a bookmark manager with tags. Not original, but that is the point — the value is in how you specify it for agent execution, not in the idea itself. Watch how each section constrains the agent without micromanaging it.",
-    },
-    {
-      type: 'code-demo',
-      title: 'Bookmark manager spec',
-      body: 'This is the actual markdown you would put in a CLAUDE.md file or pass directly to Claude Code. Notice: it says WHAT, not HOW.',
+      type: 'code-fill',
+      instruction: 'Let us walk through a concrete example. You have a product idea: a bookmark manager with tags. Complete the missing parts of this spec — notice how each section constrains the agent without micromanaging it. The spec says WHAT, not HOW.',
       language: 'markdown',
       filename: 'SPEC.md',
-      code: "# Bookmark Manager — Agent Spec\n\n## Goal\nA working web app where users can save, tag, search, and delete bookmarks.\n\n## Constraints\n- Next.js 15 with App Router\n- TypeScript strict mode\n- SQLite via Drizzle ORM (local file DB, no external services)\n- Tailwind CSS for styling\n- No authentication (single-user, local)\n\n## Acceptance Criteria\n- [ ] User can add a bookmark (URL + optional title)\n- [ ] User can assign multiple tags to a bookmark\n- [ ] User can filter bookmarks by tag\n- [ ] User can full-text search bookmarks by title/URL\n- [ ] User can delete a bookmark\n- [ ] All data persists across server restarts\n- [ ] App runs with `npm run dev` after `npm install`\n\n## Technical Boundaries\n- Create a new project from scratch (not modify existing)\n- Use `src/` directory structure\n- Keep all DB logic in `src/db/` directory\n- Use server actions for mutations (no API routes)\n\n## Out of Scope\n- User authentication / multi-tenancy\n- Bookmark import/export\n- Browser extension\n- Favicon fetching\n- Deployment configuration",
+      template: '# Bookmark Manager — Agent Spec\n\n## Goal\nA working web app where users can save, tag, search, and delete bookmarks.\n\n## Constraints\n- Next.js 15 with App Router\n- TypeScript strict mode\n- {{database}} (local file DB, no external services)\n- Tailwind CSS for styling\n- No authentication (single-user, local)\n\n## Acceptance Criteria\n- [ ] User can add a bookmark (URL + optional title)\n- [ ] User can assign multiple tags to a bookmark\n- [ ] User can filter bookmarks by tag\n- [ ] User can full-text search bookmarks by title/URL\n- [ ] User can delete a bookmark\n\n## Technical Boundaries\n- Create a new project from scratch (not modify existing)\n- Use `src/` directory structure\n- Keep all DB logic in `src/db/` directory\n- Use {{mutation_pattern}} for mutations (no API routes)\n\n## Out of Scope\n- User authentication / multi-tenancy\n- {{excluded_feature}}\n- Browser extension\n- Favicon fetching',
+      blanks: [
+        { id: 'database', answer: 'SQLite via Drizzle ORM', alternatives: ['SQLite + Drizzle ORM', 'Drizzle ORM + SQLite', 'SQLite with Drizzle ORM'], placeholder: 'which database + ORM?', hint: 'A lightweight file-based DB paired with a TypeScript ORM' },
+        { id: 'mutation_pattern', answer: 'server actions', alternatives: ['Server Actions', 'server actions', 'Server actions'], placeholder: 'which data mutation pattern?', hint: 'Next.js App Router feature that replaces API routes for form submissions' },
+        { id: 'excluded_feature', answer: 'Bookmark import/export', alternatives: ['Import/export', 'import/export', 'Bookmark import export'], placeholder: 'what data portability feature?', hint: 'A common feature for migrating bookmarks between tools' },
+      ],
+      explanation: 'Naming SQLite + Drizzle removes a database decision. Server actions is an architectural choice that affects how the whole app handles mutations. Import/export is a reasonable feature an agent might add — excluding it prevents scope creep.',
     },
     {
       type: 'multiple-choice',
@@ -82,19 +116,34 @@ const content: LessonContent = {
 
     // === ANTI-PATTERNS ===
     {
-      type: 'info',
-      title: 'Spec anti-pattern: too vague',
-      body: "\"Build me a bookmark manager. Make it good. Use modern tech.\" This tells the agent almost nothing. What is \"good\"? What is \"modern\"? The agent will make dozens of decisions you did not authorize — picking a database, choosing a styling approach, deciding on routing patterns, inventing features. You will spend more time correcting these decisions than you saved by being brief. Vagueness is not delegation — it is abdication.",
+      type: 'compare',
+      title: 'Two spec anti-patterns',
+      body: 'Both of these specs will cause problems. One tells the agent almost nothing. The other writes code in English.',
+      question: 'Which failure mode wastes MORE of your time correcting the output?',
+      correctSide: 'left',
+      left: {
+        label: 'Too vague',
+        content: '"Build me a bookmark manager.\nMake it good. Use modern tech."\n\nResult: agent makes dozens of\nunauthorized decisions — picks a\ndatabase, invents features, chooses\nrouting patterns. You spend more\ntime correcting than you saved.',
+        language: 'text',
+      },
+      right: {
+        label: 'Too prescriptive',
+        content: '"Create src/components/BookmarkCard.tsx.\nExport a component with props\n{ url: string, title: string }.\nUse a div with className \'card p-4\'\nInside, render an anchor tag..."\n\nResult: you are writing code\nin English. Just write the code.',
+        language: 'text',
+      },
+      explanation: 'Too vague causes more rework because the agent makes architectural decisions you must undo. Too prescriptive wastes your time writing the spec, but the output is at least predictable. The sweet spot: constrain the expensive decisions (architecture, tech stack, boundaries), leave cheap ones (naming, styling details) to the agent.',
     },
     {
-      type: 'info',
-      title: 'Spec anti-pattern: too prescriptive',
-      body: "The opposite failure mode. \"Create a file at src/components/BookmarkCard.tsx. It should export a React component that takes props { url: string, title: string, tags: string[] }. Use a div with className 'card p-4 border rounded-lg'. Inside, render an anchor tag...\" You are writing code in English. If you know exactly what every line should be, just write the code. A spec should constrain decisions, not eliminate them. Let the agent use its judgment within your boundaries.",
-    },
-    {
-      type: 'info',
-      title: 'Spec anti-pattern: missing boundaries',
-      body: "A spec with a clear goal and acceptance criteria but no boundaries or scope exclusions. The agent builds everything correctly — then also adds authentication, a REST API, Docker config, CI/CD pipeline, and deployment scripts. It was being helpful. Without explicit boundaries, the agent optimizes for completeness. The Out of Scope section is not optional — it is your defense against scope creep from an eager builder.",
+      type: 'multiple-choice',
+      question: 'A spec has a clear goal and acceptance criteria but no boundaries or scope exclusions. The agent builds everything correctly — then also adds authentication, Docker config, and a CI/CD pipeline. What anti-pattern is this?',
+      options: [
+        'Too vague — the spec did not specify enough detail',
+        'Too prescriptive — the spec over-constrained the agent',
+        'Missing boundaries — without explicit exclusions, the agent optimizes for completeness',
+        'Wrong format — the spec should have been in CLAUDE.md instead of a prompt',
+      ],
+      correctIndex: 2,
+      explanation: 'Without an Out of Scope section, the agent tries to be helpful by building everything it thinks you might need. The Out of Scope section is not optional — it is your defense against scope creep from an eager builder.',
     },
     {
       type: 'compare',
@@ -134,32 +183,41 @@ const content: LessonContent = {
 
     // === DELIVERY METHOD ===
     {
-      type: 'info',
-      title: 'How the agent receives your spec',
-      body: "There are two delivery methods. First: put the spec in CLAUDE.md at the project root. The agent reads this file automatically at the start of every session. This works best for ongoing projects where the spec evolves over time. Second: paste the spec directly into the prompt. This works for one-shot builds where you want the agent to scaffold from scratch. Both are valid — the choice depends on whether the spec is a living document or a one-time instruction.",
+      type: 'multiple-choice',
+      question: 'You are starting a new project that will evolve over weeks. Where should you put the spec so the agent has context on every invocation?',
+      options: [
+        'In the first prompt message — paste it each time you start a session',
+        'In CLAUDE.md at the project root — the agent reads it automatically every session',
+        'In a README.md file — standard documentation location',
+        'In a comment at the top of the main source file',
+      ],
+      correctIndex: 1,
+      explanation: 'CLAUDE.md at the project root is read automatically by Claude Code at the start of every session. For ongoing projects where the spec evolves, this is the best delivery method. For one-shot builds, pasting the spec directly into the prompt works too — but it does not persist across sessions.',
     },
     {
-      type: 'code-demo',
-      title: 'Spec via CLAUDE.md',
-      body: 'When building a new project, you often start with the spec in CLAUDE.md so the agent has context on every invocation.',
-      language: 'markdown',
-      filename: 'CLAUDE.md',
-      code: "# Bookmark Manager\n\n## Spec\n[... your full spec here ...]\n\n## Development\n- Run: `npm run dev`\n- Test: `npm test`\n- Lint: `npm run lint`\n\n## Architecture Decisions\n(Agent fills this in as it builds)",
-    },
-    {
-      type: 'code-demo',
-      title: 'Spec via direct prompt',
-      body: 'For one-shot builds, you paste the spec directly. The agent executes it in a single session.',
-      language: 'text',
-      filename: 'prompt.txt',
-      code: "Build this project from scratch according to the following spec:\n\n[paste your full spec]\n\nStart by creating the project structure, then implement\neach acceptance criterion one at a time. After each one,\nverify it works before moving to the next.",
+      type: 'compare',
+      title: 'CLAUDE.md vs direct prompt',
+      body: 'Two valid ways to deliver a spec to the agent. The right choice depends on your project lifecycle.',
+      question: 'Which method is better for an ongoing project that evolves over weeks?',
+      correctSide: 'left',
+      left: {
+        label: 'CLAUDE.md',
+        content: '# Bookmark Manager\n\n## Spec\n[... your full spec here ...]\n\n## Development\n- Run: `npm run dev`\n- Test: `npm test`\n\n## Architecture Decisions\n(Agent fills this in as it builds)\n\n✓ Persists across sessions\n✓ Evolves with the project\n✓ Auto-read by agent',
+        language: 'markdown',
+      },
+      right: {
+        label: 'Direct prompt',
+        content: 'Build this project from scratch\naccording to the following spec:\n\n[paste your full spec]\n\nStart by creating the project\nstructure, then implement each\ncriterion one at a time.\n\n✓ Good for one-shot builds\n✓ No file to maintain\n✗ Must re-paste each session',
+        language: 'text',
+      },
+      explanation: 'CLAUDE.md is the right choice for evolving projects — it persists, updates over time, and the agent reads it automatically. Direct prompts work for one-shot builds where the spec is a single-use instruction.',
     },
 
     // === WORKFLOW DIAGRAM ===
     {
-      type: 'diagram',
+      type: 'interactive-diagram',
       title: 'Product Vision to Ship',
-      body: 'The full workflow from idea to deployed product. The spec is the bridge between your vision and agent execution.',
+      body: 'The full workflow from idea to deployed product. The spec is the bridge between your vision and agent execution. Step through each stage.',
       diagram: {
         direction: 'LR',
         nodes: [
@@ -177,6 +235,33 @@ const content: LessonContent = {
           { from: 'review', to: 'spec', label: 'iterate', dashed: true },
         ],
       },
+      stages: [
+        {
+          highlightNodes: ['vision', 'spec'],
+          highlightEdges: [{ from: 'vision', to: 'spec' }],
+          explanation: 'You start with a product idea and translate it into a structured spec with all five sections. This is the most important step — everything downstream depends on spec quality.',
+        },
+        {
+          highlightNodes: ['spec', 'execute'],
+          highlightEdges: [{ from: 'spec', to: 'execute' }],
+          explanation: 'Hand the spec to Claude Code. The agent reads it (from CLAUDE.md or a prompt) and builds the product. Your spec constrains what it builds and how.',
+        },
+        {
+          highlightNodes: ['execute', 'review'],
+          highlightEdges: [{ from: 'execute', to: 'review' }],
+          explanation: 'Review the output against your acceptance criteria. Does it match the spec? Are there unexpected additions or missing features?',
+        },
+        {
+          highlightNodes: ['review', 'spec'],
+          highlightEdges: [{ from: 'review', to: 'spec' }],
+          explanation: 'If something is off, iterate: update the spec or give a targeted follow-up prompt. Plan for 2-3 rounds. Perfect specs do not exist.',
+        },
+        {
+          highlightNodes: ['review', 'ship'],
+          highlightEdges: [{ from: 'review', to: 'ship' }],
+          explanation: 'When the output passes all criteria, ship it. Deploy to production. The spec, the code, and the CLAUDE.md documentation travel together.',
+        },
+      ],
     },
     {
       type: 'checkpoint',
@@ -186,14 +271,34 @@ const content: LessonContent = {
 
     // === ITERATION ===
     {
-      type: 'info',
-      title: 'Iterating after first output',
-      body: "The agent builds. You review. Something is off — maybe the UI layout is not what you imagined, or the agent chose client-side filtering when you wanted server-side search. This is normal. The iteration cycle is: observe what the agent built, identify the gap between output and intent, update the spec (or give a targeted follow-up prompt), and let the agent revise. Good specs reduce iterations. Perfect specs do not exist. Plan for 2-3 rounds.",
+      type: 'multiple-choice',
+      question: 'The agent builds your bookmark manager. The search works, but it uses client-side filtering instead of the server-side SQL search you intended. How many iteration rounds should you expect when working with specs?',
+      options: [
+        'Zero — a well-written spec should produce perfect output on the first try',
+        'One — if you need more than one revision, your spec was too vague',
+        'Two to three rounds — good specs reduce iterations, but perfect specs do not exist',
+        'Five or more — agents always need heavy correction',
+      ],
+      correctIndex: 2,
+      explanation: 'Plan for 2-3 iteration rounds. The cycle is: observe what the agent built, identify the gap between output and intent, update the spec (or give a targeted follow-up), and let the agent revise. Good specs reduce rounds but cannot eliminate them entirely.',
     },
     {
-      type: 'info',
-      title: 'Targeted follow-ups vs spec rewrites',
-      body: "Small corrections do not need a spec rewrite. \"The search should be server-side using SQL LIKE, not client-side filtering\" is a targeted follow-up. But if you realize the whole approach is wrong — you wanted a Chrome extension, not a web app — that requires a spec rewrite. The rule of thumb: if the fix is within the existing boundaries, use a follow-up prompt. If it changes the boundaries themselves, rewrite the spec.",
+      type: 'compare',
+      title: 'Targeted follow-up vs spec rewrite',
+      body: 'When something is wrong with the output, you have two correction strategies. The right one depends on what needs to change.',
+      question: 'The agent used client-side filtering instead of server-side search. Which correction is appropriate?',
+      correctSide: 'left',
+      left: {
+        label: 'Targeted follow-up',
+        content: '"The search should be server-side\nusing SQL LIKE, not client-side\nfiltering. Update the bookmarks\npage to query the database directly."\n\n✓ Fix is within existing boundaries\n✓ Quick, surgical correction\n✓ No spec changes needed',
+        language: 'text',
+      },
+      right: {
+        label: 'Spec rewrite',
+        content: '"Actually, I want this to be a\nChrome extension instead of a\nweb app. Rewrite the spec with\nnew constraints and boundaries."\n\n✓ Needed when boundaries change\n✓ Fundamental direction shift\n✗ Overkill for small fixes',
+        language: 'text',
+      },
+      explanation: 'A targeted follow-up is right because the fix is within the existing boundaries — you still want a web app, just with a different search implementation. A spec rewrite is only needed when the boundaries themselves change (e.g., switching from web app to Chrome extension).',
     },
 
     // === INTERACTIVE EXERCISES ===
@@ -244,9 +349,16 @@ const content: LessonContent = {
 
     // === FINAL SYNTHESIS ===
     {
-      type: 'info',
-      title: 'The spec mindset',
-      body: "Writing specs is a new skill that feels awkward at first. You are used to expressing ideas through code. Now you express them through constraints and criteria. The payoff is enormous: a well-written spec lets you build in hours what used to take days. But the spec must earn that speed by being precise enough to execute against. Every ambiguity in your spec becomes a decision the agent makes without you. Sometimes that is fine. Sometimes it is expensive to fix. Your job is to know which decisions matter and lock those down.",
+      type: 'multiple-choice',
+      question: 'Every ambiguity in your spec becomes a decision the agent makes without you. Which of the following best describes the "spec mindset"?',
+      options: [
+        'Write specs as detailed as possible — cover every variable name and function signature',
+        'Keep specs minimal — the agent knows best and will make good decisions',
+        'Lock down the decisions that matter (architecture, boundaries) and leave cheap decisions to the agent',
+        'Write the spec once and never iterate — revisions mean the original spec was bad',
+      ],
+      correctIndex: 2,
+      explanation: 'The spec mindset is about knowing which decisions are expensive to change later (architecture, tech stack, scope) and locking those down. Cheap decisions (naming, styling details) can safely be left to the agent. The payoff: a well-written spec lets you build in hours what used to take days.',
     },
     {
       type: 'checklist',

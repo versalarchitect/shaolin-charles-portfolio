@@ -73,12 +73,19 @@ const content: LessonContent = {
       ],
     },
     {
-      type: 'code-demo',
-      title: 'Spec d\'intégration : Stripe Checkout',
-      body: 'Cette spec mentionne explicitement les modes de défaillance et l\'idempotence. Remarquez combien concerne ce qui peut mal tourner, pas ce qui va bien.',
+      type: 'code-fill',
+      instruction: 'Completez cette spec d\'integration avec les exigences critiques qu\'un agent manquerait sinon :',
       language: 'markdown',
       filename: 'specs/payments.md',
-      code: "# Payment Integration Spec — Stripe Checkout\n\n## Goal\nUsers can purchase a plan via Stripe Checkout. Fulfillment happens\nvia webhook, not on redirect (redirect is unreliable).\n\n## Constraints\n- Stripe SDK (`stripe` npm package)\n- Webhook signature verification (STRIPE_WEBHOOK_SECRET)\n- Idempotent fulfillment (same webhook delivered twice = same result)\n- All prices defined in Stripe Dashboard, not hardcoded\n\n## Acceptance Criteria\n- [ ] POST /api/checkout creates a Stripe Checkout Session\n- [ ] Webhook endpoint verifies signature before processing\n- [ ] checkout.session.completed triggers order fulfillment\n- [ ] Duplicate webhooks do not create duplicate orders\n- [ ] Failed fulfillment does not return 200 (Stripe retries)\n- [ ] Success page works even if webhook hasn't arrived yet\n- [ ] Refund webhook (charge.refunded) updates order status\n\n## Failure Cases (MUST HANDLE)\n1. Webhook arrives before redirect — user sees \"processing\"\n2. Webhook arrives twice — second is no-op\n3. Fulfillment fails (DB error) — return 500, Stripe retries\n4. User refreshes success page — show current order state\n5. Stripe is down — checkout button shows error, no crash\n\n## Out of Scope\n- Subscription billing (one-time only)\n- Promo codes\n- Tax calculation\n- Invoice PDF generation",
+      template: '# Spec d\'Integration Paiement\n\n## Objectif\nLes utilisateurs achetent via Stripe Checkout. La livraison se fait\nvia {{fulfillment_method}}, pas au redirect (le redirect n\'est pas fiable).\n\n## Contraintes\n- Verification de signature webhook ({{secret_env}})\n- Livraison {{idempotency_req}} (meme webhook deux fois = meme resultat)\n- Tous les prix definis dans le Dashboard Stripe, pas en dur\n\n## Cas de Defaillance (DOIVENT ETRE GERES)\n1. Webhook arrive deux fois — le second est un {{duplicate_behavior}}\n2. Livraison echoue (erreur BD) — retourner {{error_code}}, Stripe reessaie',
+      blanks: [
+        { id: 'fulfillment_method', answer: 'webhook', alternatives: ['webhooks', 'Webhook'], placeholder: 'quelle methode ?', hint: 'La notification asynchrone fiable de Stripe' },
+        { id: 'secret_env', answer: 'STRIPE_WEBHOOK_SECRET', alternatives: ['stripe_webhook_secret'], placeholder: 'nom de var env ?', hint: 'Le secret utilise pour verifier les signatures webhook' },
+        { id: 'idempotency_req', answer: 'idempotente', alternatives: ['idempotent', 'Idempotente'], placeholder: 'quelle propriete ?', hint: 'Traiter la meme entree deux fois produit le meme resultat' },
+        { id: 'duplicate_behavior', answer: 'no-op', alternatives: ['a no-op', 'noop', 'no op', 'ignore'], placeholder: 'que se passe-t-il ?', hint: 'Le doublon ne devrait avoir aucun effet' },
+        { id: 'error_code', answer: '500', alternatives: ['500 error', 'HTTP 500'], placeholder: 'code de statut ?', hint: 'Code erreur serveur qui declenche le reessai Stripe' },
+      ],
+      explanation: 'Une spec d\'integration doit definir explicitement : livraison via webhook (pas redirect), verification de signature, exigence d\'idempotence, et comment les echecs doivent se comporter (500 declenche le reessai, 200 signifie termine). Sans ceux-ci, l\'agent construit seulement le chemin heureux.',
     },
     {
       type: 'multiple-choice',
@@ -100,17 +107,29 @@ const content: LessonContent = {
 
     // === DIRECTING THE BUILD ===
     {
-      type: 'info',
-      title: 'Diriger l\'agent : approche par phases',
-      body: "Ne remettez pas toute la spec à l'agent en disant « construis ». Le travail d'intégration devrait être phasé : (1) Configurer le SDK Stripe et les variables d'environnement, (2) Construire l'endpoint de création de session checkout, (3) Construire le handler de webhook avec vérification de signature, (4) Ajouter la livraison idempotente, (5) Gérer les cas de défaillance. Chaque phase produit un résultat testable. Vous vérifiez avant de passer à la phase suivante.",
+      type: 'multiple-choice',
+      question: 'Comment devez-vous diriger un agent a travers une integration Stripe ?',
+      options: [
+        'Remettre toute la spec a l\'agent et dire "construis"',
+        'Phaser : config SDK d\'abord, puis endpoint, puis handler webhook, puis livraison idempotente, puis cas de defaillance',
+        'Laisser l\'agent decider de l\'ordre de construction selon la complexite',
+        'Tout construire d\'un coup et tester a la fin',
+      ],
+      correctIndex: 1,
+      explanation: 'Le travail d\'integration doit etre phase. Chaque phase produit un resultat testable que vous verifiez avant de continuer. Phase 1 : SDK + vars env. Phase 2 : endpoint checkout. Phase 3 : handler webhook avec verification signature. Phase 4 : livraison idempotente. Phase 5 : gestion des cas de defaillance. Tester chaque phase attrape les problemes tot.',
     },
     {
-      type: 'code-demo',
-      title: 'Prompt phase 1 : configuration du SDK',
-      body: 'Commencez par les fondations. Vérifiez que l\'environnement et le SDK fonctionnent avant de construire la logique.',
+      type: 'code-fill',
+      instruction: 'Completez ce prompt Phase 1 pour configurer correctement le SDK Stripe :',
       language: 'text',
       filename: 'prompt-phase-1.txt',
-      code: "Install the Stripe SDK and set up environment variables.\n\nRequirements:\n- Add `stripe` package\n- Create `src/lib/stripe.ts` that exports an initialized Stripe client\n- Read STRIPE_SECRET_KEY from env\n- Add STRIPE_SECRET_KEY and STRIPE_WEBHOOK_SECRET to .env.example\n- Do NOT create any endpoints yet — just the SDK setup\n\nWhen done, I should be able to import { stripe } from '@/lib/stripe'\nand call stripe.customers.list() without errors.",
+      template: "Installer le SDK Stripe et configurer les variables d'environnement.\n\nExigences :\n- Ajouter le package `{{package_name}}`\n- Creer `src/lib/stripe.ts` qui exporte un client Stripe initialise\n- Lire {{secret_key_env}} depuis l'env\n- Ajouter {{secret_key_env}} et STRIPE_WEBHOOK_SECRET a {{env_file}}\n- NE PAS creer d'endpoints encore — juste la config SDK",
+      blanks: [
+        { id: 'package_name', answer: 'stripe', alternatives: ['@stripe/stripe-js'], placeholder: 'package npm ?', hint: 'Le nom du package SDK Stripe cote serveur' },
+        { id: 'secret_key_env', answer: 'STRIPE_SECRET_KEY', alternatives: ['stripe_secret_key'], placeholder: 'var env ?', hint: 'La variable d\'environnement pour la cle API Stripe' },
+        { id: 'env_file', answer: '.env.example', alternatives: ['.env.local', '.env'], placeholder: 'quel fichier ?', hint: 'Le fichier env template qui documente les variables requises' },
+      ],
+      explanation: 'La Phase 1 est uniquement les fondations. Verifiez que le SDK et l\'environnement fonctionnent avant de construire la moindre logique. La contrainte "NE PAS creer d\'endpoints encore" est critique — elle empeche l\'agent de sauter en avant et de construire des flux de paiement non testes.',
     },
     {
       type: 'terminal',
@@ -119,12 +138,18 @@ const content: LessonContent = {
       hint: 'Utilisez stripe listen pour transmettre les événements webhook à votre serveur local',
     },
     {
-      type: 'code-demo',
-      title: 'Prompt phase 3 : handler de webhook',
-      body: 'Le handler de webhook est là où vivent la plupart des bugs d\'intégration. Soyez explicite sur la vérification et les codes de réponse.',
+      type: 'code-fill',
+      instruction: 'Completez le prompt du handler webhook avec les exigences critiques de securite et fiabilite :',
       language: 'text',
       filename: 'prompt-phase-3.txt',
-      code: "Build the webhook handler at `src/app/api/webhooks/stripe/route.ts`.\n\nCritical requirements:\n1. Read raw body (NOT parsed JSON) for signature verification\n2. Verify webhook signature using STRIPE_WEBHOOK_SECRET\n3. Return 400 immediately if signature fails\n4. Handle event type: checkout.session.completed\n5. Return 200 ONLY after successful processing\n6. Return 500 if processing fails (triggers Stripe retry)\n7. Log the event ID for debugging\n\nDo NOT implement fulfillment logic yet — just log\n\"Fulfilling order for session {id}\" and return 200.\nI want to test the webhook pipeline first.",
+      template: "Construire le handler webhook a `src/app/api/webhooks/stripe/route.ts`.\n\nExigences critiques :\n1. Lire le {{body_type}} (PAS du JSON parse) pour la verification de signature\n2. Verifier la signature webhook avec STRIPE_WEBHOOK_SECRET\n3. Retourner {{sig_fail_code}} immediatement si la signature echoue\n4. Gerer le type d'evenement : {{event_type}}\n5. Retourner 200 SEULEMENT apres traitement reussi\n6. Retourner {{process_fail_code}} si le traitement echoue (declenche reessai Stripe)",
+      blanks: [
+        { id: 'body_type', answer: 'body brut', alternatives: ['raw body', 'corps brut', 'body raw'], placeholder: 'quel format ?', hint: 'La verification de signature necessite le body non parse' },
+        { id: 'sig_fail_code', answer: '400', alternatives: ['400 Bad Request', 'HTTP 400'], placeholder: 'code de statut ?', hint: 'Erreur client — mauvaise requete' },
+        { id: 'event_type', answer: 'checkout.session.completed', alternatives: ['checkout.session.completed event'], placeholder: 'quel evenement ?', hint: 'L\'evenement Stripe pour un paiement reussi' },
+        { id: 'process_fail_code', answer: '500', alternatives: ['500 Internal Server Error', 'HTTP 500'], placeholder: 'code de statut ?', hint: 'Erreur serveur qui declenche le reessai Stripe' },
+      ],
+      explanation: 'Le handler webhook doit : lire le body brut pour la verification de signature (le JSON parse casse la signature), retourner 400 pour les signatures invalides, retourner 500 sur les echecs de traitement (pour que Stripe reessaie), et retourner 200 SEULEMENT en cas de succes. Se tromper sur ces codes de reponse signifie soit accepter des webhooks falsifies soit perdre des commandes.',
     },
     {
       type: 'terminal',
@@ -140,17 +165,30 @@ const content: LessonContent = {
 
     // === IDEMPOTENCY ===
     {
-      type: 'info',
-      title: 'Idempotence : le non-négociable',
-      body: "Stripe livre les webhooks au moins une fois — ce qui veut dire que le même événement peut arriver plusieurs fois. Si votre logique de livraison crée un enregistrement à chaque livraison, vous obtenez des commandes en double, des emails en double, ou des crédits en double. Idempotent signifie : traiter la même entrée deux fois produit le même résultat que la traiter une fois. L'agent va presque certainement sauter ça à moins que vous ne le spécifiiez. C'est le bug le plus courant dans le code de paiement généré par un agent.",
+      type: 'multiple-choice',
+      question: 'Pourquoi l\'idempotence est-elle l\'exigence la plus critique pour les handlers de webhook ?',
+      options: [
+        'Stripe l\'exige dans ses conditions d\'utilisation',
+        'Stripe livre les webhooks au moins une fois — les doublons creent des commandes en double, des emails en double et des charges en double si votre handler n\'est pas idempotent',
+        'Ca rend le code plus facile a tester',
+        'Sans ca, Stripe n\'enverra aucun webhook',
+      ],
+      correctIndex: 1,
+      explanation: 'Stripe livre les webhooks au moins une fois. Le meme evenement peut arriver plusieurs fois. Si votre logique de livraison cree un enregistrement a chaque livraison, vous obtenez des commandes en double. Idempotent signifie : traiter la meme entree deux fois produit le meme resultat que la traiter une fois. C\'est le bug le plus courant dans le code de paiement genere par agent — l\'agent le sautera sauf si vous le specifiez.',
     },
     {
-      type: 'code-demo',
-      title: 'Pattern de livraison idempotente',
-      body: 'La clé d\'idempotence est l\'ID d\'événement Stripe ou l\'ID de session checkout. Vérifier-puis-créer avec une contrainte unique.',
+      type: 'code-fill',
+      instruction: 'Completez le pattern de livraison idempotente avec la logique verifier-puis-creer :',
       language: 'typescript',
       filename: 'src/lib/fulfill-order.ts',
-      code: "import { db } from '@/db'\nimport { orders } from '@/db/schema'\nimport { eq } from 'drizzle-orm'\n\nexport async function fulfillOrder(sessionId: string, data: OrderData) {\n  // Check if already fulfilled (idempotency)\n  const existing = await db.query.orders.findFirst({\n    where: eq(orders.stripeSessionId, sessionId),\n  })\n\n  if (existing) {\n    // Already fulfilled — this is a retry, not a new order\n    console.log(`Order already fulfilled for session ${sessionId}`)\n    return existing\n  }\n\n  // Fulfill: create order + send email\n  // The stripeSessionId column has a UNIQUE constraint as a safety net\n  const order = await db.insert(orders).values({\n    stripeSessionId: sessionId,\n    email: data.customerEmail,\n    amount: data.amountTotal,\n    status: 'fulfilled',\n  }).returning()\n\n  await sendConfirmationEmail(order[0])\n  return order[0]\n}",
+      template: "export async function fulfillOrder(sessionId: string, data: OrderData) {\n  // Verifier si deja livre (idempotence)\n  const existing = await db.query.orders.{{find_method}}({\n    where: eq(orders.stripeSessionId, {{lookup_param}}),\n  })\n\n  if ({{guard_clause}}) {\n    console.log(`Commande deja livree pour la session ${sessionId}`)\n    return existing\n  }\n\n  // La colonne stripeSessionId a une contrainte {{constraint_type}}\n  const order = await db.insert(orders).values({\n    stripeSessionId: sessionId,\n    email: data.customerEmail,\n    status: 'fulfilled',\n  }).returning()\n\n  return order[0]\n}",
+      blanks: [
+        { id: 'find_method', answer: 'findFirst', alternatives: ['findOne'], placeholder: 'methode de requete ?', hint: 'Trouver un seul enregistrement correspondant' },
+        { id: 'lookup_param', answer: 'sessionId', alternatives: ['session_id'], placeholder: 'valeur de recherche ?', hint: 'Le parametre de fonction a verifier' },
+        { id: 'guard_clause', answer: 'existing', alternatives: ['existing !== null', 'existing != null'], placeholder: 'que verifier ?', hint: 'Si vrai, la commande a deja ete traitee' },
+        { id: 'constraint_type', answer: 'UNIQUE', alternatives: ['unique'], placeholder: 'quelle contrainte ?', hint: 'Empeche les IDs de session en double au niveau BD' },
+      ],
+      explanation: 'Le pattern verifier-puis-creer : chercher par ID de session d\'abord, retourner tot si trouve (webhook en double), inserer seulement si nouveau. La contrainte UNIQUE sur stripeSessionId est un filet de securite — meme si le verifier-puis-creer a une condition de course, la BD empeche les doublons.',
     },
     {
       type: 'multiple-choice',
@@ -199,17 +237,30 @@ const content: LessonContent = {
 
     // === FAILURE VERIFICATION ===
     {
-      type: 'info',
-      title: 'Vérifier la gestion des défaillances',
-      body: "Le chemin heureux fonctionne. Maintenant cassez-le. Dirigez l'agent pour vous aider à vérifier les cas de défaillance : Que se passe-t-il si la BD est en panne pendant la livraison ? Le webhook retourne-t-il 500 pour que Stripe réessaie ? Que se passe-t-il si l'utilisateur arrive sur la page de succès avant l'arrivée du webhook ? La page fait-elle du polling ou affiche un état de chargement ? Testez tout ça explicitement — ne faites pas confiance que l'agent les a implémentés juste parce que la spec les listait.",
+      type: 'multiple-choice',
+      question: 'Le chemin heureux fonctionne. Que devez-vous tester ENSUITE ?',
+      options: [
+        'Deployer en production et surveiller les erreurs',
+        'Ecrire des tests unitaires pour la fonction checkout',
+        'Casser le systeme : tester les webhooks en double, les signatures invalides et les pannes BD pour verifier que votre gestion des defaillances fonctionne',
+        'Ajouter plus de fonctionnalites comme les codes promo et les abonnements',
+      ],
+      correctIndex: 2,
+      explanation: 'Apres que le chemin heureux fonctionne, cassez-le. Testez : Que se passe-t-il avec des webhooks en double ? (verification idempotence). Des signatures invalides ? (devrait retourner 400). Si la BD est en panne pendant la livraison ? (devrait retourner 500 pour que Stripe reessaie). Ne faites pas confiance que l\'agent les a implementes juste parce que la spec les listait.',
     },
     {
-      type: 'code-demo',
-      title: 'Tester les scénarios de défaillance',
-      body: 'Utilisez le CLI Stripe pour simuler les cas limites. Chaque test vérifie un mode de défaillance spécifique.',
+      type: 'code-fill',
+      instruction: 'Completez ces scenarios de test de defaillance avec le comportement attendu :',
       language: 'bash',
       filename: 'test-failures.sh',
-      code: "# Test 1: Duplicate webhook (idempotency)\nstripe trigger checkout.session.completed\nstripe trigger checkout.session.completed\n# Expected: second call logs \"already fulfilled\", no duplicate order\n\n# Test 2: Check signature verification\ncurl -X POST http://localhost:3000/api/webhooks/stripe \\\n  -H \"Content-Type: application/json\" \\\n  -d '{\"type\": \"checkout.session.completed\"}'\n# Expected: 400 response (no valid signature)\n\n# Test 3: Verify retry behavior\n# Temporarily make fulfillment throw an error\n# Expected: webhook returns 500, Stripe will retry",
+      template: '# Test 1 : Webhook en double (idempotence)\nstripe trigger checkout.session.completed\nstripe trigger checkout.session.completed\n# Attendu : le second appel log "{{duplicate_result}}"\n\n# Test 2 : Verification de signature\ncurl -X POST http://localhost:3000/api/webhooks/stripe \\\n  -H "Content-Type: application/json" \\\n  -d \'{"type": "checkout.session.completed"}\'\n# Attendu : reponse {{sig_fail_response}} (pas de signature valide)\n\n# Test 3 : Panne BD pendant la livraison\n# Attendu : webhook retourne {{db_fail_response}}, Stripe va {{retry_action}}',
+      blanks: [
+        { id: 'duplicate_result', answer: 'already fulfilled', alternatives: ['Already fulfilled', 'deja livre', 'already processed'], placeholder: 'que est logge ?', hint: 'Le message de garde d\'idempotence' },
+        { id: 'sig_fail_response', answer: '400', alternatives: ['400 Bad Request', 'HTTP 400'], placeholder: 'code de statut ?', hint: 'Mauvaise requete — pas de signature valide' },
+        { id: 'db_fail_response', answer: '500', alternatives: ['500 Internal Server Error', 'HTTP 500'], placeholder: 'code de statut ?', hint: 'Erreur serveur declenche le reessai' },
+        { id: 'retry_action', answer: 'reessayer', alternatives: ['retry', 'retry the webhook', 'renvoyer'], placeholder: 'que fera Stripe ?', hint: 'Stripe reessaie sur les reponses 5xx' },
+      ],
+      explanation: 'Chaque test verifie un mode de defaillance specifique : les doublons doivent etre des no-ops, les signatures manquantes doivent etre rejetees avec 400, et les echecs de traitement doivent retourner 500 pour que Stripe reessaie plus tard. Ne faites jamais confiance que l\'agent les a implementes — verifiez toujours.',
     },
     {
       type: 'terminal',
@@ -225,24 +276,48 @@ const content: LessonContent = {
 
     // === PARTIAL FAILURES ===
     {
-      type: 'info',
-      title: 'Défaillances partielles : le cas le plus difficile',
-      body: "La livraison implique souvent plusieurs étapes : mettre à jour la base de données, envoyer un email de confirmation, provisionner l'accès. Et si la mise à jour BD réussit mais l'email échoue ? Vous avez une commande dans le système mais l'utilisateur n'a jamais reçu de confirmation. L'agent doit gérer ça : soit rendre toute l'opération atomique (transaction + rollback), soit rendre chaque étape indépendamment réessayable. Spécifiez quelle approche vous voulez — l'agent ne demandera pas.",
+      type: 'multiple-choice',
+      question: 'La livraison a 3 etapes : mise a jour BD, email et provisionnement d\'acces. La mise a jour BD reussit mais l\'email echoue. Que devrait-il se passer ?',
+      options: [
+        'Tout rollback — l\'utilisateur n\'a pas recu de confirmation donc la commande ne devrait pas exister',
+        'Retourner 500 pour que Stripe reessaie toute la livraison depuis le debut',
+        'Garder la mise a jour BD (critique), mettre l\'email en file d\'attente pour reessai (non-critique), et retourner 200',
+        'Ignorer l\'echec email — l\'utilisateur s\'en sortira',
+      ],
+      correctIndex: 2,
+      explanation: 'Separez les operations critiques (BD + acces) des non-critiques (email). Les operations critiques tournent dans une transaction — si l\'une echoue, les deux sont rollback et le webhook retourne 500 pour reessai. Les operations non-critiques sont dans un try/catch et mises en file pour reessai en arriere-plan. L\'utilisateur obtient son acces immediatement ; l\'email arrive plus tard.',
     },
     {
-      type: 'code-demo',
-      title: 'Gérer les défaillances partielles',
-      body: 'Séparez les opérations critiques (doivent réussir) des non-critiques (peuvent être réessayées plus tard).',
-      language: 'typescript',
-      filename: 'src/lib/fulfill-order.ts',
-      code: "export async function fulfillOrder(sessionId: string, data: OrderData) {\n  // Critical: must succeed or webhook returns 500\n  const order = await db.transaction(async (tx) => {\n    const [order] = await tx.insert(orders).values({\n      stripeSessionId: sessionId,\n      email: data.customerEmail,\n      amount: data.amountTotal,\n      status: 'fulfilled',\n    }).returning()\n\n    await tx.insert(accessGrants).values({\n      orderId: order.id,\n      userId: data.userId,\n      expiresAt: addYears(new Date(), 1),\n    })\n\n    return order\n  })\n\n  // Non-critical: queue for retry if it fails\n  try {\n    await sendConfirmationEmail(order)\n  } catch (error) {\n    // Log but don't fail the webhook\n    // A background job will retry failed emails\n    await queueFailedEmail(order.id, error)\n  }\n\n  return order\n}",
+      type: 'compare',
+      title: 'Gestion de defaillance critique vs non-critique',
+      body: 'Les defaillances partielles necessitent de separer les operations qui doivent reussir de celles qui peuvent reessayer plus tard.',
+      question: 'Quelle approche gere correctement un email echoue pendant la livraison ?',
+      correctSide: 'right',
+      left: {
+        label: 'Tout-ou-rien (fragile)',
+        content: "async function fulfillOrder(session) {\n  // Si UNE etape echoue, tout echoue\n  await db.insert(orders).values({...})\n  await db.insert(accessGrants).values({...})\n  await sendConfirmationEmail(order)\n  // Echec email = webhook retourne 500\n  // Stripe reessaie = inserts BD en double !\n  return order\n}",
+        language: 'typescript',
+      },
+      right: {
+        label: 'Separation critique/non-critique',
+        content: "async function fulfillOrder(session) {\n  // Critique : transaction BD (atomique)\n  const order = await db.transaction(async (tx) => {\n    const [order] = await tx.insert(orders)...\n    await tx.insert(accessGrants)...\n    return order\n  })\n  // Non-critique : file d'attente pour reessai\n  try {\n    await sendConfirmationEmail(order)\n  } catch (e) {\n    await queueFailedEmail(order.id, e)\n  }\n  return order\n}",
+        language: 'typescript',
+      },
+      explanation: 'La bonne approche encapsule les operations critiques (BD + acces) dans une transaction qui rollback atomiquement en cas d\'echec. Les operations non-critiques (email) sont catchees et mises en file pour reessai en arriere-plan. Le webhook retourne 200 parce que le travail critique a reussi.',
     },
 
     // === APPLYING THE PATTERN ===
     {
-      type: 'info',
-      title: 'Ce pattern s\'applique à chaque intégration',
-      body: "Stripe est l'exemple, mais le pattern est universel. Chaque intégration tierce a : un appel API qui peut échouer, un callback asynchrone (webhook/polling) qui peut arriver plusieurs fois, des états de succès partiel, et des cas limites que l'agent n'anticipera pas sauf si vous les spécifiez. Flux OAuth, services d'email (Resend, SendGrid), processeurs de paiement, stockage de fichiers (URLs signées S3) — tous suivent la même structure de spec : chemin heureux + cas de défaillance explicites + exigence d'idempotence.",
+      type: 'multiple-choice',
+      question: 'Le pattern Stripe (specer les defaillances, phaser la construction, verifier l\'idempotence) s\'applique a quelles autres integrations ?',
+      options: [
+        'Seulement les processeurs de paiement comme PayPal et Paddle',
+        'Seulement les services bases sur webhook',
+        'Chaque integration tierce : OAuth, services email, stockage fichiers, toute API avec callbacks asynchrones ou modes de defaillance',
+        'Seulement les services qui utilisent des APIs REST',
+      ],
+      correctIndex: 2,
+      explanation: 'Le pattern est universel. Chaque integration tierce a : un appel API qui peut echouer, un callback asynchrone qui peut arriver plusieurs fois, des etats de succes partiel, et des cas limites que l\'agent n\'anticipera pas. Flux OAuth, services email, stockage fichiers (URLs signees S3) — tous suivent la meme structure : chemin heureux + cas de defaillance explicites + idempotence.',
     },
     {
       type: 'order',

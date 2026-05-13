@@ -126,69 +126,72 @@ const content: LessonContent = {
 
     // === PIPELINE COMPONENTS ===
     {
-      type: 'info',
-      title: 'Étape 1 : La vérification de types attrape les violations de contrat',
-      body: "La compilation TypeScript est ta première porte. Elle attrape l'erreur multi-agents la plus courante : les exports d'un agent qui correspondent pas aux imports d'un autre agent. Si l'Agent A retourne `{ data: User }` mais que l'Agent B s'attend à `{ user: User }`, tsc le détecte en 2 secondes. Ça seul prévient 40 % des échecs d'intégration.",
+      type: 'compare',
+      title: 'Vérification de types vs linting : différentes classes d\'erreurs',
+      body: 'Les deux sont des barrières automatisées, mais elles attrapent des problèmes fondamentalement différents.',
+      question: 'Quelle barrière attrape les décalages de contrats entre agents (ex: l\'Agent A retourne `{ data: User }` mais l\'Agent B s\'attend à `{ user: User }`) ?',
+      correctSide: 'left',
+      left: {
+        label: 'Vérif. types (tsc)',
+        content: '// Ce qu\'elle attrape :\n// - Décalages de forme import/export\n// - Mauvais types d\'arguments\n// - Champs requis manquants\n// - Accès undefined sur valeurs nullable\n\n// Agent A exporte :\nexport function getUser(): { data: User } { ... }\n\n// Agent B importe :\nconst { user } = getUser()\n//       ^^^^ ERREUR tsc: La propriété "user" n\'existe pas\n// Détecté en 2 secondes. Prévient 40 % des échecs d\'intégration.',
+        language: 'typescript',
+      },
+      right: {
+        label: 'Linting (eslint)',
+        content: '// Ce qu\'il attrape :\n// - Violations de conventions (any, exports par défaut)\n// - Patterns interdits (fichiers barrel)\n// - Dérive de style du CLAUDE.md\n\n// L\'agent écrit :\nexport default function getUser() { ... }\n//     ^^^^^^^ ERREUR eslint: Utilise les exports nommés uniquement\n\nconst data: any = fetchData()\n//          ^^^ ERREUR eslint: no-explicit-any\n\nimport { getUser } from "./users/index"\n//                       ^^^^^^^^^^^^^^ ERREUR eslint: pas d\'imports barrel',
+        language: 'typescript',
+      },
+      explanation: 'La vérification de types attrape les violations de contrat structurelles entre agents — l\'échec d\'intégration #1. Le linting attrape la dérive de conventions par rapport aux règles du CLAUDE.md. Les deux sont nécessaires : les types assurent la correction, le lint assure la cohérence.',
     },
     {
-      type: 'code-demo',
-      title: 'Configuration de la vérification de types',
-      body: "Configuration TypeScript stricte qui détecte les décalages de contrats entre les sorties des agents.",
-      language: 'json',
-      filename: 'tsconfig.json',
-      code: `{
-  "compilerOptions": {
-    "strict": true,
-    "noEmit": true,
-    "noUncheckedIndexedAccess": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
-    "exactOptionalPropertyTypes": true,
-    "forceConsistentCasingInFileNames": true
-  },
-  "include": ["src/**/*.ts", "src/**/*.tsx"],
-  "exclude": ["node_modules", "dist"]
-}`,
-    },
-    {
-      type: 'info',
-      title: 'Étape 2 : Le linting attrape les violations de conventions',
-      body: "Les agents dérivent parfois des conventions du CLAUDE.md — utiliser `any`, créer des fichiers barrel, utiliser des exports par défaut. Le linter encode ces règles comme des vérifications automatisées. Si le CLAUDE.md dit « pas d'exports par défaut », une règle eslint l'impose mécaniquement.",
-    },
-    {
-      type: 'code-demo',
-      title: 'Règles ESLint correspondant aux contraintes du CLAUDE.md',
-      body: "Chaque « pattern interdit » du CLAUDE.md devient une règle ESLint. Ça transforme des directives lisibles par l'humain en barrières applicables par la machine.",
+      type: 'code-fill',
+      instruction: 'Complète la configuration ESLint qui encode les patterns interdits du CLAUDE.md comme règles automatisées. Remplis les noms et valeurs des règles.',
       language: 'javascript',
       filename: 'eslint.config.js',
-      code: `import tseslint from 'typescript-eslint'
+      template: `import tseslint from 'typescript-eslint'
 
 export default tseslint.config(
   ...tseslint.configs.strict,
   {
     rules: {
       // CLAUDE.md: "no any type"
-      '@typescript-eslint/no-explicit-any': 'error',
+      '___BLANK_1___': 'error',
 
       // CLAUDE.md: "no default exports"
       'no-restricted-syntax': ['error', {
-        selector: 'ExportDefaultDeclaration',
+        selector: '___BLANK_2___',
         message: 'Use named exports only (CLAUDE.md rule)',
       }],
 
       // CLAUDE.md: "no console.log in production"
-      'no-console': ['error', { allow: ['warn', 'error'] }],
-
-      // CLAUDE.md: "no barrel files"
-      'no-restricted-imports': ['error', {
-        patterns: [{
-          group: ['**/index'],
-          message: 'Import directly from source file, not barrel (CLAUDE.md rule)',
-        }],
-      }],
+      'no-console': ['error', { allow: ___BLANK_3___ }],
     },
   }
 )`,
+      blanks: [
+        {
+          id: 'BLANK_1',
+          answer: '@typescript-eslint/no-explicit-any',
+          alternatives: ['"@typescript-eslint/no-explicit-any"'],
+          hint: 'La règle TypeScript ESLint qui interdit le type `any`',
+          placeholder: 'règle typescript-eslint pour any',
+        },
+        {
+          id: 'BLANK_2',
+          answer: 'ExportDefaultDeclaration',
+          alternatives: ['"ExportDefaultDeclaration"'],
+          hint: 'Le sélecteur AST qui correspond aux instructions `export default ...`',
+          placeholder: 'sélecteur AST pour exports par défaut',
+        },
+        {
+          id: 'BLANK_3',
+          answer: "['warn', 'error']",
+          alternatives: ["['warn', 'error']", '["warn", "error"]'],
+          hint: 'Quelles méthodes console sont autorisées ? Seulement les avertissements et erreurs.',
+          placeholder: 'méthodes console autorisées',
+        },
+      ],
+      explanation: 'Chaque pattern interdit du CLAUDE.md devient une règle ESLint applicable par la machine. `no-explicit-any` empêche les échappatoires de types, `ExportDefaultDeclaration` impose les exports nommés, et n\'autoriser que `console.warn` et `console.error` empêche le logging de débogage en production.',
     },
     {
       type: 'multiple-choice',
@@ -210,72 +213,113 @@ export default tseslint.config(
 
     // === TESTING IN AGENT SPECS ===
     {
-      type: 'info',
-      title: 'Étape 3 : Les tests — l\'agent les écrit dans le cadre de la tâche',
-      body: "Voici l'insight clé : traite pas les tests comme une réflexion après coup que t'ajoutes post-fusion. Intègre-les dans le cahier des charges de l'agent. « Construis le système d'auth ET écris les tests pour. » L'agent produit à la fois le code et la vérification en un seul passage. Le pipeline exécute ces tests pour confirmer que la sortie fonctionne vraiment.",
+      type: 'multiple-choice',
+      question: 'Quand les tests doivent-ils être créés pour le code construit par les agents ?',
+      options: [
+        'Après que l\'agent finit — ajouter les tests dans une PR séparée',
+        'Dans le cahier des charges de l\'agent — les tests sont des livrables obligatoires avec le code',
+        'Seulement pour les chemins critiques — sauter les tests pour le CRUD simple',
+        'Laisser le pipeline CI auto-générer les tests à partir du code',
+      ],
+      correctIndex: 1,
+      explanation: "Les tests doivent faire partie du cahier des charges de l'agent, pas une réflexion après coup. « Construis le système d'auth ET écris les tests pour. » L'agent produit le code et la vérification en un seul passage. Le pipeline exécute ces tests pour confirmer que la sortie fonctionne. Si les tests sont optionnels, les agents les sautent.",
     },
     {
-      type: 'code-demo',
-      title: 'Cahier des charges incluant les tests comme livrables',
-      body: "Remarque comment les tests sont listés comme fichiers requis, pas optionnels. La définition de « terminé » inclut la réussite des tests. L'agent peut pas déclarer la tâche complète sans eux.",
+      type: 'code-fill',
+      instruction: 'Complète le cahier des charges qui exige les tests comme livrables non optionnels. Remplis les chemins des fichiers de test et la commande de Définition de Terminé.',
       language: 'markdown',
       filename: 'TASK-AUTH.md',
-      code: `# Task: Authentication System
+      template: `# Task: Authentication System
 
 ## Required Files (code)
 - src/auth/login.ts
 - src/auth/signup.ts
 - src/auth/middleware.ts
 
-## Required Files (tests) ← NOT OPTIONAL
-- src/auth/__tests__/login.test.ts
-- src/auth/__tests__/signup.test.ts
+## Required Files (tests) -- NOT OPTIONAL
+- src/auth/__tests__/___BLANK_1___
+- src/auth/__tests__/___BLANK_2___
 - src/auth/__tests__/middleware.test.ts
-
-## Test Requirements
-- Login: test valid credentials, invalid credentials, missing fields
-- Signup: test new user, duplicate email, weak password
-- Middleware: test valid token, expired token, missing token
 
 ## Definition of Done
 - [ ] All source files created
 - [ ] All test files created
-- [ ] \`bun test src/auth/\` passes with 0 failures`,
+- [ ] \`___BLANK_3___\` passes with 0 failures`,
+      blanks: [
+        {
+          id: 'BLANK_1',
+          answer: 'login.test.ts',
+          alternatives: ['login.test.ts', 'login.spec.ts'],
+          hint: 'Le fichier de test pour le module login — correspond au nom du fichier source',
+          placeholder: 'nom du fichier de test login',
+        },
+        {
+          id: 'BLANK_2',
+          answer: 'signup.test.ts',
+          alternatives: ['signup.test.ts', 'signup.spec.ts'],
+          hint: 'Le fichier de test pour le module signup — correspond au nom du fichier source',
+          placeholder: 'nom du fichier de test signup',
+        },
+        {
+          id: 'BLANK_3',
+          answer: 'bun test src/auth/',
+          alternatives: ['bun test src/auth/', 'bun test src/auth', 'vitest src/auth/'],
+          hint: 'Exécute le lanceur de tests limité au répertoire auth uniquement',
+          placeholder: 'commande de test limitée à auth',
+        },
+      ],
+      explanation: 'Les fichiers de test sont le miroir des fichiers source : login.ts -> login.test.ts, signup.ts -> signup.test.ts. La Définition de Terminé inclut `bun test src/auth/` qui passe avec 0 échec — l\'agent ne peut pas déclarer la tâche complète sans tests qui passent.',
     },
     {
-      type: 'code-demo',
-      title: 'Configuration Vitest pour les tests de flotte',
-      body: "Configure Vitest pour exécuter les tests par répertoire afin de pouvoir vérifier la sortie de chaque agent indépendamment avant la fusion.",
+      type: 'code-fill',
+      instruction: 'Complète la configuration Vitest avec les seuils de couverture que les agents doivent atteindre. Remplis le fournisseur et les valeurs de seuil.',
       language: 'typescript',
       filename: 'vitest.config.ts',
-      code: `import { defineConfig } from 'vitest/config'
+      template: `import { defineConfig } from 'vitest/config'
 import path from 'path'
 
 export default defineConfig({
   test: {
-    // Run tests that match the changed files (for CI)
     passWithNoTests: false,
-
-    // Coverage thresholds — agents must hit these
     coverage: {
-      provider: 'v8',
+      provider: '___BLANK_1___',
       thresholds: {
-        statements: 80,
+        statements: ___BLANK_2___,
         branches: 75,
         functions: 80,
-        lines: 80,
+        lines: ___BLANK_3___,
       },
     },
-
-    // Isolate test environments (no cross-contamination)
     isolate: true,
-
-    // Resolve aliases matching tsconfig paths
     alias: {
       '@': path.resolve(__dirname, './src'),
     },
   },
 })`,
+      blanks: [
+        {
+          id: 'BLANK_1',
+          answer: 'v8',
+          alternatives: ['v8', "'v8'", '"v8"'],
+          hint: 'Le fournisseur de couverture rapide et intégré à Node.js',
+          placeholder: 'fournisseur de couverture',
+        },
+        {
+          id: 'BLANK_2',
+          answer: '80',
+          alternatives: ['80'],
+          hint: 'Seuil standard — 80 % de couverture des instructions est le minimum courant',
+          placeholder: 'seuil d\'instructions',
+        },
+        {
+          id: 'BLANK_3',
+          answer: '80',
+          alternatives: ['80'],
+          hint: 'Le seuil de couverture des lignes — correspond au seuil des instructions',
+          placeholder: 'seuil de lignes',
+        },
+      ],
+      explanation: 'Le fournisseur de couverture v8 est rapide et intégré à Node.js. Les seuils de 80 % pour les instructions, fonctions et lignes (75 % pour les branches) garantissent que les agents écrivent des tests significatifs. Avec `isolate: true`, chaque test s\'exécute dans son propre environnement — pas de contamination croisée entre les sorties d\'agents.',
     },
     {
       type: 'terminal',
@@ -286,21 +330,15 @@ export default defineConfig({
 
     // === CI CONFIGURATION ===
     {
-      type: 'info',
-      title: 'Étape 4 : Pipeline CI — automatisé à chaque push',
-      body: "Le pipeline s'exécute automatiquement quand un agent pousse sur sa branche. GitHub Actions (ou ton CI au choix) se déclenche au push, exécute les quatre étapes, et bloque la fusion si une étape échoue. Ça veut dire que tu peux dispatcher 5 agents et faire confiance au pipeline pour attraper les problèmes avant même que tu regardes la sortie.",
-    },
-    {
-      type: 'code-demo',
-      title: 'Workflow GitHub Actions pour les branches d\'agents',
-      body: "Ce workflow se déclenche sur tout push de branche correspondant au pattern feat/* (tes branches de flotte). Il exécute toutes les étapes du pipeline dans l'ordre. Si une étape échoue, tout le workflow échoue et la branche peut pas fusionner.",
+      type: 'code-fill',
+      instruction: 'Complète le workflow GitHub Actions qui vérifie automatiquement chaque branche d\'agent. Remplis le pattern de déclenchement et les étapes du pipeline.',
       language: 'yaml',
       filename: '.github/workflows/verify-agent.yml',
-      code: `name: Verify Agent Output
+      template: `name: Verify Agent Output
 
 on:
   push:
-    branches: ['feat/**']
+    branches: ['___BLANK_1___']
 
 jobs:
   verify:
@@ -315,17 +353,41 @@ jobs:
       - name: Install dependencies
         run: bun install --frozen-lockfile
 
-      - name: Stage 1 — Type Check
-        run: bunx tsc --noEmit
+      - name: Stage 1 -- Type Check
+        run: ___BLANK_2___
 
-      - name: Stage 2 — Lint
+      - name: Stage 2 -- Lint
         run: bun run lint
 
-      - name: Stage 3 — Unit Tests
-        run: bun test --coverage
+      - name: Stage 3 -- Unit Tests
+        run: ___BLANK_3___
 
-      - name: Stage 4 — Build (integration check)
+      - name: Stage 4 -- Build (integration check)
         run: bun run build`,
+      blanks: [
+        {
+          id: 'BLANK_1',
+          answer: 'feat/**',
+          alternatives: ['feat/**', '"feat/**"'],
+          hint: 'Les branches d\'agents utilisent le préfixe feat/ avec correspondance profonde',
+          placeholder: 'pattern glob de branche',
+        },
+        {
+          id: 'BLANK_2',
+          answer: 'bunx tsc --noEmit',
+          alternatives: ['bunx tsc --noEmit', 'npx tsc --noEmit'],
+          hint: 'Exécute le compilateur TypeScript en mode vérification seule (pas de fichiers de sortie)',
+          placeholder: 'commande de vérification de types',
+        },
+        {
+          id: 'BLANK_3',
+          answer: 'bun test --coverage',
+          alternatives: ['bun test --coverage', 'bunx vitest --coverage'],
+          hint: 'Exécute les tests avec le rapport de couverture activé',
+          placeholder: 'commande de test avec couverture',
+        },
+      ],
+      explanation: 'Le workflow se déclenche sur les branches feat/** (tes branches de flotte), exécute les quatre étapes dans l\'ordre, et bloque la fusion en cas d\'échec. Le pipeline donne un feedback rapide : erreurs de types en 2-5 secondes, lint en 5-10 secondes, tests en 30-60 secondes, build en 1-2 minutes.',
     },
     {
       type: 'checkpoint',
@@ -335,29 +397,59 @@ jobs:
 
     // === BRANCH PROTECTION ===
     {
-      type: 'info',
-      title: 'Protection de branche : la garantie mécanique',
-      body: "Le CI exécute le pipeline, mais qu'est-ce qui t'empêche de fusionner une branche qui a échoué quand même ? Les règles de protection de branche. Configure GitHub pour exiger que le workflow « Verify Agent Output » passe avant que n'importe quelle PR puisse fusionner dans main. Ça rend la règle mécanique, pas juste sociale.",
+      type: 'multiple-choice',
+      question: 'Le CI exécute le pipeline, mais qu\'est-ce qui empêche mécaniquement de fusionner une branche qui a échoué ?',
+      options: [
+        'Un accord d\'équipe de ne pas fusionner les branches en échec',
+        'Des règles de protection de branche qui exigent que le pipeline passe avant la fusion',
+        'L\'approbation de révision de code d\'un autre développeur',
+        'Un rollback automatique après la fusion si les tests échouent',
+      ],
+      correctIndex: 1,
+      explanation: "Les règles de protection de branche rendent physiquement impossible la fusion d'une sortie d'agent qui n'a pas passé le pipeline. Configure GitHub pour exiger que le workflow « Verify Agent Output » passe avant que n'importe quelle PR puisse fusionner dans main. Ça rend la règle mécanique, pas juste sociale.",
     },
     {
-      type: 'code-demo',
-      title: 'Configuration de la protection de branche',
-      body: "Ces règles rendent physiquement impossible la fusion d'une sortie d'agent qui n'a pas passé le pipeline. Aucune exception, aucun contournement.",
+      type: 'code-fill',
+      instruction: 'Complète la commande GitHub CLI pour configurer la protection de branche. Remplis les paramètres API qui imposent le passage du pipeline avant la fusion.',
       language: 'bash',
       filename: 'terminal',
-      code: `# Configure branch protection via GitHub CLI
+      template: `# Configure branch protection via GitHub CLI
 gh api repos/{owner}/{repo}/branches/main/protection -X PUT \\
   --input - << 'EOF'
 {
   "required_status_checks": {
-    "strict": true,
-    "contexts": ["verify"]
+    "strict": ___BLANK_1___,
+    "contexts": ["___BLANK_2___"]
   },
-  "enforce_admins": true,
+  "___BLANK_3___": true,
   "required_pull_request_reviews": null,
   "restrictions": null
 }
 EOF`,
+      blanks: [
+        {
+          id: 'BLANK_1',
+          answer: 'true',
+          alternatives: ['true'],
+          hint: 'La branche doit-elle être à jour avec main avant la fusion ?',
+          placeholder: 'exiger branche à jour',
+        },
+        {
+          id: 'BLANK_2',
+          answer: 'verify',
+          alternatives: ['verify', '"verify"'],
+          hint: 'Le nom du job CI qui doit passer (depuis le fichier de workflow)',
+          placeholder: 'nom du status check requis',
+        },
+        {
+          id: 'BLANK_3',
+          answer: 'enforce_admins',
+          alternatives: ['enforce_admins', '"enforce_admins"'],
+          hint: 'Les admins doivent-ils aussi être soumis à ces règles ? (pas d\'exceptions)',
+          placeholder: 'flag d\'application admin',
+        },
+      ],
+      explanation: 'Définir `strict: true` exige que les branches soient à jour avant la fusion. Le tableau `contexts` liste quels jobs CI doivent passer — « verify » correspond au nom du job dans le workflow. `enforce_admins: true` signifie que personne ne peut contourner les règles, pas même les propriétaires du dépôt.',
     },
     {
       type: 'multiple-choice',
@@ -374,9 +466,9 @@ EOF`,
 
     // === DIAGRAM 2: Full Flow ===
     {
-      type: 'diagram',
+      type: 'interactive-diagram',
       title: 'De bout en bout : Flotte + Pipeline + Fusion',
-      body: "Le flux complet du dispatch d'agents à la fusion en production. Chaque branche d'agent passe par le pipeline. Seules les branches qui passent sont fusionnées. C'est le système qui te permet de passer à l'échelle avec 5, 10, 20 agents sans crainte.",
+      body: "Le flux complet du dispatch d'agents à la fusion en production. Chaque branche d'agent passe par le pipeline. Seules les branches qui passent sont fusionnées.",
       diagram: {
         direction: 'TB',
         nodes: [
@@ -402,13 +494,42 @@ EOF`,
           { from: 'fix', to: 'pipe', dashed: true },
         ],
       },
+      stages: [
+        {
+          highlightNodes: ['fleet', 'b1', 'b2', 'b3'],
+          highlightEdges: [{ from: 'fleet', to: 'b1' }, { from: 'fleet', to: 'b2' }, { from: 'fleet', to: 'b3' }],
+          explanation: 'La flotte dispatch les agents sur des branches séparées. Chaque agent travaille indépendamment dans son propre worktree, produisant du code en parallèle.',
+        },
+        {
+          highlightNodes: ['b1', 'b2', 'b3', 'pipe'],
+          highlightEdges: [{ from: 'b1', to: 'pipe' }, { from: 'b2', to: 'pipe' }, { from: 'b3', to: 'pipe' }],
+          explanation: 'Quand un agent pousse, le pipeline se déclenche automatiquement. Les quatre étapes s\'exécutent : vérif. types, lint, tests, build. Chaque branche est vérifiée indépendamment.',
+        },
+        {
+          highlightNodes: ['pipe', 'gate', 'merge'],
+          highlightEdges: [{ from: 'pipe', to: 'gate' }, { from: 'gate', to: 'merge' }],
+          explanation: 'Les branches qui passent les quatre étapes du pipeline sont approuvées pour la fusion. La protection de branche garantit que seul le code vérifié atteint main.',
+        },
+        {
+          highlightNodes: ['gate', 'fix', 'pipe'],
+          highlightEdges: [{ from: 'gate', to: 'fix' }, { from: 'fix', to: 'pipe' }],
+          explanation: 'Les branches en échec sont corrigées et re-poussées. Le pipeline s\'exécute à nouveau. Cette boucle continue jusqu\'à ce que le code passe toutes les barrières ou soit abandonné.',
+        },
+      ],
     },
 
     // === HANDS-ON EXERCISE ===
     {
-      type: 'info',
-      title: 'Exercice : Construire ton pipeline de vérification',
-      body: "Câblons un vrai pipeline. Tu vas créer les fichiers de configuration qui automatisent la vérification pour les sorties de ta flotte.",
+      type: 'multiple-choice',
+      question: 'Tu es sur le point de câbler un vrai pipeline de vérification. Quel est le bon ordre de création des fichiers de configuration ?',
+      options: [
+        'Workflow CI d\'abord, puis tsconfig, puis eslint — le CI est la priorité',
+        'tsconfig d\'abord, puis eslint.config, puis workflow CI — outils locaux avant le CI',
+        'eslint d\'abord, puis tsconfig, puis CI — conventions avant types',
+        'Tout en même temps — l\'ordre n\'a pas d\'importance',
+      ],
+      correctIndex: 1,
+      explanation: "Crée les configs d'outils locaux d'abord (tsconfig, eslint) pour pouvoir exécuter le pipeline localement avant de configurer le CI. Le workflow CI référence ces configs — il exécute `tsc --noEmit` (nécessite tsconfig) et `bun run lint` (nécessite eslint.config). Toujours vérifier localement avant d'automatiser.",
     },
     {
       type: 'terminal',

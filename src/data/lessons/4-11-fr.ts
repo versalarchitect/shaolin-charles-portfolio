@@ -17,9 +17,9 @@ const content: LessonContent = {
 
     // === THE TRANSLATION FRAMEWORK ===
     {
-      type: 'diagram',
+      type: 'interactive-diagram',
       title: 'De la réalité technique à la valeur métier',
-      body: 'Chaque choix technique doit se connecter à un résultat qui intéresse les parties prenantes.',
+      body: 'Clique sur chaque étape pour comprendre le pipeline de traduction des décisions techniques aux messages prêts pour les parties prenantes.',
       diagram: {
         direction: 'LR',
         nodes: [
@@ -32,11 +32,35 @@ const content: LessonContent = {
           { from: 'translate', to: 'value' },
         ],
       },
+      stages: [
+        {
+          highlightNodes: ['tech'],
+          highlightEdges: [],
+          explanation: 'Tu commences ici : « 5 agents sur des worktrees parallèles », « CLAUDE.md par package », « application des frontières de modules ». Ce sont des descriptions exactes de ton architecture, mais elles supposent que l\'auditeur partage ton modèle mental. La plupart des parties prenantes ne le partagent pas.',
+        },
+        {
+          highlightNodes: ['tech', 'translate'],
+          highlightEdges: [{ from: 'tech', to: 'translate' }],
+          explanation: 'La couche de traduction est TA compétence. Pour chaque choix technique, demande-toi : « Quel résultat cela produit-il que mon audience valorise déjà ? » Ce n\'est pas simplifier — c\'est connecter ton travail à leur cadre de décision.',
+        },
+        {
+          highlightNodes: ['translate', 'value'],
+          highlightEdges: [{ from: 'translate', to: 'value' }],
+          explanation: '« 5 agents en worktrees parallèles » devient « 5x la capacité de développement avec un minimum de coordination ». « CLAUDE.md par package » devient « architecture auto-documentée — tout développeur productif en heures ». « Pipeline de vérification » devient « porte qualité automatisée attrapant les problèmes avant la production ». Même architecture. Langage différent. Réception radicalement différente.',
+        },
+      ],
     },
     {
-      type: 'info',
-      title: 'Le tableau de traduction',
-      body: "Chaque concept agent-first a une traduction métier. « 5 agents en worktrees parallèles » devient « 5x la capacité de développement avec un minimum de coordination ». « CLAUDE.md par package » devient « architecture auto-documentée qui permet à tout développeur de contribuer immédiatement ». « Application des frontières de modules » devient « garde-fous architecturaux qui préviennent les conflits inter-équipes ». « Pipeline de vérification » devient « porte qualité automatisée qui attrape les problèmes avant qu'ils atteignent la production ». Même architecture. Langage différent. Réception radicalement différente.",
+      type: 'multiple-choice',
+      question: 'Tu dis « application des frontières de modules via des règles eslint et des tags Nx ». Qu\'est-ce que ton responsable d\'ingénierie entend probablement ?',
+      options: [
+        'Une décision architecturale intelligente qui prévient les conflits inter-équipes',
+        'Plus de surcharge de processus et de complexité d\'outillage qui ralentit l\'équipe',
+        'Une mesure d\'économie qui réduit les besoins en embauche',
+        'Une approche innovante du développement parallèle',
+      ],
+      correctIndex: 1,
+      explanation: 'Sans traduction, les mécanismes techniques sonnent comme de la surcharge pour les non-praticiens. « Application des frontières de modules » sonne comme de la bureaucratie de processus. La même décision cadrée comme « garde-fous architecturaux qui préviennent les conflits inter-équipes » se connecte à un résultat que les gestionnaires valorisent déjà : moins de problèmes de coordination, moins d\'incidents, livraison plus rapide.',
     },
     {
       type: 'checkpoint',

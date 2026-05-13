@@ -35,9 +35,9 @@ const content: LessonContent = {
 
     // === SCOPE DEGRADATION DIAGRAM ===
     {
-      type: 'diagram',
+      type: 'interactive-diagram',
       title: 'Scope vs Output Quality',
-      body: 'As task scope expands, agent output quality degrades non-linearly. The sweet spot is a focused sub-task.',
+      body: 'As task scope expands, agent output quality degrades non-linearly. Click through each level.',
       diagram: {
         direction: 'LR',
         nodes: [
@@ -54,6 +54,23 @@ const content: LessonContent = {
           { from: 'broad', to: 'degraded' },
         ],
       },
+      stages: [
+        {
+          highlightNodes: ['narrow', 'precise'],
+          highlightEdges: [{ from: 'narrow', to: 'precise' }],
+          explanation: 'Narrow scope ("implement this one function") gets the agent\'s full attention. Output is coherent, testable, and easy to review. This is the sweet spot.',
+        },
+        {
+          highlightNodes: ['medium', 'decent'],
+          highlightEdges: [{ from: 'medium', to: 'decent' }],
+          explanation: 'Medium scope ("build session management") stretches attention across multiple functions. Output is mostly consistent but may have gaps in edge cases or inconsistent patterns.',
+        },
+        {
+          highlightNodes: ['broad', 'degraded'],
+          highlightEdges: [{ from: 'broad', to: 'degraded' }],
+          explanation: 'Broad scope ("build the whole auth system") exhausts context and splits attention 8 ways. Output is verbose, inconsistent, and requires extensive debugging. This is the quality tax of over-scoping.',
+        },
+      ],
     },
     {
       type: 'checkpoint',
@@ -63,17 +80,29 @@ const content: LessonContent = {
 
     // === FILE BOUNDARIES ===
     {
-      type: 'info',
-      title: 'File boundaries: constraining where the agent works',
-      body: "The most concrete scope constraint is telling the agent which files it may touch. 'Only modify files in src/components/auth/' is unambiguous. The agent will not refactor your database layer, will not update unrelated components, will not 'helpfully' improve files outside its zone. File boundaries prevent two problems: unintended side effects (the agent breaks something elsewhere) and scope creep (it starts improving tangential code because it noticed an opportunity).",
+      type: 'multiple-choice',
+      question: 'What is the most concrete way to constrain the scope of an agent task?',
+      options: [
+        'Tell the agent to "be careful"',
+        'Limit the number of tokens in your prompt',
+        'Specify exact file boundaries: "Only modify files in src/components/auth/"',
+        'Ask the agent to work slowly',
+      ],
+      correctIndex: 2,
+      explanation: "The most concrete scope constraint is telling the agent which files it may touch. 'Only modify files in src/components/auth/' is unambiguous. File boundaries prevent two problems: unintended side effects (the agent breaks something elsewhere) and scope creep (it starts improving tangential code because it noticed an opportunity).",
     },
     {
-      type: 'code-demo',
-      title: 'File boundary in practice',
-      body: 'Explicit file boundaries in your prompt prevent the agent from touching unrelated code.',
+      type: 'code-fill',
+      instruction: 'Complete this prompt with proper file boundaries to prevent the agent from touching unrelated code:',
       language: 'text',
       filename: 'prompt.txt',
-      code: "Implement the password reset flow.\n\nBOUNDARIES:\n- Only create/modify files in: src/components/auth/ and src/lib/auth/\n- Do NOT touch: src/components/dashboard/, src/lib/db/, src/app/api/\n- New files are allowed within the boundary directories\n- If you need changes outside these directories, tell me what\n  you need changed and I will do it separately.\n\nThis is important: if you find yourself wanting to modify\na file outside the boundary, STOP and explain why instead\nof doing it.",
+      template: 'Implement the password reset flow.\n\nBOUNDARIES:\n- Only create/modify files in: {{allowed_dirs}}\n- Do NOT touch: {{forbidden_dirs}}\n- New files are allowed within the boundary directories\n- If you need changes outside these directories, {{escape_clause}}',
+      blanks: [
+        { id: 'allowed_dirs', answer: 'src/components/auth/ and src/lib/auth/', alternatives: ['src/components/auth/, src/lib/auth/', 'src/components/auth/ + src/lib/auth/'], placeholder: 'which directories allowed?', hint: 'The auth component and auth library directories' },
+        { id: 'forbidden_dirs', answer: 'src/components/dashboard/, src/lib/db/, src/app/api/', alternatives: ['src/components/dashboard/ src/lib/db/ src/app/api/'], placeholder: 'which directories forbidden?', hint: 'The dashboard, database, and API directories' },
+        { id: 'escape_clause', answer: 'tell me what you need changed and I will do it separately', alternatives: ['stop and explain why', 'STOP and explain why instead of doing it'], placeholder: 'what should agent do?', hint: 'The agent should ask, not act outside boundaries' },
+      ],
+      explanation: 'Explicit file boundaries prevent the agent from touching unrelated code. The escape clause is critical — it gives the agent a safe way to signal when it genuinely needs something outside its zone.',
     },
     {
       type: 'terminal',
@@ -89,17 +118,22 @@ const content: LessonContent = {
 
     // === FUNCTION BOUNDARIES ===
     {
-      type: 'info',
+      type: 'compare',
       title: 'Function boundaries: one task per prompt',
-      body: "Even within a single file, you can constrain scope to a single function or module. 'Implement only the validateSession helper — do not implement the full auth middleware, just this one function.' This prevents the agent from anticipating your next request and pre-building things you have not specified yet. It also makes the output trivially reviewable: you asked for one function, you evaluate one function.",
-    },
-    {
-      type: 'code-demo',
-      title: 'Function-level scope constraint',
-      body: 'Constraining to a single function produces focused, reviewable output.',
-      language: 'text',
-      filename: 'prompt.txt',
-      code: "Implement the `validateSession` function in src/lib/auth/session.ts.\n\nSignature:\n  async function validateSession(token: string): Promise<Session | null>\n\nBehavior:\n- Decode the JWT token (use jose library)\n- Check expiry — return null if expired\n- Look up the session in the database via sessionId from payload\n- Return the Session object if valid, null otherwise\n\nDo NOT implement:\n- Token refresh logic (separate task)\n- Session creation (already done)\n- Middleware that calls this function (separate task)\n- Error handling beyond returning null (keep it simple for now)\n\nJust this one function. Nothing else.",
+      body: 'Even within a single file, you can constrain scope to a single function.',
+      question: 'Which prompt produces more focused, reviewable output?',
+      correctSide: 'right',
+      left: {
+        label: 'Unbounded',
+        content: '"Add session validation to the auth system.\nMake sure it works with the middleware\nand handles token refresh too."',
+        language: 'text',
+      },
+      right: {
+        label: 'Function-scoped',
+        content: '"Implement validateSession in session.ts.\nSignature: (token: string) => Session | null\nBehavior: decode JWT, check expiry, look up\nsession in DB, return Session or null.\n\nDo NOT implement: token refresh,\nsession creation, or middleware."',
+        language: 'text',
+      },
+      explanation: "Constraining to a single function prevents the agent from anticipating your next request and pre-building things you have not specified yet. It also makes the output trivially reviewable: you asked for one function, you evaluate one function. The 'Do NOT implement' section is critical.",
     },
     {
       type: 'multiple-choice',
@@ -129,17 +163,22 @@ const content: LessonContent = {
 
     // === TOKEN BUDGETS ===
     {
-      type: 'info',
+      type: 'compare',
       title: 'Token budgets: keeping prompts focused',
-      body: "Every token of context competes for the agent's attention. A prompt that includes background on the entire project, the full database schema, every API route, and the complete design system — then asks for a single helper function — is wasting attention on irrelevant context. Include only the context directly relevant to the task at hand. If the agent needs more, it will ask (or you can provide it in follow-ups). Front-load the most important information.",
-    },
-    {
-      type: 'code-demo',
-      title: 'Focused context vs kitchen sink',
-      body: 'Only include context the agent needs for THIS specific task.',
-      language: 'text',
-      filename: 'focused-prompt.txt',
-      code: "❌ KITCHEN SINK (wastes attention on irrelevant context):\n\nHere's my full schema: [500 lines of SQL]\nHere's my auth system: [200 lines of code]\nHere's my design system: [300 lines of tokens]\nNow implement the validateSession function.\n\n✅ FOCUSED (relevant context only):\n\nImplement validateSession in src/lib/auth/session.ts.\n\nRelevant types:\n  interface Session { id: string; userId: string; expiresAt: Date }\n\nRelevant DB call (already exists):\n  db.query.sessions.findFirst({ where: eq(sessions.id, sessionId) })\n\nJWT library: jose (already installed)\n\n[spec follows...]",
+      body: 'Every token of context competes for the agent\'s attention. Only include what is relevant.',
+      question: 'Which prompt gives the agent the best chance of producing correct output?',
+      correctSide: 'right',
+      left: {
+        label: 'Kitchen sink',
+        content: '"Here\'s my full schema: [500 lines]\nHere\'s my auth system: [200 lines]\nHere\'s my design system: [300 lines]\n\nNow implement validateSession."',
+        language: 'text',
+      },
+      right: {
+        label: 'Focused context',
+        content: '"Implement validateSession in session.ts.\n\nRelevant types:\n  Session { id, userId, expiresAt }\n\nRelevant DB call (already exists):\n  db.query.sessions.findFirst({...})\n\nJWT library: jose (installed)"',
+        language: 'text',
+      },
+      explanation: 'Including 1000 lines of irrelevant context dilutes the agent\'s attention on the 10 lines that matter. Front-load the most important information. If the agent needs more, it will ask.',
     },
     {
       type: 'checkpoint',
@@ -149,17 +188,24 @@ const content: LessonContent = {
 
     // === SPLITTING LARGE TASKS ===
     {
-      type: 'info',
-      title: 'Splitting large tasks without losing coherence',
-      body: "The challenge with narrow scope: how do you build a complex system from isolated pieces without it feeling disjointed? The answer is a shared spec that each sub-task references. You write the full system spec once (the big picture), then extract focused sub-tasks that each cite the relevant section. Each sub-task knows its place in the whole — but only executes its narrow piece. The agent has just enough context to be coherent without being overwhelmed.",
+      type: 'multiple-choice',
+      question: 'How do you build a complex system from narrow-scope tasks without it feeling disjointed?',
+      options: [
+        'Let the agent figure out how the pieces connect',
+        'Write a shared spec once (the big picture), then extract focused sub-tasks that each cite the relevant section',
+        'Build everything in one large prompt to keep it coherent',
+        'Build each piece independently and hope they fit together',
+      ],
+      correctIndex: 1,
+      explanation: "The answer is a shared spec that each sub-task references. You write the full system spec once (the big picture), then extract focused sub-tasks that each cite the relevant section. Each sub-task knows its place in the whole — but only executes its narrow piece. The agent has just enough context to be coherent without being overwhelmed.",
     },
     {
-      type: 'code-demo',
-      title: 'Task decomposition pattern',
-      body: 'Break a large system into sequential focused tasks, each with its own boundary.',
-      language: 'markdown',
-      filename: 'auth-tasks.md',
-      code: "# Auth System — Task Breakdown\n\n## Task 1: Database Schema (src/db/schema/auth.ts)\nCreate users, sessions, and password_resets tables.\nDo NOT implement any application logic.\n\n## Task 2: Session Helpers (src/lib/auth/session.ts)\nImplement: createSession, validateSession, deleteSession.\nUse the schema from Task 1. Do NOT create API routes.\n\n## Task 3: Password Utilities (src/lib/auth/password.ts)\nImplement: hashPassword, verifyPassword, generateResetToken.\nStandalone utilities — no database calls in this file.\n\n## Task 4: Auth API Routes (src/app/api/auth/)\nCreate login, register, logout routes.\nImport from Task 2 and Task 3. Do NOT modify those files.\n\n## Task 5: Auth UI Components (src/components/auth/)\nCreate LoginForm, RegisterForm, ResetPasswordForm.\nCall API routes from Task 4. Do NOT modify API logic.",
+      type: 'match',
+      instruction: 'Match each auth system sub-task to its correct file boundary:',
+      leftItems: ['Database schema (tables only)', 'Session helpers (create, validate, delete)', 'Password utilities (hash, verify)', 'Auth API routes (login, register, logout)'],
+      rightItems: ['src/lib/auth/password.ts — standalone, no DB calls', 'src/db/schema/auth.ts — no application logic', 'src/app/api/auth/ — imports from helpers, does NOT modify them', 'src/lib/auth/session.ts — uses schema, does NOT create API routes'],
+      correctPairs: { 0: 1, 1: 3, 2: 0, 3: 2 },
+      explanation: 'Each sub-task has its own file boundary and explicit exclusions. The schema task creates tables only. Session helpers use the schema but do not create routes. Password utils are standalone. API routes import from helpers but never modify them.',
     },
     {
       type: 'order',
@@ -180,21 +226,37 @@ const content: LessonContent = {
 
     // === PRINCIPLE 5 ===
     {
-      type: 'info',
-      title: 'Principle 5: Boundaries force better decisions',
-      body: "This is not just about agent quality. Scope constraints force better decisions from YOU as the director. When you cannot dump everything into one prompt, you must think about sequencing: what depends on what? What can be built independently? What interface contracts need to be defined up front? This decomposition thinking is the core skill of software architecture. Agents did not invent it — they just made it viscerally obvious when you skip it.",
+      type: 'multiple-choice',
+      question: 'When you write "only touch src/components/auth/" in a prompt, you are communicating to:',
+      options: [
+        'Only the agent — so it knows where to work',
+        'Three audiences: the agent (working zone), yourself (blast radius), and your future self (what was modified)',
+        'Only your future self — as documentation',
+        'Only the code reviewer — so they know what to check',
+      ],
+      correctIndex: 1,
+      explanation: "Scope constraints communicate three things simultaneously. To the agent: your working zone. To yourself: the blast radius of this change. To your future self: what was modified in this iteration. They are documentation, safety rails, and focus aids — all in one line. They cost nothing to write and save enormous debugging time.",
     },
     {
-      type: 'info',
-      title: 'Boundaries as communication',
-      body: "When you write 'only touch src/components/auth/' you are communicating three things simultaneously. To the agent: your working zone. To yourself: the blast radius of this change. To your future self: what was modified in this iteration. Scope constraints are documentation, safety rails, and focus aids — all in one line. They cost nothing to write and save enormous debugging time.",
+      type: 'order',
+      instruction: 'Order these architectural thinking steps that scope constraints force you to do:',
+      items: [
+        'Define interface contracts between pieces up front',
+        'Identify which pieces can be built independently (parallel work)',
+        'Determine what depends on what (sequencing)',
+        'Write the full system spec as the big picture',
+      ],
+      correctOrder: [3, 2, 1, 0],
     },
 
     // === REAL CLAUDE CODE FLAGS ===
     {
-      type: 'info',
-      title: 'Claude Code scope patterns',
-      body: "Claude Code supports several patterns for scope constraint. You can use CLAUDE.md to set persistent boundaries for a project. You can use inline prompt instructions for per-task constraints. And you can structure your prompts to reference specific files by path. The key insight: scope is not a feature of the tool — it is a discipline in how you write prompts. Any agent system benefits from explicit scope.",
+      type: 'match',
+      instruction: 'Match each scope constraint mechanism to when you would use it:',
+      leftItems: ['CLAUDE.md file', 'Inline prompt instructions', 'File path references in prompt', 'Do NOT implement section'],
+      rightItems: ['Per-task constraints for a single prompt', 'Persistent project-wide boundaries that apply to every task', 'Prevent the agent from pre-building things you have not asked for', 'Point the agent to exactly the right file to modify'],
+      correctPairs: { 0: 1, 1: 0, 2: 3, 3: 2 },
+      explanation: "Scope is not a feature of the tool — it is a discipline in how you write prompts. CLAUDE.md for project-wide rules, inline instructions for per-task constraints, file paths for precision targeting, and 'Do NOT' sections to prevent over-delivery. Any agent system benefits from explicit scope.",
     },
     {
       type: 'terminal',
@@ -216,9 +278,22 @@ const content: LessonContent = {
 
     // === WHEN TO BROADEN SCOPE ===
     {
-      type: 'info',
+      type: 'compare',
       title: 'When wider scope is justified',
-      body: "Not every task should be micro-scoped. When changes are tightly coupled — a type change that propagates through 5 files — narrow scope creates more work than it saves. The rule: broaden scope only when the coupling between changes is so tight that splitting them would require you to specify the interface contract in more detail than just having the agent do both sides. If two changes share no interface, they are separate tasks. If they share a tight interface, they might be one task.",
+      body: 'Not every task should be micro-scoped. Sometimes coupling makes wider scope more efficient.',
+      question: 'Which scenario justifies a single wide-scope prompt?',
+      correctSide: 'right',
+      left: {
+        label: 'Split into narrow tasks',
+        content: 'Task A: Build login form (UI only)\nTask B: Implement password hashing (util)\nTask C: Add email validation to signup\nTask D: Add phone validation to profile\n\nThese share NO interface — splitting\nis free and each task is reviewable.',
+        language: 'text',
+      },
+      right: {
+        label: 'Keep as one task',
+        content: 'Rename the type UserProfile to Account\nand update all 12 files that reference it.\n\nThis is tightly coupled — every reference\nmust change in sync or the code breaks.\nSplitting this into 12 tasks is worse.',
+        language: 'text',
+      },
+      explanation: 'Broaden scope only when coupling between changes is so tight that splitting would require you to specify interface contracts in more detail than just having the agent do both sides. If two changes share no interface, they are separate tasks. If they share a tight interface, they might be one task.',
     },
     {
       type: 'multiple-choice',
@@ -235,9 +310,16 @@ const content: LessonContent = {
 
     // === SYNTHESIS ===
     {
-      type: 'info',
-      title: 'The constraint mindset',
-      body: "Constraining scope feels counterintuitive when agents promise to 'do everything.' But the fastest path to a working system is a sequence of focused, high-quality sub-tasks — not one sprawling attempt that requires extensive debugging. Every minute you spend defining scope saves five minutes fixing inconsistencies. Every boundary you set is a decision you will not have to undo. The best directors are not the ones who ask for the most — they are the ones who ask for exactly the right thing at the right time.",
+      type: 'multiple-choice',
+      question: 'What is the ROI of spending one minute defining scope constraints in a prompt?',
+      options: [
+        'It wastes time — agents work better with creative freedom',
+        'It saves roughly five minutes fixing inconsistencies later',
+        'It makes no difference to output quality',
+        'It only helps with small tasks, not complex systems',
+      ],
+      correctIndex: 1,
+      explanation: "Every minute you spend defining scope saves five minutes fixing inconsistencies. Every boundary you set is a decision you will not have to undo. The best directors are not the ones who ask for the most — they are the ones who ask for exactly the right thing at the right time.",
     },
     {
       type: 'prompt-lab',

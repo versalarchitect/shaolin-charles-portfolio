@@ -35,9 +35,9 @@ const content: LessonContent = {
 
     // === SCOPE DEGRADATION DIAGRAM ===
     {
-      type: 'diagram',
+      type: 'interactive-diagram',
       title: 'Scope vs Qualité de la sortie',
-      body: 'À mesure que le scope de la tâche s\'étend, la qualité de sortie de l\'agent se dégrade de façon non linéaire. Le point idéal est une sous-tâche ciblée.',
+      body: 'À mesure que le scope de la tâche s\'étend, la qualité de sortie de l\'agent se dégrade. Clique sur chaque niveau.',
       diagram: {
         direction: 'LR',
         nodes: [
@@ -54,6 +54,23 @@ const content: LessonContent = {
           { from: 'broad', to: 'degraded' },
         ],
       },
+      stages: [
+        {
+          highlightNodes: ['narrow', 'precise'],
+          highlightEdges: [{ from: 'narrow', to: 'precise' }],
+          explanation: 'Un scope étroit (« implémente cette seule fonction ») obtient toute l\'attention de l\'agent. La sortie est cohérente, testable et facile à réviser. C\'est le point idéal.',
+        },
+        {
+          highlightNodes: ['medium', 'decent'],
+          highlightEdges: [{ from: 'medium', to: 'decent' }],
+          explanation: 'Un scope moyen (« construis la gestion de sessions ») étire l\'attention sur plusieurs fonctions. La sortie est plutôt cohérente mais peut avoir des lacunes dans les cas limites ou des patterns incohérents.',
+        },
+        {
+          highlightNodes: ['broad', 'degraded'],
+          highlightEdges: [{ from: 'broad', to: 'degraded' }],
+          explanation: 'Un scope large (« construis tout le système d\'auth ») épuise le contexte et divise l\'attention en 8 directions. La sortie est verbeuse, incohérente et nécessite un débogage extensif. C\'est la taxe sur la qualité du sur-scoping.',
+        },
+      ],
     },
     {
       type: 'checkpoint',
@@ -63,17 +80,29 @@ const content: LessonContent = {
 
     // === FILE BOUNDARIES ===
     {
-      type: 'info',
-      title: 'Limites de fichiers : contraindre où l\'agent travaille',
-      body: "La contrainte de scope la plus concrète, c'est de dire à l'agent quels fichiers il peut toucher. « Modifie uniquement les fichiers dans src/components/auth/ » est sans ambiguïté. L'agent ne va pas refactorer ta couche de base de données, ne va pas mettre à jour des composants non reliés, ne va pas « gentiment » améliorer des fichiers hors de sa zone. Les limites de fichiers préviennent deux problèmes : les effets secondaires non intentionnels (l'agent casse quelque chose ailleurs) et le scope creep (il commence à améliorer du code tangentiel parce qu'il a remarqué une opportunité).",
+      type: 'multiple-choice',
+      question: 'Quelle est la manière la plus concrète de contraindre le scope d\'une tâche d\'agent ?',
+      options: [
+        'Dire à l\'agent de « faire attention »',
+        'Limiter le nombre de tokens dans ton prompt',
+        'Spécifier des limites de fichiers exactes : « Modifie uniquement les fichiers dans src/components/auth/ »',
+        'Demander à l\'agent de travailler lentement',
+      ],
+      correctIndex: 2,
+      explanation: "La contrainte de scope la plus concrète, c'est de dire à l'agent quels fichiers il peut toucher. « Modifie uniquement les fichiers dans src/components/auth/ » est sans ambiguïté. Les limites de fichiers préviennent deux problèmes : les effets secondaires non intentionnels (l'agent casse quelque chose ailleurs) et le scope creep (il commence à améliorer du code tangentiel).",
     },
     {
-      type: 'code-demo',
-      title: 'Limite de fichiers en pratique',
-      body: 'Des limites de fichiers explicites dans ton prompt empêchent l\'agent de toucher du code non relié.',
+      type: 'code-fill',
+      instruction: 'Complète ce prompt avec les bonnes limites de fichiers pour empêcher l\'agent de toucher du code non relié :',
       language: 'text',
       filename: 'prompt.txt',
-      code: "Implement the password reset flow.\n\nBOUNDARIES:\n- Only create/modify files in: src/components/auth/ and src/lib/auth/\n- Do NOT touch: src/components/dashboard/, src/lib/db/, src/app/api/\n- New files are allowed within the boundary directories\n- If you need changes outside these directories, tell me what\n  you need changed and I will do it separately.\n\nThis is important: if you find yourself wanting to modify\na file outside the boundary, STOP and explain why instead\nof doing it.",
+      template: 'Implémente le flux de réinitialisation de mot de passe.\n\nLIMITES :\n- Crée/modifie uniquement les fichiers dans : {{allowed_dirs}}\n- Ne PAS toucher : {{forbidden_dirs}}\n- Les nouveaux fichiers sont autorisés dans les répertoires permis\n- Si tu as besoin de changements hors de ces répertoires, {{escape_clause}}',
+      blanks: [
+        { id: 'allowed_dirs', answer: 'src/components/auth/ et src/lib/auth/', alternatives: ['src/components/auth/, src/lib/auth/', 'src/components/auth/ + src/lib/auth/'], placeholder: 'quels répertoires autorisés ?', hint: 'Les répertoires de composants auth et de la lib auth' },
+        { id: 'forbidden_dirs', answer: 'src/components/dashboard/, src/lib/db/, src/app/api/', alternatives: ['src/components/dashboard/ src/lib/db/ src/app/api/'], placeholder: 'quels répertoires interdits ?', hint: 'Les répertoires dashboard, base de données et API' },
+        { id: 'escape_clause', answer: 'dis-moi ce que tu as besoin de changer et je le ferai séparément', alternatives: ['arrête et explique pourquoi', 'ARRÊTE et explique pourquoi au lieu de le faire'], placeholder: 'que doit faire l\'agent ?', hint: 'L\'agent devrait demander, pas agir hors des limites' },
+      ],
+      explanation: 'Les limites de fichiers explicites empêchent l\'agent de toucher du code non relié. La clause d\'échappatoire est critique — elle donne à l\'agent un moyen sûr de signaler quand il a vraiment besoin de quelque chose hors de sa zone.',
     },
     {
       type: 'terminal',
@@ -89,17 +118,22 @@ const content: LessonContent = {
 
     // === FUNCTION BOUNDARIES ===
     {
-      type: 'info',
+      type: 'compare',
       title: 'Limites de fonctions : une tâche par prompt',
-      body: "Même à l'intérieur d'un seul fichier, tu peux contraindre le scope à une seule fonction ou module. « Implémente uniquement le helper validateSession — n'implémente pas le middleware d'auth complet, juste cette seule fonction. » Ça empêche l'agent d'anticiper ta prochaine demande et de pré-construire des choses que t'as pas encore spécifiées. Ça rend aussi la sortie triviale à réviser : t'as demandé une fonction, t'évalues une fonction.",
-    },
-    {
-      type: 'code-demo',
-      title: 'Contrainte de scope au niveau fonction',
-      body: 'Contraindre à une seule fonction produit une sortie ciblée et révisable.',
-      language: 'text',
-      filename: 'prompt.txt',
-      code: "Implement the `validateSession` function in src/lib/auth/session.ts.\n\nSignature:\n  async function validateSession(token: string): Promise<Session | null>\n\nBehavior:\n- Decode the JWT token (use jose library)\n- Check expiry — return null if expired\n- Look up the session in the database via sessionId from payload\n- Return the Session object if valid, null otherwise\n\nDo NOT implement:\n- Token refresh logic (separate task)\n- Session creation (already done)\n- Middleware that calls this function (separate task)\n- Error handling beyond returning null (keep it simple for now)\n\nJust this one function. Nothing else.",
+      body: 'Même à l\'intérieur d\'un seul fichier, tu peux contraindre le scope à une seule fonction.',
+      question: 'Quel prompt produit une sortie plus ciblée et révisable ?',
+      correctSide: 'right',
+      left: {
+        label: 'Sans limites',
+        content: '« Ajoute la validation de session au système\nd\'auth. Assure-toi que ça marche avec le\nmiddleware et gère le rafraîchissement\nde token aussi. »',
+        language: 'text',
+      },
+      right: {
+        label: 'Scope au niveau fonction',
+        content: '« Implémente validateSession dans session.ts.\nSignature : (token: string) => Session | null\nComportement : décode JWT, vérifie expiration,\ncherche session en BD, retourne Session ou null.\n\nNe PAS implémenter : rafraîchissement de\ntoken, création de session, ou middleware. »',
+        language: 'text',
+      },
+      explanation: "Contraindre à une seule fonction empêche l'agent d'anticiper ta prochaine demande et de pré-construire des choses que t'as pas encore spécifiées. Ça rend aussi la sortie triviale à réviser : t'as demandé une fonction, t'évalues une fonction. La section « Ne PAS implémenter » est critique.",
     },
     {
       type: 'multiple-choice',
@@ -129,17 +163,22 @@ const content: LessonContent = {
 
     // === TOKEN BUDGETS ===
     {
-      type: 'info',
+      type: 'compare',
       title: 'Budgets de tokens : garder les prompts concentrés',
-      body: "Chaque token de contexte compétitionne pour l'attention de l'agent. Un prompt qui inclut le contexte de tout le projet, le schéma complet de la base de données, chaque route API, et le design system au complet — puis demande une seule fonction utilitaire — gaspille de l'attention sur du contexte non pertinent. Inclus uniquement le contexte directement pertinent à la tâche en cours. Si l'agent a besoin de plus, il va le demander (ou tu peux le fournir en suivis). Mets l'information la plus importante en premier.",
-    },
-    {
-      type: 'code-demo',
-      title: 'Contexte ciblé vs tout inclure',
-      body: 'Inclus uniquement le contexte dont l\'agent a besoin pour CETTE tâche spécifique.',
-      language: 'text',
-      filename: 'focused-prompt.txt',
-      code: "❌ KITCHEN SINK (wastes attention on irrelevant context):\n\nHere's my full schema: [500 lines of SQL]\nHere's my auth system: [200 lines of code]\nHere's my design system: [300 lines of tokens]\nNow implement the validateSession function.\n\n✅ FOCUSED (relevant context only):\n\nImplement validateSession in src/lib/auth/session.ts.\n\nRelevant types:\n  interface Session { id: string; userId: string; expiresAt: Date }\n\nRelevant DB call (already exists):\n  db.query.sessions.findFirst({ where: eq(sessions.id, sessionId) })\n\nJWT library: jose (already installed)\n\n[spec follows...]",
+      body: 'Chaque token de contexte compétitionne pour l\'attention de l\'agent. Inclus uniquement ce qui est pertinent.',
+      question: 'Quel prompt donne à l\'agent les meilleures chances de produire une sortie correcte ?',
+      correctSide: 'right',
+      left: {
+        label: 'Tout inclure',
+        content: '« Voici mon schéma complet : [500 lignes]\nVoici mon système d\'auth : [200 lignes]\nVoici mon design system : [300 lignes]\n\nMaintenant implémente validateSession. »',
+        language: 'text',
+      },
+      right: {
+        label: 'Contexte ciblé',
+        content: '« Implémente validateSession dans session.ts.\n\nTypes pertinents :\n  Session { id, userId, expiresAt }\n\nAppel BD pertinent (existe déjà) :\n  db.query.sessions.findFirst({...})\n\nBibliothèque JWT : jose (installée) »',
+        language: 'text',
+      },
+      explanation: 'Inclure 1000 lignes de contexte non pertinent dilue l\'attention de l\'agent sur les 10 lignes qui comptent. Mets l\'information la plus importante en premier. Si l\'agent a besoin de plus, il va le demander.',
     },
     {
       type: 'checkpoint',
@@ -149,17 +188,24 @@ const content: LessonContent = {
 
     // === SPLITTING LARGE TASKS ===
     {
-      type: 'info',
-      title: 'Découper les grosses tâches sans perdre la cohérence',
-      body: "Le défi avec un scope étroit : comment construire un système complexe à partir de pièces isolées sans que ça semble disjoint ? La réponse, c'est un spec partagé que chaque sous-tâche référence. Tu écris le spec complet du système une fois (la vision d'ensemble), puis tu extrais des sous-tâches ciblées qui citent chacune la section pertinente. Chaque sous-tâche connaît sa place dans l'ensemble — mais n'exécute que sa partie étroite. L'agent a juste assez de contexte pour être cohérent sans être submergé.",
+      type: 'multiple-choice',
+      question: 'Comment construire un système complexe à partir de tâches à scope étroit sans que ça semble disjoint ?',
+      options: [
+        'Laisser l\'agent deviner comment les pièces se connectent',
+        'Écrire un spec partagé une fois (la vision d\'ensemble), puis extraire des sous-tâches ciblées qui citent chacune la section pertinente',
+        'Tout construire dans un seul gros prompt pour garder la cohérence',
+        'Construire chaque pièce indépendamment et espérer qu\'elles s\'assemblent',
+      ],
+      correctIndex: 1,
+      explanation: "La réponse, c'est un spec partagé que chaque sous-tâche référence. Tu écris le spec complet du système une fois (la vision d'ensemble), puis tu extrais des sous-tâches ciblées qui citent chacune la section pertinente. Chaque sous-tâche connaît sa place dans l'ensemble — mais n'exécute que sa partie étroite. L'agent a juste assez de contexte pour être cohérent sans être submergé.",
     },
     {
-      type: 'code-demo',
-      title: 'Patron de décomposition de tâches',
-      body: 'Découpe un gros système en tâches séquentielles ciblées, chacune avec sa propre limite.',
-      language: 'markdown',
-      filename: 'auth-tasks.md',
-      code: "# Auth System — Task Breakdown\n\n## Task 1: Database Schema (src/db/schema/auth.ts)\nCreate users, sessions, and password_resets tables.\nDo NOT implement any application logic.\n\n## Task 2: Session Helpers (src/lib/auth/session.ts)\nImplement: createSession, validateSession, deleteSession.\nUse the schema from Task 1. Do NOT create API routes.\n\n## Task 3: Password Utilities (src/lib/auth/password.ts)\nImplement: hashPassword, verifyPassword, generateResetToken.\nStandalone utilities — no database calls in this file.\n\n## Task 4: Auth API Routes (src/app/api/auth/)\nCreate login, register, logout routes.\nImport from Task 2 and Task 3. Do NOT modify those files.\n\n## Task 5: Auth UI Components (src/components/auth/)\nCreate LoginForm, RegisterForm, ResetPasswordForm.\nCall API routes from Task 4. Do NOT modify API logic.",
+      type: 'match',
+      instruction: 'Associe chaque sous-tâche du système d\'auth à sa bonne limite de fichiers :',
+      leftItems: ['Schéma de base de données (tables uniquement)', 'Helpers de session (créer, valider, supprimer)', 'Utilitaires de mot de passe (hacher, vérifier)', 'Routes API d\'auth (login, inscription, déconnexion)'],
+      rightItems: ['src/lib/auth/password.ts — standalone, pas d\'appels BD', 'src/db/schema/auth.ts — pas de logique applicative', 'src/app/api/auth/ — importe des helpers, ne les MODIFIE PAS', 'src/lib/auth/session.ts — utilise le schéma, ne CRÉE PAS de routes API'],
+      correctPairs: { 0: 1, 1: 3, 2: 0, 3: 2 },
+      explanation: 'Chaque sous-tâche a sa propre limite de fichiers et des exclusions explicites. La tâche de schéma crée uniquement des tables. Les helpers de session utilisent le schéma mais ne créent pas de routes. Les utilitaires de mot de passe sont standalone. Les routes API importent des helpers mais ne les modifient jamais.',
     },
     {
       type: 'order',
@@ -180,21 +226,37 @@ const content: LessonContent = {
 
     // === PRINCIPLE 5 ===
     {
-      type: 'info',
-      title: 'Principe 5 : Les limites forcent de meilleures décisions',
-      body: "C'est pas juste une question de qualité de l'agent. Les contraintes de scope forcent de meilleures décisions de TA part en tant que directeur. Quand tu peux pas tout mettre dans un seul prompt, tu dois réfléchir au séquençage : qu'est-ce qui dépend de quoi ? Qu'est-ce qui peut être construit indépendamment ? Quels contrats d'interface doivent être définis d'avance ? Cette pensée de décomposition est la compétence centrale de l'architecture logicielle. Les agents ne l'ont pas inventée — ils ont juste rendu ça viscéralement évident quand tu la sautes.",
+      type: 'multiple-choice',
+      question: 'Quand tu écris « touche uniquement src/components/auth/ » dans un prompt, tu communiques à :',
+      options: [
+        'Uniquement l\'agent — pour qu\'il sache où travailler',
+        'Trois audiences : l\'agent (zone de travail), toi-même (rayon d\'impact), et ton futur toi (ce qui a été modifié)',
+        'Uniquement ton futur toi — comme documentation',
+        'Uniquement le réviseur de code — pour qu\'il sache quoi vérifier',
+      ],
+      correctIndex: 1,
+      explanation: "Les contraintes de scope communiquent trois choses simultanément. À l'agent : ta zone de travail. À toi-même : le rayon d'impact de ce changement. À ton futur toi : ce qui a été modifié dans cette itération. Ce sont de la documentation, des garde-fous de sécurité et des aides à la concentration — tout en une seule ligne.",
     },
     {
-      type: 'info',
-      title: 'Les limites comme communication',
-      body: "Quand tu écris « touche uniquement src/components/auth/ », tu communiques trois choses simultanément. À l'agent : ta zone de travail. À toi-même : le rayon d'impact de ce changement. À ton futur toi : ce qui a été modifié dans cette itération. Les contraintes de scope sont de la documentation, des garde-fous de sécurité et des aides à la concentration — tout en une seule ligne. Elles ne coûtent rien à écrire et sauvent un temps de débogage énorme.",
+      type: 'order',
+      instruction: 'Ordonne ces étapes de pensée architecturale que les contraintes de scope te forcent à faire :',
+      items: [
+        'Définir les contrats d\'interface entre les pièces d\'avance',
+        'Identifier quelles pièces peuvent être construites indépendamment (travail parallèle)',
+        'Déterminer ce qui dépend de quoi (séquençage)',
+        'Écrire le spec complet du système comme vision d\'ensemble',
+      ],
+      correctOrder: [3, 2, 1, 0],
     },
 
     // === REAL CLAUDE CODE FLAGS ===
     {
-      type: 'info',
-      title: 'Patrons de scope dans Claude Code',
-      body: "Claude Code supporte plusieurs patrons pour contraindre le scope. Tu peux utiliser CLAUDE.md pour établir des limites persistantes pour un projet. Tu peux utiliser des instructions en ligne dans le prompt pour des contraintes par tâche. Et tu peux structurer tes prompts pour référencer des fichiers spécifiques par chemin. L'insight clé : le scope n'est pas une fonctionnalité de l'outil — c'est une discipline dans comment tu écris tes prompts. Tout système d'agent bénéficie d'un scope explicite.",
+      type: 'match',
+      instruction: 'Associe chaque mécanisme de contrainte de scope à quand tu l\'utiliserais :',
+      leftItems: ['Fichier CLAUDE.md', 'Instructions en ligne dans le prompt', 'Références de chemin de fichier dans le prompt', 'Section « Ne PAS implémenter »'],
+      rightItems: ['Contraintes par tâche pour un seul prompt', 'Limites persistantes pour tout le projet qui s\'appliquent à chaque tâche', 'Empêcher l\'agent de pré-construire des choses que t\'as pas demandées', 'Pointer l\'agent vers exactement le bon fichier à modifier'],
+      correctPairs: { 0: 1, 1: 0, 2: 3, 3: 2 },
+      explanation: "Le scope n'est pas une fonctionnalité de l'outil — c'est une discipline dans comment tu écris tes prompts. CLAUDE.md pour les règles de projet, instructions en ligne pour les contraintes par tâche, chemins de fichiers pour le ciblage précis, et sections « Ne PAS » pour empêcher la livraison excessive. Tout système d'agent bénéficie d'un scope explicite.",
     },
     {
       type: 'terminal',
@@ -216,9 +278,22 @@ const content: LessonContent = {
 
     // === WHEN TO BROADEN SCOPE ===
     {
-      type: 'info',
+      type: 'compare',
       title: 'Quand un scope plus large est justifié',
-      body: "Pas toutes les tâches devraient être micro-scopées. Quand les changements sont étroitement couplés — un changement de type qui se propage dans 5 fichiers — un scope étroit crée plus de travail qu'il en sauve. La règle : élargis le scope seulement quand le couplage entre les changements est si serré que les séparer te demanderait de spécifier le contrat d'interface plus en détail que juste laisser l'agent faire les deux côtés. Si deux changements ne partagent aucune interface, ce sont des tâches séparées. S'ils partagent une interface serrée, c'est peut-être une seule tâche.",
+      body: 'Pas toutes les tâches devraient être micro-scopées. Parfois le couplage rend un scope plus large plus efficace.',
+      question: 'Quel scénario justifie un seul prompt à scope large ?',
+      correctSide: 'right',
+      left: {
+        label: 'Découper en tâches étroites',
+        content: 'Tâche A : Construire le formulaire de connexion (UI)\nTâche B : Implémenter le hachage de mot de passe\nTâche C : Ajouter validation d\'email à l\'inscription\nTâche D : Ajouter validation de téléphone au profil\n\nCeux-ci ne partagent AUCUNE interface —\nles découper est gratuit et chaque tâche\nest révisable.',
+        language: 'text',
+      },
+      right: {
+        label: 'Garder en une seule tâche',
+        content: 'Renommer le type UserProfile en Account\net mettre à jour les 12 fichiers qui le\nréférencent.\n\nC\'est étroitement couplé — chaque référence\ndoit changer en synchronisation sinon le\ncode casse. Découper ça en 12 tâches\nest pire.',
+        language: 'text',
+      },
+      explanation: 'Élargis le scope seulement quand le couplage entre les changements est si serré que les séparer te demanderait de spécifier les contrats d\'interface plus en détail que juste laisser l\'agent faire les deux côtés. Si deux changements ne partagent aucune interface, ce sont des tâches séparées. S\'ils partagent une interface serrée, c\'est peut-être une seule tâche.',
     },
     {
       type: 'multiple-choice',
@@ -235,9 +310,16 @@ const content: LessonContent = {
 
     // === SYNTHESIS ===
     {
-      type: 'info',
-      title: 'L\'état d\'esprit de la contrainte',
-      body: "Contraindre le scope semble contre-intuitif quand les agents promettent de « tout faire ». Mais le chemin le plus rapide vers un système fonctionnel, c'est une séquence de sous-tâches ciblées et de haute qualité — pas une tentative tentaculaire qui nécessite un débogage extensif. Chaque minute que tu passes à définir le scope en sauve cinq à corriger des incohérences. Chaque limite que tu établis est une décision que t'auras pas à défaire. Les meilleurs directeurs ne sont pas ceux qui demandent le plus — ce sont ceux qui demandent exactement la bonne chose au bon moment.",
+      type: 'multiple-choice',
+      question: 'Quel est le retour sur investissement de passer une minute à définir les contraintes de scope dans un prompt ?',
+      options: [
+        'Ça gaspille du temps — les agents travaillent mieux avec de la liberté créative',
+        'Ça sauve environ cinq minutes à corriger des incohérences plus tard',
+        'Ça ne fait aucune différence sur la qualité de la sortie',
+        'Ça n\'aide que pour les petites tâches, pas les systèmes complexes',
+      ],
+      correctIndex: 1,
+      explanation: "Chaque minute que tu passes à définir le scope en sauve cinq à corriger des incohérences. Chaque limite que tu établis est une décision que t'auras pas à défaire. Les meilleurs directeurs ne sont pas ceux qui demandent le plus — ce sont ceux qui demandent exactement la bonne chose au bon moment.",
     },
     {
       type: 'prompt-lab',

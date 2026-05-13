@@ -17,9 +17,16 @@ const content: LessonContent = {
 
     // === THE AUDIT FRAMEWORK ===
     {
-      type: 'info',
-      title: 'The 3-search audit',
-      body: "Here is how you test navigability. Pick any feature in your codebase. Ask: if an agent needs to modify this feature, how many searches (grep, find, file listing) does it take to locate ALL relevant files? Count the searches. If it is 1-2: excellent. The structure guides the agent directly. If it is 3: acceptable. One search to find the domain, one to find the file, one to confirm dependencies. If it is 4+: your structure is working against the agent. Every extra search is wasted tokens, increased risk of the agent getting lost, and potential for it to modify the wrong file.",
+      type: 'multiple-choice',
+      question: 'In the 3-search audit, what does it mean if an agent needs 4+ searches to find all relevant files for a feature?',
+      options: [
+        'The feature is complex and needs more documentation',
+        'The agent needs better search capabilities',
+        'Your directory structure is working against the agent — each extra search wastes tokens and increases risk',
+        '4 searches is still within acceptable limits',
+      ],
+      correctIndex: 2,
+      explanation: "The 3-search audit: pick any feature and count how many searches it takes an agent to locate ALL relevant files. 1-2 is excellent, 3 is acceptable, 4+ means your structure is actively working against the agent. Every extra search is wasted tokens, increased risk of getting lost, and potential for modifying the wrong file.",
     },
     {
       type: 'diagram',
@@ -54,27 +61,76 @@ const content: LessonContent = {
 
     // === GOOD PATTERNS ===
     {
-      type: 'info',
-      title: 'Pattern 1: Feature-based modules',
-      body: "Group by domain, not by technical layer. Instead of src/controllers/, src/services/, src/models/ (where payment logic is scattered across 3 directories), use src/features/payments/ containing everything related to payments: the handler, the schema, the validation, the tests. An agent searching for \"payments\" finds one directory with everything it needs. This is the single highest-impact structural decision for agent navigability.",
+      type: 'multiple-choice',
+      question: 'What is the single highest-impact structural decision for agent navigability?',
+      options: [
+        'Using TypeScript strict mode in all files',
+        'Grouping by domain (features/payments/) instead of technical layer (controllers/, services/, models/)',
+        'Adding comprehensive JSDoc comments to every function',
+        'Using a flat directory structure with all files in src/',
+      ],
+      correctIndex: 1,
+      explanation: "Group by domain, not by technical layer. Instead of scattering payment logic across controllers/, services/, and models/, use features/payments/ containing everything: handler, schema, validation, tests. An agent searching for \"payments\" finds one directory with everything it needs.",
     },
     {
-      type: 'code-demo',
-      title: 'Feature-based structure',
-      body: 'Everything related to a domain lives together. An agent finds ALL relevant files in one directory listing.',
+      type: 'code-fill',
+      instruction: 'Complete this feature-based directory structure. Fill in the file names following the consistent naming convention.',
       language: 'text',
       filename: 'directory-structure',
-      code: "src/\n├── features/\n│   ├── payments/\n│   │   ├── payments.handler.ts      # Route handler\n│   │   ├── payments.schema.ts       # Validation schema\n│   │   ├── payments.service.ts      # Business logic\n│   │   ├── payments.test.ts         # Tests\n│   │   └── index.ts                 # Public API\n│   ├── users/\n│   │   ├── users.handler.ts\n│   │   ├── users.schema.ts\n│   │   ├── users.service.ts\n│   │   ├── users.test.ts\n│   │   └── index.ts\n│   └── orders/\n│       ├── orders.handler.ts\n│       ├── orders.schema.ts\n│       ├── orders.service.ts\n│       ├── orders.test.ts\n│       └── index.ts\n├── shared/\n│   ├── database.ts                  # DB connection only\n│   └── auth-middleware.ts           # Auth only\n└── app.ts                           # Wiring",
+      template: `src/
+├── features/
+│   ├── payments/
+│   │   ├── payments.handler.ts      # Route handler
+│   │   ├── payments.schema.ts       # Validation schema
+│   │   ├── payments.service.ts      # Business logic
+│   │   ├── {{payments_test}}         # Tests
+│   │   └── index.ts                 # Public API
+│   ├── users/
+│   │   ├── {{users_handler}}
+│   │   ├── users.schema.ts
+│   │   ├── users.service.ts
+│   │   ├── users.test.ts
+│   │   └── index.ts
+│   └── orders/
+│       ├── orders.handler.ts
+│       ├── orders.schema.ts
+│       ├── {{orders_service}}
+│       ├── orders.test.ts
+│       └── index.ts
+├── shared/
+│   ├── database.ts                  # DB connection only
+│   └── auth-middleware.ts           # Auth only
+└── app.ts                           # Wiring`,
+      blanks: [
+        { id: 'payments_test', answer: 'payments.test.ts', alternatives: ['payments.test.ts'], placeholder: 'test file name', hint: 'Follow the convention: [domain].test.ts — colocated with the code it tests' },
+        { id: 'users_handler', answer: 'users.handler.ts', alternatives: ['users.handler.ts'], placeholder: 'handler file name', hint: 'Follow the same convention as payments: [domain].handler.ts' },
+        { id: 'orders_service', answer: 'orders.service.ts', alternatives: ['orders.service.ts'], placeholder: 'service file name', hint: 'Follow the convention: [domain].service.ts for business logic' },
+      ],
+      explanation: 'Everything related to a domain lives together. An agent finds ALL relevant files in one directory listing. Consistent naming means the agent can predict file names after learning the pattern from one feature.',
     },
     {
-      type: 'info',
-      title: 'Pattern 2: Consistent naming conventions',
-      body: "If your payments handler is payments.handler.ts, your users handler MUST be users.handler.ts — not userController.ts, not handle-users.ts, not UsersAPI.ts. Consistency means the agent can PREDICT file names without searching. Once it learns the pattern from one feature, it can navigate to any feature instantly. Inconsistent naming forces a search for every single file. This compounds: 10 features with inconsistent naming means dozens of extra searches per session.",
+      type: 'multiple-choice',
+      question: 'Your payments handler is payments.handler.ts. What MUST the users handler be named?',
+      options: [
+        'userController.ts — a common alternative convention',
+        'handle-users.ts — descriptive and clear',
+        'users.handler.ts — matching the established [domain].handler.ts pattern',
+        'UsersAPI.ts — PascalCase is more readable',
+      ],
+      correctIndex: 2,
+      explanation: "Consistency means the agent can PREDICT file names without searching. Once it learns the pattern from one feature, it can navigate to any feature instantly. Inconsistent naming forces a search for every single file. 10 features with inconsistent naming means dozens of extra searches per session.",
     },
     {
-      type: 'info',
-      title: 'Pattern 3: Collocated tests',
-      body: "Tests live next to the code they test. Not in a separate __tests__/ directory tree that mirrors src/. When an agent modifies payments.service.ts, it needs to update payments.test.ts. If the test is in the same directory, it finds it immediately. If tests are in a parallel directory tree (__tests__/features/payments/payments.service.test.ts), the agent has to search, and it might find the wrong test file or miss related integration tests.",
+      type: 'multiple-choice',
+      question: 'An agent modifies payments.service.ts and needs to update its test. Where should the test file live?',
+      options: [
+        '__tests__/features/payments/payments.service.test.ts — in a parallel test directory tree',
+        'tests/unit/payments.test.ts — in a centralized test folder',
+        'payments.test.ts — in the same directory, next to the code it tests',
+        'test/payments/payments.service.spec.ts — following Jest conventions',
+      ],
+      correctIndex: 2,
+      explanation: "Tests live next to the code they test. If the test is in the same directory, the agent finds it immediately. A parallel __tests__/ directory tree forces the agent to search, and it might find the wrong test file or miss related integration tests.",
     },
     {
       type: 'compare',
@@ -127,27 +183,66 @@ const content: LessonContent = {
 
     // === BAD PATTERNS ===
     {
-      type: 'info',
-      title: 'Anti-pattern 1: The "shared" dumping ground',
-      body: "A shared/ or utils/ or helpers/ directory that grows to 50+ files. Initially it held genuinely shared code — the database connection, a date formatter. Over time, developers dump anything they cannot categorize. Now the agent searches for payment validation and finds it in shared/validators/payment-validator.ts alongside 30 other unrelated validators. The directory name \"shared\" conveys zero information about what is inside. It forces a full search of its contents every time.",
+      type: 'multiple-choice',
+      question: 'A shared/utils/ directory has grown to 50+ files. Why is this an anti-pattern for agent navigability?',
+      options: [
+        'Utility functions should never be shared between features',
+        'The directory name "shared" conveys zero information — it forces a full search of its contents every time',
+        '50 files is too many for any single directory',
+        'Agents cannot read files from directories named "shared"',
+      ],
+      correctIndex: 1,
+      explanation: "The name \"shared\" conveys zero information about what is inside. Initially it held genuinely shared code, but over time developers dump anything they cannot categorize. An agent searching for payment validation finds it alongside 30 unrelated validators. Domain-specific code should live in its feature module.",
     },
     {
-      type: 'code-demo',
-      title: 'The shared/ dumping ground',
-      body: 'When "shared" means "I did not know where to put this." Every file here requires a search to discover.',
+      type: 'code-fill',
+      instruction: 'Identify which files in this shared/ directory actually belong in feature modules. Fill in where each misplaced file should go.',
       language: 'text',
       filename: 'anti-pattern-shared',
-      code: "src/shared/\n├── validators/\n│   ├── payment-validator.ts     # Why not in features/payments?\n│   ├── user-validator.ts        # Why not in features/users?\n│   ├── order-validator.ts       # Why not in features/orders?\n│   ├── email-validator.ts       # Actually shared\n│   └── string-helpers.ts        # Not even a validator\n├── services/\n│   ├── email-service.ts         # Legitimately shared\n│   ├── payment-processor.ts     # Should be in features/payments\n│   ├── user-lookup.ts           # Should be in features/users\n│   └── cache.ts                 # Legitimately shared\n├── utils/\n│   ├── format-date.ts\n│   ├── format-currency.ts\n│   ├── handle-errors.ts\n│   ├── parse-query.ts\n│   └── ... 40 more files\n└── types/\n    └── ... 25 type files",
+      template: `src/shared/
+├── validators/
+│   ├── payment-validator.ts     # Should be in {{payment_location}}
+│   ├── user-validator.ts        # Should be in features/users/
+│   ├── order-validator.ts       # Should be in features/orders/
+│   ├── email-validator.ts       # Actually shared (used by 3+ features)
+│   └── string-helpers.ts        # Not even a validator
+├── services/
+│   ├── email-service.ts         # Legitimately shared
+│   ├── payment-processor.ts     # Should be in {{payment_service_location}}
+│   ├── user-lookup.ts           # Should be in features/users/
+│   └── cache.ts                 # {{cache_status}}
+├── utils/
+│   └── ... 40+ files`,
+      blanks: [
+        { id: 'payment_location', answer: 'features/payments/', alternatives: ['features/payments/', 'features/payments', 'src/features/payments/'], placeholder: 'correct feature directory', hint: 'Domain-specific validation belongs with the domain, not in shared/' },
+        { id: 'payment_service_location', answer: 'features/payments/', alternatives: ['features/payments/', 'features/payments', 'src/features/payments/'], placeholder: 'correct feature directory', hint: 'Payment processing logic belongs with the payments feature' },
+        { id: 'cache_status', answer: 'Legitimately shared', alternatives: ['Legitimately shared', 'Actually shared', 'Shared'], placeholder: 'shared or feature-specific?', hint: 'Caching is used across many features — it is genuinely cross-cutting infrastructure' },
+      ],
+      explanation: 'When "shared" means "I did not know where to put this." Domain-specific files should live in their feature module. Only truly cross-cutting concerns (email, cache, database) justify a shared location.',
     },
     {
-      type: 'info',
-      title: 'Anti-pattern 2: Circular imports',
-      body: "Module A imports from Module B, which imports from Module A. This is not just a code smell — it is an agent navigation nightmare. When an agent modifies Module A, it needs to understand that Module B depends on it. But Module B also flows back into Module A, so understanding the impact requires tracing a loop. Agents handle trees well. They handle loops poorly. Circular dependencies increase the chance of the agent making a change that breaks something it cannot see.",
+      type: 'multiple-choice',
+      question: 'Module A imports from Module B, which imports from Module A. Why is this especially bad for AI agents?',
+      options: [
+        'Circular imports cause compilation errors in TypeScript',
+        'Agents handle tree structures well but handle loops poorly — circular dependencies increase the chance of breaking something the agent cannot see',
+        'Circular imports make the code run slower',
+        'Agents refuse to modify files with circular dependencies',
+      ],
+      correctIndex: 1,
+      explanation: "Circular imports are not just a code smell — they are an agent navigation nightmare. When an agent modifies Module A, it needs to understand Module B depends on it, but Module B also flows back into A. Understanding impact requires tracing a loop. Agents handle trees well, loops poorly.",
     },
     {
-      type: 'info',
-      title: 'Anti-pattern 3: Ambiguous file names',
-      body: "manager.ts, handler.ts, service.ts, processor.ts, helper.ts — without a domain prefix, these names communicate nothing. An agent searching for \"payment processing\" cannot distinguish between processor.ts (generic name) and payments.service.ts (domain-specific name). Every ambiguous name is a forced search. Name files for what they DO in the context of what DOMAIN they serve: payments.handler.ts tells you both the domain (payments) and the role (handler) instantly.",
+      type: 'multiple-choice',
+      question: 'An agent searches for "payment processing." Which file name helps it find the right file without extra searches?',
+      options: [
+        'processor.ts — short and concise',
+        'service.ts — follows a common convention',
+        'payments.service.ts — encodes both domain (payments) and role (service)',
+        'PaymentProcessor.ts — PascalCase is standard',
+      ],
+      correctIndex: 2,
+      explanation: "Without a domain prefix, names like manager.ts, handler.ts, service.ts communicate nothing. payments.service.ts tells you both the domain (payments) and the role (service) instantly. Every ambiguous name forces a search.",
     },
     {
       type: 'multiple-choice',
@@ -169,22 +264,59 @@ const content: LessonContent = {
 
     // === REFACTORING FOR NAVIGABILITY ===
     {
-      type: 'info',
-      title: 'Refactoring strategy: the migration path',
-      body: "You cannot refactor a large codebase overnight. The strategy: (1) Identify the highest-traffic features — the ones agents modify most often. (2) Migrate those first to feature-based modules. (3) Leave rarely-touched code where it is. (4) Update CLAUDE.md to document the new structure. This is not about purity. It is about reducing search friction for the 20% of the codebase that gets 80% of the modifications.",
+      type: 'multiple-choice',
+      question: 'When migrating a large codebase to feature-based structure, what should you migrate first?',
+      options: [
+        'Everything at once for consistency',
+        'The simplest features first to build momentum',
+        'The highest-traffic features — the ones agents modify most often',
+        'Shared utilities first, then features',
+      ],
+      correctIndex: 2,
+      explanation: "You cannot refactor a large codebase overnight. The strategy: identify the highest-traffic features (most modified by agents), migrate those first, leave rarely-touched code where it is, and update CLAUDE.md. This reduces search friction for the 20% of the codebase that gets 80% of the modifications.",
     },
     {
-      type: 'code-demo',
-      title: 'Before and after: payments feature',
-      body: 'Refactoring from layer-based to feature-based. All payment files move to one directory.',
+      type: 'code-fill',
+      instruction: 'Complete this migration from layer-based to feature-based. Fill in the new file paths and the public API exports.',
       language: 'typescript',
       filename: 'migration-example.ts',
-      code: "// BEFORE: Layer-based (agent needs 4 searches)\n// src/controllers/paymentController.ts\n// src/services/paymentService.ts\n// src/validators/paymentValidator.ts\n// src/models/Payment.ts\n// tests/services/paymentService.test.ts\n\n// AFTER: Feature-based (agent needs 1 search)\n// src/features/payments/payments.handler.ts\n// src/features/payments/payments.service.ts\n// src/features/payments/payments.schema.ts\n// src/features/payments/payments.model.ts\n// src/features/payments/payments.test.ts\n// src/features/payments/index.ts\n\n// The index.ts defines the public API:\nexport { createPayment, refundPayment } from './payments.service'\nexport { PaymentSchema } from './payments.schema'\nexport type { Payment } from './payments.model'",
+      template: `// BEFORE: Layer-based (agent needs 4 searches)
+// src/controllers/paymentController.ts
+// src/services/paymentService.ts
+// src/validators/paymentValidator.ts
+// src/models/Payment.ts
+// tests/services/paymentService.test.ts
+
+// AFTER: Feature-based (agent needs 1 search)
+// src/features/payments/payments.handler.ts
+// src/features/payments/{{service_file}}
+// src/features/payments/payments.schema.ts
+// src/features/payments/payments.model.ts
+// src/features/payments/payments.test.ts
+// src/features/payments/{{barrel_file}}
+
+// The index.ts defines the public API:
+export { createPayment, refundPayment } from './payments.service'
+export { PaymentSchema } from '{{schema_import}}'
+export type { Payment } from './payments.model'`,
+      blanks: [
+        { id: 'service_file', answer: 'payments.service.ts', alternatives: ['payments.service.ts'], placeholder: 'service file name', hint: 'Follow the [domain].service.ts convention' },
+        { id: 'barrel_file', answer: 'index.ts', alternatives: ['index.ts'], placeholder: 'public API file', hint: 'The barrel file that exports the public API of this feature module' },
+        { id: 'schema_import', answer: './payments.schema', alternatives: ['./payments.schema'], placeholder: 'schema import path', hint: 'Relative import from the same directory following the naming convention' },
+      ],
+      explanation: 'Refactoring from layer-based to feature-based. All payment files converge into one directory. The index.ts defines the public API — other modules import from here, never from internal files.',
     },
     {
-      type: 'info',
-      title: 'The index.ts contract',
-      body: "Every feature module exposes exactly one public API through its index.ts. Other modules import from the feature — never from internal files. This means an agent working on the orders feature that needs something from payments imports from features/payments (the index), not from features/payments/payments.service.ts (an internal file). This creates clear boundaries: the agent knows what is public and what is internal. If it is not in index.ts, it is not meant to be used externally.",
+      type: 'multiple-choice',
+      question: 'The orders feature needs something from the payments feature. Where should it import from?',
+      options: [
+        'features/payments/payments.service.ts — directly from the internal file',
+        'features/payments (the index.ts) — the public API',
+        'shared/payments.ts — from a shared directory',
+        '@/payments — from an alias that maps to the service file',
+      ],
+      correctIndex: 1,
+      explanation: "Every feature module exposes exactly one public API through its index.ts. Other modules import from the feature, never from internal files. If it is not in index.ts, it is not meant to be used externally. This creates clear boundaries the agent can navigate.",
     },
     {
       type: 'order',
@@ -246,9 +378,16 @@ const content: LessonContent = {
 
     // === PRACTICAL EVALUATION ===
     {
-      type: 'info',
-      title: 'Running the navigability audit',
-      body: "Here is how to score your own codebase. Pick 5 recent agent tasks — features added, bugs fixed, refactors performed. For each task, count how many file searches the agent needed to find all relevant files. Average those numbers. Under 2.5 average: excellent navigability. 2.5-4.0 average: acceptable but with friction points. Over 4.0: your structure is actively fighting the agents. Focus on the worst cases — those are your highest-leverage refactoring targets.",
+      type: 'multiple-choice',
+      question: 'You run a navigability audit on 5 recent agent tasks with these search counts: 2, 1, 5, 3, 4. What is the average and what does it mean?',
+      options: [
+        'Average 3.0 — excellent navigability, no action needed',
+        'Average 3.0 — acceptable but with friction points; focus on the tasks that needed 4-5 searches',
+        'Average 3.0 — your structure is actively fighting the agents; full rewrite needed',
+        'Average 3.0 — meaningless; you need at least 20 tasks to draw conclusions',
+      ],
+      correctIndex: 1,
+      explanation: 'The average is (2+1+5+3+4)/5 = 3.0. Under 2.5 is excellent, 2.5-4.0 is acceptable but with friction points, over 4.0 means your structure is actively fighting agents. At 3.0 you are in the acceptable range, but you should focus on the worst cases (the 5-search and 4-search tasks) as your highest-leverage refactoring targets.',
     },
     {
       type: 'multiple-choice',
@@ -263,19 +402,32 @@ const content: LessonContent = {
       explanation: 'Target the worst offenders first — they have the highest search counts, meaning agents waste the most time navigating them. Auth (7) and notifications (6) deliver the biggest improvement per refactoring effort. Payments is already fine. Doing all at once is risky and unnecessary.',
     },
     {
-      type: 'code-demo',
-      title: 'Self-documenting structure for agents',
-      body: 'A complete project structure designed for agent navigability. Notice: no ambiguity about where anything lives.',
+      type: 'code-fill',
+      instruction: 'Complete this ideal project structure. Fill in the directory names that make the codebase self-documenting for agents.',
       language: 'text',
       filename: 'ideal-structure',
-      code: "project-root/\n├── CLAUDE.md                        # Agent coordination protocol\n├── src/\n│   ├── features/                    # Domain logic (one dir per feature)\n│   │   ├── payments/\n│   │   │   ├── payments.handler.ts\n│   │   │   ├── payments.service.ts\n│   │   │   ├── payments.schema.ts\n│   │   │   ├── payments.test.ts\n│   │   │   └── index.ts\n│   │   ├── users/\n│   │   ├── orders/\n│   │   └── notifications/\n│   ├── infrastructure/              # Cross-cutting (DB, cache, queue)\n│   │   ├── database.ts\n│   │   ├── cache.ts\n│   │   └── queue.ts\n│   ├── middleware/                  # HTTP middleware (auth, logging)\n│   │   ├── auth.ts\n│   │   └── logging.ts\n│   └── app.ts                       # Composition root\n├── scripts/                         # Operational scripts\n│   ├── migrate.ts\n│   └── seed.ts\n└── package.json",
+      template: 'project-root/\n├── CLAUDE.md                        # Agent coordination protocol\n├── src/\n│   ├── {{domain_dir}}/              # Domain logic (one dir per feature)\n│   │   ├── payments/\n│   │   │   ├── payments.handler.ts\n│   │   │   ├── payments.service.ts\n│   │   │   ├── payments.schema.ts\n│   │   │   ├── payments.test.ts\n│   │   │   └── index.ts\n│   │   ├── users/\n│   │   ├── orders/\n│   │   └── notifications/\n│   ├── {{infra_dir}}/               # Cross-cutting (DB, cache, queue)\n│   │   ├── database.ts\n│   │   ├── cache.ts\n│   │   └── queue.ts\n│   ├── {{middleware_dir}}/          # HTTP middleware (auth, logging)\n│   │   ├── auth.ts\n│   │   └── logging.ts\n│   └── {{entry_file}}               # Composition root\n├── scripts/\n│   ├── migrate.ts\n│   └── seed.ts\n└── package.json',
+      blanks: [
+        { id: 'domain_dir', answer: 'features', alternatives: ['features'], placeholder: '________', hint: 'The directory that groups all domain modules, one sub-directory per feature' },
+        { id: 'infra_dir', answer: 'infrastructure', alternatives: ['infra', 'shared'], placeholder: '________', hint: 'Cross-cutting concerns like database, cache, and queue — not domain-specific' },
+        { id: 'middleware_dir', answer: 'middleware', alternatives: ['middlewares'], placeholder: '________', hint: 'HTTP-level concerns like auth and logging that wrap requests' },
+        { id: 'entry_file', answer: 'app.ts', alternatives: ['app.ts', 'index.ts', 'main.ts'], placeholder: '________', hint: 'The composition root that wires everything together' },
+      ],
+      explanation: 'A self-documenting structure uses directory names that communicate purpose. "features/" tells the agent where domain logic lives. "infrastructure/" signals cross-cutting concerns. "middleware/" is HTTP-level wiring. No ambiguity about where anything belongs.',
     },
 
     // === SYNTHESIS ===
     {
-      type: 'info',
-      title: 'The navigability principle',
-      body: "Architecture for agent navigability is not about following any single pattern dogmatically. It is about one principle: reduce the number of searches an agent needs to find and modify related code. Feature-based modules achieve this by colocation. Consistent naming achieves this by predictability. Clear public APIs achieve this by eliminating ambiguity about what is internal vs external. Every structural decision should be evaluated through this lens: does this make it easier or harder for a fresh agent to find what it needs?",
+      type: 'multiple-choice',
+      question: 'What is the single principle that all agent-friendly architecture decisions should be evaluated against?',
+      options: [
+        'Minimize the total number of files in the project',
+        'Follow the most popular framework conventions regardless of context',
+        'Reduce the number of searches an agent needs to find and modify related code',
+        'Ensure every file has comprehensive documentation comments',
+      ],
+      correctIndex: 2,
+      explanation: 'Architecture for agent navigability is not about following any single pattern dogmatically. It is about one principle: reduce the number of searches an agent needs to find and modify related code. Feature-based modules achieve this by colocation. Consistent naming achieves this by predictability. Clear public APIs achieve this by eliminating ambiguity about what is internal vs external. Every structural decision should be evaluated through this lens.',
     },
     {
       type: 'checklist',

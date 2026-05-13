@@ -17,9 +17,9 @@ const content: LessonContent = {
 
     // === DIAGRAM 1: The Coordination Problem ===
     {
-      type: 'diagram',
+      type: 'interactive-diagram',
       title: 'Sans contexte partagé : décisions divergentes',
-      body: "Sans fichier de contexte partagé, chaque agent prend des décisions indépendantes. Ils produisent tous du code fonctionnel — mais du code qui contredit les autres. La fusion devient un cauchemar de patrons contradictoires.",
+      body: "Parcourez les étapes pour voir comment les agents parallèles divergent sans fichier de contexte partagé.",
       diagram: {
         direction: 'TB',
         nodes: [
@@ -41,21 +41,42 @@ const content: LessonContent = {
           { from: 'd', to: 'merge' },
         ],
       },
+      stages: [
+        {
+          highlightNodes: ['you'],
+          explanation: 'Vous répartissez quatre agents sans fichier de contexte partagé. Chaque agent ne reçoit que la description de sa tâche.',
+        },
+        {
+          highlightNodes: ['a', 'b'],
+          highlightEdges: [{ from: 'you', to: 'a' }, { from: 'you', to: 'b' }],
+          explanation: 'L\'agent A choisit REST parce que ça semble plus simple. L\'agent B choisit GraphQL parce que ça gère mieux les requêtes complexes. Les deux sont raisonnables — mais incompatibles.',
+        },
+        {
+          highlightNodes: ['c', 'd'],
+          highlightEdges: [{ from: 'you', to: 'c' }, { from: 'you', to: 'd' }],
+          explanation: 'L\'agent C nomme les fichiers en camelCase (userProfile.tsx). L\'agent D utilise le kebab-case (user-profile.tsx). Les deux sont des conventions valides — mais incohérentes ensemble.',
+        },
+        {
+          highlightNodes: ['merge'],
+          highlightEdges: [{ from: 'a', to: 'merge' }, { from: 'b', to: 'merge' }, { from: 'c', to: 'merge' }, { from: 'd', to: 'merge' }],
+          explanation: 'Au moment de la fusion : REST et GraphQL se heurtent, le nommage est incohérent, les chemins d\'import cassent. Chaque agent a produit du code fonctionnel — mais du code qui contredit les autres.',
+        },
+      ],
     },
 
     // === DIAGRAM 2: With CLAUDE.md ===
     {
-      type: 'diagram',
+      type: 'interactive-diagram',
       title: 'Avec CLAUDE.md : décisions cohérentes',
-      body: "Chaque agent lit CLAUDE.md en premier. Il dit : REST, fichiers kebab-case, validation Zod. Tous les agents suivent les mêmes règles. La fusion est propre parce que chaque pièce a été construite selon la même spécification.",
+      body: "Maintenant voyez ce qui se passe quand chaque agent lit CLAUDE.md en premier.",
       diagram: {
         direction: 'TB',
         nodes: [
           { id: 'claude', label: 'CLAUDE.md', sublabel: 'Contexte partagé', shape: 'rounded', highlight: true },
-          { id: 'a', label: 'Agent A', sublabel: 'Lit → REST', shape: 'rect' },
-          { id: 'b', label: 'Agent B', sublabel: 'Lit → REST', shape: 'rect' },
-          { id: 'c', label: 'Agent C', sublabel: 'Lit → kebab-case', shape: 'rect' },
-          { id: 'd', label: 'Agent D', sublabel: 'Lit → kebab-case', shape: 'rect' },
+          { id: 'a', label: 'Agent A', sublabel: 'Lit -> REST', shape: 'rect' },
+          { id: 'b', label: 'Agent B', sublabel: 'Lit -> REST', shape: 'rect' },
+          { id: 'c', label: 'Agent C', sublabel: 'Lit -> kebab-case', shape: 'rect' },
+          { id: 'd', label: 'Agent D', sublabel: 'Lit -> kebab-case', shape: 'rect' },
           { id: 'merge', label: 'Fusion', sublabel: 'Propre !', shape: 'pill', highlight: true },
         ],
         edges: [
@@ -69,6 +90,27 @@ const content: LessonContent = {
           { from: 'd', to: 'merge' },
         ],
       },
+      stages: [
+        {
+          highlightNodes: ['claude'],
+          explanation: 'CLAUDE.md dit : REST, kebab-case, validation Zod. Ce sont des règles non négociables écrites avant que les agents ne commencent.',
+        },
+        {
+          highlightNodes: ['claude', 'a', 'b'],
+          highlightEdges: [{ from: 'claude', to: 'a' }, { from: 'claude', to: 'b' }],
+          explanation: 'Les agents A et B lisent la même règle : REST avec réponses JSON. Pas de GraphQL. Ils suivent tous les deux la même approche.',
+        },
+        {
+          highlightNodes: ['claude', 'c', 'd'],
+          highlightEdges: [{ from: 'claude', to: 'c' }, { from: 'claude', to: 'd' }],
+          explanation: 'Les agents C et D lisent : kebab-case.tsx pour les composants. Chaque fichier suit la même convention de nommage.',
+        },
+        {
+          highlightNodes: ['merge'],
+          highlightEdges: [{ from: 'a', to: 'merge' }, { from: 'b', to: 'merge' }, { from: 'c', to: 'merge' }, { from: 'd', to: 'merge' }],
+          explanation: 'Au moment de la fusion : tout est cohérent. REST partout, kebab-case partout, Zod partout. La fusion est propre parce que chaque pièce a été construite selon la même spécification.',
+        },
+      ],
     },
     {
       type: 'checkpoint',
@@ -78,44 +120,31 @@ const content: LessonContent = {
 
     // === WHAT BELONGS IN CLAUDE.MD ===
     {
-      type: 'info',
-      title: 'Ce qui appartient au CLAUDE.md partagé',
-      body: "Tout n'a pas sa place dans CLAUDE.md. Ce n'est pas un tutoriel ni un README. Il contient uniquement les décisions que les agents doivent prendre de façon cohérente : choix architecturaux, conventions de nommage, patrons de fichiers, approches interdites et contrats d'intégration. Pensez-y comme la constitution — les règles non négociables que chaque agent doit suivre.",
+      type: 'multiple-choice',
+      question: 'CLAUDE.md contient les décisions que les agents doivent prendre de façon cohérente. Qu\'est-ce qui N\'a PAS sa place dans un CLAUDE.md multi-agent ?',
+      options: [
+        'Style API : REST avec réponses JSON',
+        'Un tutoriel étape par étape sur le fonctionnement des hooks React',
+        'Patrons interdits : pas de type `any`, pas de fichiers barrel',
+        'Nommage des fichiers : kebab-case.tsx pour les composants',
+      ],
+      correctIndex: 1,
+      explanation: "CLAUDE.md est pour les décisions, pas pour l'éducation. Les agents savent déjà comment fonctionnent les hooks React. Ils ont besoin de connaître les règles spécifiques de VOTRE projet — les choix qui pourraient aller dans n'importe quelle direction s'ils ne sont pas spécifiés. Pensez-y comme la constitution — les règles non négociables.",
     },
     {
-      type: 'code-demo',
-      title: 'Un CLAUDE.md multi-agent (racine du projet)',
-      body: "Voici un vrai CLAUDE.md conçu pour le travail en parallèle avec des agents. Remarquez comment chaque section répond à une question qu'un agent devrait autrement deviner.",
+      type: 'code-fill',
+      instruction: 'Complétez ce CLAUDE.md multi-agent qui empêche les agents de prendre des décisions contradictoires :',
       language: 'markdown',
       filename: 'CLAUDE.md',
-      code: `# Project: TaskFlow
-
-## Architecture Decisions (DO NOT DEVIATE)
-
-- **API style**: REST with JSON responses. No GraphQL.
-- **Validation**: Zod schemas in \`src/schemas/\`. Every endpoint validates input.
-- **Auth**: JWT tokens via \`src/lib/auth.ts\`. No session-based auth.
-- **State management**: Zustand. No Redux, no Context for global state.
-- **Styling**: Tailwind CSS only. No CSS modules, no styled-components.
-
-## File Naming
-
-- Components: \`kebab-case.tsx\` (e.g., \`user-profile.tsx\`)
-- Utilities: \`kebab-case.ts\` (e.g., \`format-date.ts\`)
-- Types: \`kebab-case.ts\` in \`src/types/\`
-- Tests: \`*.test.ts\` co-located with source file
-
-## Forbidden Patterns
-
-- \`any\` type — use \`unknown\` and narrow
-- Barrel files (\`index.ts\` re-exports) — import directly
-- Default exports — use named exports only
-- \`console.log\` in production code — use the logger from \`src/lib/logger.ts\`
-
-## Shared Contracts
-
-All agents import types from \`src/types/contracts.ts\`.
-No agent modifies this file. It is written by the orchestrator.`,
+      template: '# Project: TaskFlow\n\n## Architecture Decisions (DO NOT DEVIATE)\n\n- **API style**: {{apiStyle}}. No GraphQL.\n- **Validation**: {{validation}} in `src/schemas/`. Every endpoint validates input.\n- **Auth**: {{authMethod}} via `src/lib/auth.ts`. No session-based auth.\n- **State management**: {{stateLib}}. No Redux, no Context for global state.\n- **Styling**: {{cssApproach}} only. No CSS modules, no styled-components.',
+      blanks: [
+        { id: 'apiStyle', answer: 'REST with JSON responses', alternatives: ['REST', 'REST API', 'REST with JSON'], placeholder: 'quel style API ?', hint: 'Le patron API le plus courant pour les apps web' },
+        { id: 'validation', answer: 'Zod schemas', alternatives: ['Zod', 'zod schemas', 'Zod Schemas'], placeholder: 'quelle validation ?', hint: 'Bibliothèque de validation de schéma TypeScript-first' },
+        { id: 'authMethod', answer: 'JWT tokens', alternatives: ['JWT', 'jwt tokens', 'JSON Web Tokens'], placeholder: 'quelle auth ?', hint: 'Authentification basée sur des tokens stateless' },
+        { id: 'stateLib', answer: 'Zustand', alternatives: ['zustand'], placeholder: 'quelle lib d\'état ?', hint: 'Bibliothèque de gestion d\'état légère' },
+        { id: 'cssApproach', answer: 'Tailwind CSS', alternatives: ['Tailwind', 'tailwind', 'tailwind css'], placeholder: 'quel CSS ?', hint: 'Framework CSS utilitaire' },
+      ],
+      explanation: 'Chaque blanc élimine une catégorie de divergence. Sans choix explicites pour le style API, la validation, l\'auth, la gestion d\'état et le styling, les agents prendront des décisions raisonnables mais incompatibles.',
     },
     {
       type: 'multiple-choice',
@@ -137,65 +166,43 @@ No agent modifies this file. It is written by the orchestrator.`,
 
     // === LAYERING: PROJECT + DIRECTORY ===
     {
-      type: 'info',
-      title: 'Superposition : CLAUDE.md au niveau projet + répertoire',
-      body: "Un seul CLAUDE.md à la racine couvre les décisions à l'échelle du projet. Mais quand les agents travaillent dans des répertoires spécifiques, ils ont aussi besoin de guidance spécifique au domaine. Claude lit les fichiers CLAUDE.md à chaque niveau — racine pour les règles globales, niveau répertoire pour les spécificités locales. C'est la superposition : contexte général en haut, contexte spécifique là où le travail se fait.",
+      type: 'multiple-choice',
+      question: 'Un seul CLAUDE.md racine couvre les décisions à l\'échelle du projet. Mais quand les agents travaillent dans des répertoires spécifiques, ils ont besoin de guidance spécifique. Comment Claude gère-t-il cela ?',
+      options: [
+        'Claude ne lit que le CLAUDE.md racine — les fichiers au niveau répertoire sont ignorés',
+        'Claude lit le CLAUDE.md racine et à chaque niveau de répertoire pertinent à son travail (superposés)',
+        'Claude lit chaque CLAUDE.md du projet entier peu importe l\'emplacement',
+        'Vous devez copier toutes les règles dans chaque CLAUDE.md au niveau répertoire',
+      ],
+      correctIndex: 1,
+      explanation: 'Claude lit le CLAUDE.md à chaque niveau — racine pour les règles globales, niveau répertoire pour les spécificités locales. C\'est la superposition : contexte général en haut, contexte spécifique là où le travail se fait. Les règles de répertoire ajoutent de la spécificité sans répéter les règles globales.',
     },
     {
-      type: 'code-demo',
-      title: 'CLAUDE.md au niveau répertoire pour l\'agent API',
-      body: "Ce fichier réside dans src/api/ et donne à l'agent API des directives spécifiques au-delà de ce que le CLAUDE.md racine fournit. Il se superpose — ne répète pas les règles globales.",
+      type: 'code-fill',
+      instruction: 'Complétez ce CLAUDE.md au niveau répertoire pour l\'agent API qui se superpose aux règles racine :',
       language: 'markdown',
       filename: 'src/api/CLAUDE.md',
-      code: `# API Layer — Agent-Specific Context
-
-## Endpoint Pattern
-Every route follows: \`src/api/routes/{resource}.ts\`
-Each file exports a Hono router with CRUD operations.
-
-## Response Format
-Always wrap in: \`{ data: T, error: null }\` or \`{ data: null, error: string }\`
-Use the ApiResponse<T> type from \`src/types/contracts.ts\`.
-
-## Error Handling
-- 400: Zod validation failure (return parsed errors)
-- 401: Missing or expired JWT
-- 404: Resource not found
-- 500: Unexpected error (log full stack, return generic message)
-
-## Database Access
-Use Drizzle ORM. Schema at \`src/db/schema.ts\`.
-Never raw SQL. Never direct pg client calls.`,
+      template: '# API Layer — Agent-Specific Context\n\n## Endpoint Pattern\nEvery route follows: `src/api/routes/{{routePattern}}.ts`\nEach file exports a Hono router with {{operations}} operations.\n\n## Response Format\nAlways wrap in: `{ data: T, error: null }` or `{ data: null, error: string }`\nUse the {{responseType}} type from `src/types/contracts.ts`.\n\n## Error Handling\n- 400: {{validationError}}\n- 401: Missing or expired JWT\n- 404: Resource not found\n- 500: Unexpected error (log full stack, return generic message)',
+      blanks: [
+        { id: 'routePattern', answer: '{resource}', alternatives: ['resource', '[resource]'], placeholder: 'quel patron ?', hint: 'Les routes sont organisées par nom de ressource' },
+        { id: 'operations', answer: 'CRUD', alternatives: ['crud', 'Create Read Update Delete'], placeholder: 'quelles opérations ?', hint: 'Les quatre opérations de base de données de base' },
+        { id: 'responseType', answer: 'ApiResponse<T>', alternatives: ['ApiResponse', 'ApiResponse<T> type'], placeholder: 'quel type ?', hint: 'Le wrapper de réponse générique des contrats partagés' },
+        { id: 'validationError', answer: 'Zod validation failure (return parsed errors)', alternatives: ['Zod validation failure', 'Validation failure', 'validation error'], placeholder: 'quel type d\'erreur ?', hint: 'Échecs de validation d\'entrée utilisant la bibliothèque de schéma du CLAUDE.md racine' },
+      ],
+      explanation: 'Ce CLAUDE.md au niveau répertoire se superpose aux règles racine. Il ne répète pas « utiliser Zod » — c\'est dans la racine. Il spécifie COMMENT l\'agent API utilise Zod (retourner les erreurs parsées sur 400).',
     },
     {
-      type: 'code-demo',
-      title: 'CLAUDE.md au niveau répertoire pour l\'agent UI',
-      body: "Un agent différent travaillant dans src/components/ obtient sa propre guidance spécifique. Il hérite des règles au niveau projet (Tailwind, Zustand, kebab-case) et ajoute des patrons spécifiques aux composants.",
+      type: 'code-fill',
+      instruction: 'Complétez ce CLAUDE.md au niveau répertoire pour l\'agent UI avec des patrons spécifiques aux composants :',
       language: 'markdown',
       filename: 'src/components/CLAUDE.md',
-      code: `# UI Components — Agent-Specific Context
-
-## Component Structure
-- Props interface above component (named {Component}Props)
-- Destructure props in function signature
-- Use forwardRef for any component that wraps an HTML element
-
-## Import Order
-1. React/framework imports
-2. Third-party libraries
-3. Internal components (@/components/*)
-4. Utilities (@/lib/*)
-5. Types (@/types/*)
-
-## Accessibility
-- All interactive elements need aria-labels
-- Use semantic HTML (button, nav, main, aside)
-- Support keyboard navigation (onKeyDown handlers)
-
-## Testing
-- Use Testing Library (render, screen, userEvent)
-- Test behavior, not implementation
-- Co-locate test files: \`user-card.test.tsx\` beside \`user-card.tsx\``,
+      template: '# UI Components — Agent-Specific Context\n\n## Component Structure\n- Props interface above component (named {{propsNaming}})\n- {{destructure}} props in function signature\n- Use forwardRef for any component that wraps an HTML element\n\n## Import Order\n1. React/framework imports\n2. Third-party libraries\n3. Internal components ({{componentAlias}})\n4. Utilities (@/lib/*)\n5. Types (@/types/*)',
+      blanks: [
+        { id: 'propsNaming', answer: '{Component}Props', alternatives: ['ComponentProps', '{ComponentName}Props'], placeholder: 'patron de nommage ?', hint: 'L\'interface des props est nommée d\'après le composant' },
+        { id: 'destructure', answer: 'Destructure', alternatives: ['destructure', 'Destructured', 'Déstructurer'], placeholder: 'quoi faire avec les props ?', hint: 'Extraire les propriétés directement dans le paramètre de fonction' },
+        { id: 'componentAlias', answer: '@/components/*', alternatives: ['@/components'], placeholder: 'quel alias d\'import ?', hint: 'Les composants internes utilisent l\'alias de chemin @' },
+      ],
+      explanation: 'L\'agent UI hérite des règles racine (Tailwind, Zustand, kebab-case) et ajoute des patrons spécifiques aux composants. L\'ordre des imports et le nommage des props préviennent les petites incohérences qui s\'accumulent en un codebase désordonné.',
     },
     {
       type: 'multiple-choice',
@@ -217,37 +224,29 @@ Never raw SQL. Never direct pg client calls.`,
 
     // === PREVENTING CONTRADICTORY DECISIONS ===
     {
-      type: 'info',
-      title: 'Prévenir les décisions contradictoires',
-      body: "L'échec multi-agent le plus courant : deux agents font des choix raisonnables mais incompatibles. L'agent A utilise Axios pour HTTP. L'agent B utilise fetch. L'agent C crée un wrapper personnalisé. Maintenant vous avez trois bibliothèques HTTP dans un seul projet. CLAUDE.md prévient ça en rendant le choix explicite avant que tout agent ne commence.",
+      type: 'multiple-choice',
+      question: 'L\'agent A utilise Axios pour HTTP, l\'agent B utilise fetch, l\'agent C crée un wrapper personnalisé. Quelle section CLAUDE.md aurait empêché cela ?',
+      options: [
+        'Une section « Premiers pas » tutoriel',
+        'Une section « Catégories de décisions » spécifiant l\'approche HTTP unique',
+        'Une section « Membres de l\'équipe » listant les responsabilités des agents',
+        'Une section « Journal des modifications » suivant les modifications',
+      ],
+      correctIndex: 1,
+      explanation: 'CLAUDE.md prévient les décisions contradictoires en rendant les choix explicites avant que tout agent ne commence. Le fetching de données, la gestion de formulaires, les bibliothèques de dates, la génération d\'ID et la gestion d\'erreurs sont les catégories principales où les agents divergent. Un choix explicite par catégorie élimine le problème.',
     },
     {
-      type: 'code-demo',
-      title: 'Catégories de décisions qui DOIVENT être spécifiées',
-      body: "Ce sont les décisions où les agents vont diverger si on ne leur dit pas explicitement. Chaque CLAUDE.md multi-agent a besoin de réponses à ces questions.",
+      type: 'code-fill',
+      instruction: 'Complétez ces catégories de décisions qui empêchent les agents de choisir des bibliothèques différentes pour le même travail :',
       language: 'markdown',
       filename: 'CLAUDE.md',
-      code: `## Decisions That Prevent Contradictions
-
-### Data Fetching
-- Client: use \`fetch\` via the wrapper in \`src/lib/api-client.ts\`
-- No Axios, no ky, no got — one HTTP approach
-
-### Form Handling
-- React Hook Form + Zod resolver
-- No Formik, no uncontrolled forms
-
-### Date/Time
-- date-fns for all formatting and manipulation
-- No moment.js, no dayjs, no native Date formatting
-
-### ID Generation
-- nanoid for client-generated IDs
-- UUID v4 for database-generated IDs (via Postgres)
-
-### Error Boundaries
-- Use the shared ErrorBoundary from \`src/components/error-boundary.tsx\`
-- Don't create new error boundary components`,
+      template: '## Decisions That Prevent Contradictions\n\n### Data Fetching\n- Client: use `{{httpClient}}` via the wrapper in `src/lib/api-client.ts`\n- No Axios, no ky, no got — one HTTP approach\n\n### Form Handling\n- {{formLib}} + Zod resolver\n- No Formik, no uncontrolled forms\n\n### Date/Time\n- {{dateLib}} for all formatting and manipulation\n- No moment.js, no dayjs, no native Date formatting',
+      blanks: [
+        { id: 'httpClient', answer: 'fetch', alternatives: ['Fetch', 'the fetch API'], placeholder: 'quel client HTTP ?', hint: 'L\'API native du navigateur/Node pour faire des requêtes HTTP' },
+        { id: 'formLib', answer: 'React Hook Form', alternatives: ['react-hook-form', 'react hook form', 'RHF'], placeholder: 'quelle bibliothèque de formulaires ?', hint: 'La bibliothèque de formulaires React la plus populaire avec API basée sur les hooks' },
+        { id: 'dateLib', answer: 'date-fns', alternatives: ['Date-fns', 'date fns', 'datefns'], placeholder: 'quelle bibliothèque de dates ?', hint: 'Bibliothèque utilitaire de dates fonctionnelle (pas moment, pas dayjs)' },
+      ],
+      explanation: 'Chaque décision nomme un outil et interdit explicitement les alternatives. Sans cela, vous obtenez trois bibliothèques HTTP, deux gestionnaires de formulaires, et un formatage de dates incohérent à travers votre codebase.',
     },
     {
       type: 'order',
@@ -263,30 +262,29 @@ Never raw SQL. Never direct pg client calls.`,
 
     // === UPDATING SHARED CONTEXT ===
     {
-      type: 'info',
-      title: 'Mettre à jour le contexte partagé pendant le travail parallèle',
-      body: "Les bases de code évoluent pendant une session multi-agent. L'agent A découvre que la bibliothèque d'auth nécessite un patron d'initialisation spécifique. L'agent C trouve que le schéma de base de données a besoin d'un champ supplémentaire. Ces découvertes doivent se propager aux autres agents. La règle : seul l'orchestrateur (vous) met à jour CLAUDE.md. Les agents proposent des changements ; vous décidez.",
+      type: 'multiple-choice',
+      question: 'Pendant une exécution parallèle, l\'agent A découvre que la bibliothèque d\'auth nécessite une initialisation asynchrone. Qui devrait mettre à jour CLAUDE.md avec cette information ?',
+      options: [
+        'L\'agent A devrait mettre à jour CLAUDE.md directement',
+        'Tous les agents devraient s\'arrêter et discuter du changement',
+        'Vous (l\'orchestrateur) mettez à jour CLAUDE.md et informez les agents concernés',
+        'Pas de mise à jour nécessaire — chaque agent se débrouille indépendamment',
+      ],
+      correctIndex: 2,
+      explanation: 'Seul l\'orchestrateur (vous) met à jour CLAUDE.md. Les agents proposent des changements ; vous décidez. Vous notez la découverte, mettez à jour le fichier, et informez sélectivement les agents dont le travail est affecté. C\'est de la coordination ciblée, pas une interruption en broadcast.',
     },
     {
-      type: 'code-demo',
-      title: 'Mise à jour CLAUDE.md en cours de session',
-      body: "Pendant une exécution de flotte, l'agent A découvre que la bibliothèque d'auth nécessite une initialisation asynchrone. Vous mettez à jour CLAUDE.md pour que tous les autres agents gèrent ça correctement. C'est une mise à jour de coordination en temps réel.",
+      type: 'code-fill',
+      instruction: 'Complétez cette mise à jour CLAUDE.md en cours de session qui propage une découverte d\'un agent à tous les autres :',
       language: 'markdown',
       filename: 'CLAUDE.md',
-      code: `## Runtime Notes (added during this session)
-
-### Auth Initialization (IMPORTANT)
-The auth client requires async init before any protected call:
-\`\`\`typescript
-import { initAuth } from '@/lib/auth'
-// Call once at app startup or route handler entry
-await initAuth()
-\`\`\`
-Any agent making authenticated requests MUST call this first.
-
-### Database: users table has new column
-Added \`preferences JSONB DEFAULT '{}'\` to users table.
-Agents working with user data: include this field in your types.`,
+      template: '## Runtime Notes (added during this session)\n\n### Auth Initialization (IMPORTANT)\nThe auth client requires {{initType}} init before any protected call:\n```typescript\nimport { initAuth } from \'@/lib/auth\'\n// Call once at app startup or route handler entry\n{{initCall}}\n```\nAny agent making authenticated requests MUST call this first.\n\n### Database: users table has new column\nAdded `{{newColumn}} DEFAULT \'{}\'` to users table.\nAgents working with user data: include this field in your types.',
+      blanks: [
+        { id: 'initType', answer: 'async', alternatives: ['asynchronous', 'asynchrone'], placeholder: 'sync ou async ?', hint: 'L\'initialisation nécessite un await' },
+        { id: 'initCall', answer: 'await initAuth()', alternatives: ['await initAuth();'], placeholder: 'l\'appel d\'init ?', hint: 'Un appel de fonction awaité pour initialiser l\'auth' },
+        { id: 'newColumn', answer: 'preferences JSONB', alternatives: ['preferences jsonb', 'preferences JSONB DEFAULT'], placeholder: 'définition de colonne ?', hint: 'Une colonne JSON pour les préférences utilisateur' },
+      ],
+      explanation: 'Les mises à jour en cours de session propagent les découvertes entre agents. Le besoin d\'init async et le changement de schéma affectent chaque agent faisant des appels authentifiés ou travaillant avec les données utilisateur. Sans cette mise à jour, les agents échoueraient à l\'exécution.',
     },
     {
       type: 'multiple-choice',
@@ -318,7 +316,7 @@ Agents working with user data: include this field in your types.`,
       },
       right: {
         label: 'CLAUDE.md partagé',
-        content: 'All agents read:\n  "Functions: camelCase"\n  "Errors: throw AppError(msg, code)"\n  "Styling: Tailwind only, no inline"\n\nAgent 1: follows rules ✓\nAgent 2: follows rules ✓\nAgent 3: follows rules ✓\n\nResult: consistent codebase',
+        content: 'All agents read:\n  "Functions: camelCase"\n  "Errors: throw AppError(msg, code)"\n  "Styling: Tailwind only, no inline"\n\nAgent 1: follows rules\nAgent 2: follows rules\nAgent 3: follows rules\n\nResult: consistent codebase',
         language: 'text',
       },
     },
@@ -340,9 +338,16 @@ Agents working with user data: include this field in your types.`,
 
     // === EXERCICE PRATIQUE ===
     {
-      type: 'info',
-      title: 'Exercice : Écrire un CLAUDE.md multi-agent',
-      body: "C'est le moment de pratiquer. Vous allez lancer 4 agents sur un projet e-commerce : agent auth, agent catalogue produits, agent panier/paiement, et agent tableau de bord admin. Écrivez le contexte partagé qui les garde alignés.",
+      type: 'multiple-choice',
+      question: 'Vous allez lancer 4 agents sur un projet e-commerce : auth, catalogue produits, panier/paiement et tableau de bord admin. Quelle est la PREMIÈRE chose que vous écrivez avant de répartir un agent ?',
+      options: [
+        'Le composant du catalogue produits',
+        'Un CLAUDE.md partagé avec les décisions d\'architecture, la propriété des fichiers, le nommage et les patrons interdits',
+        'Les fichiers de migration de base de données',
+        'Les descriptions de tâches individuelles pour chaque agent',
+      ],
+      correctIndex: 1,
+      explanation: 'Le CLAUDE.md partagé vient en premier — avant tout code, avant que tout agent ne démarre. Il établit les règles qui gardent les quatre agents cohérents. Sans lui, l\'agent auth pourrait utiliser Prisma tandis que l\'agent catalogue utilise Drizzle.',
     },
     {
       type: 'terminal',
@@ -380,10 +385,10 @@ Agents working with user data: include this field in your types.`,
 - State: Zustand for client state, server state via React Query
 
 ## File Ownership
-- src/auth/* → Auth Agent (login, signup, session)
-- src/products/* → Catalog Agent (listing, search, detail)
-- src/cart/* → Cart Agent (add/remove, checkout, payment)
-- src/admin/* → Admin Agent (dashboard, CRUD, analytics)
+- src/auth/* -> Auth Agent (login, signup, session)
+- src/products/* -> Catalog Agent (listing, search, detail)
+- src/cart/* -> Cart Agent (add/remove, checkout, payment)
+- src/admin/* -> Admin Agent (dashboard, CRUD, analytics)
 
 ## Shared Resources (NO AGENT MODIFIES)
 - src/types/contracts.ts — shared type definitions

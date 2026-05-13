@@ -17,9 +17,9 @@ const content: LessonContent = {
 
     // === DIAGRAM 1: WORKTREE ISOLATION ===
     {
-      type: 'diagram',
+      type: 'interactive-diagram',
       title: 'Isolation par worktree',
-      body: 'Trois agents travaillent dans des worktrees séparés sur des branches séparées. Aucun conflit de fichier. Fusion propre à la fin.',
+      body: 'Trois agents travaillent dans des worktrees séparés sur des branches séparées. Parcourez pour voir comment l\'isolation fonctionne.',
       diagram: {
         direction: 'TB',
         nodes: [
@@ -38,6 +38,22 @@ const content: LessonContent = {
           { from: 'wt-c', to: 'merge' },
         ],
       },
+      stages: [
+        {
+          highlightNodes: ['repo'],
+          explanation: 'Votre dépôt principal est sur la branche main. C\'est là que le code fusionné final vit.',
+        },
+        {
+          highlightNodes: ['repo', 'wt-a', 'wt-b', 'wt-c'],
+          highlightEdges: [{ from: 'repo', to: 'wt-a' }, { from: 'repo', to: 'wt-b' }, { from: 'repo', to: 'wt-c' }],
+          explanation: 'Chaque agent obtient son propre répertoire worktree avec sa propre branche. Ils partagent la base de données .git mais ont des systèmes de fichiers complètement séparés. Aucun conflit pendant le travail.',
+        },
+        {
+          highlightNodes: ['wt-a', 'wt-b', 'wt-c', 'merge'],
+          highlightEdges: [{ from: 'wt-a', to: 'merge' }, { from: 'wt-b', to: 'merge' }, { from: 'wt-c', to: 'merge' }],
+          explanation: 'Quand les agents ont fini, fusionnez leurs branches vers main. Les conflits n\'arrivent qu\'au moment de la fusion — et avec une bonne propriété des fichiers, ils sont rares.',
+        },
+      ],
     },
     {
       type: 'checkpoint',
@@ -47,14 +63,20 @@ const content: LessonContent = {
 
     // === WHAT IS A WORKTREE ===
     {
-      type: 'info',
-      title: 'Qu\'est-ce qu\'un worktree git ?',
-      body: "Un worktree est un répertoire de travail supplémentaire lié à votre dépôt existant. Normalement, vous avez un seul répertoire de travail et changez de branche avec git checkout. Les worktrees vous permettent d'avoir plusieurs branches extraites simultanément dans différents dossiers. Crucialément, ils partagent tous la même base de données .git — commits, branches, historique, remotes. Quand l'agent 1 fait un commit dans son worktree, l'agent 2 peut voir cette branche immédiatement.",
-    },
-    {
-      type: 'info',
-      title: 'Worktree vs clone',
-      body: "Vous pourriez penser : clonez le dépôt trois fois. Ça fonctionne mais pose des problèmes. Trois clones signifient trois copies de l'historique .git complet, trois ensembles de remotes à push/pull, et aucune visibilité de branche partagée. Les worktrees partagent tout en coulisses. Ils sont légers — en créer un prend des millisecondes, pas des minutes. Et quand vous fusionnez, vous fusionnez des branches locales, pas en coordonnant entre des dépôts séparés.",
+      type: 'compare',
+      title: 'Worktree vs Clone',
+      body: 'Deux façons de donner aux agents des répertoires de travail séparés. L\'un est léger et rapide, l\'autre est lourd et lent.',
+      question: 'Quelle approche est meilleure pour des agents parallèles travaillant sur le même projet ?',
+      correctSide: 'left',
+      left: {
+        label: 'Git Worktree',
+        content: "git worktree add ../agent-auth -b feat/auth\n\n- Millisecondes pour créer\n- Partage l'historique .git avec le dépôt principal\n- Branches visibles dans tous les worktrees\n- Fusion locale (même dépôt)\n- Léger : pas de données dupliquées\n- Un seul remote à push/pull",
+      },
+      right: {
+        label: 'Git Clone',
+        content: "git clone repo-url ../agent-auth-clone\n\n- Minutes pour créer (copie complète)\n- Historique .git séparé par clone\n- Branches NON partagées entre clones\n- Doit push/pull pour coordonner\n- Lourd : copie complète du dépôt à chaque fois\n- Multiples remotes à gérer",
+      },
+      explanation: 'Les worktrees partagent tout en coulisses — commits, branches, historique, remotes. Ils sont légers (millisecondes pour créer) et les branches locales sont immédiatement visibles dans tous les worktrees. Les clones dupliquent tout et nécessitent push/pull pour coordonner.',
     },
     {
       type: 'multiple-choice',
@@ -71,17 +93,29 @@ const content: LessonContent = {
 
     // === CORE COMMANDS ===
     {
-      type: 'info',
-      title: 'Les quatre commandes dont vous avez besoin',
-      body: "Les worktrees Git se résument à quatre commandes : add (créer un nouveau worktree), list (voir tous les worktrees actifs), remove (nettoyer un worktree), et prune (supprimer les références périmées). C'est tout. La simplicité est le point — la puissance est dans la façon dont vous les combinez avec les agents.",
+      type: 'multiple-choice',
+      question: 'Les worktrees Git se résument à quatre commandes. Quelle commande crée un nouveau worktree avec une nouvelle branche ?',
+      options: [
+        'git worktree list -b <branche>',
+        'git worktree add <chemin> -b <branche>',
+        'git branch <branche> && git checkout <branche>',
+        'git worktree create <chemin> <branche>',
+      ],
+      correctIndex: 1,
+      explanation: 'git worktree add crée un nouveau répertoire et extrait une branche dedans. Le flag -b crée une nouvelle branche. Les quatre commandes sont : add (créer), list (voir tout), remove (nettoyer), et prune (supprimer les références périmées).',
     },
     {
-      type: 'code-demo',
-      title: 'Créer un worktree',
-      body: 'La commande git worktree add crée un nouveau répertoire et extrait une branche dedans. Si la branche n\'existe pas, utilisez -b pour la créer.',
+      type: 'code-fill',
+      instruction: 'Complétez ces commandes git worktree pour créer des espaces de travail pour les agents :',
       language: 'bash',
       filename: 'terminal',
-      code: '# Create a worktree with a new branch\ngit worktree add ../project-auth -b feat/auth\n\n# Create a worktree for an existing branch\ngit worktree add ../project-api feat/api\n\n# Result: ../project-auth/ is now a full working directory\n# on the feat/auth branch, ready for an agent',
+      template: '# Create a worktree with a new branch\ngit worktree {{addCmd}} ../project-auth -b {{authBranch}}\n\n# Create a worktree for an existing branch\ngit worktree {{addCmd}} ../project-api {{apiBranch}}\n\n# Result: ../project-auth/ is now a full working directory\n# on the {{authBranch}} branch, ready for an agent',
+      blanks: [
+        { id: 'addCmd', answer: 'add', alternatives: [], placeholder: 'quelle sous-commande ?', hint: 'La sous-commande git worktree qui crée un nouveau worktree' },
+        { id: 'authBranch', answer: 'feat/auth', alternatives: ['feature/auth', 'auth'], placeholder: 'nom de branche ?', hint: 'Une branche de fonctionnalité pour le travail auth' },
+        { id: 'apiBranch', answer: 'feat/api', alternatives: ['feature/api', 'api'], placeholder: 'branche existante ?', hint: 'Une branche de fonctionnalité pour le travail API' },
+      ],
+      explanation: 'git worktree add est la commande principale. Avec -b elle crée une nouvelle branche. Sans -b elle extrait une branche existante. Chaque worktree obtient son propre répertoire qui est une copie de travail complète.',
     },
     {
       type: 'terminal',
@@ -90,12 +124,17 @@ const content: LessonContent = {
       hint: 'Utilisez git worktree add <chemin> -b <nom-nouvelle-branche>',
     },
     {
-      type: 'code-demo',
-      title: 'Gérer les worktrees',
-      body: 'Listez tous les worktrees pour voir ce qui est actif, et supprimez-les quand c\'est fini.',
+      type: 'code-fill',
+      instruction: 'Complétez ces commandes de gestion de worktrees :',
       language: 'bash',
       filename: 'terminal',
-      code: '# List all worktrees\ngit worktree list\n# /home/user/project        abc1234 [main]\n# /home/user/project-auth   def5678 [feat/auth]\n# /home/user/project-api    ghi9012 [feat/api]\n\n# Remove a worktree after merging\ngit worktree remove ../project-auth\n\n# Clean up stale references\ngit worktree prune',
+      template: '# List all worktrees\ngit worktree {{listCmd}}\n\n# Remove a worktree after merging\ngit worktree {{removeCmd}} ../project-auth\n\n# Clean up stale references\ngit worktree {{pruneCmd}}',
+      blanks: [
+        { id: 'listCmd', answer: 'list', alternatives: [], placeholder: 'quelle commande ?', hint: 'Voir tous les worktrees actifs' },
+        { id: 'removeCmd', answer: 'remove', alternatives: ['rm'], placeholder: 'quelle commande ?', hint: 'Nettoyer un répertoire worktree' },
+        { id: 'pruneCmd', answer: 'prune', alternatives: [], placeholder: 'quelle commande ?', hint: 'Supprimer les références de worktree périmées' },
+      ],
+      explanation: 'list montre tous les worktrees actifs avec leurs branches. remove supprime le répertoire worktree et le délie. prune nettoie les références aux worktrees supprimés manuellement.',
     },
     {
       type: 'checkpoint',
@@ -105,9 +144,9 @@ const content: LessonContent = {
 
     // === DIAGRAM 2: WORKTREE LIFECYCLE ===
     {
-      type: 'diagram',
+      type: 'interactive-diagram',
       title: 'Cycle de vie d\'un worktree',
-      body: 'Chaque worktree suit ce cycle de vie : le créer, brancher depuis main, faire le travail, le tester, fusionner vers main, puis nettoyer.',
+      body: 'Chaque worktree suit ce cycle de vie. Parcourez chaque phase.',
       diagram: {
         direction: 'LR',
         nodes: [
@@ -126,21 +165,61 @@ const content: LessonContent = {
           { from: 'merge', to: 'cleanup' },
         ],
       },
+      stages: [
+        {
+          highlightNodes: ['create', 'branch'],
+          highlightEdges: [{ from: 'create', to: 'branch' }],
+          explanation: 'Créer : exécutez git worktree add pour créer un répertoire isolé avec sa propre branche. Prend des millisecondes. L\'agent a maintenant son propre bac à sable de fichiers.',
+        },
+        {
+          highlightNodes: ['branch', 'work'],
+          highlightEdges: [{ from: 'branch', to: 'work' }],
+          explanation: 'Travailler : l\'agent travaille librement dans son worktree — modification, création, suppression de fichiers. Aucun autre agent n\'est affecté. Isolation complète.',
+        },
+        {
+          highlightNodes: ['work', 'test'],
+          highlightEdges: [{ from: 'work', to: 'test' }],
+          explanation: 'Tester : exécutez les tests dans le worktree pour vérifier le travail de l\'agent avant la fusion. Détectez les problèmes tôt pendant que le contexte est frais.',
+        },
+        {
+          highlightNodes: ['test', 'merge'],
+          highlightEdges: [{ from: 'test', to: 'merge' }],
+          explanation: 'Fusionner : revenez au dépôt principal et faites git merge de la branche de fonctionnalité. Si la propriété des fichiers était exclusive, ça fusionne proprement.',
+        },
+        {
+          highlightNodes: ['merge', 'cleanup'],
+          highlightEdges: [{ from: 'merge', to: 'cleanup' }],
+          explanation: 'Nettoyer : exécutez git worktree remove et git branch -d pour nettoyer. Retour à un état vierge pour la prochaine exécution.',
+        },
+      ],
     },
 
     // === PRACTICAL SETUP ===
     {
-      type: 'info',
-      title: 'Configurer 3 worktrees pour des agents parallèles',
-      body: "Voici le vrai workflow. Vous avez une fonctionnalité qui se divise en trois tâches indépendantes : auth, API et UI. Vous créez trois worktrees, lancez trois agents Claude Code, et pointez chacun vers son propre répertoire. Ils travaillent en parallèle sans aucune coordination nécessaire. La règle clé : chaque agent travaille dans un répertoire worktree séparé, jamais dans le répertoire du dépôt principal.",
+      type: 'multiple-choice',
+      question: 'Vous avez une fonctionnalité qui se divise en trois tâches indépendantes : auth, API et UI. Où chaque agent devrait-il travailler ?',
+      options: [
+        'Les trois agents travaillent dans le répertoire du dépôt principal sur différentes branches',
+        'Chaque agent travaille dans son propre répertoire worktree, jamais dans le dépôt principal',
+        'Le premier agent travaille dans le dépôt principal, les autres dans des worktrees',
+        'Chaque agent clone le dépôt dans un répertoire séparé',
+      ],
+      correctIndex: 1,
+      explanation: 'Chaque agent travaille dans un répertoire worktree séparé sur sa propre branche. Jamais dans le répertoire du dépôt principal. Cela assure une isolation complète des fichiers — aucun agent ne peut écraser le travail d\'un autre.',
     },
     {
-      type: 'code-demo',
-      title: 'Configuration complète en parallèle',
-      body: 'Créez trois worktrees, puis lancez des agents dans chacun. Chaque agent obtient son propre espace de travail isolé.',
+      type: 'code-fill',
+      instruction: 'Complétez cette configuration parallèle complète pour trois agents avec des worktrees :',
       language: 'bash',
       filename: 'terminal',
-      code: '# From your main repo directory\ngit worktree add ../myapp-auth -b feat/auth\ngit worktree add ../myapp-api  -b feat/api\ngit worktree add ../myapp-ui   -b feat/ui\n\n# Launch agents in separate terminals\n# Terminal 1:\ncd ../myapp-auth && claude "Implement JWT auth middleware"\n\n# Terminal 2:\ncd ../myapp-api && claude "Add CRUD endpoints for users"\n\n# Terminal 3:\ncd ../myapp-ui && claude "Build the settings page component"',
+      template: '# From your main repo directory\ngit worktree add ../myapp-auth -b {{authBranch}}\ngit worktree add ../myapp-api  -b {{apiBranch}}\ngit worktree add ../myapp-ui   -b {{uiBranch}}\n\n# Launch agents in separate terminals\n# Terminal 1:\ncd ../myapp-auth && claude "{{authTask}}"\n\n# Terminal 2:\ncd ../myapp-api && claude "Add CRUD endpoints for users"',
+      blanks: [
+        { id: 'authBranch', answer: 'feat/auth', alternatives: ['feature/auth'], placeholder: 'nom de branche ?', hint: 'Branche de fonctionnalité pour le travail auth' },
+        { id: 'apiBranch', answer: 'feat/api', alternatives: ['feature/api'], placeholder: 'nom de branche ?', hint: 'Branche de fonctionnalité pour le travail API' },
+        { id: 'uiBranch', answer: 'feat/ui', alternatives: ['feature/ui'], placeholder: 'nom de branche ?', hint: 'Branche de fonctionnalité pour le travail UI' },
+        { id: 'authTask', answer: 'Implement JWT auth middleware', alternatives: ['Build JWT auth', 'Implement auth middleware', 'Build authentication'], placeholder: 'tâche de l\'agent ?', hint: 'Une tâche en une phrase pour l\'agent auth' },
+      ],
+      explanation: 'Trois worktrees, trois branches, trois agents. Chaque agent a une isolation complète. Le patron de commande clé : git worktree add <répertoire> -b <branche>, puis cd dans le répertoire et lancer l\'agent.',
     },
     {
       type: 'code-input',
@@ -169,17 +248,28 @@ const content: LessonContent = {
 
     // === MERGE STRATEGY ===
     {
-      type: 'info',
-      title: 'L\'ordre de fusion compte',
-      body: "Quand les trois agents ont fini, vous devez fusionner leurs branches vers main. L'ordre compte. Commencez par la branche qui a zéro dépendance envers les autres — généralement la fonctionnalité la plus isolée. Puis fusionnez la suivante. Si ça crée un conflit, vous le résolvez contre un main qui a déjà la première fusion. Enfin, fusionnez la branche la plus susceptible de toucher du code partagé en dernier, pour attraper tous les conflits en une seule passe.",
+      type: 'multiple-choice',
+      question: 'Les trois agents ont fini. Vous devez fusionner leurs branches vers main. Que devriez-vous fusionner EN PREMIER ?',
+      options: [
+        'La plus grosse branche (le plus de changements)',
+        'La branche la plus indépendante (le moins de dépendances)',
+        'La branche qui a fini en premier',
+        'Ça n\'a pas d\'importance — l\'ordre est sans importance',
+      ],
+      correctIndex: 1,
+      explanation: 'Commencez par la branche qui a zéro dépendance envers les autres — généralement la fonctionnalité la plus isolée. Puis fusionnez la suivante, en résolvant contre le main mis à jour. Enfin, fusionnez la branche la plus susceptible de toucher du code partagé en dernier.',
     },
     {
-      type: 'code-demo',
-      title: 'Stratégie de fusion séquentielle',
-      body: 'Fusionnez auth en premier (indépendant), puis api, puis ui (qui peut dépendre des types api).',
+      type: 'code-fill',
+      instruction: 'Complétez cette stratégie de fusion séquentielle — auth en premier (indépendant), puis api, puis ui :',
       language: 'bash',
       filename: 'terminal',
-      code: '# Back in your main repo directory\n\n# Step 1: Merge auth (no dependencies)\ngit merge feat/auth\n# Clean merge -- auth is fully independent\n\n# Step 2: Merge api\ngit merge feat/api\n# Clean merge -- api didn\'t touch auth files\n\n# Step 3: Merge ui (may conflict if it imports api types)\ngit merge feat/ui\n# If conflicts arise, resolve them here\n# You only deal with conflicts once, at the end',
+      template: '# Back in your main repo directory\n\n# Step 1: Merge auth (no dependencies)\ngit {{mergeCmd}} feat/auth\n# Clean merge — auth is fully independent\n\n# Step 2: Merge api\ngit {{mergeCmd}} feat/api\n# Clean merge — api didn\'t touch auth files\n\n# Step 3: Merge ui (may conflict if it imports api types)\ngit {{mergeCmd}} {{uiBranch}}\n# If conflicts arise, resolve them here',
+      blanks: [
+        { id: 'mergeCmd', answer: 'merge', alternatives: [], placeholder: 'quelle commande ?', hint: 'La commande git qui combine les branches' },
+        { id: 'uiBranch', answer: 'feat/ui', alternatives: ['feature/ui'], placeholder: 'quelle branche ?', hint: 'La branche de fonctionnalité UI' },
+      ],
+      explanation: 'Fusionnez la branche la plus indépendante d\'abord, puis progressez vers les branches avec plus de dépendances. Ainsi, les conflits sont concentrés dans la fusion finale où vous pouvez tous les gérer en une fois.',
     },
     {
       type: 'order',
@@ -195,9 +285,9 @@ const content: LessonContent = {
 
     // === DIAGRAM 3: BRANCH STRATEGY ===
     {
-      type: 'diagram',
+      type: 'interactive-diagram',
       title: 'Stratégie de branches',
-      body: 'Les branches de fonctionnalité divergent de main, sont révisées, et fusionnent à nouveau. La couche parallèle est l\'endroit où les agents travaillent simultanément.',
+      body: 'Les branches de fonctionnalité divergent de main, sont révisées, et fusionnent à nouveau. Parcourez le workflow parallèle.',
       diagram: {
         direction: 'TB',
         nodes: [
@@ -218,21 +308,54 @@ const content: LessonContent = {
           { from: 'review', to: 'main-end' },
         ],
       },
+      stages: [
+        {
+          highlightNodes: ['main-top'],
+          highlightEdges: [{ from: 'main-top', to: 'auth' }, { from: 'main-top', to: 'api' }, { from: 'main-top', to: 'ui' }],
+          explanation: 'Toutes les branches de fonctionnalité divergent du même point sur main. Chaque agent commence avec un code identique.',
+        },
+        {
+          highlightNodes: ['auth', 'api', 'ui'],
+          explanation: 'Les agents travaillent en parallèle sur leurs propres branches dans leurs propres worktrees. Isolation complète — aucune coordination nécessaire pendant la phase de travail.',
+        },
+        {
+          highlightNodes: ['review'],
+          highlightEdges: [{ from: 'auth', to: 'review' }, { from: 'api', to: 'review' }, { from: 'ui', to: 'review' }],
+          explanation: 'Toutes les branches convergent pour la révision de PR. Vous vérifiez chaque branche indépendamment, puis fusionnez dans l\'ordre des dépendances.',
+        },
+        {
+          highlightNodes: ['main-end'],
+          highlightEdges: [{ from: 'review', to: 'main-end' }],
+          explanation: 'Après révision et fusion, main a les trois fonctionnalités intégrées. Nettoyez les worktrees, supprimez les branches de fonctionnalité, terminé.',
+        },
+      ],
     },
 
     // === CONFLICT RESOLUTION ===
     {
-      type: 'info',
-      title: 'Quand les conflits arrivent quand même',
-      body: "Même avec une isolation parfaite par worktree, des conflits peuvent survenir. L'agent 1 ajoute un nouvel export à src/index.ts. L'agent 3 ajoute aussi un export à src/index.ts. Ils ont modifié des lignes différentes, mais git ne peut pas toujours auto-fusionner des changements adjacents. La solution est simple : quand git merge signale un conflit, ouvrez le fichier, gardez les deux ajouts, et commitez. L'insight clé est que les worktrees réduisent les conflits de « cauchemar constant » à « occasionnel et gérable ».",
+      type: 'multiple-choice',
+      question: 'Même avec l\'isolation par worktree, l\'agent 1 ajoute un nouvel export à src/index.ts et l\'agent 3 ajoute aussi un export à src/index.ts. Que se passe-t-il à la fusion ?',
+      options: [
+        'Git fusionne automatiquement les deux ajouts parfaitement',
+        'Git peut signaler un conflit car les deux ont modifié le même fichier près des mêmes lignes',
+        'La deuxième fusion écrase la première — des données sont perdues',
+        'Les worktrees empêchent que cela arrive',
+      ],
+      correctIndex: 1,
+      explanation: 'Même avec une isolation parfaite, des conflits peuvent survenir quand les agents modifient le même fichier. Git ne peut pas toujours auto-fusionner des changements adjacents. La solution est simple : garder les deux ajouts, supprimer les marqueurs de conflit, commiter. Les worktrees réduisent les conflits de « cauchemar constant » à « occasionnel et gérable ».',
     },
     {
-      type: 'code-demo',
-      title: 'Résoudre un conflit de fusion',
-      body: 'Git marque les conflits avec des chevrons. Gardez les deux changements, supprimez les marqueurs, et commitez.',
+      type: 'code-fill',
+      instruction: 'Complétez la résolution de conflit — gardez les deux exports de différents agents :',
       language: 'typescript',
       filename: 'src/index.ts',
-      code: '// Git shows this in the conflicted file:\n<<<<<<< HEAD\nexport { AuthService } from \'./auth\'\n=======\nexport { UserSettings } from \'./settings\'\n>>>>>>> feat/ui\n\n// Resolution: keep both exports\nexport { AuthService } from \'./auth\'\nexport { UserSettings } from \'./settings\'',
+      template: '// Git shows conflict markers in the file:\n// <<<<<<< HEAD\n// export { AuthService } from \'./auth\'\n// =======\n// export { UserSettings } from \'./settings\'\n// >>>>>>> feat/ui\n\n// Resolution: keep {{resolution}}\nexport { {{export1}} } from \'./auth\'\nexport { {{export2}} } from \'./settings\'',
+      blanks: [
+        { id: 'resolution', answer: 'both exports', alternatives: ['both', 'both additions', 'both lines', 'les deux exports', 'les deux'], placeholder: 'garder quoi ?', hint: 'Les deux agents ont ajouté du code valide — gardez tout' },
+        { id: 'export1', answer: 'AuthService', alternatives: ['authService'], placeholder: 'premier export ?', hint: 'L\'export ajouté par l\'agent auth' },
+        { id: 'export2', answer: 'UserSettings', alternatives: ['userSettings'], placeholder: 'deuxième export ?', hint: 'L\'export ajouté par l\'agent UI' },
+      ],
+      explanation: 'Quand les agents ajoutent du code non chevauchant au même fichier, la solution est presque toujours de garder les deux ajouts. Supprimez les marqueurs <<<, === et >>>, gardez les deux exports, et commitez la fusion.',
     },
     {
       type: 'multiple-choice',
@@ -254,17 +377,29 @@ const content: LessonContent = {
 
     // === CLEANUP ===
     {
-      type: 'info',
-      title: 'Nettoyage : supprimer les worktrees après la fusion',
-      body: "Les worktrees sont peu coûteux à créer mais vous devriez quand même les nettoyer. Après la fusion, le répertoire worktree ne fait que prendre de l'espace disque et la référence de branche devient périmée. Supprimez chaque worktree, supprimez les branches fusionnées, et vous retrouvez un état propre. Prenez-en l'habitude — des worktrees restants de la fonctionnalité de la semaine dernière vous embrouilleront la semaine prochaine.",
+      type: 'multiple-choice',
+      question: 'Après avoir fusionné toutes les branches, vous avez trois répertoires worktree encore sur le disque. Que devriez-vous faire ?',
+      options: [
+        'Les laisser — ils pourraient être utiles plus tard',
+        'Supprimer les répertoires manuellement avec rm -rf',
+        'Exécuter git worktree remove pour chacun, puis git branch -d pour supprimer les branches fusionnées',
+        'Exécuter git worktree prune pour tout supprimer d\'un coup',
+      ],
+      correctIndex: 2,
+      explanation: 'Nettoyage propre : git worktree remove pour chaque répertoire (le délie de git), puis git branch -d pour chaque branche fusionnée. Ça vous laisse dans un état propre. Les worktrees restants dérivent de main et accumulent des conflits.',
     },
     {
-      type: 'code-demo',
-      title: 'Séquence de nettoyage complète',
-      body: 'Supprimez les répertoires worktree, puis supprimez les branches fusionnées.',
+      type: 'code-fill',
+      instruction: 'Complétez la séquence de nettoyage complète après la fusion :',
       language: 'bash',
       filename: 'terminal',
-      code: '# Remove worktrees\ngit worktree remove ../myapp-auth\ngit worktree remove ../myapp-api\ngit worktree remove ../myapp-ui\n\n# Delete merged branches\ngit branch -d feat/auth\ngit branch -d feat/api\ngit branch -d feat/ui\n\n# Verify clean state\ngit worktree list\n# Should show only the main worktree',
+      template: '# Remove worktrees\ngit worktree {{removeCmd}} ../myapp-auth\ngit worktree {{removeCmd}} ../myapp-api\ngit worktree {{removeCmd}} ../myapp-ui\n\n# Delete merged branches\ngit branch {{deleteFlag}} feat/auth\ngit branch {{deleteFlag}} feat/api\ngit branch {{deleteFlag}} feat/ui\n\n# Verify clean state\ngit worktree {{verifyCmd}}',
+      blanks: [
+        { id: 'removeCmd', answer: 'remove', alternatives: ['rm'], placeholder: 'commande de nettoyage ?', hint: 'Supprimer le répertoire worktree' },
+        { id: 'deleteFlag', answer: '-d', alternatives: ['--delete', '-D'], placeholder: 'quel flag ?', hint: 'Supprimer une branche fusionnée en sécurité' },
+        { id: 'verifyCmd', answer: 'list', alternatives: [], placeholder: 'commande de vérification ?', hint: 'Lister tous les worktrees pour confirmer qu\'il ne reste que main' },
+      ],
+      explanation: 'Supprimez les worktrees d\'abord, puis supprimez les branches, puis vérifiez avec list. Le flag -d pour la suppression de branches est sûr — il ne supprime que les branches complètement fusionnées. Utilisez -D (majuscule) seulement pour forcer la suppression de branches non fusionnées.',
     },
     {
       type: 'terminal',
@@ -324,11 +459,6 @@ const content: LessonContent = {
 
     // === ANTI-PATRONS ===
     {
-      type: 'info',
-      title: 'Erreurs courantes à éviter',
-      body: "Trois pièges font trébucher les gens. Premier : extraire la même branche dans deux worktrees. Git ne vous laissera pas faire — chaque branche ne peut être extraite que dans un seul worktree à la fois. Deuxième : oublier de commiter dans le worktree avant de passer au dépôt principal pour la fusion. Le travail non commité reste dans le worktree — il n'apparaît pas magiquement dans main. Troisième : laisser les worktrees traîner pendant des semaines. Ils dérivent de main et les conflits s'accumulent. Créer, travailler, fusionner, nettoyer — le même jour si possible.",
-    },
-    {
       type: 'multiple-choice',
       question: 'Que se passe-t-il si vous essayez d\'extraire la même branche dans deux worktrees ?',
       options: [
@@ -338,7 +468,7 @@ const content: LessonContent = {
         'Le deuxième worktree devient en lecture seule',
       ],
       correctIndex: 2,
-      explanation: 'Git impose que chaque branche ne peut être extraite que dans un seul worktree à la fois. Cela empêche deux worktrees de faire des changements contradictoires à la même référence de branche.',
+      explanation: 'Git impose que chaque branche ne peut être extraite que dans un seul worktree à la fois. Cela empêche deux worktrees de faire des changements contradictoires à la même référence de branche. Trois pièges à éviter : (1) même branche dans deux worktrees, (2) oublier de commiter avant la fusion, (3) laisser les worktrees traîner pendant des semaines.',
     },
 
     // === CHECKLIST ===

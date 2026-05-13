@@ -22,17 +22,29 @@ const content: LessonContent = {
 
     // === SKILL FILE STRUCTURE ===
     {
-      type: 'code-demo',
-      title: 'Anatomy of a skill file',
-      body: 'Skills are markdown files stored in the .claude/commands/ directory. The filename (without .md) becomes the slash command name. Here is a skill that runs a full pre-commit check.',
+      type: 'code-fill',
+      instruction: 'Complete this skill file that runs a full pre-commit check. Skills are markdown files in .claude/commands/:',
       language: 'markdown',
       filename: '.claude/commands/pre-commit.md',
-      code: "# Pre-Commit Check\n\nRun these checks before any commit:\n\n1. Run `bun run lint` and fix any errors\n2. Run `bun run typecheck` and fix any type errors\n3. Run `bun run test` — if tests fail, investigate and fix\n4. Stage only the files you changed (never `git add -A`)\n5. Write a conventional commit message summarizing the changes\n6. Do NOT push — just commit locally\n\nIf any step fails, stop and report the error. Do not skip checks.",
+      template: "# Pre-Commit Check\n\nRun these checks before any commit:\n\n1. Run `bun run {{lint_cmd}}` and fix any errors\n2. Run `bun run {{type_cmd}}` and fix any type errors\n3. Run `bun run test` — if tests fail, investigate and fix\n4. Stage only the files you changed (never `{{bad_add}}`)\n5. Write a conventional commit message summarizing the changes\n6. Do NOT push — just commit locally\n\nIf any step fails, stop and report the error. Do not skip checks.",
+      blanks: [
+        { id: 'lint_cmd', answer: 'lint', alternatives: ['eslint'], placeholder: 'check code style?', hint: 'The script that checks for code style and formatting issues' },
+        { id: 'type_cmd', answer: 'typecheck', alternatives: ['tsc', 'type-check'], placeholder: 'check types?', hint: 'The script that verifies TypeScript types are correct' },
+        { id: 'bad_add', answer: 'git add -A', alternatives: ['git add .', 'git add --all'], placeholder: 'dangerous command?', hint: 'The git staging command that adds ALL files, including ones you did not change' },
+      ],
+      explanation: 'Skills are markdown instruction files. The filename (pre-commit.md) becomes the slash command /pre-commit. The skill runs lint, typecheck, and tests before committing. Never use git add -A — it stages files you did not change.',
     },
     {
-      type: 'info',
-      title: 'Skill file locations',
-      body: "Skills can live in three places. Project skills go in .claude/commands/ and are committed to git — your whole team shares them. User skills go in ~/.claude/commands/ and are personal across all projects. Nested directories create namespaced commands: .claude/commands/deploy/staging.md becomes /deploy-staging. The filename minus the .md extension is the command name.",
+      type: 'multiple-choice',
+      question: 'A skill file at .claude/commands/deploy/staging.md becomes which slash command?',
+      options: [
+        '/deploy/staging',
+        '/deploy-staging',
+        '/staging',
+        '/commands-deploy-staging',
+      ],
+      correctIndex: 1,
+      explanation: 'Nested directories create namespaced commands with hyphens. .claude/commands/deploy/staging.md becomes /deploy-staging. Project skills in .claude/commands/ are shared via git. User skills in ~/.claude/commands/ are personal across all projects.',
     },
     {
       type: 'multiple-choice',
@@ -55,12 +67,16 @@ const content: LessonContent = {
       hint: 'Use mkdir with the -p flag to create nested directories',
     },
     {
-      type: 'code-demo',
-      title: 'A review skill with parameters',
-      body: 'Skills can reference $ARGUMENTS to accept input from the user. When invoked as /review src/auth.ts, the $ARGUMENTS variable contains "src/auth.ts".',
+      type: 'code-fill',
+      instruction: 'Complete this review skill that accepts a file path as a parameter:',
       language: 'markdown',
       filename: '.claude/commands/review.md',
-      code: "# Code Review\n\nReview the file: $ARGUMENTS\n\nCheck for:\n- Security vulnerabilities (SQL injection, XSS, auth bypasses)\n- Performance issues (N+1 queries, unnecessary re-renders)\n- Error handling (uncaught promises, missing try/catch)\n- Type safety (any casts, missing null checks)\n\nFor each issue found:\n1. Quote the problematic code\n2. Explain the risk\n3. Provide a fix\n\nIf the file is clean, say so explicitly.",
+      template: "# Code Review\n\nReview the file: {{param_var}}\n\nCheck for:\n- {{security_check}} (SQL injection, XSS, auth bypasses)\n- Performance issues (N+1 queries, unnecessary re-renders)\n- Error handling (uncaught promises, missing try/catch)\n- Type safety (any casts, missing null checks)\n\nFor each issue found:\n1. Quote the problematic code\n2. Explain the risk\n3. Provide a fix",
+      blanks: [
+        { id: 'param_var', answer: '$ARGUMENTS', alternatives: ['$arguments', '$ARGS'], placeholder: 'user input variable?', hint: 'The all-caps variable prefixed with $ that holds text passed after the slash command' },
+        { id: 'security_check', answer: 'Security vulnerabilities', alternatives: ['Security issues', 'security vulnerabilities'], placeholder: 'first check category?', hint: 'The most critical type of code issue to check for — involves exploits and attacks' },
+      ],
+      explanation: 'Skills reference $ARGUMENTS to accept user input. When invoked as /review src/auth.ts, $ARGUMENTS contains "src/auth.ts". Security vulnerabilities are always the first check priority in a code review.',
     },
     {
       type: 'code-input',
@@ -72,14 +88,27 @@ const content: LessonContent = {
 
     // === HOOKS: AUTOMATIC TRIGGERS ===
     {
-      type: 'info',
-      title: 'What are hooks?',
-      body: "Hooks are shell commands that run automatically when Claude Code performs certain actions. Unlike skills (which you invoke manually), hooks fire on their own when a matching event occurs. They intercept the agent's behavior at key moments: before a tool runs, after a tool runs, or when a notification is sent. Hooks are configured in settings.json — not in markdown files. They run outside the model, as plain shell commands on your machine.",
+      type: 'compare',
+      title: 'Skills vs Hooks',
+      body: 'Both extend Claude Code, but they trigger in opposite ways.',
+      question: 'Which one fires automatically without you typing anything?',
+      correctSide: 'right',
+      left: {
+        label: 'Skills (Manual)',
+        content: "- You invoke with /command-name\n- Markdown files in .claude/commands/\n- Loaded on demand when you type the command\n- Can contain multi-step instructions\n- Accept $ARGUMENTS from user input\n\nExample: /pre-commit\n→ Runs lint, typecheck, test, then commits",
+        language: 'text',
+      },
+      right: {
+        label: 'Hooks (Automatic)',
+        content: "- Fire automatically on matching events\n- Configured in settings.json (not markdown)\n- Run as plain shell commands on your machine\n- Intercept tool calls before/after execution\n- Can block dangerous actions\n\nExample: PostToolUse on Write\n→ Auto-lints every file Claude creates",
+        language: 'text',
+      },
+      explanation: 'Skills are manual — you invoke them with a slash command. Hooks are automatic — they fire when Claude Code performs certain actions. Hooks intercept before (PreToolUse) and after (PostToolUse) tool execution, and on notifications.',
     },
     {
-      type: 'diagram',
+      type: 'interactive-diagram',
       title: 'Hook Execution Flow',
-      body: 'Hooks intercept tool calls at two points: before execution (PreToolUse) and after execution (PostToolUse). The hook runs your shell command and can block or modify the action.',
+      body: 'Click through each stage to see how hooks intercept tool calls before and after execution.',
       diagram: {
         direction: 'TB',
         nodes: [
@@ -96,16 +125,48 @@ const content: LessonContent = {
           { from: 'post', to: 'result', label: 'return' },
         ],
       },
+      stages: [
+        {
+          highlightNodes: ['model'],
+          highlightEdges: [],
+          explanation: 'Claude decides to use a tool — Bash, Edit, Read, or Write. Before the tool runs, hooks get a chance to intercept.',
+        },
+        {
+          highlightNodes: ['model', 'pre'],
+          highlightEdges: [{ from: 'model', to: 'pre' }],
+          explanation: 'The PreToolUse hook fires. Your shell command runs with context about what tool is being called. If the hook exits with code 1, the tool is BLOCKED.',
+        },
+        {
+          highlightNodes: ['pre', 'tool'],
+          highlightEdges: [{ from: 'pre', to: 'tool' }],
+          explanation: 'If the PreToolUse hook allows it (exit code 0), the tool executes normally — running the bash command, editing the file, etc.',
+        },
+        {
+          highlightNodes: ['tool', 'post'],
+          highlightEdges: [{ from: 'tool', to: 'post' }],
+          explanation: 'After the tool completes, the PostToolUse hook fires. Use this for auto-formatting, linting, logging, or notifications.',
+        },
+        {
+          highlightNodes: ['post', 'result'],
+          highlightEdges: [{ from: 'post', to: 'result' }],
+          explanation: 'The result flows back to the model. The agent continues its work, unaware that hooks ran behind the scenes.',
+        },
+      ],
     },
 
     // === HOOK CONFIGURATION ===
     {
-      type: 'code-demo',
-      title: 'Hook configuration in settings.json',
-      body: 'Hooks are defined in the "hooks" key of your settings.json. Each hook event maps to an array of handlers. The "matcher" filters which tool triggers the hook. The "command" is the shell command to run.',
+      type: 'code-fill',
+      instruction: 'Complete this hook configuration. Hooks are defined in settings.json with event types, matchers, and shell commands:',
       language: 'json',
       filename: '.claude/settings.json',
-      code: '{\n  "hooks": {\n    "PreToolUse": [\n      {\n        "matcher": "Bash",\n        "command": "echo \\"About to run a bash command\\""\n      },\n      {\n        "matcher": "Edit",\n        "command": "test -f .pre-edit-check && sh .pre-edit-check"\n      }\n    ],\n    "PostToolUse": [\n      {\n        "matcher": "Write",\n        "command": "bun run lint --fix $CLAUDE_FILE_PATH"\n      }\n    ],\n    "Notification": [\n      {\n        "command": "terminal-notifier -message \\"Claude needs attention\\""\n      }\n    ]\n  }\n}',
+      template: '{\n  "hooks": {\n    "{{pre_event}}": [\n      {\n        "matcher": "Bash",\n        "command": "echo \\"About to run a bash command\\""\n      }\n    ],\n    "PostToolUse": [\n      {\n        "{{filter_field}}": "Write",\n        "command": "bun run lint --fix {{file_var}}"\n      }\n    ],\n    "Notification": [\n      {\n        "command": "terminal-notifier -message \\"Claude needs attention\\""\n      }\n    ]\n  }\n}',
+      blanks: [
+        { id: 'pre_event', answer: 'PreToolUse', alternatives: ['pretooluse'], placeholder: 'before event?', hint: 'The hook event that fires BEFORE a tool runs — Pre + ToolUse' },
+        { id: 'filter_field', answer: 'matcher', placeholder: 'filter key?', hint: 'The JSON key that specifies which tool name triggers this hook' },
+        { id: 'file_var', answer: '$CLAUDE_FILE_PATH', alternatives: ['$claude_file_path'], placeholder: 'file variable?', hint: 'The environment variable containing the file path the tool is operating on' },
+      ],
+      explanation: 'PreToolUse fires before execution (use for validation/blocking). The "matcher" field filters by tool name. $CLAUDE_FILE_PATH is the env var containing the current file path. Notification hooks fire when Claude needs attention.',
     },
     {
       type: 'multiple-choice',
@@ -122,17 +183,35 @@ const content: LessonContent = {
 
     // === HOOK EVENTS ===
     {
-      type: 'info',
-      title: 'Hook event types',
-      body: "There are three hook events. PreToolUse fires before a tool runs — use it for validation, logging, or blocking dangerous commands. PostToolUse fires after a tool completes — use it for auto-formatting, linting, or notifications. Notification fires when the agent sends a notification (typically when it needs human input or finishes a long task) — use it for desktop alerts, Slack messages, or sound effects. Each event receives context via environment variables.",
+      type: 'match',
+      instruction: 'Match each hook environment variable to the context it provides:',
+      leftItems: [
+        '$CLAUDE_TOOL_NAME',
+        '$CLAUDE_TOOL_INPUT',
+        '$CLAUDE_FILE_PATH',
+        '$CLAUDE_SESSION_ID',
+      ],
+      rightItems: [
+        'Which tool is being called (Bash, Edit, Read, Write)',
+        'JSON string of the tool input parameters',
+        'File path the tool is operating on',
+        'Current session identifier',
+      ],
+      correctPairs: { 0: 0, 1: 1, 2: 2, 3: 3 },
+      explanation: 'Hooks receive context about the current tool call through environment variables. Use $CLAUDE_TOOL_INPUT to inspect what command is being run — for example, to block destructive git commands like --force or reset --hard.',
     },
     {
-      type: 'code-demo',
-      title: 'Environment variables available to hooks',
-      body: 'Hooks receive context about the current tool call through environment variables. Use these to make decisions in your hook scripts.',
+      type: 'code-fill',
+      instruction: 'Complete this hook script that blocks destructive git commands. Three hook events exist: PreToolUse (before), PostToolUse (after), and Notification.',
       language: 'bash',
-      filename: 'hook-env-vars.sh',
-      code: "# Available in all hooks:\n# $CLAUDE_TOOL_NAME    — the tool being called (Bash, Edit, Read, Write)\n# $CLAUDE_TOOL_INPUT   — JSON string of the tool's input parameters\n# $CLAUDE_FILE_PATH    — file path if the tool operates on a file\n# $CLAUDE_SESSION_ID   — current session identifier\n\n# Example: Block destructive git commands\nif echo \"$CLAUDE_TOOL_INPUT\" | grep -q 'git.*--force\\|git.*reset --hard'; then\n  echo \"BLOCKED: Destructive git command detected\" >&2\n  exit 1\nfi",
+      filename: 'block-destructive.sh',
+      template: "# Block destructive git commands in a PreToolUse hook\nif echo \"${{input_var}}\" | grep -q 'git.*{{force_flag}}\\|git.*reset --hard'; then\n  echo \"BLOCKED: Destructive git command detected\" >&2\n  exit {{block_code}}\nfi",
+      blanks: [
+        { id: 'input_var', answer: 'CLAUDE_TOOL_INPUT', alternatives: ['claude_tool_input'], placeholder: 'which env var?', hint: 'The environment variable containing the JSON of what the tool will do' },
+        { id: 'force_flag', answer: '--force', alternatives: ['-f'], placeholder: 'dangerous flag?', hint: 'The git push flag that overwrites remote history' },
+        { id: 'block_code', answer: '1', placeholder: 'exit code?', hint: 'A non-zero exit code tells the PreToolUse hook to BLOCK the tool' },
+      ],
+      explanation: 'Check $CLAUDE_TOOL_INPUT for dangerous patterns like --force or reset --hard. Exit with code 1 to block the tool. Exit 0 (or no exit) allows the tool to proceed. This is how guardrail hooks enforce safety boundaries.',
     },
     {
       type: 'checkpoint',
@@ -142,32 +221,56 @@ const content: LessonContent = {
 
     // === PRACTICAL EXAMPLES ===
     {
-      type: 'info',
-      title: 'Practical hook patterns',
-      body: "The most powerful hooks are guardrails. A PreToolUse hook on Bash can block rm -rf, git push --force, or any command matching a deny-list. A PostToolUse hook on Write can auto-run the linter on any file the agent creates. A Notification hook can send a Slack message or play a sound when Claude finishes a task. Hooks transform your agent from untethered to governed — still autonomous, but within boundaries you define.",
+      type: 'multiple-choice',
+      question: 'A PostToolUse hook on Write runs "npx eslint --fix" on every file Claude creates. What does this accomplish?',
+      options: [
+        'It blocks Claude from writing files that have lint errors',
+        'It automatically fixes formatting in every file Claude writes, so code is always clean',
+        'It sends a notification when lint errors are found',
+        'It prevents Claude from using the Write tool entirely',
+      ],
+      correctIndex: 1,
+      explanation: 'PostToolUse fires AFTER the tool completes. The hook auto-fixes formatting on every file Claude creates. The agent never commits unformatted code. PreToolUse hooks block actions; PostToolUse hooks clean up after actions. Hooks transform your agent from untethered to governed.',
     },
     {
-      type: 'code-demo',
-      title: 'Auto-lint after every file write',
-      body: 'This PostToolUse hook runs ESLint with auto-fix on any file that Claude writes. The agent never commits unformatted code.',
+      type: 'code-fill',
+      instruction: 'Complete this PostToolUse hook that auto-lints files after both Write and Edit operations:',
       language: 'json',
       filename: '.claude/settings.json (partial)',
-      code: '{\n  "hooks": {\n    "PostToolUse": [\n      {\n        "matcher": "Write",\n        "command": "npx eslint --fix \\"$CLAUDE_FILE_PATH\\" 2>/dev/null || true"\n      },\n      {\n        "matcher": "Edit",\n        "command": "npx eslint --fix \\"$CLAUDE_FILE_PATH\\" 2>/dev/null || true"\n      }\n    ]\n  }\n}',
+      template: '{\n  "hooks": {\n    "PostToolUse": [\n      {\n        "matcher": "{{write_tool}}",\n        "command": "npx {{linter}} --fix \\"$CLAUDE_FILE_PATH\\" 2>/dev/null || true"\n      },\n      {\n        "matcher": "{{edit_tool}}",\n        "command": "npx {{linter}} --fix \\"$CLAUDE_FILE_PATH\\" 2>/dev/null || true"\n      }\n    ]\n  }\n}',
+      blanks: [
+        { id: 'write_tool', answer: 'Write', alternatives: ['write'], placeholder: 'create tool?', hint: 'The Claude Code tool that creates new files' },
+        { id: 'linter', answer: 'eslint', alternatives: ['ESLint'], placeholder: 'lint command?', hint: 'The popular JavaScript/TypeScript linting tool' },
+        { id: 'edit_tool', answer: 'Edit', alternatives: ['edit'], placeholder: 'modify tool?', hint: 'The Claude Code tool that modifies existing files' },
+      ],
+      explanation: 'Match both "Write" (new files) and "Edit" (modified files) to ensure every file Claude touches gets auto-linted. The "2>/dev/null || true" suppresses errors so the hook never blocks the workflow.',
     },
 
     // === CHAINING SKILLS ===
     {
-      type: 'info',
-      title: 'Chaining skills for complex workflows',
-      body: "Skills can reference other skills in their instructions. A /deploy skill might say \"First run /pre-commit, then push to main, then verify with /check-deploy\". This creates composable automation: small, focused skills that combine into powerful pipelines. The key principle is single responsibility — each skill does one thing well, and chaining combines them. This mirrors how Unix pipes work: small tools composed into complex workflows.",
+      type: 'multiple-choice',
+      question: 'A /deploy skill references /pre-commit and /check-deploy in its instructions. What design principle does this follow?',
+      options: [
+        'Dependency injection — skills inject behavior into each other',
+        'Single responsibility — each skill does one thing, chaining combines them',
+        'Inheritance — the deploy skill inherits from pre-commit',
+        'Abstraction — hide implementation details',
+      ],
+      correctIndex: 1,
+      explanation: 'Skills can reference other skills to create composable automation. The key principle is single responsibility — each skill does one thing well, and chaining combines them. This mirrors Unix pipes: small tools composed into complex workflows.',
     },
     {
-      type: 'code-demo',
-      title: 'A deployment skill that chains others',
-      body: 'This skill orchestrates a multi-step deployment by referencing other skills in sequence. Each sub-skill handles one concern.',
+      type: 'code-fill',
+      instruction: 'Complete this deployment skill that chains other skills in a pipeline:',
       language: 'markdown',
       filename: '.claude/commands/ship.md',
-      code: "# Ship to Production\n\nExecute this deployment pipeline in order:\n\n1. Run the /pre-commit checks (lint, typecheck, test)\n2. If all checks pass, commit with a conventional commit message\n3. Push to origin main\n4. Wait 30 seconds, then run /check-deploy to verify\n5. If deployment fails, immediately run `git revert HEAD` and push\n\nReport final status: deployed successfully or rolled back with error details.",
+      template: "# Ship to Production\n\nExecute this deployment pipeline in order:\n\n1. Run the {{pre_check}} checks (lint, typecheck, test)\n2. If all checks pass, commit with a {{commit_style}} commit message\n3. Push to origin main\n4. Wait 30 seconds, then run {{verify_cmd}} to verify\n5. If deployment fails, immediately run `git revert HEAD` and push\n\nReport final status: deployed successfully or rolled back with error details.",
+      blanks: [
+        { id: 'pre_check', answer: '/pre-commit', alternatives: ['pre-commit'], placeholder: 'which skill?', hint: 'The slash command that runs lint, typecheck, and tests' },
+        { id: 'commit_style', answer: 'conventional', alternatives: ['conventional-commit'], placeholder: 'commit format?', hint: 'The commit message format that uses prefixes like feat:, fix:, refactor:' },
+        { id: 'verify_cmd', answer: '/check-deploy', alternatives: ['check-deploy'], placeholder: 'verify skill?', hint: 'A slash command that verifies the deployment succeeded' },
+      ],
+      explanation: 'The /ship skill chains /pre-commit for quality checks, uses conventional commits for clear history, and runs /check-deploy to verify. If deployment fails, it auto-reverts. Small focused skills combine into powerful pipelines.',
     },
     {
       type: 'multiple-choice',
@@ -184,9 +287,16 @@ const content: LessonContent = {
 
     // === SHARING SKILLS ===
     {
-      type: 'info',
-      title: 'Sharing skills across projects',
-      body: "User-level skills in ~/.claude/commands/ are available in every project you open. This is ideal for personal workflows: your code review checklist, your deployment process, your debugging steps. Project-level skills in .claude/commands/ are shared with your team via git. When a teammate pulls the repo, they get all the skills automatically. This creates institutional knowledge that lives in the codebase — not in someone's head or a wiki nobody reads.",
+      type: 'multiple-choice',
+      question: 'You have a personal code review checklist you use across all projects. Where should this skill file live?',
+      options: [
+        '.claude/commands/ (project-level)',
+        '~/.claude/commands/ (user-level)',
+        'CLAUDE.md (project instructions)',
+        'package.json (project config)',
+      ],
+      correctIndex: 1,
+      explanation: 'User-level skills in ~/.claude/commands/ are available in every project you open — ideal for personal workflows. Project-level skills in .claude/commands/ are for team-shared workflows committed to git. When a teammate pulls the repo, they get all project skills automatically.',
     },
     {
       type: 'terminal',
@@ -197,12 +307,17 @@ const content: LessonContent = {
 
     // === ADVANCED PATTERNS ===
     {
-      type: 'code-demo',
-      title: 'Combining hooks and skills',
-      body: 'The most powerful pattern: hooks enforce guardrails automatically, while skills provide on-demand workflows. Together, they create a governed, automated development environment.',
+      type: 'code-fill',
+      instruction: 'Complete this combined hooks config. Hooks enforce guardrails automatically while skills provide on-demand workflows:',
       language: 'json',
       filename: '.claude/settings.json',
-      code: '{\n  "hooks": {\n    "PreToolUse": [\n      {\n        "matcher": "Bash",\n        "command": "sh .claude/guards/no-force-push.sh"\n      }\n    ],\n    "PostToolUse": [\n      {\n        "matcher": "Write",\n        "command": "npx eslint --fix \\"$CLAUDE_FILE_PATH\\" 2>/dev/null || true"\n      }\n    ],\n    "Notification": [\n      {\n        "command": "osascript -e \'display notification \\\"Claude needs you\\\" with title \\\"Claude Code\\\"\'"\n      }\n    ]\n  }\n}',
+      template: '{\n  "hooks": {\n    "PreToolUse": [\n      {\n        "matcher": "{{shell_tool}}",\n        "command": "sh .claude/guards/no-force-push.sh"\n      }\n    ],\n    "PostToolUse": [\n      {\n        "matcher": "Write",\n        "command": "npx eslint --fix \\"{{file_env_var}}\\" 2>/dev/null || true"\n      }\n    ],\n    "{{notify_event}}": [\n      {\n        "command": "osascript -e \'display notification \\\"Claude needs you\\\"\'"\n      }\n    ]\n  }\n}',
+      blanks: [
+        { id: 'shell_tool', answer: 'Bash', alternatives: ['bash'], placeholder: 'which tool to guard?', hint: 'The tool that runs shell commands — where dangerous git operations happen' },
+        { id: 'file_env_var', answer: '$CLAUDE_FILE_PATH', alternatives: ['$claude_file_path'], placeholder: 'file path var?', hint: 'The hook environment variable that contains the file being operated on' },
+        { id: 'notify_event', answer: 'Notification', alternatives: ['notification'], placeholder: 'alert event?', hint: 'The hook event that fires when Claude needs human attention' },
+      ],
+      explanation: 'Guard Bash commands with PreToolUse to block force-push. Auto-lint with PostToolUse on Write using $CLAUDE_FILE_PATH. Send desktop alerts on Notification events. Together, hooks and skills create a governed, automated environment.',
     },
     {
       type: 'order',

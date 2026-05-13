@@ -80,77 +80,77 @@ const content: LessonContent = {
 
     // === COMMON AGENT-INTRODUCED BUGS ===
     {
-      type: 'info',
-      title: 'Les cinq bogues les plus courants introduits par les agents',
-      body: "Après avoir surveillé des centaines de déploiements construits par agents, ces patrons dominent : (1) Frontières d'erreur manquantes — les agents gèrent le chemin heureux à merveille mais sautent les états d'erreur. (2) Hypothèses erronées sur la forme des données — les agents devinent les champs nullable. (3) Conditions de course dans le code asynchrone — les agents ne pensent pas aux requêtes concurrentes. (4) Validation d'entrée manquante — les agents font confiance à toutes les entrées implicitement. (5) Hypothèses d'environnement codées en dur — les agents intègrent des URL localhost ou des configs pour le développement seulement.",
+      type: 'multiple-choice',
+      question: 'Quel est le patron de bogue #1 le plus courant dans le code construit par les agents ?',
+      options: [
+        'Problèmes de performance — les agents écrivent des algorithmes lents',
+        'Frontières d\'erreur manquantes — les agents gèrent le chemin heureux mais sautent les états d\'erreur, de chargement et null',
+        'Vulnérabilités de sécurité — les agents exposent des secrets dans le code client',
+        'Fuites mémoire — les agents créent des objets sans nettoyage',
+      ],
+      correctIndex: 1,
+      explanation: "Après avoir surveillé des centaines de déploiements construits par agents, les frontières d'erreur manquantes dominent. Les agents construisent de beaux composants qui fonctionnent parfaitement quand les données chargent mais lancent des exceptions non gérées quand l'API retourne une erreur ou null. Les quatre autres patrons courants : hypothèses erronées sur la forme des données, conditions de course dans le code async, validation d'entrée manquante, et hypothèses d'environnement codées en dur.",
     },
     {
-      type: 'code-demo',
-      title: 'Patron 1 : Frontières d\'erreur manquantes',
-      body: "Le bogue d'agent le plus courant. L'agent construit un beau composant qui fonctionne parfaitement quand les données chargent — mais lance une exception non gérée quand l'API retourne une erreur ou que la forme des données est inattendue. En production, ça se manifeste par un écran blanc.",
+      type: 'compare',
+      title: 'Patron 1 vs Patron 2 : frontières d\'erreur vs hypothèses de forme de données',
+      body: 'Les deux sont des bogues d\'agent majeurs. Les deux plantent en production. Corrections différentes.',
+      question: 'Quel patron cause un écran blanc quand l\'API retourne une erreur ?',
+      correctSide: 'left',
+      left: {
+        label: 'Frontières d\'erreur manquantes',
+        content: '// L\'agent construit le chemin heureux seul :\nfunction DashboardStats() {\n  const { data } = useQuery("stats", fetchStats)\n  return (\n    <div>\n      <h2>Revenue: ${data.revenue.toLocaleString()}</h2>\n    </div>\n  )\n}\n// data est undefined pendant le chargement -> CRASH\n// data.revenue est null depuis l\'API -> CRASH\n// Pas d\'état de chargement, pas d\'état d\'erreur\n\n// Correction : Trois états (chargement, erreur, succès)\n// Plus accès null-safe avec valeurs par défaut ??',
+        language: 'typescript',
+      },
+      right: {
+        label: 'Mauvaise forme de données',
+        content: '// L\'agent suppose que tous les champs existent :\nexport async function getUser(req: Request) {\n  const user = await db.users.findUnique({\n    where: { id: req.params.id }\n  })\n  return Response.json({\n    name: user.name,\n    avatar: user.profile.url,\n    teamName: user.team.name,\n  })\n}\n// user peut être null (non trouvé) -> CRASH\n// profile peut être null -> CRASH\n// team peut ne pas être chargé -> CRASH\n\n// Correction : vérif null + chaînage optionnel\n// user.profile?.url ?? null',
+        language: 'typescript',
+      },
+      explanation: 'Les frontières d\'erreur manquantes causent des écrans blancs dans les composants React. Les mauvaises hypothèses de forme de données causent des erreurs 500 dans les handlers API. Les deux viennent du fait que les agents supposent que chaque champ est toujours présent. La correction de spec : « Chaque composant qui récupère des données doit afficher trois états : chargement, erreur, et succès avec accès null-safe. »',
+    },
+    {
+      type: 'code-fill',
+      instruction: 'Corrige le composant construit par l\'agent en ajoutant la gestion correcte du chargement, de l\'erreur et de la sécurité null. Remplis les états manquants.',
       language: 'typescript',
       filename: 'src/dashboard/stats.tsx',
-      code: `// What the agent built (works in happy path):
-function DashboardStats() {
-  const { data } = useQuery('stats', fetchStats)
-  return (
-    <div>
-      <h2>Revenue: \${data.revenue.toLocaleString()}</h2>
-      {/*  data can be undefined while loading */}
-      {/*  data.revenue can be null from API */}
-      {/*  No loading state, no error state */}
-    </div>
-  )
-}
-
-// What production needs:
-function DashboardStats() {
+      template: `function DashboardStats() {
   const { data, isLoading, error } = useQuery('stats', fetchStats)
 
-  if (isLoading) return <StatsSkeleton />
-  if (error) return <StatsError message={error.message} onRetry={refetch} />
+  if (___BLANK_1___) return <StatsSkeleton />
+  if (___BLANK_2___) return <StatsError message={error.message} onRetry={refetch} />
   if (!data) return null
 
   return (
     <div>
-      <h2>Revenue: \${(data.revenue ?? 0).toLocaleString()}</h2>
+      <h2>Revenue: \${(data.revenue ___BLANK_3___ 0).toLocaleString()}</h2>
     </div>
   )
 }`,
-    },
-    {
-      type: 'code-demo',
-      title: 'Patron 2 : Hypothèses erronées sur la forme des données',
-      body: "Les agents lisent tes définitions de types et supposent que chaque champ est toujours présent. En réalité, les API retournent des données partielles, des champs optionnels, et des valeurs null. Ça plante à l'exécution quand l'agent fait `user.profile.avatar.url` sans vérifications de null.",
-      language: 'typescript',
-      filename: 'src/api/handlers/user.ts',
-      code: `// What the agent built:
-export async function getUser(req: Request) {
-  const user = await db.users.findUnique({ where: { id: req.params.id } })
-  return Response.json({
-    name: user.name,           //  user might be null (not found)
-    avatar: user.profile.url,  //  profile might be null
-    teamName: user.team.name,  //  team might not be loaded
-  })
-}
-
-// What production needs:
-export async function getUser(req: Request) {
-  const user = await db.users.findUnique({
-    where: { id: req.params.id },
-    include: { profile: true, team: true },
-  })
-
-  if (!user) {
-    return Response.json({ error: 'User not found' }, { status: 404 })
-  }
-
-  return Response.json({
-    name: user.name,
-    avatar: user.profile?.url ?? null,
-    teamName: user.team?.name ?? 'No team',
-  })
-}`,
+      blanks: [
+        {
+          id: 'BLANK_1',
+          answer: 'isLoading',
+          alternatives: ['isLoading'],
+          hint: 'L\'état du hook de requête qui indique que les données sont encore en cours de récupération',
+          placeholder: 'vérification de chargement',
+        },
+        {
+          id: 'BLANK_2',
+          answer: 'error',
+          alternatives: ['error', '!!error'],
+          hint: 'L\'état du hook de requête qui indique un échec de récupération',
+          placeholder: 'vérification d\'erreur',
+        },
+        {
+          id: 'BLANK_3',
+          answer: '??',
+          alternatives: ['??'],
+          hint: 'L\'opérateur de coalescence null — retourne le côté droit seulement si le gauche est null ou undefined',
+          placeholder: 'opérateur null-safe',
+        },
+      ],
+      explanation: 'Trois états sont obligatoires pour chaque composant qui récupère des données : chargement (squelette), erreur (avec réessai), et succès (avec accès null-safe via ??). L\'opérateur de coalescence null `??` fournit une valeur par défaut seulement pour null/undefined, contrairement à `||` qui attrape aussi 0 et les chaînes vides.',
     },
     {
       type: 'multiple-choice',
@@ -172,61 +172,71 @@ export async function getUser(req: Request) {
 
     // === SENTRY SETUP FOR AGENT-BUILT CODE ===
     {
-      type: 'info',
-      title: 'Suivi d\'erreurs ajusté pour le code construit par agents',
-      body: "Le suivi d'erreurs standard te dit CE QUI a cassé. Pour les systèmes construits par agents, tu as aussi besoin de savoir QUELLE SESSION AGENT a produit le code, pour pouvoir retracer le bogue jusqu'à la spec qui l'a causé. La technique : taguer les déploiements avec des métadonnées d'agent pour que Sentry regroupe les erreurs par la version de spec qui les a produites.",
+      type: 'multiple-choice',
+      question: 'Le suivi d\'erreurs standard te dit CE QUI a cassé. Pour les systèmes construits par agents, quelle info supplémentaire te faut-il ?',
+      options: [
+        'Quel langage de programmation a été utilisé',
+        'Quelle session d\'agent a produit le code, pour retracer le bogue à la spec',
+        'Combien d\'utilisateurs ont été affectés par l\'erreur',
+        'Quelle suite de tests couvre le code cassé',
+      ],
+      correctIndex: 1,
+      explanation: "Pour les systèmes construits par agents, tu as besoin de savoir QUELLE SESSION AGENT a produit le code pour retracer le bogue à la spec qui l'a causé. Tague les déploiements avec des métadonnées d'agent (ID d'exécution de flotte, SHA du commit) pour que Sentry regroupe les erreurs par la version de spec qui les a produites.",
     },
     {
-      type: 'code-demo',
-      title: 'Configuration Sentry avec traçabilité des agents',
-      body: "Ajoute des tags de version qui correspondent à tes sessions d'agent. Quand une erreur se déclenche, tu peux immédiatement voir : ce code a été produit par l'Agent 3 (payments), durant l'exécution de flotte #7, à partir de la spec version 2.1. Maintenant tu sais exactement quelle spec améliorer.",
+      type: 'code-fill',
+      instruction: 'Complète le Sentry init avec des tags de traçabilité des agents. Remplis les tags personnalisés qui mappent les erreurs aux sessions d\'agent.',
       language: 'typescript',
       filename: 'src/lib/monitoring.ts',
-      code: `import * as Sentry from '@sentry/react'
+      template: `import * as Sentry from '@sentry/react'
 
 Sentry.init({
   dsn: process.env.SENTRY_DSN,
   environment: process.env.NODE_ENV,
-
-  // Tag with deployment metadata
   release: process.env.COMMIT_SHA,
 
-  // Custom tags for agent traceability
   initialScope: {
     tags: {
-      // Which fleet run produced this code
-      fleet_run: process.env.FLEET_RUN_ID || 'manual',
-      // Deployment timestamp (correlate with agent sessions)
-      deployed_at: new Date().toISOString(),
+      fleet_run: process.env.___BLANK_1___ || 'manual',
+      deployed_at: new Date().___BLANK_2___(),
     },
   },
 
-  // Capture unhandled promise rejections (Pattern 1)
   integrations: [
     Sentry.browserTracingIntegration(),
     Sentry.replayIntegration({
-      // Capture user session replay for error context
       maskAllText: false,
       blockAllMedia: false,
     }),
   ],
 
-  // Sample 100% of errors, 10% of transactions
   tracesSampleRate: 0.1,
-  replaysOnErrorSampleRate: 1.0,
-})
-
-// Helper: add agent context to manual error reports
-export function reportAgentBug(error: Error, context: {
-  component: string
-  expectedBehavior: string
-  actualBehavior: string
-}) {
-  Sentry.captureException(error, {
-    tags: { bug_type: 'agent_introduced' },
-    extra: context,
-  })
-}`,
+  replaysOnErrorSampleRate: ___BLANK_3___,
+})`,
+      blanks: [
+        {
+          id: 'BLANK_1',
+          answer: 'FLEET_RUN_ID',
+          alternatives: ['FLEET_RUN_ID'],
+          hint: 'La variable d\'env qui identifie quelle exécution de flotte a produit ce déploiement',
+          placeholder: 'var d\'env identifiant de flotte',
+        },
+        {
+          id: 'BLANK_2',
+          answer: 'toISOString',
+          alternatives: ['toISOString'],
+          hint: 'Méthode Date qui retourne une chaîne de timestamp standardisée',
+          placeholder: 'méthode de sérialisation de date',
+        },
+        {
+          id: 'BLANK_3',
+          answer: '1.0',
+          alternatives: ['1.0', '1'],
+          hint: 'Capturer 100% des replays d\'erreurs — chaque session d\'erreur compte pour le débogage',
+          placeholder: 'taux d\'échantillonnage de replay d\'erreur',
+        },
+      ],
+      explanation: 'FLEET_RUN_ID corrèle les erreurs avec des exécutions de flotte spécifiques. toISOString() donne un timestamp standardisé pour corréler avec les journaux de sessions d\'agent. Un taux de replay d\'erreur de 100% (1.0) garantit que tu captures chaque session d\'erreur pour le débogage.',
     },
     {
       type: 'terminal',
@@ -275,17 +285,11 @@ Sentry.init({
 
     // === TRACING ERRORS TO AGENT SESSIONS ===
     {
-      type: 'info',
-      title: 'Retracer une erreur jusqu\'à sa source',
-      body: "Une alerte Sentry se déclenche : `TypeError: Cannot read property 'name' of undefined` dans `src/payments/checkout.ts:47`. Tu dois répondre : quel agent a écrit ça, quelle spec suivait-il, et qu'est-ce qui manquait dans la spec ? Le chemin de traçage : erreur → SHA du commit → git blame → branche du worktree → fichier de spec.",
-    },
-    {
-      type: 'code-demo',
-      title: 'La procédure de remontée',
-      body: "Ce script automatise le traçage d'une erreur de production jusqu'à la session d'agent qui l'a produite. Il utilise git blame pour trouver le commit, puis mappe le commit à une branche (worktree) et un fichier de spec.",
+      type: 'code-fill',
+      instruction: 'Complète le script de remontée qui mappe une erreur de production à la session d\'agent qui l\'a produite. Remplis les commandes git.',
       language: 'bash',
       filename: 'scripts/trace-to-agent.sh',
-      code: `#!/bin/bash
+      template: `#!/bin/bash
 # Trace a production bug to its agent source
 FILE=$1  # e.g., "src/payments/checkout.ts"
 LINE=$2  # e.g., "47"
@@ -293,26 +297,43 @@ LINE=$2  # e.g., "47"
 echo "=== Tracing $FILE:$LINE ==="
 
 # 1. Find the commit that last modified this line
-COMMIT=$(git blame -L "$LINE,$LINE" "$FILE" | awk '{print $1}')
+COMMIT=$(___BLANK_1___ | awk '{print $1}')
 echo "Commit: $COMMIT"
 
 # 2. Find which branch introduced this commit
-BRANCH=$(git branch --contains "$COMMIT" | grep -v main | head -1 | xargs)
+BRANCH=$(___BLANK_2___ | grep -v main | head -1 | xargs)
 echo "Branch: $BRANCH"
 
-# 3. Get the commit message (should reference spec/task)
-echo "Message: $(git log -1 --format='%s' "$COMMIT")"
+# 3. Get the commit message
+echo "Message: $(___BLANK_3___)"
 
-# 4. Show the full context of the buggy code
-echo ""
-echo "=== Code context ==="
-git show "$COMMIT" -- "$FILE" | head -50
-
-# 5. Suggest spec improvement
 echo ""
 echo "=== Action ==="
-echo "Update the spec for agent '$BRANCH' to prevent this pattern."
-echo "Bug class: check the file for missing null checks, error states, or validation."`,
+echo "Update the spec for agent '$BRANCH' to prevent this pattern."`,
+      blanks: [
+        {
+          id: 'BLANK_1',
+          answer: 'git blame -L "$LINE,$LINE" "$FILE"',
+          alternatives: ['git blame -L "$LINE,$LINE" "$FILE"'],
+          hint: 'Commande git qui montre qui a modifié en dernier une plage de lignes spécifique dans un fichier',
+          placeholder: 'commande git blame',
+        },
+        {
+          id: 'BLANK_2',
+          answer: 'git branch --contains "$COMMIT"',
+          alternatives: ['git branch --contains "$COMMIT"'],
+          hint: 'Commande git qui liste les branches contenant un commit spécifique',
+          placeholder: 'trouver la branche du commit',
+        },
+        {
+          id: 'BLANK_3',
+          answer: 'git log -1 --format=\'%s\' "$COMMIT"',
+          alternatives: ['git log -1 --format=\'%s\' "$COMMIT"', 'git log -1 --format="%s" "$COMMIT"'],
+          hint: 'Montrer juste la ligne de sujet d\'un commit spécifique',
+          placeholder: 'commande du message de commit',
+        },
+      ],
+      explanation: 'Le chemin de traçage : erreur -> git blame (trouve le commit) -> git branch --contains (trouve la branche de l\'agent) -> git log (trouve la référence de spec). Ça mappe un TypeError de production directement à la session d\'agent et la spec qui l\'a produit.',
     },
     {
       type: 'terminal',
@@ -328,41 +349,65 @@ echo "Bug class: check the file for missing null checks, error states, or valida
 
     // === THE SPEC IMPROVEMENT FEEDBACK LOOP ===
     {
-      type: 'info',
-      title: 'Boucler la boucle : des erreurs qui améliorent les specs',
-      body: "Chaque erreur de production représente une lacune dans ta spécification. L'erreur te dit exactement ce qui manquait. Une erreur de référence null signifie que tu n'as pas spécifié la gestion des null. Un timeout signifie que tu n'as pas spécifié la logique de réessai. Un plantage sur un tableau vide signifie que tu n'as pas spécifié les états vides. Suis ces patrons et ajoute-les à une liste de vérification d'« exigences de spec » que chaque nouvelle spec doit satisfaire.",
+      type: 'multiple-choice',
+      question: 'Une erreur de référence null se déclenche en production. Qu\'est-ce que ça te dit sur ta spec ?',
+      options: [
+        'L\'agent a introduit un bogue — les agents ne sont pas fiables',
+        'La spec n\'a pas spécifié la gestion des null pour ce chemin de données — chaque erreur est une lacune de spec',
+        'Les types TypeScript étaient faux — corrige les définitions de type',
+        'La suite de tests était incomplète — ajoute plus de tests',
+      ],
+      correctIndex: 1,
+      explanation: "Chaque erreur de production représente une lacune dans ta spécification. Une erreur de référence null signifie que tu n'as pas spécifié la gestion des null. Un timeout signifie que tu n'as pas spécifié la logique de réessai. Un plantage sur un tableau vide signifie que tu n'as pas spécifié les états vides. Suis ces patrons et ajoute-les à une liste de vérification d'exigences de spec.",
     },
     {
-      type: 'code-demo',
-      title: 'Exigences de spec dérivées des erreurs de production',
-      body: "Ce document vivant grandit avec chaque incident de production. Avant de lancer un agent, tu vérifies la spec contre cette liste. Chaque règle existe parce que son absence a causé un bogue en production. C'est la mémoire institutionnelle du développement dirigé par agents.",
+      type: 'code-fill',
+      instruction: 'Complète la liste de vérification des exigences de spec dérivées des erreurs de production. Remplis les exigences manquantes pour la gestion des données et les états d\'erreur.',
       language: 'markdown',
       filename: 'specs/REQUIREMENTS.md',
-      code: `# Spec Requirements Checklist
+      template: `# Spec Requirements Checklist
 (Each rule added after a production incident)
 
 ## Data Handling
-- [ ] All API responses specify behavior for: success, error, empty, null
+- [ ] All API responses specify behavior for: success, error, empty, ___BLANK_1___
 - [ ] Optional/nullable fields are explicitly listed with defaults
 - [ ] Array operations handle empty arrays (no .length on undefined)
-- [ ] Date/time values specify timezone handling
 
 ## Error States
-- [ ] Every data-fetching component has: loading, error, success, empty states
+- [ ] Every data-fetching component has: loading, error, success, ___BLANK_2___ states
 - [ ] API handlers return proper status codes (404, 422, 500)
-- [ ] External service calls have timeout + retry configuration
-- [ ] Rate limit handling is specified for third-party APIs
+- [ ] External service calls have ___BLANK_3___ configuration
 
 ## Security
-- [ ] Input validation on all user-provided data (query params, body, headers)
-- [ ] Authentication check before data access
+- [ ] Input validation on all user-provided data
 - [ ] No secrets/keys in client-side code
-- [ ] CORS configuration specified explicitly
 
 ## Environment
-- [ ] No hardcoded URLs (use env vars)
-- [ ] Feature flags for gradual rollout
-- [ ] Logging includes request ID for traceability`,
+- [ ] No hardcoded URLs (use env vars)`,
+      blanks: [
+        {
+          id: 'BLANK_1',
+          answer: 'null',
+          alternatives: ['null'],
+          hint: 'Le quatrième état que les réponses API doivent gérer — quand un champ n\'a pas de valeur',
+          placeholder: 'état de données manquantes',
+        },
+        {
+          id: 'BLANK_2',
+          answer: 'empty',
+          alternatives: ['empty', 'vide'],
+          hint: 'Le quatrième état UI quand la récupération réussit mais retourne aucun résultat (ex: liste vide)',
+          placeholder: 'état sans résultats',
+        },
+        {
+          id: 'BLANK_3',
+          answer: 'timeout + retry',
+          alternatives: ['timeout + retry', 'timeout and retry', 'timeout et retry'],
+          hint: 'Les services externes peuvent être lents ou instables — deux configs nécessaires pour la résilience',
+          placeholder: 'configs de résilience',
+        },
+      ],
+      explanation: 'Ce document vivant grandit avec chaque incident de production. Chaque règle existe parce que son absence a causé un bogue. La gestion des null, les états vides, et la configuration timeout + retry sont les trois exigences de spec les plus souvent manquantes. Avant de lancer un agent, vérifie la spec contre cette liste.',
     },
     {
       type: 'multiple-choice',
@@ -379,23 +424,29 @@ echo "Bug class: check the file for missing null checks, error states, or valida
 
     // === MONITORING DASHBOARDS ===
     {
-      type: 'info',
-      title: 'Quoi surveiller dans les systèmes construits par agents',
-      body: "La surveillance standard (disponibilité, latence, taux d'erreur) s'applique. Mais pour les systèmes construits par agents, ajoute ceci : (1) Taux d'erreur par chemin de fichier — si le code d'un agent a plus d'erreurs que les autres, sa spec était faible. (2) Taux de rejets de promesse non gérés — les agents laissent fréquemment des chaînes de promesses non gérées. (3) Erreurs TypeScript attrapées à l'exécution — signale que l'agent a contourné le système de types.",
+      type: 'multiple-choice',
+      question: 'Au-delà de la surveillance standard (disponibilité, latence, taux d\'erreur), que faut-il ajouter pour les systèmes construits par agents ?',
+      options: [
+        'Métriques de complexité du code et complexité cyclomatique',
+        'Taux d\'erreur par chemin de fichier, taux de rejets de promesse non gérés, et erreurs TypeScript à l\'exécution',
+        'Fréquence de commits git et lignes de code par agent',
+        'Utilisation mémoire par composant et suivi de la taille du bundle',
+      ],
+      correctIndex: 1,
+      explanation: "Pour les systèmes construits par agents, ajoute : (1) Taux d'erreur par chemin de fichier — si le code d'un agent a plus d'erreurs, sa spec était faible. (2) Taux de rejets de promesse non gérés — les agents laissent fréquemment des chaînes de promesses non gérées. (3) Erreurs TypeScript à l'exécution — signale que l'agent a contourné le système de types.",
     },
     {
-      type: 'code-demo',
-      title: 'Patrons de surveillance Vercel + Sentry',
-      body: "Combine les analytiques intégrées de Vercel avec Sentry pour une surveillance complète du code construit par agents. La frontière d'erreur personnalisée attrape les plantages React et les tague pour la traçabilité des agents.",
+      type: 'code-fill',
+      instruction: 'Complète la frontière d\'erreur React qui attrape les plantages dans le code construit par agents et les tague pour la traçabilité Sentry.',
       language: 'typescript',
       filename: 'src/components/error-boundary.tsx',
-      code: `import * as Sentry from '@sentry/react'
+      template: `import * as Sentry from '@sentry/react'
 import { Component, type ReactNode } from 'react'
 
 interface Props {
   children: ReactNode
   fallback?: ReactNode
-  componentName: string  // For tracing back to agent
+  componentName: string
 }
 
 interface State {
@@ -411,9 +462,9 @@ export class AgentCodeBoundary extends Component<Props, State> {
   }
 
   componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
-    Sentry.captureException(error, {
+    Sentry.___BLANK_1___(error, {
       tags: {
-        component: this.props.componentName,
+        component: this.props.___BLANK_2___,
         error_boundary: 'agent_code',
       },
       extra: {
@@ -423,19 +474,38 @@ export class AgentCodeBoundary extends Component<Props, State> {
   }
 
   render() {
-    if (this.state.hasError) {
+    if (this.state.___BLANK_3___) {
       return this.props.fallback || (
-        <div className="p-4 border border-red-200 rounded bg-red-50">
-          <p className="text-red-800">Something went wrong in {this.props.componentName}.</p>
-          <button onClick={() => this.setState({ hasError: false, error: null })}>
-            Retry
-          </button>
-        </div>
+        <div>Something went wrong in {this.props.componentName}.</div>
       )
     }
     return this.props.children
   }
 }`,
+      blanks: [
+        {
+          id: 'BLANK_1',
+          answer: 'captureException',
+          alternatives: ['captureException'],
+          hint: 'La méthode Sentry qui rapporte une erreur au tableau de bord',
+          placeholder: 'méthode de capture d\'erreur Sentry',
+        },
+        {
+          id: 'BLANK_2',
+          answer: 'componentName',
+          alternatives: ['componentName'],
+          hint: 'La prop qui identifie quel composant (module agent) a planté — pour la traçabilité',
+          placeholder: 'prop d\'identifiant de composant',
+        },
+        {
+          id: 'BLANK_3',
+          answer: 'hasError',
+          alternatives: ['hasError'],
+          hint: 'Le booléen d\'état qui suit si une erreur a été attrapée',
+          placeholder: 'flag d\'état d\'erreur',
+        },
+      ],
+      explanation: 'La frontière d\'erreur attrape les plantages React et les tague avec le componentName — mappant le plantage au module agent qui l\'a produit. `captureException` envoie l\'erreur à Sentry avec des tags personnalisés pour le filtrage. Le flag d\'état `hasError` déclenche l\'UI de fallback au lieu d\'un écran blanc.',
     },
     {
       type: 'checkpoint',
@@ -445,9 +515,16 @@ export class AgentCodeBoundary extends Component<Props, State> {
 
     // === PREVENTING RECURRENCE ===
     {
-      type: 'info',
-      title: 'L\'étape de vérification : attraper les bogues avant le déploiement',
-      body: "Le meilleur bogue de production est celui qui n'atteint jamais la production. Après qu'un agent a terminé son travail, exécute une passe de vérification ciblant spécifiquement les patrons d'échec connus des agents. Ce n'est pas une révision de code standard — c'est une liste de vérification ajustée à ce que les agents font mal.",
+      type: 'multiple-choice',
+      question: 'Quel est le meilleur bogue de production ?',
+      options: [
+        'Un qui est attrapé rapidement par Sentry avec le contexte complet',
+        'Un qui n\'affecte qu\'un petit pourcentage d\'utilisateurs',
+        'Un qui n\'atteint jamais la production — attrapé dans la vérification pré-déploiement',
+        'Un qui a une correction évidente que tu peux livrer en minutes',
+      ],
+      correctIndex: 2,
+      explanation: "Le meilleur bogue de production est celui qui n'atteint jamais la production. Après qu'un agent a terminé son travail, exécute une passe de vérification ciblant les patrons d'échec connus des agents. Ce n'est pas une révision de code standard — c'est une liste de vérification ajustée à ce que les agents font mal : vérifications null manquantes, URL codées en dur, logging de débogage, et tests chemin-heureux-seulement.",
     },
     {
       type: 'checklist',
@@ -466,52 +543,61 @@ export class AgentCodeBoundary extends Component<Props, State> {
       ],
     },
     {
-      type: 'code-demo',
-      title: 'Script de vérification pré-déploiement automatisé',
-      body: "Exécute ceci avant chaque fusion pour attraper les patrons d'agent les plus courants. C'est rapide (moins de 10 secondes) et attrape des problèmes qui deviendraient des bogues de production.",
+      type: 'code-fill',
+      instruction: 'Complète le script de vérification pré-déploiement qui attrape les patrons d\'agent courants. Remplis les patrons grep qui détectent le logging de débogage, les URL codées en dur, et les échappatoires de type.',
       language: 'bash',
       filename: 'scripts/agent-code-check.sh',
-      code: `#!/bin/bash
-# Pre-deploy check for agent-introduced patterns
+      template: `#!/bin/bash
 echo "=== Agent Code Quality Check ==="
 ISSUES=0
 
-# Check for console.log (agents leave debug logging)
-LOGS=$(grep -r "console.log" src/ --include="*.ts" --include="*.tsx" -l | wc -l)
+# Check for debug logging (agents leave console.log)
+LOGS=$(grep -r "___BLANK_1___" src/ --include="*.ts" --include="*.tsx" -l | wc -l)
 if [ "$LOGS" -gt 0 ]; then
   echo "[WARN] $LOGS files with console.log statements"
   ((ISSUES++))
 fi
 
-# Check for hardcoded localhost
-LOCALHOST=$(grep -r "localhost" src/ --include="*.ts" --include="*.tsx" -l | wc -l)
+# Check for hardcoded URLs
+LOCALHOST=$(grep -r "___BLANK_2___" src/ --include="*.ts" --include="*.tsx" -l | wc -l)
 if [ "$LOCALHOST" -gt 0 ]; then
   echo "[FAIL] $LOCALHOST files with hardcoded localhost"
   ((ISSUES++))
 fi
 
-# Check for TODO comments
-TODOS=$(grep -r "TODO" src/ --include="*.ts" --include="*.tsx" | wc -l)
-if [ "$TODOS" -gt 3 ]; then
-  echo "[WARN] $TODOS TODO comments (agents leave aspirational TODOs)"
-  ((ISSUES++))
-fi
-
-# Check for 'any' type usage
-ANYS=$(grep -r ": any" src/ --include="*.ts" --include="*.tsx" | wc -l)
+# Check for type escape hatches
+ANYS=$(grep -r "___BLANK_3___" src/ --include="*.ts" --include="*.tsx" | wc -l)
 if [ "$ANYS" -gt 0 ]; then
-  echo "[WARN] $ANYS uses of 'any' type (agent couldn't resolve types)"
+  echo "[WARN] $ANYS uses of 'any' type"
   ((ISSUES++))
 fi
 
-# TypeScript strict check
-echo ""
-echo "Running TypeScript strict check..."
-npx tsc --noEmit --strict 2>&1 | tail -5
-
-echo ""
 echo "=== $ISSUES issues found ==="
 exit $ISSUES`,
+      blanks: [
+        {
+          id: 'BLANK_1',
+          answer: 'console.log',
+          alternatives: ['console.log', '"console.log"'],
+          hint: 'La fonction de logging de débogage JavaScript que les agents laissent derrière eux',
+          placeholder: 'patron de logging de débogage',
+        },
+        {
+          id: 'BLANK_2',
+          answer: 'localhost',
+          alternatives: ['localhost', '"localhost"'],
+          hint: 'Le nom d\'hôte du développement local qui ne devrait jamais apparaître dans le code de production',
+          placeholder: 'patron d\'URL codée en dur',
+        },
+        {
+          id: 'BLANK_3',
+          answer: ': any',
+          alternatives: [': any', '": any"'],
+          hint: 'L\'annotation de type TypeScript que les agents utilisent quand ils ne peuvent pas résoudre les types',
+          placeholder: 'patron d\'échappatoire de type',
+        },
+      ],
+      explanation: 'Ce script s\'exécute en moins de 10 secondes et attrape les patrons d\'agent les plus courants : `console.log` (logging de débogage laissé derrière), `localhost` (URL de développement codées en dur), et `: any` (échappatoires de type où l\'agent a abandonné la sécurité des types). Exécute-le avant chaque fusion.',
     },
 
     // === PUTTING IT TOGETHER ===

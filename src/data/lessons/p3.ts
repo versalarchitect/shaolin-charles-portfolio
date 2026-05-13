@@ -5,9 +5,16 @@ const content: LessonContent = {
   steps: [
     // === INTRO ===
     {
-      type: 'info',
-      title: 'Meet your AI building partner',
-      body: "Claude Code is an AI assistant that lives in your terminal (the command-line window). It can read your project files, write code, run commands, and make decisions — all from a text interface. In this lesson you will install it, connect it to external tools, and complete your first AI-directed task. You tell it what to build in plain English. It does the building.",
+      type: 'multiple-choice',
+      question: 'Claude Code is an AI assistant that lives in your terminal. Where does it operate?',
+      options: [
+        'In a web browser like a normal chatbot',
+        'Directly inside your project — reading files, writing code, and running commands',
+        'Only in the cloud, with no access to your local files',
+        'Inside a mobile app on your phone',
+      ],
+      correctIndex: 1,
+      explanation: 'Claude Code is an AI assistant that lives in your terminal (the command-line window). It can read your project files, write code, run commands, and make decisions — all from a text interface. In this lesson you will install it, connect it to external tools, and complete your first AI-directed task.',
     },
     {
       type: 'multiple-choice',
@@ -41,14 +48,15 @@ const content: LessonContent = {
       hint: 'Just type "claude" — it walks you through authentication.',
     },
     {
-      type: 'checklist',
-      title: 'Installation check — confirm each step:',
+      type: 'order',
+      instruction: 'Put the Claude Code installation steps in the correct order:',
       items: [
-        'Pasted the install command and it completed without errors',
-        'Typed claude in the terminal and it launched',
-        'Signed in through the browser window that opened',
-        'Saw the Claude Code welcome screen in your terminal',
+        'Run npm install -g @anthropic-ai/claude-code',
+        'Type claude in the terminal',
+        'Sign in through the browser window that opens',
+        'See the Claude Code welcome screen in your terminal',
       ],
+      correctOrder: [0, 1, 2, 3],
     },
     {
       type: 'checkpoint',
@@ -86,9 +94,22 @@ const content: LessonContent = {
       ],
     },
     {
-      type: 'info',
-      title: 'Understanding MCP in plain terms',
-      body: "Think of MCP like a USB port. Before USB, every device needed its own cable. MCP works the same way for AI tools — it is a universal standard that lets Claude Code plug into any service: databases, websites, deployment platforms, and more. An MCP server is a small program that gives Claude Code access to a specific tool. You do not need to build these yourself — most are pre-built and ready to use.",
+      type: 'compare',
+      title: 'Before MCP vs After MCP',
+      body: 'MCP is like a USB port — a universal standard that lets Claude Code plug into any service.',
+      question: 'Which approach is more maintainable as you add more tools?',
+      correctSide: 'right',
+      left: {
+        label: 'Without MCP',
+        content: 'Each tool needs its own custom integration\nDifferent API formats for every service\nBreaks when a service updates their API\nYou must build each connector yourself',
+        language: 'text',
+      },
+      right: {
+        label: 'With MCP',
+        content: 'Universal standard protocol for all tools\nOne consistent format (JSON-RPC)\nPre-built servers for most services\nPlug and play — just add to settings.json',
+        language: 'text',
+      },
+      explanation: 'MCP is a universal standard — like USB replaced the mess of proprietary cables. An MCP server is a small program that gives Claude Code access to a specific tool. Most are pre-built and ready to use.',
     },
     {
       type: 'multiple-choice',
@@ -105,12 +126,17 @@ const content: LessonContent = {
 
     // === CONFIGURE MCP SERVER ===
     {
-      type: 'code-demo',
-      title: 'Connect an MCP tool to your project',
-      body: "Let us add a file system tool to your project settings. This gives Claude Code enhanced abilities to read and search your files. You just need to add this configuration to a settings file:",
+      type: 'code-fill',
+      instruction: 'Add the filesystem MCP server to your project settings. This gives Claude Code enhanced abilities to read and search your files. Fill in the missing configuration:',
       language: 'json',
       filename: '.claude/settings.json',
-      code: '{\n  "mcpServers": {\n    "filesystem": {\n      "command": "npx",\n      "args": [\n        "-y",\n        "@modelcontextprotocol/server-filesystem",\n        "."\n      ]\n    }\n  }\n}',
+      template: '{\n  "{{section}}": {\n    "filesystem": {\n      "command": "{{runner}}",\n      "args": [\n        "-y",\n        "@modelcontextprotocol/server-{{type}}",\n        "."\n      ]\n    }\n  }\n}',
+      blanks: [
+        { id: 'section', answer: 'mcpServers', placeholder: 'config section?', hint: 'The key that holds all MCP server configurations' },
+        { id: 'runner', answer: 'npx', placeholder: 'command runner?', hint: 'The Node.js tool for running packages without installing them globally' },
+        { id: 'type', answer: 'filesystem', placeholder: 'server type?', hint: 'This server provides file system access' },
+      ],
+      explanation: 'The mcpServers section maps server names to their configurations. npx runs the package without a global install. The server-filesystem package gives Claude Code enhanced file reading and searching capabilities.',
     },
     {
       type: 'code-input',
@@ -127,20 +153,30 @@ const content: LessonContent = {
 
     // === SKILLS & HOOKS ===
     {
-      type: 'code-demo',
-      title: 'Create a reusable instruction (called a "skill")',
-      body: "Skills are saved instructions you can reuse anytime with a simple slash command. Instead of typing the same detailed request every time, you save it once and invoke it by name. Create a file at .claude/skills/component.md:",
+      type: 'code-fill',
+      instruction: 'Skills are saved instructions you can reuse anytime with a slash command. Complete this skill file that defines how Claude Code should create React components:',
       language: 'markdown',
       filename: '.claude/skills/component.md',
-      code: '# Component Generator\n\nWhen asked to create a React component:\n\n1. Use TypeScript with explicit prop interfaces\n2. Export as default\n3. Use Tailwind for styling\n4. Add JSDoc comments for props\n5. Place in src/components/',
+      template: '# Component Generator\n\nWhen asked to create a React component:\n\n1. Use {{lang}} with explicit prop interfaces\n2. Export as {{exportType}}\n3. Use {{css}} for styling\n4. Add JSDoc comments for props\n5. Place in src/{{dir}}/',
+      blanks: [
+        { id: 'lang', answer: 'TypeScript', alternatives: ['typescript', 'TS', 'ts'], placeholder: 'which language?', hint: 'JavaScript with type safety' },
+        { id: 'exportType', answer: 'default', placeholder: 'export type?', hint: 'The standard export style for page components' },
+        { id: 'css', answer: 'Tailwind', alternatives: ['tailwind', 'TailwindCSS', 'tailwindcss'], placeholder: 'CSS framework?', hint: 'Utility-first CSS framework' },
+        { id: 'dir', answer: 'components', placeholder: 'directory?', hint: 'Where React components live in the project' },
+      ],
+      explanation: 'Skills encode your team conventions as reusable prompts. This skill tells Claude Code to always use TypeScript, default exports, Tailwind CSS, and place components in src/components/. Define once, use every time.',
     },
     {
-      type: 'code-demo',
-      title: 'Set up an automatic action (called a "hook")',
-      body: "Hooks are automatic actions that happen without you asking. For example, every time Claude Code edits a file, a hook can automatically clean up the formatting. They run in the background. Add this to your settings.json:",
+      type: 'code-fill',
+      instruction: 'Hooks are automatic actions that run without you asking. Complete this hook that automatically lints files after Claude Code edits them:',
       language: 'json',
       filename: '.claude/settings.json',
-      code: '{\n  "hooks": {\n    "afterEdit": [\n      {\n        "command": "npx eslint --fix ${file}",\n        "description": "Auto-lint after edit"\n      }\n    ]\n  }\n}',
+      template: '{\n  "hooks": {\n    "{{trigger}}": [\n      {\n        "command": "npx {{linter}} --fix ${file}",\n        "description": "Auto-lint after edit"\n      }\n    ]\n  }\n}',
+      blanks: [
+        { id: 'trigger', answer: 'afterEdit', alternatives: ['after_edit'], placeholder: 'when to run?', hint: 'This hook runs after a file is edited' },
+        { id: 'linter', answer: 'eslint', placeholder: 'which linter?', hint: 'The most popular JavaScript/TypeScript linter' },
+      ],
+      explanation: 'The afterEdit hook runs every time Claude Code modifies a file. ESLint with the --fix flag automatically corrects formatting and code style issues. The ${file} variable is replaced with the path of the edited file.',
     },
     {
       type: 'multiple-choice',
@@ -170,9 +206,9 @@ const content: LessonContent = {
 
     // === YOUR AI TOOLING STACK ===
     {
-      type: 'diagram',
+      type: 'interactive-diagram',
       title: 'Your AI Tooling Stack',
-      body: 'Everything you just configured, working together.',
+      body: 'Everything you just configured, working together. Step through to see how each piece connects.',
       diagram: {
         direction: 'LR',
         nodes: [
@@ -189,6 +225,12 @@ const content: LessonContent = {
           { from: 'mcp', to: 'tools' },
         ],
       },
+      stages: [
+        { highlightNodes: ['cc'], explanation: 'Claude Code is the hub. It receives your instructions in natural language and orchestrates everything else.' },
+        { highlightNodes: ['cc', 'skills'], highlightEdges: [{ from: 'cc', to: 'skills' }], explanation: 'Skills are reusable instructions invoked with slash commands. They teach Claude Code your project patterns and conventions.' },
+        { highlightNodes: ['cc', 'hooks'], highlightEdges: [{ from: 'cc', to: 'hooks' }], explanation: 'Hooks trigger automatically at specific moments — like linting after every edit. No manual action needed.' },
+        { highlightNodes: ['cc', 'mcp', 'tools'], highlightEdges: [{ from: 'cc', to: 'mcp' }, { from: 'mcp', to: 'tools' }], explanation: 'MCP servers connect Claude Code to external tools — databases, APIs, deployment platforms. This is how it interacts with the world beyond your project files.' },
+      ],
     },
 
     // === FIRST AGENT TASK ===
@@ -211,16 +253,12 @@ const content: LessonContent = {
       correctOrder: [0, 1, 2, 3, 4],
     },
     {
-      type: 'checklist',
-      title: 'Final check — make sure you have completed each of these:',
-      items: [
-        'Claude Code is installed and you signed in successfully',
-        'You understand MCP at a high level (it connects Claude Code to external tools)',
-        'You added an MCP tool connection to your project settings',
-        'You created a skill file (a saved reusable instruction)',
-        'You set up a hook (an automatic action)',
-        'You gave Claude Code a real task and it completed it',
-      ],
+      type: 'match',
+      instruction: 'Match each configuration you just completed to its file location:',
+      leftItems: ['MCP server configuration', 'Component generator skill', 'Auto-lint hook', 'Project instructions'],
+      rightItems: ['.claude/settings.json (mcpServers section)', '.claude/skills/component.md', '.claude/settings.json (hooks section)', 'CLAUDE.md in project root'],
+      correctPairs: { 0: 0, 1: 1, 2: 2, 3: 3 },
+      explanation: 'Each configuration lives in a specific location. MCP servers and hooks go in .claude/settings.json. Skills are markdown files in .claude/skills/. Project-level instructions go in CLAUDE.md at the project root.',
     },
     {
       type: 'checkpoint',

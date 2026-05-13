@@ -22,9 +22,16 @@ const content: LessonContent = {
 
     // === BRANCH STRATEGY ===
     {
-      type: 'info',
-      title: 'Branch-per-feature avec les agents',
-      body: "Crée une nouvelle branche pour chaque tâche que tu donnes à un agent. Même si la tâche semble petite. Les branches sont pas chères. Une branche te donne de l'isolation (les changements de l'agent ne touchent pas main tant qu'ils ne sont pas révisés), du rollback (supprime la branche si l'agent déraille), et de la visibilité (tu peux voir tout le travail de l'agent dans ta liste de branches). Nomme les branches de façon descriptive : feat/add-auth-flow, fix/pagination-off-by-one, refactor/extract-api-client. Inclus le périmètre du changement dans le nom.",
+      type: 'multiple-choice',
+      question: 'Pourquoi devrais-tu créer une nouvelle branche pour CHAQUE tâche que tu donnes à un agent, même les petites ?',
+      options: [
+        'Les branches rendent les commandes git plus rapides',
+        'Les branches donnent isolation, rollback et visibilité pour le travail de l\'agent',
+        'Les agents ne peuvent pas committer sur la branche principale',
+        'Plusieurs branches réduisent automatiquement les conflits de merge',
+      ],
+      correctIndex: 1,
+      explanation: 'Les branches sont pas chères mais fournissent trois avantages critiques : isolation (les changements de l\'agent restent séparés de main), rollback (supprime la branche si l\'agent déraille), et visibilité (tu vois tout le travail de l\'agent dans ta liste de branches). Nomme les branches de façon descriptive : feat/add-auth-flow, fix/pagination-off-by-one.',
     },
     {
       type: 'terminal',
@@ -33,9 +40,9 @@ const content: LessonContent = {
       hint: 'Utilise git checkout -b suivi du nom de la branche',
     },
     {
-      type: 'diagram',
+      type: 'interactive-diagram',
       title: 'Workflow de branches agent',
-      body: 'Chaque tâche d\'agent vit sur sa propre branche. L\'humain révise avant de merger dans main. Plusieurs agents peuvent travailler en parallèle sur des branches séparées.',
+      body: 'Clique sur chaque étape pour voir comment les branches d\'agents circulent de la création à la révision jusqu\'au merge.',
       diagram: {
         direction: 'LR',
         nodes: [
@@ -55,6 +62,28 @@ const content: LessonContent = {
           { from: 'review', to: 'main', label: 'merge' },
         ],
       },
+      stages: [
+        {
+          highlightNodes: ['main'],
+          highlightEdges: [],
+          explanation: 'Main est la branche protégée. Aucun agent — et aucun humain — ne pousse directement ici. Tous les changements passent par des pull requests révisées.',
+        },
+        {
+          highlightNodes: ['main', 'feat1', 'feat2', 'feat3'],
+          highlightEdges: [{ from: 'main', to: 'feat1' }, { from: 'main', to: 'feat2' }, { from: 'main', to: 'feat3' }],
+          explanation: 'Chaque tâche d\'agent a sa propre branche. Plusieurs agents travaillent en parallèle sans interférer. Nomme les branches avec des préfixes comme feat/, fix/, refactor/.',
+        },
+        {
+          highlightNodes: ['feat1', 'feat2', 'feat3', 'review'],
+          highlightEdges: [{ from: 'feat1', to: 'review' }, { from: 'feat2', to: 'review' }, { from: 'feat3', to: 'review' }],
+          explanation: 'Les agents poussent leurs branches et ouvrent des PR. Chaque changement passe par la porte de révision humaine — vérifiant les erreurs de logique, les problèmes de sécurité et le scope creep.',
+        },
+        {
+          highlightNodes: ['review', 'main'],
+          highlightEdges: [{ from: 'review', to: 'main' }],
+          explanation: 'Après révision et approbation, les changements sont mergés dans main. L\'humain garde le contrôle de ce qui part en production.',
+        },
+      ],
     },
 
     // === INTERACTIF : COMPARE, CODE-FILL, INTERACTIVE-DIAGRAM ===
@@ -138,17 +167,22 @@ const content: LessonContent = {
 
     // === COMMIT HYGIENE ===
     {
-      type: 'info',
-      title: 'Messages de commit pour le code généré par agent',
-      body: "Les agents produisent du code vite, mais le message de commit est toujours important — peut-être même plus qu'habituellement. Quand tu révises une PR des semaines plus tard, le message de commit est ton seul contexte pour comprendre pourquoi l'agent a fait un choix. Bonne pratique : utilise les commits conventionnels (feat:, fix:, refactor:), décris l'intention pas l'implémentation, et inclus un trailer Co-Authored-By pour l'agent. Claude Code fait ça automatiquement quand tu lui demandes de committer. N'accepte jamais un message de commit comme « update files » ou « make changes ».",
-    },
-    {
-      type: 'code-demo',
-      title: 'Bons vs mauvais messages de commit d\'agent',
-      body: 'Le message de commit devrait expliquer pourquoi le changement existe. Le diff montre déjà ce qui a changé.',
-      language: 'text',
-      filename: 'commit-examples.txt',
-      code: "# BAD - tells you nothing\ngit commit -m \"update auth\"\ngit commit -m \"fix bug\"\ngit commit -m \"changes from Claude\"\n\n# GOOD - explains intent and scope\ngit commit -m \"feat(auth): add refresh token rotation to prevent session hijacking\"\ngit commit -m \"fix(api): handle null response from payments webhook\"\ngit commit -m \"refactor(db): extract query builder to reduce duplication in user service\"\n\n# With Co-Authored-By (added automatically by Claude Code)\ngit commit -m \"feat(settings): add user preferences page with theme toggle\n\nCo-Authored-By: Claude <noreply@anthropic.com>\"",
+      type: 'compare',
+      title: 'Mauvais vs bons messages de commit d\'agent',
+      body: 'Le message de commit est ton seul contexte des semaines plus tard pour comprendre pourquoi l\'agent a fait un choix.',
+      question: 'Quel style donne aux réviseurs le contexte dont ils ont besoin ?',
+      correctSide: 'right',
+      left: {
+        label: 'Mauvais (ne dit rien)',
+        content: "git commit -m \"update auth\"\ngit commit -m \"fix bug\"\ngit commit -m \"changes from Claude\"\ngit commit -m \"update files\"\n\n→ Quoi a été mis à jour ? Quel bug ?\n→ Pas de scope, pas d'intention, pas de contexte\n→ Inutile en révision des semaines plus tard\n→ Impossible de git bisect efficacement",
+        language: 'text',
+      },
+      right: {
+        label: 'Bon (explique l\'intention)',
+        content: "git commit -m \"feat(auth): add refresh\n  token rotation to prevent session\n  hijacking\"\ngit commit -m \"fix(api): handle null\n  response from payments webhook\"\ngit commit -m \"refactor(db): extract\n  query builder to reduce duplication\"\n\n→ Type + scope + pourquoi\n→ Format commit conventionnel\n→ Contexte révisable des semaines plus tard",
+        language: 'text',
+      },
+      explanation: 'Les bons messages de commit utilisent le format conventionnel (type(scope): description), expliquent POURQUOI le changement existe (pas ce qui a changé — le diff le montre), et incluent un trailer Co-Authored-By pour l\'agent. N\'accepte jamais de messages vagues des agents.',
     },
     {
       type: 'multiple-choice',
@@ -165,17 +199,35 @@ const content: LessonContent = {
 
     // === REVIEWING AGENT PRs ===
     {
-      type: 'info',
-      title: 'Réviser les pull requests des agents',
-      body: "Les PR d'agents ont besoin de la même rigueur de révision que les PR humaines — mais avec des points d'attention différents. Les agents ont rarement des typos ou des problèmes de style (ils suivent les linters). À la place, cherche : les erreurs de logique que l'agent ne pourrait pas détecter sans exécuter le code, la sur-ingénierie (les agents adorent abstraire trop tôt), les cas limites manquants, les problèmes de sécurité (les agents exposent parfois des secrets ou sautent les vérifications d'auth), et les changements inutiles sur des fichiers hors du périmètre de la tâche. Survole vite, concentre-toi en profondeur sur la logique métier.",
+      type: 'match',
+      instruction: 'En révisant les PR d\'agents, associe chaque point d\'attention à ce que tu cherches :',
+      leftItems: [
+        'Erreurs de logique',
+        'Sur-ingénierie',
+        'Problèmes de sécurité',
+        'Dépassement de scope',
+      ],
+      rightItems: [
+        'Bugs que l\'agent ne peut pas détecter sans exécuter le code',
+        'Abstractions prématurées et complexité inutile',
+        'Secrets exposés, vérifications d\'auth manquantes, injection SQL',
+        'Changements sur des fichiers en dehors de la tâche assignée',
+      ],
+      correctPairs: { 0: 0, 1: 1, 2: 2, 3: 3 },
+      explanation: 'Les PR d\'agents ont besoin de la même rigueur que les PR humaines mais avec un focus différent. Les agents ont rarement des problèmes de style (ils suivent les linters). Concentre-toi sur les erreurs de logique, la sur-ingénierie, la sécurité et le dépassement de scope. Survole vite, plonge dans la logique métier.',
     },
     {
-      type: 'code-demo',
-      title: 'Commandes de révision de PR',
-      body: 'Utilise ces commandes git pour réviser efficacement les PR générées par agent. Concentre-toi d\'abord sur la compréhension du périmètre, puis plonge dans les détails.',
+      type: 'code-fill',
+      instruction: 'Complète ces commandes git pour réviser efficacement une PR d\'agent. Périmètre d\'abord, puis détails :',
       language: 'bash',
       filename: 'review-workflow.sh',
-      code: "# See all files changed in the PR branch\ngit diff --stat main...HEAD\n\n# Review changes file by file\ngit diff main...HEAD -- src/auth/\n\n# See commit history (check for logical grouping)\ngit log --oneline main..HEAD\n\n# Check if agent touched files outside its scope\ngit diff --name-only main...HEAD | grep -v '^src/auth/'\n\n# Interactive review with GitHub CLI\ngh pr diff 42\ngh pr review 42 --comment -b \"LGTM — logic is sound, tests cover edge cases\"",
+      template: "# Voir tous les fichiers changés dans la branche PR\ngit diff {{stat_flag}} main...HEAD\n\n# Réviser les changements dans un répertoire spécifique\ngit diff main...HEAD -- src/auth/\n\n# Vérifier si l'agent a touché des fichiers hors périmètre\ngit diff {{names_flag}} main...HEAD | grep -v '^src/auth/'\n\n# Réviser avec GitHub CLI\ngh pr {{review_cmd}} 42",
+      blanks: [
+        { id: 'stat_flag', answer: '--stat', alternatives: ['--stats'], placeholder: 'flag résumé ?', hint: 'Le flag git diff qui montre un résumé des fichiers changés et lignes ajoutées/supprimées' },
+        { id: 'names_flag', answer: '--name-only', alternatives: ['--names-only', '--nameonly'], placeholder: 'flag noms de fichiers ?', hint: 'Le flag git diff qui montre uniquement les noms de fichiers, pas les changements' },
+        { id: 'review_cmd', answer: 'diff', alternatives: ['review'], placeholder: 'gh pr ___ ?', hint: 'La sous-commande gh pr qui montre le diff de la PR' },
+      ],
+      explanation: 'Utilise --stat pour un résumé de haut niveau des changements, --name-only pour vérifier le périmètre (l\'agent a-t-il touché des fichiers hors de sa tâche ?), et gh pr diff pour réviser la PR complète. Une révision efficace signifie périmètre d\'abord, puis plongée dans la logique métier.',
     },
     {
       type: 'multiple-choice',
@@ -197,17 +249,29 @@ const content: LessonContent = {
 
     // === MERGE CONFLICTS ===
     {
-      type: 'info',
-      title: 'Gérer les conflits de merge dans les workflows d\'agents',
-      body: "Les conflits de merge arrivent plus souvent avec les agents parce que plusieurs agents peuvent travailler en parallèle sur des fichiers reliés. La prévention vaut mieux que la cure : avant de lancer un agent sur une tâche, pull le dernier main. Garde les branches d'agents de courte durée (merge en quelques heures, pas jours). Quand les conflits arrivent, ne demande pas à l'agent de les résoudre à l'aveugle — il n'a pas le contexte de ce que l'autre branche voulait. À la place : révise les deux côtés, décide toi-même de la bonne résolution, puis laisse l'agent l'implémenter.",
+      type: 'multiple-choice',
+      question: 'Quand une branche d\'agent a des conflits de merge, que devrais-tu faire ?',
+      options: [
+        'Demander à l\'agent de résoudre les conflits automatiquement',
+        'Réviser les deux côtés toi-même, décider la résolution, puis laisser l\'agent l\'implémenter',
+        'Supprimer la branche et recommencer de zéro',
+        'Force-push la branche de l\'agent pour écraser main',
+      ],
+      correctIndex: 1,
+      explanation: 'Ne demande jamais à un agent de résoudre les conflits à l\'aveugle — il n\'a pas le contexte de ce que l\'autre branche voulait. Révise les deux côtés, décide toi-même la bonne résolution, puis laisse l\'agent l\'implémenter. La prévention est meilleure : pull le dernier main avant de commencer, et garde les branches d\'agents de courte durée.',
     },
     {
-      type: 'code-demo',
-      title: 'Résoudre les conflits en toute sécurité',
-      body: 'Quand une branche d\'agent entre en conflit avec main, rebase sur le dernier main et résous les conflits avec le contexte complet.',
+      type: 'code-fill',
+      instruction: 'Complète le workflow de résolution de conflits. Rebase la branche d\'agent sur le dernier main :',
       language: 'bash',
       filename: 'resolve-conflicts.sh',
-      code: "# Update main first\ngit checkout main && git pull\n\n# Switch to the agent branch and rebase\ngit checkout feat/add-auth\ngit rebase main\n\n# If conflicts appear:\n# 1. Open the conflicted files\n# 2. Understand BOTH sides (yours and main)\n# 3. Resolve manually — don't guess\n# 4. Continue the rebase\ngit add <resolved-files>\ngit rebase --continue\n\n# If the rebase is too messy, abort and merge instead\ngit rebase --abort\ngit merge main",
+      template: "# Mettre à jour main d'abord\ngit checkout main && git pull\n\n# Basculer sur la branche agent et rebaser\ngit checkout {{branch_name}}\ngit {{rebase_cmd}} main\n\n# Si des conflits apparaissent :\n# 1. Ouvrir les fichiers en conflit\n# 2. Comprendre les DEUX côtés\n# 3. Résoudre manuellement\ngit add <fichiers-résolus>\ngit rebase {{continue_flag}}\n\n# Si trop compliqué, annuler et merger à la place\ngit rebase --abort\ngit merge main",
+      blanks: [
+        { id: 'branch_name', answer: 'feat/add-auth', alternatives: ['feat/auth'], placeholder: 'nom de branche ?', hint: 'La branche de fonctionnalité sur laquelle l\'agent travaillait' },
+        { id: 'rebase_cmd', answer: 'rebase', placeholder: 'commande de replay ?', hint: 'La commande git qui rejoue tes commits par-dessus une autre branche' },
+        { id: 'continue_flag', answer: '--continue', placeholder: 'flag de reprise ?', hint: 'Le flag de rebase qui continue après la résolution d\'un conflit' },
+      ],
+      explanation: 'D\'abord mettre à jour main avec git pull. Basculer sur la branche agent et rebaser sur main. Résoudre les conflits manuellement (jamais à l\'aveugle), puis git rebase --continue. Si le rebase est trop compliqué, annuler et utiliser git merge à la place.',
     },
     {
       type: 'terminal',
@@ -218,17 +282,17 @@ const content: LessonContent = {
 
     // === GIT WORKTREES ===
     {
-      type: 'info',
-      title: 'Git worktrees pour le travail d\'agents en parallèle',
-      body: "Quand tu veux que plusieurs agents travaillent simultanément sur différentes branches du même repo, les git worktrees sont la solution. Un worktree crée un répertoire de travail séparé lié au même dépôt. Chaque worktree peut avoir une branche différente checkout. Ça veut dire que tu peux avoir l'Agent A qui travaille dans /project-feat-auth et l'Agent B dans /project-fix-pagination — même repo, pas de conflits, pas de stash, pas de changement de branche. Chaque agent a son propre espace de travail propre.",
-    },
-    {
-      type: 'code-demo',
-      title: 'Mettre en place des worktrees pour des agents en parallèle',
-      body: 'Crée des répertoires de travail séparés pour chaque tâche d\'agent. Ils partagent le même historique git mais ont des états de fichiers indépendants.',
+      type: 'code-fill',
+      instruction: 'Mets en place des git worktrees pour le travail d\'agents en parallèle. Chaque worktree crée un répertoire de travail séparé lié au même repo :',
       language: 'bash',
       filename: 'worktree-setup.sh',
-      code: "# Create a worktree for a feature branch\ngit worktree add ../project-feat-auth feat/add-auth\n\n# Create another worktree for a different task\ngit worktree add ../project-fix-pagination fix/pagination\n\n# List all active worktrees\ngit worktree list\n# /Users/you/project             abc1234 [main]\n# /Users/you/project-feat-auth   def5678 [feat/add-auth]\n# /Users/you/project-fix-pagination ghi9012 [fix/pagination]\n\n# Each agent works in its own directory — no interference\n# Agent 1: cd ../project-feat-auth && claude\n# Agent 2: cd ../project-fix-pagination && claude\n\n# When done, clean up\ngit worktree remove ../project-feat-auth\ngit worktree remove ../project-fix-pagination",
+      template: "# Créer un worktree pour une branche de fonctionnalité\ngit worktree {{add_cmd}} ../project-feat-auth feat/add-auth\n\n# Créer un autre worktree pour une autre tâche\ngit worktree {{add_cmd}} ../project-fix-pagination fix/pagination\n\n# Lister tous les worktrees actifs\ngit worktree {{list_cmd}}\n\n# Chaque agent travaille dans son propre répertoire — pas d'interférence\n# Agent 1: cd ../project-feat-auth && claude\n# Agent 2: cd ../project-fix-pagination && claude\n\n# Quand c'est fini, nettoyer\ngit worktree {{remove_cmd}} ../project-feat-auth",
+      blanks: [
+        { id: 'add_cmd', answer: 'add', placeholder: 'sous-commande de création ?', hint: 'La sous-commande git worktree qui crée un nouveau répertoire worktree' },
+        { id: 'list_cmd', answer: 'list', placeholder: 'sous-commande d\'affichage ?', hint: 'La sous-commande git worktree qui montre tous les worktrees actifs' },
+        { id: 'remove_cmd', answer: 'remove', placeholder: 'sous-commande de nettoyage ?', hint: 'La sous-commande git worktree qui supprime un worktree quand tu as fini' },
+      ],
+      explanation: 'Les git worktrees créent des répertoires de travail séparés liés au même dépôt. Utilise "add" pour créer, "list" pour voir tous les worktrees actifs, et "remove" pour nettoyer. Chaque agent a son propre répertoire et branche — pas de stash, pas de changement de contexte.',
     },
     {
       type: 'multiple-choice',
@@ -245,17 +309,28 @@ const content: LessonContent = {
 
     // === BEST PRACTICES ===
     {
-      type: 'info',
-      title: 'Les règles d\'or',
-      body: "Voici les règles non négociables pour git avec les agents. Un : ne laisse jamais les agents pousser directement sur main — utilise toujours une PR avec révision. Deux : ne laisse jamais les agents force-push ou réécrire l'historique sur les branches partagées. Trois : garde les branches d'agents de courte durée — merge ou supprime dans la journée. Quatre : vérifie toujours que les changements de l'agent compilent et passent les tests avant de merger. Cinq : utilise les règles de protection de branche pour faire respecter ces contraintes même quand tu es pressé.",
+      type: 'multiple-choice',
+      question: 'Laquelle est une règle NON NÉGOCIABLE de git avec les agents ?',
+      options: [
+        'Les agents devraient committer directement sur main pour gagner du temps',
+        'Le force-push est acceptable si l\'agent est confiant',
+        'Ne jamais laisser les agents pousser directement sur main — toujours utiliser une PR avec révision',
+        'Les branches d\'agents devraient rester ouvertes des semaines pour accumuler les changements',
+      ],
+      correctIndex: 2,
+      explanation: 'Les règles d\'or : 1) Jamais pousser directement sur main. 2) Jamais de force-push ni réécriture d\'historique. 3) Branches de courte durée. 4) Vérifier les builds et tests avant le merge. 5) Utiliser la protection de branche pour les faire respecter même quand pressé.',
     },
     {
-      type: 'code-demo',
-      title: 'Protection de branche pour la sécurité des agents',
-      body: 'Configure ton dépôt pour empêcher les agents (et les humains) de contourner la révision. Ces paramètres s\'appliquent sur GitHub/GitLab.',
+      type: 'code-fill',
+      instruction: 'Configure la protection de branche via GitHub CLI. Empêche les agents et les humains de contourner la révision :',
       language: 'bash',
       filename: 'branch-protection.sh',
-      code: "# Set up branch protection via GitHub CLI\ngh api repos/{owner}/{repo}/branches/main/protection -X PUT -f \\\n  required_pull_request_reviews.required_approving_review_count=1 \\\n  required_status_checks.strict=true \\\n  enforce_admins=true \\\n  allow_force_pushes=false \\\n  allow_deletions=false\n\n# Result: no one (human or agent) can:\n# - Push directly to main\n# - Force push to main\n# - Merge without an approval\n# - Merge with failing CI checks",
+      template: "# Configurer la protection de branche via GitHub CLI\ngh api repos/{owner}/{repo}/branches/main/protection -X PUT -f \\\n  required_pull_request_reviews.required_approving_review_count={{min_reviews}} \\\n  required_status_checks.strict=true \\\n  enforce_admins=true \\\n  allow_force_pushes={{force_push}} \\\n  allow_deletions=false\n\n# Résultat : personne ne peut push directement, force push ou skip la révision",
+      blanks: [
+        { id: 'min_reviews', answer: '1', alternatives: ['2'], placeholder: 'combien d\'approbations ?', hint: 'Le nombre minimum de révisions approuvatrices — au moins une personne doit réviser' },
+        { id: 'force_push', answer: 'false', placeholder: 'autoriser le force push ?', hint: 'Le force push réécrit l\'historique et est une des violations des règles d\'or' },
+      ],
+      explanation: 'Exiger au moins 1 révision approuvatrice, appliquer des vérifications de statut strictes (le CI doit passer), et mettre allow_force_pushes à false. Ça garantit que personne — humain ou agent — ne peut contourner la révision, même pressé.',
     },
 
     // === WORKFLOW EXERCISE ===

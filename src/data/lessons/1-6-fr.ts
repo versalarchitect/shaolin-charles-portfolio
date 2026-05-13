@@ -80,17 +80,28 @@ const content: LessonContent = {
 
     // === ERROR ANATOMY ===
     {
-      type: 'info',
-      title: 'Anatomie d\'un message d\'erreur',
-      body: 'Chaque erreur a quatre parties : le type d\'erreur (quelle catégorie de problème), le message (description lisible par un humain), le fichier et le numéro de ligne (où c\'est arrivé), et le stack trace (la chaîne d\'appels de fonctions qui y a mené). T\'entraîner à parser ces quatre éléments instantanément est la compétence de débogage la plus rentable.',
+      type: 'multiple-choice',
+      question: 'Chaque message d\'erreur a quatre parties. Laquelle n\'en fait PAS partie ?',
+      options: [
+        'Le type d\'erreur (catégorie du problème)',
+        'Le fichier et le numéro de ligne (où c\'est arrivé)',
+        'Le commit git qui a introduit le bug',
+        'Le stack trace (chaîne d\'appels de fonctions)',
+      ],
+      correctIndex: 2,
+      explanation: 'Les quatre parties sont : le type d\'erreur, le message lisible, le fichier/numéro de ligne, et le stack trace. Le commit git ne fait pas partie du message d\'erreur — il faudrait git blame pour ça. T\'entraîner à parser ces quatre parties instantanément est la compétence de débogage la plus rentable.',
     },
     {
-      type: 'code-demo',
-      title: 'Une vraie erreur Node.js, disséquée',
-      body: 'Regarde chaque partie. Le type est TypeError. Le message dit ce qui a échoué. L\'emplacement dit où. Le stack dit comment tu y es arrivé.',
+      type: 'code-fill',
+      instruction: 'Remplis les quatre parties de ce message d\'erreur Node.js disséqué :',
       language: 'text',
-      filename: 'terminal output',
-      code: "TypeError: Cannot read properties of undefined (reading 'map')\n    at renderList (/app/src/components/UserList.tsx:12:18)\n    at Object.render (/app/src/pages/Dashboard.tsx:45:5)\n    at processChild (/app/node_modules/react-dom/server.js:3456:14)\n\n┌─ Type:     TypeError\n├─ Message:  Cannot read properties of undefined (reading 'map')\n├─ File:     src/components/UserList.tsx, line 12\n└─ Cause:    'users' is undefined when .map() is called",
+      template: "TypeError: Cannot read properties of undefined (reading 'map')\n    at renderList (/app/src/components/UserList.tsx:12:18)\n    at Object.render (/app/src/pages/Dashboard.tsx:45:5)\n\n┌─ Type:     {{error_type}}\n├─ Message:  Cannot read properties of undefined (reading 'map')\n├─ File:     {{error_file}}, line 12\n└─ Cause:    '{{undefined_var}}' is undefined when .map() is called",
+      blanks: [
+        { id: 'error_type', answer: 'TypeError', alternatives: ['typeerror', 'type error'], placeholder: 'catégorie d\'erreur ?', hint: 'Le premier mot du message d\'erreur — quel type d\'erreur est-ce ?' },
+        { id: 'error_file', answer: 'src/components/UserList.tsx', alternatives: ['UserList.tsx'], placeholder: 'quel fichier ?', hint: 'Regarde le haut du stack trace — quel fichier est à la ligne 12 ?' },
+        { id: 'undefined_var', answer: 'users', alternatives: ['user'], placeholder: 'quelle variable ?', hint: 'Qu\'est-ce qui est undefined quand .map() est appelé ? Pense à ce sur quoi tu fais .map().' },
+      ],
+      explanation: 'Le type est TypeError. Le fichier est src/components/UserList.tsx à la ligne 12 (haut du stack trace — commence toujours par là). La variable undefined est users — tu appelles .map() sur un tableau d\'utilisateurs, mais il est undefined.',
     },
     {
       type: 'multiple-choice',
@@ -112,9 +123,9 @@ const content: LessonContent = {
 
     // === ERROR CATEGORIES ===
     {
-      type: 'diagram',
+      type: 'interactive-diagram',
       title: 'Catégories d\'erreurs',
-      body: 'Chaque erreur tombe dans l\'une de trois catégories. Chacune nécessite une approche de débogage différente.',
+      body: 'Clique sur chaque étape pour apprendre les trois catégories d\'erreurs et comment déboguer chacune.',
       diagram: {
         direction: 'TB',
         nodes: [
@@ -137,29 +148,58 @@ const content: LessonContent = {
           { from: 'logic', to: 'logic_fix' },
         ],
       },
+      stages: [
+        {
+          highlightNodes: ['error', 'type'],
+          highlightEdges: [{ from: 'error', to: 'type' }],
+          explanation: 'Chaque erreur tombe dans l\'une de trois catégories. Chacune nécessite une approche de débogage différente. La première étape est toujours de classifier l\'erreur.',
+        },
+        {
+          highlightNodes: ['type', 'syntax', 'code'],
+          highlightEdges: [{ from: 'type', to: 'syntax' }, { from: 'syntax', to: 'code' }],
+          explanation: 'Les erreurs de syntaxe signifient que le code ne peut même pas être parsé. Crochets manquants, typos, mauvais imports. Ce sont les plus faciles — le message pointe vers le caractère exact. Le correctif est mécanique : lis le message, va à la ligne, corrige la typo.',
+        },
+        {
+          highlightNodes: ['type', 'runtime', 'data'],
+          highlightEdges: [{ from: 'type', to: 'runtime' }, { from: 'runtime', to: 'data' }],
+          explanation: 'Les erreurs d\'exécution se produisent quand le code est syntaxiquement valide mais échoue pendant l\'exécution. Références null, incompatibilités de types, fichiers manquants. Vérifie quelles données existaient réellement au point de l\'échec.',
+        },
+        {
+          highlightNodes: ['type', 'logic', 'logic_fix'],
+          highlightEdges: [{ from: 'type', to: 'logic' }, { from: 'logic', to: 'logic_fix' }],
+          explanation: 'Les erreurs de logique sont les plus difficiles. Le code tourne sans planter mais produit de mauvais résultats. Aucun message d\'erreur. Ça nécessite de comprendre l\'intention vs le comportement — c\'est là que les agents IA aident le plus.',
+        },
+      ],
     },
     {
-      type: 'info',
-      title: 'Catégorie 1 : Erreurs de syntaxe',
-      body: "Les erreurs de syntaxe signifient que le code ne peut même pas être parsé. Crochets manquants, typos, mauvais imports. Ce sont les plus faciles — le message d'erreur pointe généralement vers le caractère exact. Le correctif est mécanique : lis le message, va à la ligne, corrige la typo.",
-    },
-    {
-      type: 'code-demo',
-      title: 'Exemple d\'erreur de syntaxe',
-      body: 'Le parser te dit exactement où est le problème. Ligne 3, token inattendu.',
+      type: 'code-fill',
+      instruction: 'Le parser te dit exactement où est le problème. Remplis ce que le message d\'erreur révèle :',
       language: 'text',
-      filename: 'terminal output',
-      code: "SyntaxError: Unexpected token '}' at line 3\n\nfunction greet(name: string) {\n  console.log('Hello, ' + name)\n}} // <-- extra closing brace",
+      template: "{{error_type}}: Unexpected token '}' at line {{line_num}}\n\nfunction greet(name: string) {\n  console.log('Hello, ' + name)\n}} // <-- {{fix_description}}",
+      blanks: [
+        { id: 'error_type', answer: 'SyntaxError', alternatives: ['syntaxerror', 'syntax error'], placeholder: 'type d\'erreur ?', hint: 'Cette catégorie d\'erreur signifie que le code ne peut même pas être parsé' },
+        { id: 'line_num', answer: '3', placeholder: 'quelle ligne ?', hint: 'Compte les lignes de la fonction — quelle ligne a l\'accolade en trop ?' },
+        { id: 'fix_description', answer: 'extra closing brace', alternatives: ['extra brace', 'extra }', 'accolade en trop'], placeholder: 'quel est le problème ?', hint: 'Il y en a une de trop à la fin' },
+      ],
+      explanation: 'Un SyntaxError à la ligne 3 causé par une accolade fermante en trop. Les erreurs de syntaxe se corrigent mécaniquement : lis le message, va à la ligne, corrige le problème structurel.',
     },
     {
-      type: 'info',
-      title: 'Catégorie 2 : Erreurs d\'exécution',
-      body: "Les erreurs d'exécution se produisent quand le code est syntaxiquement valide mais échoue pendant l'exécution. Références null, incompatibilités de types, fichiers manquants. Le code s'est bien parsé mais a rencontré des données incorrectes ou un état inattendu. Ça nécessite de vérifier quelles données existaient réellement au point de l'échec.",
-    },
-    {
-      type: 'info',
-      title: 'Catégorie 3 : Erreurs de logique',
-      body: "Les erreurs de logique sont les plus difficiles. Le code tourne sans planter mais produit de mauvais résultats. Aucun message d'erreur. Une fonction retourne 0 au lieu de 100. Un filtre supprime les mauvais éléments. Ça nécessite de comprendre l'intention vs le comportement — et c'est là que les agents IA peuvent aider le plus en traçant la logique.",
+      type: 'compare',
+      title: 'Erreurs d\'exécution vs Erreurs de logique',
+      body: 'Les deux se produisent après le parsing, mais elles se comportent très différemment.',
+      question: 'Quel type est plus difficile à déboguer et pourquoi ?',
+      correctSide: 'right',
+      left: {
+        label: 'Erreur d\'exécution',
+        content: "// Le code plante pendant l'exécution\nconst users = null;\nconsole.log(users.length);\n// TypeError: Cannot read properties of null\n\n// Tu obtiens : type, message, fichier, ligne\n// Stratégie : vérifier les données au point d'échec\n// Difficulté : Moyenne — l'erreur te dit où",
+        language: 'typescript',
+      },
+      right: {
+        label: 'Erreur de logique',
+        content: "// Le code tourne mais produit de MAUVAIS résultats\nfunction discount(price: number) {\n  return price * 1.1; // BUG: ajoute 10% au lieu\n}\ndiscount(100); // Retourne 110, devrait être 90\n\n// Tu obtiens : AUCUN message d'erreur, pas de crash\n// Stratégie : comparer attendu vs réel\n// Difficulté : Difficile — rien ne te dit où chercher",
+        language: 'typescript',
+      },
+      explanation: 'Les erreurs d\'exécution plantent avec un message qui pointe vers le problème. Les erreurs de logique sont silencieuses — le code tourne mais produit une mauvaise sortie. Tu dois comparer le comportement attendu vs réel, c\'est pourquoi les agents IA sont plus utiles ici : ils peuvent tracer la logique étape par étape.',
     },
     {
       type: 'multiple-choice',
@@ -228,25 +268,34 @@ const content: LessonContent = {
 
     // === PROMPTING AGENTS FOR DEBUGGING ===
     {
-      type: 'info',
-      title: 'La mauvaise façon de demander de l\'aide à un agent',
-      body: "« Ça marche pas » est la chose la plus courante que les développeurs tapent dans les chats IA. C'est aussi la plus inutile. L'agent a zéro information. Il va deviner. Il pourrait suggérer cinq correctifs différents, dont aucun ne correspond à ton vrai problème. Tu perds du temps à essayer chacun.",
+      type: 'compare',
+      title: 'Prompts vagues vs précis pour le débogage',
+      body: "La façon dont tu demandes de l'aide à un agent détermine s'il résout ton problème ou perd ton temps à deviner.",
+      question: 'Quel prompt obtiendra une réponse utile de l\'agent ?',
+      correctSide: 'right',
+      left: {
+        label: 'Vague (l\'agent devine)',
+        content: "\"Mon app marche pas\"\n\"J'ai une erreur dans mon composant React\"\n\"Les données s'affichent pas\"\n\"Quelque chose a cassé après ma mise à jour\"\n\n→ L'agent a zéro information\n→ Suggère 5 correctifs différents\n→ Aucun ne correspond à ton vrai problème\n→ Tu perds du temps à essayer chacun",
+        language: 'text',
+      },
+      right: {
+        label: 'Précis (l\'agent trace)',
+        content: "\"J'ai cette erreur quand le Dashboard charge :\n\nTypeError: Cannot read properties of\n  undefined (reading 'map')\n  at renderList (UserList.tsx:12:18)\n  at Dashboard (Dashboard.tsx:45:5)\n\nLa prop users vient de /api/users.\nJ'attends un tableau mais c'est undefined\nau premier rendu. Quelle est la cause ?\"",
+        language: 'text',
+      },
+      explanation: 'Les prompts vagues forcent l\'agent à deviner. Le prompt précis inclut l\'erreur exacte, le stack trace, les noms de fichiers et le comportement attendu — tout ce dont l\'agent a besoin pour tracer la cause profonde. Inclus toujours le message d\'erreur exact et le stack trace.',
     },
     {
-      type: 'code-demo',
-      title: 'Anti-pattern : prompts de débogage vagues',
-      body: 'Ces prompts forcent l\'agent à deviner. Chaque supposition gaspille ton temps.',
+      type: 'code-fill',
+      instruction: 'Complète ce prompt de débogage pour donner à l\'agent tout ce dont il a besoin :',
       language: 'text',
-      filename: 'bad-prompts.txt',
-      code: "Bad:  \"My app doesn't work\"\nBad:  \"I'm getting an error in my React component\"\nBad:  \"The data isn't showing up\"\nBad:  \"Something broke after I updated\"",
-    },
-    {
-      type: 'code-demo',
-      title: 'Pattern : coller l\'erreur EXACTE',
-      body: 'Donne à l\'agent l\'erreur complète, le fichier et ce que tu attendais. Maintenant il peut tracer la cause profonde au lieu de deviner.',
-      language: 'text',
-      filename: 'good-prompt.txt',
-      code: "Good prompt:\n\n\"I'm getting this error when the Dashboard loads:\n\nTypeError: Cannot read properties of undefined (reading 'map')\n  at renderList (src/components/UserList.tsx:12:18)\n  at Dashboard (src/pages/Dashboard.tsx:45:5)\n\nThe `users` prop is fetched in Dashboard from /api/users.\nI expect an array but it seems to be undefined on first render.\nWhat's the root cause and how should I fix it?\"",
+      template: "\"J'ai cette erreur quand le {{page_name}} charge :\n\n{{error_type}}: Cannot read properties of undefined (reading 'map')\n  at renderList (src/components/UserList.tsx:12:18)\n\nLa prop `users` vient de {{data_source}}.\nQuelle est la cause profonde ?\"",
+      blanks: [
+        { id: 'page_name', answer: 'Dashboard', alternatives: ['dashboard'], placeholder: 'quelle page ?', hint: 'Regarde le stack trace — quel composant de page appelle renderList ?' },
+        { id: 'error_type', answer: 'TypeError', alternatives: ['typeerror'], placeholder: 'catégorie d\'erreur ?', hint: 'Accéder à une propriété d\'undefined est quel type d\'erreur ?' },
+        { id: 'data_source', answer: '/api/users', alternatives: ['api/users', 'l\'API', 'une API'], placeholder: 'd\'où viennent les données ?', hint: 'D\'où proviennent les données users ? Pense à la source de données.' },
+      ],
+      explanation: 'Un prompt de débogage précis inclut : la page où ça se produit (Dashboard), le type d\'erreur (TypeError), et la source de données (/api/users). Ça donne à l\'agent le contexte complet pour tracer le problème de la source au symptôme.',
     },
     {
       type: 'multiple-choice',
@@ -268,24 +317,42 @@ const content: LessonContent = {
 
     // === THE 3-STEP DEBUG LOOP ===
     {
-      type: 'info',
-      title: 'La boucle de débogage en 3 étapes',
-      body: "Chaque débogueur expérimenté suit la même boucle, qu'il en soit conscient ou non : lire l'erreur, former une hypothèse, vérifier avec un seul changement. Pas deux changements. Pas cinq. Un seul. Si ça ne corrige pas, tu as appris quelque chose — mets à jour ton hypothèse et recommence. C'est comme ça que les agents devraient fonctionner aussi.",
+      type: 'multiple-choice',
+      question: 'La boucle de débogage en 3 étapes : Lire l\'erreur, former une hypothèse, vérifier avec ___ changement(s). Combien de changements par cycle ?',
+      options: [
+        'Autant que nécessaire pour corriger le bug',
+        'Deux — un pour corriger et un pour tester',
+        'Un seul — un changement unique par cycle',
+        'Cinq — essayer plusieurs approches en même temps',
+      ],
+      correctIndex: 2,
+      explanation: 'Chaque débogueur expérimenté suit la même boucle : Lire, Former une hypothèse, Vérifier avec UN seul changement. Pas deux. Pas cinq. Un seul. Si ça ne corrige pas, tu as appris quelque chose — mets à jour ton hypothèse et recommence. Plusieurs changements à la fois rendent impossible de savoir lequel a aidé.',
     },
     {
-      type: 'code-demo',
-      title: 'La boucle de débogage en pratique',
-      body: 'Un seul changement par cycle. Chaque cycle corrige le bug ou réduit les causes possibles.',
+      type: 'code-fill',
+      instruction: 'Applique la boucle de débogage en 3 étapes pour corriger un composant qui plante. Remplis la clause de garde :',
       language: 'typescript',
-      filename: 'debug-loop.ts',
-      code: "// Step 1: READ — the error says 'users' is undefined at line 12\n// Step 2: HYPOTHESIZE — the API call hasn't resolved before render\n// Step 3: VERIFY — add a guard clause and test\n\n// Before (crashes):\nfunction UserList({ users }: Props) {\n  return users.map(u => <li>{u.name}</li>)\n}\n\n// After (one change — guard clause):\nfunction UserList({ users }: Props) {\n  if (!users) return <p>Loading...</p>\n  return users.map(u => <li>{u.name}</li>)\n}",
+      template: "// Étape 1: LIRE — l'erreur dit 'users' est undefined à la ligne 12\n// Étape 2: HYPOTHÈSE — l'API n'a pas résolu avant le rendu\n// Étape 3: VÉRIFIER — ajouter une clause de garde et tester\n\nfunction UserList({ users }: Props) {\n  if ({{guard_check}}) return <p>{{fallback_text}}</p>\n  return users.{{array_method}}(u => <li>{u.name}</li>)\n}",
+      blanks: [
+        { id: 'guard_check', answer: '!users', alternatives: ['!users', 'users === undefined', 'users == null'], placeholder: 'vérification null ?', hint: 'Vérifie si users est falsy — quel opérateur nie une valeur ?' },
+        { id: 'fallback_text', answer: 'Loading...', alternatives: ['Loading', 'Chargement...', 'chargement'], placeholder: 'afficher quoi ?', hint: 'Que montres-tu à l\'utilisateur pendant que les données chargent ?' },
+        { id: 'array_method', answer: 'map', placeholder: 'quelle méthode ?', hint: 'La méthode qui transforme chaque élément d\'un tableau' },
+      ],
+      explanation: 'La clause de garde vérifie !users avant d\'appeler .map(). Si users est undefined, elle affiche un message Loading. C\'est UN seul changement qui corrige le crash ou te dit que le problème est ailleurs.',
     },
 
     // === ROOT CAUSE VS SYMPTOMS ===
     {
-      type: 'info',
-      title: 'Corriger les causes profondes, pas les symptômes',
-      body: "La clause de garde ci-dessus arrête le crash — mais c'est un correctif de symptôme. La cause profonde pourrait être que l'appel API n'est pas await, ou que le composant parent passe le mauvais nom de prop. Demande à l'agent d'investiguer POURQUOI users est undefined, pas juste comment arrêter le crash. Les correctifs de symptômes s'accumulent en code fragile.",
+      type: 'multiple-choice',
+      question: 'La clause de garde ci-dessus arrête le crash. Mais est-ce un correctif de cause profonde ou de symptôme ?',
+      options: [
+        'Cause profonde — ça résout pourquoi users est undefined',
+        'Symptôme — ça cache le crash mais les données sont toujours manquantes',
+        'Les deux — ça corrige la cause profonde et le symptôme',
+        'Ni l\'un ni l\'autre — les clauses de garde n\'ont rien à voir avec le débogage',
+      ],
+      correctIndex: 1,
+      explanation: 'La clause de garde arrête le crash mais ne corrige pas POURQUOI users est undefined. La cause profonde pourrait être un appel API non-await ou un mauvais nom de prop. Demande à l\'agent d\'investiguer POURQUOI les données manquent, pas juste comment arrêter le crash. Les correctifs de symptômes s\'accumulent en code fragile.',
     },
     {
       type: 'terminal',

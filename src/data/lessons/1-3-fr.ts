@@ -14,9 +14,9 @@ const content: LessonContent = {
       body: "Pense aux outils IA comme une échelle. Chaque barreau te donne plus de puissance mais demande plus de configuration. L'habileté n'est pas de grimper au sommet — c'est de savoir quel barreau convient au travail. Un simple renommage ? Coller. Un rapport quotidien ? Script. La construction d'une fonctionnalité complète ? Agent. Faire correspondre l'outil à la tâche, c'est ce qui sépare les utilisateurs occasionnels des directeurs efficaces.",
     },
     {
-      type: 'diagram',
+      type: 'interactive-diagram',
       title: 'L\'échelle des outils',
-      body: 'Cinq niveaux d\'assistance IA, du manuel au pleinement connecté. Chaque barreau ajoute de la capacité — et du coût de configuration.',
+      body: 'Clique sur chaque barreau pour comprendre les cinq niveaux d\'assistance IA.',
       diagram: {
         direction: 'TB',
         nodes: [
@@ -33,6 +33,33 @@ const content: LessonContent = {
           { from: 'agent', to: 'mcp' },
         ],
       },
+      stages: [
+        {
+          highlightNodes: ['paste'],
+          highlightEdges: [],
+          explanation: 'Niveau 1 : Coller. Copie une question dans ChatGPT ou Claude.ai, lis la réponse, recolle. Zéro configuration. Bon pour les questions ponctuelles. Mais entièrement manuel à chaque fois, sans mémoire entre les sessions.',
+        },
+        {
+          highlightNodes: ['paste', 'skill'],
+          highlightEdges: [{ from: 'paste', to: 'skill' }],
+          explanation: 'Niveau 2 : Skill. Un modèle de prompt réutilisable que tu invoques par son nom (comme /a11y-review). Tu le définis une fois, tu l\'utilises sur n\'importe quelle cible. L\'IA édite les fichiers directement au lieu que tu copies-colles. Utilise quand tu te surprends à coller la même question plus de deux fois.',
+        },
+        {
+          highlightNodes: ['skill', 'script'],
+          highlightEdges: [{ from: 'skill', to: 'script' }],
+          explanation: 'Niveau 3 : Script. L\'IA tourne sans toi. Un script appelle l\'API sur un cron job ou un hook git. Aucun humain dans la boucle. Pour les tâches prévisibles et répétitives qui ne nécessitent aucun jugement.',
+        },
+        {
+          highlightNodes: ['script', 'agent'],
+          highlightEdges: [{ from: 'script', to: 'agent' }],
+          explanation: 'Niveau 4 : Agent. L\'IA lit ta codebase, planifie une approche multi-étapes, édite plusieurs fichiers, lance les tests et corrige les erreurs. Tu donnes une seule instruction de haut niveau. Pour les tâches complexes qui nécessitent de comprendre la codebase.',
+        },
+        {
+          highlightNodes: ['agent', 'mcp'],
+          highlightEdges: [{ from: 'agent', to: 'mcp' }],
+          explanation: 'Niveau 5 : MCP. Le mode agent plus l\'accès aux outils externes. L\'IA se connecte aux bases de données, API, navigateurs et services via le Model Context Protocol. Action autonome avec connectivité au monde réel.',
+        },
+      ],
     },
     {
       type: 'checkpoint',
@@ -42,9 +69,16 @@ const content: LessonContent = {
 
     // === LEVEL 1: PASTE ===
     {
-      type: 'info',
-      title: 'Niveau 1 : Coller',
-      body: "Le niveau le plus simple. Tu copies du code ou une question dans ChatGPT ou Claude.ai, tu lis la réponse, et tu recolles le résultat dans ton éditeur. Zéro configuration, résultats instantanés. Parfait pour les questions ponctuelles comme « que fait cette regex ? » ou « convertis cette fonction en TypeScript ». La limite : c'est manuel à chaque fois. Aucune mémoire entre les sessions, aucun accès aux fichiers, aucune automatisation.",
+      type: 'multiple-choice',
+      question: 'Quelle est la limitation principale du Niveau 1 (Coller) ?',
+      options: [
+        'Il ne peut pas comprendre le code',
+        'C\'est manuel à chaque fois, sans mémoire entre les sessions, sans accès aux fichiers et sans automatisation',
+        'Il ne fonctionne qu\'avec le code Python',
+        'Il nécessite un abonnement payant',
+      ],
+      correctIndex: 1,
+      explanation: 'Le niveau 1 est le plus simple : copier du code ou une question dans ChatGPT ou Claude.ai, lire la réponse, recoller. Zéro configuration, résultats instantanés. Parfait pour les questions ponctuelles comme « que fait cette regex ? ». Mais c\'est manuel à chaque fois — aucune mémoire entre les sessions, aucun accès aux fichiers, aucune automatisation.',
     },
     {
       type: 'multiple-choice',
@@ -61,17 +95,29 @@ const content: LessonContent = {
 
     // === LEVEL 2: SKILL ===
     {
-      type: 'info',
-      title: 'Niveau 2 : Skill',
-      body: "Un skill est un modèle de prompt réutilisable que tu définis une fois et que tu invoques par son nom. Dans Claude Code, tu crées un /skill qui encapsule des instructions, du contexte et des contraintes. Au lieu de retaper « révise ce composant pour les problèmes d'accessibilité et suggère des attributs ARIA » à chaque fois, tu lances /a11y-review. Le prompt est le même, la cible change. Utilise les skills quand tu te surprends à coller le même type de question plus de deux fois.",
+      type: 'multiple-choice',
+      question: 'Quand devrais-tu créer un skill réutilisable au lieu de coller le même prompt ?',
+      options: [
+        'Seulement pour les tâches qui prennent plus d\'une heure',
+        'Quand tu te surprends à coller le même type de question plus de deux fois',
+        'Seulement pour les tâches de revue de code',
+        'Quand le modèle IA change de version',
+      ],
+      correctIndex: 1,
+      explanation: 'Un skill est un modèle de prompt réutilisable que tu définis une fois et invoques par son nom. Dans Claude Code, tu crées un /skill qui encapsule des instructions, du contexte et des contraintes. Au lieu de retaper « révise ce composant pour les problèmes d\'accessibilité » à chaque fois, tu lances /a11y-review. Utilise les skills quand tu te surprends à coller le même type de question plus de deux fois.',
     },
     {
-      type: 'code-demo',
-      title: 'Exemple : un skill de révision',
-      body: 'Tu définis un skill une fois dans la config de ton projet. Ensuite tu l\'invoques sur n\'importe quel fichier.',
+      type: 'code-fill',
+      instruction: 'Complète cette définition de skill. Un skill encapsule des instructions réutilisables que tu invoques par nom sur n\'importe quel fichier.',
       language: 'markdown',
       filename: '.claude/commands/a11y-review.md',
-      code: '# Accessibility Review\n\nReview the given component for:\n- Missing ARIA attributes\n- Keyboard navigation issues\n- Color contrast problems\n- Screen reader compatibility\n\nOutput a numbered list of issues with fixes.',
+      template: '# {{skill_title}} Review\n\nReview the given component for:\n- Missing {{attr_type}} attributes\n- Keyboard navigation issues\n- {{contrast_issue}} problems\n- Screen reader compatibility\n\nOutput a numbered list of issues with fixes.',
+      blanks: [
+        { id: 'skill_title', answer: 'Accessibility', alternatives: ['A11y', 'accessibility'], placeholder: '______', hint: 'Quel type de révision ce skill effectue-t-il ?' },
+        { id: 'attr_type', answer: 'ARIA', alternatives: ['aria', 'Aria'], placeholder: '____', hint: 'Attributs HTML pour l\'accessibilité' },
+        { id: 'contrast_issue', answer: 'Color contrast', alternatives: ['color contrast', 'Colour contrast', 'colour contrast'], placeholder: '______', hint: 'Un problème d\'accessibilité visuelle lié aux couleurs' },
+      ],
+      explanation: 'Ce skill vérifie les quatre piliers de l\'accessibilité web : les attributs ARIA, la navigation clavier, le contraste des couleurs et la compatibilité lecteur d\'écran. Tu le définis une fois et tu l\'invoques sur n\'importe quel composant avec /a11y-review.',
     },
     {
       type: 'code-input',
@@ -88,17 +134,29 @@ const content: LessonContent = {
 
     // === LEVEL 3: SCRIPT ===
     {
-      type: 'info',
-      title: 'Niveau 3 : Script',
-      body: "Un script appelle l'API de l'IA de façon programmatique. Aucun humain dans la boucle — ça tourne sur un horaire, un hook git ou dans le CI. Exemple : un script Node qui lit ton git diff, l'envoie à Claude, et poste un résumé de revue de code sur Slack. La différence clé avec un skill : les scripts tournent sans toi. Ils sont entièrement automatisés. Utilise ce niveau quand la tâche est prévisible, répétitive et ne nécessite pas de jugement.",
+      type: 'multiple-choice',
+      question: 'Un script Node lit ton git diff à chaque push, l\'envoie à Claude, et poste une revue sur Slack. Quel niveau de l\'échelle des outils est-ce ?',
+      options: [
+        'Niveau 1 : Coller',
+        'Niveau 2 : Skill',
+        'Niveau 3 : Script',
+        'Niveau 4 : Agent',
+      ],
+      correctIndex: 2,
+      explanation: 'Un script appelle l\'API de l\'IA de façon programmatique, sans aucun humain dans la boucle — ça tourne sur un horaire, un hook git ou dans le CI. La différence clé avec un skill : les scripts tournent sans toi. Ils sont entièrement automatisés. Utilise ce niveau quand la tâche est prévisible, répétitive et ne nécessite pas de jugement.',
     },
     {
-      type: 'code-demo',
-      title: 'Un script qui révise les PR automatiquement',
-      body: 'Ce script tourne dans le CI. Il lit le diff, l\'envoie à Claude et affiche la révision. Aucun humain nécessaire.',
+      type: 'code-fill',
+      instruction: 'Complète ce script CI qui révise automatiquement les PR. Il lit le diff, l\'envoie à Claude et affiche la révision. Aucun humain nécessaire.',
       language: 'typescript',
       filename: 'scripts/review-diff.ts',
-      code: "import Anthropic from '@anthropic-ai/sdk'\n\nconst client = new Anthropic()\nconst diff = await $`git diff main...HEAD`\n\nconst review = await client.messages.create({\n  model: 'claude-sonnet-4-20250514',\n  max_tokens: 1024,\n  messages: [{\n    role: 'user',\n    content: `Review this diff:\\n${diff}`\n  }]\n})\n\nconsole.log(review.content[0].text)",
+      template: "import Anthropic from '{{import_path}}'\n\nconst client = new Anthropic()\nconst diff = await $`git diff {{diff_range}}`\n\nconst review = await client.messages.create({\n  model: 'claude-sonnet-4-20250514',\n  max_tokens: {{max_tokens}},\n  messages: [{\n    role: 'user',\n    content: `Review this diff:\\n${diff}`\n  }]\n})\n\nconsole.log(review.content[0].text)",
+      blanks: [
+        { id: 'import_path', answer: '@anthropic-ai/sdk', alternatives: ['anthropic'], placeholder: '______', hint: 'Le nom du package officiel du SDK Anthropic' },
+        { id: 'diff_range', answer: 'main...HEAD', alternatives: ['main..HEAD'], placeholder: '______', hint: 'La plage git diff de la branche main au HEAD actuel' },
+        { id: 'max_tokens', answer: '1024', alternatives: ['1024', '2048', '4096'], placeholder: '____', hint: 'Une limite de tokens raisonnable pour une réponse de revue de code' },
+      ],
+      explanation: 'Ce script importe le SDK Anthropic, récupère le git diff de main au HEAD, et l\'envoie à Claude pour révision. Il tourne dans le CI sans aucune interaction humaine — la caractéristique définissante du Niveau 3 (Script).',
     },
     {
       type: 'multiple-choice',
@@ -120,9 +178,16 @@ const content: LessonContent = {
 
     // === LEVEL 4: AGENT ===
     {
-      type: 'info',
-      title: 'Niveau 4 : Agent',
-      body: "Un agent est une IA qui agit de façon autonome dans ta codebase. Claude Code en mode agent peut lire tes fichiers, comprendre la structure de ton projet, écrire du code dans plusieurs fichiers, lancer des tests et corriger des erreurs — le tout à partir d'une seule instruction de haut niveau. Tu dis « ajoute le support du mode sombre à la page de paramètres » et il lit le code existant, identifie le système de thème, modifie les composants, met à jour les styles et vérifie que le build passe. Utilise le mode agent pour les tâches complexes, multi-étapes, où l'IA a besoin du contexte de ta codebase réelle.",
+      type: 'multiple-choice',
+      question: 'Qu\'est-ce qui distingue un agent (Niveau 4) d\'un script (Niveau 3) ?',
+      options: [
+        'Les agents sont plus rapides parce qu\'ils sautent l\'étape de planification',
+        'Les agents peuvent lire ta codebase, planifier des approches multi-étapes, éditer plusieurs fichiers et corriger des erreurs de façon autonome à partir d\'une seule instruction',
+        'Les agents tournent selon un horaire sans interaction humaine, comme les scripts',
+        'Les agents ne fonctionnent qu\'avec le code Python, tandis que les scripts fonctionnent avec tout langage',
+      ],
+      correctIndex: 1,
+      explanation: 'Un agent est une IA qui agit de façon autonome dans ta codebase. Claude Code en mode agent peut lire tes fichiers, comprendre la structure de ton projet, écrire du code dans plusieurs fichiers, lancer des tests et corriger des erreurs — le tout à partir d\'une seule instruction de haut niveau. Tu dis « ajoute le support du mode sombre à la page de paramètres » et il lit le code existant, identifie le système de thème, modifie les composants, met à jour les styles et vérifie que le build passe. Les scripts sont automatisés mais prévisibles ; les agents raisonnent et s\'adaptent.',
     },
     {
       type: 'terminal',
@@ -131,26 +196,42 @@ const content: LessonContent = {
       hint: 'Tape simplement le nom de la commande pour démarrer Claude Code',
     },
     {
-      type: 'code-demo',
-      title: 'Exemple de prompt de niveau agent',
-      body: 'Une seule instruction qui prendrait plusieurs interactions de niveau coller :',
+      type: 'code-fill',
+      instruction: 'Complète ce prompt de niveau agent. Une seule instruction qui prendrait plusieurs interactions de niveau coller.',
       language: 'text',
-      code: "Add a /health endpoint to the API that returns:\n- server uptime\n- database connection status\n- current memory usage\n\nInclude tests. Use the existing error handling pattern\nfrom the other routes.",
+      template: "Add a /health endpoint to the API that returns:\n- server {{metric_1}}\n- {{metric_2}} connection status\n- current memory usage\n\nInclude {{include_what}}. Use the existing error handling pattern\nfrom the other routes.",
+      blanks: [
+        { id: 'metric_1', answer: 'uptime', alternatives: ['up time'], placeholder: '______', hint: 'Depuis combien de temps le serveur tourne' },
+        { id: 'metric_2', answer: 'database', alternatives: ['db', 'DB'], placeholder: '______', hint: 'Le stockage persistant de données' },
+        { id: 'include_what', answer: 'tests', alternatives: ['test', 'unit tests', 'test cases'], placeholder: '______', hint: 'Ce que tu devrais toujours écrire avec les nouveaux endpoints' },
+      ],
+      explanation: 'Ce prompt démontre le travail de niveau agent : il requiert de lire le code existant (pattern de gestion d\'erreurs), créer un nouveau fichier, et vérifier que ça fonctionne (tests). Une approche de niveau coller nécessiterait plusieurs allers-retours.',
     },
 
     // === LEVEL 5: MCP ===
     {
-      type: 'info',
-      title: 'Niveau 5 : MCP (Model Context Protocol)',
-      body: "MCP, c'est le mode agent plus l'accès aux outils externes. L'agent ne fait pas que lire et écrire des fichiers — il se connecte à des bases de données, des API, des navigateurs et des services via un protocole standardisé. Un agent équipé MCP peut interroger ta base de données de production, vérifier le statut de ton déploiement Vercel, lire les issues GitHub et parcourir la documentation — le tout dans une seule conversation. C'est le plafond : action autonome avec connectivité au monde réel.",
+      type: 'multiple-choice',
+      question: 'Qu\'est-ce que MCP (Model Context Protocol) ajoute par-dessus le mode agent ?',
+      options: [
+        'Une interface graphique pour l\'agent',
+        'La capacité de se connecter à des outils externes comme des bases de données, des API, des navigateurs et des services via un protocole standardisé',
+        'Des temps de réponse plus rapides en mettant en cache les conversations précédentes',
+        'La capacité de faire tourner plusieurs agents en parallèle sur différentes codebases',
+      ],
+      correctIndex: 1,
+      explanation: 'MCP, c\'est le mode agent plus l\'accès aux outils externes. L\'agent ne fait pas que lire et écrire des fichiers — il se connecte à des bases de données, des API, des navigateurs et des services via un protocole standardisé. Un agent équipé MCP peut interroger ta base de données de production, vérifier le statut de ton déploiement Vercel, lire les issues GitHub et parcourir la documentation — le tout dans une seule conversation. C\'est le plafond : action autonome avec connectivité au monde réel.',
     },
     {
-      type: 'code-demo',
-      title: 'Configuration du serveur MCP',
-      body: 'Tu dis à Claude Code quels outils connecter. Chaque serveur MCP expose des capacités que l\'agent peut utiliser.',
+      type: 'code-fill',
+      instruction: 'Complète cette configuration de serveur MCP. Tu dis à Claude Code quels outils externes connecter. Chaque serveur expose des capacités que l\'agent peut utiliser.',
       language: 'json',
       filename: '.claude/settings.json',
-      code: '{\n  "mcpServers": {\n    "supabase": {\n      "command": "npx",\n      "args": ["-y", "@supabase/mcp-server"]\n    },\n    "browser": {\n      "command": "npx",\n      "args": ["-y", "@anthropic/mcp-browser"]\n    }\n  }\n}',
+      template: '{\n  "{{config_key}}": {\n    "supabase": {\n      "command": "{{runner}}",\n      "args": ["-y", "@supabase/mcp-server"]\n    },\n    "browser": {\n      "command": "npx",\n      "args": ["-y", "@anthropic/mcp-browser"]\n    }\n  }\n}',
+      blanks: [
+        { id: 'config_key', answer: 'mcpServers', alternatives: ['mcp-servers', 'mcp_servers'], placeholder: '______', hint: 'La clé JSON qui liste les définitions de serveurs MCP' },
+        { id: 'runner', answer: 'npx', alternatives: ['bunx'], placeholder: '___', hint: 'La commande d\'exécution de packages Node.js' },
+      ],
+      explanation: 'Les serveurs MCP sont configurés dans .claude/settings.json sous la clé "mcpServers". Chaque serveur a une commande (npx pour exécuter le package) et des arguments. L\'agent les utilise pour se connecter à des outils externes comme les bases de données Supabase et les navigateurs.',
     },
     {
       type: 'checkpoint',
@@ -250,9 +331,9 @@ const content: LessonContent = {
 
     // === DECISION FLOW ===
     {
-      type: 'diagram',
+      type: 'interactive-diagram',
       title: 'Quand escalader',
-      body: 'Utilise cet arbre de décision pour choisir le bon niveau pour n\'importe quelle tâche.',
+      body: 'Parcours cet arbre de décision pour choisir le bon niveau pour n\'importe quelle tâche.',
       diagram: {
         direction: 'TB',
         nodes: [
@@ -275,13 +356,42 @@ const content: LessonContent = {
           { from: 'tools', to: 'agentmcp', label: 'oui' },
         ],
       },
+      stages: [
+        {
+          highlightNodes: ['task', 'repeat'],
+          highlightEdges: [{ from: 'task', to: 'repeat' }],
+          explanation: 'Commence par la première question : cette tâche est-elle répétable ? Vas-tu faire le même type de travail demain, la semaine prochaine, ou sur chaque PR ? Si non, coller suffit.',
+        },
+        {
+          highlightNodes: ['repeat', 'paste'],
+          highlightEdges: [{ from: 'repeat', to: 'paste' }],
+          explanation: 'Pas répétable ? Utilise Coller. Les questions ponctuelles comme « que signifie cette erreur ? » ou « convertis ça en TypeScript » ne nécessitent aucune configuration. Copie, demande, colle, terminé.',
+        },
+        {
+          highlightNodes: ['repeat', 'complex', 'skill'],
+          highlightEdges: [{ from: 'repeat', to: 'complex' }, { from: 'complex', to: 'skill' }],
+          explanation: 'Répétable mais pas complexe ? Utilise un Skill. Les tâches répétitives simples comme « révise ce composant pour l\'accessibilité » s\'intègrent parfaitement comme modèle de prompt réutilisable.',
+        },
+        {
+          highlightNodes: ['complex', 'tools', 'script', 'agentmcp'],
+          highlightEdges: [{ from: 'complex', to: 'tools' }, { from: 'tools', to: 'script' }, { from: 'tools', to: 'agentmcp' }],
+          explanation: 'Répétable et complexe ? Demande-toi : faut-il des outils externes (bases de données, API, navigateurs) ? Pas besoin d\'outils signifie qu\'un Script suffit. Besoin d\'outils signifie que tu veux Agent + MCP pour une action autonome complète avec connectivité.',
+        },
+      ],
     },
 
     // === CLASSIFY TASKS ===
     {
-      type: 'info',
-      title: 'Classer des tâches réelles',
-      body: "Maintenant, pratiquons. Pour chacune des tâches suivantes, identifie à quel niveau de l'échelle des outils elle appartient. Réfléchis : est-ce ponctuel ou répétitif ? Faut-il un accès aux fichiers ? Faut-il des outils externes ? Faut-il un jugement humain sur le résultat ?",
+      type: 'multiple-choice',
+      question: 'Pour classer une tâche au bon niveau d\'outil, quel ensemble de questions devrais-tu te poser ?',
+      options: [
+        'Combien de temps ça prendra ? Combien coûte l\'IA ? Est-ce que la tâche est intéressante ?',
+        'Est-ce ponctuel ou répétitif ? Faut-il un accès aux fichiers ? Faut-il des outils externes ? Faut-il un jugement humain ?',
+        'Est-ce que la tâche est écrite en TypeScript ? L\'équipe utilise-t-elle VS Code ? Y a-t-il un délai ?',
+        'Quelqu\'un d\'autre a-t-il résolu ça avant ? Y a-t-il un tutoriel ? Puis-je copier la réponse ?',
+      ],
+      correctIndex: 1,
+      explanation: 'Les bonnes questions de classification sont : Est-ce ponctuel ou répétitif ? (coller vs niveaux supérieurs) Faut-il un accès aux fichiers ? (skill vs script) Faut-il des outils externes ? (script vs agent+MCP) Faut-il un jugement humain ? (script vs agent). Ces quatre questions correspondent directement aux barreaux de l\'échelle des outils.',
     },
     {
       type: 'multiple-choice',
@@ -335,9 +445,16 @@ const content: LessonContent = {
 
     // === KEY INSIGHT ===
     {
-      type: 'info',
-      title: 'L\'instinct d\'escalade',
-      body: "La compétence la plus précieuse de tout ce cours est l'instinct d'escalade : la capacité de reconnaître, en pleine tâche, que tu es au mauvais niveau. Si tu as collé le même type de question trois fois, crée un skill. Si tu lances un skill manuellement chaque jour, écris un script. Si le script a besoin de lire ta codebase et de prendre des décisions, passe à un agent. Si l'agent a besoin de données externes, ajoute des serveurs MCP. Ne reste jamais sur un barreau plus longtemps que nécessaire.",
+      type: 'multiple-choice',
+      question: 'Tu réalises que tu lances le même skill /review manuellement sur chaque PR depuis deux semaines. Que devrais-tu faire ?',
+      options: [
+        'Continuer avec le skill — ça marche bien',
+        'Escalader vers un script qui tourne automatiquement sur chaque PR dans le CI',
+        'Rétrograder vers le niveau coller — les skills c\'est trop',
+        'Escalader vers le mode agent complet avec MCP',
+      ],
+      correctIndex: 1,
+      explanation: 'L\'instinct d\'escalade est la capacité de reconnaître, en pleine tâche, que tu es au mauvais niveau. Si tu lances un skill manuellement chaque jour, écris un script. Si le script a besoin de comprendre la codebase, passe à un agent. Si l\'agent a besoin de données externes, ajoute des serveurs MCP. Ne reste jamais sur un barreau plus longtemps que nécessaire.',
     },
 
     // === CHECKLIST ===

@@ -5,9 +5,16 @@ const content: LessonContent = {
   steps: [
     // === INTRO ===
     {
-      type: 'info',
-      title: 'Votre copilote IA vit dans le terminal',
-      body: "Claude Code est un agent CLI qui lit votre codebase, exécute des commandes, modifie des fichiers et raisonne sur l'architecture — tout depuis votre terminal. Dans cette leçon, vous allez l'installer, le connecter à des outils externes via MCP, configurer des skills et des hooks, et compléter votre première tâche dirigée par l'agent.",
+      type: 'multiple-choice',
+      question: 'Claude Code est un assistant IA qui vit dans votre terminal. Où opère-t-il?',
+      options: [
+        'Dans un navigateur web comme un chatbot normal',
+        'Directement dans votre projet — lisant des fichiers, écrivant du code et exécutant des commandes',
+        'Seulement dans le cloud, sans accès à vos fichiers locaux',
+        'Dans une application mobile sur votre téléphone',
+      ],
+      correctIndex: 1,
+      explanation: 'Claude Code est un agent CLI qui lit votre codebase, exécute des commandes, modifie des fichiers et raisonne sur l\'architecture — tout depuis votre terminal. Dans cette leçon, vous allez l\'installer, le connecter à des outils externes via MCP, configurer des skills et des hooks, et compléter votre première tâche dirigée par l\'agent.',
     },
     {
       type: 'multiple-choice',
@@ -41,14 +48,15 @@ const content: LessonContent = {
       hint: 'Tapez juste "claude" — il vous guide à travers l\'authentification.',
     },
     {
-      type: 'checklist',
-      title: 'Vérification de l\'installation :',
+      type: 'order',
+      instruction: 'Mettez les étapes d\'installation de Claude Code dans le bon ordre :',
       items: [
-        'Exécuté npm install -g @anthropic-ai/claude-code',
-        'Lancé claude dans le terminal',
-        'Complété le processus d\'authentification dans le navigateur',
-        'Vu le message de bienvenue de Claude Code',
+        'Exécuter npm install -g @anthropic-ai/claude-code',
+        'Taper claude dans le terminal',
+        'S\'authentifier via la fenêtre de navigateur qui s\'ouvre',
+        'Voir l\'écran de bienvenue de Claude Code dans le terminal',
       ],
+      correctOrder: [0, 1, 2, 3],
     },
     {
       type: 'checkpoint',
@@ -86,9 +94,22 @@ const content: LessonContent = {
       ],
     },
     {
-      type: 'info',
-      title: 'Comprendre MCP',
-      body: "MCP (Model Context Protocol) est un standard ouvert qui permet aux agents IA de communiquer avec des outils externes — bases de données, APIs, navigateurs, systèmes de fichiers, n'importe quoi. Un serveur MCP est un petit programme qui expose des outils et des ressources via un protocole standard. Claude Code se connecte à ces serveurs et obtient de nouvelles capacités sans aucun code personnalisé.",
+      type: 'compare',
+      title: 'Avant MCP vs Après MCP',
+      body: 'MCP est comme un port USB — un standard universel qui permet à Claude Code de se brancher à n\'importe quel service.',
+      question: 'Quelle approche est plus facile à maintenir quand on ajoute des outils?',
+      correctSide: 'right',
+      left: {
+        label: 'Sans MCP',
+        content: 'Chaque outil nécessite sa propre intégration personnalisée\nDifférents formats d\'API pour chaque service\nCasse quand un service met à jour son API\nVous devez construire chaque connecteur vous-même',
+        language: 'text',
+      },
+      right: {
+        label: 'Avec MCP',
+        content: 'Protocole standard universel pour tous les outils\nUn format cohérent (JSON-RPC)\nServeurs pré-construits pour la plupart des services\nPlug and play — ajoutez juste dans settings.json',
+        language: 'text',
+      },
+      explanation: 'MCP est un standard universel — comme USB a remplacé le fouillis de câbles propriétaires. Un serveur MCP est un petit programme qui donne à Claude Code l\'accès à un outil spécifique. La plupart sont pré-construits et prêts à l\'emploi.',
     },
     {
       type: 'multiple-choice',
@@ -105,12 +126,17 @@ const content: LessonContent = {
 
     // === CONFIGURE MCP SERVER ===
     {
-      type: 'code-demo',
-      title: 'Configurer un serveur MCP',
-      body: "Ajoutez le serveur MCP filesystem à vos paramètres de projet. Ça permet à Claude Code de lire et chercher des fichiers avec des capacités améliorées.",
+      type: 'code-fill',
+      instruction: 'Ajoutez le serveur MCP filesystem à vos paramètres de projet. Ça permet à Claude Code de lire et chercher des fichiers. Remplissez la configuration manquante :',
       language: 'json',
       filename: '.claude/settings.json',
-      code: '{\n  "mcpServers": {\n    "filesystem": {\n      "command": "npx",\n      "args": [\n        "-y",\n        "@modelcontextprotocol/server-filesystem",\n        "."\n      ]\n    }\n  }\n}',
+      template: '{\n  "{{section}}": {\n    "filesystem": {\n      "command": "{{runner}}",\n      "args": [\n        "-y",\n        "@modelcontextprotocol/server-{{type}}",\n        "."\n      ]\n    }\n  }\n}',
+      blanks: [
+        { id: 'section', answer: 'mcpServers', placeholder: 'section de config?', hint: 'La clé qui contient toutes les configurations de serveurs MCP' },
+        { id: 'runner', answer: 'npx', placeholder: 'exécuteur?', hint: 'L\'outil Node.js pour exécuter des paquets sans les installer globalement' },
+        { id: 'type', answer: 'filesystem', placeholder: 'type de serveur?', hint: 'Ce serveur fournit l\'accès au système de fichiers' },
+      ],
+      explanation: 'La section mcpServers mappe les noms de serveurs à leurs configurations. npx exécute le paquet sans installation globale. Le paquet server-filesystem donne à Claude Code des capacités améliorées de lecture et recherche de fichiers.',
     },
     {
       type: 'code-input',
@@ -127,20 +153,30 @@ const content: LessonContent = {
 
     // === SKILLS & HOOKS ===
     {
-      type: 'code-demo',
-      title: 'Créer un skill',
-      body: "Les skills sont des prompts réutilisables invoqués avec une commande slash. Ils enseignent à Claude Code les patterns de votre projet. Créez .claude/skills/component.md :",
+      type: 'code-fill',
+      instruction: 'Les skills sont des prompts réutilisables invoqués avec une commande slash. Complétez ce fichier de skill qui définit comment Claude Code devrait créer des composants React :',
       language: 'markdown',
       filename: '.claude/skills/component.md',
-      code: '# Component Generator\n\nWhen asked to create a React component:\n\n1. Use TypeScript with explicit prop interfaces\n2. Export as default\n3. Use Tailwind for styling\n4. Add JSDoc comments for props\n5. Place in src/components/',
+      template: '# Component Generator\n\nWhen asked to create a React component:\n\n1. Use {{lang}} with explicit prop interfaces\n2. Export as {{exportType}}\n3. Use {{css}} for styling\n4. Add JSDoc comments for props\n5. Place in src/{{dir}}/',
+      blanks: [
+        { id: 'lang', answer: 'TypeScript', alternatives: ['typescript', 'TS', 'ts'], placeholder: 'quel langage?', hint: 'JavaScript avec la sécurité des types' },
+        { id: 'exportType', answer: 'default', placeholder: 'type d\'export?', hint: 'Le style d\'export standard pour les composants de page' },
+        { id: 'css', answer: 'Tailwind', alternatives: ['tailwind', 'TailwindCSS', 'tailwindcss'], placeholder: 'framework CSS?', hint: 'Framework CSS utility-first' },
+        { id: 'dir', answer: 'components', placeholder: 'répertoire?', hint: 'Où vivent les composants React dans le projet' },
+      ],
+      explanation: 'Les skills encodent les conventions de votre équipe comme des prompts réutilisables. Ce skill dit à Claude Code de toujours utiliser TypeScript, les exports par défaut, Tailwind CSS, et de placer les composants dans src/components/.',
     },
     {
-      type: 'code-demo',
-      title: 'Configurer un hook',
-      body: "Les hooks sont des actions automatisées qui s'exécutent à des moments précis du cycle de vie — avant une commande, après une modification de fichier, ou au démarrage d'une conversation. Ajoutez ceci à votre settings.json :",
+      type: 'code-fill',
+      instruction: 'Les hooks sont des actions automatisées qui s\'exécutent sans que vous le demandiez. Complétez ce hook qui lint automatiquement les fichiers après que Claude Code les modifie :',
       language: 'json',
       filename: '.claude/settings.json',
-      code: '{\n  "hooks": {\n    "afterEdit": [\n      {\n        "command": "npx eslint --fix ${file}",\n        "description": "Auto-lint after edit"\n      }\n    ]\n  }\n}',
+      template: '{\n  "hooks": {\n    "{{trigger}}": [\n      {\n        "command": "npx {{linter}} --fix ${file}",\n        "description": "Auto-lint after edit"\n      }\n    ]\n  }\n}',
+      blanks: [
+        { id: 'trigger', answer: 'afterEdit', alternatives: ['after_edit'], placeholder: 'quand exécuter?', hint: 'Ce hook s\'exécute après la modification d\'un fichier' },
+        { id: 'linter', answer: 'eslint', placeholder: 'quel linter?', hint: 'Le linter JavaScript/TypeScript le plus populaire' },
+      ],
+      explanation: 'Le hook afterEdit s\'exécute chaque fois que Claude Code modifie un fichier. ESLint avec le flag --fix corrige automatiquement le formatage et les problèmes de style. La variable ${file} est remplacée par le chemin du fichier modifié.',
     },
     {
       type: 'multiple-choice',
@@ -170,9 +206,9 @@ const content: LessonContent = {
 
     // === YOUR AI TOOLING STACK ===
     {
-      type: 'diagram',
+      type: 'interactive-diagram',
       title: 'Votre stack d\'outils IA',
-      body: 'Tout ce que vous venez de configurer, fonctionnant ensemble.',
+      body: 'Tout ce que vous venez de configurer, fonctionnant ensemble. Parcourez les étapes pour voir comment chaque pièce se connecte.',
       diagram: {
         direction: 'LR',
         nodes: [
@@ -189,6 +225,12 @@ const content: LessonContent = {
           { from: 'mcp', to: 'tools' },
         ],
       },
+      stages: [
+        { highlightNodes: ['cc'], explanation: 'Claude Code est le centre. Il reçoit vos instructions en langage naturel et orchestre tout le reste.' },
+        { highlightNodes: ['cc', 'skills'], highlightEdges: [{ from: 'cc', to: 'skills' }], explanation: 'Les skills sont des instructions réutilisables invoquées avec des commandes slash. Ils enseignent à Claude Code les patterns et conventions de votre projet.' },
+        { highlightNodes: ['cc', 'hooks'], highlightEdges: [{ from: 'cc', to: 'hooks' }], explanation: 'Les hooks se déclenchent automatiquement à des moments précis — comme le linting après chaque modification. Aucune action manuelle nécessaire.' },
+        { highlightNodes: ['cc', 'mcp', 'tools'], highlightEdges: [{ from: 'cc', to: 'mcp' }, { from: 'mcp', to: 'tools' }], explanation: 'Les serveurs MCP connectent Claude Code aux outils externes — bases de données, APIs, plateformes de déploiement. C\'est comme ça qu\'il interagit avec le monde au-delà de vos fichiers de projet.' },
+      ],
     },
 
     // === FIRST AGENT TASK ===
@@ -211,16 +253,12 @@ const content: LessonContent = {
       correctOrder: [0, 1, 2, 3, 4],
     },
     {
-      type: 'checklist',
-      title: 'Vérification finale :',
-      items: [
-        'Claude Code installé et authentifié',
-        'Comprendre l\'architecture MCP (serveurs, outils, ressources)',
-        'Configuré un serveur MCP dans les paramètres',
-        'Créé un fichier de skill',
-        'Configuré un hook',
-        'Complété une vraie tâche dirigée par l\'agent',
-      ],
+      type: 'match',
+      instruction: 'Associez chaque configuration que vous venez de compléter à son emplacement de fichier :',
+      leftItems: ['Configuration du serveur MCP', 'Skill de génération de composants', 'Hook d\'auto-lint', 'Instructions du projet'],
+      rightItems: ['.claude/settings.json (section mcpServers)', '.claude/skills/component.md', '.claude/settings.json (section hooks)', 'CLAUDE.md à la racine du projet'],
+      correctPairs: { 0: 0, 1: 1, 2: 2, 3: 3 },
+      explanation: 'Chaque configuration vit dans un emplacement spécifique. Les serveurs MCP et les hooks vont dans .claude/settings.json. Les skills sont des fichiers markdown dans .claude/skills/. Les instructions au niveau du projet vont dans CLAUDE.md à la racine du projet.',
     },
     {
       type: 'checkpoint',

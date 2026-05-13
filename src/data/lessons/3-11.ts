@@ -80,77 +80,77 @@ const content: LessonContent = {
 
     // === COMMON AGENT-INTRODUCED BUGS ===
     {
-      type: 'info',
-      title: 'The five most common agent-introduced bugs',
-      body: "After monitoring hundreds of agent-built deployments, these patterns dominate: (1) Missing error boundaries — agents handle the happy path beautifully but skip error states. (2) Wrong data shape assumptions — agents guess at nullable fields. (3) Race conditions in async code — agents don't think about concurrent requests. (4) Missing input validation — agents trust all input implicitly. (5) Hardcoded environment assumptions — agents embed localhost URLs or dev-only configs.",
+      type: 'multiple-choice',
+      question: 'What is the #1 most common bug pattern in agent-built code?',
+      options: [
+        'Performance issues — agents write slow algorithms',
+        'Missing error boundaries — agents handle the happy path but skip error, loading, and null states',
+        'Security vulnerabilities — agents expose secrets in client code',
+        'Memory leaks — agents create objects without cleanup',
+      ],
+      correctIndex: 1,
+      explanation: "After monitoring hundreds of agent-built deployments, missing error boundaries dominate. Agents build beautiful components that work perfectly when data loads but throw unhandled exceptions when the API returns an error or null. The other four common patterns: wrong data shape assumptions, race conditions in async code, missing input validation, and hardcoded environment assumptions.",
     },
     {
-      type: 'code-demo',
-      title: 'Pattern 1: Missing error boundaries',
-      body: "The most common agent bug. The agent builds a beautiful component that works perfectly when data loads — but throws an unhandled exception when the API returns an error or the data shape is unexpected. In production, this shows as a white screen crash.",
+      type: 'compare',
+      title: 'Pattern 1 vs Pattern 2: error boundaries vs data shape assumptions',
+      body: 'Both are top agent bugs. Both crash in production. Different fixes.',
+      question: 'Which pattern causes a white screen crash when the API returns an error?',
+      correctSide: 'left',
+      left: {
+        label: 'Missing Error Boundaries',
+        content: '// Agent builds happy-path only:\nfunction DashboardStats() {\n  const { data } = useQuery("stats", fetchStats)\n  return (\n    <div>\n      <h2>Revenue: ${data.revenue.toLocaleString()}</h2>\n    </div>\n  )\n}\n// data is undefined while loading -> CRASH\n// data.revenue is null from API -> CRASH\n// No loading state, no error state\n\n// Fix: Three states (loading, error, success)\n// Plus null-safe access with ?? defaults',
+        language: 'typescript',
+      },
+      right: {
+        label: 'Wrong Data Shape',
+        content: '// Agent assumes all fields exist:\nexport async function getUser(req: Request) {\n  const user = await db.users.findUnique({\n    where: { id: req.params.id }\n  })\n  return Response.json({\n    name: user.name,\n    avatar: user.profile.url,\n    teamName: user.team.name,\n  })\n}\n// user might be null (not found) -> CRASH\n// profile might be null -> CRASH\n// team might not be loaded -> CRASH\n\n// Fix: null check + optional chaining\n// user.profile?.url ?? null',
+        language: 'typescript',
+      },
+      explanation: 'Missing error boundaries cause white screen crashes in React components. Wrong data shape assumptions cause 500 errors in API handlers. Both stem from agents assuming every field is always present. The spec fix: "Every data-fetching component must render three states: loading, error, and success with null-safe access."',
+    },
+    {
+      type: 'code-fill',
+      instruction: 'Fix the agent-built component by adding proper loading, error, and null-safe handling. Fill in the missing states.',
       language: 'typescript',
       filename: 'src/dashboard/stats.tsx',
-      code: `// What the agent built (works in happy path):
-function DashboardStats() {
-  const { data } = useQuery('stats', fetchStats)
-  return (
-    <div>
-      <h2>Revenue: \${data.revenue.toLocaleString()}</h2>
-      {/*  data can be undefined while loading */}
-      {/*  data.revenue can be null from API */}
-      {/*  No loading state, no error state */}
-    </div>
-  )
-}
-
-// What production needs:
-function DashboardStats() {
+      template: `function DashboardStats() {
   const { data, isLoading, error } = useQuery('stats', fetchStats)
 
-  if (isLoading) return <StatsSkeleton />
-  if (error) return <StatsError message={error.message} onRetry={refetch} />
+  if (___BLANK_1___) return <StatsSkeleton />
+  if (___BLANK_2___) return <StatsError message={error.message} onRetry={refetch} />
   if (!data) return null
 
   return (
     <div>
-      <h2>Revenue: \${(data.revenue ?? 0).toLocaleString()}</h2>
+      <h2>Revenue: \${(data.revenue ___BLANK_3___ 0).toLocaleString()}</h2>
     </div>
   )
 }`,
-    },
-    {
-      type: 'code-demo',
-      title: 'Pattern 2: Wrong data shape assumptions',
-      body: "Agents read your type definitions and assume every field is always present. In reality, APIs return partial data, optional fields, and null values. This crashes at runtime when the agent does `user.profile.avatar.url` without null checks.",
-      language: 'typescript',
-      filename: 'src/api/handlers/user.ts',
-      code: `// What the agent built:
-export async function getUser(req: Request) {
-  const user = await db.users.findUnique({ where: { id: req.params.id } })
-  return Response.json({
-    name: user.name,           //  user might be null (not found)
-    avatar: user.profile.url,  //  profile might be null
-    teamName: user.team.name,  //  team might not be loaded
-  })
-}
-
-// What production needs:
-export async function getUser(req: Request) {
-  const user = await db.users.findUnique({
-    where: { id: req.params.id },
-    include: { profile: true, team: true },
-  })
-
-  if (!user) {
-    return Response.json({ error: 'User not found' }, { status: 404 })
-  }
-
-  return Response.json({
-    name: user.name,
-    avatar: user.profile?.url ?? null,
-    teamName: user.team?.name ?? 'No team',
-  })
-}`,
+      blanks: [
+        {
+          id: 'BLANK_1',
+          answer: 'isLoading',
+          alternatives: ['isLoading'],
+          hint: 'The query hook state that indicates data is still being fetched',
+          placeholder: 'loading check',
+        },
+        {
+          id: 'BLANK_2',
+          answer: 'error',
+          alternatives: ['error', '!!error'],
+          hint: 'The query hook state that indicates a fetch failure',
+          placeholder: 'error check',
+        },
+        {
+          id: 'BLANK_3',
+          answer: '??',
+          alternatives: ['??'],
+          hint: 'The nullish coalescing operator — returns right side only if left is null or undefined',
+          placeholder: 'null-safe operator',
+        },
+      ],
+      explanation: 'Three states are mandatory for every data-fetching component: loading (skeleton), error (with retry), and success (with null-safe access via ??). The nullish coalescing operator `??` provides a default value only for null/undefined, unlike `||` which also catches 0 and empty strings.',
     },
     {
       type: 'multiple-choice',
@@ -172,61 +172,71 @@ export async function getUser(req: Request) {
 
     // === SENTRY SETUP FOR AGENT-BUILT CODE ===
     {
-      type: 'info',
-      title: 'Error tracking tuned for agent-built code',
-      body: "Standard error tracking tells you WHAT broke. For agent-built systems, you also need to know WHICH AGENT SESSION produced the code, so you can trace the bug back to the spec that caused it. The technique: tag deployments with agent metadata so Sentry groups errors by the spec version that produced them.",
+      type: 'multiple-choice',
+      question: 'Standard error tracking tells you WHAT broke. For agent-built systems, what additional info do you need?',
+      options: [
+        'Which programming language was used',
+        'Which agent session produced the code, so you can trace the bug back to the spec',
+        'How many users were affected by the error',
+        'Which test suite covers the broken code',
+      ],
+      correctIndex: 1,
+      explanation: "For agent-built systems, you need to know WHICH AGENT SESSION produced the code so you can trace the bug back to the spec that caused it. Tag deployments with agent metadata (fleet run ID, commit SHA) so Sentry groups errors by the spec version that produced them.",
     },
     {
-      type: 'code-demo',
-      title: 'Sentry configuration with agent traceability',
-      body: "Add release tags that map to your agent sessions. When an error fires, you can immediately see: this code was produced by Agent 3 (payments), during fleet run #7, from spec version 2.1. Now you know exactly which spec to improve.",
+      type: 'code-fill',
+      instruction: 'Complete the Sentry init with agent traceability tags. Fill in the custom tags that map errors to agent sessions.',
       language: 'typescript',
       filename: 'src/lib/monitoring.ts',
-      code: `import * as Sentry from '@sentry/react'
+      template: `import * as Sentry from '@sentry/react'
 
 Sentry.init({
   dsn: process.env.SENTRY_DSN,
   environment: process.env.NODE_ENV,
-
-  // Tag with deployment metadata
   release: process.env.COMMIT_SHA,
 
-  // Custom tags for agent traceability
   initialScope: {
     tags: {
-      // Which fleet run produced this code
-      fleet_run: process.env.FLEET_RUN_ID || 'manual',
-      // Deployment timestamp (correlate with agent sessions)
-      deployed_at: new Date().toISOString(),
+      fleet_run: process.env.___BLANK_1___ || 'manual',
+      deployed_at: new Date().___BLANK_2___(),
     },
   },
 
-  // Capture unhandled promise rejections (Pattern 1)
   integrations: [
     Sentry.browserTracingIntegration(),
     Sentry.replayIntegration({
-      // Capture user session replay for error context
       maskAllText: false,
       blockAllMedia: false,
     }),
   ],
 
-  // Sample 100% of errors, 10% of transactions
   tracesSampleRate: 0.1,
-  replaysOnErrorSampleRate: 1.0,
-})
-
-// Helper: add agent context to manual error reports
-export function reportAgentBug(error: Error, context: {
-  component: string
-  expectedBehavior: string
-  actualBehavior: string
-}) {
-  Sentry.captureException(error, {
-    tags: { bug_type: 'agent_introduced' },
-    extra: context,
-  })
-}`,
+  replaysOnErrorSampleRate: ___BLANK_3___,
+})`,
+      blanks: [
+        {
+          id: 'BLANK_1',
+          answer: 'FLEET_RUN_ID',
+          alternatives: ['FLEET_RUN_ID'],
+          hint: 'The env var that identifies which fleet execution produced this deployment',
+          placeholder: 'fleet identifier env var',
+        },
+        {
+          id: 'BLANK_2',
+          answer: 'toISOString',
+          alternatives: ['toISOString'],
+          hint: 'Date method that returns a standardized timestamp string',
+          placeholder: 'date serialization method',
+        },
+        {
+          id: 'BLANK_3',
+          answer: '1.0',
+          alternatives: ['1.0', '1'],
+          hint: 'Capture 100% of error replays — every error session matters for debugging',
+          placeholder: 'error replay sample rate',
+        },
+      ],
+      explanation: 'FLEET_RUN_ID correlates errors with specific fleet executions. toISOString() gives a standardized timestamp for correlating with agent session logs. 100% error replay rate (1.0) ensures you capture every error session for debugging — errors are rare enough that cost is minimal.',
     },
     {
       type: 'terminal',
@@ -275,17 +285,11 @@ Sentry.init({
 
     // === TRACING ERRORS TO AGENT SESSIONS ===
     {
-      type: 'info',
-      title: 'Tracing an error back to its source',
-      body: "A Sentry alert fires: `TypeError: Cannot read property 'name' of undefined` in `src/payments/checkout.ts:47`. You need to answer: which agent wrote this, what spec were they following, and what was the spec missing? The trace path: error → commit SHA → git blame → worktree branch → spec file.",
-    },
-    {
-      type: 'code-demo',
-      title: 'The trace-back procedure',
-      body: "This script automates tracing a production error back to the agent session that produced it. It uses git blame to find the commit, then maps the commit to a branch (worktree) and spec file.",
+      type: 'code-fill',
+      instruction: 'Complete the trace-back script that maps a production error to the agent session that produced it. Fill in the git commands.',
       language: 'bash',
       filename: 'scripts/trace-to-agent.sh',
-      code: `#!/bin/bash
+      template: `#!/bin/bash
 # Trace a production bug to its agent source
 FILE=$1  # e.g., "src/payments/checkout.ts"
 LINE=$2  # e.g., "47"
@@ -293,26 +297,43 @@ LINE=$2  # e.g., "47"
 echo "=== Tracing $FILE:$LINE ==="
 
 # 1. Find the commit that last modified this line
-COMMIT=$(git blame -L "$LINE,$LINE" "$FILE" | awk '{print $1}')
+COMMIT=$(___BLANK_1___ | awk '{print $1}')
 echo "Commit: $COMMIT"
 
 # 2. Find which branch introduced this commit
-BRANCH=$(git branch --contains "$COMMIT" | grep -v main | head -1 | xargs)
+BRANCH=$(___BLANK_2___ | grep -v main | head -1 | xargs)
 echo "Branch: $BRANCH"
 
-# 3. Get the commit message (should reference spec/task)
-echo "Message: $(git log -1 --format='%s' "$COMMIT")"
+# 3. Get the commit message
+echo "Message: $(___BLANK_3___)"
 
-# 4. Show the full context of the buggy code
-echo ""
-echo "=== Code context ==="
-git show "$COMMIT" -- "$FILE" | head -50
-
-# 5. Suggest spec improvement
 echo ""
 echo "=== Action ==="
-echo "Update the spec for agent '$BRANCH' to prevent this pattern."
-echo "Bug class: check the file for missing null checks, error states, or validation."`,
+echo "Update the spec for agent '$BRANCH' to prevent this pattern."`,
+      blanks: [
+        {
+          id: 'BLANK_1',
+          answer: 'git blame -L "$LINE,$LINE" "$FILE"',
+          alternatives: ['git blame -L "$LINE,$LINE" "$FILE"'],
+          hint: 'Git command that shows who last modified a specific line range in a file',
+          placeholder: 'git blame command',
+        },
+        {
+          id: 'BLANK_2',
+          answer: 'git branch --contains "$COMMIT"',
+          alternatives: ['git branch --contains "$COMMIT"'],
+          hint: 'Git command that lists branches containing a specific commit',
+          placeholder: 'find branch for commit',
+        },
+        {
+          id: 'BLANK_3',
+          answer: 'git log -1 --format=\'%s\' "$COMMIT"',
+          alternatives: ['git log -1 --format=\'%s\' "$COMMIT"', 'git log -1 --format="%s" "$COMMIT"'],
+          hint: 'Show just the subject line of a specific commit',
+          placeholder: 'commit message command',
+        },
+      ],
+      explanation: 'The trace path: error -> git blame (finds commit) -> git branch --contains (finds agent branch) -> git log (finds spec reference). This maps a production TypeError directly to the agent session and spec that produced it. Now you know exactly which spec to improve.',
     },
     {
       type: 'terminal',
@@ -328,41 +349,65 @@ echo "Bug class: check the file for missing null checks, error states, or valida
 
     // === THE SPEC IMPROVEMENT FEEDBACK LOOP ===
     {
-      type: 'info',
-      title: 'Closing the loop: errors that improve specs',
-      body: "Every production error represents a gap in your specification. The error tells you exactly what was missing. A null reference error means you didn't specify null handling. A timeout means you didn't specify retry logic. A crash on empty array means you didn't specify empty states. Track these patterns and add them to a 'spec requirements' checklist that every new spec must satisfy.",
+      type: 'multiple-choice',
+      question: 'A null reference error fires in production. What does this tell you about your spec?',
+      options: [
+        'The agent introduced a bug — agents are unreliable',
+        'The spec did not specify null handling for that data path — every error is a spec gap',
+        'The TypeScript types were wrong — fix the type definitions',
+        'The test suite was incomplete — add more tests',
+      ],
+      correctIndex: 1,
+      explanation: "Every production error represents a gap in your specification. A null reference error means you didn't specify null handling. A timeout means you didn't specify retry logic. A crash on empty array means you didn't specify empty states. Track these patterns and add them to a spec requirements checklist.",
     },
     {
-      type: 'code-demo',
-      title: 'Spec requirements derived from production errors',
-      body: "This living document grows with every production incident. Before launching any agent, you check the spec against this list. Each rule exists because its absence caused a production bug. This is institutional memory for agent-directed development.",
+      type: 'code-fill',
+      instruction: 'Complete the spec requirements checklist derived from production errors. Fill in the missing requirements for data handling and error states.',
       language: 'markdown',
       filename: 'specs/REQUIREMENTS.md',
-      code: `# Spec Requirements Checklist
+      template: `# Spec Requirements Checklist
 (Each rule added after a production incident)
 
 ## Data Handling
-- [ ] All API responses specify behavior for: success, error, empty, null
+- [ ] All API responses specify behavior for: success, error, empty, ___BLANK_1___
 - [ ] Optional/nullable fields are explicitly listed with defaults
 - [ ] Array operations handle empty arrays (no .length on undefined)
-- [ ] Date/time values specify timezone handling
 
 ## Error States
-- [ ] Every data-fetching component has: loading, error, success, empty states
+- [ ] Every data-fetching component has: loading, error, success, ___BLANK_2___ states
 - [ ] API handlers return proper status codes (404, 422, 500)
-- [ ] External service calls have timeout + retry configuration
-- [ ] Rate limit handling is specified for third-party APIs
+- [ ] External service calls have ___BLANK_3___ configuration
 
 ## Security
-- [ ] Input validation on all user-provided data (query params, body, headers)
-- [ ] Authentication check before data access
+- [ ] Input validation on all user-provided data
 - [ ] No secrets/keys in client-side code
-- [ ] CORS configuration specified explicitly
 
 ## Environment
-- [ ] No hardcoded URLs (use env vars)
-- [ ] Feature flags for gradual rollout
-- [ ] Logging includes request ID for traceability`,
+- [ ] No hardcoded URLs (use env vars)`,
+      blanks: [
+        {
+          id: 'BLANK_1',
+          answer: 'null',
+          alternatives: ['null'],
+          hint: 'The fourth state that API responses must handle — when a field has no value',
+          placeholder: 'missing data state',
+        },
+        {
+          id: 'BLANK_2',
+          answer: 'empty',
+          alternatives: ['empty'],
+          hint: 'The fourth UI state for when the fetch succeeds but returns no results (e.g., empty list)',
+          placeholder: 'no-results state',
+        },
+        {
+          id: 'BLANK_3',
+          answer: 'timeout + retry',
+          alternatives: ['timeout + retry', 'timeout and retry', 'retry + timeout'],
+          hint: 'External services can be slow or flaky — two configs needed for resilience',
+          placeholder: 'resilience configs',
+        },
+      ],
+      explanation: 'This living document grows with every production incident. Each rule exists because its absence caused a production bug. Null handling, empty states, and timeout + retry configuration are the three most commonly missing spec requirements. Before launching any agent, check the spec against this list.',
     },
     {
       type: 'multiple-choice',
@@ -379,23 +424,29 @@ echo "Bug class: check the file for missing null checks, error states, or valida
 
     // === MONITORING DASHBOARDS ===
     {
-      type: 'info',
-      title: 'What to monitor in agent-built systems',
-      body: "Standard monitoring (uptime, latency, error rate) applies. But for agent-built systems, add these: (1) Error rate by file path — if one agent's code errors more than others, its spec was weak. (2) Unhandled rejection rate — agents frequently leave promise chains unhandled. (3) TypeScript errors caught at runtime — signals the agent defeated the type system.",
+      type: 'multiple-choice',
+      question: 'Beyond standard monitoring (uptime, latency, error rate), what should you add for agent-built systems?',
+      options: [
+        'Code complexity metrics and cyclomatic complexity',
+        'Error rate by file path, unhandled rejection rate, and runtime TypeScript errors',
+        'Git commit frequency and lines of code per agent',
+        'Memory usage per component and bundle size tracking',
+      ],
+      correctIndex: 1,
+      explanation: "For agent-built systems, add: (1) Error rate by file path — if one agent's code errors more than others, its spec was weak. (2) Unhandled rejection rate — agents frequently leave promise chains unhandled. (3) TypeScript errors caught at runtime — signals the agent defeated the type system.",
     },
     {
-      type: 'code-demo',
-      title: 'Vercel + Sentry monitoring patterns',
-      body: "Combine Vercel's built-in analytics with Sentry for comprehensive monitoring of agent-built code. The custom error boundary catches React crashes and tags them for agent traceability.",
+      type: 'code-fill',
+      instruction: 'Complete the React error boundary that catches crashes in agent-built code and tags them for Sentry traceability.',
       language: 'typescript',
       filename: 'src/components/error-boundary.tsx',
-      code: `import * as Sentry from '@sentry/react'
+      template: `import * as Sentry from '@sentry/react'
 import { Component, type ReactNode } from 'react'
 
 interface Props {
   children: ReactNode
   fallback?: ReactNode
-  componentName: string  // For tracing back to agent
+  componentName: string
 }
 
 interface State {
@@ -411,9 +462,9 @@ export class AgentCodeBoundary extends Component<Props, State> {
   }
 
   componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
-    Sentry.captureException(error, {
+    Sentry.___BLANK_1___(error, {
       tags: {
-        component: this.props.componentName,
+        component: this.props.___BLANK_2___,
         error_boundary: 'agent_code',
       },
       extra: {
@@ -423,19 +474,38 @@ export class AgentCodeBoundary extends Component<Props, State> {
   }
 
   render() {
-    if (this.state.hasError) {
+    if (this.state.___BLANK_3___) {
       return this.props.fallback || (
-        <div className="p-4 border border-red-200 rounded bg-red-50">
-          <p className="text-red-800">Something went wrong in {this.props.componentName}.</p>
-          <button onClick={() => this.setState({ hasError: false, error: null })}>
-            Retry
-          </button>
-        </div>
+        <div>Something went wrong in {this.props.componentName}.</div>
       )
     }
     return this.props.children
   }
 }`,
+      blanks: [
+        {
+          id: 'BLANK_1',
+          answer: 'captureException',
+          alternatives: ['captureException'],
+          hint: 'The Sentry method that reports an error to the dashboard',
+          placeholder: 'Sentry error capture method',
+        },
+        {
+          id: 'BLANK_2',
+          answer: 'componentName',
+          alternatives: ['componentName'],
+          hint: 'The prop that identifies which component (agent module) crashed — for traceability',
+          placeholder: 'component identifier prop',
+        },
+        {
+          id: 'BLANK_3',
+          answer: 'hasError',
+          alternatives: ['hasError'],
+          hint: 'The state boolean that tracks whether an error has been caught',
+          placeholder: 'error state flag',
+        },
+      ],
+      explanation: 'The error boundary catches React crashes and tags them with the componentName — mapping the crash to the agent module that produced it. `captureException` sends the error to Sentry with custom tags for filtering. The `hasError` state flag triggers the fallback UI instead of a white screen.',
     },
     {
       type: 'checkpoint',
@@ -445,9 +515,16 @@ export class AgentCodeBoundary extends Component<Props, State> {
 
     // === PREVENTING RECURRENCE ===
     {
-      type: 'info',
-      title: 'The verification step: catching bugs before deploy',
-      body: "The best production bug is one that never reaches production. After an agent completes its work, run a verification pass specifically targeting known agent failure patterns. This isn't standard code review — it's a checklist tuned to what agents get wrong.",
+      type: 'multiple-choice',
+      question: 'What is the best production bug?',
+      options: [
+        'One that is caught quickly by Sentry with full context',
+        'One that only affects a small percentage of users',
+        'One that never reaches production — caught in pre-deploy verification',
+        'One that has an obvious fix you can ship in minutes',
+      ],
+      correctIndex: 2,
+      explanation: "The best production bug is one that never reaches production. After an agent completes its work, run a verification pass targeting known agent failure patterns. This isn't standard code review — it's a checklist tuned to what agents get wrong: missing null checks, hardcoded URLs, debug logging, and happy-path-only tests.",
     },
     {
       type: 'checklist',
@@ -466,52 +543,61 @@ export class AgentCodeBoundary extends Component<Props, State> {
       ],
     },
     {
-      type: 'code-demo',
-      title: 'Automated pre-deploy check script',
-      body: "Run this before every merge to catch the most common agent patterns. It's fast (under 10 seconds) and catches issues that would become production bugs.",
+      type: 'code-fill',
+      instruction: 'Complete the pre-deploy check script that catches common agent patterns. Fill in the grep patterns that detect debug logging, hardcoded URLs, and type escape hatches.',
       language: 'bash',
       filename: 'scripts/agent-code-check.sh',
-      code: `#!/bin/bash
-# Pre-deploy check for agent-introduced patterns
+      template: `#!/bin/bash
 echo "=== Agent Code Quality Check ==="
 ISSUES=0
 
-# Check for console.log (agents leave debug logging)
-LOGS=$(grep -r "console.log" src/ --include="*.ts" --include="*.tsx" -l | wc -l)
+# Check for debug logging (agents leave console.log)
+LOGS=$(grep -r "___BLANK_1___" src/ --include="*.ts" --include="*.tsx" -l | wc -l)
 if [ "$LOGS" -gt 0 ]; then
   echo "[WARN] $LOGS files with console.log statements"
   ((ISSUES++))
 fi
 
-# Check for hardcoded localhost
-LOCALHOST=$(grep -r "localhost" src/ --include="*.ts" --include="*.tsx" -l | wc -l)
+# Check for hardcoded URLs
+LOCALHOST=$(grep -r "___BLANK_2___" src/ --include="*.ts" --include="*.tsx" -l | wc -l)
 if [ "$LOCALHOST" -gt 0 ]; then
   echo "[FAIL] $LOCALHOST files with hardcoded localhost"
   ((ISSUES++))
 fi
 
-# Check for TODO comments
-TODOS=$(grep -r "TODO" src/ --include="*.ts" --include="*.tsx" | wc -l)
-if [ "$TODOS" -gt 3 ]; then
-  echo "[WARN] $TODOS TODO comments (agents leave aspirational TODOs)"
-  ((ISSUES++))
-fi
-
-# Check for 'any' type usage
-ANYS=$(grep -r ": any" src/ --include="*.ts" --include="*.tsx" | wc -l)
+# Check for type escape hatches
+ANYS=$(grep -r "___BLANK_3___" src/ --include="*.ts" --include="*.tsx" | wc -l)
 if [ "$ANYS" -gt 0 ]; then
-  echo "[WARN] $ANYS uses of 'any' type (agent couldn't resolve types)"
+  echo "[WARN] $ANYS uses of 'any' type"
   ((ISSUES++))
 fi
 
-# TypeScript strict check
-echo ""
-echo "Running TypeScript strict check..."
-npx tsc --noEmit --strict 2>&1 | tail -5
-
-echo ""
 echo "=== $ISSUES issues found ==="
 exit $ISSUES`,
+      blanks: [
+        {
+          id: 'BLANK_1',
+          answer: 'console.log',
+          alternatives: ['console.log', '"console.log"'],
+          hint: 'The JavaScript debug logging function that agents leave behind',
+          placeholder: 'debug logging pattern',
+        },
+        {
+          id: 'BLANK_2',
+          answer: 'localhost',
+          alternatives: ['localhost', '"localhost"'],
+          hint: 'The hostname for local development that should never appear in production code',
+          placeholder: 'hardcoded URL pattern',
+        },
+        {
+          id: 'BLANK_3',
+          answer: ': any',
+          alternatives: [': any', '": any"'],
+          hint: 'The TypeScript type annotation that agents use when they cannot resolve types',
+          placeholder: 'type escape hatch pattern',
+        },
+      ],
+      explanation: 'This script runs in under 10 seconds and catches the most common agent patterns: `console.log` (debug logging left behind), `localhost` (hardcoded development URLs), and `: any` (type escape hatches where the agent gave up on type safety). Run it before every merge.',
     },
 
     // === PUTTING IT TOGETHER ===

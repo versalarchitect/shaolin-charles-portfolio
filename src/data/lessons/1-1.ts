@@ -17,9 +17,16 @@ const content: LessonContent = {
 
     // === TOKENIZATION ===
     {
-      type: 'info',
-      title: 'Tokens: how AI reads your words',
-      body: "AI does not read words the way you do. It reads \"tokens\" — small chunks of text. A common word like \"the\" is one token. A longer word like \"tokenization\" gets split into two pieces: \"token\" and \"ization\". Even spaces and punctuation count as tokens. Why does this matter? Because AI charges per token, and there is a limit to how many tokens it can handle at once.",
+      type: 'multiple-choice',
+      question: 'How does AI read your text?',
+      options: [
+        'It reads complete sentences as single units',
+        'It reads individual characters one at a time',
+        'It reads "tokens" — small chunks of text, not whole words',
+        'It converts text to images first, then reads the images',
+      ],
+      correctIndex: 2,
+      explanation: 'AI does not read words the way you do. It reads "tokens" — small chunks of text. A common word like "the" is one token. A longer word like "tokenization" gets split into two pieces: "token" and "ization". Even spaces and punctuation count as tokens. This matters because AI charges per token, and there is a limit to how many tokens it can handle at once.',
     },
     {
       type: 'multiple-choice',
@@ -34,11 +41,22 @@ const content: LessonContent = {
       explanation: 'Tokenizers split words into learned subword pieces. Common prefixes ("un"), stems ("happi"), and suffixes ("ness") each become separate tokens. This lets the model handle words it has never seen as a whole by understanding their parts.',
     },
     {
-      type: 'code-demo',
+      type: 'compare',
       title: 'Tokens affect cost and limits',
-      body: "Every AI request costs money based on how many tokens are used — both what you send and what the AI sends back. AI also has a memory limit measured in tokens (Claude can hold about 200,000 tokens at once). A simple rule of thumb: 1 token is about 4 characters in English, or roughly 3/4 of a word.",
-      language: 'text',
-      code: 'Prompt: "Explain recursion in Python"  →  ~5 tokens\nPrompt: "Explain recursion in Python with 3 examples, edge cases, and performance analysis"  →  ~16 tokens\n\nMore tokens in = higher cost + less room for the response',
+      body: 'Every AI request costs money based on how many tokens are used — both what you send and what the AI sends back. A simple rule of thumb: 1 token is about 4 characters in English, or roughly 3/4 of a word.',
+      question: 'Which prompt uses more tokens and costs more?',
+      correctSide: 'right',
+      left: {
+        label: 'Short prompt (~5 tokens)',
+        content: '"Explain recursion in Python"\n\nLower cost\nMore room for the response\nLess specific output',
+        language: 'text',
+      },
+      right: {
+        label: 'Detailed prompt (~16 tokens)',
+        content: '"Explain recursion in Python with 3 examples, edge cases, and performance analysis"\n\nHigher cost\nLess room for the response\nMore specific output',
+        language: 'text',
+      },
+      explanation: 'More tokens in means higher cost and less room for the response. Claude can hold about 200,000 tokens at once. The trade-off: detailed prompts give better results but use more of your token budget.',
     },
     {
       type: 'terminal',
@@ -54,9 +72,16 @@ const content: LessonContent = {
 
     // === EMBEDDINGS ===
     {
-      type: 'info',
-      title: 'Embeddings: how AI understands meaning',
-      body: "After breaking text into tokens, the AI converts each token into a list of numbers that represents its meaning. Think of it like GPS coordinates, but for meaning instead of location. Words with similar meanings land near each other: \"dog\" is close to \"puppy\" but far from \"algebra.\" This is how AI understands that similar words are related — nobody had to teach it every synonym.",
+      type: 'multiple-choice',
+      question: 'What are embeddings and how do they work?',
+      options: [
+        'Embeddings are images that AI creates from text',
+        'Embeddings are lists of numbers representing meaning — similar words get similar numbers',
+        'Embeddings are the passwords AI uses to access databases',
+        'Embeddings are the HTML code that makes websites display text',
+      ],
+      correctIndex: 1,
+      explanation: 'After breaking text into tokens, the AI converts each token into a list of numbers (a vector) that represents its meaning. Think of it like GPS coordinates, but for meaning instead of location. Words with similar meanings land near each other: "dog" is close to "puppy" but far from "algebra." This is how AI understands that similar words are related.',
     },
     {
       type: 'multiple-choice',
@@ -130,9 +155,16 @@ const content: LessonContent = {
 
     // === ATTENTION ===
     {
-      type: 'info',
-      title: 'Attention: how AI decides what matters',
-      body: "Attention is how the AI decides which parts of your message are most important for each word it writes back. For example, in \"The cat sat on the mat because it was tired,\" the AI uses attention to figure out that \"it\" refers to \"the cat,\" not \"the mat.\" It compares every word to every other word and gives higher importance to the most relevant pairs.",
+      type: 'multiple-choice',
+      question: 'In the sentence "The cat sat on the mat because it was tired," what does the attention mechanism help the AI figure out?',
+      options: [
+        'That the sentence is in English',
+        'That "it" refers to "the cat," not "the mat"',
+        'How many words are in the sentence',
+        'The correct spelling of each word',
+      ],
+      correctIndex: 1,
+      explanation: 'Attention is how the AI decides which parts of your message are most important for each word it writes back. It compares every word to every other word and gives higher importance to the most relevant pairs. In this case, it figures out that "it" refers to "the cat" because of contextual clues like "tired."',
     },
     {
       type: 'compare',
@@ -171,9 +203,12 @@ const content: LessonContent = {
 
     // === TEMPERATURE ===
     {
-      type: 'info',
-      title: 'Temperature: controlling how creative vs reliable AI is',
-      body: "After figuring out which words to focus on, the AI picks its next word from a list of possibilities. Temperature controls how it chooses. At temperature 0, it always picks the most likely word — very predictable and reliable. At temperature 1, it mixes in more variety — more creative but less predictable. For business tasks where you need reliable results, lower temperature is almost always better.",
+      type: 'match',
+      instruction: 'Match each temperature setting to its best use case:',
+      leftItems: ['Temperature 0', 'Temperature 0.3', 'Temperature 0.7', 'Temperature 1.0+'],
+      rightItems: ['Code refactoring and data extraction', 'Business emails and technical docs', 'Creative writing and brainstorming', 'Experimental and artistic text generation'],
+      correctPairs: { 0: 0, 1: 1, 2: 2, 3: 3 },
+      explanation: 'Temperature controls how creative vs reliable the AI is. At 0, it always picks the most likely word — perfect for code. At 0.3, mostly reliable with slight variation — great for business writing. At 0.7, balanced creativity. At 1.0+, maximum variety — good for brainstorming but risky for production work.',
     },
     {
       type: 'multiple-choice',
@@ -190,14 +225,21 @@ const content: LessonContent = {
 
     // === HALLUCINATION ===
     {
-      type: 'info',
-      title: 'When AI makes things up (hallucination)',
-      body: "Sometimes AI writes something that sounds confident but is factually wrong. This is called hallucination. It happens because AI is always guessing the most likely next word — it does not actually know what is true. Three things trigger hallucinations: (1) you ask about something it was not trained on, (2) your instructions are vague, so it fills in the blanks with plausible-but-wrong details, (3) you ask a leading question that steers it toward a wrong answer.",
+      type: 'multiple-choice',
+      question: 'Why does AI sometimes write confident-sounding but wrong information (hallucination)?',
+      options: [
+        'Because the AI is intentionally lying',
+        'Because it is always predicting the most likely next word — it has no concept of truth, only probability',
+        'Because the internet connection is slow',
+        'Because the AI is running out of memory',
+      ],
+      correctIndex: 1,
+      explanation: 'Sometimes AI writes something that sounds confident but is factually wrong. This is called hallucination. It happens because AI is always guessing the most likely next word — it does not actually know what is true. Three triggers: (1) you ask about something it was not trained on, (2) your instructions are vague, (3) you ask a leading question that steers it toward a wrong answer.',
     },
     {
-      type: 'diagram',
+      type: 'interactive-diagram',
       title: 'When Models Hallucinate',
-      body: 'The model\'s reliability depends on whether the input falls within its training distribution. Ambiguous prompts increase risk even for known topics.',
+      body: 'The model\'s reliability depends on whether the input falls within its training distribution. Step through to see the decision tree.',
       diagram: {
         direction: 'TB',
         nodes: [
@@ -216,13 +258,32 @@ const content: LessonContent = {
           { from: 'ambiguous', to: 'risky', label: 'Yes', dashed: true },
         ],
       },
+      stages: [
+        { highlightNodes: ['input'], explanation: 'It starts with your prompt. The question is: does the model have reliable training data about this topic?' },
+        { highlightNodes: ['input', 'trained'], highlightEdges: [{ from: 'input', to: 'trained' }], explanation: 'First check: was the model trained on this topic? If not, it has nothing reliable to draw from and will likely hallucinate.' },
+        { highlightNodes: ['trained', 'hallucinate'], highlightEdges: [{ from: 'trained', to: 'hallucinate' }], explanation: 'No training data = hallucination territory. The model will generate plausible-sounding text based on patterns, not facts. Example: asking about events after its training cutoff.' },
+        { highlightNodes: ['trained', 'ambiguous'], highlightEdges: [{ from: 'trained', to: 'ambiguous' }], explanation: 'If training data exists, next check: is your prompt clear or ambiguous? Vague instructions leave room for the model to fill in gaps incorrectly.' },
+        { highlightNodes: ['ambiguous', 'reliable'], highlightEdges: [{ from: 'ambiguous', to: 'reliable' }], explanation: 'Clear prompt + good training data = reliable output. This is the sweet spot. Be specific, provide context, and stick to well-known topics.' },
+        { highlightNodes: ['ambiguous', 'risky'], highlightEdges: [{ from: 'ambiguous', to: 'risky' }], explanation: 'Ambiguous prompt + training data = risky. The model knows the topic but your vague instructions let it fill in details that may be wrong. Fix: make your prompt more specific.' },
+      ],
     },
     {
-      type: 'code-demo',
+      type: 'compare',
       title: 'Spotting hallucination risk',
-      body: "Learn to recognize prompts that are likely to produce hallucinations. The fix is usually to add constraints, provide reference material, or ask the model to say \"I don't know\" when uncertain.",
-      language: 'text',
-      code: '# High hallucination risk:\n"What did the CEO of Acme Corp say in their Q3 2025 earnings call?"\n→ Model may invent quotes it has never seen\n\n# Lower risk — grounded prompt:\n"Based on the following transcript [paste text], summarize what the CEO said about revenue."\n→ Model works from provided context, not memory',
+      body: 'Learn to recognize prompts that are likely to produce hallucinations vs ones that keep the model grounded.',
+      question: 'Which prompt is safer and less likely to cause hallucination?',
+      correctSide: 'right',
+      left: {
+        label: 'High risk (ungrounded)',
+        content: '"What did the CEO of Acme Corp say in their Q3 2025 earnings call?"\n\nModel may invent quotes it has never seen\nNo reference material provided\nAsks about specific facts from memory',
+        language: 'text',
+      },
+      right: {
+        label: 'Lower risk (grounded)',
+        content: '"Based on the following transcript [paste text], summarize what the CEO said about revenue."\n\nModel works from provided context, not memory\nReference material anchors the response\nClear, specific task with constraints',
+        language: 'text',
+      },
+      explanation: 'The fix for hallucination is usually to add constraints, provide reference material, or ask the model to say "I don\'t know" when uncertain. Grounded prompts give the model real data to work with instead of relying on potentially faulty memory.',
     },
     {
       type: 'multiple-choice',
@@ -253,16 +314,17 @@ const content: LessonContent = {
 
     // === PUTTING IT TOGETHER ===
     {
-      type: 'checklist',
-      title: 'Key mental models to keep',
+      type: 'order',
+      instruction: 'Put the AI processing pipeline in the correct order, from your input to the final response:',
       items: [
-        'Tokens are word pieces, not words -- "tokenization" is 2 tokens',
-        'Embeddings place meaning in geometric space -- similar concepts cluster together',
-        'Attention weighs every token against every other -- position and structure matter',
-        'Temperature 0 for reliability, higher for creativity',
-        'Hallucinations come from gaps in training data, ambiguous prompts, or leading questions',
-        'Ground prompts with context to reduce hallucination risk',
+        'Your text enters as raw characters',
+        'Tokenizer splits text into subword pieces',
+        'Each token gets converted to an embedding vector',
+        'Attention weighs every token against every other',
+        'Model predicts the most likely next token',
+        'Response is assembled token by token',
       ],
+      correctOrder: [0, 1, 2, 3, 4, 5],
     },
     {
       type: 'terminal',

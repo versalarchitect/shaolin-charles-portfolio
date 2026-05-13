@@ -10,16 +10,23 @@ const content: LessonContent = {
       body: "Module boundaries handle individual features. But what about the entire system architecture? How do you design a system where adding another agent to the fleet makes things FASTER rather than slower? This is the scaling question. Some architectures have a natural ceiling — after 3 concurrent agents, adding a 4th creates more coordination overhead than speed gain. Other architectures scale linearly: 10 agents working 10x faster with zero additional coordination cost. The difference is in the system-level patterns.",
     },
     {
-      type: 'info',
-      title: 'The coordination cost function',
-      body: "In a coupled system, coordination cost grows quadratically with team size. 2 agents need 1 coordination path. 3 agents need 3. 5 agents need 10. 10 agents need 45. This is why tightly coupled architectures break down with more agents — the coordination overhead eventually exceeds the work being done. In a decoupled system, coordination cost stays flat: each agent works independently against a contract. Adding agent #11 requires zero communication with agents 1-10. This is the architecture you are designing toward.",
+      type: 'multiple-choice',
+      question: 'In a coupled system with 10 agents, how many coordination paths exist? (Formula: N*(N-1)/2)',
+      options: [
+        '10 paths — one per agent',
+        '20 paths — two per agent',
+        '45 paths — coordination cost grows quadratically and eventually exceeds the work being done',
+        '100 paths — N squared',
+      ],
+      correctIndex: 2,
+      explanation: 'In a coupled system, coordination cost grows quadratically: 2 agents need 1 path, 3 need 3, 5 need 10, 10 need 45. This is why tightly coupled architectures break down with more agents. In a decoupled system, cost stays flat: each agent works independently against a contract. Adding agent #11 requires zero communication with agents 1-10.',
     },
 
     // === ARCHITECTURAL PATTERNS ===
     {
-      type: 'diagram',
+      type: 'interactive-diagram',
       title: 'Coupled vs decoupled at scale',
-      body: 'In a coupled system, agents communicate with each other (N*N paths). In a decoupled system, agents communicate only with contracts (N paths).',
+      body: 'Walk through how coordination paths grow in each architecture as you add agents.',
       diagram: {
         direction: 'TB',
         nodes: [
@@ -46,6 +53,23 @@ const content: LessonContent = {
           { from: 'contract', to: 'd_a3' },
         ],
       },
+      stages: [
+        {
+          highlightNodes: ['coupled', 'c_a1', 'c_a2'],
+          highlightEdges: [{ from: 'coupled', to: 'c_a1' }, { from: 'coupled', to: 'c_a2' }, { from: 'c_a1', to: 'c_a2' }],
+          explanation: 'Coupled system with 2 agents: 1 coordination path (A to B). Each agent must be aware of the other\'s changes.',
+        },
+        {
+          highlightNodes: ['coupled', 'c_a1', 'c_a2', 'c_a3'],
+          highlightEdges: [{ from: 'coupled', to: 'c_a1' }, { from: 'coupled', to: 'c_a2' }, { from: 'coupled', to: 'c_a3' }, { from: 'c_a1', to: 'c_a2' }, { from: 'c_a2', to: 'c_a3' }, { from: 'c_a1', to: 'c_a3' }],
+          explanation: 'Adding Agent 3 triples coordination paths from 1 to 3. Formula: N*(N-1)/2. At 10 agents = 45 paths. Coordination overhead eventually exceeds the work being done.',
+        },
+        {
+          highlightNodes: ['decoupled', 'contract', 'd_a1', 'd_a2', 'd_a3'],
+          highlightEdges: [{ from: 'decoupled', to: 'contract' }, { from: 'contract', to: 'd_a1' }, { from: 'contract', to: 'd_a2' }, { from: 'contract', to: 'd_a3' }],
+          explanation: 'Decoupled system: each agent communicates only with contracts. 3 agents = 3 paths. Adding Agent 4 adds exactly 1 path. Linear growth. Zero agent-to-agent communication needed.',
+        },
+      ],
     },
     {
       type: 'compare',
@@ -175,22 +199,42 @@ const content: LessonContent = {
 
     // === EVENT-DRIVEN ARCHITECTURE ===
     {
-      type: 'info',
-      title: 'Pattern 1: Event-driven architecture',
-      body: "In an event-driven system, modules emit events — they do not call each other directly. When an order is placed, the Orders module emits an OrderPlaced event. The Payments module listens for this event and processes the charge. The Email module listens and sends a confirmation. The Inventory module listens and decrements stock. No module needs to know the others exist. This means: agents building Payments never need to read Orders code. Agents building Email never need to coordinate with Payments. Each agent works against events, not other modules.",
+      type: 'multiple-choice',
+      question: 'In an event-driven system, how do modules communicate?',
+      options: [
+        'Direct function calls between modules',
+        'Shared mutable state in a central store',
+        'Modules emit events — no module calls another directly. Each agent works against events, not other modules.',
+        'Message passing through a central coordinator',
+      ],
+      correctIndex: 2,
+      explanation: 'In an event-driven system, modules emit events. When an order is placed, the Orders module emits an OrderPlaced event. Payments listens and charges. Email listens and sends confirmation. Inventory listens and decrements stock. No module needs to know the others exist. Agents building different modules never need to coordinate.',
     },
     {
-      type: 'code-demo',
-      title: 'Event-driven module independence',
-      body: 'Modules communicate through events. No direct calls, no shared mutable state, no coordination needed between agents building different modules.',
+      type: 'code-fill',
+      instruction: 'Complete this event-driven module setup. Fill in the event names and listener patterns.',
       language: 'typescript',
+      template: '// Event Definition (shared contract)\nexport interface OrderEvents {\n  \'___\': {\n    orderId: string\n    customerId: string\n    totalCents: number\n  }\n}\n\n// Orders module (Agent A)\nexport async function placeOrder(input: PlaceOrderInput) {\n  const order = await db.orders.create(input)\n  eventBus.emit(\'___\', {\n    orderId: order.id,\n    customerId: input.customerId,\n    totalCents: order.totalCents,\n  })\n  return order\n}\n\n// Payments module (Agent B)\neventBus.on(\'___\', async (event) => {\n  await ___(event.customerId, event.totalCents)\n})',
+      blanks: [
+        { id: 'event-def', answer: 'order.placed', alternatives: ['OrderPlaced', 'order_placed'], hint: 'The event emitted when a new order is created', placeholder: 'event name' },
+        { id: 'event-emit', answer: 'order.placed', alternatives: ['OrderPlaced', 'order_placed'], hint: 'Same event name as the definition', placeholder: 'event name' },
+        { id: 'event-listen', answer: 'order.placed', alternatives: ['OrderPlaced', 'order_placed'], hint: 'Payments listens for the same event', placeholder: 'event name' },
+        { id: 'charge-fn', answer: 'chargeCustomer', alternatives: ['charge', 'processPayment'], hint: 'The function that charges the customer', placeholder: 'function name' },
+      ],
       filename: 'event-driven-pattern.ts',
-      code: "// === Event Definitions (the shared contract) ===\n// src/events/order.events.ts\nexport interface OrderEvents {\n  'order.placed': {\n    orderId: string\n    customerId: string\n    items: Array<{ productId: string; quantity: number; priceCents: number }>\n    totalCents: number\n  }\n  'order.cancelled': {\n    orderId: string\n    reason: string\n  }\n  'order.shipped': {\n    orderId: string\n    trackingNumber: string\n  }\n}\n\n// === Orders module (Agent A builds this) ===\n// src/features/orders/orders.service.ts\nimport { eventBus } from '@/infrastructure/event-bus'\n\nexport async function placeOrder(input: PlaceOrderInput) {\n  const order = await db.orders.create(input)\n  \n  // Emit event — Orders does NOT know who listens\n  eventBus.emit('order.placed', {\n    orderId: order.id,\n    customerId: input.customerId,\n    items: input.items,\n    totalCents: order.totalCents,\n  })\n  \n  return order\n}\n\n// === Payments module (Agent B builds this) ===\n// src/features/payments/payments.listeners.ts\nimport { eventBus } from '@/infrastructure/event-bus'\n\neventBus.on('order.placed', async (event) => {\n  await chargeCustomer(event.customerId, event.totalCents)\n})\n\n// === Email module (Agent C builds this) ===\n// src/features/emails/email.listeners.ts\nimport { eventBus } from '@/infrastructure/event-bus'\n\neventBus.on('order.placed', async (event) => {\n  await sendOrderConfirmation(event.customerId, event.orderId)\n})",
+      explanation: 'Modules communicate through events. Orders emits "order.placed" and does NOT know who listens. Payments subscribes independently. Email subscribes independently. No direct calls, no shared state, no coordination between agents building different modules.',
     },
     {
-      type: 'info',
-      title: 'Why event-driven enables agent parallelism',
-      body: "With direct function calls, adding a notification when an order is placed requires modifying the Orders module (add a call to the notification service). That means the agent building notifications MUST also touch the Orders code — conflict risk. With events, the agent building notifications just adds a new listener. It never touches Orders. Never touches Payments. Never conflicts with any other agent. The event bus is the coordination mechanism that replaces direct module-to-module coupling.",
+      type: 'multiple-choice',
+      question: 'With direct function calls, adding a notification on order placement requires modifying the Orders module. With events, what does the notification agent do instead?',
+      options: [
+        'Modify the Orders module to add a call to the notification service',
+        'Wait for the Orders agent to finish, then integrate',
+        'Just add a new listener for the order.placed event — it never touches Orders code, never conflicts with any other agent',
+        'Create a new event type and modify all existing listeners',
+      ],
+      correctIndex: 2,
+      explanation: 'With events, the notification agent just adds a new listener. It never touches Orders. Never touches Payments. Never conflicts with any other agent. The event bus is the coordination mechanism that replaces direct module-to-module coupling.',
     },
     {
       type: 'multiple-choice',
@@ -212,22 +256,43 @@ const content: LessonContent = {
 
     // === CONTRACT-FIRST DEVELOPMENT ===
     {
-      type: 'info',
-      title: 'Pattern 2: Contract-first development',
-      body: "Define all interfaces BEFORE any implementation begins. The architect (you) writes the contracts: API schemas, event types, database interfaces, module boundaries. Then you dispatch agents — each agent implements one module against the contracts. No agent needs to wait for another. No agent needs to read another's implementation. The contracts are the ONLY coordination mechanism. This is the pattern that enables maximum parallelism: N agents building N modules simultaneously with zero conflicts.",
+      type: 'multiple-choice',
+      question: 'In contract-first development, what happens BEFORE any implementation begins?',
+      options: [
+        'Agent A builds Module A, then other agents build against it',
+        'You (the architect) define all interfaces — API schemas, event types, database interfaces, module boundaries — then dispatch N agents in parallel',
+        'Agents negotiate contracts between themselves during implementation',
+        'You build a prototype and agents extend it',
+      ],
+      correctIndex: 1,
+      explanation: 'Define all interfaces BEFORE any implementation. You write contracts: API schemas, event types, database interfaces, module boundaries. Then dispatch agents — each implements one module against the contracts. No agent waits for another. The contracts are the ONLY coordination mechanism. N agents building N modules simultaneously with zero conflicts.',
     },
     {
-      type: 'code-demo',
-      title: 'Contract-first workflow',
-      body: 'You write contracts first. Then N agents implement in parallel. Each agent only reads the contracts and its own module.',
+      type: 'code-fill',
+      instruction: 'Complete this contract-first workflow. Fill in the contract types and agent assignments.',
       language: 'typescript',
+      template: '// STEP 1: Architect writes ALL contracts\n\nexport interface API {\n  \'POST /orders\': {\n    body: { items: CartItem[]; shippingAddress: ___ }\n    response: { orderId: ___; estimatedDelivery: Date }\n  }\n}\n\nexport interface SystemEvents {\n  \'order.placed\': { orderId: string; customerId: string; totalCents: ___ }\n  \'___\': { orderId: string; transactionId: string }\n}\n\nexport interface OrderRepository {\n  create(input: CreateOrderInput): Promise<___>\n  findById(id: string): Promise<Order | null>\n}',
+      blanks: [
+        { id: 'address-type', answer: 'Address', alternatives: ['ShippingAddress'], hint: 'A type representing a shipping address', placeholder: 'type name' },
+        { id: 'id-type', answer: 'string', alternatives: [], hint: 'Order IDs are text identifiers', placeholder: 'type' },
+        { id: 'amount-type', answer: 'number', alternatives: ['int'], hint: 'Monetary amounts in cents', placeholder: 'type' },
+        { id: 'payment-event', answer: 'payment.completed', alternatives: ['PaymentCompleted', 'payment_completed'], hint: 'Event emitted when payment succeeds', placeholder: 'event name' },
+        { id: 'return-type', answer: 'Order', alternatives: [], hint: 'Creating an order returns the created order', placeholder: 'type name' },
+      ],
       filename: 'contract-first.ts',
-      code: "// === STEP 1: Architect writes ALL contracts ===\n\n// src/contracts/api.contract.ts\nexport interface API {\n  'POST /orders': {\n    body: { items: CartItem[]; shippingAddress: Address }\n    response: { orderId: string; estimatedDelivery: Date }\n  }\n  'GET /orders/:id': {\n    params: { id: string }\n    response: Order\n  }\n  'POST /payments/charge': {\n    body: { orderId: string; paymentMethod: string }\n    response: { transactionId: string; status: 'success' | 'failed' }\n  }\n}\n\n// src/contracts/events.contract.ts\nexport interface SystemEvents {\n  'order.placed': { orderId: string; customerId: string; totalCents: number }\n  'payment.completed': { orderId: string; transactionId: string }\n  'shipment.created': { orderId: string; trackingNumber: string }\n}\n\n// src/contracts/repositories.contract.ts\nexport interface OrderRepository {\n  create(input: CreateOrderInput): Promise<Order>\n  findById(id: string): Promise<Order | null>\n  updateStatus(id: string, status: OrderStatus): Promise<void>\n}\n\n// === STEP 2: Dispatch agents in parallel ===\n// Agent A: Implement Orders (builds to API + Events + Repository contracts)\n// Agent B: Implement Payments (builds to API + Events contracts)\n// Agent C: Implement Notifications (builds to Events contract)\n// Agent D: Implement Shipping (builds to Events contract)\n// All work simultaneously. Zero coordination needed.",
+      explanation: 'You write contracts first. Then N agents implement in parallel. Agent A implements Orders against API + Events + Repository contracts. Agent B implements Payments. Agent C implements Notifications. All work simultaneously. Total elapsed time: the longest single module, not the sum.',
     },
     {
-      type: 'info',
-      title: 'The architect\'s deliverable',
-      body: "In contract-first development, your primary output is not code — it is contracts. You write: API schemas (what endpoints exist, what data flows), event definitions (what events are emitted, what data they carry), module interfaces (what each module exposes to others), and data schemas (what tables exist, what columns they have). This takes 1-2 hours. Then 5 agents implement the entire system in parallel — each building against your contracts independently. Total elapsed time: the longest single module, not the sum of all modules.",
+      type: 'multiple-choice',
+      question: 'In contract-first development, what is the architect\'s primary output?',
+      options: [
+        'Working code for the core module',
+        'Contracts — API schemas, event definitions, module interfaces, and data schemas. This takes 1-2 hours, then 5 agents build the entire system in parallel.',
+        'A detailed technical specification document',
+        'A prototype that agents extend',
+      ],
+      correctIndex: 1,
+      explanation: 'Your primary output is not code — it is contracts. You write: API schemas, event definitions, module interfaces, and data schemas. This takes 1-2 hours. Then 5 agents implement the entire system in parallel — each building independently. Total elapsed time: the longest single module, not the sum of all modules.',
     },
     {
       type: 'checkpoint',
@@ -237,17 +302,39 @@ const content: LessonContent = {
 
     // === MODULAR MONOLITH ===
     {
-      type: 'info',
-      title: 'Pattern 3: The modular monolith with clear seams',
-      body: "You do not need microservices to get agent parallelism. A modular monolith — one deployment unit with strictly enforced module boundaries — gives you all the parallelism benefits with none of the operational overhead. The key: modules communicate only through defined interfaces. No reaching into another module's internals. No shared database tables between modules. No circular dependencies. Each module is deployed together but developed independently. This is often the ideal architecture for agent fleets: maximum development parallelism, minimum operational complexity.",
+      type: 'compare',
+      title: 'Microservices vs modular monolith for agent fleets',
+      body: 'You do not need microservices to get agent parallelism. A modular monolith gives the same development isolation with far less operational overhead.',
+      left: {
+        label: 'Microservices',
+        content: 'Development parallelism: YES\n  Each service = independent module\n\nOperational overhead:\n  - Multiple deployments\n  - Network reliability concerns\n  - Distributed tracing needed\n  - Service discovery required\n  - Multiple monitoring setups\n  - Multiple databases\n\nBest for:\n  Teams of 50+ engineers\n  Independent scaling needs\n  Different tech stacks per service',
+        language: 'text',
+        filename: 'microservices.txt',
+      },
+      right: {
+        label: 'Modular Monolith',
+        content: 'Development parallelism: YES\n  Each module = independent unit\n  Enforced by import rules + linter\n\nOperational overhead:\n  - ONE deployment\n  - No network calls between modules\n  - Standard tracing\n  - No service discovery\n  - ONE monitoring setup\n  - ONE database\n\nBest for:\n  Agent fleets (any size team)\n  Maximum dev parallelism\n  Minimum ops complexity',
+        language: 'text',
+        filename: 'modular-monolith.txt',
+      },
+      question: 'Which gives the same development parallelism with less operational complexity?',
+      correctSide: 'right',
+      explanation: 'A modular monolith — one deployment unit with strictly enforced module boundaries — gives all the parallelism benefits with none of the operational overhead. Modules communicate only through defined interfaces. No shared database tables. No circular dependencies. Each module is deployed together but developed independently.',
     },
     {
-      type: 'code-demo',
-      title: 'Modular monolith with enforced boundaries',
-      body: 'One deployable unit. Strict module isolation enforced by the import rules. Each module is independently buildable by an agent.',
+      type: 'code-fill',
+      instruction: 'Complete this modular monolith boundary enforcement. Fill in the import rules and enforcement mechanism.',
       language: 'typescript',
+      template: '// Modular Monolith Rules:\n// 1. Modules ONLY import from other modules via ___\n// 2. No module accesses another module\'s ___ tables\n// 3. Cross-module communication via ___ OR defined interfaces\n// 4. Each module owns its own ___\n\n// src/features/orders/index.ts — PUBLIC API\nexport { placeOrder, cancelOrder } from \'./orders.service\'\nexport type { Order, OrderStatus } from \'./orders.types\'\n// Everything else is ___ — other modules cannot import it',
+      blanks: [
+        { id: 'import-via', answer: 'their index.ts', alternatives: ['index.ts', 'the index'], hint: 'The public API file of each module', placeholder: 'import source' },
+        { id: 'no-access', answer: 'database', alternatives: ['DB', 'data'], hint: 'Each module owns its own storage', placeholder: 'what not to access' },
+        { id: 'communication', answer: 'event bus', alternatives: ['events', 'event-bus'], hint: 'Async communication mechanism', placeholder: 'communication method' },
+        { id: 'owns', answer: 'migrations', alternatives: ['database migrations', 'schema migrations'], hint: 'Database schema change files', placeholder: 'what each module owns' },
+        { id: 'internal', answer: 'internal', alternatives: ['private', 'hidden'], hint: 'Not accessible from outside the module', placeholder: 'access level' },
+      ],
       filename: 'modular-monolith.ts',
-      code: "// === Architecture: Modular Monolith ===\n//\n// Rules (enforced in CLAUDE.md + linter):\n// 1. Modules ONLY import from other modules via their index.ts\n// 2. No module accesses another module's database tables\n// 3. Cross-module communication via event bus OR defined interfaces\n// 4. Each module owns its own migrations\n\n// src/features/orders/index.ts — PUBLIC API\nexport { placeOrder, cancelOrder, getOrder } from './orders.service'\nexport type { Order, OrderStatus } from './orders.types'\n// Everything else is internal — other modules cannot import it\n\n// src/features/payments/index.ts — PUBLIC API  \nexport { chargePayment, refundPayment } from './payments.service'\nexport type { Payment, PaymentStatus } from './payments.types'\n\n// Enforcement via ESLint rule:\n// eslint-plugin-boundaries or custom rule:\n{\n  \"rules\": {\n    \"boundaries/element-types\": [\n      \"error\",\n      {\n        \"default\": {\n          \"allow\": [\"[same-module]\"]\n        },\n        \"rules\": [\n          {\n            \"from\": \"features/*\",\n            \"allow\": [\"features/*/index\", \"contracts/*\", \"infrastructure/*\"]\n          }\n        ]\n      }\n    ]\n  }\n}\n\n// If Agent A tries to import from features/payments/payments.service.ts\n// (bypassing the index), the linter catches it immediately.",
+      explanation: 'The key rules: modules import only via index.ts (enforced by linter), no cross-module database access, communication via event bus or contracts, and each module owns its migrations. If an agent tries to bypass the index, the linter catches it immediately.',
     },
     {
       type: 'multiple-choice',
@@ -269,29 +356,56 @@ const content: LessonContent = {
 
     // === EVENT SOURCING & CQRS ===
     {
-      type: 'info',
-      title: 'Pattern 4: Event sourcing for agent-safe state management',
-      body: "In event sourcing, you never mutate state directly. Instead, you record events: OrderPlaced, PaymentCharged, ItemShipped. The current state is derived by replaying events. Why is this agent-friendly? Because events are append-only. Two agents can never conflict on a state mutation — they both just append new events. And the event log provides a complete audit trail that agents can read to understand what happened, without needing tribal knowledge of state transitions.",
+      type: 'multiple-choice',
+      question: 'Why is event sourcing agent-friendly?',
+      options: [
+        'It makes the code simpler',
+        'Events are append-only — two agents can never conflict on a state mutation because they both just append new events',
+        'It eliminates the need for a database',
+        'Agents can read events faster than database rows',
+      ],
+      correctIndex: 1,
+      explanation: 'In event sourcing, you never mutate state directly. You record events: OrderPlaced, PaymentCharged, ItemShipped. Current state is derived by replaying events. Events are append-only, so two agents can never conflict on a state mutation. The event log also provides a complete audit trail agents can read without tribal knowledge.',
     },
     {
-      type: 'code-demo',
-      title: 'Event sourcing eliminates state conflicts',
-      body: 'Multiple agents can append events simultaneously without conflicts. State is derived, never directly mutated.',
+      type: 'code-fill',
+      instruction: 'Complete this event sourcing state derivation. Fill in the event types and state transitions.',
       language: 'typescript',
+      template: '// Event Store (append-only, never conflicts)\n\n// Agent A appends:\nawait eventStore.append({\n  aggregateId: orderId,\n  type: \'___\',\n  data: { customerId, items, totalCents },\n})\n\n// Agent B appends simultaneously:\nawait eventStore.append({\n  aggregateId: orderId,\n  type: \'___\',\n  data: { transactionId, amountCents },\n})\n\n// Derive state by replaying:\nfunction deriveOrderState(events: DomainEvent[]): OrderState {\n  return events.reduce((state, event) => {\n    switch (event.type) {\n      case \'OrderPlaced\':\n        return { ...state, status: \'___\' }\n      case \'PaymentCharged\':\n        return { ...state, status: \'___\' }\n      default: return state\n    }\n  }, {} as OrderState)\n}',
+      blanks: [
+        { id: 'event-1', answer: 'OrderPlaced', alternatives: ['order.placed', 'ORDER_PLACED'], hint: 'The event when a new order is created', placeholder: 'event type' },
+        { id: 'event-2', answer: 'PaymentCharged', alternatives: ['payment.charged', 'PAYMENT_CHARGED'], hint: 'The event when payment is processed', placeholder: 'event type' },
+        { id: 'status-1', answer: 'placed', alternatives: ['created', 'new'], hint: 'Initial order status after creation', placeholder: 'status' },
+        { id: 'status-2', answer: 'paid', alternatives: ['charged', 'completed'], hint: 'Status after successful payment', placeholder: 'status' },
+      ],
       filename: 'event-sourcing.ts',
-      code: "// === Event Store (append-only, never conflicts) ===\n\ninterface DomainEvent {\n  id: string\n  aggregateId: string\n  type: string\n  data: Record<string, unknown>\n  timestamp: Date\n  version: number\n}\n\n// Agent A works on order placement:\nawait eventStore.append({\n  aggregateId: orderId,\n  type: 'OrderPlaced',\n  data: { customerId, items, totalCents },\n})\n\n// Agent B works on payment processing (simultaneously, no conflict):\nawait eventStore.append({\n  aggregateId: orderId,\n  type: 'PaymentCharged',\n  data: { transactionId, amountCents },\n})\n\n// Agent C works on shipping (simultaneously, no conflict):\nawait eventStore.append({\n  aggregateId: orderId,\n  type: 'ShipmentCreated',\n  data: { trackingNumber, carrier },\n})\n\n// Current state derived by replaying events:\nfunction deriveOrderState(events: DomainEvent[]): OrderState {\n  return events.reduce((state, event) => {\n    switch (event.type) {\n      case 'OrderPlaced':\n        return { ...state, status: 'placed', ...event.data }\n      case 'PaymentCharged':\n        return { ...state, status: 'paid', transactionId: event.data.transactionId }\n      case 'ShipmentCreated':\n        return { ...state, status: 'shipped', tracking: event.data.trackingNumber }\n      default:\n        return state\n    }\n  }, {} as OrderState)\n}",
+      explanation: 'Multiple agents append events simultaneously without conflicts. Agent A appends OrderPlaced, Agent B appends PaymentCharged — no collision because events are append-only. State is derived by replaying the event stream, giving a complete audit trail.',
     },
     {
-      type: 'info',
-      title: 'When event sourcing is overkill',
-      body: "Event sourcing adds complexity: you need event stores, replay logic, eventual consistency handling, and snapshot strategies for long event streams. It is justified when: (1) you need a complete audit trail, (2) multiple agents frequently modify the same aggregate, (3) you need temporal queries (\"what was the state at time X?\"). It is NOT justified for simple CRUD with low write contention. Use the evaluation framework from Lesson 4-4: does the problem actually require this, or is a simpler approach sufficient?",
+      type: 'multiple-choice',
+      question: 'When is event sourcing NOT justified?',
+      options: [
+        'When you need a complete audit trail',
+        'When multiple agents frequently modify the same aggregate',
+        'For simple CRUD with low write contention — it adds event stores, replay logic, and eventual consistency handling for no benefit',
+        'When you need temporal queries like "what was the state at time X?"',
+      ],
+      correctIndex: 2,
+      explanation: 'Event sourcing adds complexity: event stores, replay logic, eventual consistency, snapshot strategies. Justified when you need audit trails, handle high write contention, or need temporal queries. NOT justified for simple CRUD. Use the evaluation framework: does the problem actually require this, or is a simpler approach sufficient?',
     },
 
     // === SCALE FACTOR ===
     {
-      type: 'info',
-      title: 'The scale factor: does adding agents help or hurt?',
-      body: "Here is the ultimate litmus test for your architecture. Imagine you currently use 3 agents. You add a 4th. Does the system build FASTER or SLOWER? Faster: your architecture scales. Each agent works on an independent unit. No coordination overhead increases. Slower: your architecture has hit a ceiling. The 4th agent creates conflicts, waits for others, or duplicates work. Measure this empirically: time how long N agents take to complete M tasks, then try N+1 agents on the same workload.",
+      type: 'multiple-choice',
+      question: 'You currently use 3 agents. You add a 4th. The system builds SLOWER. What does this mean?',
+      options: [
+        'The 4th agent is defective',
+        'Your architecture has hit a parallelism ceiling — the 4th agent creates conflicts, waits for others, or duplicates work',
+        'You need a faster machine',
+        '3 agents is always the maximum for any project',
+      ],
+      correctIndex: 1,
+      explanation: 'The ultimate litmus test: does adding an agent make things FASTER or SLOWER? Faster = architecture scales, each agent works independently. Slower = ceiling hit, the new agent creates conflicts or waits. Measure empirically: time N agents on M tasks, then try N+1 on the same workload.',
     },
     {
       type: 'multiple-choice',
@@ -313,9 +427,16 @@ const content: LessonContent = {
 
     // === PATTERN SELECTION ===
     {
-      type: 'info',
-      title: 'Choosing the right pattern',
-      body: "Not every system needs every pattern. The choice depends on your scale requirements. For a 2-3 agent fleet: modular monolith with clear boundaries is usually sufficient. For 4-8 agents: add event-driven communication between modules. For 8+ agents: consider event sourcing for high-contention aggregates and contract-first development workflow. Start simpler and add complexity only when you measure that your parallelism ceiling has been hit. Over-engineering the coordination layer is as much of a failure as under-engineering it.",
+      type: 'multiple-choice',
+      question: 'For a fleet of 2-3 agents, which pattern is usually sufficient?',
+      options: [
+        'Full event sourcing with CQRS',
+        'Microservices with Kubernetes',
+        'Modular monolith with clear boundaries — start simpler and add complexity only when the parallelism ceiling is measured',
+        'Contract-first with event-driven communication',
+      ],
+      correctIndex: 2,
+      explanation: 'Not every system needs every pattern. 2-3 agents: modular monolith with clear boundaries. 4-8 agents: add event-driven communication. 8+ agents: consider event sourcing for high-contention areas and contract-first workflow. Start simpler and add complexity only when you measure that your parallelism ceiling has been hit.',
     },
     {
       type: 'order',
@@ -330,19 +451,26 @@ const content: LessonContent = {
       correctOrder: [4, 1, 3, 2, 0],
     },
     {
-      type: 'code-demo',
-      title: 'Pattern selection guide',
-      body: 'Match your architecture to your agent fleet size. Over-engineering is as harmful as under-engineering.',
-      language: 'markdown',
-      filename: 'pattern-selection.md',
-      code: "# Pattern Selection Guide\n\n## 1-2 Agents (solo or pair)\n- Feature-based directories\n- Consistent naming conventions\n- Collocated tests\n- Simple CLAUDE.md\n- Direct function calls between modules\n\n## 3-5 Agents (small fleet)\n- Modular monolith with index.ts public APIs\n- ESLint boundary enforcement\n- Module-specific CLAUDE.md files\n- Per-module database migrations\n- Interface contracts for adjacent modules\n\n## 5-8 Agents (medium fleet)\n- Event-driven communication between modules\n- Contract-first development workflow\n- Event bus for decoupling\n- Separate test suites per module\n- Conflict rate monitoring (<5% target)\n\n## 8+ Agents (large fleet)\n- Event sourcing for high-contention areas\n- CQRS where read/write patterns differ\n- Full contract suite (API, events, repos)\n- Automated boundary violation detection\n- Parallelism ceiling monitoring",
+      type: 'match',
+      instruction: 'Match each fleet size to the appropriate architectural pattern:',
+      leftItems: ['1-2 agents', '3-5 agents', '5-8 agents', '8+ agents'],
+      rightItems: ['Feature directories + direct function calls', 'Modular monolith + interface contracts', 'Event-driven + contract-first workflow', 'Event sourcing + CQRS + full contract suite'],
+      correctPairs: { 0: 0, 1: 1, 2: 2, 3: 3 },
+      explanation: 'Match architecture to fleet size. 1-2 agents need simple feature directories. 3-5 agents need enforced module boundaries. 5-8 agents need event-driven decoupling. 8+ agents need event sourcing for high-contention areas. Over-engineering is as harmful as under-engineering.',
     },
 
     // === SYNTHESIS ===
     {
-      type: 'info',
-      title: 'System architecture as a multiplier',
-      body: "Your architecture IS the limit on how many agents can work productively in parallel. A well-designed system with event-driven boundaries and clear contracts scales linearly — each additional agent adds proportional speed. A poorly designed system with shared state and tight coupling hits a ceiling at 2-3 agents, after which more agents make things slower. The architect's job in an agent-native world is to push that ceiling as high as possible by choosing patterns that minimize coordination cost and maximize independent work units.",
+      type: 'multiple-choice',
+      question: 'Your architecture IS the limit on how many agents can work in parallel. A well-designed system scales:',
+      options: [
+        'Logarithmically — each new agent adds diminishing returns',
+        'Linearly — each additional agent adds proportional speed because coordination cost stays flat',
+        'Exponentially — agents make each other faster through collaboration',
+        'It does not matter — agents work at the same speed regardless of architecture',
+      ],
+      correctIndex: 1,
+      explanation: 'A well-designed system with event-driven boundaries and clear contracts scales linearly — each additional agent adds proportional speed. A poorly designed system hits a ceiling at 2-3 agents, after which more agents make things slower. The architect\'s job is to push that ceiling as high as possible by minimizing coordination cost and maximizing independent work units.',
     },
     {
       type: 'multiple-choice',

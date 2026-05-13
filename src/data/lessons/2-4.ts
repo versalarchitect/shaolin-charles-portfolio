@@ -22,17 +22,30 @@ const content: LessonContent = {
 
     // === SPECCING A DATABASE ===
     {
-      type: 'info',
-      title: 'What to include in a database spec',
-      body: "A good database spec for the agent covers: entities (what are the nouns in your system), relationships (how entities connect — one-to-many, many-to-many), constraints (NOT NULL, UNIQUE, CHECK, foreign keys), indexes (which columns will be queried/filtered/joined), enums (fixed sets of values like status or role), and audit fields (created_at, updated_at, deleted_at if soft-deletes). The more explicit you are, the fewer assumptions the agent makes.",
+      type: 'multiple-choice',
+      question: 'Which element is MOST important to include in a database spec for an AI agent?',
+      options: [
+        'The color scheme for the database admin panel',
+        'Explicit relationship types (one-to-many, many-to-many) and constraints (NOT NULL, UNIQUE, FK)',
+        'The exact SQL dialect the database will use',
+        'A list of all API endpoints that will query the database',
+      ],
+      correctIndex: 1,
+      explanation: 'A good database spec covers: entities, relationships (one-to-many, many-to-many), constraints (NOT NULL, UNIQUE, CHECK, foreign keys), indexes, enums, and audit fields. The more explicit you are about relationships and constraints, the fewer assumptions the agent makes. Without them, the agent will guess — and guess wrong.',
     },
     {
-      type: 'code-demo',
-      title: 'Example database spec prompt',
-      body: 'Structure your spec like this before directing the agent. Notice explicit relationship types and constraints.',
+      type: 'code-fill',
+      instruction: 'Complete this database spec by filling in the relationship types and constraints:',
       language: 'markdown',
       filename: 'database-spec.md',
-      code: "## Database Spec: Project Management App\n\n### Entities\n- users (from auth.users, extended with profiles)\n- workspaces (multi-tenant, users belong to many)\n- projects (belong to one workspace)\n- tasks (belong to one project, assigned to one user)\n- comments (belong to one task, authored by one user)\n\n### Relationships\n- users <-> workspaces: many-to-many (junction: workspace_members)\n- workspace -> projects: one-to-many\n- project -> tasks: one-to-many\n- task -> comments: one-to-many\n- user -> tasks: one-to-many (assignee)\n\n### Constraints\n- workspace_members: UNIQUE(user_id, workspace_id)\n- tasks.status: CHECK (status IN ('todo','in_progress','done'))\n- tasks.title: NOT NULL, max 200 chars\n- projects.slug: UNIQUE per workspace\n\n### Indexes\n- tasks: (project_id, status) for filtered lists\n- comments: (task_id, created_at) for chronological loading\n- workspace_members: (user_id) for \"my workspaces\" query\n\n### Audit\n- All tables: created_at DEFAULT now(), updated_at via trigger",
+      template: '## Database Spec: Project Management App\n\n### Relationships\n- users <-> workspaces: {{user_workspace_rel}} (junction: workspace_members)\n- workspace -> projects: {{workspace_project_rel}}\n- project -> tasks: one-to-many\n\n### Constraints\n- workspace_members: {{unique_constraint}}(user_id, workspace_id)\n- tasks.status: {{check_type}} (status IN (\'todo\',\'in_progress\',\'done\'))\n- tasks.title: NOT NULL, max 200 chars',
+      blanks: [
+        { id: 'user_workspace_rel', answer: 'many-to-many', alternatives: ['M:N', 'm2m'], placeholder: 'relationship type?', hint: 'Users belong to many workspaces, workspaces have many users' },
+        { id: 'workspace_project_rel', answer: 'one-to-many', alternatives: ['1:N', '1:many', 'one to many'], placeholder: 'relationship type?', hint: 'A project belongs to exactly one workspace' },
+        { id: 'unique_constraint', answer: 'UNIQUE', alternatives: ['unique'], placeholder: 'constraint?', hint: 'A user can only be a member of a workspace once' },
+        { id: 'check_type', answer: 'CHECK', alternatives: ['check'], placeholder: 'constraint type?', hint: 'Restricts column values to a specific set' },
+      ],
+      explanation: 'Explicit relationship types tell the agent whether to create junction tables (many-to-many) or simple foreign keys (one-to-many). UNIQUE prevents duplicates, CHECK restricts values to valid options. Without these, the agent guesses.',
     },
     {
       type: 'checkpoint',
@@ -42,9 +55,16 @@ const content: LessonContent = {
 
     // === DIRECTING SCHEMA GENERATION ===
     {
-      type: 'info',
-      title: 'Directing the agent to generate schema',
-      body: "Give the spec to the agent and ask it to generate a migration file. Do not ask for \"the whole database\" at once — break it into logical groups. First: users and workspaces. Second: projects and tasks. Third: comments and activity. This sequencing matters because later migrations reference earlier tables via foreign keys. It also makes reviewing easier — smaller migrations are easier to audit than one 200-line file.",
+      type: 'multiple-choice',
+      question: 'When asking an agent to generate database migrations, what is the best approach?',
+      options: [
+        'Ask for the entire database schema in one migration file',
+        'Break it into logical groups (users first, then projects, then comments) so FKs reference existing tables',
+        'Let the agent decide the order — it knows best',
+        'Generate all tables without foreign keys, then add FKs in a separate migration',
+      ],
+      correctIndex: 1,
+      explanation: 'Break migrations into logical groups. Later migrations reference earlier tables via foreign keys, so order matters. Smaller migrations are also easier to review — auditing a 50-line file is much easier than a 200-line one. This sequencing prevents FK reference errors and gives you review checkpoints.',
     },
     {
       type: 'terminal',
@@ -53,12 +73,19 @@ const content: LessonContent = {
       hint: 'Use supabase migration new followed by a descriptive snake_case name',
     },
     {
-      type: 'code-demo',
-      title: 'Well-structured migration output',
-      body: 'This is what a properly constrained migration looks like. Compare what the agent generates against this standard.',
+      type: 'code-fill',
+      instruction: 'Complete this migration to create a properly constrained workspace members junction table:',
       language: 'sql',
-      filename: 'supabase/migrations/001_add_users_and_workspaces.sql',
-      code: "-- Create enum for workspace roles\nCREATE TYPE workspace_role AS ENUM ('owner', 'admin', 'member', 'viewer');\n\n-- Profiles table (extends auth.users)\nCREATE TABLE profiles (\n  id UUID PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE,\n  display_name TEXT NOT NULL,\n  avatar_url TEXT,\n  created_at TIMESTAMPTZ NOT NULL DEFAULT now(),\n  updated_at TIMESTAMPTZ NOT NULL DEFAULT now()\n);\n\n-- Workspaces\nCREATE TABLE workspaces (\n  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),\n  name TEXT NOT NULL,\n  slug TEXT NOT NULL UNIQUE,\n  created_by UUID NOT NULL REFERENCES profiles(id),\n  created_at TIMESTAMPTZ NOT NULL DEFAULT now(),\n  updated_at TIMESTAMPTZ NOT NULL DEFAULT now()\n);\n\n-- Junction table: workspace members\nCREATE TABLE workspace_members (\n  workspace_id UUID NOT NULL REFERENCES workspaces(id) ON DELETE CASCADE,\n  user_id UUID NOT NULL REFERENCES profiles(id) ON DELETE CASCADE,\n  role workspace_role NOT NULL DEFAULT 'member',\n  joined_at TIMESTAMPTZ NOT NULL DEFAULT now(),\n  PRIMARY KEY (workspace_id, user_id)\n);\n\n-- Indexes\nCREATE INDEX idx_workspace_members_user ON workspace_members(user_id);\nCREATE INDEX idx_workspaces_slug ON workspaces(slug);\n\n-- Updated_at trigger function\nCREATE OR REPLACE FUNCTION update_updated_at()\nRETURNS TRIGGER AS $$\nBEGIN\n  NEW.updated_at = now();\n  RETURN NEW;\nEND;\n$$ LANGUAGE plpgsql;\n\nCREATE TRIGGER profiles_updated_at\n  BEFORE UPDATE ON profiles\n  FOR EACH ROW EXECUTE FUNCTION update_updated_at();\n\nCREATE TRIGGER workspaces_updated_at\n  BEFORE UPDATE ON workspaces\n  FOR EACH ROW EXECUTE FUNCTION update_updated_at();",
+      filename: 'supabase/migrations/001_add_workspaces.sql',
+      template: "-- Junction table: workspace members\nCREATE TABLE workspace_members (\n  workspace_id UUID NOT NULL REFERENCES workspaces(id) ON DELETE {{ws_cascade}},\n  user_id UUID NOT NULL REFERENCES profiles(id) ON DELETE CASCADE,\n  role workspace_role NOT NULL DEFAULT '{{default_role}}',\n  joined_at TIMESTAMPTZ NOT NULL DEFAULT {{default_time}},\n  PRIMARY KEY (workspace_id, {{pk_col}})\n);\n\n-- Index for 'my workspaces' query\nCREATE INDEX idx_workspace_members_user ON workspace_members({{index_col}});",
+      blanks: [
+        { id: 'ws_cascade', answer: 'CASCADE', alternatives: ['cascade'], placeholder: 'delete behavior?', hint: 'When workspace is deleted, remove its members' },
+        { id: 'default_role', answer: 'member', placeholder: 'default role?', hint: 'New users join as the lowest privilege role' },
+        { id: 'default_time', answer: 'now()', alternatives: ['NOW()'], placeholder: 'default value?', hint: 'Postgres function for current timestamp' },
+        { id: 'pk_col', answer: 'user_id', placeholder: 'second PK column?', hint: 'Composite PK prevents duplicate membership' },
+        { id: 'index_col', answer: 'user_id', placeholder: 'which column?', hint: 'Needed for the "my workspaces" query' },
+      ],
+      explanation: 'A junction table needs: CASCADE on both FKs (membership is meaningless without both parent records), a composite PRIMARY KEY to prevent duplicates, a sensible default role, and an index on user_id for the "show my workspaces" query pattern.',
     },
     {
       type: 'checkpoint',
@@ -68,17 +95,30 @@ const content: LessonContent = {
 
     // === REVIEWING MIGRATIONS ===
     {
-      type: 'info',
-      title: 'Reviewing migrations: what agents get wrong',
-      body: "Here is your review checklist for every agent-generated migration: (1) Missing NOT NULL — agents leave columns nullable by default when they should be required. (2) Missing indexes on foreign key columns — Postgres does NOT auto-index FKs, and missing indexes destroy join performance. (3) Wrong CASCADE behavior — CASCADE on delete means deleting a user deletes all their data. Sometimes you want SET NULL or RESTRICT instead. (4) No updated_at trigger. (5) VARCHAR(255) everywhere instead of TEXT with CHECK constraints. (6) Missing UNIQUE constraints on natural keys (email, slug, etc.).",
+      type: 'multiple-choice',
+      question: 'Which of these is the MOST common mistake agents make in generated migrations?',
+      options: [
+        'Using the wrong SQL dialect',
+        'Leaving columns nullable by default when they should be NOT NULL, and missing indexes on FK columns',
+        'Creating too many tables at once',
+        'Using incorrect column names',
+      ],
+      correctIndex: 1,
+      explanation: 'Agents consistently: (1) leave columns nullable when they should be NOT NULL, (2) skip indexes on FK columns (Postgres does NOT auto-index FKs), (3) default to CASCADE when SET NULL or RESTRICT would be safer, (4) skip updated_at triggers, (5) use VARCHAR(255) instead of TEXT with CHECK, (6) miss UNIQUE constraints on natural keys. Always review for these patterns.',
     },
     {
-      type: 'code-demo',
-      title: 'Spot the problems in this agent output',
-      body: 'The agent generated this migration. Count the issues before reading the explanation below.',
+      type: 'code-fill',
+      instruction: 'The agent generated a broken tasks table. Fill in the missing constraints to fix it:',
       language: 'sql',
       filename: 'supabase/migrations/002_add_tasks.sql',
-      code: "-- Agent-generated (has problems!)\nCREATE TABLE tasks (\n  id SERIAL PRIMARY KEY,\n  title VARCHAR(255),          -- Problem 1: should be NOT NULL\n  description TEXT,\n  status TEXT,                  -- Problem 2: no CHECK constraint\n  project_id INTEGER,           -- Problem 3: no FK, no NOT NULL\n  assigned_to UUID,             -- Problem 4: no FK reference\n  created_at TIMESTAMP          -- Problem 5: no DEFAULT, no NOT NULL\n);                              -- Problem 6: no index on project_id\n                                -- Problem 7: no updated_at column",
+      template: "CREATE TABLE tasks (\n  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),\n  title TEXT {{title_constraint}},\n  description TEXT,\n  status TEXT NOT NULL {{status_check}},\n  project_id UUID NOT NULL REFERENCES {{fk_table}}(id),\n  assigned_to UUID REFERENCES profiles(id),\n  created_at TIMESTAMPTZ NOT NULL DEFAULT now(),\n  {{update_col}} TIMESTAMPTZ NOT NULL DEFAULT now()\n);",
+      blanks: [
+        { id: 'title_constraint', answer: 'NOT NULL', alternatives: ['not null'], placeholder: 'constraint?', hint: 'Every task must have a title' },
+        { id: 'status_check', answer: "CHECK (status IN ('todo','in_progress','done'))", alternatives: ["check (status in ('todo','in_progress','done'))"], placeholder: 'validation?', hint: 'Restrict status to valid values only' },
+        { id: 'fk_table', answer: 'projects', placeholder: 'parent table?', hint: 'Tasks belong to which entity?' },
+        { id: 'update_col', answer: 'updated_at', alternatives: ['updatedAt'], placeholder: 'missing column?', hint: 'Track when the row was last modified' },
+      ],
+      explanation: 'Every required column needs NOT NULL. Status columns need CHECK constraints to prevent invalid values. FK columns need proper REFERENCES. And every table needs an updated_at column with a trigger to track modifications.',
     },
     {
       type: 'multiple-choice',
@@ -95,9 +135,22 @@ const content: LessonContent = {
 
     // === COMMON DATA MODELING MISTAKES ===
     {
-      type: 'info',
-      title: 'Data modeling mistakes agents commonly make',
-      body: "Beyond constraint issues, agents make structural modeling errors: (1) Denormalization where normalization is needed — stuffing tags as a comma-separated string instead of a junction table. (2) Missing junction tables for many-to-many — using arrays of IDs instead of proper relational joins. (3) Using VARCHAR(255) everywhere — a MySQL habit that has no benefit in Postgres (use TEXT with CHECK). (4) No audit timestamps — missing created_at/updated_at on every table. (5) Integer IDs instead of UUIDs — makes multi-tenant systems and data merging painful.",
+      type: 'compare',
+      title: 'Denormalized vs normalized data modeling',
+      body: 'Agents often denormalize where normalization is needed. Spot the structural difference.',
+      question: 'Which approach handles tags correctly for a blog platform?',
+      correctSide: 'right',
+      left: {
+        label: 'Agent default (denormalized)',
+        content: "CREATE TABLE posts (\n  id UUID PRIMARY KEY,\n  title TEXT NOT NULL,\n  tags TEXT[],  -- Array of strings\n  -- Problems:\n  -- No referential integrity\n  -- Can't store tag metadata\n  -- Querying 'all posts with tag X'\n  --   requires scanning every row\n  -- No canonical tag list\n);",
+        language: 'sql',
+      },
+      right: {
+        label: 'Properly normalized',
+        content: "CREATE TABLE tags (\n  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),\n  name TEXT NOT NULL UNIQUE,\n  color TEXT,\n  created_by UUID REFERENCES profiles(id)\n);\nCREATE TABLE post_tags (\n  post_id UUID REFERENCES posts(id)\n    ON DELETE CASCADE,\n  tag_id UUID REFERENCES tags(id)\n    ON DELETE CASCADE,\n  PRIMARY KEY (post_id, tag_id)\n);",
+        language: 'sql',
+      },
+      explanation: 'Array columns cannot enforce that tag values exist in a canonical list (no FK). You cannot store metadata about a tag (color, description, created_by). Querying "all posts with tag X" requires scanning every row. A proper tags table + post_tags junction table solves all of these. Agents default to arrays because they look simpler.',
     },
     {
       type: 'multiple-choice',
@@ -160,7 +213,7 @@ const content: LessonContent = {
 
     // === WORKFLOW DIAGRAM ===
     {
-      type: 'diagram',
+      type: 'interactive-diagram',
       title: 'Iterative Schema Refinement',
       body: 'Your workflow is a review loop. You never accept the first draft — you review, fix, and verify before migrating.',
       diagram: {
@@ -180,13 +233,47 @@ const content: LessonContent = {
           { from: 'review', to: 'migrate', label: 'approved' },
         ],
       },
+      stages: [
+        {
+          highlightNodes: ['spec', 'generate'],
+          highlightEdges: [{ from: 'spec', to: 'generate' }],
+          explanation: 'You start by writing a detailed spec — entities, relationships, constraints, indexes. The agent uses this to generate a SQL migration file.',
+        },
+        {
+          highlightNodes: ['generate', 'review'],
+          highlightEdges: [{ from: 'generate', to: 'review' }],
+          explanation: 'The agent produces SQL. You review it against your checklist: NOT NULL on required fields, indexes on FKs, correct CASCADE behavior, CHECK constraints on enums.',
+        },
+        {
+          highlightNodes: ['review', 'fix'],
+          highlightEdges: [{ from: 'review', to: 'fix' }],
+          explanation: 'Issues found? Give surgical corrections: "Add NOT NULL to tasks.title. Add an index on project_id." Specific fixes, not full rewrites.',
+        },
+        {
+          highlightNodes: ['fix', 'generate'],
+          highlightEdges: [{ from: 'fix', to: 'generate' }],
+          explanation: 'The agent regenerates only the parts you flagged. This loop repeats until the migration passes your review. Most schemas need 2-3 iterations.',
+        },
+        {
+          highlightNodes: ['review', 'migrate'],
+          highlightEdges: [{ from: 'review', to: 'migrate' }],
+          explanation: 'Once the migration passes review, apply it with supabase db push. The schema is now locked in — changing it later requires a new migration and data backfill.',
+        },
+      ],
     },
 
     // === ITERATIVE REFINEMENT ===
     {
-      type: 'info',
-      title: 'Iterative refinement without starting over',
-      body: "When you find issues in a migration, do not ask the agent to regenerate from scratch. That wastes context and may introduce new issues. Instead, tell it exactly what to fix: \"Add NOT NULL to tasks.title and tasks.project_id. Add a CHECK constraint on status. Add an index on project_id. Add FK references to projects(id) and profiles(id). Add created_at and updated_at with defaults.\" Surgical fixes, not rewrites.",
+      type: 'multiple-choice',
+      question: 'You find 3 issues in an agent-generated migration. What is the best correction approach?',
+      options: [
+        'Ask the agent to regenerate the entire migration from scratch',
+        'List the exact fixes: "Add NOT NULL to tasks.title, add CHECK on status, add index on project_id"',
+        'Write the corrected migration yourself without the agent',
+        'Accept it as-is and fix issues later when they cause problems',
+      ],
+      correctIndex: 1,
+      explanation: 'Surgical corrections preserve what the agent got right and only fix what it got wrong. Regenerating from scratch wastes context and may introduce new issues. Telling the agent exactly what to fix — column by column, constraint by constraint — produces the fastest, most reliable result.',
     },
     {
       type: 'code-input',
@@ -204,12 +291,17 @@ const content: LessonContent = {
       hint: 'The Supabase CLI command that applies pending migrations to your linked database',
     },
     {
-      type: 'code-demo',
-      title: 'Foreign key with proper cascade',
-      body: 'Choose CASCADE behavior deliberately. This example shows all three options and when to use each.',
+      type: 'code-fill',
+      instruction: 'Choose the correct ON DELETE behavior for each foreign key relationship:',
       language: 'sql',
       filename: 'cascade-examples.sql',
-      code: "-- CASCADE: Delete user → delete all their posts\n-- Use when: child data is meaningless without parent\nCREATE TABLE posts (\n  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),\n  user_id UUID NOT NULL REFERENCES profiles(id) ON DELETE CASCADE\n);\n\n-- SET NULL: Delete workspace → keep projects, clear workspace_id\n-- Use when: child can exist independently\nCREATE TABLE projects (\n  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),\n  workspace_id UUID REFERENCES workspaces(id) ON DELETE SET NULL\n);\n\n-- RESTRICT: Cannot delete a project that still has tasks\n-- Use when: deletion should be blocked if children exist\nCREATE TABLE tasks (\n  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),\n  project_id UUID NOT NULL REFERENCES projects(id) ON DELETE RESTRICT\n);",
+      template: "-- Child data is meaningless without parent\nCREATE TABLE posts (\n  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),\n  user_id UUID NOT NULL REFERENCES profiles(id)\n    ON DELETE {{posts_cascade}}\n);\n\n-- Child can exist independently\nCREATE TABLE projects (\n  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),\n  workspace_id UUID REFERENCES workspaces(id)\n    ON DELETE {{projects_cascade}}\n);\n\n-- Deletion should be blocked if children exist\nCREATE TABLE tasks (\n  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),\n  project_id UUID NOT NULL REFERENCES projects(id)\n    ON DELETE {{tasks_cascade}}\n);",
+      blanks: [
+        { id: 'posts_cascade', answer: 'CASCADE', alternatives: ['cascade'], placeholder: 'behavior?', hint: 'Posts are meaningless without their author' },
+        { id: 'projects_cascade', answer: 'SET NULL', alternatives: ['set null', 'SET null'], placeholder: 'behavior?', hint: 'Keep projects alive but clear the workspace link' },
+        { id: 'tasks_cascade', answer: 'RESTRICT', alternatives: ['restrict'], placeholder: 'behavior?', hint: 'Prevent deleting a project that still has tasks' },
+      ],
+      explanation: 'CASCADE deletes children automatically (posts without author are useless). SET NULL keeps children but removes the link (projects can exist without a workspace). RESTRICT prevents deletion entirely (cannot delete a project with active tasks). Choose deliberately — the agent will default to CASCADE for everything.',
     },
     {
       type: 'multiple-choice',

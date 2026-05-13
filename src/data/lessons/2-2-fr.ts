@@ -17,9 +17,16 @@ const content: LessonContent = {
 
     // === SCAFFOLD PROMPTS ===
     {
-      type: 'info',
-      title: 'Quoi dire à l\'agent',
-      body: "Quand vous dirigez un scaffold, spécifiez : le framework et la version (Next.js 15, App Router), la structure de routing (quelles pages existent), les besoins en données par route (quelles pages nécessitent des données côté serveur), les layouts partagés (qu'est-ce qui enveloppe quoi), et les packages clés (ORM, styling, auth). Ne spécifiez PAS : les conventions de nommage de fichiers (l'agent connaît les conventions Next.js), l'organisation interne des dossiers de composants, l'ordre des imports, ni le config boilerplate. Laissez l'agent gérer ce qu'il sait déjà.",
+      type: 'multiple-choice',
+      question: 'Quand vous dirigez un agent pour scaffolder un projet, lequel des elements suivants ne devriez-vous PAS specifier dans votre prompt ?',
+      options: [
+        'Le framework et la version (ex. : Next.js 15, App Router)',
+        'Les conventions de nommage de fichiers et l\'ordre des imports',
+        'La structure de routing (quelles pages existent)',
+        'Les packages cles (ORM, styling, auth)',
+      ],
+      correctIndex: 1,
+      explanation: 'Les conventions de nommage, l\'ordre des imports et le config boilerplate sont des choses que l\'agent connait deja. Specifiez les decisions couteuses : version du framework, structure de routing, besoins en donnees par route, layouts partages et packages cles. Laissez l\'agent gerer ce qu\'il sait deja — micro-gerer les details bon marche gaspille votre temps et la fenetre de contexte.',
     },
     {
       type: 'compare',
@@ -40,12 +47,17 @@ const content: LessonContent = {
       explanation: 'Les decisions architecturales (gauche) sont couteuses a changer apres la construction du scaffold. Les details d\'implementation (droite) sont bon marche a ajuster plus tard. Concentrez votre spec sur les decisions couteuses.',
     },
     {
-      type: 'code-demo',
-      title: 'Un bon prompt de scaffold',
-      body: 'Ce prompt donne assez d\'infos à Claude Code pour scaffolder correctement sans micro-gérer les noms de fichiers ou le boilerplate.',
+      type: 'code-fill',
+      instruction: 'Ce prompt donne assez d\'infos a Claude Code pour scaffolder correctement. Completez les specifications de routes et decisions de rendu manquantes.',
       language: 'text',
       filename: 'scaffold-prompt.txt',
-      code: "Create a Next.js 15 app with App Router. TypeScript, Tailwind CSS.\n\nRoutes:\n- / (landing page, static)\n- /dashboard (authenticated, server component, fetches user data)\n- /dashboard/bookmarks (list view, server component, fetches from DB)\n- /dashboard/bookmarks/[id] (detail view, dynamic route)\n- /settings (client component, form interactions)\n\nLayouts:\n- Root layout: global styles, fonts, metadata\n- /dashboard layout: sidebar nav, auth check wrapper\n\nPackages: Drizzle ORM + SQLite, next-auth for session.\n\nUse server components by default. Only use client components\nwhere user interaction requires it (forms, toggles, modals).",
+      template: 'Create a Next.js 15 app with App Router. TypeScript, Tailwind CSS.\n\nRoutes:\n- / (landing page, static)\n- /dashboard (authenticated, {{dashboard_rendering}}, fetches user data)\n- /dashboard/bookmarks (list view, server component, fetches from DB)\n- /dashboard/bookmarks/[id] (detail view, dynamic route)\n- /settings ({{settings_rendering}}, form interactions)\n\nLayouts:\n- Root layout: global styles, fonts, metadata\n- /dashboard layout: sidebar nav, auth check wrapper\n\nPackages: {{database_package}}, next-auth for session.\n\nUse server components by default. Only use client components\nwhere user interaction requires it (forms, toggles, modals).',
+      blanks: [
+        { id: 'dashboard_rendering', answer: 'server component', alternatives: ['Server Component', 'server-component', 'SC'], placeholder: 'strategie de rendu ?', hint: 'Le dashboard recupere des donnees au chargement — pas d\'interactivite necessaire' },
+        { id: 'settings_rendering', answer: 'client component', alternatives: ['Client Component', 'client-component', 'CC'], placeholder: 'strategie de rendu ?', hint: 'Les formulaires avec toggles ont besoin d\'etat cote client (useState)' },
+        { id: 'database_package', answer: 'Drizzle ORM + SQLite', alternatives: ['Drizzle ORM + SQLite', 'drizzle-orm + sqlite', 'Drizzle + SQLite'], placeholder: 'quelle stack BD ?', hint: 'Un ORM TypeScript associe a une base de donnees legere sur fichier' },
+      ],
+      explanation: 'Dashboard recupere des donnees sans interactivite = composant serveur. Settings a des toggles de formulaire = composant client. Nommer le package de base de donnees exact empeche l\'agent d\'evaluer des alternatives.',
     },
     {
       type: 'checkpoint',
@@ -55,9 +67,16 @@ const content: LessonContent = {
 
     // === CREATE NEXT APP ===
     {
-      type: 'info',
-      title: 'La commande initiale',
-      body: "La plupart des sessions de scaffold commencent avec create-next-app. Vous pouvez soit laisser l'agent l'exécuter, soit l'exécuter vous-même d'abord puis inviter l'agent dans le projet existant. Les deux fonctionnent. Si vous laissez l'agent le faire, spécifiez les flags qui vous importent dans votre prompt. L'agent choisira typiquement : --typescript, --tailwind, --app, --src-dir. Si vous avez des préférences pour la config ESLint ou les alias d'import, dites-le explicitement.",
+      type: 'multiple-choice',
+      question: 'Vous voulez que l\'agent scaffolde un projet Next.js de zero. Quelle approche est correcte ?',
+      options: [
+        'Toujours lancer create-next-app vous-meme d\'abord, puis inviter l\'agent',
+        'Toujours laisser l\'agent lancer create-next-app — il connait les bons flags',
+        'Les deux fonctionnent — mais si l\'agent le lance, specifiez les flags qui vous importent dans votre prompt',
+        'Eviter completement create-next-app et laisser l\'agent creer les fichiers manuellement',
+      ],
+      correctIndex: 2,
+      explanation: 'Les deux approches fonctionnent. Si l\'agent lance create-next-app, specifiez les flags qui comptent pour vous (--typescript, --tailwind, --app, --src-dir). Si vous avez des preferences pour la config ESLint ou les alias d\'import, dites-le explicitement. L\'agent fera des choix par defaut raisonnables pour tout ce que vous ne specifiez pas.',
     },
     {
       type: 'terminal',
@@ -66,24 +85,49 @@ const content: LessonContent = {
       hint: 'Utilisez npx create-next-app@latest avec les flags --typescript, --tailwind et --app',
     },
     {
-      type: 'code-demo',
-      title: 'Dire à l\'agent de scaffolder de zéro',
-      body: 'Si vous voulez que l\'agent gère tout, y compris la commande initiale de création, votre prompt pourrait ressembler à ceci.',
+      type: 'code-fill',
+      instruction: 'Si vous voulez que l\'agent gere tout y compris la commande de creation initiale, completez ce prompt de scaffold avec les bons choix technologiques.',
       language: 'text',
       filename: 'full-scaffold-prompt.txt',
-      code: "Create a new Next.js 15 project called \"bookmark-app\" in the\ncurrent directory. Use:\n- TypeScript strict\n- Tailwind CSS\n- App Router with src/ directory\n- ESLint with the default Next.js config\n\nAfter creating, set up the route structure from my spec\nand install Drizzle ORM with better-sqlite3.",
+      template: 'Create a new Next.js 15 project called "bookmark-app" in the\ncurrent directory. Use:\n- {{type_system}} strict\n- {{css_framework}}\n- App Router with src/ directory\n- ESLint with the default Next.js config\n\nAfter creating, set up the route structure from my spec\nand install {{orm_package}} with better-sqlite3.',
+      blanks: [
+        { id: 'type_system', answer: 'TypeScript', alternatives: ['typescript', 'TS'], placeholder: 'quel systeme de types ?', hint: 'Le systeme de types strict pour JavaScript' },
+        { id: 'css_framework', answer: 'Tailwind CSS', alternatives: ['Tailwind', 'tailwindcss'], placeholder: 'quel framework CSS ?', hint: 'Framework CSS utility-first' },
+        { id: 'orm_package', answer: 'Drizzle ORM', alternatives: ['drizzle-orm', 'Drizzle'], placeholder: 'quel ORM ?', hint: 'L\'ORM TypeScript de votre spec' },
+      ],
+      explanation: 'Nommer les packages exacts dans le prompt de scaffold empeche l\'agent d\'evaluer des alternatives. TypeScript strict attrape plus de bugs. Tailwind CSS et Drizzle ORM sont des decisions architecturales qui affectent chaque fichier du projet.',
     },
 
     // === RENDERING STRATEGY ===
     {
-      type: 'info',
-      title: 'Évaluer les décisions de rendu',
-      body: "La décision architecturale la plus importante dans une app Next.js est la stratégie de rendu par route. Les Server Components se rendent sur le serveur, n'ont pas de JavaScript côté client, et peuvent accéder directement aux bases de données et APIs. Les Client Components se rendent côté client, supportent l'interactivité (useState, useEffect, gestionnaires d'événements), et envoient du JavaScript au navigateur. L'agent doit choisir correctement par route. Votre travail est de vérifier que ces choix correspondent aux exigences de données et d'interaction de votre spec.",
+      type: 'compare',
+      title: 'Composants Serveur vs Composants Client',
+      body: 'La decision architecturale la plus importante dans une app Next.js. L\'agent doit choisir correctement par route — votre travail est de verifier.',
+      question: 'Une page qui recupere des favoris depuis une base de donnees et les affiche en liste — quel rendu est correct ?',
+      correctSide: 'left',
+      left: {
+        label: 'Composant Serveur',
+        content: '✓ Rendu sur le serveur\n✓ Pas de JavaScript cote client\n✓ Acces direct a la BD/API\n✓ Chargement initial plus rapide\n\nIdeal pour : affichage de donnees,\ncontenu statique, pages sans\ninteraction utilisateur.',
+        language: 'text',
+      },
+      right: {
+        label: 'Composant Client',
+        content: '✓ Rendu cote client\n✓ Supporte useState, useEffect\n✓ Gestionnaires d\'evenements, etat de formulaire\n✓ Interactivite en temps reel\n\nIdeal pour : formulaires, toggles,\nmodals, mises a jour en temps reel,\ntout ce qui necessite interaction.',
+        language: 'text',
+      },
+      explanation: 'Une page d\'affichage de donnees en lecture seule est le cas d\'ecole du Composant Serveur. L\'erreur la plus courante de l\'agent est de tout mettre en composant client parce que c\'est « plus sur » — ca fonctionne, mais ca envoie du JavaScript inutile. Demandez-vous : cette route a-t-elle besoin d\'interactivite ? Si non, c\'est un composant serveur.',
     },
     {
-      type: 'info',
-      title: 'Le cadre de décision',
-      body: "Demandez-vous : est-ce que cette route a besoin d'interactivité (formulaires, mises à jour en temps réel, toggles) ? Si oui, elle a besoin de composants client — au moins partiellement. Est-ce qu'elle récupère des données au chargement ? Composant serveur. Les deux ? Composant serveur au niveau de la page avec des îlots de composants client pour les parties interactives. L'erreur la plus courante de l'agent est de tout mettre en composant client parce que c'est « plus sûr » — ça fonctionne, mais ça envoie du JavaScript inutile et perd les avantages de performance du rendu serveur.",
+      type: 'multiple-choice',
+      question: 'Une page recupere des donnees ET a un bouton supprimer interactif. Quel est le bon pattern ?',
+      options: [
+        'Faire de toute la page un composant client',
+        'Faire de toute la page un composant serveur et utiliser des server actions pour supprimer',
+        'Composant serveur au niveau de la page avec un petit composant client pour le bouton supprimer',
+        'Creer une route API pour les donnees et une route API separee pour la suppression',
+      ],
+      correctIndex: 2,
+      explanation: 'Le bon pattern est « page serveur avec ilots client ». La page est un composant serveur qui recupere les donnees directement. Les elements interactifs (comme un bouton supprimer) sont extraits dans de petits composants client enfants. Cela vous donne la performance cote serveur avec l\'interactivite cote client ou necessaire.',
     },
     {
       type: 'multiple-choice',
@@ -155,25 +199,24 @@ const content: LessonContent = {
 
     // === REDIRECTING THE AGENT ===
     {
-      type: 'info',
-      title: 'Quand rediriger',
-      body: "Vous révisez la structure générée et trouvez un problème. Peut-être que l'agent a mis « use client » sur une page qui ne fait que récupérer des données. Peut-être qu'il a créé des routes API alors que votre spec disait server actions. Peut-être que la hiérarchie des layouts est plate alors qu'elle devrait être imbriquée. Rediriger n'est pas un échec — c'est le flux de travail normal. La compétence est d'identifier le problème rapidement et de donner une correction précise.",
+      type: 'match',
+      instruction: 'Associez chaque probleme de scaffold a la bonne instruction de redirection :',
+      leftItems: ['L\'agent a ajoute "use client" a une page qui ne fait qu\'afficher des donnees', 'L\'agent a cree des routes API au lieu de server actions', 'La hierarchie des layouts est plate au lieu d\'etre imbriquee', 'L\'agent a fait de chaque composant un composant client'],
+      rightItems: ['Deplacer l\'UI partagee dans dashboard/layout.tsx pour envelopper les routes enfants', 'Retirer "use client", utiliser une requete BD directe dans le corps du composant', 'Retirer les routes API, creer actions.ts avec la directive "use server"', 'Garder la page comme composant serveur, extraire seulement les elements interactifs en enfants clients'],
+      correctPairs: { 0: 1, 1: 2, 2: 0, 3: 3 },
+      explanation: 'Chaque redirection est chirurgicale et specifique : nommez le fichier, decrivez le probleme, et donnez la correction. Rediriger n\'est pas un echec — c\'est le flux de travail normal. La competence est d\'identifier le probleme rapidement.',
     },
     {
-      type: 'code-demo',
-      title: 'Redirection : mauvais type de composant',
-      body: 'L\'agent a fait de la page de liste de favoris un composant client. Voici comment le rediriger.',
+      type: 'code-fill',
+      instruction: 'L\'agent a cree des routes API au lieu de server actions. Completez ce prompt de redirection avec la bonne correction.',
       language: 'text',
       filename: 'redirect-prompt.txt',
-      code: "The bookmarks list page (src/app/dashboard/bookmarks/page.tsx)\nshould be a server component, not a client component. It only\ndisplays data — there is no interactivity on this page.\n\nRemove \"use client\", move the data fetch into the component\nbody (direct DB query via Drizzle), and remove the useEffect\n+ useState pattern. The data should be fetched at render time\non the server.",
-    },
-    {
-      type: 'code-demo',
-      title: 'Redirection : mauvais pattern de données',
-      body: 'L\'agent a créé des routes API pour les mutations. Votre spec disait server actions. Voici la correction.',
-      language: 'text',
-      filename: 'redirect-prompt-2.txt',
-      code: "The spec says \"server actions for mutations.\" You created\nAPI routes at src/app/api/bookmarks/route.ts. Remove those.\n\nInstead, create server actions in src/app/dashboard/bookmarks/\nactions.ts using \"use server\". The form in the add-bookmark\ncomponent should call the server action directly via the\naction prop or useFormAction.",
+      template: 'The spec says "server actions for mutations." You created\nAPI routes at src/app/api/bookmarks/route.ts. Remove those.\n\nInstead, create server actions in src/app/dashboard/bookmarks/\nactions.ts using "{{server_directive}}". The form in the add-bookmark\ncomponent should call the server action directly via the\n{{form_prop}} prop or useFormAction.',
+      blanks: [
+        { id: 'server_directive', answer: 'use server', alternatives: ['"use server"', 'use server'], placeholder: 'quelle directive ?', hint: 'La directive qui marque un fichier comme contenant des server actions' },
+        { id: 'form_prop', answer: 'action', alternatives: ['action'], placeholder: 'quel attribut de formulaire ?', hint: 'L\'attribut HTML du formulaire qui accepte une fonction server action' },
+      ],
+      explanation: 'Les server actions utilisent la directive "use server" et sont appelees directement depuis les attributs action des formulaires. Cela elimine le besoin de routes API et d\'appels fetch manuels pour les mutations.',
     },
     {
       type: 'multiple-choice',
@@ -195,17 +238,28 @@ const content: LessonContent = {
 
     // === LAYOUT HIERARCHY ===
     {
-      type: 'info',
-      title: 'Évaluer la hiérarchie des layouts',
-      body: "Les layouts dans l'App Router de Next.js sont imbriqués par défaut. Un layout à app/dashboard/layout.tsx enveloppe toutes les pages sous /dashboard/*. C'est là que vous mettez l'UI partagée : barres latérales, navigation, wrappers d'auth. L'agent devrait créer des layouts correspondant aux exigences d'UI partagée de votre spec. Erreurs courantes : tout mettre dans le root layout (rendant impossible d'avoir des layouts différents par section), ou ne pas créer de layouts du tout (dupliquant le code de la sidebar dans chaque page).",
+      type: 'multiple-choice',
+      question: 'L\'agent a mis la navigation sidebar dans le root layout (app/layout.tsx). La landing page a "/" affiche maintenant incorrectement la sidebar. Quelle est la bonne correction ?',
+      options: [
+        'Ajouter une condition pour masquer la sidebar sur la landing page',
+        'Deplacer la sidebar dans app/dashboard/layout.tsx pour qu\'elle n\'enveloppe que les pages /dashboard/*',
+        'Creer un layout separe pour la landing page',
+        'Supprimer les layouts entierement et mettre la sidebar dans chaque composant de page',
+      ],
+      correctIndex: 1,
+      explanation: 'Les layouts dans l\'App Router de Next.js sont imbriques par defaut. Un layout a app/dashboard/layout.tsx enveloppe toutes les pages sous /dashboard/*. L\'UI partagee comme les sidebars et wrappers d\'auth appartient aux layouts specifiques a la section, pas au root layout. Tout mettre dans le root rend impossible d\'avoir des layouts differents par section.',
     },
     {
-      type: 'code-demo',
-      title: 'Hiérarchie de layouts attendue',
-      body: 'Pour la spec de l\'app de favoris, voici l\'imbrication correcte des layouts. Vérifiez que l\'agent produit quelque chose d\'équivalent.',
+      type: 'code-fill',
+      instruction: 'Verifiez que l\'agent produit la bonne hierarchie de layouts. Completez les annotations de rendu manquantes pour chaque page.',
       language: 'text',
       filename: 'expected-structure.txt',
-      code: "src/app/\n├── layout.tsx          ← Root: html, body, fonts, global providers\n├── page.tsx            ← Landing page (no sidebar)\n├── dashboard/\n│   ├── layout.tsx      ← Dashboard: sidebar + auth wrapper\n│   ├── page.tsx        ← Dashboard home\n│   ├── bookmarks/\n│   │   ├── page.tsx    ← Bookmark list (server component)\n│   │   └── [id]/\n│   │       └── page.tsx ← Bookmark detail (dynamic)\n│   └── settings/\n│       └── page.tsx    ← Settings form (client component)\n└── globals.css",
+      template: 'src/app/\n├── layout.tsx          ← Root: html, body, fonts, global providers\n├── page.tsx            ← Landing page (no sidebar)\n├── dashboard/\n│   ├── layout.tsx      ← Dashboard: sidebar + auth wrapper\n│   ├── page.tsx        ← Dashboard home\n│   ├── bookmarks/\n│   │   ├── page.tsx    ← Bookmark list ({{bookmarks_type}})\n│   │   └── [id]/\n│   │       └── page.tsx ← Bookmark detail (dynamic)\n│   └── settings/\n│       └── page.tsx    ← Settings form ({{settings_type}})\n└── globals.css',
+      blanks: [
+        { id: 'bookmarks_type', answer: 'server component', alternatives: ['Server Component', 'server-component', 'SC'], placeholder: 'type de rendu ?', hint: 'Cette page affiche seulement des donnees recuperees de la base' },
+        { id: 'settings_type', answer: 'client component', alternatives: ['Client Component', 'client-component', 'CC'], placeholder: 'type de rendu ?', hint: 'Cette page a des toggles de formulaire qui necessitent useState' },
+      ],
+      explanation: 'La liste de favoris affiche des donnees sans interactivite = composant serveur. Le formulaire de settings a des toggles necessitant un etat client = composant client. Verifier la strategie de rendu par page est l\'etape de revision de scaffold la plus importante.',
     },
     {
       type: 'order',
@@ -222,9 +276,16 @@ const content: LessonContent = {
 
     // === VERIFICATION ===
     {
-      type: 'info',
-      title: 'Vérifier le scaffold',
-      body: "Après le scaffold de l'agent, faites une passe de vérification rapide. Vérifiez que la structure de fichiers correspond aux routes de votre spec. Ouvrez les fichiers clés pour confirmer la stratégie de rendu (cherchez les directives « use client »). Vérifiez que le package.json a les bonnes dépendances. Lancez le serveur de dev pour confirmer qu'il démarre sans erreurs. Ça prend 2 minutes et attrape les problèmes structurels avant que vous construisiez des fonctionnalités sur une fondation cassée.",
+      type: 'multiple-choice',
+      question: 'Apres que l\'agent scaffolde votre projet, quelle est la PREMIERE chose que vous devriez verifier ?',
+      options: [
+        'La qualite du code et le nommage des variables',
+        'Que la structure de fichiers correspond aux routes de votre spec et que la strategie de rendu est correcte par page',
+        'Que toutes les classes CSS sont appliquees correctement',
+        'Que les tests passent',
+      ],
+      correctIndex: 1,
+      explanation: 'La justesse structurelle passe en premier : verifiez que les routes correspondent a votre spec, que la strategie de rendu (serveur vs client) est correcte par page, que le package.json a les bonnes dependances, et que le serveur de dev demarre sans erreurs. Ca prend 2 minutes et attrape les problemes avant que vous construisiez des fonctionnalites sur une fondation cassee.',
     },
     {
       type: 'terminal',
@@ -233,12 +294,16 @@ const content: LessonContent = {
       hint: 'La commande dev standard de Next.js',
     },
     {
-      type: 'code-demo',
-      title: 'Prompts de vérification pour Claude Code',
-      body: 'Vous pouvez demander à Claude Code de s\'auto-vérifier par rapport à votre spec. Il lira les fichiers générés et rapportera les divergences.',
+      type: 'code-fill',
+      instruction: 'Vous pouvez demander a Claude Code de s\'auto-verifier. Completez ce prompt de verification avec les bons controles.',
       language: 'text',
       filename: 'verify-prompt.txt',
-      code: "Review the project structure you just created against my spec.\nFor each route in the spec, confirm:\n1. The file exists at the correct path\n2. The rendering strategy is correct (server vs client)\n3. The layout hierarchy matches the nesting I specified\n\nList any discrepancies.",
+      template: 'Review the project structure you just created against my spec.\nFor each route in the spec, confirm:\n1. The file exists at the correct path\n2. The {{rendering_check}} is correct (server vs client)\n3. The {{hierarchy_check}} matches the nesting I specified\n\nList any discrepancies.',
+      blanks: [
+        { id: 'rendering_check', answer: 'rendering strategy', alternatives: ['rendering strategy', 'component type', 'rendering type'], placeholder: 'quoi verifier par route ?', hint: 'Si chaque page est un composant serveur ou client' },
+        { id: 'hierarchy_check', answer: 'layout hierarchy', alternatives: ['layout hierarchy', 'layout nesting', 'layouts'], placeholder: 'quel controle structurel ?', hint: 'Quels layouts enveloppent quelles pages' },
+      ],
+      explanation: 'Un prompt d\'auto-verification fait auditer par l\'agent sa propre sortie. Les trois controles — chemins de fichiers, strategie de rendu et hierarchie de layouts — sont les sources les plus courantes d\'erreurs de scaffold.',
     },
     {
       type: 'checkpoint',
@@ -248,17 +313,16 @@ const content: LessonContent = {
 
     // === COMMON PATTERNS ===
     {
-      type: 'info',
-      title: 'Pattern : composant serveur avec îlots client',
-      body: "Le pattern correct le plus courant dans l'App Router de Next.js : la page est un composant serveur qui récupère les données, et les éléments interactifs sont extraits dans de petits composants client enfants. La page passe les données via props. Ça vous donne la performance de récupération de données côté serveur avec l'interactivité côté client où nécessaire. Si l'agent fait de toute la page un composant client pour supporter un clic de bouton, redirigez-le vers ce pattern.",
-    },
-    {
-      type: 'code-demo',
-      title: 'Page serveur avec îlot client',
-      body: 'La page récupère les données sur le serveur. Le bouton supprimer interactif est un composant client séparé.',
+      type: 'code-fill',
+      instruction: 'Le pattern correct le plus courant : page composant serveur qui recupere les donnees, avec de petits composants client enfants pour l\'interactivite. Completez les parties manquantes de cette implementation.',
       language: 'typescript',
       filename: 'src/app/dashboard/bookmarks/page.tsx',
-      code: "import { db } from '@/db'\nimport { bookmarks } from '@/db/schema'\nimport { DeleteButton } from './delete-button' // client component\n\nexport default async function BookmarksPage() {\n  const allBookmarks = await db.select().from(bookmarks)\n\n  return (\n    <div>\n      <h1>Bookmarks</h1>\n      {allBookmarks.map((b) => (\n        <div key={b.id}>\n          <a href={b.url}>{b.title}</a>\n          <DeleteButton id={b.id} />\n        </div>\n      ))}\n    </div>\n  )\n}",
+      template: "import { db } from '@/db'\nimport { bookmarks } from '@/db/schema'\nimport { DeleteButton } from './delete-button' // client component\n\nexport default {{function_keyword}} function BookmarksPage() {\n  const allBookmarks = await db.{{query_method}}().from(bookmarks)\n\n  return (\n    <div>\n      <h1>Bookmarks</h1>\n      {allBookmarks.map((b) => (\n        <div key={b.id}>\n          <a href={b.url}>{b.title}</a>\n          <DeleteButton id={b.id} />\n        </div>\n      ))}\n    </div>\n  )\n}",
+      blanks: [
+        { id: 'function_keyword', answer: 'async', alternatives: ['async'], placeholder: 'quel mot-cle ?', hint: 'Les composants serveur peuvent utiliser ce mot-cle pour await les donnees directement' },
+        { id: 'query_method', answer: 'select', alternatives: ['select'], placeholder: 'quelle methode Drizzle ?', hint: 'L\'operation SQL qui lit des lignes d\'une table' },
+      ],
+      explanation: 'Les composants serveur peuvent etre async — ils await les donnees directement dans le corps du composant, pas besoin de useEffect. Le DeleteButton est un composant client separe car il a besoin d\'interactivite onClick. La page passe les donnees via props.',
     },
     {
       type: 'multiple-choice',
@@ -275,14 +339,12 @@ const content: LessonContent = {
 
     // === ADVANCED CONSIDERATIONS ===
     {
-      type: 'info',
-      title: 'Ce qu\'il faut laisser au jugement de l\'agent',
-      body: "Chaque décision n'a pas besoin de votre avis. Laissez l'agent décider : les noms de fichiers de composants et l'organisation interne, le placement des fonctions utilitaires, le nommage des classes CSS dans Tailwind, le placement des error boundaries, les emplacements de loading.tsx et not-found.tsx, le nommage des interfaces TypeScript. Ce sont des détails d'implémentation qui n'affectent pas l'architecture. Les micro-gérer gaspille votre temps et la fenêtre de contexte de l'agent. Concentrez-vous sur les décisions coûteuses à changer plus tard.",
-    },
-    {
-      type: 'info',
-      title: 'L\'heuristique du coût de changement',
-      body: "Quelles décisions devriez-vous contrôler dans la spec ? Utilisez l'heuristique du coût de changement. Structure de routing — coûteux à changer (affecte les URLs, la navigation, le flux de données). Stratégie de rendu — coûteux (restructurer les limites serveur/client se propage). Hiérarchie des layouts — modéré (nécessite de déplacer des fichiers et de mettre à jour l'état partagé). Nommage des composants — pas cher (rechercher-remplacer). Classes Tailwind — trivial. Verrouillez les décisions coûteuses. Laissez les pas chères à l'agent.",
+      type: 'match',
+      instruction: 'Appliquez l\'heuristique du cout de changement. Associez chaque decision a son cout de modification ulterieure :',
+      leftItems: ['Structure de routing et chemins URL', 'Limites serveur vs client', 'Nommage des fichiers de composants', 'Classes CSS Tailwind', 'Hierarchie d\'imbrication des layouts'],
+      rightItems: ['Trivial — rechercher et remplacer', 'Bon marche — chercher et renommer', 'Modere — deplacer des fichiers, mettre a jour l\'etat partage', 'Couteux — la restructuration se propage dans toute l\'app', 'Couteux — affecte les URLs, la navigation, le flux de donnees'],
+      correctPairs: { 0: 4, 1: 3, 2: 1, 3: 0, 4: 2 },
+      explanation: 'Verrouillez les decisions couteuses (routing, strategie de rendu) dans votre spec. Laissez les decisions bon marche (nommage, classes CSS) a l\'agent. L\'heuristique du cout de changement vous dit ou concentrer votre attention en tant que directeur.',
     },
     {
       type: 'checkpoint',

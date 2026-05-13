@@ -17,9 +17,16 @@ const content: LessonContent = {
 
     // === SCAFFOLD PROMPTS ===
     {
-      type: 'info',
-      title: 'What to tell the agent',
-      body: "When directing a scaffold, specify: the framework and version (Next.js 15, App Router), the routing structure (what pages exist), data requirements per route (which pages need server-side data), shared layouts (what wraps what), and key packages (ORM, styling, auth). Do NOT specify: file naming conventions (the agent knows Next.js conventions), internal folder organization within components, import ordering, or boilerplate config. Let the agent handle what it already knows.",
+      type: 'multiple-choice',
+      question: 'When directing an agent to scaffold a project, which of the following should you NOT specify in your prompt?',
+      options: [
+        'The framework and version (e.g., Next.js 15, App Router)',
+        'File naming conventions and import ordering',
+        'The routing structure (what pages exist)',
+        'Key packages (ORM, styling, auth)',
+      ],
+      correctIndex: 1,
+      explanation: 'File naming conventions, import ordering, and boilerplate config are things the agent already knows. Specify the expensive decisions: framework version, routing structure, data requirements per route, shared layouts, and key packages. Let the agent handle what it already knows — micromanaging cheap details wastes your time and context window.',
     },
     {
       type: 'compare',
@@ -40,12 +47,17 @@ const content: LessonContent = {
       explanation: 'Architectural decisions (left) are expensive to change after the scaffold is built. Implementation details (right) are cheap to adjust later. Focus your spec on the expensive decisions.',
     },
     {
-      type: 'code-demo',
-      title: 'A good scaffold prompt',
-      body: 'This prompt gives Claude Code enough to scaffold correctly without micromanaging file names or boilerplate.',
+      type: 'code-fill',
+      instruction: 'This prompt gives Claude Code enough to scaffold correctly. Complete the missing route specifications and rendering decisions.',
       language: 'text',
       filename: 'scaffold-prompt.txt',
-      code: "Create a Next.js 15 app with App Router. TypeScript, Tailwind CSS.\n\nRoutes:\n- / (landing page, static)\n- /dashboard (authenticated, server component, fetches user data)\n- /dashboard/bookmarks (list view, server component, fetches from DB)\n- /dashboard/bookmarks/[id] (detail view, dynamic route)\n- /settings (client component, form interactions)\n\nLayouts:\n- Root layout: global styles, fonts, metadata\n- /dashboard layout: sidebar nav, auth check wrapper\n\nPackages: Drizzle ORM + SQLite, next-auth for session.\n\nUse server components by default. Only use client components\nwhere user interaction requires it (forms, toggles, modals).",
+      template: 'Create a Next.js 15 app with App Router. TypeScript, Tailwind CSS.\n\nRoutes:\n- / (landing page, static)\n- /dashboard (authenticated, {{dashboard_rendering}}, fetches user data)\n- /dashboard/bookmarks (list view, server component, fetches from DB)\n- /dashboard/bookmarks/[id] (detail view, dynamic route)\n- /settings ({{settings_rendering}}, form interactions)\n\nLayouts:\n- Root layout: global styles, fonts, metadata\n- /dashboard layout: sidebar nav, auth check wrapper\n\nPackages: {{database_package}}, next-auth for session.\n\nUse server components by default. Only use client components\nwhere user interaction requires it (forms, toggles, modals).',
+      blanks: [
+        { id: 'dashboard_rendering', answer: 'server component', alternatives: ['Server Component', 'server-component', 'SC'], placeholder: 'rendering strategy?', hint: 'The dashboard fetches data on load — no interactivity needed' },
+        { id: 'settings_rendering', answer: 'client component', alternatives: ['Client Component', 'client-component', 'CC'], placeholder: 'rendering strategy?', hint: 'Forms with toggles need client-side state (useState)' },
+        { id: 'database_package', answer: 'Drizzle ORM + SQLite', alternatives: ['Drizzle ORM + SQLite', 'drizzle-orm + sqlite', 'Drizzle + SQLite'], placeholder: 'which DB stack?', hint: 'A TypeScript ORM paired with a lightweight file-based database' },
+      ],
+      explanation: 'Dashboard fetches data without interactivity = server component. Settings has form toggles = client component. Naming the exact database package prevents the agent from evaluating alternatives.',
     },
     {
       type: 'checkpoint',
@@ -55,9 +67,16 @@ const content: LessonContent = {
 
     // === CREATE NEXT APP ===
     {
-      type: 'info',
-      title: 'The initial command',
-      body: "Most scaffold sessions start with create-next-app. You can either let the agent run it, or run it yourself first and then invite the agent into the existing project. Both work. If you let the agent run it, specify the flags you care about in your prompt. The agent will typically choose: --typescript, --tailwind, --app, --src-dir. If you have preferences about ESLint config or import aliases, state them explicitly.",
+      type: 'multiple-choice',
+      question: 'You want the agent to scaffold a Next.js project from scratch. Which approach is correct?',
+      options: [
+        'Always run create-next-app yourself first, then invite the agent',
+        'Always let the agent run create-next-app — it knows the right flags',
+        'Either works — but if the agent runs it, specify the flags you care about in your prompt',
+        'Skip create-next-app entirely and have the agent create files manually',
+      ],
+      correctIndex: 2,
+      explanation: 'Both approaches work. If the agent runs create-next-app, specify the flags that matter to you (--typescript, --tailwind, --app, --src-dir). If you have preferences about ESLint config or import aliases, state them explicitly. The agent will make reasonable defaults for anything you do not specify.',
     },
     {
       type: 'terminal',
@@ -66,24 +85,49 @@ const content: LessonContent = {
       hint: 'Use npx create-next-app@latest with the --typescript, --tailwind, and --app flags',
     },
     {
-      type: 'code-demo',
-      title: 'Telling the agent to scaffold from scratch',
-      body: 'If you want the agent to handle everything including the initial create command, your prompt might look like this.',
+      type: 'code-fill',
+      instruction: 'If you want the agent to handle everything including the initial create command, complete this scaffold prompt with the right technology choices.',
       language: 'text',
       filename: 'full-scaffold-prompt.txt',
-      code: "Create a new Next.js 15 project called \"bookmark-app\" in the\ncurrent directory. Use:\n- TypeScript strict\n- Tailwind CSS\n- App Router with src/ directory\n- ESLint with the default Next.js config\n\nAfter creating, set up the route structure from my spec\nand install Drizzle ORM with better-sqlite3.",
+      template: 'Create a new Next.js 15 project called "bookmark-app" in the\ncurrent directory. Use:\n- {{type_system}} strict\n- {{css_framework}}\n- App Router with src/ directory\n- ESLint with the default Next.js config\n\nAfter creating, set up the route structure from my spec\nand install {{orm_package}} with better-sqlite3.',
+      blanks: [
+        { id: 'type_system', answer: 'TypeScript', alternatives: ['typescript', 'TS'], placeholder: 'which type system?', hint: 'The strict type system for JavaScript' },
+        { id: 'css_framework', answer: 'Tailwind CSS', alternatives: ['Tailwind', 'tailwindcss'], placeholder: 'which CSS framework?', hint: 'Utility-first CSS framework' },
+        { id: 'orm_package', answer: 'Drizzle ORM', alternatives: ['drizzle-orm', 'Drizzle'], placeholder: 'which ORM?', hint: 'The TypeScript ORM from your spec' },
+      ],
+      explanation: 'Naming exact packages in the scaffold prompt prevents the agent from evaluating alternatives. TypeScript strict catches more bugs. Tailwind CSS and Drizzle ORM are architectural decisions that affect every file in the project.',
     },
 
     // === RENDERING STRATEGY ===
     {
-      type: 'info',
-      title: 'Evaluating rendering decisions',
-      body: "The most important architectural decision in a Next.js app is the rendering strategy per route. Server Components render on the server, have no client-side JavaScript, and can directly access databases and APIs. Client Components render on the client, support interactivity (useState, useEffect, event handlers), and ship JavaScript to the browser. The agent must choose correctly per route. Your job is to verify these choices match your spec's data and interaction requirements.",
+      type: 'compare',
+      title: 'Server Components vs Client Components',
+      body: 'The most important architectural decision in a Next.js app. The agent must choose correctly per route — your job is to verify.',
+      question: 'A page that fetches bookmarks from a database and displays them as a list — which rendering is correct?',
+      correctSide: 'left',
+      left: {
+        label: 'Server Component',
+        content: '✓ Renders on the server\n✓ No client-side JavaScript\n✓ Direct database/API access\n✓ Faster initial load\n\nBest for: data display, static\ncontent, pages without user\ninteraction.',
+        language: 'text',
+      },
+      right: {
+        label: 'Client Component',
+        content: '✓ Renders on the client\n✓ Supports useState, useEffect\n✓ Event handlers, form state\n✓ Real-time interactivity\n\nBest for: forms, toggles, modals,\nreal-time updates, anything that\nneeds user interaction.',
+        language: 'text',
+      },
+      explanation: 'A read-only data display page is a textbook Server Component. The most common agent mistake is making everything a client component because it is "safer" — it works, but ships unnecessary JavaScript. Ask: does this route need interactivity? If not, it is a server component.',
     },
     {
-      type: 'info',
-      title: 'The decision framework',
-      body: "Ask: does this route need interactivity (forms, real-time updates, toggles)? If yes, it needs client components — at least partially. Does it fetch data on load? Server component. Does it do both? Server component at the page level with client component islands for the interactive parts. The most common agent mistake is making everything a client component because it is \"safer\" — it works, but it ships unnecessary JavaScript and loses the performance benefits of server rendering.",
+      type: 'multiple-choice',
+      question: 'A page fetches data AND has an interactive delete button. What is the correct pattern?',
+      options: [
+        'Make the entire page a client component',
+        'Make the entire page a server component and use server actions for delete',
+        'Server component at the page level with a small client component for the delete button',
+        'Create an API route for the data and a separate API route for delete',
+      ],
+      correctIndex: 2,
+      explanation: 'The correct pattern is "server page with client islands." The page is a server component that fetches data directly. Interactive elements (like a delete button) are extracted into small client component children. This gives you server-side performance with client-side interactivity where needed.',
     },
     {
       type: 'multiple-choice',
@@ -155,25 +199,24 @@ const content: LessonContent = {
 
     // === REDIRECTING THE AGENT ===
     {
-      type: 'info',
-      title: 'When to redirect',
-      body: "You review the generated structure and find a problem. Maybe the agent put \"use client\" on a page that only fetches data. Maybe it created API routes when your spec said server actions. Maybe the layout hierarchy is flat when it should be nested. Redirecting is not failure — it is the normal workflow. The skill is identifying the problem quickly and giving a precise correction.",
+      type: 'match',
+      instruction: 'Match each scaffold problem to the correct redirect instruction:',
+      leftItems: ['Agent added "use client" to a data-only page', 'Agent created API routes instead of server actions', 'Layout hierarchy is flat instead of nested', 'Agent made every component a client component'],
+      rightItems: ['Move shared UI into dashboard/layout.tsx to wrap child routes', 'Remove "use client", use direct DB query in the component body', 'Remove API routes, create actions.ts with "use server" directive', 'Keep page as server component, extract only interactive elements to client children'],
+      correctPairs: { 0: 1, 1: 2, 2: 0, 3: 3 },
+      explanation: 'Each redirect is surgical and specific: name the file, state what is wrong, and describe the fix. Redirecting is not failure — it is the normal workflow. The skill is identifying the problem quickly.',
     },
     {
-      type: 'code-demo',
-      title: 'Redirect: wrong component type',
-      body: 'The agent made the bookmarks list page a client component. Here is how you redirect it.',
+      type: 'code-fill',
+      instruction: 'The agent created API routes instead of server actions. Complete this redirect prompt with the correct fix.',
       language: 'text',
       filename: 'redirect-prompt.txt',
-      code: "The bookmarks list page (src/app/dashboard/bookmarks/page.tsx)\nshould be a server component, not a client component. It only\ndisplays data — there is no interactivity on this page.\n\nRemove \"use client\", move the data fetch into the component\nbody (direct DB query via Drizzle), and remove the useEffect\n+ useState pattern. The data should be fetched at render time\non the server.",
-    },
-    {
-      type: 'code-demo',
-      title: 'Redirect: wrong data pattern',
-      body: 'The agent created API routes for mutations. Your spec said server actions. Here is the correction.',
-      language: 'text',
-      filename: 'redirect-prompt-2.txt',
-      code: "The spec says \"server actions for mutations.\" You created\nAPI routes at src/app/api/bookmarks/route.ts. Remove those.\n\nInstead, create server actions in src/app/dashboard/bookmarks/\nactions.ts using \"use server\". The form in the add-bookmark\ncomponent should call the server action directly via the\naction prop or useFormAction.",
+      template: 'The spec says "server actions for mutations." You created\nAPI routes at src/app/api/bookmarks/route.ts. Remove those.\n\nInstead, create server actions in src/app/dashboard/bookmarks/\nactions.ts using "{{server_directive}}". The form in the add-bookmark\ncomponent should call the server action directly via the\n{{form_prop}} prop or useFormAction.',
+      blanks: [
+        { id: 'server_directive', answer: 'use server', alternatives: ['"use server"', 'use server'], placeholder: 'which directive?', hint: 'The directive that marks a file as containing server actions' },
+        { id: 'form_prop', answer: 'action', alternatives: ['action'], placeholder: 'which form prop?', hint: 'The HTML form attribute that accepts a server action function' },
+      ],
+      explanation: 'Server actions use the "use server" directive and are called directly from form action props. This eliminates the need for API routes and manual fetch calls for mutations.',
     },
     {
       type: 'multiple-choice',
@@ -195,17 +238,28 @@ const content: LessonContent = {
 
     // === LAYOUT HIERARCHY ===
     {
-      type: 'info',
-      title: 'Evaluating layout hierarchy',
-      body: "Layouts in Next.js App Router are nested by default. A layout at app/dashboard/layout.tsx wraps all pages under /dashboard/*. This is where you put shared UI: sidebars, navigation, auth wrappers. The agent should create layouts that match your spec's shared UI requirements. Common mistakes: putting everything in the root layout (making it impossible to have different layouts per section), or not creating layouts at all (duplicating sidebar code in every page).",
+      type: 'multiple-choice',
+      question: 'The agent put the sidebar navigation in the root layout (app/layout.tsx). The landing page at "/" now incorrectly shows the sidebar. What is the correct fix?',
+      options: [
+        'Add a conditional to hide the sidebar on the landing page',
+        'Move the sidebar to app/dashboard/layout.tsx so it only wraps /dashboard/* pages',
+        'Create a separate layout for the landing page',
+        'Remove layouts entirely and put the sidebar in each page component',
+      ],
+      correctIndex: 1,
+      explanation: 'Layouts in Next.js App Router are nested by default. A layout at app/dashboard/layout.tsx wraps all pages under /dashboard/*. Shared UI like sidebars and auth wrappers belong in section-specific layouts, not the root layout. Putting everything in root makes it impossible to have different layouts per section.',
     },
     {
-      type: 'code-demo',
-      title: 'Expected layout hierarchy',
-      body: 'For the bookmark app spec, this is the correct layout nesting. Verify the agent produces something equivalent.',
+      type: 'code-fill',
+      instruction: 'Verify the agent produces the correct layout hierarchy. Complete the missing rendering annotations for each page.',
       language: 'text',
       filename: 'expected-structure.txt',
-      code: "src/app/\n├── layout.tsx          ← Root: html, body, fonts, global providers\n├── page.tsx            ← Landing page (no sidebar)\n├── dashboard/\n│   ├── layout.tsx      ← Dashboard: sidebar + auth wrapper\n│   ├── page.tsx        ← Dashboard home\n│   ├── bookmarks/\n│   │   ├── page.tsx    ← Bookmark list (server component)\n│   │   └── [id]/\n│   │       └── page.tsx ← Bookmark detail (dynamic)\n│   └── settings/\n│       └── page.tsx    ← Settings form (client component)\n└── globals.css",
+      template: 'src/app/\n├── layout.tsx          ← Root: html, body, fonts, global providers\n├── page.tsx            ← Landing page (no sidebar)\n├── dashboard/\n│   ├── layout.tsx      ← Dashboard: sidebar + auth wrapper\n│   ├── page.tsx        ← Dashboard home\n│   ├── bookmarks/\n│   │   ├── page.tsx    ← Bookmark list ({{bookmarks_type}})\n│   │   └── [id]/\n│   │       └── page.tsx ← Bookmark detail (dynamic)\n│   └── settings/\n│       └── page.tsx    ← Settings form ({{settings_type}})\n└── globals.css',
+      blanks: [
+        { id: 'bookmarks_type', answer: 'server component', alternatives: ['Server Component', 'server-component', 'SC'], placeholder: 'rendering type?', hint: 'This page only displays data fetched from the database' },
+        { id: 'settings_type', answer: 'client component', alternatives: ['Client Component', 'client-component', 'CC'], placeholder: 'rendering type?', hint: 'This page has form toggles that need useState' },
+      ],
+      explanation: 'Bookmark list displays data without interactivity = server component. Settings form has toggles requiring client state = client component. Verifying rendering strategy per page is the most important scaffold review step.',
     },
     {
       type: 'order',
@@ -222,9 +276,16 @@ const content: LessonContent = {
 
     // === VERIFICATION ===
     {
-      type: 'info',
-      title: 'Verifying the scaffold',
-      body: "After the agent scaffolds, run a quick verification pass. Check that the file structure matches your spec's routes. Open key files to confirm rendering strategy (look for \"use client\" directives). Verify the package.json has the right dependencies. Run the dev server to confirm it starts without errors. This takes 2 minutes and catches structural problems before you build features on a broken foundation.",
+      type: 'multiple-choice',
+      question: 'After the agent scaffolds your project, what is the FIRST thing you should verify?',
+      options: [
+        'Code quality and variable naming',
+        'That the file structure matches your spec routes and rendering strategy is correct per page',
+        'That all CSS classes are applied correctly',
+        'That tests are passing',
+      ],
+      correctIndex: 1,
+      explanation: 'Structural correctness comes first: check that routes match your spec, rendering strategy (server vs client) is correct per page, package.json has the right dependencies, and the dev server starts without errors. This takes 2 minutes and catches problems before you build features on a broken foundation.',
     },
     {
       type: 'terminal',
@@ -233,12 +294,16 @@ const content: LessonContent = {
       hint: 'The standard Next.js dev command',
     },
     {
-      type: 'code-demo',
-      title: 'Verification prompts for Claude Code',
-      body: 'You can ask Claude Code to self-verify the scaffold against your spec. It will read the generated files and report discrepancies.',
+      type: 'code-fill',
+      instruction: 'You can ask Claude Code to self-verify the scaffold. Complete this verification prompt with the right checks.',
       language: 'text',
       filename: 'verify-prompt.txt',
-      code: "Review the project structure you just created against my spec.\nFor each route in the spec, confirm:\n1. The file exists at the correct path\n2. The rendering strategy is correct (server vs client)\n3. The layout hierarchy matches the nesting I specified\n\nList any discrepancies.",
+      template: 'Review the project structure you just created against my spec.\nFor each route in the spec, confirm:\n1. The file exists at the correct path\n2. The {{rendering_check}} is correct (server vs client)\n3. The {{hierarchy_check}} matches the nesting I specified\n\nList any discrepancies.',
+      blanks: [
+        { id: 'rendering_check', answer: 'rendering strategy', alternatives: ['rendering strategy', 'component type', 'rendering type'], placeholder: 'what to check per route?', hint: 'Whether each page is a server or client component' },
+        { id: 'hierarchy_check', answer: 'layout hierarchy', alternatives: ['layout hierarchy', 'layout nesting', 'layouts'], placeholder: 'what structural check?', hint: 'Which layouts wrap which pages' },
+      ],
+      explanation: 'A self-verification prompt makes the agent audit its own output. The three checks — file paths, rendering strategy, and layout hierarchy — are the most common sources of scaffold errors.',
     },
     {
       type: 'checkpoint',
@@ -248,17 +313,16 @@ const content: LessonContent = {
 
     // === COMMON PATTERNS ===
     {
-      type: 'info',
-      title: 'Pattern: server component with client islands',
-      body: "The most common correct pattern in Next.js App Router: the page is a server component that fetches data, and interactive elements are extracted into small client component children. The page passes data down as props. This gives you server-side data fetching performance with client-side interactivity where needed. If the agent makes the whole page a client component to support one button click, redirect it to this pattern.",
-    },
-    {
-      type: 'code-demo',
-      title: 'Server page with client island',
-      body: 'The page fetches data on the server. The interactive delete button is a separate client component.',
+      type: 'code-fill',
+      instruction: 'The most common correct pattern: server component page that fetches data, with small client component children for interactivity. Complete the missing parts of this implementation.',
       language: 'typescript',
       filename: 'src/app/dashboard/bookmarks/page.tsx',
-      code: "import { db } from '@/db'\nimport { bookmarks } from '@/db/schema'\nimport { DeleteButton } from './delete-button' // client component\n\nexport default async function BookmarksPage() {\n  const allBookmarks = await db.select().from(bookmarks)\n\n  return (\n    <div>\n      <h1>Bookmarks</h1>\n      {allBookmarks.map((b) => (\n        <div key={b.id}>\n          <a href={b.url}>{b.title}</a>\n          <DeleteButton id={b.id} />\n        </div>\n      ))}\n    </div>\n  )\n}",
+      template: "import { db } from '@/db'\nimport { bookmarks } from '@/db/schema'\nimport { DeleteButton } from './delete-button' // client component\n\nexport default {{function_keyword}} function BookmarksPage() {\n  const allBookmarks = await db.{{query_method}}().from(bookmarks)\n\n  return (\n    <div>\n      <h1>Bookmarks</h1>\n      {allBookmarks.map((b) => (\n        <div key={b.id}>\n          <a href={b.url}>{b.title}</a>\n          <DeleteButton id={b.id} />\n        </div>\n      ))}\n    </div>\n  )\n}",
+      blanks: [
+        { id: 'function_keyword', answer: 'async', alternatives: ['async'], placeholder: 'what keyword?', hint: 'Server components can use this keyword to await data directly' },
+        { id: 'query_method', answer: 'select', alternatives: ['select'], placeholder: 'which Drizzle method?', hint: 'The SQL operation that reads rows from a table' },
+      ],
+      explanation: 'Server components can be async — they await data directly in the component body, no useEffect needed. The DeleteButton is a separate client component because it needs onClick interactivity. The page passes data down as props.',
     },
     {
       type: 'multiple-choice',
@@ -275,14 +339,12 @@ const content: LessonContent = {
 
     // === ADVANCED CONSIDERATIONS ===
     {
-      type: 'info',
-      title: 'What to leave to the agent\'s judgment',
-      body: "Not every decision needs your input. Let the agent decide: component file names and internal organization, utility function placement, CSS class naming within Tailwind, error boundary placement, loading.tsx and not-found.tsx locations, TypeScript interface naming. These are implementation details that do not affect architecture. Micromanaging them wastes your time and the agent's context window. Focus on the decisions that are expensive to change later.",
-    },
-    {
-      type: 'info',
-      title: 'The cost-of-change heuristic',
-      body: "Which decisions should you control in the spec? Use the cost-of-change heuristic. Routing structure — expensive to change (affects URLs, navigation, data flow). Rendering strategy — expensive (restructuring server/client boundaries cascades). Layout hierarchy — moderate (requires moving files and updating shared state). Component naming — cheap (find-and-replace). Tailwind classes — trivial. Lock down the expensive decisions. Leave cheap ones to the agent.",
+      type: 'match',
+      instruction: 'Apply the cost-of-change heuristic. Match each decision to how expensive it is to change later:',
+      leftItems: ['Routing structure and URL paths', 'Server vs client component boundaries', 'Component file naming', 'Tailwind CSS classes', 'Layout nesting hierarchy'],
+      rightItems: ['Trivial — find and replace', 'Cheap — search and rename', 'Moderate — move files, update shared state', 'Expensive — restructuring cascades through the app', 'Expensive — affects URLs, navigation, data flow'],
+      correctPairs: { 0: 4, 1: 3, 2: 1, 3: 0, 4: 2 },
+      explanation: 'Lock down the expensive decisions (routing, rendering strategy) in your spec. Leave cheap decisions (naming, CSS classes) to the agent. The cost-of-change heuristic tells you where to focus your attention as a director.',
     },
     {
       type: 'checkpoint',

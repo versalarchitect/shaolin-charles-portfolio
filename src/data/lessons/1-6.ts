@@ -80,17 +80,28 @@ const content: LessonContent = {
 
     // === ERROR ANATOMY ===
     {
-      type: 'info',
-      title: 'Anatomy of an error message',
-      body: 'Every error has four parts: the error type (what category of problem), the message (human-readable description), the file and line number (where it happened), and the stack trace (the chain of function calls that led there). Training yourself to parse all four instantly is the single highest-leverage debugging skill.',
+      type: 'multiple-choice',
+      question: 'Every error message has four parts. Which of these is NOT one of the four parts?',
+      options: [
+        'The error type (category of problem)',
+        'The file and line number (where it happened)',
+        'The git commit that introduced the bug',
+        'The stack trace (chain of function calls)',
+      ],
+      correctIndex: 2,
+      explanation: 'The four parts are: error type, human-readable message, file/line number, and stack trace. The git commit is not part of the error message — you would need git blame to find that. Training yourself to parse all four parts instantly is the single highest-leverage debugging skill.',
     },
     {
-      type: 'code-demo',
-      title: 'A real Node.js error, dissected',
-      body: 'Look at each part. The type is TypeError. The message tells you what failed. The location tells you where. The stack tells you how you got there.',
+      type: 'code-fill',
+      instruction: 'Fill in the four parts of this dissected Node.js error message:',
       language: 'text',
-      filename: 'terminal output',
-      code: "TypeError: Cannot read properties of undefined (reading 'map')\n    at renderList (/app/src/components/UserList.tsx:12:18)\n    at Object.render (/app/src/pages/Dashboard.tsx:45:5)\n    at processChild (/app/node_modules/react-dom/server.js:3456:14)\n\n┌─ Type:     TypeError\n├─ Message:  Cannot read properties of undefined (reading 'map')\n├─ File:     src/components/UserList.tsx, line 12\n└─ Cause:    'users' is undefined when .map() is called",
+      template: "TypeError: Cannot read properties of undefined (reading 'map')\n    at renderList (/app/src/components/UserList.tsx:12:18)\n    at Object.render (/app/src/pages/Dashboard.tsx:45:5)\n\n┌─ Type:     {{error_type}}\n├─ Message:  Cannot read properties of undefined (reading 'map')\n├─ File:     {{error_file}}, line 12\n└─ Cause:    '{{undefined_var}}' is undefined when .map() is called",
+      blanks: [
+        { id: 'error_type', answer: 'TypeError', alternatives: ['typeerror', 'type error'], placeholder: 'error category?', hint: 'The first word of the error message — what kind of error is this?' },
+        { id: 'error_file', answer: 'src/components/UserList.tsx', alternatives: ['UserList.tsx'], placeholder: 'which file?', hint: 'Look at the top of the stack trace — which file is at line 12?' },
+        { id: 'undefined_var', answer: 'users', alternatives: ['user'], placeholder: 'which variable?', hint: 'What is undefined when .map() is called? Think about what you .map() over.' },
+      ],
+      explanation: 'The type is TypeError. The file is src/components/UserList.tsx at line 12 (top of the stack trace — always start there). The undefined variable is users — you call .map() on an array of users, but it is undefined.',
     },
     {
       type: 'multiple-choice',
@@ -112,9 +123,9 @@ const content: LessonContent = {
 
     // === ERROR CATEGORIES ===
     {
-      type: 'diagram',
+      type: 'interactive-diagram',
       title: 'Error Categories',
-      body: 'Every error falls into one of three categories. Each requires a different debugging approach.',
+      body: 'Click through each stage to learn the three error categories and how to debug each one.',
       diagram: {
         direction: 'TB',
         nodes: [
@@ -137,29 +148,58 @@ const content: LessonContent = {
           { from: 'logic', to: 'logic_fix' },
         ],
       },
+      stages: [
+        {
+          highlightNodes: ['error', 'type'],
+          highlightEdges: [{ from: 'error', to: 'type' }],
+          explanation: 'Every error falls into one of three categories. Each requires a different debugging approach. The first step is always to classify the error.',
+        },
+        {
+          highlightNodes: ['type', 'syntax', 'code'],
+          highlightEdges: [{ from: 'type', to: 'syntax' }, { from: 'syntax', to: 'code' }],
+          explanation: "Syntax errors mean the code can't even be parsed. Missing brackets, typos, bad imports. These are the easiest — the error message usually points to the exact character. The fix is mechanical: read the message, go to the line, fix the typo.",
+        },
+        {
+          highlightNodes: ['type', 'runtime', 'data'],
+          highlightEdges: [{ from: 'type', to: 'runtime' }, { from: 'runtime', to: 'data' }],
+          explanation: 'Runtime errors happen when the code is valid syntax but fails during execution. Null references, type mismatches, missing files. The code parsed fine but hit bad data or an unexpected state. Check what data actually was at the point of failure.',
+        },
+        {
+          highlightNodes: ['type', 'logic', 'logic_fix'],
+          highlightEdges: [{ from: 'type', to: 'logic' }, { from: 'logic', to: 'logic_fix' }],
+          explanation: "Logic errors are the hardest. The code runs without crashing but produces wrong results. No error message at all. A function returns 0 instead of 100. These require understanding intent vs. behavior — and they're where AI agents can help most.",
+        },
+      ],
     },
     {
-      type: 'info',
-      title: 'Category 1: Syntax errors',
-      body: "Syntax errors mean the code can't even be parsed. Missing brackets, typos, bad imports. These are the easiest — the error message usually points to the exact character. The fix is mechanical: read the message, go to the line, fix the typo.",
-    },
-    {
-      type: 'code-demo',
-      title: 'Syntax error example',
-      body: 'The parser tells you exactly where the problem is. Line 3, unexpected token.',
+      type: 'code-fill',
+      instruction: 'The parser tells you exactly where the problem is. Fill in what the error message reveals:',
       language: 'text',
-      filename: 'terminal output',
-      code: "SyntaxError: Unexpected token '}' at line 3\n\nfunction greet(name: string) {\n  console.log('Hello, ' + name)\n}} // <-- extra closing brace",
+      template: "{{error_type}}: Unexpected token '}' at line {{line_num}}\n\nfunction greet(name: string) {\n  console.log('Hello, ' + name)\n}} // <-- {{fix_description}}",
+      blanks: [
+        { id: 'error_type', answer: 'SyntaxError', alternatives: ['syntaxerror', 'syntax error'], placeholder: 'error type?', hint: 'This error category means the code cannot even be parsed' },
+        { id: 'line_num', answer: '3', placeholder: 'which line?', hint: 'Count the lines of the function — which line has the extra brace?' },
+        { id: 'fix_description', answer: 'extra closing brace', alternatives: ['extra brace', 'extra }', 'extra bracket'], placeholder: 'what is wrong?', hint: 'There is one too many of something at the end' },
+      ],
+      explanation: 'A SyntaxError at line 3 caused by an extra closing brace. Syntax errors are mechanical to fix: read the message, go to the line, fix the structural issue.',
     },
     {
-      type: 'info',
-      title: 'Category 2: Runtime errors',
-      body: "Runtime errors happen when the code is valid syntax but fails during execution. Null references, type mismatches, missing files. The code parsed fine but hit bad data or an unexpected state. These require checking what data actually was at the point of failure.",
-    },
-    {
-      type: 'info',
-      title: 'Category 3: Logic errors',
-      body: "Logic errors are the hardest. The code runs without crashing but produces wrong results. No error message at all. A function returns 0 instead of 100. A filter removes the wrong items. These require understanding intent vs. behavior — and they're where AI agents can help most by tracing through the logic.",
+      type: 'compare',
+      title: 'Runtime errors vs Logic errors',
+      body: 'Both happen after the code parses, but they behave very differently.',
+      question: 'Which type is harder to debug and why?',
+      correctSide: 'right',
+      left: {
+        label: 'Runtime error',
+        content: "// Code crashes during execution\nconst users = null;\nconsole.log(users.length);\n// TypeError: Cannot read properties of null\n\n// You get: error type, message, file, line\n// Strategy: check what data was at the failure point\n// Difficulty: Medium — the error tells you where",
+        language: 'typescript',
+      },
+      right: {
+        label: 'Logic error',
+        content: "// Code runs fine but produces WRONG results\nfunction discount(price: number) {\n  return price * 1.1; // BUG: adds 10% instead\n}\ndiscount(100); // Returns 110, should be 90\n\n// You get: NO error message, no crash\n// Strategy: compare expected vs actual behavior\n// Difficulty: Hard — nothing tells you where to look",
+        language: 'typescript',
+      },
+      explanation: 'Runtime errors crash with a message pointing you to the problem. Logic errors are silent — the code runs but produces wrong output. You must compare expected vs actual behavior, which is why AI agents are most helpful here: they can trace through logic step by step.',
     },
     {
       type: 'multiple-choice',
@@ -228,25 +268,34 @@ const content: LessonContent = {
 
     // === PROMPTING AGENTS FOR DEBUGGING ===
     {
-      type: 'info',
-      title: 'The wrong way to ask an agent for help',
-      body: "\"It doesn't work\" is the most common thing developers type into AI chats. It's also the most useless. The agent has zero information. It will guess. It might suggest five different fixes, none of which match your actual problem. You waste time trying each one.",
+      type: 'compare',
+      title: 'Vague vs precise debugging prompts',
+      body: "How you ask an agent for help determines whether it solves your problem or wastes your time guessing.",
+      question: 'Which prompt will get a useful answer from the agent?',
+      correctSide: 'right',
+      left: {
+        label: 'Vague (agent guesses)',
+        content: "\"My app doesn't work\"\n\"I'm getting an error in my React component\"\n\"The data isn't showing up\"\n\"Something broke after I updated\"\n\n→ Agent has zero information\n→ Suggests 5 different fixes\n→ None match your actual problem\n→ You waste time trying each one",
+        language: 'text',
+      },
+      right: {
+        label: 'Precise (agent traces)',
+        content: "\"I'm getting this error when Dashboard loads:\n\nTypeError: Cannot read properties of\n  undefined (reading 'map')\n  at renderList (UserList.tsx:12:18)\n  at Dashboard (Dashboard.tsx:45:5)\n\nThe users prop is fetched from /api/users.\nI expect an array but it's undefined on\nfirst render. What's the root cause?\"",
+        language: 'text',
+      },
+      explanation: "The vague prompts force the agent to guess. The precise prompt includes the exact error, stack trace, file names, and expected behavior — everything the agent needs to trace the root cause directly. Always include the exact error message and stack trace.",
     },
     {
-      type: 'code-demo',
-      title: 'Anti-pattern: vague debugging prompts',
-      body: 'These prompts force the agent to guess. Every guess wastes your time.',
+      type: 'code-fill',
+      instruction: 'Complete this debugging prompt to give the agent everything it needs:',
       language: 'text',
-      filename: 'bad-prompts.txt',
-      code: "Bad:  \"My app doesn't work\"\nBad:  \"I'm getting an error in my React component\"\nBad:  \"The data isn't showing up\"\nBad:  \"Something broke after I updated\"",
-    },
-    {
-      type: 'code-demo',
-      title: 'Pattern: paste the EXACT error',
-      body: 'Give the agent the full error, the file, and what you expected. Now it can trace the root cause instead of guessing.',
-      language: 'text',
-      filename: 'good-prompt.txt',
-      code: "Good prompt:\n\n\"I'm getting this error when the Dashboard loads:\n\nTypeError: Cannot read properties of undefined (reading 'map')\n  at renderList (src/components/UserList.tsx:12:18)\n  at Dashboard (src/pages/Dashboard.tsx:45:5)\n\nThe `users` prop is fetched in Dashboard from /api/users.\nI expect an array but it seems to be undefined on first render.\nWhat's the root cause and how should I fix it?\"",
+      template: "\"I'm getting this error when the {{page_name}} loads:\n\n{{error_type}}: Cannot read properties of undefined (reading 'map')\n  at renderList (src/components/UserList.tsx:12:18)\n\nThe `users` prop is fetched from {{data_source}}.\nWhat's the root cause?\"",
+      blanks: [
+        { id: 'page_name', answer: 'Dashboard', alternatives: ['dashboard'], placeholder: 'which page?', hint: 'Look at the stack trace — which page component calls renderList?' },
+        { id: 'error_type', answer: 'TypeError', alternatives: ['typeerror'], placeholder: 'error category?', hint: 'Accessing a property of undefined is what type of error?' },
+        { id: 'data_source', answer: '/api/users', alternatives: ['api/users', 'the API', 'an API'], placeholder: 'where from?', hint: 'Where does the users data originate? Think about the data source.' },
+      ],
+      explanation: 'A precise debugging prompt includes: the page where it happens (Dashboard), the error type (TypeError), and the data source (/api/users). This gives the agent full context to trace the issue from source to symptom.',
     },
     {
       type: 'multiple-choice',
@@ -268,24 +317,42 @@ const content: LessonContent = {
 
     // === THE 3-STEP DEBUG LOOP ===
     {
-      type: 'info',
-      title: 'The 3-step debug loop',
-      body: "Every experienced debugger follows the same loop, whether they realize it or not: Read the error, form a hypothesis, verify with one change. Not two changes. Not five. One. If it doesn't fix it, you learned something — update your hypothesis and loop again. This is how agents should work too.",
+      type: 'multiple-choice',
+      question: 'The 3-step debug loop is: Read the error, form a hypothesis, verify with ___ change(s). How many changes per cycle?',
+      options: [
+        'As many as needed to fix the bug',
+        'Two — one to fix and one to test',
+        'One — a single change per cycle',
+        'Five — try multiple approaches at once',
+      ],
+      correctIndex: 2,
+      explanation: "Every experienced debugger follows the same loop: Read, Hypothesize, Verify with ONE change. Not two. Not five. One. If it doesn't fix the bug, you learned something — update your hypothesis and loop again. Multiple changes at once make it impossible to know which one helped.",
     },
     {
-      type: 'code-demo',
-      title: 'The debug loop in practice',
-      body: 'One change per cycle. Each cycle either fixes the bug or narrows the cause.',
+      type: 'code-fill',
+      instruction: 'Apply the 3-step debug loop to fix a crashing component. Fill in the guard clause:',
       language: 'typescript',
-      filename: 'debug-loop.ts',
-      code: "// Step 1: READ — the error says 'users' is undefined at line 12\n// Step 2: HYPOTHESIZE — the API call hasn't resolved before render\n// Step 3: VERIFY — add a guard clause and test\n\n// Before (crashes):\nfunction UserList({ users }: Props) {\n  return users.map(u => <li>{u.name}</li>)\n}\n\n// After (one change — guard clause):\nfunction UserList({ users }: Props) {\n  if (!users) return <p>Loading...</p>\n  return users.map(u => <li>{u.name}</li>)\n}",
+      template: "// Step 1: READ — error says 'users' is undefined at line 12\n// Step 2: HYPOTHESIZE — API hasn't resolved before render\n// Step 3: VERIFY — add a guard clause and test\n\nfunction UserList({ users }: Props) {\n  if ({{guard_check}}) return <p>{{fallback_text}}</p>\n  return users.{{array_method}}(u => <li>{u.name}</li>)\n}",
+      blanks: [
+        { id: 'guard_check', answer: '!users', alternatives: ['!users', 'users === undefined', 'users == null'], placeholder: 'null check?', hint: 'Check if users is falsy — what operator negates a value?' },
+        { id: 'fallback_text', answer: 'Loading...', alternatives: ['Loading', 'loading...', 'loading'], placeholder: 'show what?', hint: 'What do you show the user while data is being fetched?' },
+        { id: 'array_method', answer: 'map', placeholder: 'which method?', hint: 'The method that transforms each element in an array' },
+      ],
+      explanation: 'The guard clause checks !users before calling .map(). If users is undefined, it shows a Loading message. This is ONE change that either fixes the crash or tells you the problem is elsewhere.',
     },
 
     // === ROOT CAUSE VS SYMPTOMS ===
     {
-      type: 'info',
-      title: 'Fix root causes, not symptoms',
-      body: "The guard clause above stops the crash — but it's a symptom fix. The root cause might be that the API call isn't being awaited, or the parent component passes the wrong prop name. Ask the agent to investigate WHY users is undefined, not just how to stop the crash. Symptom fixes accumulate into fragile code.",
+      type: 'multiple-choice',
+      question: 'The guard clause above stops the crash. But is it a root cause fix or a symptom fix?',
+      options: [
+        'Root cause fix — it solves why users is undefined',
+        'Symptom fix — it hides the crash but the data is still missing',
+        'Both — it fixes the root cause and the symptom',
+        'Neither — guard clauses are unrelated to debugging',
+      ],
+      correctIndex: 1,
+      explanation: "The guard clause stops the crash but doesn't fix WHY users is undefined. The root cause might be an un-awaited API call or a wrong prop name. Ask the agent to investigate WHY the data is missing, not just how to stop the crash. Symptom fixes accumulate into fragile code.",
     },
     {
       type: 'terminal',

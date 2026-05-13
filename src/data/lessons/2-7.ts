@@ -17,12 +17,19 @@ const content: LessonContent = {
 
     // === IDENTIFYING DIVERGENCE ===
     {
-      type: 'info',
-      title: 'Step 1: Diff the output against your spec',
-      body: "Before reacting emotionally (\"this is all wrong!\"), be precise. Open your spec. Open the code. Walk through each acceptance criterion. Which ones are met? Which are not? Where specifically did the agent deviate? \"The agent built the wrong thing\" is not actionable. \"The agent used client-side routing for the checkout flow instead of server-side redirects as specified in criterion 3\" is actionable.",
+      type: 'multiple-choice',
+      question: 'The agent built something that does not match your spec. What is the FIRST thing you should do?',
+      options: [
+        'Tell the agent "this is all wrong, start over"',
+        'Walk through each acceptance criterion and identify specifically where the agent deviated',
+        'Delete all the generated code and write it yourself',
+        'Accept the output as-is and work around the differences',
+      ],
+      correctIndex: 1,
+      explanation: 'Before reacting, be precise. Walk through each acceptance criterion. Which are met? Which are not? Where specifically did the agent deviate? "The agent built the wrong thing" is not actionable. "The agent used client-side routing instead of server-side redirects as specified in criterion 3" is actionable.',
     },
     {
-      type: 'diagram',
+      type: 'interactive-diagram',
       title: 'Recovery Decision Tree',
       body: 'Use this flow to decide the right recovery action based on how far the agent diverged.',
       diagram: {
@@ -45,6 +52,33 @@ const content: LessonContent = {
           { from: 'rollback', to: 'restart' },
         ],
       },
+      stages: [
+        {
+          highlightNodes: ['detect'],
+          highlightEdges: [],
+          explanation: 'You notice the output does not match your spec. Do not react emotionally — move to assessment.',
+        },
+        {
+          highlightNodes: ['assess'],
+          highlightEdges: [{ from: 'detect', to: 'assess' }],
+          explanation: 'Count how many acceptance criteria are wrong. Is it 1-2 specific issues, or is the entire approach different?',
+        },
+        {
+          highlightNodes: ['minor', 'redirect'],
+          highlightEdges: [{ from: 'assess', to: 'minor' }, { from: 'minor', to: 'redirect' }],
+          explanation: 'Minor divergence (1-2 criteria off): give a targeted correction — specific file, specific change, specific approach. Add "only modify this file" to prevent cascade.',
+        },
+        {
+          highlightNodes: ['major', 'rollback'],
+          highlightEdges: [{ from: 'assess', to: 'major' }, { from: 'major', to: 'rollback' }],
+          explanation: 'Major divergence (wrong architecture): the entire approach is different. Save the work on a branch with git, then roll back to a known good state.',
+        },
+        {
+          highlightNodes: ['rollback', 'restart'],
+          highlightEdges: [{ from: 'rollback', to: 'restart' }],
+          explanation: 'After rollback, improve your spec to prevent the same misinterpretation. Start a fresh session with the clarified spec. The mistake becomes documentation.',
+        },
+      ],
     },
     {
       type: 'multiple-choice',
@@ -66,22 +100,46 @@ const content: LessonContent = {
 
     // === TARGETED CORRECTIONS ===
     {
-      type: 'info',
-      title: 'Targeted corrections: the precision tool',
-      body: "For minor divergence, you do not need to rewrite or restart. You need a precise correction prompt that tells the agent exactly what is wrong, exactly where, and exactly what to do instead. \"Try again\" wastes context. \"The checkout function in src/lib/checkout.ts should redirect server-side using redirect() from next/navigation, not return a URL for the client to navigate to. Keep everything else the same.\" That is actionable.",
+      type: 'multiple-choice',
+      question: 'The agent used client-side navigation instead of server-side redirects. Which correction prompt is best?',
+      options: [
+        '"The checkout flow is wrong. Fix it."',
+        '"This isn\'t what I asked for at all!"',
+        '"In src/lib/checkout.ts, change createCheckout to use redirect() from next/navigation instead of returning a URL. Only modify this file."',
+        '"Try again and this time do it right."',
+      ],
+      correctIndex: 2,
+      explanation: 'Targeted corrections tell the agent exactly what is wrong, exactly where, and exactly what to do instead. Vague corrections ("fix it") cause the agent to rewrite more than needed, potentially introducing new divergence. The key is specificity: file, function, current behavior, desired behavior, and scope constraint.',
     },
     {
-      type: 'code-demo',
-      title: 'Bad correction vs. good correction',
-      body: 'Vague corrections cause the agent to make more changes than needed, potentially introducing new divergence.',
-      language: 'text',
-      filename: 'correction-examples.txt',
-      code: "# BAD: Vague correction\n\"The checkout flow is wrong. Fix it.\"\n# Agent response: rewrites 5 files, changes things that were correct\n\n# BAD: Emotional correction\n\"This isn't what I asked for at all. I said server-side!\"\n# Agent response: apologizes, rewrites broadly, may break working code\n\n# GOOD: Targeted correction\n\"In src/lib/checkout.ts, the createCheckout function currently\nreturns a URL string. Change it to use redirect() from\nnext/navigation to perform a server-side redirect to the\nStripe checkout URL. The function signature should become\nasync with no return value. Only modify this file.\"\n# Agent response: changes exactly what you specified",
+      type: 'compare',
+      title: 'Vague correction vs targeted correction',
+      body: 'The precision of your correction determines whether the agent fixes the problem or creates new ones.',
+      question: 'Which correction prompt will produce the best result?',
+      correctSide: 'right',
+      left: {
+        label: 'Vague (causes cascade)',
+        content: '"The checkout flow is wrong. Fix it."\n\nAgent response:\n- Rewrites 5 files\n- Changes things that were correct\n- Introduces new divergence\n- Breaks working import paths\n- You now have MORE to fix',
+        language: 'text',
+      },
+      right: {
+        label: 'Targeted (surgical fix)',
+        content: '"In src/lib/checkout.ts, the createCheckout\nfunction currently returns a URL string.\nChange it to use redirect() from\nnext/navigation to perform a server-side\nredirect. Only modify this file."\n\nAgent response:\n- Changes exactly one file\n- Preserves everything else\n- One clean diff to review',
+        language: 'text',
+      },
+      explanation: 'Targeted corrections name: (1) the specific file, (2) the specific function, (3) what it currently does wrong, (4) what it should do instead, and (5) the scope constraint ("only modify this file"). This prevents the agent from propagating unnecessary changes.',
     },
     {
-      type: 'info',
-      title: 'The \"only modify\" constraint',
-      body: "When giving corrections, add \"Only modify [specific files]\" or \"Do not change [specific files].\" Without this constraint, the agent may propagate changes through the codebase — updating imports, refactoring callers, changing tests — creating a cascade of modifications you did not review. Scope your corrections as tightly as possible.",
+      type: 'multiple-choice',
+      question: 'Why should you add "Only modify this file" to correction prompts?',
+      options: [
+        'It makes the agent work faster',
+        'Without scope constraints, the agent may propagate changes through the codebase — updating imports, refactoring callers, changing tests — creating unreviewed cascading modifications',
+        'The agent will refuse to work without explicit file permissions',
+        'It is required by the Claude Code API',
+      ],
+      correctIndex: 1,
+      explanation: 'Without the "only modify" constraint, the agent may propagate changes through the codebase — updating imports, refactoring callers, changing tests. This creates a cascade of modifications you did not review, potentially introducing new divergence. Always scope corrections as tightly as possible.',
     },
     {
       type: 'code-diff',
@@ -108,14 +166,28 @@ const content: LessonContent = {
 
     // === WHEN TO RESTART ===
     {
-      type: 'info',
-      title: 'When corrections are not enough',
-      body: "Sometimes the divergence is architectural. The agent chose a fundamentally different approach — wrong data model, wrong rendering strategy, wrong state management pattern. Correcting one file would create inconsistencies with everything else it built. Trying to patch an architectural mistake file-by-file takes longer than starting fresh. The signal: if fixing the divergence requires changing more than 3-4 files, it is probably cheaper to restart.",
+      type: 'multiple-choice',
+      question: 'The agent used the wrong state management pattern and it touches 6 files. What is the most efficient recovery?',
+      options: [
+        'Give targeted corrections to each of the 6 files one at a time',
+        'Tell the agent to refactor all 6 files at once',
+        'Save the work on a branch, identify why the spec was ambiguous, improve it, and start a fresh session',
+        'Accept the wrong pattern and work around it',
+      ],
+      correctIndex: 2,
+      explanation: 'If fixing divergence requires changing more than 3-4 files, restarting is cheaper. The restart protocol: (1) save work on a branch, (2) identify why the agent diverged (spec ambiguity?), (3) rewrite the spec to eliminate ambiguity, (4) start fresh. The mistake becomes documentation showing where your spec was unclear.',
     },
     {
-      type: 'info',
-      title: 'The restart protocol',
-      body: "Restarting does not mean losing everything. First: git stash or branch the current work (you might want to reference it). Second: identify why the agent diverged — was the spec ambiguous? Did it lack a critical constraint? Third: rewrite the spec to eliminate the ambiguity. Fourth: start a fresh session with the improved spec. The mistake becomes documentation — it shows you where your spec was unclear.",
+      type: 'multiple-choice',
+      question: 'After saving divergent work on a branch, what should you do BEFORE starting a fresh session?',
+      options: [
+        'Delete the branch to avoid confusion',
+        'Copy-paste the good parts into the new session',
+        'Identify why the agent diverged and rewrite the spec to eliminate the ambiguity that caused it',
+        'Ask a different AI model to review the divergent code',
+      ],
+      correctIndex: 2,
+      explanation: 'The key step between saving and restarting is improving your spec. The divergence tells you exactly what was ambiguous. Add explicit constraints that prevent the same misinterpretation. The mistake becomes documentation — it shows you where your spec was unclear.',
     },
     {
       type: 'terminal',
@@ -124,12 +196,18 @@ const content: LessonContent = {
       hint: 'Create a branch, stage all files, and commit the current state',
     },
     {
-      type: 'code-demo',
-      title: 'Improving the spec after divergence',
-      body: 'The divergence tells you what was ambiguous. Add explicit constraints that prevent the same misinterpretation.',
+      type: 'code-fill',
+      instruction: 'Complete this revised spec that prevents the same divergence from happening again:',
       language: 'markdown',
       filename: 'specs/checkout-v2.md',
-      code: "# Checkout Flow — Revised Spec\n\n## What went wrong last time\nAgent built client-side navigation to Stripe. I need server-side redirect.\n\n## Constraints (ADDED after first attempt)\n- Server-side redirect via next/navigation redirect() — NOT client navigation\n- No checkout URLs returned to the client — redirect happens in server action\n- Success page must work WITHOUT JavaScript (SSR only)\n\n## Architecture Decision: Server Actions\nThe checkout flow uses Next.js Server Actions exclusively.\nNo API routes, no client-side fetch calls for the payment flow.\nThe user clicks a button → server action runs → server redirects to Stripe.\n\n## What I want to KEEP from the first attempt\n- The Stripe SDK setup in src/lib/stripe.ts (correct)\n- The product schema in src/db/schema.ts (correct)\n- The webhook handler structure (correct)",
+      template: '# Checkout Flow — Revised Spec\n\n## What went wrong last time\nAgent built {{wrong_approach}} to Stripe. I need server-side redirect.\n\n## Constraints (ADDED after first attempt)\n- Server-side redirect via next/navigation {{redirect_fn}}() — NOT client navigation\n- No checkout URLs returned to the client — redirect happens in {{action_type}}\n- Success page must work WITHOUT {{no_js}} (SSR only)\n\n## What I want to KEEP from the first attempt\n- The Stripe SDK setup in src/lib/stripe.ts (correct)\n- The product schema in src/db/schema.ts (correct)',
+      blanks: [
+        { id: 'wrong_approach', answer: 'client-side navigation', alternatives: ['client side navigation', 'client navigation'], placeholder: 'what went wrong?', hint: 'The agent navigated on the client instead of the server' },
+        { id: 'redirect_fn', answer: 'redirect', alternatives: ['Redirect'], placeholder: 'which function?', hint: 'The Next.js function for server-side redirects' },
+        { id: 'action_type', answer: 'server action', alternatives: ['Server Action', 'server actions', 'Server Actions'], placeholder: 'where does redirect happen?', hint: 'Next.js pattern for server-side mutations' },
+        { id: 'no_js', answer: 'JavaScript', alternatives: ['javascript', 'JS', 'js'], placeholder: 'without what?', hint: 'SSR means the page works even if this is disabled' },
+      ],
+      explanation: 'The revised spec documents what went wrong, adds explicit constraints that prevent recurrence, and lists what to keep from the first attempt. This turns every divergence into a better spec for the next session.',
     },
     {
       type: 'multiple-choice',
@@ -151,9 +229,16 @@ const content: LessonContent = {
 
     // === RECOVERY WORKFLOW ===
     {
-      type: 'info',
-      title: 'The full recovery workflow',
-      body: "Detect → Assess → Decide → Act. Detect: notice the output does not match intent. Assess: how many criteria are off? Is it surface (rename, restructure) or architectural (wrong approach)? Decide: if surface, targeted correction. If architectural, restart. Act: execute the correction or restart. Then verify the fix did not introduce new divergence. This workflow should take minutes, not hours. Speed comes from precision in the assess step.",
+      type: 'multiple-choice',
+      question: 'What determines whether recovery takes minutes or hours?',
+      options: [
+        'The size of the codebase',
+        'How quickly you can type correction prompts',
+        'Precision in the assess step — correctly identifying whether divergence is surface-level or architectural',
+        'Whether you use git or not',
+      ],
+      correctIndex: 2,
+      explanation: 'The full workflow is: Detect, Assess, Decide, Act. Speed comes from precision in the Assess step. Correctly identifying surface-level vs architectural divergence means you choose the right recovery action (targeted correction vs restart) the first time. Misjudging scope wastes time on corrections that cascade into more problems.',
     },
     {
       type: 'terminal',
@@ -162,12 +247,18 @@ const content: LessonContent = {
       hint: 'git diff --stat shows a summary of all changed files and line counts',
     },
     {
-      type: 'code-demo',
-      title: 'Recovery prompt template',
-      body: 'When redirecting mid-session, structure your correction as: what is wrong, where it is wrong, what to do instead.',
+      type: 'code-fill',
+      instruction: 'Complete this recovery prompt template with the right sections:',
       language: 'text',
       filename: 'recovery-template.txt',
-      code: "I need to correct the implementation in [specific area].\n\n## What is wrong\n[Describe the divergence from spec precisely]\n\n## Where it is wrong\n[List specific files and functions]\n\n## What to do instead\n[Describe the correct approach]\n\n## Do not change\n[List files/areas that are correct and should stay untouched]\n\n## After the fix, verify\n[How to confirm the correction worked]",
+      template: "I need to correct the implementation in [specific area].\n\n## What is {{section_1}}\n[Describe the divergence from spec precisely]\n\n## Where it is wrong\n[List specific {{location_type}} and functions]\n\n## What to do {{section_3}}\n[Describe the correct approach]\n\n## Do not {{constraint}}\n[List files/areas that are correct and should stay untouched]",
+      blanks: [
+        { id: 'section_1', answer: 'wrong', alternatives: ['Wrong', 'incorrect'], placeholder: 'what section?', hint: 'Describe the problem' },
+        { id: 'location_type', answer: 'files', alternatives: ['Files', 'file paths'], placeholder: 'list what?', hint: 'The exact locations in the codebase' },
+        { id: 'section_3', answer: 'instead', alternatives: ['Instead', 'differently'], placeholder: 'what section?', hint: 'The alternative approach' },
+        { id: 'constraint', answer: 'change', alternatives: ['Change', 'modify', 'touch'], placeholder: 'constraint?', hint: 'Protect working code from unnecessary modifications' },
+      ],
+      explanation: 'A recovery prompt has 4 parts: what is wrong (precise divergence), where (specific files), what to do instead (correct approach), and what NOT to change (scope constraint). This structure gives the agent maximum clarity with minimum risk of cascade.',
     },
     {
       type: 'order',
@@ -210,9 +301,16 @@ const content: LessonContent = {
 
     // === PREVENTION ===
     {
-      type: 'info',
-      title: 'Reducing divergence in future sessions',
-      body: "Every divergence teaches you something about your spec. Keep a mental (or written) log: \"Agent used REST instead of GraphQL\" means your spec needed to say API style explicitly. \"Agent used client-side storage\" means your spec needed a data persistence constraint. Over time, you build a library of constraints you always include. The best specs come from people who have recovered from divergence many times.",
+      type: 'multiple-choice',
+      question: 'The agent keeps using REST when you want GraphQL across different projects. What is the long-term fix?',
+      options: [
+        'Switch to a different AI model that defaults to GraphQL',
+        'Always correct the agent after it builds REST endpoints',
+        'Build a library of spec constraints you always include — "API style: GraphQL with single /graphql endpoint" becomes a default in your specs',
+        'Give up on GraphQL and accept REST',
+      ],
+      correctIndex: 2,
+      explanation: 'Every divergence teaches you something about your spec. "Agent used REST" means your spec needs to say API style explicitly. Over time, you build a personal library of constraints you always include. The best specs come from people who have recovered from divergence many times and codified the lessons.',
     },
     {
       type: 'checklist',

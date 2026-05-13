@@ -17,17 +17,29 @@ const content: LessonContent = {
 
     // === COMMON MISTAKES ===
     {
-      type: 'info',
-      title: 'Mistake 1: Missing error handling',
-      body: "The most frequent agent mistake. A fetch call without try/catch. A database query that assumes success. A file read that does not handle \"file not found.\" The agent writes the logic for when things work. Your job is to verify the logic for when things fail. Check every external call (API, DB, filesystem) for proper error handling.",
+      type: 'multiple-choice',
+      question: 'What is the single most frequent mistake in agent-generated code?',
+      options: [
+        'Using deprecated APIs',
+        'Missing error handling on external calls (fetch, DB, file I/O)',
+        'Incorrect variable naming conventions',
+        'Forgetting to add comments',
+      ],
+      correctIndex: 1,
+      explanation: "The most frequent agent mistake is missing error handling. A fetch call without try/catch. A database query that assumes success. A file read that does not handle 'file not found.' The agent writes the logic for when things work. Your job is to verify the logic for when things fail. Check every external call (API, DB, filesystem) for proper error handling.",
     },
     {
-      type: 'code-demo',
-      title: 'Spot the missing error handling',
-      body: 'This code looks correct at first glance but has no failure path. What happens when the API returns 500?',
+      type: 'code-fill',
+      instruction: 'This agent-generated function has no failure path. Add the missing error handling checks:',
       language: 'typescript',
       filename: 'src/actions/get-user.ts',
-      code: "// Agent-generated code — looks clean, but fragile\nexport async function getUser(id: string) {\n  const response = await fetch(`/api/users/${id}`)\n  const data = await response.json()\n  return data.user\n}\n\n// What you should verify exists:\nexport async function getUserVerified(id: string) {\n  const response = await fetch(`/api/users/${id}`)\n\n  if (!response.ok) {\n    throw new Error(`Failed to fetch user: ${response.status}`)\n  }\n\n  const data = await response.json()\n\n  if (!data.user) {\n    return null // Explicit null instead of undefined access\n  }\n\n  return data.user\n}",
+      template: 'export async function getUser(id: string) {\n  const response = await fetch(`/api/users/${id}`)\n\n  if ({{response_check}}) {\n    throw new Error(`Failed to fetch user: ${response.status}`)\n  }\n\n  const data = await {{parse_body}}\n\n  if ({{null_check}}) {\n    return null\n  }\n\n  return data.user\n}',
+      blanks: [
+        { id: 'response_check', answer: '!response.ok', alternatives: ['response.status >= 400', 'response.status !== 200'], placeholder: 'check response?', hint: 'Check if the HTTP response indicates an error' },
+        { id: 'parse_body', answer: 'response.json()', alternatives: ['response.json()', 'res.json()'], placeholder: 'parse body?', hint: 'Parse the JSON response body' },
+        { id: 'null_check', answer: '!data.user', alternatives: ['data.user === null', 'data.user === undefined', '!data.user'], placeholder: 'null check?', hint: 'What if the user field is missing?' },
+      ],
+      explanation: 'Two checks added: !response.ok catches HTTP errors (404, 500). The null check on data.user prevents "Cannot read property of undefined" errors downstream. The agent wrote the happy path — you added the failure paths.',
     },
     {
       type: 'code-diff',
@@ -40,14 +52,34 @@ const content: LessonContent = {
       explanation: 'Two checks added: response.ok catches HTTP errors (404, 500). The null check on data.user prevents "Cannot read property of undefined" errors downstream.',
     },
     {
-      type: 'info',
+      type: 'compare',
       title: 'Mistake 2: Wrong assumptions about data',
-      body: "The agent assumes data is always present, always the right shape, always in the expected range. It writes `user.profile.avatar.url` without checking if profile or avatar exist. It uses `items[0]` without checking if the array is empty. It parses dates assuming ISO format when your API returns Unix timestamps. Every property access chain is a potential crash site.",
+      body: 'The agent assumes data is always present and well-shaped. Compare the unsafe vs safe approach.',
+      question: 'Which code safely handles potentially missing nested data?',
+      correctSide: 'right',
+      left: {
+        label: 'Unsafe (agent default)',
+        content: '// Assumes data is always present\nconst url = user.profile.avatar.url\nconst first = items[0].name\nconst date = new Date(record.createdAt)',
+        language: 'typescript',
+      },
+      right: {
+        label: 'Safe (your verification)',
+        content: '// Guards against missing data\nconst url = user?.profile?.avatar?.url ?? null\nconst first = items.length > 0 ? items[0].name : null\nconst date = record.createdAt\n  ? new Date(record.createdAt) : null',
+        language: 'typescript',
+      },
+      explanation: 'The agent writes user.profile.avatar.url without checking if profile or avatar exist. It uses items[0] without checking if the array is empty. Every property access chain is a potential crash site. Optional chaining (?.) and length checks are your safety net.',
     },
     {
-      type: 'info',
-      title: 'Mistake 3: Skipped edge cases in CRUD',
-      body: "Agent-built CRUD operations typically handle: create (with all fields), read (by ID), update (all fields), delete (by ID). They typically skip: create with missing optional fields, read for non-existent ID, update partial fields, delete with foreign key constraints, concurrent updates (optimistic locking), soft delete vs hard delete behavior. These gaps become production bugs.",
+      type: 'multiple-choice',
+      question: 'Agent-built CRUD operations typically handle the happy path. Which edge case is MOST commonly skipped?',
+      options: [
+        'Create with all required fields present',
+        'Read by a valid, existing ID',
+        'Delete a record that has child records referencing it via foreign key',
+        'Update all fields at once',
+      ],
+      correctIndex: 2,
+      explanation: "Agent-built CRUD typically handles: create (all fields), read (by ID), update (all fields), delete (by ID). They skip: create with missing optional fields, read for non-existent ID, update partial fields, delete with foreign key constraints, concurrent updates (optimistic locking), soft delete vs hard delete. These gaps become production bugs.",
     },
     {
       type: 'multiple-choice',
@@ -136,12 +168,17 @@ const content: LessonContent = {
       explanation: 'Each category has telltale patterns in code. Error handling: missing try/catch. Null safety: missing optional chaining. Security: hardcoded secrets. Async: unbounded Promise.all.',
     },
     {
-      type: 'code-demo',
-      title: 'The verification scan — error handling',
-      body: 'For every external call, verify: what happens on failure? Is the error caught? Is it surfaced correctly?',
+      type: 'code-fill',
+      instruction: 'Complete these grep commands to find unhandled external calls in agent-generated code:',
       language: 'bash',
       filename: 'verification-commands.sh',
-      code: "# Find all fetch/axios calls and check for error handling\n# Look for fetch() without .ok check or try/catch\ngrep -rn \"await fetch\" src/ --include=\"*.ts\" --include=\"*.tsx\"\n\n# Find all database operations without try/catch\ngrep -rn \"await db\\.\" src/ --include=\"*.ts\" | grep -v \"try\"\n\n# Find unhandled promise patterns\ngrep -rn \"\\.then(\" src/ --include=\"*.ts\" --include=\"*.tsx\"",
+      template: '# Find all fetch calls and check for error handling\ngrep -rn "{{fetch_pattern}}" src/ --include="*.ts" --include="*.tsx"\n\n# Find all database operations without try/catch\ngrep -rn "{{db_pattern}}" src/ --include="*.ts" | grep -v "try"\n\n# Find unhandled promise patterns\ngrep -rn "{{promise_pattern}}" src/ --include="*.ts" --include="*.tsx"',
+      blanks: [
+        { id: 'fetch_pattern', answer: 'await fetch', alternatives: ['fetch('], placeholder: 'fetch pattern?', hint: 'What does an async fetch call look like?' },
+        { id: 'db_pattern', answer: 'await db\\.', alternatives: ['await db.', 'db\\.query', 'db.insert\\|db.update\\|db.delete'], placeholder: 'DB pattern?', hint: 'How do database calls start?' },
+        { id: 'promise_pattern', answer: '\\.then(', alternatives: ['.then(', '.then\\('], placeholder: 'promise pattern?', hint: 'Old-style promise chaining method' },
+      ],
+      explanation: 'For every external call, verify: what happens on failure? Is the error caught? Is it surfaced correctly? These grep patterns find the most common unhandled call sites.',
     },
     {
       type: 'terminal',
@@ -157,17 +194,12 @@ const content: LessonContent = {
 
     // === DATA INTEGRITY ===
     {
-      type: 'info',
-      title: 'Data integrity in agent-built CRUD',
-      body: "The agent builds your database schema and CRUD operations. Now verify: Are unique constraints in place (duplicate emails, duplicate slugs)? Are foreign keys defined correctly? Do cascading deletes work as expected? Are timestamps auto-set? Is soft-delete implemented if required? Check the migration file — that is where the truth lives, not the TypeScript schema definition.",
-    },
-    {
-      type: 'code-demo',
-      title: 'Data integrity verification',
-      body: 'Run these checks against agent-generated schema and CRUD operations.',
-      language: 'typescript',
-      filename: 'verify-integrity.ts',
-      code: "// 1. Check: Can I create a duplicate? (unique constraints)\nawait db.insert(users).values({ email: 'test@test.com', name: 'A' })\nawait db.insert(users).values({ email: 'test@test.com', name: 'B' })\n// Expected: second insert throws unique violation\n\n// 2. Check: Can I delete a parent with children?\nawait db.delete(users).where(eq(users.id, userWithPosts.id))\n// Expected: either cascades (deletes posts) or throws FK violation\n\n// 3. Check: Partial updates preserve existing data\nawait db.update(users)\n  .set({ name: 'New Name' }) // Does NOT passing email null it out?\n  .where(eq(users.id, id))\n// Expected: email field unchanged\n\n// 4. Check: Timestamps auto-update\nawait db.update(posts).set({ title: 'Updated' }).where(eq(posts.id, id))\nconst post = await db.query.posts.findFirst({ where: eq(posts.id, id) })\n// Expected: updatedAt > createdAt",
+      type: 'match',
+      instruction: 'Match each data integrity check to its expected database behavior:',
+      leftItems: ['Insert duplicate email', 'Delete user who has posts', 'Update only the name field', 'Update any field in a row'],
+      rightItems: ['updatedAt timestamp auto-updates', 'Throws unique constraint violation', 'Email field remains unchanged (not nulled)', 'Either cascades or throws FK violation'],
+      correctPairs: { 0: 1, 1: 3, 2: 2, 3: 0 },
+      explanation: 'The agent builds your schema and CRUD operations. Verify: unique constraints prevent duplicates, foreign keys cascade or block correctly, partial updates preserve untouched fields, and timestamps auto-update. Check the migration file — that is where the truth lives, not the TypeScript schema definition.',
     },
     {
       type: 'multiple-choice',
@@ -184,17 +216,29 @@ const content: LessonContent = {
 
     // === VERIFY BEFORE COMMIT WORKFLOW ===
     {
-      type: 'info',
-      title: 'The verify-before-commit workflow',
-      body: "Never commit agent-generated code without verification. The workflow: (1) Agent generates code, (2) Review the diff — not the whole file, just what changed, (3) Run your verification checklist on the changed code, (4) Run the test suite, (5) Manually test the happy path AND one failure case, (6) Only then: git add and commit. This adds 5-10 minutes per commit but prevents hours of debugging bad code that \"looked fine\".",
+      type: 'multiple-choice',
+      question: 'What is the correct verify-before-commit workflow for agent-generated code?',
+      options: [
+        'Run tests, then commit if they pass',
+        'Read the whole file, check it looks right, commit',
+        'Review the diff, run verification checklist on changed code, run test suite, manually test happy path AND one failure case, then commit',
+        'Ask the agent if the code is correct, then commit',
+      ],
+      correctIndex: 2,
+      explanation: "Never commit agent-generated code without verification. The workflow: (1) Agent generates code, (2) Review the diff — not the whole file, just what changed, (3) Run your verification checklist on the changed code, (4) Run the test suite, (5) Manually test the happy path AND one failure case, (6) Only then: git add and commit. This adds 5-10 minutes per commit but prevents hours of debugging bad code that 'looked fine'.",
     },
     {
-      type: 'code-demo',
-      title: 'Pre-commit verification script',
-      body: 'Automate what you can. This script catches the most common agent mistakes before they reach your git history.',
+      type: 'code-fill',
+      instruction: 'Complete this pre-commit verification script that catches common agent mistakes:',
       language: 'bash',
       filename: 'scripts/verify.sh',
-      code: "#!/bin/bash\nset -e\n\necho \"=== Running verification checks ===\"\n\n# 1. TypeScript type check (catches wrong assumptions)\necho \"\\n--- Type checking ---\"\nnpx tsc --noEmit\n\n# 2. Lint (catches missing awaits, unused vars)\necho \"\\n--- Linting ---\"\nbun run lint\n\n# 3. Test suite\necho \"\\n--- Running tests ---\"\nbun test\n\n# 4. Check for common agent mistakes\necho \"\\n--- Checking for issues ---\"\n\n# Unhandled fetch calls\nUNHANDLED=$(grep -rn \"await fetch\" src/ --include=\"*.ts\" | grep -v \"try\" | grep -v \"response.ok\" | wc -l)\nif [ \"$UNHANDLED\" -gt 0 ]; then\n  echo \"WARNING: $UNHANDLED fetch calls may lack error handling\"\n  grep -rn \"await fetch\" src/ --include=\"*.ts\" | grep -v \"try\" | grep -v \"response.ok\"\nfi\n\n# Any type assertions (often a sign of shortcuts)\nASSERTIONS=$(grep -rn \"as any\" src/ --include=\"*.ts\" --include=\"*.tsx\" | wc -l)\nif [ \"$ASSERTIONS\" -gt 0 ]; then\n  echo \"WARNING: $ASSERTIONS 'as any' assertions found\"\nfi\n\necho \"\\n=== Verification complete ===\"",
+      template: '#!/bin/bash\nset -e\n\n# 1. TypeScript type check (catches wrong assumptions)\n{{type_check}}\n\n# 2. Lint (catches missing awaits, unused vars)\n{{lint_cmd}}\n\n# 3. Check for unhandled fetch calls\nUNHANDLED=$(grep -rn "await fetch" src/ --include="*.ts" | grep -v "try" | grep -v "response.ok" | wc -l)\nif [ "$UNHANDLED" -gt 0 ]; then\n  echo "WARNING: $UNHANDLED fetch calls may lack error handling"\nfi\n\n# 4. Check for type escape hatches\nASSERTIONS=$(grep -rn "{{type_escape}}" src/ --include="*.ts" --include="*.tsx" | wc -l)\nif [ "$ASSERTIONS" -gt 0 ]; then\n  echo "WARNING: $ASSERTIONS type assertions found"\nfi',
+      blanks: [
+        { id: 'type_check', answer: 'npx tsc --noEmit', alternatives: ['tsc --noEmit', 'bunx tsc --noEmit'], placeholder: 'type check command?', hint: 'TypeScript compiler in check-only mode' },
+        { id: 'lint_cmd', answer: 'bun run lint', alternatives: ['npm run lint', 'npx eslint src/'], placeholder: 'lint command?', hint: 'Run the project linter' },
+        { id: 'type_escape', answer: 'as any', alternatives: ['as any', '// @ts-ignore'], placeholder: 'type escape?', hint: 'The TypeScript escape hatch that agents love' },
+      ],
+      explanation: 'Automate what you can. This script catches type errors, lint issues, unhandled fetch calls, and type escape hatches before they reach your git history.',
     },
     {
       type: 'terminal',
@@ -210,17 +254,27 @@ const content: LessonContent = {
 
     // === ASYNC CORRECTNESS ===
     {
-      type: 'info',
-      title: 'Async verification: the hidden danger',
-      body: "Agents frequently produce async code with subtle bugs: missing await (function returns a promise instead of the value), parallel operations that should be sequential (race conditions), sequential operations that could be parallel (performance), and unhandled promise rejections. These bugs do not always cause errors — they cause intermittent failures that are painful to debug in production.",
+      type: 'order',
+      instruction: 'Rank these async bugs from most dangerous (hardest to detect) to least:',
+      items: [
+        'Parallel mutations that should be in a transaction (race condition)',
+        'Missing await on a notification call (fire-and-forget)',
+        'Sequential queries that could be parallel (performance only)',
+        'Unbounded Promise.all on a user-supplied array (connection exhaustion)',
+      ],
+      correctOrder: [0, 3, 1, 2],
     },
     {
-      type: 'code-demo',
-      title: 'Async mistakes to check for',
-      body: 'Common async patterns agents get wrong. Each looks correct at a glance.',
-      language: 'typescript',
-      filename: 'async-checks.ts',
-      code: "// BUG: Missing await — returns Promise<void>, not void\nasync function saveAndNotify(data: Data) {\n  await db.insert(items).values(data)\n  sendNotification(data.userId) // Missing await! Fire-and-forget\n}\n\n// BUG: Sequential when parallel is safe\nasync function getDashboard(userId: string) {\n  const posts = await db.query.posts.findMany({ where: eq(posts.userId, userId) })\n  const comments = await db.query.comments.findMany({ where: eq(comments.userId, userId) })\n  const likes = await db.query.likes.findMany({ where: eq(likes.userId, userId) })\n  // These 3 queries are independent — should use Promise.all()\n}\n\n// BUG: Parallel when sequential is required\nasync function transferFunds(from: string, to: string, amount: number) {\n  await Promise.all([\n    db.update(accounts).set({ balance: sql`balance - ${amount}` }).where(eq(accounts.id, from)),\n    db.update(accounts).set({ balance: sql`balance + ${amount}` }).where(eq(accounts.id, to)),\n  ])\n  // Race condition! If first succeeds and second fails, money disappears.\n  // Should be in a transaction.\n}",
+      type: 'multiple-choice',
+      question: 'An agent writes getDashboard() that runs 3 independent DB queries sequentially with await. What is the issue?',
+      options: [
+        'It will crash because queries cannot be sequential',
+        'Nothing — sequential queries are always safer',
+        'Performance: independent queries should use Promise.all() to run in parallel',
+        'The database will lock between queries',
+      ],
+      correctIndex: 2,
+      explanation: "Agents frequently produce sequential operations that could be parallel. Three independent queries with await run one-after-another, tripling response time. Use Promise.all() for independent queries. But remember: mutations that depend on each other (like transferFunds) should NOT be parallel — they need a transaction.",
     },
     {
       type: 'multiple-choice',
@@ -237,17 +291,12 @@ const content: LessonContent = {
 
     // === SECURITY QUICK-SCAN ===
     {
-      type: 'info',
-      title: 'Security quick-scan',
-      body: "Agents do not think adversarially. They build for legitimate users. Quick security checks: (1) Are all API endpoints checking authorization? (2) Is user input validated/sanitized before use? (3) Are SQL queries parameterized (no string concatenation)? (4) Are file uploads validated for type and size? (5) Are secrets in environment variables, not hardcoded? One missing auth check is all it takes for a data breach.",
-    },
-    {
-      type: 'code-demo',
-      title: 'Security verification grep commands',
-      body: 'Quick searches to find common security gaps in agent-generated code.',
-      language: 'bash',
-      filename: 'security-scan.sh',
-      code: "# Check for hardcoded secrets\ngrep -rn \"sk_live\\|sk_test\\|password.*=.*['\\\"]\" src/ --include=\"*.ts\"\n\n# Check for raw SQL (potential injection)\ngrep -rn \"sql\\`.*\\${\" src/ --include=\"*.ts\"\n\n# Check API routes for auth middleware\n# Every route.ts should check session/auth\nfor f in $(find src/app/api -name \"route.ts\"); do\n  if ! grep -q \"auth\\|session\\|getUser\\|requireAuth\" \"$f\"; then\n    echo \"WARNING: $f may lack auth check\"\n  fi\ndone\n\n# Check for dangerouslySetInnerHTML\ngrep -rn \"dangerouslySetInnerHTML\" src/ --include=\"*.tsx\"",
+      type: 'match',
+      instruction: 'Match each security vulnerability to the grep command that detects it:',
+      leftItems: ['Hardcoded API keys', 'SQL injection risk', 'Unprotected API routes', 'XSS vulnerability'],
+      rightItems: ['grep -rn "dangerouslySetInnerHTML" src/ --include="*.tsx"', 'grep -rn "sk_live\\|sk_test\\|password.*=" src/ --include="*.ts"', 'find src/app/api -name "route.ts" -exec grep -L "auth\\|session" {} \\;', 'grep -rn "sql\\`.*\\${" src/ --include="*.ts"'],
+      correctPairs: { 0: 1, 1: 3, 2: 2, 3: 0 },
+      explanation: 'Agents do not think adversarially. They build for legitimate users. These grep patterns catch the most dangerous gaps: hardcoded secrets, raw SQL with interpolation, routes missing auth checks, and unsafe HTML injection. One missing check is all it takes for a data breach.',
     },
     {
       type: 'terminal',
@@ -263,9 +312,16 @@ const content: LessonContent = {
 
     // === PUTTING IT ALL TOGETHER ===
     {
-      type: 'info',
-      title: 'Your complete verification ritual',
-      body: "After every agent output and before every commit: (1) Read the diff, (2) Check error handling on external calls, (3) Verify null safety on data access, (4) Confirm edge cases in CRUD, (5) Quick security scan on new endpoints, (6) Verify async correctness, (7) Run tsc + lint + tests, (8) Manual smoke test one happy path and one failure. This takes 10-15 minutes. It prevents 2-4 hours of debugging per week. The math is clear.",
+      type: 'multiple-choice',
+      question: 'How much time does the full verification ritual add per commit, and how much debugging time does it prevent per week?',
+      options: [
+        '1-2 minutes per commit, prevents 30 minutes/week',
+        '10-15 minutes per commit, prevents 2-4 hours/week',
+        '30+ minutes per commit, prevents 1 hour/week',
+        'No time cost — it is fully automated',
+      ],
+      correctIndex: 1,
+      explanation: "After every agent output and before every commit: (1) Read the diff, (2) Check error handling on external calls, (3) Verify null safety on data access, (4) Confirm edge cases in CRUD, (5) Quick security scan on new endpoints, (6) Verify async correctness, (7) Run tsc + lint + tests, (8) Manual smoke test one happy path and one failure. This takes 10-15 minutes. It prevents 2-4 hours of debugging per week. The math is clear.",
     },
     {
       type: 'order',

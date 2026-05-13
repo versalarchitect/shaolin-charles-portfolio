@@ -3,19 +3,27 @@ import type { LessonContent } from './types'
 const content: LessonContent = {
   lessonId: '3-6',
   steps: [
-    // === INTRODUCTION ===
+    // === INTRODUCTION (keep first 2 passive) ===
     {
       type: 'info',
       title: 'Using one AI agent to check another\'s work',
       body: "Agent A builds a feature. You could review it yourself. But there's a better move: send Agent B to systematically verify Agent A's output against the spec. This isn't code review — it's structured verification. Agent B has fresh context, no sunk-cost bias, and can catch what Agent A missed because it wasn't emotionally invested in the implementation.",
     },
+    // CONVERTED: info → multiple-choice (#1)
     {
-      type: 'info',
-      title: 'Why agents verify better than the builder',
-      body: "When you build something, you develop blind spots. You know what you intended, so you see the intention rather than what's actually there. A second agent reads the code cold — no assumptions, no context bleed. It evaluates purely against the spec. This is the same principle as code review, but automated and systematic.",
+      type: 'multiple-choice',
+      question: 'Why does a second agent verify better than the builder agent?',
+      options: [
+        'The second agent has more computing power available',
+        'The second agent reads the code cold with no assumptions or context bleed, evaluating purely against the spec',
+        'The second agent was specifically trained for code review',
+        'The second agent can run the code while the first cannot',
+      ],
+      correctIndex: 1,
+      explanation: "When you build something, you develop blind spots. You know what you intended, so you see the intention rather than what's actually there. A second agent reads the code cold — no assumptions, no context bleed. It evaluates purely against the spec. This is the same principle as code review, but automated and systematic.",
     },
 
-    // === DIAGRAM 1: Build → Verify → Decide (Interactive) ===
+    // === DIAGRAM 1: Build -> Verify -> Decide (Interactive — already interactive) ===
     {
       type: 'interactive-diagram',
       title: 'The Verification Loop',
@@ -73,7 +81,7 @@ const content: LessonContent = {
       message: 'You see the verification loop: build, verify, decide.',
     },
 
-    // === PROMPT LAB: Write a Verification Prompt ===
+    // === PROMPT LAB (already interactive) ===
     {
       type: 'prompt-lab',
       instruction: 'Write a verification prompt that instructs a verifier agent to check the builder agent\'s auth implementation.',
@@ -99,11 +107,22 @@ const content: LessonContent = {
       },
     },
 
-    // === WHAT VERIFICATION IS NOT ===
+    // === WHAT VERIFICATION IS NOT — CONVERTED: info → compare (#2 — merge two concepts) ===
     {
-      type: 'info',
-      title: 'Verification is NOT code review',
-      body: "Code review asks: is this good code? Verification asks: does this meet the spec? A function can have beautiful code but miss a requirement. Or ugly code that perfectly satisfies every constraint. Verification checks completeness and correctness against a defined standard — not style, not elegance, not cleverness.",
+      type: 'compare',
+      title: 'Verification vs Code Review',
+      body: 'These are two different activities with different goals. Understanding the distinction is critical for writing effective verification prompts.',
+      question: 'Which one checks compliance against the spec?',
+      correctSide: 'right',
+      left: {
+        label: 'Code Review',
+        content: "Asks: Is this good code?\n\nChecks:\n- Style and conventions (var vs const)\n- Component structure (too many props?)\n- Performance patterns\n- Readability and maintainability\n- Naming conventions\n\nOutcome:\n- Suggestions for improvement\n- Style nits and best practices\n- Subjective quality judgments",
+      },
+      right: {
+        label: 'Verification',
+        content: "Asks: Does this meet the spec?\n\nChecks:\n- Every requirement has an implementation\n- Types match agreed contracts\n- Edge cases from spec are handled\n- Integration points work correctly\n\nOutcome:\n- PASS / FAIL per requirement\n- Objective compliance report\n- Actionable gaps to fix",
+      },
+      explanation: "A function can have beautiful code but miss a requirement. Or ugly code that perfectly satisfies every constraint. Verification checks completeness and correctness against a defined standard — not style, not elegance, not cleverness.",
     },
     {
       type: 'multiple-choice',
@@ -118,47 +137,33 @@ const content: LessonContent = {
       explanation: "Verification checks against the spec: does login return a JWT? That's a pass/fail requirement. Style issues (var vs const, prop count) are code review territory — they matter, but they're separate from spec compliance.",
     },
 
-    // === SETTING UP VERIFICATION ===
+    // === SETTING UP VERIFICATION — CONVERTED: info → multiple-choice (#3) ===
     {
-      type: 'info',
-      title: 'Setting up the verify agent',
-      body: "The verify agent needs exactly two inputs: the spec (what should have been built) and the output (what was actually built). It does NOT need the build agent's conversation history — that would contaminate its fresh perspective. Give it the branch, give it the spec, ask it to verify.",
+      type: 'multiple-choice',
+      question: 'What inputs does the verify agent need?',
+      options: [
+        'The build agent\'s conversation history and the output',
+        'Only the output (branch/PR) — it can figure out the rest',
+        'The spec (what should have been built) and the output (what was actually built) — NOT the build conversation',
+        'A description of the codebase architecture and a list of common bugs',
+      ],
+      correctIndex: 2,
+      explanation: "The verify agent needs exactly two inputs: the spec and the output. It does NOT need the build agent's conversation history — that would contaminate its fresh perspective. Give it the branch, give it the spec, ask it to verify.",
     },
+    // CONVERTED: code-demo → code-fill (#4)
     {
-      type: 'code-demo',
-      title: 'Verification prompt template',
-      body: "This is the prompt you give to the verification agent. It's structured to force systematic checking rather than impressionistic scanning.",
+      type: 'code-fill',
+      instruction: 'Complete this verification prompt template that forces systematic checking:',
       language: 'markdown',
       filename: 'VERIFY-PROMPT.md',
-      code: `# Verification Task
-
-## Your Role
-You are a verification agent. Your job is to systematically check
-whether the implementation meets every requirement in the spec.
-You have NO knowledge of how or why it was built this way.
-Evaluate only what exists against what was required.
-
-## The Spec (what should exist)
-[paste the original task spec here]
-
-## The Output (what to verify)
-Branch: feat/auth
-Files to check: src/auth/*
-
-## Verification Checklist
-For each requirement in the spec, report:
-- PASS: requirement fully met
-- FAIL: requirement not met (explain what's missing)
-- PARTIAL: partially met (explain the gap)
-
-## Also Check
-- Are there files outside the specified scope?
-- Are shared contracts imported correctly?
-- Do the types match the contracts.ts definitions?
-- Are there any hardcoded values that should be configurable?
-
-## Output Format
-Return a structured verdict with pass/fail per requirement.`,
+      template: '# Verification Task\n\n## Your Role\nYou are a {{role}} agent. Your job is to systematically check\nwhether the implementation meets every requirement in the spec.\nYou have NO knowledge of how or why it was built this way.\nEvaluate only what exists against what was required.\n\n## The Spec (what should exist)\n[paste the original task spec here]\n\n## The Output (what to verify)\nBranch: feat/auth\nFiles to check: src/auth/*\n\n## Verification Checklist\nFor each requirement in the spec, report:\n- {{passLabel}}: requirement fully met\n- {{failLabel}}: requirement not met (explain what\'s missing)\n- PARTIAL: partially met (explain the gap)\n\n## Output Format\nReturn a structured {{outputType}} with pass/fail per requirement.',
+      blanks: [
+        { id: 'role', answer: 'verification', alternatives: ['verifier', 'verify'], placeholder: 'agent role?', hint: 'This agent verifies, it does not build' },
+        { id: 'passLabel', answer: 'PASS', placeholder: 'success label?', hint: 'The label when a requirement is fully met' },
+        { id: 'failLabel', answer: 'FAIL', placeholder: 'failure label?', hint: 'The label when a requirement is not met' },
+        { id: 'outputType', answer: 'verdict', alternatives: ['report'], placeholder: 'output type?', hint: 'A structured judgment or decision' },
+      ],
+      explanation: "The prompt is structured to force systematic checking rather than impressionistic scanning. Each requirement gets an explicit PASS/FAIL/PARTIAL rating. No ambiguity about what's working and what's not.",
     },
     {
       type: 'checkpoint',
@@ -166,45 +171,34 @@ Return a structured verdict with pass/fail per requirement.`,
       message: 'You can set up a verification agent with the right inputs.',
     },
 
-    // === VERIFICATION CRITERIA ===
+    // === VERIFICATION CRITERIA — CONVERTED: info → multiple-choice (#5) ===
     {
-      type: 'info',
-      title: 'Beyond "it compiles": verification criteria',
-      body: "Compilation is the lowest bar. A file can compile and be completely wrong. Verification checks deeper: does it meet the functional requirements? Does it handle edge cases? Does it respect the architectural constraints from CLAUDE.md? Does it integrate cleanly with the rest of the system?",
+      type: 'multiple-choice',
+      question: 'A file compiles without errors. Does that mean it passes verification?',
+      options: [
+        'Yes — compilation proves the code is correct',
+        'No — compilation is the lowest bar; verification checks functional requirements, edge cases, architectural constraints, and integration readiness',
+        'Yes — if TypeScript is happy, the spec is satisfied',
+        'It depends on whether there are tests',
+      ],
+      correctIndex: 1,
+      explanation: "Compilation is the lowest bar. A file can compile and be completely wrong. Verification checks deeper: does it meet the functional requirements? Does it handle edge cases? Does it respect the architectural constraints from CLAUDE.md? Does it integrate cleanly with the rest of the system?",
     },
+    // CONVERTED: code-demo → code-fill (#6)
     {
-      type: 'code-demo',
-      title: 'Structured verification criteria',
-      body: "Give your verify agent these categories to check. Each one catches a different class of error that build agents commonly make.",
+      type: 'code-fill',
+      instruction: 'Complete these structured verification criteria ordered by severity:',
       language: 'markdown',
       filename: 'verification-criteria.md',
-      code: `# Verification Criteria (ordered by severity)
-
-## 1. Functional Completeness
-- Every requirement in the spec has a corresponding implementation
-- No spec item is missing or only partially implemented
-- Edge cases mentioned in the spec are handled
-
-## 2. Contract Compliance
-- Types match src/types/contracts.ts exactly
-- API responses use the correct wrapper format
-- Function signatures match agreed interfaces
-
-## 3. Architectural Compliance (CLAUDE.md)
-- Uses specified libraries (not alternatives)
-- Follows file naming conventions
-- No forbidden patterns (any, barrel files, etc.)
-- Imports from correct paths
-
-## 4. Integration Readiness
-- Exports are named correctly for consumers
-- No implicit dependencies on unbuilt features
-- Environment variables documented if new ones added
-
-## 5. Testability
-- Tests exist for each public function/endpoint
-- Tests cover both happy path and error cases
-- Tests are runnable in isolation (no external dependencies)`,
+      template: '# Verification Criteria (ordered by severity)\n\n## 1. {{topCriteria}}\n- Every requirement in the spec has a corresponding implementation\n- No spec item is missing or only partially implemented\n- Edge cases mentioned in the spec are handled\n\n## 2. Contract Compliance\n- Types match src/types/{{contractFile}} exactly\n- API responses use the correct wrapper format\n- Function signatures match agreed interfaces\n\n## 3. {{archCriteria}} (CLAUDE.md)\n- Uses specified libraries (not alternatives)\n- Follows file naming conventions\n- No forbidden patterns (any, barrel files, etc.)\n\n## 4. Integration Readiness\n- Exports are named correctly for {{consumers}}\n- No implicit dependencies on unbuilt features\n\n## 5. {{testCriteria}}\n- Tests exist for each public function/endpoint\n- Tests cover both happy path and error cases',
+      blanks: [
+        { id: 'topCriteria', answer: 'Functional Completeness', alternatives: ['Functional completeness'], placeholder: 'most critical?', hint: 'Does the implementation cover all spec requirements?' },
+        { id: 'contractFile', answer: 'contracts.ts', alternatives: ['contracts'], placeholder: 'shared types file?', hint: 'The file where shared type contracts are defined' },
+        { id: 'archCriteria', answer: 'Architectural Compliance', alternatives: ['Architectural compliance', 'Architecture Compliance'], placeholder: 'architecture check?', hint: 'Checking against the project\'s architectural rules' },
+        { id: 'consumers', answer: 'consumers', alternatives: ['importers', 'other agents'], placeholder: 'who uses exports?', hint: 'Other modules that will import from this code' },
+        { id: 'testCriteria', answer: 'Testability', alternatives: ['Test Coverage', 'Testing'], placeholder: 'test category?', hint: 'Whether the code has proper tests' },
+      ],
+      explanation: 'Verification criteria are ordered by severity: functional completeness first (does it do what the spec says?), then contract compliance, architectural rules, integration readiness, and finally testability.',
     },
     {
       type: 'order',
@@ -218,41 +212,34 @@ Return a structured verdict with pass/fail per requirement.`,
       correctOrder: [0, 1, 3, 2],
     },
 
-    // === CATCHING INTEGRATION ISSUES ===
+    // === CATCHING INTEGRATION ISSUES — CONVERTED: info → multiple-choice (#7) ===
     {
-      type: 'info',
-      title: 'Catching integration issues between parallel outputs',
-      body: "The verify agent's most valuable role: catching issues that only appear when you combine multiple agents' outputs. Agent A exports a function. Agent B imports it with different expected parameters. Neither agent is wrong individually — the mismatch only appears at integration. The verify agent checks these seams.",
+      type: 'multiple-choice',
+      question: 'What is the verify agent\'s MOST valuable role in fleet work?',
+      options: [
+        'Checking code style and formatting consistency',
+        'Running automated tests that the builder forgot',
+        'Catching integration mismatches between parallel agent outputs that only appear when you combine them',
+        'Ensuring all comments are in English',
+      ],
+      correctIndex: 2,
+      explanation: "The verify agent's most valuable role: catching issues that only appear when you combine multiple agents' outputs. Agent A exports a function. Agent B imports it with different expected parameters. Neither agent is wrong individually — the mismatch only appears at integration. The verify agent checks these seams.",
     },
+    // CONVERTED: code-demo → code-fill (#8)
     {
-      type: 'code-demo',
-      title: 'Integration verification prompt',
-      body: "When verifying integration points, you give the verify agent BOTH agents' outputs and ask it to check the seams — the places where one agent's output connects to another's.",
+      type: 'code-fill',
+      instruction: 'Complete this integration verification prompt that checks the seams between agent outputs:',
       language: 'markdown',
       filename: 'VERIFY-INTEGRATION.md',
-      code: `# Integration Verification
-
-## Check These Seams
-
-### Auth → API (middleware import)
-- src/api/routes/tasks.ts imports from src/auth/middleware.ts
-- Verify: does the import path exist? Does the middleware
-  export match what the API expects?
-
-### API → UI (response shapes)
-- src/components/task-list.tsx consumes GET /tasks response
-- Verify: does the component's type annotation match the
-  actual API response shape?
-
-### Auth → UI (token handling)
-- src/components/login-form.tsx stores JWT from auth response
-- Verify: does the login response shape match what the
-  form component expects to receive?
-
-## For Each Seam, Report:
-- Exporter: what's actually exported (function signature, type)
-- Consumer: what's expected by the importer
-- Match: YES (compatible) or NO (explain the mismatch)`,
+      template: '# Integration Verification\n\n## Check These Seams\n\n### Auth -> API ({{seamType1}})\n- src/api/routes/tasks.ts imports from src/auth/{{middlewareFile}}\n- Verify: does the import path exist? Does the middleware\n  export match what the API expects?\n\n### API -> UI ({{seamType2}})\n- src/components/task-list.tsx consumes GET /tasks response\n- Verify: does the component\'s type annotation match the\n  actual API response shape?\n\n## For Each Seam, Report:\n- Exporter: what\'s actually exported (function signature, type)\n- Consumer: what\'s expected by the {{importerRole}}\n- Match: {{yesLabel}} (compatible) or NO (explain the mismatch)',
+      blanks: [
+        { id: 'seamType1', answer: 'middleware import', alternatives: ['middleware'], placeholder: 'what crosses this boundary?', hint: 'The auth component the API needs to import' },
+        { id: 'middlewareFile', answer: 'middleware.ts', alternatives: ['middleware'], placeholder: 'auth file?', hint: 'The file containing the JWT verification middleware' },
+        { id: 'seamType2', answer: 'response shapes', alternatives: ['response types', 'data shapes'], placeholder: 'what to match?', hint: 'The shapes of data flowing from API to UI' },
+        { id: 'importerRole', answer: 'importer', alternatives: ['consumer'], placeholder: 'who imports?', hint: 'The module that brings in the export' },
+        { id: 'yesLabel', answer: 'YES', placeholder: 'compatible label?', hint: 'The affirmative label for a matching seam' },
+      ],
+      explanation: 'Integration verification checks the seams — places where one agent\'s output connects to another\'s. For each seam, compare what\'s exported vs what\'s expected. Mismatches caught here prevent runtime errors after merge.',
     },
     {
       type: 'multiple-choice',
@@ -272,50 +259,45 @@ Return a structured verdict with pass/fail per requirement.`,
       message: 'You can verify integration seams between parallel agent outputs.',
     },
 
-    // === THE VERIFICATION LOOP IN PRACTICE ===
+    // === THE VERIFICATION LOOP — CONVERTED: info → compare (#9 — merge loop info + report code-demo) ===
     {
-      type: 'info',
-      title: 'The full loop: Build → Verify → Fix → Verify',
-      body: "When verification finds issues, you have three options: fix it yourself (small issue), send the build agent a correction (medium issue), or re-run the build agent with an updated spec (fundamental misunderstanding). Most issues are small — a missing error handler, a wrong type annotation. These are quick fixes.",
+      type: 'compare',
+      title: 'Responding to verification failures',
+      body: 'When verification finds issues, your response depends on the severity. Here are two scenarios from the same verification report.',
+      question: 'Which response is appropriate for which severity level?',
+      correctSide: 'left',
+      left: {
+        label: 'Minor failures (quick fix)',
+        content: "Verification Report:\n- [FAIL] JWT payload missing 'role' field\n- [PARTIAL] Signup schema missing email validation\n\nResponse: Fix it yourself (2 minutes)\n- Add 'role' to JWT payload object\n- Add .email() to Zod signup schema\n- No need to re-run the build agent\n\nWhen to use:\n- Missing a field or validation\n- Wrong type annotation\n- Forgotten export",
+      },
+      right: {
+        label: 'Major failures (re-run needed)',
+        content: "Verification Report:\n- [FAIL] Used Firebase Auth instead of Supabase Auth\n- [FAIL] No RLS policies — all data publicly readable\n- [FAIL] Passwords stored in plaintext\n\nResponse: Re-run with clearer spec\n- Builder fundamentally misunderstood the task\n- Multiple cascading failures\n- Fixing individually would take longer than re-run\n\nWhen to use:\n- Wrong technology/approach chosen\n- Security violations\n- Fundamental misunderstanding of requirements",
+      },
+      explanation: 'Most verification failures are minor — a missing field, a wrong type. Fix them yourself in minutes. Major failures (wrong approach, security issues, fundamental misunderstanding) warrant a re-run with a clearer spec. The verify agent gives you the data to make this judgment.',
     },
+    // CONVERTED: code-demo (verification report) → code-fill (#10)
     {
-      type: 'code-demo',
-      title: 'Real verification output',
-      body: "This is what a verification agent's structured output looks like. Clear, actionable, no ambiguity about what needs fixing.",
+      type: 'code-fill',
+      instruction: 'Complete this real verification report. Fill in the verdict for each item based on the description:',
       language: 'markdown',
       filename: 'verification-report.md',
-      code: `# Verification Report: Auth Agent Output
-
-## Functional Completeness
-- [PASS] Login returns JWT on valid credentials
-- [PASS] Signup creates user and returns JWT
-- [FAIL] Middleware rejects expired tokens — no expiry check found
-- [PARTIAL] Zod schemas — login schema exists, signup missing email format validation
-
-## Contract Compliance
-- [PASS] User type matches contracts.ts
-- [PASS] ApiResponse wrapper used correctly
-- [FAIL] JWT payload missing 'role' field (spec requires { userId, email, role })
-
-## Architectural Compliance
-- [PASS] Uses specified bcrypt library for hashing
-- [PASS] Files named in kebab-case
-- [PASS] Named exports only, no default exports
-
-## Integration Readiness
-- [PASS] Middleware exported correctly for API agent to import
-- [FAIL] Token verification function not exported (API agent will need it)
-
-## Summary
-4 PASS | 3 FAIL | 1 PARTIAL
-Blocking issues: expired token handling, JWT role field, token verify export`,
+      template: '# Verification Report: Auth Agent Output\n\n## Functional Completeness\n- [{{v1}}] Login returns JWT on valid credentials\n- [PASS] Signup creates user and returns JWT\n- [{{v2}}] Middleware rejects expired tokens — no expiry check found\n- [{{v3}}] Zod schemas — login schema exists, signup missing email format\n\n## Contract Compliance\n- [PASS] User type matches contracts.ts\n- [PASS] ApiResponse wrapper used correctly\n- [{{v4}}] JWT payload missing \'role\' field (spec requires userId, email, role)\n\n## Summary\n4 PASS | 3 {{failWord}} | 1 PARTIAL',
+      blanks: [
+        { id: 'v1', answer: 'PASS', placeholder: 'verdict?', hint: 'Login works correctly per spec' },
+        { id: 'v2', answer: 'FAIL', placeholder: 'verdict?', hint: 'No expiry check means this requirement is NOT met' },
+        { id: 'v3', answer: 'PARTIAL', placeholder: 'verdict?', hint: 'Login schema exists but signup is missing validation — partially met' },
+        { id: 'v4', answer: 'FAIL', placeholder: 'verdict?', hint: 'A required field is missing from the JWT payload' },
+        { id: 'failWord', answer: 'FAIL', placeholder: 'failure label?', hint: 'The word used for unmet requirements' },
+      ],
+      explanation: 'A structured verification report removes ambiguity. Each requirement gets a clear PASS, FAIL, or PARTIAL verdict. The summary gives you an at-a-glance view: 4 passing, 3 failing, 1 partial. You can immediately see what needs fixing.',
     },
 
-    // === DIAGRAM 2: Multi-Agent Verify Pattern ===
+    // === DIAGRAM 2 — CONVERTED: diagram → interactive-diagram (#11 — bonus) ===
     {
-      type: 'diagram',
+      type: 'interactive-diagram',
       title: 'Cross-Verification in a Fleet',
-      body: "In a fleet of 4 agents, you can use a single dedicated verification agent that checks all outputs sequentially. Or you can have agents cross-verify: Agent 2 verifies Agent 1's output, Agent 3 verifies Agent 2's, etc. The dedicated verifier is simpler; cross-verification is more thorough.",
+      body: "In a fleet of 4 agents, you can use a single dedicated verification agent that checks all outputs sequentially. Or you can have agents cross-verify: Agent 2 verifies Agent 1's output, Agent 3 verifies Agent 2's, etc.",
       diagram: {
         direction: 'TB',
         nodes: [
@@ -334,14 +316,15 @@ Blocking issues: expired token handling, JWT role field, token verify export`,
           { from: 'report', to: 'you' },
         ],
       },
+      stages: [
+        { highlightNodes: ['b1', 'b2', 'b3'], explanation: 'Three build agents complete their work in parallel. Each produces output on its own branch.' },
+        { highlightNodes: ['b1', 'b2', 'b3', 'v'], highlightEdges: [{ from: 'b1', to: 'v' }, { from: 'b2', to: 'v' }, { from: 'b3', to: 'v' }], explanation: 'A dedicated verify agent receives ALL outputs plus the specs. It checks each agent\'s work sequentially.' },
+        { highlightNodes: ['v', 'report'], highlightEdges: [{ from: 'v', to: 'report' }], explanation: 'The verify agent produces a consolidated report with PASS/FAIL per agent and per requirement.' },
+        { highlightNodes: ['report', 'you'], highlightEdges: [{ from: 'report', to: 'you' }], explanation: 'You act on the report: fix minor issues yourself, send corrections for medium issues, or re-spec for fundamental misunderstandings.' },
+      ],
     },
 
     // === HANDS-ON EXERCISE ===
-    {
-      type: 'info',
-      title: 'Exercise: Write a verification prompt',
-      body: "You ran a fleet. Agent 1 built an auth system. You need to verify its output before merging. Write the verification prompt that another agent will use to systematically check the work.",
-    },
     {
       type: 'terminal',
       instruction: 'Check what the auth agent actually produced (list files):',

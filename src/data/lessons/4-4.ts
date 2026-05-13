@@ -10,16 +10,23 @@ const content: LessonContent = {
       body: "The AI suggests a complex architecture. It sounds confident. The reasoning is clear. The examples look professional. But is it RIGHT for your situation? At this level, your role shifts from \"person who uses AI\" to \"person who evaluates AI recommendations.\" AI is excellent at generating plausible-sounding solutions. It is poor at evaluating whether that solution fits YOUR budget, YOUR team size, YOUR timeline, and YOUR maintenance capacity. That evaluation is your job — and it requires a simple framework, not gut feelings.",
     },
     {
-      type: 'info',
-      title: 'Why agents over-architect',
-      body: "AI agents are trained on the entire internet — including thousands of blog posts about microservices, event sourcing, CQRS, and other patterns designed for companies with 500+ engineers. When you ask an agent to design a system, it draws from this corpus. The result: architectures that are technically correct but wildly inappropriate for a 3-person team or an MVP. The agent does not know your team size, your timeline, or your operational capacity. It optimizes for architectural \"correctness\" in the abstract. Your job is to evaluate against reality.",
+      type: 'multiple-choice',
+      question: 'Why do AI agents tend to over-architect systems?',
+      options: [
+        'They are designed to create complex systems',
+        'They are trained on internet content including thousands of enterprise architecture posts — they optimize for abstract "correctness" without knowing your team size, timeline, or operational capacity',
+        'They cannot understand simple architectures',
+        'They are trying to impress the developer',
+      ],
+      correctIndex: 1,
+      explanation: 'AI agents are trained on the entire internet — including thousands of posts about microservices, event sourcing, CQRS, and patterns designed for companies with 500+ engineers. The result: architectures that are technically correct but wildly inappropriate for a 3-person team or an MVP. The agent does not know your team size, timeline, or operational capacity. Your job is to evaluate against reality.',
     },
 
     // === THE EVALUATION FRAMEWORK ===
     {
-      type: 'diagram',
+      type: 'interactive-diagram',
       title: 'Agent suggestion evaluation flow',
-      body: 'Every architectural suggestion from an agent goes through this evaluation before acceptance.',
+      body: 'Walk through the evaluation process for any architectural suggestion from an agent.',
       diagram: {
         direction: 'TB',
         nodes: [
@@ -41,6 +48,28 @@ const content: LessonContent = {
           { from: 'simpler', to: 'modify', label: 'simpler exists' },
         ],
       },
+      stages: [
+        {
+          highlightNodes: ['suggestion', 'fit'],
+          highlightEdges: [{ from: 'suggestion', to: 'fit' }],
+          explanation: 'Every suggestion enters the pipeline. First gate: does this solve a REAL, MEASURED problem? Not an imagined future problem. If the problem does not exist today, reject immediately.',
+        },
+        {
+          highlightNodes: ['fit', 'constraints', 'reject'],
+          highlightEdges: [{ from: 'fit', to: 'constraints' }, { from: 'fit', to: 'reject' }],
+          explanation: 'If it fits requirements, check constraints: team size, timeline, budget, operational capacity. If it does not fit requirements at all, reject outright.',
+        },
+        {
+          highlightNodes: ['constraints', 'simpler', 'modify'],
+          highlightEdges: [{ from: 'constraints', to: 'simpler' }, { from: 'constraints', to: 'modify' }],
+          explanation: 'If constraints are fully met, check for simpler alternatives. If constraints are only partially met, route to Modify — take the kernel idea and simplify it.',
+        },
+        {
+          highlightNodes: ['simpler', 'accept', 'modify'],
+          highlightEdges: [{ from: 'simpler', to: 'accept' }, { from: 'simpler', to: 'modify' }],
+          explanation: 'Final gate: is there a simpler alternative? If no simpler way exists, accept. If simpler exists, modify. Microservices might become a modular monolith. Event sourcing might become an append-only log table.',
+        },
+      ],
     },
     {
       type: 'interactive-diagram',
@@ -99,19 +128,36 @@ const content: LessonContent = {
       explanation: 'God objects become single points of failure because everything depends on them — modify the god object and the entire system is at risk. Over-abstraction creates unnecessary complexity through interfaces, factories, and layers that only have one consumer. Premature optimization wastes effort on non-bottlenecks because you are optimizing code that was never measured as slow. Tight coupling makes changes cascade because modifying one module forces changes in every module that depends on its internals.',
     },
     {
-      type: 'info',
-      title: 'Question 1: Does it fit the actual requirements?',
-      body: "Not the imagined future requirements. Not the \"what if we scale to 10M users\" requirements. The actual, current, proven requirements. An agent suggests event sourcing because \"you might want an audit trail later.\" But you have 50 users and no audit requirement. The suggestion is technically valid but does not fit what you actually need today. Architecture for current needs with extension points for tomorrow — not architecture for imagined tomorrows.",
+      type: 'multiple-choice',
+      question: 'An agent suggests event sourcing because "you might want an audit trail later." You have 50 users and no audit requirement. What is the correct evaluation?',
+      options: [
+        'Accept — better to have it and not need it',
+        'The suggestion does not fit actual, current, proven requirements — architecture for imagined tomorrows is over-engineering',
+        'Defer — implement it when you reach 1000 users',
+        'Accept but simplify the implementation',
+      ],
+      correctIndex: 1,
+      explanation: 'Not the imagined future requirements. Not the "what if we scale to 10M users" requirements. The actual, current, proven requirements. The suggestion is technically valid but does not fit what you actually need today. Architecture for current needs with extension points for tomorrow — not architecture for imagined tomorrows.',
     },
     {
-      type: 'info',
-      title: 'Question 2: Are constraints honored?',
-      body: "Your constraints are real and non-negotiable. Team of 2 cannot operate 8 microservices. A startup with 3-month runway cannot spend 6 weeks on infrastructure. A solo developer cannot maintain a Kubernetes cluster. When the agent suggests an architecture, check it against: team size, timeline, operational capacity, budget, and existing expertise. If the architecture requires capabilities you do not have, it is wrong — no matter how elegant.",
+      type: 'multiple-choice',
+      question: 'An agent suggests a microservices architecture. Your team is 2 engineers with a 3-month deadline. Which evaluation question catches this?',
+      options: [
+        'Question 1: Does it fit requirements? — Microservices solve the wrong problem',
+        'Question 2: Are constraints honored? — A team of 2 cannot operate 8 microservices within a 3-month deadline',
+        'Question 3: Does a simpler alternative exist? — A monolith would be simpler',
+        'None — microservices are always the right choice for production systems',
+      ],
+      correctIndex: 1,
+      explanation: 'Your constraints are real and non-negotiable. Team of 2 cannot operate 8 microservices. A startup with 3-month runway cannot spend 6 weeks on infrastructure. When the agent suggests an architecture, check against: team size, timeline, operational capacity, budget, and existing expertise. If it requires capabilities you do not have, it is wrong — no matter how elegant.',
     },
     {
-      type: 'info',
-      title: 'Question 3: Does a simpler alternative exist?',
-      body: "This is the most important question and the one agents almost never ask themselves. For every complex architecture suggested, there is usually a simpler one that solves 90% of the problem with 20% of the complexity. Microservices? Maybe a modular monolith with clear seams. Event sourcing? Maybe an append-only log table. CQRS? Maybe separate read/write repositories in the same service. The simpler alternative might not be as theoretically pure, but if it ships faster and is maintainable by your team, it wins.",
+      type: 'match',
+      instruction: 'Match each complex architecture to its simpler alternative that solves 90% of the problem:',
+      leftItems: ['Microservices', 'Event sourcing', 'CQRS', 'Message queue for 50 emails/day'],
+      rightItems: ['Modular monolith with clear seams', 'Append-only log table', 'Separate read/write repositories in same service', 'Synchronous send in the request handler'],
+      correctPairs: { 0: 0, 1: 1, 2: 2, 3: 3 },
+      explanation: 'For every complex architecture, there is usually a simpler one that solves 90% of the problem with 20% of the complexity. The simpler alternative might not be as theoretically pure, but if it ships faster and is maintainable by your team, it wins. This is the most important question and the one agents almost never ask themselves.',
     },
     {
       type: 'checkpoint',
@@ -121,27 +167,56 @@ const content: LessonContent = {
 
     // === COMMON AI ANTI-PATTERNS ===
     {
-      type: 'info',
-      title: 'AI anti-pattern: Over-abstraction',
-      body: "Agents love abstractions. They create interfaces for things that have exactly one implementation. They build plugin systems that will only ever have one plugin. They write factory functions that produce one type of object. Every abstraction adds cognitive load, increases the number of files, and makes the codebase harder for the next agent to navigate. The rule: no abstraction without at least 3 proven consumers. One consumer means inline it. Two means maybe. Three means abstract.",
+      type: 'multiple-choice',
+      question: 'An agent creates an interface with exactly one implementation, a factory function that produces one type of object, and a plugin system with one plugin. What anti-pattern is this?',
+      options: [
+        'Premature optimization — the code is not slow enough to need abstraction',
+        'Over-abstraction — every abstraction adds cognitive load with zero benefit when there is only one consumer',
+        'Cargo-culting — the agent is copying patterns from enterprise code',
+        'Tight coupling — the modules are too connected',
+      ],
+      correctIndex: 1,
+      explanation: 'Agents love abstractions. They create interfaces for things with exactly one implementation. Every abstraction adds cognitive load, increases file count, and makes the codebase harder to navigate. The rule: no abstraction without at least 3 proven consumers. One consumer means inline it. Two means maybe. Three means abstract.',
     },
     {
-      type: 'code-demo',
-      title: 'Over-abstraction in action',
-      body: 'The agent created 4 files for something that should be 1. Each abstraction layer adds navigation cost for the next agent.',
-      language: 'typescript',
-      filename: 'over-abstraction.ts',
-      code: "// ❌ Agent's suggestion: \"Clean Architecture\" with 1 implementation\n// src/features/users/domain/user.entity.ts\n// src/features/users/domain/user.repository.interface.ts\n// src/features/users/infrastructure/user.repository.impl.ts\n// src/features/users/application/create-user.use-case.ts\n// src/features/users/application/create-user.use-case.interface.ts\n// src/features/users/presentation/user.controller.ts\n// src/features/users/presentation/user.dto.ts\n// src/features/users/presentation/user.mapper.ts\n// = 8 files, 1 feature, 1 implementation of each interface\n\n// ✅ What you actually need:\n// src/features/users/users.handler.ts   (HTTP + validation)\n// src/features/users/users.service.ts   (business logic + DB)\n// src/features/users/users.test.ts      (tests)\n// src/features/users/index.ts           (public API)\n// = 4 files, same feature, fully functional\n\n// The abstraction is only justified WHEN you have a second\n// implementation (e.g., switching from Postgres to DynamoDB).\n// Until then, it is pure overhead.",
+      type: 'compare',
+      title: 'Over-abstraction vs right-sized modules',
+      body: 'The agent created 8 files for something that needs 4. Each abstraction layer adds navigation cost for the next agent.',
+      left: {
+        label: 'Over-Abstracted (8 files)',
+        content: '// "Clean Architecture" with 1 implementation\nsrc/features/users/\n  domain/user.entity.ts\n  domain/user.repository.interface.ts\n  infrastructure/user.repository.impl.ts\n  application/create-user.use-case.ts\n  application/create-user.use-case.interface.ts\n  presentation/user.controller.ts\n  presentation/user.dto.ts\n  presentation/user.mapper.ts\n\n= 8 files, 1 feature\n= 1 implementation per interface\n= Pure overhead until 2nd implementation',
+        language: 'text',
+        filename: 'over-abstracted.txt',
+      },
+      right: {
+        label: 'Right-Sized (4 files)',
+        content: '// What you actually need:\nsrc/features/users/\n  users.handler.ts   (HTTP + validation)\n  users.service.ts   (business logic + DB)\n  users.test.ts      (tests)\n  index.ts           (public API)\n\n= 4 files, same feature\n= Fully functional\n= Easy to navigate\n= Abstraction justified only WHEN you\n  need a second implementation\n  (e.g., Postgres → DynamoDB)',
+        language: 'text',
+        filename: 'right-sized.txt',
+      },
+      question: 'Which structure lets the next agent find and modify user code faster?',
+      correctSide: 'right',
+      explanation: 'The abstraction is only justified WHEN you have a second implementation. One consumer means inline it. Two means maybe. Three means abstract. The right-sized version is fully functional with half the files and zero unnecessary interfaces.',
     },
     {
-      type: 'info',
-      title: 'AI anti-pattern: Premature optimization',
-      body: "\"Let us add Redis caching for this endpoint.\" \"We should implement database connection pooling.\" \"This list should be virtualized for performance.\" All of these are potentially valid — but not before you have evidence of a performance problem. Agents suggest optimizations because they have seen them in training data associated with \"good\" code. But premature optimization adds complexity, increases operational burden, and often optimizes the wrong thing. Ask: \"What evidence do we have that this is slow?\" No evidence = no optimization.",
-    },
-    {
-      type: 'info',
-      title: 'AI anti-pattern: Cargo-culting patterns',
-      body: "The agent suggests patterns because it has seen them associated with \"production\" or \"enterprise\" code — not because they solve a specific problem in your system. GraphQL when you have 3 endpoints and one client. Kubernetes when you deploy twice a month. A message queue when you process 10 events per hour. These patterns solve real problems at real scale — but applying them without that scale is cargo-culting. The pattern becomes the burden it was meant to alleviate.",
+      type: 'compare',
+      title: 'Premature optimization vs cargo-culting',
+      body: 'Two AI anti-patterns that add complexity for zero benefit. Both stem from agents applying training data patterns without evaluating fit.',
+      left: {
+        label: 'Premature Optimization',
+        content: '"Add Redis caching for this endpoint"\n"Implement connection pooling"\n"Virtualize this list for performance"\n\nAll potentially valid — but NOT before\nevidence of a performance problem.\n\nAgents suggest optimizations because\ntraining data associates them with\n"good" code.\n\nResult:\n- Complexity added to non-bottleneck\n- Operational burden increased\n- Wrong thing optimized\n\nRule: "What evidence says this is slow?"\nNo evidence = no optimization.',
+        language: 'text',
+        filename: 'premature-opt.txt',
+      },
+      right: {
+        label: 'Cargo-Culting Patterns',
+        content: 'GraphQL → 3 endpoints, 1 client\nKubernetes → deploy twice a month\nMessage queue → 10 events per hour\n\nPatterns from "production" or "enterprise"\ncode applied without the scale that\njustifies them.\n\nThese solve REAL problems at REAL scale.\nApplying them without that scale:\nthe pattern becomes the burden.\n\nResult:\n- Infrastructure complexity for nothing\n- Operational overhead without benefit\n- Pattern is the new problem\n\nRule: "Does our scale justify this?"\nNo scale = no pattern.',
+        language: 'text',
+        filename: 'cargo-cult.txt',
+      },
+      question: 'What question separates legitimate optimization from premature optimization?',
+      correctSide: 'left',
+      explanation: '"What evidence do we have that this is slow?" is the key question. Premature optimization adds complexity before evidence of a problem. Cargo-culting applies patterns from enterprise scale to small systems. Both stem from agents applying training data associations without evaluating whether the actual problem or scale exists in YOUR system.',
     },
     {
       type: 'multiple-choice',
@@ -163,17 +238,33 @@ const content: LessonContent = {
 
     // === BUILDING A REVIEW CHECKLIST ===
     {
-      type: 'info',
-      title: 'The systematic review checklist',
-      body: "Do not evaluate architecture suggestions on vibes. Use a checklist — the same one every time. This gives you consistency and prevents the agent's confidence from overriding your judgment. A confident agent is not a correct agent. Your checklist evaluates: problem-solution fit, constraint compliance, simplicity, operational cost, team capability, and reversibility. Score each dimension. If more than 2 dimensions score poorly, the suggestion needs modification or rejection.",
+      type: 'multiple-choice',
+      question: 'Why should you use a systematic checklist instead of gut feelings when evaluating agent architecture suggestions?',
+      options: [
+        'Checklists are faster than thinking',
+        'A confident agent is not a correct agent — checklists give consistency and prevent the agent\'s confidence from overriding your judgment',
+        'Agents always suggest bad architectures that need rejection',
+        'Checklists eliminate the need to understand the suggestion at all',
+      ],
+      correctIndex: 1,
+      explanation: 'Do not evaluate on vibes. Use a checklist — the same one every time. This gives you consistency and prevents the agent\'s confidence from overriding your judgment. A confident agent is not a correct agent. Score: problem-solution fit, constraint compliance, simplicity, operational cost, and reversibility. If more than 2 dimensions score poorly, the suggestion needs modification or rejection.',
     },
     {
-      type: 'code-demo',
-      title: 'Architecture review checklist',
-      body: 'Use this template to evaluate every significant architectural suggestion from an agent. Score each criterion.',
+      type: 'code-fill',
+      instruction: 'Complete this architecture review checklist. Fill in the evaluation criteria and scoring dimensions.',
       language: 'markdown',
+      template: '# Architecture Review: [Agent Suggestion]\n\n## ___ (1-5)\n- What specific problem does this solve?\n- Do we actually HAVE this problem today?\n- Is the problem proven or ___?\n\n## Constraint Compliance (1-5)\n- ___ can maintain this? (currently: ___ engineers)\n- Fits ___?\n- Operational capacity exists?\n\n## ___ (1-5)\n- Is there a ___ alternative that solves 90%?\n- Can a new team member understand this in < 1 hour?\n\n## Verdict: Accept / Modify / ___',
+      blanks: [
+        { id: 'first-dimension', answer: 'Problem-Solution Fit', alternatives: ['Problem Fit', 'Requirements Fit'], hint: 'Does the suggestion match the actual problem?', placeholder: 'dimension name' },
+        { id: 'problem-type', answer: 'imagined', alternatives: ['speculated', 'theoretical', 'guessed'], hint: 'Opposite of proven/measured', placeholder: 'type of problem' },
+        { id: 'team-check', answer: 'Team size', alternatives: ['Team', 'The team'], hint: 'How many engineers you have', placeholder: 'what to check' },
+        { id: 'time-check', answer: 'timeline', alternatives: ['deadline', 'schedule'], hint: 'When you need to deliver', placeholder: 'constraint' },
+        { id: 'simplicity-dim', answer: 'Simplicity', alternatives: ['Simplicity Check', 'Complexity'], hint: 'Could you do less and still win?', placeholder: 'dimension name' },
+        { id: 'simpler', answer: 'simpler', alternatives: ['less complex', 'easier'], hint: 'The opposite of complex', placeholder: 'adjective' },
+        { id: 'reject', answer: 'Reject', alternatives: ['reject', 'Decline'], hint: 'The third option when a suggestion fails evaluation', placeholder: 'verdict' },
+      ],
       filename: 'arch-review-template.md',
-      code: "# Architecture Review: [Agent Suggestion]\n\n## Problem-Solution Fit (1-5)\n- What specific problem does this solve?\n- Do we actually HAVE this problem today?\n- Is the problem proven (measured) or imagined (speculated)?\n- Score: ___\n\n## Constraint Compliance (1-5)\n- Team size can maintain this? (currently: ___ engineers)\n- Fits timeline? (deadline: ___)\n- Operational capacity exists? (monitoring, on-call, deploys)\n- Budget allows? (infrastructure cost estimate: $___/mo)\n- Score: ___\n\n## Simplicity (1-5)\n- Is there a simpler alternative that solves 90%?\n- How many new concepts does this introduce?\n- Can a new team member understand this in < 1 hour?\n- Score: ___\n\n## Operational Cost (1-5)\n- What new infrastructure is needed?\n- What new failure modes are introduced?\n- What monitoring/alerting is required?\n- Score: ___\n\n## Reversibility (1-5)\n- If this is wrong, how hard is it to undo?\n- Can we migrate incrementally or is it all-or-nothing?\n- Score: ___\n\n## Verdict: Accept / Modify / Reject\n## If Modify: what simplification?",
+      explanation: 'Use this template to evaluate every significant architectural suggestion. Score each criterion 1-5. Problem-Solution Fit catches imagined problems. Constraint Compliance catches unrealistic suggestions. Simplicity catches over-engineering. The verdict is Accept (all dimensions pass), Modify (take the kernel, simplify), or Reject (too complex for context).',
     },
     {
       type: 'multiple-choice',
@@ -247,19 +338,48 @@ const content: LessonContent = {
 
     // === OVERRIDE SCENARIOS ===
     {
-      type: 'info',
-      title: 'When to override the agent',
-      body: "Trust the agent on implementation details — function structure, variable naming, algorithm choice for well-defined problems. Override the agent on strategic decisions — architecture patterns, technology choices, scope decisions, and anything involving organizational context. The agent does not know: your team's strengths, your deployment process, your on-call rotation, your technical debt priorities, or your product roadmap. These are exactly the inputs that determine whether an architecture is correct. Without them, the agent is guessing — confidently.",
+      type: 'compare',
+      title: 'Trust implementation vs override strategy',
+      body: 'The agent does not know your team\'s strengths, deployment process, or product roadmap. Know when to trust and when to override.',
+      left: {
+        label: 'Trust Agent (Implementation)',
+        content: 'Trust the agent on:\n\n- Function structure\n- Variable naming\n- Algorithm choice for defined problems\n- Code formatting and style\n- Test structure and assertions\n- Error message wording\n\nWhy: These are well-defined problems\nwith clear right answers.\nThe agent has seen millions of examples.',
+        language: 'text',
+        filename: 'trust-agent.txt',
+      },
+      right: {
+        label: 'Override Agent (Strategy)',
+        content: 'Override the agent on:\n\n- Architecture patterns\n- Technology choices\n- Scope decisions\n- Anything involving org context\n\nAgent does NOT know:\n- Your team\'s strengths\n- Your deployment process\n- Your on-call rotation\n- Your tech debt priorities\n- Your product roadmap\n\nWithout these inputs, the agent\nis guessing — confidently.',
+        language: 'text',
+        filename: 'override-agent.txt',
+      },
+      question: 'On which type of decisions should you override the agent?',
+      correctSide: 'right',
+      explanation: 'Trust the agent on implementation details — well-defined problems with clear right answers. Override on strategic decisions — architecture patterns, technology choices, scope decisions, and anything involving organizational context the agent cannot see.',
     },
     {
-      type: 'info',
-      title: 'Override scenario: the agent wants to split the service',
-      body: "Agent: \"This service handles both user management and authentication. These should be separate microservices for separation of concerns.\" YOUR evaluation: The team is 2 engineers. Splitting means deploying, monitoring, and maintaining 2 services. The \"separation of concerns\" exists at the module level already — separate directories, separate tests, clear interface between them. The only benefit of splitting into services is independent scaling, which is irrelevant at current load. Override: keep as modular monolith. The module boundary gives you separation of concerns. The service boundary gives you operational overhead for zero benefit.",
+      type: 'multiple-choice',
+      question: 'Agent: "This service handles both user management and authentication. These should be separate microservices." Your team is 2 engineers. What is your evaluation?',
+      options: [
+        'Accept — separation of concerns is always better',
+        'Override — the separation already exists at the module level. Splitting into services adds operational overhead (2 deploys, 2 monitors) for zero benefit at current scale.',
+        'Defer — split them when the team grows',
+        'Accept but simplify — use serverless functions instead of microservices',
+      ],
+      correctIndex: 1,
+      explanation: 'The "separation of concerns" already exists at the module level — separate directories, separate tests, clear interface. The only benefit of splitting into services is independent scaling, which is irrelevant at current load. Override: keep as modular monolith. Module boundary gives separation of concerns. Service boundary gives operational overhead for zero benefit.',
     },
     {
-      type: 'info',
-      title: 'Override scenario: the agent rejects simplicity',
-      body: "Agent: \"Using a JSON file for configuration is not production-ready. We should use a proper configuration service with environment-specific overrides, encryption for secrets, and hot-reload capability.\" YOUR evaluation: The app has 5 config values. It deploys once per week. Secrets are in environment variables already. The JSON file reads at startup and never changes. The \"proper\" solution adds a config service dependency, encryption complexity, and hot-reload logic for 5 values that change yearly. Override: keep the JSON file. Revisit when you have 50+ config values or need hot-reload.",
+      type: 'multiple-choice',
+      question: 'Agent: "Using a JSON file for config is not production-ready. We should use a proper config service with encryption and hot-reload." Your app has 5 config values that change yearly. Override or accept?',
+      options: [
+        'Accept — configuration services are industry best practice',
+        'Override — 5 values that change yearly do not justify a config service. Keep the JSON file. Revisit when you have 50+ values or need hot-reload.',
+        'Modify — use environment variables instead of JSON',
+        'Defer — add the config service when you add more config values',
+      ],
+      correctIndex: 1,
+      explanation: 'The app has 5 config values, deploys once per week, secrets are in env vars already. The "proper" solution adds a config service dependency, encryption complexity, and hot-reload logic for 5 values that change yearly. Override: keep the JSON file. The agent rejects simplicity because training data associates "production-ready" with complex infrastructure.',
     },
     {
       type: 'multiple-choice',
@@ -293,16 +413,30 @@ const content: LessonContent = {
       correctOrder: [1, 4, 2, 3, 0],
     },
     {
-      type: 'info',
-      title: 'Communicating overrides to agents',
-      body: "When you override an agent's suggestion, do not just say \"no.\" Explain WHY in terms the agent can use for future decisions. \"Do not use microservices because our team of 2 cannot maintain multiple deployments. Use a modular monolith instead.\" This teaches the agent your constraints. In CLAUDE.md, codify recurring overrides as constraints: \"Architecture must be operationally manageable by a team of 2.\" This prevents the agent from making the same suggestion repeatedly.",
+      type: 'multiple-choice',
+      question: 'You override an agent\'s microservices suggestion. How should you communicate the override?',
+      options: [
+        'Just say "no" and move on',
+        'Explain WHY in terms the agent can use for future decisions, then codify recurring overrides in CLAUDE.md as constraints',
+        'Ignore the suggestion without responding',
+        'Accept a simplified version to avoid conflict',
+      ],
+      correctIndex: 1,
+      explanation: 'When you override, explain WHY in terms the agent can reuse: "Do not use microservices because our team of 2 cannot maintain multiple deployments. Use a modular monolith instead." Then codify recurring overrides in CLAUDE.md as constraints: "Architecture must be operationally manageable by a team of 2." This prevents the same suggestion repeatedly.',
     },
 
     // === SYNTHESIS ===
     {
-      type: 'info',
-      title: 'The evaluator mindset',
-      body: "Your value is no longer in writing code or even in designing systems from scratch. It is in EVALUATING proposed systems against reality. The agent generates options. You evaluate them against constraints the agent cannot see. This is a different skill from building — it is judgment, not craft. It requires understanding both the technical trade-offs AND the organizational context. Train this skill deliberately: for every agent suggestion, run the checklist. Over time, evaluation becomes instant — you develop architectural intuition that operates faster than any checklist.",
+      type: 'multiple-choice',
+      question: 'At the Architect tier, your primary value is:',
+      options: [
+        'Writing code faster than agents can',
+        'Designing systems from scratch without agent help',
+        'EVALUATING proposed systems against reality — constraints the agent cannot see require your judgment',
+        'Reviewing every line of code an agent produces',
+      ],
+      correctIndex: 2,
+      explanation: 'Your value is in EVALUATING proposed systems against reality. The agent generates options. You evaluate them against constraints the agent cannot see. This is judgment, not craft. It requires understanding both technical trade-offs AND organizational context. Train this skill: for every suggestion, run the checklist. Over time, evaluation becomes instant — architectural intuition faster than any checklist.',
     },
     {
       type: 'checklist',

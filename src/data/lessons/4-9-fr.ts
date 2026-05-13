@@ -17,9 +17,9 @@ const content: LessonContent = {
 
     // === THE TASTE FILTER ===
     {
-      type: 'diagram',
+      type: 'interactive-diagram',
       title: 'Le filtre du goût',
-      body: 'Les agents produisent du contenu fonctionnel. Ton filtre du goût l\'élève vers l\'excellence.',
+      body: 'Clique pour voir comment ton filtre du goût transforme le contenu fonctionnel en contenu excellent.',
       diagram: {
         direction: 'LR',
         nodes: [
@@ -35,6 +35,28 @@ const content: LessonContent = {
           { from: 'iterate', to: 'agent', dashed: true },
         ],
       },
+      stages: [
+        {
+          highlightNodes: ['agent'],
+          highlightEdges: [],
+          explanation: 'L\'agent produit une sortie qui fonctionne. Ça compile, passe les tests et fait ce qui a été demandé. Mais la correction fonctionnelle est une barre basse — c\'est nécessaire mais pas suffisant.',
+        },
+        {
+          highlightNodes: ['agent', 'taste'],
+          highlightEdges: [{ from: 'agent', to: 'taste' }],
+          explanation: 'Ton filtre du goût évalue au-delà de la correction. Est-ce simple ? Est-ce cohérent avec les patrons existants ? Est-ce proportionnel au problème ? Ces questions demandent du jugement, pas du calcul.',
+        },
+        {
+          highlightNodes: ['taste', 'excellent'],
+          highlightEdges: [{ from: 'taste', to: 'excellent' }],
+          explanation: 'Quand la sortie passe ton filtre du goût, elle n\'est pas juste fonctionnelle — elle est élégante, cohérente avec le système, et juste pour le contexte. C\'est la barre de qualité qui sépare les bons produits des excellents.',
+        },
+        {
+          highlightNodes: ['taste', 'iterate', 'agent'],
+          highlightEdges: [{ from: 'taste', to: 'iterate' }, { from: 'iterate', to: 'agent' }],
+          explanation: 'Quand la sortie ne passe pas, tu itères : affine la spec, ajoute des contraintes, et régénère. Chaque itération se rapproche de l\'excellence. Le filtre du goût n\'est pas une porte — c\'est une boucle de rétroaction.',
+        },
+      ],
     },
     {
       type: 'checkpoint',
@@ -44,19 +66,40 @@ const content: LessonContent = {
 
     // === DIMENSIONS OF TASTE ===
     {
-      type: 'info',
-      title: 'Dimension 1 : La simplicité',
-      body: "Un agent à qui on demande de construire un système de notifications va souvent produire une solution complète : plusieurs canaux de notification, une file d'attente, une logique de réessai, des gabarits, des préférences utilisateur, un suivi de livraison. Le tout fonctionnel. Mais si ton app a 200 utilisateurs et a besoin de notifications par courriel pour les réinitialisations de mot de passe — cette solution est un passif, pas un actif. Le goût dit : une seule fonction qui appelle SendGrid, c'est correct. L'agent a produit ce qui était demandé. Le goût décide ce qui AURAIT DÛ être demandé.",
+      type: 'multiple-choice',
+      question: 'Un agent construit un système de notifications complet (file d\'attente, réessai, gabarits, préférences) pour une app de 200 utilisateurs qui n\'a besoin que de courriels de réinitialisation de mot de passe. Que dit le goût ?',
+      options: [
+        'Livre-le — les solutions complètes sont toujours meilleures',
+        'La solution est un passif, pas un actif. Une seule fonction qui appelle SendGrid, c\'est correct. L\'agent a produit ce qui était demandé ; le goût décide ce qui AURAIT DÛ être demandé.',
+        'Ajoute plus de fonctionnalités puisque la fondation est là',
+        'Garde-le mais désactive les fonctionnalités inutilisées',
+      ],
+      correctIndex: 1,
+      explanation: "Dimension 1 : La simplicité. Un agent à qui on demande de construire un système de notifications va souvent produire une solution complète. Mais si ton app a 200 utilisateurs et a besoin de courriels de réinitialisation — cette solution est un passif. Le goût dit : une seule fonction qui appelle SendGrid, c'est correct. Le goût décide ce qui AURAIT DÛ être demandé.",
     },
     {
-      type: 'info',
-      title: 'Dimension 2 : La cohérence',
-      body: "Ta codebase utilise des patrons fonctionnels : fonctions pures, composition, données immuables. L'agent écrit une classe avec un état mutable. Ça fonctionne. Les tests passent. Mais ça viole la voix du système. Dans six mois, quelqu'un lit cette classe et assume que les classes sont acceptables ici — maintenant t'as deux patrons. Le goût impose la cohérence non pas parce qu'un style est meilleur, mais parce que des styles mélangés créent de la surcharge cognitive pour chaque futur lecteur (humain ou agent).",
+      type: 'multiple-choice',
+      question: 'Ta codebase utilise des patrons fonctionnels (fonctions pures, composition, données immuables). Un agent écrit une classe avec un état mutable qui fonctionne et passe les tests. Quel est le problème de goût ?',
+      options: [
+        'Les classes sont toujours pires que les fonctions',
+        'L\'agent aurait dû utiliser des interfaces TypeScript',
+        'Ça viole la voix du système — des styles mélangés créent de la surcharge cognitive pour chaque futur lecteur, et quelqu\'un assumera que les classes sont acceptables ici',
+        'L\'état mutable est toujours un risque de bogue',
+      ],
+      correctIndex: 2,
+      explanation: "Dimension 2 : La cohérence. Le goût impose la cohérence non pas parce qu'un style est meilleur, mais parce que des styles mélangés créent de la surcharge cognitive pour chaque futur lecteur. Dans six mois, quelqu'un lit cette classe et assume que les classes sont acceptables ici — maintenant t'as deux patrons en compétition.",
     },
     {
-      type: 'info',
-      title: 'Dimension 3 : La proportionnalité',
-      body: "Est-ce que cette solution est proportionnelle au problème ? Une abstraction de 500 lignes pour éviter de répéter 3 lignes de code, c'est disproportionné. Une machine à états faite à la main pour un toggle à deux états, c'est disproportionné. Le goût calibre l'investissement en complexité par rapport à la gravité du problème. Les agents ne peuvent pas faire ça parce qu'ils ne ressentent pas le coût continu de maintenir du code complexe — ils ne voient que le problème immédiat à résoudre.",
+      type: 'multiple-choice',
+      question: 'Un agent crée une abstraction de 500 lignes pour éviter de répéter 3 lignes de code. Quelle dimension du goût est violée ?',
+      options: [
+        'Simplicité — le code est trop complexe',
+        'Cohérence — ça ne correspond pas aux patrons existants',
+        'Proportionnalité — l\'investissement en complexité dépasse vastement la gravité du problème à résoudre',
+        'Nécessité — le code n\'est pas nécessaire',
+      ],
+      correctIndex: 2,
+      explanation: "Dimension 3 : La proportionnalité. Est-ce que cette solution est proportionnelle au problème ? Une abstraction de 500 lignes pour éviter de répéter 3 lignes de code, c'est disproportionné. Le goût calibre l'investissement en complexité par rapport à la gravité du problème. Les agents ne peuvent pas faire ça parce qu'ils ne ressentent pas le coût continu de maintenir du code complexe.",
     },
     {
       type: 'multiple-choice',
@@ -78,9 +121,16 @@ const content: LessonContent = {
 
     // === ELEGANCE VS CLEVERNESS ===
     {
-      type: 'info',
-      title: 'L\'élégance n\'est pas la ruse',
-      body: "Les agents adorent les solutions ingénieuses. Des one-liners qui enchaînent 6 méthodes de tableau. De la gymnastique de types qui infère tout. Des gabarits récursifs qui se génèrent eux-mêmes. Ce sont des exploits impressionnants de programmation — et du terrible code de production. L'élégance est l'OPPOSÉ de la ruse. L'élégance, c'est quand la solution est tellement simple qu'elle semble évidente en rétrospective. Quand tu lis du code élégant, tu penses « bien sûr ». Quand tu lis du code rusé, tu penses « quoi ? ».",
+      type: 'multiple-choice',
+      question: 'Un agent produit un one-liner enchaînant 6 méthodes de tableau avec de la gymnastique de types. C\'est impressionnant et correct. Est-ce du code élégant ?',
+      options: [
+        'Oui — moins de lignes signifie un meilleur code',
+        'Non — l\'élégance est l\'OPPOSÉ de la ruse. Le code élégant semble évident en rétrospective. Quand tu le lis, tu penses « bien sûr ». Le code rusé te fait penser « quoi ? »',
+        'Oui — si ça passe les tests, c\'est assez bon',
+        'Ça dépend des caractéristiques de performance',
+      ],
+      correctIndex: 1,
+      explanation: "Les agents adorent les solutions ingénieuses. Des one-liners qui enchaînent 6 méthodes de tableau. De la gymnastique de types qui infère tout. Ce sont des exploits impressionnants de programmation — et du terrible code de production. L'élégance est l'OPPOSÉ de la ruse. L'élégance, c'est quand la solution est tellement simple qu'elle semble évidente en rétrospective.",
     },
     {
       type: 'compare',
@@ -165,14 +215,24 @@ const content: LessonContent = {
 
     // === YOUR AESTHETIC AS FILTER ===
     {
-      type: 'info',
-      title: 'Développer ton esthétique',
-      body: "Le goût n'est pas inné — il se développe par l'exposition et la pratique. Lis d'excellentes codebases (la bibliothèque standard de Go, le code source de SQLite, les entrailles de Redis). Remarque ce qui les rend satisfaisantes : la clarté, la cohérence, la proportion. Puis applique ce standard à la sortie des agents. Au fil du temps, tu développes un sens interne de « c'est juste » qui se déclenche avant que tu puisses articuler pourquoi. Ce sens est ton avantage compétitif — c'est de la reconnaissance de patrons entraînée sur des milliers d'exemples évalués.",
-    },
-    {
-      type: 'info',
-      title: 'Le rôle de curateur',
-      body: "Dans un monde assisté par agents, ton rôle passe de producteur à curateur. Un curateur de musée ne peint pas — il décide ce qui va sur le mur et ce qui va en réserve. Il crée de la cohérence à partir d'une collection d'oeuvres individuelles. Tu fais la même chose : les agents produisent. Tu sélectionnes, arranges et affines. Le système final reflète ton goût, pas celui de l'agent. C'est pas de la paresse — la curation au niveau du système demande plus de jugement que d'écrire n'importe quel composant individuel.",
+      type: 'compare',
+      title: 'Mentalité de producteur vs Mentalité de curateur',
+      body: 'Dans un monde assisté par agents, ton rôle change. Quelle mentalité produit de meilleurs systèmes ?',
+      left: {
+        label: 'Producteur (Tout écrire)',
+        content: 'Tu écris chaque ligne de code toi-même.\n\nSortie par jour : 200-400 LOC\nQualité : varie avec ton énergie\nCohérence : TES patrons uniquement\nGoulot : TA vitesse de frappe\n\nLe système reflète ta capacité\nà produire sous pression.\n\nLimitation : tu es le plafond.',
+        language: 'text',
+        filename: 'producteur.txt',
+      },
+      right: {
+        label: 'Curateur (Sélectionner + Affiner)',
+        content: 'Les agents produisent. Tu évalues.\n\nSortie par jour : 2000-5000 LOC révisés\nQualité : constante (filtre du goût appliqué)\nCohérence : TES standards, appliqués\nGoulot : TA vitesse de jugement\n\nLe système reflète ton goût\nappliqué à une production énorme.\n\nAvantage : le jugement passe à l\'échelle, pas la frappe.',
+        language: 'text',
+        filename: 'curateur.txt',
+      },
+      question: 'Quel rôle produit de meilleurs systèmes à l\'échelle ?',
+      correctSide: 'right',
+      explanation: "Le goût n'est pas inné — il se développe par l'exposition et la pratique. Dans un monde assisté par agents, ton rôle passe de producteur à curateur. Un curateur de musée ne peint pas — il décide ce qui va sur le mur. Tu fais la même chose : les agents produisent, tu sélectionnes, arranges et affines. La curation au niveau du système demande plus de jugement que d'écrire n'importe quel composant individuel.",
     },
     {
       type: 'multiple-choice',
@@ -194,14 +254,28 @@ const content: LessonContent = {
 
     // === WHAT TO CUT ===
     {
-      type: 'info',
-      title: 'Le goût, c\'est savoir quoi couper',
-      body: "Un agent ne dira jamais « ne construis pas cette fonctionnalité ». Il ne suggérera jamais de supprimer un composant. Il optimise pour la complétude — plus c'est mieux dans sa distribution d'entraînement. Mais les meilleurs produits se définissent par ce qu'ils EXCLUENT. Le goût, c'est le courage de couper : cette fonctionnalité est techniquement possible et quelqu'un l'a demandée et l'agent l'a construite parfaitement — et elle ne devrait quand même pas exister parce qu'elle complexifie le produit sans valeur proportionnelle.",
+      type: 'multiple-choice',
+      question: 'Un agent ne dira jamais « ne construis pas cette fonctionnalité ». Pourquoi savoir quoi couper est-il la compétence de goût la plus difficile ?',
+      options: [
+        'Parce que couper des fonctionnalités gaspille le travail de l\'agent',
+        'Parce que les agents optimisent pour la complétude, mais les meilleurs produits se définissent par ce qu\'ils EXCLUENT. Le goût, c\'est le courage de couper quelque chose de bien construit qui ne devrait pas exister.',
+        'Parce que les parties prenantes veulent toujours plus de fonctionnalités',
+        'Parce que les agents ne peuvent pas construire de fonctionnalités qui devraient être coupées',
+      ],
+      correctIndex: 1,
+      explanation: "Un agent ne dira jamais « ne construis pas cette fonctionnalité ». Il optimise pour la complétude — plus c'est mieux dans sa distribution d'entraînement. Mais les meilleurs produits se définissent par ce qu'ils EXCLUENT. Le goût, c'est le courage de couper : cette fonctionnalité est techniquement possible et l'agent l'a construite parfaitement — et elle ne devrait quand même pas exister.",
     },
     {
-      type: 'info',
-      title: 'Le test de la fonctionnalité',
-      body: "Avant de livrer toute fonctionnalité construite par un agent, applique le test de la fonctionnalité. Un : si cette fonctionnalité disparaissait demain, est-ce que les utilisateurs le remarqueraient dans la semaine ? Deux : est-ce que cette fonctionnalité améliore l'expérience principale ou dilue-t-elle l'attention ? Trois : est-ce que cette fonctionnalité nécessite une maintenance continue disproportionnée par rapport à son utilisation ? Si les réponses sont non, dilue et oui — coupe. L'agent l'a bien construite. Toi, tu la coupes judicieusement. La production, c'est ce que le goût laisse passer, pas ce que la capacité peut produire.",
+      type: 'multiple-choice',
+      question: 'Avant de livrer une fonctionnalité construite par un agent, tu appliques le test de la fonctionnalité. Les réponses sont : les utilisateurs NE remarqueraient PAS si elle disparaissait, elle DILUE l\'expérience principale, et elle nécessite une maintenance DISPROPORTIONNÉE. Que fais-tu ?',
+      options: [
+        'Livre quand même — quelqu\'un l\'a demandée',
+        'Coupe. L\'agent l\'a bien construite. Toi, tu la coupes judicieusement. La production, c\'est ce que le goût laisse passer, pas ce que la capacité peut produire.',
+        'Simplifie-la et livre une version réduite',
+        'Demande d\'abord aux utilisateurs s\'ils la veulent',
+      ],
+      correctIndex: 1,
+      explanation: "Avant de livrer toute fonctionnalité construite par un agent, applique le test de la fonctionnalité. Un : les utilisateurs le remarqueraient-ils ? Deux : ça améliore ou ça dilue ? Trois : maintenance disproportionnée ? Si les réponses sont non, dilue et oui — coupe.",
     },
     {
       type: 'multiple-choice',
@@ -223,17 +297,32 @@ const content: LessonContent = {
 
     // === TASTE IN PRACTICE ===
     {
-      type: 'info',
-      title: 'Construire une grille d\'évaluation du goût',
-      body: "Rends ton goût explicite. Avant de réviser la sortie d'un agent, écris tes critères d'évaluation : Est-ce proportionnel ? Est-ce cohérent avec le système existant ? Est-ce assez simple pour que la prochaine personne (ou le prochain agent) puisse le comprendre en 30 secondes ? Est-ce que ça résout un problème qui vaut la peine d'être résolu ? Quand t'as une grille, tu ne te fies pas à ton humeur — tu appliques un jugement cohérent. Au fil du temps, cette grille évolue à mesure que ton goût s'affine.",
+      type: 'multiple-choice',
+      question: 'Pourquoi devrais-tu écrire tes critères d\'évaluation AVANT de réviser la sortie d\'un agent, plutôt que de juger au feeling ?',
+      options: [
+        'Pour créer de la documentation pour l\'équipe',
+        'Quand t\'as une grille, tu appliques un jugement cohérent au lieu de te fier à ton humeur. Au fil du temps, la grille évolue à mesure que ton goût s\'affine.',
+        'Pour ralentir le processus de revue et être plus attentif',
+        'Parce que les agents ont besoin de critères écrits pour s\'améliorer',
+      ],
+      correctIndex: 1,
+      explanation: "Rends ton goût explicite. Avant de réviser la sortie d'un agent, écris tes critères d'évaluation : Est-ce proportionnel ? Est-ce cohérent avec le système existant ? Est-ce assez simple pour que la prochaine personne puisse le comprendre en 30 secondes ? Quand t'as une grille, tu ne te fies pas à ton humeur — tu appliques un jugement cohérent.",
     },
     {
-      type: 'code-demo',
-      title: 'Grille d\'évaluation du goût pour la revue de sortie d\'agents',
-      body: 'Applique cette grille à chaque morceau significatif de code généré par un agent avant de fusionner. Pas tous les éléments s\'appliquent à chaque changement — mais parcourir la liste attrape la majorité des échecs de goût.',
+      type: 'code-fill',
+      instruction: 'Complète cette grille d\'évaluation du goût pour réviser la sortie d\'agents. Remplis les questions d\'évaluation clés pour chaque dimension.',
       language: 'markdown',
       filename: 'REVIEW_RUBRIC.md',
-      code: "# Agent Output Review Rubric\n\n## Proportionality (most common taste failure)\n- [ ] Is the solution proportional to the problem?\n- [ ] Could this be done in significantly fewer lines without losing clarity?\n- [ ] Does this abstraction earn its complexity?\n\n## Coherence\n- [ ] Does this match the existing patterns in the codebase?\n- [ ] If it introduces a new pattern, is the old pattern deprecated?\n- [ ] Would a future reader understand the style without context?\n\n## Simplicity\n- [ ] Can I explain this to a colleague in one sentence?\n- [ ] Are there any clever tricks that should be rewritten plainly?\n- [ ] Does it use the simplest tool that solves the problem?\n\n## Necessity\n- [ ] Does this solve a problem that actually exists (not a hypothetical)?\n- [ ] If I deleted this, would anything break within 30 days?\n- [ ] Is the ongoing maintenance cost justified by the usage?",
+      template: '# Agent Output Review Rubric\n\n## Proportionality (most common taste failure)\n- [ ] Is the solution {{proportional_q}}?\n- [ ] Does this abstraction {{complexity_q}}?\n\n## Coherence\n- [ ] Does this match {{pattern_q}}?\n- [ ] Would a future reader {{readability_q}}?\n\n## Necessity\n- [ ] Does this solve a problem that {{exists_q}}?\n- [ ] If I deleted this, would {{deletion_q}}?',
+      blanks: [
+        { id: 'proportional_q', answer: 'proportional to the problem', alternatives: ['proportional', 'proportionate to the problem'], placeholder: 'vérification de proportionnalité ?', hint: 'La solution correspond-elle à la taille du problème ?' },
+        { id: 'complexity_q', answer: 'earn its complexity', alternatives: ['justify its complexity', 'warrant its complexity'], placeholder: 'vérification de complexité ?', hint: 'L\'abstraction vaut-elle la surcharge ?' },
+        { id: 'pattern_q', answer: 'the existing patterns in the codebase', alternatives: ['existing patterns', 'current codebase patterns'], placeholder: 'vérification de correspondance ?', hint: 'Cohérence avec ce qui existe déjà' },
+        { id: 'readability_q', answer: 'understand the style without context', alternatives: ['understand it without context', 'read it without extra context'], placeholder: 'vérification de lisibilité ?', hint: 'Quelqu\'un de nouveau peut-il comprendre immédiatement ?' },
+        { id: 'exists_q', answer: 'actually exists', alternatives: ['actually exists (not a hypothetical)', 'is real'], placeholder: 'vérification de nécessité ?', hint: 'Problème réel ou hypothétique ?' },
+        { id: 'deletion_q', answer: 'anything break within 30 days', alternatives: ['anything break', 'users notice'], placeholder: 'test de suppression ?', hint: 'Que se passe-t-il si ce code disparaît ?' },
+      ],
+      explanation: 'Applique cette grille à chaque morceau significatif de code généré par un agent avant de fusionner. Parcourir la liste attrape la majorité des échecs de goût. La grille rend ton jugement implicite explicite et cohérent.',
     },
     {
       type: 'order',
@@ -255,14 +344,28 @@ const content: LessonContent = {
 
     // === THE IRREPLACEABLE SKILL ===
     {
-      type: 'info',
-      title: 'Pourquoi c\'est l\'avantage défensif',
-      body: "La génération de code deviendra banalisée. Les tests seront automatisés. Le déploiement sera autonome. Ce qui ne peut pas être automatisé, c'est le jugement sur quoi construire, à quel point le simplifier, et quand dire non. Ce jugement — le goût — se forge au fil d'années à construire, livrer, maintenir, et voir les conséquences des décisions. Ça ne peut pas être distillé dans un prompt. Ça ne peut pas être enseigné à un modèle. C'est expérientiel, contextuel, et profondément humain. Investis-y sans relâche.",
+      type: 'multiple-choice',
+      question: 'La génération de code, les tests et le déploiement seront tous automatisés. Qu\'est-ce qui NE PEUT PAS être automatisé ?',
+      options: [
+        'Écrire des algorithmes complexes',
+        'Déboguer des problèmes en production',
+        'Le jugement sur quoi construire, à quel point le simplifier, et quand dire non — le goût est expérientiel, contextuel et profondément humain',
+        'Configurer des pipelines CI/CD',
+      ],
+      correctIndex: 2,
+      explanation: "La génération de code deviendra banalisée. Les tests seront automatisés. Le déploiement sera autonome. Ce qui ne peut pas être automatisé, c'est le jugement sur quoi construire, à quel point le simplifier, et quand dire non. Ce jugement — le goût — se forge au fil d'années à construire, livrer, maintenir, et voir les conséquences des décisions. Investis-y sans relâche.",
     },
     {
-      type: 'info',
-      title: 'Le praticien qui a du goût',
-      body: "Il révise la sortie d'un agent et voit immédiatement : cette abstraction ne survivra pas à la prochaine demande de fonctionnalité. Il regarde une architecture proposée et sent : ça va devenir un fardeau de maintenance dans 6 mois. Il évalue une fonctionnalité et sait : ça dilue le produit sans ajouter de valeur proportionnelle. Il ne peut pas toujours articuler POURQUOI en temps réel — le jugement se déclenche plus vite que l'explication. Mais il a raison assez souvent pour que son équipe fasse confiance à son instinct. C'est vers ça que tu te diriges.",
+      type: 'multiple-choice',
+      question: 'Un praticien avec du goût révise la sortie d\'un agent et voit immédiatement « cette abstraction ne survivra pas à la prochaine demande de fonctionnalité ». Quelle compétence est-ce ?',
+      options: [
+        'Connaissance technique des patrons de conception',
+        'Reconnaissance de patrons forgée par des années à construire, livrer et voir les conséquences — un jugement qui se déclenche plus vite que l\'explication',
+        'Pessimisme sur les capacités des agents',
+        'Expérience avec un langage de programmation spécifique',
+      ],
+      correctIndex: 1,
+      explanation: "Le praticien avec du goût révise la sortie d'un agent et voit immédiatement des problèmes invisibles dans les tests ou les métriques. Il ne peut pas toujours articuler POURQUOI en temps réel — le jugement se déclenche plus vite que l'explication. Mais il a raison assez souvent pour que son équipe fasse confiance à son instinct. C'est vers ça que tu te diriges.",
     },
     {
       type: 'checklist',

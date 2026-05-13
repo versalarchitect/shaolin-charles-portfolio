@@ -17,9 +17,9 @@ const content: LessonContent = {
 
     // === DIAGRAM 1: Serial vs Parallel ===
     {
-      type: 'diagram',
+      type: 'interactive-diagram',
       title: 'Exécution séquentielle vs parallèle',
-      body: "Voici le changement fondamental de modèle mental. L'exécution séquentielle est sûre mais lente — chaque tâche attend la précédente. L'exécution parallèle lance les tâches indépendantes simultanément. L'orchestrateur (vous) remplace l'agent unique comme coordinateur.",
+      body: "Voici le changement fondamental de modèle mental. L'exécution séquentielle est sûre mais lente. L'exécution parallèle lance les tâches indépendantes simultanément. Parcourez les étapes pour voir comment l'orchestrateur coordonne.",
       diagram: {
         direction: 'TB',
         nodes: [
@@ -40,6 +40,27 @@ const content: LessonContent = {
           { from: 'merge', to: 'done' },
         ],
       },
+      stages: [
+        {
+          highlightNodes: ['orch'],
+          explanation: 'Vous êtes l\'orchestrateur. Au lieu de diriger un agent à travers chaque tâche séquentiellement, vous décomposez le travail et répartissez plusieurs agents simultanément.',
+        },
+        {
+          highlightNodes: ['orch', 'a', 'b', 'c'],
+          highlightEdges: [{ from: 'orch', to: 'a' }, { from: 'orch', to: 'b' }, { from: 'orch', to: 'c' }],
+          explanation: 'Fan-out : trois agents démarrent en même temps, chacun sur une tâche indépendante. Auth, API et UI s\'exécutent en parallèle car ils ne dépendent pas les uns des autres.',
+        },
+        {
+          highlightNodes: ['a', 'b', 'c', 'merge'],
+          highlightEdges: [{ from: 'a', to: 'merge' }, { from: 'b', to: 'merge' }, { from: 'c', to: 'merge' }],
+          explanation: 'Fan-in : quand tous les agents ont fini, leur travail converge à l\'étape de fusion. C\'est ici que vous intégrez les pièces et résolvez les incompatibilités d\'interface.',
+        },
+        {
+          highlightNodes: ['merge', 'done'],
+          highlightEdges: [{ from: 'merge', to: 'done' }],
+          explanation: 'Après l\'intégration, le projet est complet. Temps réel : la durée de l\'agent le plus lent plus le temps de fusion. Bien plus rapide que le séquentiel.',
+        },
+      ],
     },
     {
       type: 'checkpoint',
@@ -49,9 +70,16 @@ const content: LessonContent = {
 
     // === TASK DECOMPOSITION ===
     {
-      type: 'info',
-      title: 'Décomposition des tâches et propriété des fichiers',
-      body: "La décomposition des tâches consiste à diviser un produit en unités de travail adaptées à un agent. Chaque unité doit avoir des frontières claires, posséder des fichiers spécifiques et être testable indépendamment. La règle d'or : si deux agents doivent écrire dans le même fichier, votre décomposition est mauvaise. L'accès partagé aux fichiers est la cause numéro un d'échec multi-agent.",
+      type: 'multiple-choice',
+      question: 'La décomposition des tâches consiste à diviser un produit en unités de travail adaptées à un agent. Quelle est la règle d\'or de la propriété des fichiers en multi-agent ?',
+      options: [
+        'Chaque agent devrait travailler sur les plus petits fichiers possibles',
+        'Les agents devraient partager des fichiers pour rester au courant des changements des autres',
+        'Si deux agents doivent écrire dans le même fichier, votre décomposition est mauvaise',
+        'La propriété des fichiers n\'a pas d\'importance tant que les agents travaillent sur des fonctionnalités différentes',
+      ],
+      correctIndex: 2,
+      explanation: 'L\'accès partagé aux fichiers est la cause numéro un d\'échec multi-agent. Si deux agents doivent écrire dans le même fichier, restructurez pour que chaque agent possède ses fichiers exclusivement. Chaque unité de travail doit avoir des frontières claires, posséder des fichiers spécifiques et être testable indépendamment.',
     },
     {
       type: 'multiple-choice',
@@ -80,9 +108,9 @@ const content: LessonContent = {
 
     // === DIAGRAM 2: Task Dependency Graph ===
     {
-      type: 'diagram',
+      type: 'interactive-diagram',
       title: 'Graphe de dépendances des tâches',
-      body: "Un vrai produit SaaS décomposé en flux de travail parallèles. Auth et API peuvent démarrer immédiatement — ils sont indépendants. L'UI dépend du contrat API (a besoin des formes de réponse). Les Paiements dépendent de l'Auth (a besoin du contexte utilisateur). Tout converge à l'intégration.",
+      body: "Un vrai produit SaaS décomposé en flux de travail parallèles. Parcourez les étapes pour voir quelles tâches peuvent s'exécuter en parallèle et lesquelles doivent attendre.",
       diagram: {
         direction: 'TB',
         nodes: [
@@ -106,6 +134,27 @@ const content: LessonContent = {
           { from: 'int', to: 'deploy' },
         ],
       },
+      stages: [
+        {
+          highlightNodes: ['spec'],
+          highlightEdges: [{ from: 'spec', to: 'auth' }, { from: 'spec', to: 'api' }],
+          explanation: 'Étape 0 : Vous définissez le spec et les contrats partagés en premier. Ça prend 5 minutes et active tout ce qui suit. Types, formes API, schéma de base de données.',
+        },
+        {
+          highlightNodes: ['auth', 'api'],
+          explanation: 'Étape 1 : Auth et API peuvent démarrer immédiatement en parallèle — ils sont indépendants. Chacun possède ses propres fichiers et travaille avec les contrats partagés.',
+        },
+        {
+          highlightNodes: ['ui', 'pay'],
+          highlightEdges: [{ from: 'api', to: 'ui' }, { from: 'auth', to: 'pay' }],
+          explanation: 'Étape 2 : L\'UI dépend du contrat API (a besoin des formes de réponse). Les Paiements dépendent de l\'Auth (a besoin du contexte utilisateur). Ceux-ci démarrent après la fin de leurs dépendances.',
+        },
+        {
+          highlightNodes: ['int', 'deploy'],
+          highlightEdges: [{ from: 'int', to: 'deploy' }],
+          explanation: 'Étape 3 : L\'intégration fusionne toutes les pièces. Vous branchez les routes, testez les interfaces, résolvez les incompatibilités. Puis déployez le produit unifié.',
+        },
+      ],
     },
     {
       type: 'multiple-choice',
@@ -127,35 +176,30 @@ const content: LessonContent = {
 
     // === THE SPEC / CONTRACTS STEP ===
     {
-      type: 'info',
-      title: 'Étape zéro : définir les contrats',
-      body: "Avant qu'un agent commence à coder, vous définissez les contrats — les interfaces entre les composants. Formes de réponse API, format du token d'auth, props des composants, schéma de base de données. Ça prend 5 minutes et prévient des heures de douleur à l'intégration. Chaque agent travaille avec les mêmes types partagés. Aucun agent ne modifie le fichier de contrats.",
+      type: 'multiple-choice',
+      question: 'Avant qu\'un agent commence à coder, vous définissez les contrats partagés (interfaces, formes API, types). Pourquoi cette étape est-elle critique pour le travail parallèle ?',
+      options: [
+        'Ça rend le compilateur TypeScript content',
+        'Ça empêche les agents de faire des suppositions raisonnables mais incompatibles sur les formes de données',
+        'Ça donne aux agents quelque chose à lire en attendant leur tour',
+        'C\'est nécessaire seulement pour les équipes de plus de 3 agents',
+      ],
+      correctIndex: 1,
+      explanation: 'Sans contrats partagés, l\'agent A pourrait définir un User avec un champ « name » tandis que l\'agent B attend « firstName » et « lastName ». Le fichier de contrats est écrit une fois par vous, importé par chaque agent, et modifié par aucun. Ça prend 5 minutes et prévient des heures de douleur à l\'intégration.',
     },
     {
-      type: 'code-demo',
-      title: 'Un fichier de contrats partagé',
-      body: "Ce fichier de types est écrit en premier, avant que tout agent ne commence. Chaque agent l'importe. Aucun agent ne le modifie. C'est la source unique de vérité qui rend le travail parallèle possible.",
+      type: 'code-fill',
+      instruction: 'Complétez ce fichier de contrats partagé que tous les agents importeront. Aucun agent ne le modifie — vous l\'écrivez avant qu\'ils commencent :',
       language: 'typescript',
       filename: 'src/types/contracts.ts',
-      code: `// Written by YOU before agents start
-// Every agent imports from this file — none modify it
-
-export interface User {
-  id: string
-  email: string
-  role: 'admin' | 'member'
-}
-
-export interface ApiResponse<T> {
-  data: T
-  error: string | null
-}
-
-export interface DashboardStats {
-  revenue: number
-  users: number
-  churn: number
-}`,
+      template: '// Written by YOU before agents start\n// Every agent imports from this file — none modify it\n\nexport interface User {\n  id: {{idType}}\n  email: string\n  role: {{roleType}}\n}\n\nexport interface ApiResponse<T> {\n  data: T\n  error: {{errorType}}\n}\n\nexport interface DashboardStats {\n  revenue: number\n  users: number\n  churn: {{churnType}}\n}',
+      blanks: [
+        { id: 'idType', answer: 'string', alternatives: ['String'], placeholder: 'quel type pour les IDs ?', hint: 'Les UUIDs sont représentés par ce type en TypeScript' },
+        { id: 'roleType', answer: "'admin' | 'member'", alternatives: ['"admin" | "member"', "'admin'|'member'", '"admin"|"member"'], placeholder: 'quel type union ?', hint: 'Une union de types littéraux de chaîne pour les deux rôles' },
+        { id: 'errorType', answer: 'string | null', alternatives: ['string|null', 'null | string'], placeholder: 'erreur ou pas d\'erreur ?', hint: 'Le champ erreur est une chaîne quand présent, ou absent' },
+        { id: 'churnType', answer: 'number', alternatives: ['Number'], placeholder: 'quel type pour les métriques ?', hint: 'Le taux de désabonnement est une valeur numérique comme le revenu et les utilisateurs' },
+      ],
+      explanation: 'Chaque type de champ est une décision qui prévient la divergence. Si vous laissez le type User.role non spécifié, un agent pourrait utiliser des chaînes tandis qu\'un autre utilise un enum. Le fichier de contrats est la source unique de vérité.',
     },
     {
       type: 'code-input',
@@ -167,27 +211,19 @@ export interface DashboardStats {
 
     // === AGENT DISPATCH PATTERN ===
     {
-      type: 'code-demo',
-      title: 'Répartition des agents en parallèle',
-      body: "Dans Claude Code, vous répartissez les agents en parallèle en regroupant les appels d'outils indépendants ou en utilisant l'outil Agent. Chaque agent obtient son propre contexte, périmètre de fichiers et description de tâche. Remarquez comment chaque tâche possède des répertoires spécifiques — aucun chevauchement.",
+      type: 'code-fill',
+      instruction: 'Complétez ce plan de répartition CLAUDE.md qui assigne des agents en parallèle avec propriété exclusive des fichiers :',
       language: 'markdown',
       filename: 'CLAUDE.md',
-      code: `## Parallel Tasks — Run Simultaneously
-
-### Agent 1: Auth (owns src/auth/*)
-Build login, signup, and password reset.
-Use the User type from src/types/contracts.ts.
-Write tests in src/auth/__tests__/.
-
-### Agent 2: API (owns src/api/*)
-Build REST endpoints for dashboard stats.
-Use ApiResponse<T> from src/types/contracts.ts.
-Write tests in src/api/__tests__/.
-
-### Agent 3: Landing Page (owns src/marketing/*)
-Build the marketing landing page.
-No dependencies on other agents.
-Static content only.`,
+      template: '## Parallel Tasks — Run Simultaneously\n\n### Agent 1: Auth (owns {{authDir}})\nBuild login, signup, and password reset.\nUse the User type from src/types/contracts.ts.\nWrite tests in src/auth/__tests__/.\n\n### Agent 2: API (owns {{apiDir}})\nBuild REST endpoints for dashboard stats.\nUse {{responseType}} from src/types/contracts.ts.\nWrite tests in src/api/__tests__/.\n\n### Agent 3: Landing Page (owns {{marketingDir}})\nBuild the marketing landing page.\nNo dependencies on other agents.\n{{staticNote}}.',
+      blanks: [
+        { id: 'authDir', answer: 'src/auth/*', alternatives: ['src/auth'], placeholder: 'quel répertoire ?', hint: 'L\'agent auth possède tous les fichiers sous src/auth/' },
+        { id: 'apiDir', answer: 'src/api/*', alternatives: ['src/api'], placeholder: 'quel répertoire ?', hint: 'L\'agent API possède tous les fichiers sous src/api/' },
+        { id: 'responseType', answer: 'ApiResponse<T>', alternatives: ['ApiResponse', 'ApiResponse<T> type'], placeholder: 'quel type partagé ?', hint: 'Le wrapper de réponse générique du fichier de contrats' },
+        { id: 'marketingDir', answer: 'src/marketing/*', alternatives: ['src/marketing'], placeholder: 'quel répertoire ?', hint: 'L\'agent landing page possède tous les fichiers sous src/marketing/' },
+        { id: 'staticNote', answer: 'Static content only', alternatives: ['Static content', 'static content only'], placeholder: 'quel type de contenu ?', hint: 'La landing page n\'a aucune dépendance — elle est purement statique' },
+      ],
+      explanation: 'Chaque agent a une propriété exclusive des fichiers (aucun chevauchement), importe d\'un contrat partagé (lecture seule), et a un périmètre clair en une phrase. C\'est le patron de répartition qui rend le travail parallèle sûr.',
     },
     {
       type: 'checkpoint',
@@ -197,9 +233,9 @@ Static content only.`,
 
     // === DIAGRAM 3: When NOT to Parallelize ===
     {
-      type: 'diagram',
+      type: 'interactive-diagram',
       title: 'Quand NE PAS paralléliser',
-      body: "Toutes les tâches ne bénéficient pas de l'exécution parallèle. Utilisez cet arbre de décision avant de répartir les agents. Si les tâches partagent un état ou des fichiers, exécutez-les en série. Si elles touchent des fichiers indépendants sans état partagé, parallélisez en confiance.",
+      body: "Toutes les tâches ne bénéficient pas de l'exécution parallèle. Parcourez cet arbre de décision pour apprendre quand paralléliser et quand sérialiser.",
       diagram: {
         direction: 'TB',
         nodes: [
@@ -218,6 +254,33 @@ Static content only.`,
           { from: 'files', to: 'coord', label: 'non' },
         ],
       },
+      stages: [
+        {
+          highlightNodes: ['task'],
+          highlightEdges: [{ from: 'task', to: 'state' }],
+          explanation: 'Commencez avec une nouvelle tâche que vous voulez paralléliser. La première question : cette tâche partage-t-elle un état mutable avec une autre tâche ?',
+        },
+        {
+          highlightNodes: ['state', 'serial'],
+          highlightEdges: [{ from: 'state', to: 'serial' }],
+          explanation: 'Si les tâches partagent un état (même table de base de données, même store Zustand, même fichier de config), exécutez-les en série. L\'état partagé est la catégorie la plus dangereuse pour le travail parallèle.',
+        },
+        {
+          highlightNodes: ['state', 'files'],
+          highlightEdges: [{ from: 'state', to: 'files' }],
+          explanation: 'Si les tâches NE partagent PAS d\'état, posez la question suivante : possèdent-elles chacune leurs propres fichiers sans chevauchement ?',
+        },
+        {
+          highlightNodes: ['files', 'parallel'],
+          highlightEdges: [{ from: 'files', to: 'parallel' }],
+          explanation: 'Si chaque tâche possède ses fichiers exclusivement — parallélisez en confiance. Pas d\'état partagé, pas de fichiers partagés, pas de conflits.',
+        },
+        {
+          highlightNodes: ['files', 'coord'],
+          highlightEdges: [{ from: 'files', to: 'coord' }],
+          explanation: 'Si les tâches touchent des fichiers qui se chevauchent, restructurez d\'abord. Extrayez le code partagé dans un module, créez un patron de configuration, ou divisez le fichier. Puis parallélisez.',
+        },
+      ],
     },
     {
       type: 'multiple-choice',
@@ -245,9 +308,16 @@ Static content only.`,
       correctOrder: [0, 1, 2, 3],
     },
     {
-      type: 'info',
-      title: 'Prévenir chaque mode d\'échec',
-      body: "Conflits de fichiers partagés : imposer la propriété exclusive des fichiers par agent. Hypothèses incohérentes : définir les contrats partagés avant de commencer. Échecs d'intégration : planifier l'étape de fusion explicitement et tester les interfaces tôt. Travail en double : donner à chaque agent un périmètre clair et non chevauchant dans le prompt.",
+      type: 'multiple-choice',
+      question: 'Comment empêcher les agents de faire des suppositions incohérentes (par ex., l\'agent A attend User.name tandis que l\'agent B attend User.firstName) ?',
+      options: [
+        'Laisser les agents décider individuellement et réconcilier au moment de la fusion',
+        'Définir les contrats partagés (types, interfaces) avant que tout agent ne commence',
+        'Utiliser le même modèle d\'IA pour tous les agents pour qu\'ils fassent les mêmes suppositions',
+        'Faire lire à chaque agent le code des autres agents d\'abord',
+      ],
+      correctIndex: 1,
+      explanation: 'Les contrats partagés définis avant le démarrage des agents sont la prévention. Les conflits de fichiers partagés sont prévenus par la propriété exclusive. Les échecs d\'intégration en planifiant l\'étape de fusion. Le travail en double en donnant un périmètre non chevauchant.',
     },
     {
       type: 'checkpoint',
@@ -327,9 +397,16 @@ Static content only.`,
 
     // === HANDS-ON EXERCISE ===
     {
-      type: 'info',
-      title: 'Exercice : Décomposer un projet',
-      body: "C'est le moment de pratiquer. Vous construisez une application de gestion de tâches avec : authentification utilisateur (email/mot de passe), une interface Kanban, une API REST pour les opérations CRUD sur les tâches, et des mises à jour en temps réel via WebSocket. Décomposez en tâches adaptées aux agents et identifiez les dépendances.",
+      type: 'multiple-choice',
+      question: 'Vous construisez une application de gestion de tâches avec auth, une interface Kanban, une API REST et des mises à jour en temps réel via WebSocket. Quelles tâches peuvent démarrer en parallèle dès le début ?',
+      options: [
+        'Auth, API, UI et WebSocket — les quatre sont indépendantes',
+        'Auth, API et WebSocket — l\'UI Kanban a besoin des formes de réponse API d\'abord',
+        'Seulement Auth et API — tout le reste en dépend',
+        'Aucune — elles doivent toutes s\'exécuter séquentiellement',
+      ],
+      correctIndex: 1,
+      explanation: 'Auth, API et WebSocket sont indépendantes et peuvent démarrer en parallèle. L\'UI Kanban a besoin de connaître la forme des objets tâche retournés par l\'API (titre, statut, assigné, etc.). Sans ce contrat, l\'agent UI devinerait les structures de données.',
     },
     {
       type: 'code-input',
@@ -357,32 +434,31 @@ Static content only.`,
       hint: 'Utilisez mkdir -p pour créer les répertoires auth, api, board et realtime sous src/',
     },
     {
-      type: 'code-demo',
-      title: 'Votre décomposition sous forme de graphe de tâches',
-      body: "Voici comment vous documenteriez cette décomposition dans votre CLAUDE.md. Remarquez la propriété explicite des fichiers et les notes de dépendance.",
+      type: 'code-fill',
+      instruction: 'Complétez cette documentation de graphe de tâches qui assigne les agents aux phases avec propriété claire et dépendances :',
       language: 'markdown',
       filename: 'CLAUDE.md',
-      code: `## Task Graph
-
-### Phase 1 — Contracts (you, 5 min)
-Define types in src/types/task.ts
-
-### Phase 2 — Parallel Agents
-- Agent A: Auth → src/auth/* (independent)
-- Agent B: API → src/api/* (independent)
-- Agent C: WebSocket → src/realtime/* (independent)
-
-### Phase 3 — Dependent Work
-- Agent D: Kanban UI → src/board/*
-  (after API contract is defined)
-
-### Phase 4 — Integration
-- Wire routes, test end-to-end`,
+      template: '## Task Graph\n\n### Phase 1 — Contracts (you, 5 min)\nDefine types in {{typesFile}}\n\n### Phase 2 — Parallel Agents\n- Agent A: Auth → {{authOwnership}} (independent)\n- Agent B: API → {{apiOwnership}} (independent)\n- Agent C: WebSocket → {{wsOwnership}} (independent)\n\n### Phase 3 — Dependent Work\n- Agent D: Kanban UI → src/board/*\n  (after {{dependency}} is defined)',
+      blanks: [
+        { id: 'typesFile', answer: 'src/types/task.ts', alternatives: ['src/types/contracts.ts', 'src/types/task'], placeholder: 'quel fichier ?', hint: 'Le fichier de types partagé pour l\'app de gestion de tâches' },
+        { id: 'authOwnership', answer: 'src/auth/*', alternatives: ['src/auth'], placeholder: 'quel répertoire ?', hint: 'L\'agent A possède tous les fichiers auth' },
+        { id: 'apiOwnership', answer: 'src/api/*', alternatives: ['src/api'], placeholder: 'quel répertoire ?', hint: 'L\'agent B possède tous les fichiers API' },
+        { id: 'wsOwnership', answer: 'src/realtime/*', alternatives: ['src/realtime', 'src/websocket/*'], placeholder: 'quel répertoire ?', hint: 'L\'agent C possède tous les fichiers realtime/WebSocket' },
+        { id: 'dependency', answer: 'API contract', alternatives: ['api contract', 'the API contract', 'API response shapes', 'contrat API', 'le contrat API'], placeholder: 'quelle dépendance ?', hint: 'L\'UI Kanban a besoin de connaître les formes de données de l\'API' },
+      ],
+      explanation: 'Chaque agent obtient une propriété exclusive des fichiers, travaille avec les types partagés, et les dépendances sont explicites. L\'UI Kanban attend le contrat API pour typer correctement ses composants.',
     },
     {
-      type: 'info',
-      title: 'Maximiser le parallélisme avec les contrats',
-      body: "Voici le coup avancé : si vous définissez le contrat API en amont (les formes de réponse, les chemins d'endpoint, les codes de statut), l'agent UI PEUT démarrer en parallèle avec l'agent API. Les deux travaillent contre le contrat — l'API l'implémente, l'UI le consomme. C'est comme ça que vous passez de 3 agents parallèles à 4.",
+      type: 'multiple-choice',
+      question: 'L\'UI Kanban dépend des formes de réponse API. Comment faire démarrer l\'agent UI en parallèle avec l\'agent API au lieu d\'attendre ?',
+      options: [
+        'Faire deviner les formes de réponse à l\'agent UI et corriger plus tard',
+        'Définir le contrat API (formes de réponse, chemins d\'endpoints) en amont pour que les deux agents travaillent avec le même contrat',
+        'Donner à l\'agent UI accès au worktree de l\'agent API pour qu\'il puisse lire le code',
+        'Démarrer l\'agent UI avec des données fictives et ne jamais le connecter à la vraie API',
+      ],
+      correctIndex: 1,
+      explanation: 'Si vous définissez le contrat API en amont, l\'agent UI PEUT démarrer en parallèle avec l\'agent API. Les deux travaillent contre le contrat — l\'API l\'implémente, l\'UI le consomme. C\'est comme ça que vous passez de 3 agents parallèles à 4.',
     },
     {
       type: 'checklist',

@@ -22,17 +22,30 @@ const content: LessonContent = {
 
     // === SPECCING A DATABASE ===
     {
-      type: 'info',
-      title: 'Quoi inclure dans une spec de base de données',
-      body: "Une bonne spec de base de données pour l'agent couvre : les entités (quels sont les noms dans votre système), les relations (comment les entités se connectent — one-to-many, many-to-many), les contraintes (NOT NULL, UNIQUE, CHECK, clés étrangères), les index (quelles colonnes seront requêtées/filtrées/jointes), les enums (ensembles fixes de valeurs comme status ou role), et les champs d'audit (created_at, updated_at, deleted_at si soft-deletes). Plus vous êtes explicite, moins l'agent fait de suppositions.",
+      type: 'multiple-choice',
+      question: 'Quel element est LE PLUS important a inclure dans une spec de base de donnees pour un agent IA ?',
+      options: [
+        'Le theme de couleurs pour le panneau d\'admin de la base de donnees',
+        'Les types de relations explicites (one-to-many, many-to-many) et les contraintes (NOT NULL, UNIQUE, FK)',
+        'Le dialecte SQL exact que la base de donnees utilisera',
+        'Une liste de tous les endpoints API qui interrogeront la base de donnees',
+      ],
+      correctIndex: 1,
+      explanation: 'Une bonne spec de BD couvre : les entites, les relations (one-to-many, many-to-many), les contraintes (NOT NULL, UNIQUE, CHECK, cles etrangeres), les index, les enums et les champs d\'audit. Plus vous etes explicite sur les relations et contraintes, moins l\'agent fait de suppositions. Sans elles, l\'agent va deviner — et deviner faux.',
     },
     {
-      type: 'code-demo',
-      title: 'Exemple de prompt de spec de base de données',
-      body: 'Structurez votre spec comme ceci avant de diriger l\'agent. Remarquez les types de relations et contraintes explicites.',
+      type: 'code-fill',
+      instruction: 'Completez cette spec de base de donnees en remplissant les types de relations et contraintes :',
       language: 'markdown',
       filename: 'database-spec.md',
-      code: "## Database Spec: Project Management App\n\n### Entities\n- users (from auth.users, extended with profiles)\n- workspaces (multi-tenant, users belong to many)\n- projects (belong to one workspace)\n- tasks (belong to one project, assigned to one user)\n- comments (belong to one task, authored by one user)\n\n### Relationships\n- users <-> workspaces: many-to-many (junction: workspace_members)\n- workspace -> projects: one-to-many\n- project -> tasks: one-to-many\n- task -> comments: one-to-many\n- user -> tasks: one-to-many (assignee)\n\n### Constraints\n- workspace_members: UNIQUE(user_id, workspace_id)\n- tasks.status: CHECK (status IN ('todo','in_progress','done'))\n- tasks.title: NOT NULL, max 200 chars\n- projects.slug: UNIQUE per workspace\n\n### Indexes\n- tasks: (project_id, status) for filtered lists\n- comments: (task_id, created_at) for chronological loading\n- workspace_members: (user_id) for \"my workspaces\" query\n\n### Audit\n- All tables: created_at DEFAULT now(), updated_at via trigger",
+      template: '## Database Spec: Project Management App\n\n### Relationships\n- users <-> workspaces: {{user_workspace_rel}} (junction: workspace_members)\n- workspace -> projects: {{workspace_project_rel}}\n- project -> tasks: one-to-many\n\n### Constraints\n- workspace_members: {{unique_constraint}}(user_id, workspace_id)\n- tasks.status: {{check_type}} (status IN (\'todo\',\'in_progress\',\'done\'))\n- tasks.title: NOT NULL, max 200 chars',
+      blanks: [
+        { id: 'user_workspace_rel', answer: 'many-to-many', alternatives: ['M:N', 'm2m'], placeholder: 'type de relation ?', hint: 'Les utilisateurs appartiennent a plusieurs workspaces, les workspaces ont plusieurs utilisateurs' },
+        { id: 'workspace_project_rel', answer: 'one-to-many', alternatives: ['1:N', '1:many', 'one to many'], placeholder: 'type de relation ?', hint: 'Un projet appartient a exactement un workspace' },
+        { id: 'unique_constraint', answer: 'UNIQUE', alternatives: ['unique'], placeholder: 'contrainte ?', hint: 'Un utilisateur ne peut etre membre d\'un workspace qu\'une seule fois' },
+        { id: 'check_type', answer: 'CHECK', alternatives: ['check'], placeholder: 'type de contrainte ?', hint: 'Restreint les valeurs de colonne a un ensemble specifique' },
+      ],
+      explanation: 'Les types de relations explicites disent a l\'agent s\'il faut creer des tables de jonction (many-to-many) ou de simples cles etrangeres (one-to-many). UNIQUE empeche les doublons, CHECK restreint les valeurs aux options valides. Sans ceux-ci, l\'agent devine.',
     },
     {
       type: 'checkpoint',
@@ -42,9 +55,16 @@ const content: LessonContent = {
 
     // === DIRECTING SCHEMA GENERATION ===
     {
-      type: 'info',
-      title: 'Diriger l\'agent pour générer le schéma',
-      body: "Donnez la spec à l'agent et demandez-lui de générer un fichier de migration. Ne demandez pas « toute la base de données » d'un coup — divisez en groupes logiques. D'abord : utilisateurs et espaces de travail. Ensuite : projets et tâches. Troisièmement : commentaires et activité. Ce séquençage compte parce que les migrations ultérieures référencent les tables précédentes via les clés étrangères. Ça facilite aussi la révision — des migrations plus petites sont plus faciles à auditer qu'un seul fichier de 200 lignes.",
+      type: 'multiple-choice',
+      question: 'Quelle est la meilleure approche pour demander a un agent de generer des migrations de base de donnees ?',
+      options: [
+        'Demander le schema entier dans un seul fichier de migration',
+        'Decouper en groupes logiques (utilisateurs d\'abord, puis projets, puis commentaires) pour que les FK referencent des tables existantes',
+        'Laisser l\'agent decider de l\'ordre — il sait mieux',
+        'Generer toutes les tables sans FK, puis ajouter les FK dans une migration separee',
+      ],
+      correctIndex: 1,
+      explanation: 'Decoupez les migrations en groupes logiques. Les migrations suivantes referencent les tables precedentes via les cles etrangeres, donc l\'ordre compte. Des migrations plus petites sont aussi plus faciles a reviser — auditer un fichier de 50 lignes est beaucoup plus facile qu\'un de 200 lignes. Ce sequencage previent les erreurs de reference FK et vous donne des points de controle.',
     },
     {
       type: 'terminal',
@@ -53,12 +73,19 @@ const content: LessonContent = {
       hint: 'Utilisez supabase migration new suivi d\'un nom descriptif en snake_case',
     },
     {
-      type: 'code-demo',
-      title: 'Résultat de migration bien structuré',
-      body: 'Voici à quoi ressemble une migration correctement contrainte. Comparez ce que l\'agent génère par rapport à ce standard.',
+      type: 'code-fill',
+      instruction: 'Completez cette migration pour creer une table de jonction workspace_members correctement contrainte :',
       language: 'sql',
-      filename: 'supabase/migrations/001_add_users_and_workspaces.sql',
-      code: "-- Create enum for workspace roles\nCREATE TYPE workspace_role AS ENUM ('owner', 'admin', 'member', 'viewer');\n\n-- Profiles table (extends auth.users)\nCREATE TABLE profiles (\n  id UUID PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE,\n  display_name TEXT NOT NULL,\n  avatar_url TEXT,\n  created_at TIMESTAMPTZ NOT NULL DEFAULT now(),\n  updated_at TIMESTAMPTZ NOT NULL DEFAULT now()\n);\n\n-- Workspaces\nCREATE TABLE workspaces (\n  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),\n  name TEXT NOT NULL,\n  slug TEXT NOT NULL UNIQUE,\n  created_by UUID NOT NULL REFERENCES profiles(id),\n  created_at TIMESTAMPTZ NOT NULL DEFAULT now(),\n  updated_at TIMESTAMPTZ NOT NULL DEFAULT now()\n);\n\n-- Junction table: workspace members\nCREATE TABLE workspace_members (\n  workspace_id UUID NOT NULL REFERENCES workspaces(id) ON DELETE CASCADE,\n  user_id UUID NOT NULL REFERENCES profiles(id) ON DELETE CASCADE,\n  role workspace_role NOT NULL DEFAULT 'member',\n  joined_at TIMESTAMPTZ NOT NULL DEFAULT now(),\n  PRIMARY KEY (workspace_id, user_id)\n);\n\n-- Indexes\nCREATE INDEX idx_workspace_members_user ON workspace_members(user_id);\nCREATE INDEX idx_workspaces_slug ON workspaces(slug);\n\n-- Updated_at trigger function\nCREATE OR REPLACE FUNCTION update_updated_at()\nRETURNS TRIGGER AS $$\nBEGIN\n  NEW.updated_at = now();\n  RETURN NEW;\nEND;\n$$ LANGUAGE plpgsql;\n\nCREATE TRIGGER profiles_updated_at\n  BEFORE UPDATE ON profiles\n  FOR EACH ROW EXECUTE FUNCTION update_updated_at();\n\nCREATE TRIGGER workspaces_updated_at\n  BEFORE UPDATE ON workspaces\n  FOR EACH ROW EXECUTE FUNCTION update_updated_at();",
+      filename: 'supabase/migrations/001_add_workspaces.sql',
+      template: "-- Table de jonction : membres de workspace\nCREATE TABLE workspace_members (\n  workspace_id UUID NOT NULL REFERENCES workspaces(id) ON DELETE {{ws_cascade}},\n  user_id UUID NOT NULL REFERENCES profiles(id) ON DELETE CASCADE,\n  role workspace_role NOT NULL DEFAULT '{{default_role}}',\n  joined_at TIMESTAMPTZ NOT NULL DEFAULT {{default_time}},\n  PRIMARY KEY (workspace_id, {{pk_col}})\n);\n\n-- Index pour la requete 'mes workspaces'\nCREATE INDEX idx_workspace_members_user ON workspace_members({{index_col}});",
+      blanks: [
+        { id: 'ws_cascade', answer: 'CASCADE', alternatives: ['cascade'], placeholder: 'comportement de suppression ?', hint: 'Quand le workspace est supprime, supprimer ses membres' },
+        { id: 'default_role', answer: 'member', placeholder: 'role par defaut ?', hint: 'Les nouveaux utilisateurs rejoignent avec le role le plus bas' },
+        { id: 'default_time', answer: 'now()', alternatives: ['NOW()'], placeholder: 'valeur par defaut ?', hint: 'Fonction Postgres pour le timestamp actuel' },
+        { id: 'pk_col', answer: 'user_id', placeholder: 'deuxieme colonne PK ?', hint: 'La PK composite empeche les adhesions en double' },
+        { id: 'index_col', answer: 'user_id', placeholder: 'quelle colonne ?', hint: 'Necessaire pour la requete "mes workspaces"' },
+      ],
+      explanation: 'Une table de jonction necessite : CASCADE sur les deux FK (l\'adhesion n\'a pas de sens sans les deux enregistrements parents), une PRIMARY KEY composite pour empecher les doublons, un role par defaut raisonnable, et un index sur user_id pour le pattern de requete "afficher mes workspaces".',
     },
     {
       type: 'checkpoint',
@@ -68,17 +95,30 @@ const content: LessonContent = {
 
     // === REVIEWING MIGRATIONS ===
     {
-      type: 'info',
-      title: 'Réviser les migrations : ce que les agents ratent',
-      body: "Voici votre checklist de révision pour chaque migration générée par un agent : (1) NOT NULL manquant — les agents laissent les colonnes nullable par défaut quand elles devraient être obligatoires. (2) Index manquants sur les colonnes de clé étrangère — Postgres N'indexe PAS automatiquement les FK, et les index manquants détruisent la performance des jointures. (3) Mauvais comportement CASCADE — CASCADE sur delete signifie que supprimer un utilisateur supprime toutes ses données. Parfois vous voulez SET NULL ou RESTRICT à la place. (4) Pas de trigger updated_at. (5) VARCHAR(255) partout au lieu de TEXT avec contraintes CHECK. (6) Contraintes UNIQUE manquantes sur les clés naturelles (email, slug, etc.).",
+      type: 'multiple-choice',
+      question: 'Quelle est l\'erreur LA PLUS courante des agents dans les migrations generees ?',
+      options: [
+        'Utiliser le mauvais dialecte SQL',
+        'Laisser les colonnes nullable par defaut quand elles devraient etre NOT NULL, et oublier les index sur les colonnes FK',
+        'Creer trop de tables a la fois',
+        'Utiliser des noms de colonnes incorrects',
+      ],
+      correctIndex: 1,
+      explanation: 'Les agents de maniere recurrente : (1) laissent les colonnes nullable quand elles devraient etre NOT NULL, (2) oublient les index sur les colonnes FK (Postgres N\'indexe PAS automatiquement les FK), (3) utilisent CASCADE par defaut quand SET NULL ou RESTRICT serait plus sur, (4) oublient les triggers updated_at, (5) utilisent VARCHAR(255) au lieu de TEXT avec CHECK, (6) oublient les contraintes UNIQUE sur les cles naturelles. Revisez toujours pour ces patterns.',
     },
     {
-      type: 'code-demo',
-      title: 'Repérez les problèmes dans ce résultat d\'agent',
-      body: 'L\'agent a généré cette migration. Comptez les problèmes avant de lire l\'explication ci-dessous.',
+      type: 'code-fill',
+      instruction: 'L\'agent a genere une table tasks cassee. Remplissez les contraintes manquantes pour la corriger :',
       language: 'sql',
       filename: 'supabase/migrations/002_add_tasks.sql',
-      code: "-- Agent-generated (has problems!)\nCREATE TABLE tasks (\n  id SERIAL PRIMARY KEY,\n  title VARCHAR(255),          -- Problem 1: should be NOT NULL\n  description TEXT,\n  status TEXT,                  -- Problem 2: no CHECK constraint\n  project_id INTEGER,           -- Problem 3: no FK, no NOT NULL\n  assigned_to UUID,             -- Problem 4: no FK reference\n  created_at TIMESTAMP          -- Problem 5: no DEFAULT, no NOT NULL\n);                              -- Problem 6: no index on project_id\n                                -- Problem 7: no updated_at column",
+      template: "CREATE TABLE tasks (\n  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),\n  title TEXT {{title_constraint}},\n  description TEXT,\n  status TEXT NOT NULL {{status_check}},\n  project_id UUID NOT NULL REFERENCES {{fk_table}}(id),\n  assigned_to UUID REFERENCES profiles(id),\n  created_at TIMESTAMPTZ NOT NULL DEFAULT now(),\n  {{update_col}} TIMESTAMPTZ NOT NULL DEFAULT now()\n);",
+      blanks: [
+        { id: 'title_constraint', answer: 'NOT NULL', alternatives: ['not null'], placeholder: 'contrainte ?', hint: 'Chaque tache doit avoir un titre' },
+        { id: 'status_check', answer: "CHECK (status IN ('todo','in_progress','done'))", alternatives: ["check (status in ('todo','in_progress','done'))"], placeholder: 'validation ?', hint: 'Restreindre le statut aux valeurs valides uniquement' },
+        { id: 'fk_table', answer: 'projects', placeholder: 'table parent ?', hint: 'Les taches appartiennent a quelle entite ?' },
+        { id: 'update_col', answer: 'updated_at', alternatives: ['updatedAt'], placeholder: 'colonne manquante ?', hint: 'Suivre quand la ligne a ete modifiee pour la derniere fois' },
+      ],
+      explanation: 'Chaque colonne obligatoire necessite NOT NULL. Les colonnes de statut necessitent des contraintes CHECK pour empecher les valeurs invalides. Les colonnes FK necessitent des REFERENCES appropriees. Et chaque table a besoin d\'une colonne updated_at avec un trigger pour suivre les modifications.',
     },
     {
       type: 'multiple-choice',
@@ -95,9 +135,22 @@ const content: LessonContent = {
 
     // === COMMON DATA MODELING MISTAKES ===
     {
-      type: 'info',
-      title: 'Erreurs de modélisation de données courantes des agents',
-      body: "Au-delà des problèmes de contraintes, les agents font des erreurs de modélisation structurelle : (1) Dénormalisation là où la normalisation est nécessaire — stocker les tags comme chaîne séparée par des virgules au lieu d'une table de jonction. (2) Tables de jonction manquantes pour le many-to-many — utiliser des tableaux d'IDs au lieu de jointures relationnelles appropriées. (3) Utiliser VARCHAR(255) partout — une habitude MySQL sans bénéfice dans Postgres (utilisez TEXT avec CHECK). (4) Pas de timestamps d'audit — created_at/updated_at manquants sur chaque table. (5) IDs entiers au lieu d'UUIDs — rend les systèmes multi-tenant et la fusion de données pénibles.",
+      type: 'compare',
+      title: 'Modelisation denormalisee vs normalisee',
+      body: 'Les agents denormalisent souvent la ou la normalisation est necessaire. Repérez la difference structurelle.',
+      question: 'Quelle approche gere correctement les tags pour une plateforme de blog ?',
+      correctSide: 'right',
+      left: {
+        label: 'Defaut de l\'agent (denormalise)',
+        content: "CREATE TABLE posts (\n  id UUID PRIMARY KEY,\n  title TEXT NOT NULL,\n  tags TEXT[],  -- Tableau de chaines\n  -- Problemes :\n  -- Pas d'integrite referentielle\n  -- Impossible de stocker des metadonnees de tag\n  -- Interroger 'tous les posts avec tag X'\n  --   necessite de scanner chaque ligne\n  -- Pas de liste canonique de tags\n);",
+        language: 'sql',
+      },
+      right: {
+        label: 'Correctement normalise',
+        content: "CREATE TABLE tags (\n  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),\n  name TEXT NOT NULL UNIQUE,\n  color TEXT,\n  created_by UUID REFERENCES profiles(id)\n);\nCREATE TABLE post_tags (\n  post_id UUID REFERENCES posts(id)\n    ON DELETE CASCADE,\n  tag_id UUID REFERENCES tags(id)\n    ON DELETE CASCADE,\n  PRIMARY KEY (post_id, tag_id)\n);",
+        language: 'sql',
+      },
+      explanation: 'Les colonnes array ne peuvent pas garantir que les valeurs de tags existent dans une liste canonique (pas de FK). Vous ne pouvez pas stocker de metadonnees sur un tag (couleur, description, created_by). Interroger "tous les posts avec le tag X" necessite de scanner chaque ligne. Une table tags + table de jonction post_tags resout tous ces problemes. Les agents preferent les arrays parce qu\'ils semblent plus simples.',
     },
     {
       type: 'multiple-choice',
@@ -160,33 +213,67 @@ const content: LessonContent = {
 
     // === WORKFLOW DIAGRAM ===
     {
-      type: 'diagram',
-      title: 'Raffinement Itératif du Schéma',
-      body: 'Votre flux de travail est une boucle de révision. Vous n\'acceptez jamais le premier jet — vous révisez, corrigez et vérifiez avant de migrer.',
+      type: 'interactive-diagram',
+      title: 'Raffinement Iteratif du Schema',
+      body: 'Votre flux de travail est une boucle de revision. Vous n\'acceptez jamais le premier jet — vous revisez, corrigez et verifiez avant de migrer.',
       diagram: {
         direction: 'LR',
         nodes: [
-          { id: 'spec', label: 'Votre Spec', sublabel: 'Entités + Règles', shape: 'rounded' },
-          { id: 'generate', label: 'L\'Agent Génère', sublabel: 'Migration SQL', shape: 'rect' },
-          { id: 'review', label: 'Vous Révisez', sublabel: 'Vérif. Contraintes', shape: 'diamond', highlight: true },
+          { id: 'spec', label: 'Votre Spec', sublabel: 'Entites + Regles', shape: 'rounded' },
+          { id: 'generate', label: 'L\'Agent Genere', sublabel: 'Migration SQL', shape: 'rect' },
+          { id: 'review', label: 'Vous Revisez', sublabel: 'Verif. Contraintes', shape: 'diamond', highlight: true },
           { id: 'fix', label: 'Corriger', sublabel: 'Diriger l\'Agent', shape: 'rect' },
           { id: 'migrate', label: 'Migrer', sublabel: 'supabase db push', shape: 'pill', highlight: true },
         ],
         edges: [
           { from: 'spec', to: 'generate', label: 'prompt' },
-          { from: 'generate', to: 'review', label: 'résultat' },
-          { from: 'review', to: 'fix', label: 'problèmes trouvés' },
-          { from: 'fix', to: 'generate', label: 'itérer', dashed: true },
-          { from: 'review', to: 'migrate', label: 'approuvé' },
+          { from: 'generate', to: 'review', label: 'resultat' },
+          { from: 'review', to: 'fix', label: 'problemes trouves' },
+          { from: 'fix', to: 'generate', label: 'iterer', dashed: true },
+          { from: 'review', to: 'migrate', label: 'approuve' },
         ],
       },
+      stages: [
+        {
+          highlightNodes: ['spec', 'generate'],
+          highlightEdges: [{ from: 'spec', to: 'generate' }],
+          explanation: 'Vous commencez par ecrire une spec detaillee — entites, relations, contraintes, index. L\'agent l\'utilise pour generer un fichier de migration SQL.',
+        },
+        {
+          highlightNodes: ['generate', 'review'],
+          highlightEdges: [{ from: 'generate', to: 'review' }],
+          explanation: 'L\'agent produit du SQL. Vous le revisez contre votre checklist : NOT NULL sur les champs requis, index sur les FK, comportement CASCADE correct, contraintes CHECK sur les enums.',
+        },
+        {
+          highlightNodes: ['review', 'fix'],
+          highlightEdges: [{ from: 'review', to: 'fix' }],
+          explanation: 'Des problemes trouves ? Donnez des corrections chirurgicales : "Ajoute NOT NULL a tasks.title. Ajoute un index sur project_id." Des corrections specifiques, pas des reecritures completes.',
+        },
+        {
+          highlightNodes: ['fix', 'generate'],
+          highlightEdges: [{ from: 'fix', to: 'generate' }],
+          explanation: 'L\'agent regenere seulement les parties que vous avez signalees. Cette boucle se repete jusqu\'a ce que la migration passe votre revision. La plupart des schemas necessitent 2-3 iterations.',
+        },
+        {
+          highlightNodes: ['review', 'migrate'],
+          highlightEdges: [{ from: 'review', to: 'migrate' }],
+          explanation: 'Une fois que la migration passe la revision, appliquez-la avec supabase db push. Le schema est maintenant verrouille — le changer plus tard necessite une nouvelle migration et un backfill de donnees.',
+        },
+      ],
     },
 
     // === ITERATIVE REFINEMENT ===
     {
-      type: 'info',
-      title: 'Raffinement itératif sans repartir de zéro',
-      body: "Quand vous trouvez des problèmes dans une migration, ne demandez pas à l'agent de régénérer depuis le début. Ça gaspille du contexte et peut introduire de nouveaux problèmes. Au lieu de ça, dites-lui exactement quoi corriger : « Ajoute NOT NULL à tasks.title et tasks.project_id. Ajoute une contrainte CHECK sur status. Ajoute un index sur project_id. Ajoute les références FK vers projects(id) et profiles(id). Ajoute created_at et updated_at avec les valeurs par défaut. » Des corrections chirurgicales, pas des réécritures.",
+      type: 'multiple-choice',
+      question: 'Vous trouvez 3 problemes dans une migration generee par un agent. Quelle est la meilleure approche de correction ?',
+      options: [
+        'Demander a l\'agent de regenerer la migration entiere depuis zero',
+        'Lister les corrections exactes : "Ajoute NOT NULL a tasks.title, ajoute CHECK sur status, ajoute index sur project_id"',
+        'Ecrire la migration corrigee vous-meme sans l\'agent',
+        'L\'accepter tel quel et corriger les problemes plus tard quand ils causeront des soucis',
+      ],
+      correctIndex: 1,
+      explanation: 'Les corrections chirurgicales preservent ce que l\'agent a bien fait et ne corrigent que ce qu\'il a rate. Regenerer depuis zero gaspille du contexte et peut introduire de nouveaux problemes. Dire a l\'agent exactement quoi corriger — colonne par colonne, contrainte par contrainte — produit le resultat le plus rapide et fiable.',
     },
     {
       type: 'code-input',
@@ -204,12 +291,17 @@ const content: LessonContent = {
       hint: 'La commande CLI Supabase qui applique les migrations en attente à votre base de données liée',
     },
     {
-      type: 'code-demo',
-      title: 'Clé étrangère avec cascade appropriée',
-      body: 'Choisissez le comportement CASCADE délibérément. Cet exemple montre les trois options et quand utiliser chacune.',
+      type: 'code-fill',
+      instruction: 'Choisissez le bon comportement ON DELETE pour chaque relation de cle etrangere :',
       language: 'sql',
       filename: 'cascade-examples.sql',
-      code: "-- CASCADE: Delete user → delete all their posts\n-- Use when: child data is meaningless without parent\nCREATE TABLE posts (\n  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),\n  user_id UUID NOT NULL REFERENCES profiles(id) ON DELETE CASCADE\n);\n\n-- SET NULL: Delete workspace → keep projects, clear workspace_id\n-- Use when: child can exist independently\nCREATE TABLE projects (\n  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),\n  workspace_id UUID REFERENCES workspaces(id) ON DELETE SET NULL\n);\n\n-- RESTRICT: Cannot delete a project that still has tasks\n-- Use when: deletion should be blocked if children exist\nCREATE TABLE tasks (\n  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),\n  project_id UUID NOT NULL REFERENCES projects(id) ON DELETE RESTRICT\n);",
+      template: "-- Les donnees enfant n'ont pas de sens sans le parent\nCREATE TABLE posts (\n  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),\n  user_id UUID NOT NULL REFERENCES profiles(id)\n    ON DELETE {{posts_cascade}}\n);\n\n-- L'enfant peut exister independamment\nCREATE TABLE projects (\n  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),\n  workspace_id UUID REFERENCES workspaces(id)\n    ON DELETE {{projects_cascade}}\n);\n\n-- La suppression devrait etre bloquee si des enfants existent\nCREATE TABLE tasks (\n  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),\n  project_id UUID NOT NULL REFERENCES projects(id)\n    ON DELETE {{tasks_cascade}}\n);",
+      blanks: [
+        { id: 'posts_cascade', answer: 'CASCADE', alternatives: ['cascade'], placeholder: 'comportement ?', hint: 'Les posts n\'ont pas de sens sans leur auteur' },
+        { id: 'projects_cascade', answer: 'SET NULL', alternatives: ['set null', 'SET null'], placeholder: 'comportement ?', hint: 'Garder les projets vivants mais effacer le lien workspace' },
+        { id: 'tasks_cascade', answer: 'RESTRICT', alternatives: ['restrict'], placeholder: 'comportement ?', hint: 'Empecher la suppression d\'un projet qui a encore des taches' },
+      ],
+      explanation: 'CASCADE supprime les enfants automatiquement (les posts sans auteur sont inutiles). SET NULL garde les enfants mais supprime le lien (les projets peuvent exister sans workspace). RESTRICT empeche la suppression entierement (impossible de supprimer un projet avec des taches actives). Choisissez deliberement — l\'agent mettra CASCADE par defaut pour tout.',
     },
     {
       type: 'multiple-choice',

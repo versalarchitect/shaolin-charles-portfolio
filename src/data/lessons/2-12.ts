@@ -10,9 +10,16 @@ const content: LessonContent = {
       body: "This is it. You will spec, direct, verify, and ship a complete product — a Feedback Board SaaS application — using only agent direction. No writing code yourself. No hand-editing. You direct, the agent builds. Every skill from Tier 2 converges here: spec writing, iterative direction, verification protocols, visual evaluation, scope constraints, and deployment. By the end of this lesson, you will have a live production URL running software you directed an agent to build end-to-end.",
     },
     {
-      type: 'info',
-      title: 'The product: Feedback Board',
-      body: "A real product with real utility. Users submit feedback items (title + description). Other users vote on items to indicate priority. An admin can change item status (new, in progress, done, declined). Items display in a public board sorted by votes. This is not a toy — it has authentication, database persistence, role-based access, and a responsive interface. Companies like Canny and Nolt charge $79-$400/month for this. You will build it in 75 minutes of directed work.",
+      type: 'multiple-choice',
+      question: 'The capstone product is a Feedback Board SaaS. Which features make it a real product rather than a toy project?',
+      options: [
+        'It has a pretty landing page and animated transitions',
+        'It has authentication, database persistence, role-based access, and a responsive interface',
+        'It uses the latest JavaScript framework and cutting-edge libraries',
+        'It has comprehensive unit test coverage and CI/CD pipelines',
+      ],
+      correctIndex: 1,
+      explanation: 'A real product has authentication (who can access), database persistence (data survives restarts), role-based access (admin vs user), and responsive design (works on mobile). Companies like Canny and Nolt charge $79-$400/month for feedback boards with these features. You will build it in 75 minutes of directed work.',
     },
     {
       type: 'interactive-diagram',
@@ -77,17 +84,31 @@ const content: LessonContent = {
 
     // === PHASE 1: WRITE THE SPEC ===
     {
-      type: 'info',
-      title: 'Phase 1: Write the Spec (Lesson 2-1 skills)',
-      body: "Your first action is writing the complete product spec. This is not a quick outline — it is the execution contract that governs the entire build. Include all five sections: Goal, Constraints, Acceptance Criteria, Technical Boundaries, and Out of Scope. Be precise on technology choices. Be exhaustive on acceptance criteria. Be explicit on what is NOT included. This spec is your most important artifact.",
+      type: 'multiple-choice',
+      question: 'Your first action in the capstone is writing the product spec. Which of these is the most important reason the spec must include all five sections (Goal, Constraints, Acceptance Criteria, Technical Boundaries, Out of Scope)?',
+      options: [
+        'It makes the document look more professional',
+        'It serves as the execution contract — every agent decision traces back to it',
+        'It satisfies project management best practices',
+        'It helps you estimate how long the project will take',
+      ],
+      correctIndex: 1,
+      explanation: 'The spec is not documentation — it is the execution contract that governs the entire build. Every agent decision, from technology choices to feature boundaries, traces back to this document. Missing a section means the agent will fill in the gap with assumptions.',
     },
     {
-      type: 'code-demo',
-      title: 'Feedback Board — Full Spec',
-      body: 'This is the spec you will deliver to the agent. Study it — then you will create your own version.',
+      type: 'code-fill',
+      instruction: 'Complete the key sections of this Feedback Board product spec that the agent will use as its execution contract:',
       language: 'markdown',
       filename: 'SPEC.md',
-      code: "# Feedback Board — Agent Spec\n\n## Goal\nA public feedback board where users submit ideas, vote on them,\nand an admin manages item status. Live at a production URL.\n\n## Constraints\n- Next.js 15 with App Router\n- TypeScript strict mode\n- Supabase for auth (magic link) and database (Postgres)\n- Tailwind CSS + shadcn/ui components\n- Deployed on Vercel\n- Mobile-first responsive design\n\n## Acceptance Criteria\n- [ ] Users can sign in via magic link (email)\n- [ ] Signed-in users can submit feedback (title + description)\n- [ ] Signed-in users can upvote/remove vote on any item (one vote per user per item)\n- [ ] All users (including anonymous) can view the public board\n- [ ] Board displays items sorted by vote count (descending)\n- [ ] Admin can change item status: new | in-progress | done | declined\n- [ ] Items show their status as a colored badge\n- [ ] Board is filterable by status\n- [ ] Responsive: single column mobile, two-column desktop\n- [ ] App runs locally with `npm run dev` after `npm install`\n- [ ] App deploys to Vercel without errors\n\n## Technical Boundaries\n- Use Supabase Row Level Security for access control\n- Server components for data fetching, server actions for mutations\n- All database logic through Supabase client (no raw SQL in app code)\n- Keep components in src/components/, pages in src/app/\n- Admin role determined by a role column in the users/profiles table\n\n## Out of Scope\n- Comments/replies on items\n- Categories or tags\n- Email notifications\n- Public API\n- Custom domain configuration\n- Analytics or tracking\n- Dark mode (ship light-only for MVP)",
+      template: '# Feedback Board — Agent Spec\n\n## Goal\nA public feedback board where users submit ideas, vote on them,\nand an admin manages item status. Live at a {{deployment}}.\n\n## Constraints\n- {{framework}} with App Router\n- TypeScript strict mode\n- {{database}} for auth (magic link) and database (Postgres)\n- Tailwind CSS + shadcn/ui components\n\n## Technical Boundaries\n- Use Supabase {{security}} for access control\n- {{rendering}} for data fetching, server actions for mutations',
+      blanks: [
+        { id: 'deployment', answer: 'production URL', alternatives: ['production url', 'live URL', 'live url', 'public URL'], placeholder: 'where does it live?', hint: 'The spec says the app must be live and accessible' },
+        { id: 'framework', answer: 'Next.js 15', alternatives: ['Next.js', 'NextJS 15', 'nextjs 15'], placeholder: 'which framework?', hint: 'The React meta-framework with App Router' },
+        { id: 'database', answer: 'Supabase', alternatives: ['supabase'], placeholder: 'which backend?', hint: 'Postgres-based backend-as-a-service' },
+        { id: 'security', answer: 'Row Level Security', alternatives: ['RLS', 'row level security', 'Row-Level Security'], placeholder: 'which security model?', hint: 'Supabase feature that controls access at the database row level' },
+        { id: 'rendering', answer: 'Server components', alternatives: ['Server Components', 'server components', 'RSC'], placeholder: 'which rendering pattern?', hint: 'Next.js pattern for data fetching without client-side JavaScript' },
+      ],
+      explanation: 'Each blank represents a critical architectural decision. The deployment target, framework, backend service, security model, and rendering strategy must all be explicit — ambiguity here causes the agent to guess, and guesses diverge from your intent.',
     },
     {
       type: 'code-fill',
@@ -116,9 +137,16 @@ const content: LessonContent = {
 
     // === PHASE 2: AUTH + DATABASE ===
     {
-      type: 'info',
-      title: 'Phase 2: Direct Auth + Database (Lesson 2-10 scope skills)',
-      body: "Now you direct the agent to build the foundation — but NOT everything at once. Apply scope constraints from Lesson 2-10. Phase 2 has two focused sub-tasks: (1) Supabase database schema with RLS policies, (2) Authentication flow with magic link. Each sub-task gets its own prompt with explicit boundaries. The agent builds the schema without touching the app code, then builds auth without touching the schema.",
+      type: 'multiple-choice',
+      question: 'Phase 2 splits auth and database into two separate agent prompts. Why not combine them into one prompt?',
+      options: [
+        'The agent cannot handle both topics in one conversation',
+        'Scoped sub-tasks are easier to verify — you can confirm the schema is correct before building auth on top of it',
+        'Database and auth use different programming languages',
+        'It is faster to run them in sequence than in parallel',
+      ],
+      correctIndex: 1,
+      explanation: 'Scope constraints from Lesson 2-10: each sub-task gets its own prompt with explicit boundaries. You verify the schema is correct before building auth logic on top. If you combine them, a schema mistake propagates silently into the auth code, making it harder to debug.',
     },
     {
       type: 'terminal',
@@ -140,9 +168,16 @@ const content: LessonContent = {
 
     // === PHASE 3: CORE FEATURES ===
     {
-      type: 'info',
-      title: 'Phase 3: Direct Core Features (Lessons 2-3, 2-10)',
-      body: "With auth and database in place, you direct the core features: feedback submission, voting, and admin status management. Each is a scoped sub-task. The agent knows the schema exists and the auth flow works — now it builds application logic on top. Apply iterative direction from Lesson 2-3: if the first output misses something, give targeted follow-ups rather than restarting.",
+      type: 'multiple-choice',
+      question: 'Phase 3 directs three features: feedback submission, voting, and admin status. The agent delivers the voting feature but forgot to toggle off votes (clicking again does not remove the vote). What do you do?',
+      options: [
+        'Accept it — users rarely need to un-vote',
+        'Give a targeted follow-up: "Update the VoteButton so clicking when already voted deletes the vote row (toggle behavior). Do not modify submission or admin."',
+        'Rewrite the entire voting prompt from scratch',
+        'Move on to Phase 4 and fix it later during verification',
+      ],
+      correctIndex: 1,
+      explanation: 'Iterative direction from Lesson 2-3: when the first output misses something, give a targeted follow-up rather than restarting. The follow-up is scoped (only VoteButton), specific (delete the vote row), and bounded (do not touch other features).',
     },
     {
       type: 'terminal',
@@ -170,9 +205,16 @@ const content: LessonContent = {
 
     // === PHASE 4: INTERFACE ===
     {
-      type: 'info',
-      title: 'Phase 4: Direct the Interface (Lesson 2-9 visual skills)',
-      body: "The components exist but they need to come together as a cohesive interface. This is where your visual direction skills matter. You will direct the agent to build the board page — composing the components, establishing layout, and implementing the filter UI. Apply visual spec constraints: spacing system, hierarchy, responsive behavior. Then evaluate the output with your taste filter.",
+      type: 'multiple-choice',
+      question: 'Before directing the interface layout, which visual constraints should you specify to get a polished result on the first attempt?',
+      options: [
+        'Just say "make it look professional" and let the agent decide',
+        'Specify the color palette only — the agent handles layout well on its own',
+        'Specify spacing system (padding, gaps), typographic hierarchy (sizes, weights), responsive breakpoints, and status badge colors',
+        'Send a Figma link and let the agent implement the design pixel-perfect',
+      ],
+      correctIndex: 2,
+      explanation: 'Visual direction from Lesson 2-9: agents need explicit constraints — spacing values, type hierarchy, breakpoints, and color mapping. Vague instructions like "professional" produce generic output. Specific constraints like "p-5, gap-4, text-base font-semibold" get the result you want in one iteration.',
     },
     {
       type: 'terminal',
@@ -200,9 +242,16 @@ const content: LessonContent = {
 
     // === PHASE 5: VERIFY EVERYTHING ===
     {
-      type: 'info',
-      title: 'Phase 5: Verify Everything (Lessons 2-5, 2-6, 2-7, 2-8)',
-      body: "The product is built. Now you verify — systematically. Apply every verification skill from Tier 2: functional testing (does each acceptance criterion work?), edge case testing (what happens with empty states, long text, simultaneous votes?), security audit (auth checks, RLS policies, no leaked env vars), and visual evaluation (responsive, hierarchy, spacing). This is where thoroughness prevents embarrassment.",
+      type: 'multiple-choice',
+      question: 'Phase 5 applies every verification skill from Tier 2. Which of these is the MOST dangerous to skip before deploying the Feedback Board?',
+      options: [
+        'Checking that status badge colors match the spec',
+        'Verifying the security audit — auth checks, RLS policies, no leaked env vars',
+        'Testing the responsive layout at 375px',
+        'Confirming the filter UI works for all status values',
+      ],
+      correctIndex: 1,
+      explanation: 'Security gaps in production are catastrophic — leaked API keys, missing auth checks, or disabled RLS policies can expose user data or allow unauthorized mutations. Visual bugs are embarrassing but fixable. Security vulnerabilities are exploitable.',
     },
     {
       type: 'terminal',
@@ -224,9 +273,16 @@ const content: LessonContent = {
 
     // === PHASE 6: DEPLOY + DOCUMENT ===
     {
-      type: 'info',
-      title: 'Phase 6: Deploy + Document (Lesson 2-11 skills)',
-      body: "The final phase. You direct the agent through deployment configuration, push to Vercel, and document the project. Apply the deployment skills from Lesson 2-11: environment variable setup, preview deployment verification, and production readiness checks. Then direct documentation so the project is maintainable — a README that explains how to run, develop, and deploy.",
+      type: 'multiple-choice',
+      question: 'Before deploying, you direct the agent to run the build. It passes — but you notice a hardcoded localhost:3000 URL in the codebase. Why is this a problem for production?',
+      options: [
+        'Localhost URLs are slower than production URLs',
+        'The Vercel build will fail because of the localhost reference',
+        'API calls or redirects will point to localhost instead of the production domain, breaking functionality for real users',
+        'It is not a problem — Vercel automatically rewrites localhost URLs',
+      ],
+      correctIndex: 2,
+      explanation: 'Hardcoded localhost URLs are one of the most common deployment failures. Everything works in development because the server IS on localhost. In production, those calls go nowhere — or worse, they fail silently. Always use environment variables like NEXT_PUBLIC_APP_URL.',
     },
     {
       type: 'terminal',
@@ -257,9 +313,9 @@ const content: LessonContent = {
 
     // === REFLECTION ===
     {
-      type: 'diagram',
+      type: 'interactive-diagram',
       title: 'What You Just Did',
-      body: 'You directed an agent through the complete product lifecycle without writing a single line of code yourself.',
+      body: 'You directed an agent through the complete product lifecycle without writing a single line of code yourself. Step through each stage.',
       diagram: {
         direction: 'TB',
         nodes: [
@@ -276,11 +332,44 @@ const content: LessonContent = {
           { from: 'verified', to: 'shipped', label: 'Lesson 2-11' },
         ],
       },
+      stages: [
+        {
+          highlightNodes: ['idea'],
+          highlightEdges: [{ from: 'idea', to: 'spec' }],
+          explanation: 'You started with just an idea — a feedback board with voting and admin status management. No code, no repo, no project.',
+        },
+        {
+          highlightNodes: ['spec'],
+          highlightEdges: [{ from: 'spec', to: 'built' }],
+          explanation: 'You wrote a 5-section spec with 11 acceptance criteria. This document governed every agent decision throughout the build.',
+        },
+        {
+          highlightNodes: ['built'],
+          highlightEdges: [{ from: 'built', to: 'verified' }],
+          explanation: 'You directed scoped sub-tasks for auth, database, submission, voting, admin, and interface composition. Each task had explicit boundaries.',
+        },
+        {
+          highlightNodes: ['verified'],
+          highlightEdges: [{ from: 'verified', to: 'shipped' }],
+          explanation: 'You ran functional tests against every acceptance criterion, a security audit, and a visual evaluation. Verification caught issues before users did.',
+        },
+        {
+          highlightNodes: ['shipped'],
+          explanation: 'You deployed to Vercel with environment variables configured, build verified, and documentation complete. The product is live.',
+        },
+      ],
     },
     {
-      type: 'info',
-      title: 'Tier 2 mastery: the single-agent director',
-      body: "You have proven you can take a product from idea to production using only agent direction. You wrote zero application code. You wrote specs, gave direction, evaluated output, and made judgment calls. This is the new skill: product direction at the speed of thought. In Tier 3, you will scale this — directing multiple agents in parallel, orchestrating complex systems, and building at a pace that was previously impossible. But the foundation is what you just demonstrated: clear specs, scoped direction, rigorous verification, and confident deployment.",
+      type: 'multiple-choice',
+      question: 'You have completed the full capstone — idea to production. What is the core skill you demonstrated across all six phases?',
+      options: [
+        'Writing efficient code faster than an AI agent',
+        'Memorizing the right terminal commands for each framework',
+        'Product direction — clear specs, scoped prompts, rigorous verification, and confident deployment',
+        'Using the most advanced AI model available',
+      ],
+      correctIndex: 2,
+      explanation: 'You wrote zero application code. You wrote specs, gave direction, evaluated output, and made judgment calls. This is the new skill: product direction at the speed of thought. In Tier 3, you will scale this with multiple agents in parallel.',
     },
     {
       type: 'checklist',

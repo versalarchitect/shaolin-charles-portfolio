@@ -17,34 +17,68 @@ const content: LessonContent = {
 
     // === IDENTIFYING DIVERGENCE ===
     {
-      type: 'info',
-      title: 'Étape 1 : Comparer le résultat avec votre spec',
-      body: "Avant de réagir émotionnellement (« c'est tout faux ! »), soyez précis. Ouvrez votre spec. Ouvrez le code. Parcourez chaque critère d'acceptation. Lesquels sont satisfaits ? Lesquels ne le sont pas ? Où exactement l'agent a-t-il dévié ? « L'agent a construit la mauvaise chose » n'est pas actionnable. « L'agent a utilisé du routing côté client pour le flux de checkout au lieu de redirections côté serveur comme spécifié au critère 3 » est actionnable.",
+      type: 'multiple-choice',
+      question: 'L\'agent a construit quelque chose qui ne correspond pas a votre spec. Que devez-vous faire EN PREMIER ?',
+      options: [
+        'Dire a l\'agent "c\'est tout faux, recommence"',
+        'Parcourir chaque critere d\'acceptation et identifier specifiquement ou l\'agent a devie',
+        'Supprimer tout le code genere et l\'ecrire vous-meme',
+        'Accepter le resultat tel quel et contourner les differences',
+      ],
+      correctIndex: 1,
+      explanation: 'Avant de reagir, soyez precis. Parcourez chaque critere d\'acceptation. Lesquels sont satisfaits ? Lesquels ne le sont pas ? Ou exactement l\'agent a-t-il devie ? "L\'agent a construit la mauvaise chose" n\'est pas actionnable. "L\'agent a utilise du routing cote client au lieu de redirections cote serveur comme specifie au critere 3" est actionnable.',
     },
     {
-      type: 'diagram',
-      title: 'Arbre de Décision de Récupération',
-      body: 'Utilisez ce flux pour décider la bonne action de récupération selon l\'ampleur de la divergence de l\'agent.',
+      type: 'interactive-diagram',
+      title: 'Arbre de Decision de Recuperation',
+      body: 'Utilisez ce flux pour decider la bonne action de recuperation selon l\'ampleur de la divergence de l\'agent.',
       diagram: {
         direction: 'TB',
         nodes: [
-          { id: 'detect', label: 'Détecter la Divergence', sublabel: 'Résultat != spec', shape: 'rounded', highlight: true },
-          { id: 'assess', label: 'Évaluer la Portée', sublabel: 'Combien est faux ?', shape: 'diamond' },
-          { id: 'minor', label: 'Divergence Mineure', sublabel: '1-2 critères ratés', shape: 'rect' },
+          { id: 'detect', label: 'Detecter la Divergence', sublabel: 'Resultat != spec', shape: 'rounded', highlight: true },
+          { id: 'assess', label: 'Evaluer la Portee', sublabel: 'Combien est faux ?', shape: 'diamond' },
+          { id: 'minor', label: 'Divergence Mineure', sublabel: '1-2 criteres rates', shape: 'rect' },
           { id: 'major', label: 'Divergence Majeure', sublabel: 'Architecture fausse', shape: 'rect' },
-          { id: 'redirect', label: 'Redirection Ciblée', sublabel: 'Corriger des fichiers précis', shape: 'rounded' },
+          { id: 'redirect', label: 'Redirection Ciblee', sublabel: 'Corriger des fichiers precis', shape: 'rounded' },
           { id: 'restart', label: 'Nouvelle Session', sublabel: 'Meilleure spec', shape: 'rounded' },
-          { id: 'rollback', label: 'Git Rollback', sublabel: 'Revenir au bon état', shape: 'pill' },
+          { id: 'rollback', label: 'Git Rollback', sublabel: 'Revenir au bon etat', shape: 'pill' },
         ],
         edges: [
           { from: 'detect', to: 'assess' },
-          { from: 'assess', to: 'minor', label: 'peu de problèmes' },
+          { from: 'assess', to: 'minor', label: 'peu de problemes' },
           { from: 'assess', to: 'major', label: 'fondamental' },
           { from: 'minor', to: 'redirect' },
           { from: 'major', to: 'rollback' },
           { from: 'rollback', to: 'restart' },
         ],
       },
+      stages: [
+        {
+          highlightNodes: ['detect'],
+          highlightEdges: [],
+          explanation: 'Vous remarquez que le resultat ne correspond pas a votre spec. Ne reagissez pas emotionnellement — passez a l\'evaluation.',
+        },
+        {
+          highlightNodes: ['assess'],
+          highlightEdges: [{ from: 'detect', to: 'assess' }],
+          explanation: 'Comptez combien de criteres d\'acceptation sont faux. Est-ce 1-2 problemes specifiques, ou toute l\'approche est differente ?',
+        },
+        {
+          highlightNodes: ['minor', 'redirect'],
+          highlightEdges: [{ from: 'assess', to: 'minor' }, { from: 'minor', to: 'redirect' }],
+          explanation: 'Divergence mineure (1-2 criteres rates) : donnez une correction ciblee — fichier specifique, changement specifique, approche specifique. Ajoutez "ne modifier que ce fichier" pour empecher la cascade.',
+        },
+        {
+          highlightNodes: ['major', 'rollback'],
+          highlightEdges: [{ from: 'assess', to: 'major' }, { from: 'major', to: 'rollback' }],
+          explanation: 'Divergence majeure (mauvaise architecture) : toute l\'approche est differente. Sauvez le travail sur une branche avec git, puis revenez a un etat correct connu.',
+        },
+        {
+          highlightNodes: ['rollback', 'restart'],
+          highlightEdges: [{ from: 'rollback', to: 'restart' }],
+          explanation: 'Apres le rollback, ameliorez votre spec pour empecher la meme mauvaise interpretation. Commencez une session fraiche avec la spec clarifiee. L\'erreur devient de la documentation.',
+        },
+      ],
     },
     {
       type: 'multiple-choice',
@@ -66,22 +100,46 @@ const content: LessonContent = {
 
     // === TARGETED CORRECTIONS ===
     {
-      type: 'info',
-      title: 'Corrections ciblées : l\'outil de précision',
-      body: "Pour une divergence mineure, vous n'avez pas besoin de réécrire ou recommencer. Vous avez besoin d'un prompt de correction précis qui dit à l'agent exactement ce qui ne va pas, exactement où, et exactement quoi faire à la place. « Réessaie » gaspille du contexte. « La fonction checkout dans src/lib/checkout.ts devrait rediriger côté serveur en utilisant redirect() de next/navigation, pas retourner une URL pour que le client navigue. Garde tout le reste pareil. » C'est actionnable.",
+      type: 'multiple-choice',
+      question: 'L\'agent a utilise la navigation cote client au lieu de redirections cote serveur. Quel prompt de correction est le meilleur ?',
+      options: [
+        '"Le flux de checkout est faux. Corrige."',
+        '"Ce n\'est pas du tout ce que j\'ai demande !"',
+        '"Dans src/lib/checkout.ts, change createCheckout pour utiliser redirect() de next/navigation au lieu de retourner une URL. Ne modifier que ce fichier."',
+        '"Reessaie et cette fois fais-le correctement."',
+      ],
+      correctIndex: 2,
+      explanation: 'Les corrections ciblees disent a l\'agent exactement ce qui ne va pas, exactement ou, et exactement quoi faire a la place. Les corrections vagues ("corrige") poussent l\'agent a reecrire plus que necessaire, introduisant potentiellement une nouvelle divergence. La cle est la specificite : fichier, fonction, comportement actuel, comportement desire, et contrainte de perimetre.',
     },
     {
-      type: 'code-demo',
-      title: 'Mauvaise correction vs bonne correction',
-      body: 'Les corrections vagues poussent l\'agent à faire plus de changements que nécessaire, introduisant potentiellement une nouvelle divergence.',
-      language: 'text',
-      filename: 'correction-examples.txt',
-      code: "# BAD: Vague correction\n\"The checkout flow is wrong. Fix it.\"\n# Agent response: rewrites 5 files, changes things that were correct\n\n# BAD: Emotional correction\n\"This isn't what I asked for at all. I said server-side!\"\n# Agent response: apologizes, rewrites broadly, may break working code\n\n# GOOD: Targeted correction\n\"In src/lib/checkout.ts, the createCheckout function currently\nreturns a URL string. Change it to use redirect() from\nnext/navigation to perform a server-side redirect to the\nStripe checkout URL. The function signature should become\nasync with no return value. Only modify this file.\"\n# Agent response: changes exactly what you specified",
+      type: 'compare',
+      title: 'Correction vague vs correction ciblee',
+      body: 'La precision de votre correction determine si l\'agent corrige le probleme ou en cree de nouveaux.',
+      question: 'Quel prompt de correction produira le meilleur resultat ?',
+      correctSide: 'right',
+      left: {
+        label: 'Vague (cause cascade)',
+        content: '"Le flux de checkout est faux. Corrige."\n\nReponse de l\'agent :\n- Reecrit 5 fichiers\n- Change des choses qui etaient correctes\n- Introduit une nouvelle divergence\n- Casse des chemins d\'import fonctionnels\n- Vous avez maintenant PLUS a corriger',
+        language: 'text',
+      },
+      right: {
+        label: 'Ciblee (correction chirurgicale)',
+        content: '"Dans src/lib/checkout.ts, la fonction\ncreateCheckout retourne actuellement une URL.\nChange-la pour utiliser redirect() de\nnext/navigation pour une redirection cote\nserveur. Ne modifier que ce fichier."\n\nReponse de l\'agent :\n- Change exactement un fichier\n- Preserve tout le reste\n- Un diff propre a reviser',
+        language: 'text',
+      },
+      explanation: 'Les corrections ciblees nomment : (1) le fichier specifique, (2) la fonction specifique, (3) ce qu\'elle fait actuellement de faux, (4) ce qu\'elle devrait faire a la place, et (5) la contrainte de perimetre ("ne modifier que ce fichier"). Ca empeche l\'agent de propager des changements inutiles.',
     },
     {
-      type: 'info',
-      title: 'La contrainte « ne modifier que »',
-      body: "Quand vous donnez des corrections, ajoutez « Ne modifier que [fichiers spécifiques] » ou « Ne pas changer [fichiers spécifiques] ». Sans cette contrainte, l'agent pourrait propager les changements dans tout le codebase — mettant à jour les imports, refactorant les appelants, changeant les tests — créant une cascade de modifications que vous n'avez pas révisées. Réduisez le périmètre de vos corrections autant que possible.",
+      type: 'multiple-choice',
+      question: 'Pourquoi devez-vous ajouter "Ne modifier que ce fichier" aux prompts de correction ?',
+      options: [
+        'Ca fait travailler l\'agent plus vite',
+        'Sans contrainte de perimetre, l\'agent peut propager des changements dans tout le codebase — mettant a jour les imports, refactorant les appelants, changeant les tests — creant des modifications en cascade non revisees',
+        'L\'agent refusera de travailler sans permissions de fichiers explicites',
+        'C\'est requis par l\'API Claude Code',
+      ],
+      correctIndex: 1,
+      explanation: 'Sans la contrainte "ne modifier que", l\'agent peut propager les changements dans tout le codebase — mettant a jour les imports, refactorant les appelants, changeant les tests. Ca cree une cascade de modifications que vous n\'avez pas revisees, introduisant potentiellement une nouvelle divergence. Reduisez toujours le perimetre des corrections autant que possible.',
     },
     {
       type: 'code-diff',
@@ -108,14 +166,28 @@ const content: LessonContent = {
 
     // === WHEN TO RESTART ===
     {
-      type: 'info',
-      title: 'Quand les corrections ne suffisent pas',
-      body: "Parfois la divergence est architecturale. L'agent a choisi une approche fondamentalement différente — mauvais modèle de données, mauvaise stratégie de rendu, mauvais pattern de gestion d'état. Corriger un fichier créerait des incohérences avec tout le reste qu'il a construit. Essayer de patcher une erreur architecturale fichier par fichier prend plus de temps que de repartir à neuf. Le signal : si corriger la divergence nécessite de changer plus de 3-4 fichiers, c'est probablement moins cher de recommencer.",
+      type: 'multiple-choice',
+      question: 'L\'agent a utilise le mauvais pattern de gestion d\'etat et ca touche 6 fichiers. Quelle est la recuperation la plus efficace ?',
+      options: [
+        'Donner des corrections ciblees a chacun des 6 fichiers un par un',
+        'Dire a l\'agent de refactorer les 6 fichiers d\'un coup',
+        'Sauver le travail sur une branche, identifier pourquoi la spec etait ambigue, l\'ameliorer, et commencer une session fraiche',
+        'Accepter le mauvais pattern et contourner',
+      ],
+      correctIndex: 2,
+      explanation: 'Si corriger la divergence necessite de changer plus de 3-4 fichiers, recommencer est moins cher. Le protocole de redemarrage : (1) sauver le travail sur une branche, (2) identifier pourquoi l\'agent a diverge (ambiguite de la spec ?), (3) reecrire la spec pour eliminer l\'ambiguite, (4) repartir a neuf. L\'erreur devient de la documentation montrant ou votre spec n\'etait pas claire.',
     },
     {
-      type: 'info',
-      title: 'Le protocole de redémarrage',
-      body: "Redémarrer ne signifie pas tout perdre. D'abord : git stash ou branchez le travail actuel (vous pourriez vouloir le référencer). Deuxièmement : identifiez pourquoi l'agent a divergé — la spec était-elle ambiguë ? Manquait-il une contrainte critique ? Troisièmement : réécrivez la spec pour éliminer l'ambiguïté. Quatrièmement : commencez une nouvelle session avec la spec améliorée. L'erreur devient de la documentation — elle montre où votre spec n'était pas claire.",
+      type: 'multiple-choice',
+      question: 'Apres avoir sauve le travail divergent sur une branche, que devez-vous faire AVANT de commencer une session fraiche ?',
+      options: [
+        'Supprimer la branche pour eviter la confusion',
+        'Copier-coller les bonnes parties dans la nouvelle session',
+        'Identifier pourquoi l\'agent a diverge et reecrire la spec pour eliminer l\'ambiguite qui l\'a cause',
+        'Demander a un autre modele IA de reviser le code divergent',
+      ],
+      correctIndex: 2,
+      explanation: 'L\'etape cle entre sauver et redemarrer est ameliorer votre spec. La divergence vous dit exactement ce qui etait ambigu. Ajoutez des contraintes explicites qui empechent la meme mauvaise interpretation. L\'erreur devient de la documentation — elle montre ou votre spec n\'etait pas claire.',
     },
     {
       type: 'terminal',
@@ -124,12 +196,18 @@ const content: LessonContent = {
       hint: 'Créez une branche, stagez tous les fichiers, et commitez l\'état actuel',
     },
     {
-      type: 'code-demo',
-      title: 'Améliorer la spec après une divergence',
-      body: 'La divergence vous dit ce qui était ambigu. Ajoutez des contraintes explicites qui empêchent la même mauvaise interprétation.',
+      type: 'code-fill',
+      instruction: 'Completez cette spec revisee qui empeche la meme divergence de se reproduire :',
       language: 'markdown',
       filename: 'specs/checkout-v2.md',
-      code: "# Checkout Flow — Revised Spec\n\n## What went wrong last time\nAgent built client-side navigation to Stripe. I need server-side redirect.\n\n## Constraints (ADDED after first attempt)\n- Server-side redirect via next/navigation redirect() — NOT client navigation\n- No checkout URLs returned to the client — redirect happens in server action\n- Success page must work WITHOUT JavaScript (SSR only)\n\n## Architecture Decision: Server Actions\nThe checkout flow uses Next.js Server Actions exclusively.\nNo API routes, no client-side fetch calls for the payment flow.\nThe user clicks a button → server action runs → server redirects to Stripe.\n\n## What I want to KEEP from the first attempt\n- The Stripe SDK setup in src/lib/stripe.ts (correct)\n- The product schema in src/db/schema.ts (correct)\n- The webhook handler structure (correct)",
+      template: '# Flux Checkout — Spec Revisee\n\n## Ce qui a mal tourne la derniere fois\nL\'agent a construit une {{wrong_approach}} vers Stripe. J\'ai besoin d\'une redirection cote serveur.\n\n## Contraintes (AJOUTEES apres la premiere tentative)\n- Redirection cote serveur via next/navigation {{redirect_fn}}() — PAS de navigation client\n- Aucune URL de checkout retournee au client — la redirection se fait dans une {{action_type}}\n- La page de succes doit fonctionner SANS {{no_js}} (SSR seulement)\n\n## Ce que je veux GARDER de la premiere tentative\n- La config Stripe SDK dans src/lib/stripe.ts (correcte)\n- Le schema produit dans src/db/schema.ts (correct)',
+      blanks: [
+        { id: 'wrong_approach', answer: 'navigation cote client', alternatives: ['client-side navigation', 'navigation client', 'navigation côté client'], placeholder: 'qu\'est-ce qui a mal tourne ?', hint: 'L\'agent a navigue cote client au lieu du serveur' },
+        { id: 'redirect_fn', answer: 'redirect', alternatives: ['Redirect'], placeholder: 'quelle fonction ?', hint: 'La fonction Next.js pour les redirections cote serveur' },
+        { id: 'action_type', answer: 'server action', alternatives: ['Server Action', 'server actions', 'Server Actions'], placeholder: 'ou se fait la redirection ?', hint: 'Le pattern Next.js pour les mutations cote serveur' },
+        { id: 'no_js', answer: 'JavaScript', alternatives: ['javascript', 'JS', 'js'], placeholder: 'sans quoi ?', hint: 'SSR signifie que la page fonctionne meme si ceci est desactive' },
+      ],
+      explanation: 'La spec revisee documente ce qui a mal tourne, ajoute des contraintes explicites qui empechent la recurrence, et liste ce qu\'il faut garder de la premiere tentative. Ca transforme chaque divergence en une meilleure spec pour la prochaine session.',
     },
     {
       type: 'multiple-choice',
@@ -151,9 +229,16 @@ const content: LessonContent = {
 
     // === RECOVERY WORKFLOW ===
     {
-      type: 'info',
-      title: 'Le flux de récupération complet',
-      body: "Détecter -> Évaluer -> Décider -> Agir. Détecter : remarquer que le résultat ne correspond pas à l'intention. Évaluer : combien de critères sont ratés ? Est-ce en surface (renommer, restructurer) ou architectural (mauvaise approche) ? Décider : si surface, correction ciblée. Si architectural, redémarrer. Agir : exécuter la correction ou le redémarrage. Puis vérifier que la correction n'a pas introduit de nouvelle divergence. Ce flux devrait prendre des minutes, pas des heures. La vitesse vient de la précision à l'étape d'évaluation.",
+      type: 'multiple-choice',
+      question: 'Qu\'est-ce qui determine si la recuperation prend des minutes ou des heures ?',
+      options: [
+        'La taille du codebase',
+        'A quelle vitesse vous pouvez taper les prompts de correction',
+        'La precision a l\'etape d\'evaluation — identifier correctement si la divergence est de surface ou architecturale',
+        'Si vous utilisez git ou non',
+      ],
+      correctIndex: 2,
+      explanation: 'Le flux complet est : Detecter, Evaluer, Decider, Agir. La vitesse vient de la precision a l\'etape d\'Evaluation. Identifier correctement la divergence de surface vs architecturale signifie que vous choisissez la bonne action de recuperation (correction ciblee vs redemarrage) du premier coup. Mal evaluer la portee gaspille du temps sur des corrections qui cascadent en plus de problemes.',
     },
     {
       type: 'terminal',
@@ -162,12 +247,18 @@ const content: LessonContent = {
       hint: 'git diff --stat montre un résumé de tous les fichiers modifiés et le nombre de lignes',
     },
     {
-      type: 'code-demo',
-      title: 'Template de prompt de récupération',
-      body: 'Quand vous redirigez en cours de session, structurez votre correction comme : ce qui ne va pas, où ça ne va pas, quoi faire à la place.',
+      type: 'code-fill',
+      instruction: 'Completez ce template de prompt de recuperation avec les bonnes sections :',
       language: 'text',
       filename: 'recovery-template.txt',
-      code: "I need to correct the implementation in [specific area].\n\n## What is wrong\n[Describe the divergence from spec precisely]\n\n## Where it is wrong\n[List specific files and functions]\n\n## What to do instead\n[Describe the correct approach]\n\n## Do not change\n[List files/areas that are correct and should stay untouched]\n\n## After the fix, verify\n[How to confirm the correction worked]",
+      template: "Je dois corriger l'implementation dans [zone specifique].\n\n## Ce qui est {{section_1}}\n[Decrire la divergence de la spec precisement]\n\n## Ou c'est faux\n[Lister les {{location_type}} et fonctions specifiques]\n\n## Quoi faire {{section_3}}\n[Decrire l'approche correcte]\n\n## Ne pas {{constraint}}\n[Lister les fichiers/zones correctes qui ne doivent pas etre touches]",
+      blanks: [
+        { id: 'section_1', answer: 'faux', alternatives: ['Faux', 'incorrect', 'wrong'], placeholder: 'quelle section ?', hint: 'Decrire le probleme' },
+        { id: 'location_type', answer: 'fichiers', alternatives: ['Fichiers', 'files', 'chemins de fichiers'], placeholder: 'lister quoi ?', hint: 'Les emplacements exacts dans le codebase' },
+        { id: 'section_3', answer: 'a la place', alternatives: ['A la place', 'instead', 'differemment'], placeholder: 'quelle section ?', hint: 'L\'approche alternative' },
+        { id: 'constraint', answer: 'changer', alternatives: ['Changer', 'modifier', 'toucher'], placeholder: 'contrainte ?', hint: 'Proteger le code fonctionnel des modifications inutiles' },
+      ],
+      explanation: 'Un prompt de recuperation a 4 parties : ce qui est faux (divergence precise), ou (fichiers specifiques), quoi faire a la place (approche correcte), et quoi NE PAS changer (contrainte de perimetre). Cette structure donne a l\'agent un maximum de clarte avec un minimum de risque de cascade.',
     },
     {
       type: 'order',
@@ -210,9 +301,16 @@ const content: LessonContent = {
 
     // === PREVENTION ===
     {
-      type: 'info',
-      title: 'Réduire la divergence dans les futures sessions',
-      body: "Chaque divergence vous apprend quelque chose sur votre spec. Tenez un journal mental (ou écrit) : « L'agent a utilisé REST au lieu de GraphQL » signifie que votre spec devait mentionner le style d'API explicitement. « L'agent a utilisé le stockage côté client » signifie que votre spec avait besoin d'une contrainte de persistance de données. Avec le temps, vous construisez une bibliothèque de contraintes que vous incluez toujours. Les meilleures specs viennent de gens qui ont récupéré de divergences de nombreuses fois.",
+      type: 'multiple-choice',
+      question: 'L\'agent utilise toujours REST quand vous voulez GraphQL a travers differents projets. Quelle est la solution a long terme ?',
+      options: [
+        'Passer a un modele IA different qui utilise GraphQL par defaut',
+        'Toujours corriger l\'agent apres qu\'il construit des endpoints REST',
+        'Construire une bibliotheque de contraintes de spec que vous incluez toujours — "Style API : GraphQL avec un seul endpoint /graphql" devient un defaut dans vos specs',
+        'Abandonner GraphQL et accepter REST',
+      ],
+      correctIndex: 2,
+      explanation: 'Chaque divergence vous apprend quelque chose sur votre spec. "L\'agent a utilise REST" signifie que votre spec doit mentionner le style d\'API explicitement. Avec le temps, vous construisez une bibliotheque personnelle de contraintes que vous incluez toujours. Les meilleures specs viennent de gens qui ont recupere de divergences de nombreuses fois et codifie les lecons.',
     },
     {
       type: 'checklist',

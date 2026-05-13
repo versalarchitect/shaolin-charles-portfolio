@@ -17,9 +17,9 @@ const content: LessonContent = {
 
     // === DIAGRAM 1: Context Architecture ===
     {
-      type: 'diagram',
+      type: 'interactive-diagram',
       title: 'Layered Context Architecture',
-      body: "Context isn't one flat document — it's layered. Global context (CLAUDE.md) applies to all agents. Module specs apply to one agent. Interface contracts define boundaries between agents. Each agent reads the global layer + its own module spec + the contracts it depends on. No more, no less.",
+      body: "Context isn't one flat document — it's layered. Click through to see how each layer feeds into agent-specific specs.",
       diagram: {
         direction: 'TB',
         nodes: [
@@ -41,6 +41,23 @@ const content: LessonContent = {
           { from: 'contracts', to: 'spec-pay' },
         ],
       },
+      stages: [
+        {
+          highlightNodes: ['global'],
+          highlightEdges: [],
+          explanation: 'CLAUDE.md is the global layer. It contains universal rules every agent must follow: coding style, naming conventions, error handling patterns. Think of it as the engineering handbook.',
+        },
+        {
+          highlightNodes: ['global', 'contracts'],
+          highlightEdges: [],
+          explanation: 'Interface contracts define the exact data shapes flowing between modules. They are written by the orchestrator and are read-only for all agents. This prevents cross-agent mismatches.',
+        },
+        {
+          highlightNodes: ['global', 'contracts', 'spec-auth', 'spec-api', 'spec-ui', 'spec-pay'],
+          highlightEdges: [{ from: 'global', to: 'spec-auth' }, { from: 'global', to: 'spec-api' }, { from: 'global', to: 'spec-ui' }, { from: 'global', to: 'spec-pay' }, { from: 'contracts', to: 'spec-auth' }, { from: 'contracts', to: 'spec-api' }, { from: 'contracts', to: 'spec-ui' }, { from: 'contracts', to: 'spec-pay' }],
+          explanation: 'Each agent reads the global layer + contracts + its own module spec. The payments agent never reads the auth spec. No more, no less. This focused context reduces token waste and confusion.',
+        },
+      ],
     },
     {
       type: 'checkpoint',
@@ -70,17 +87,23 @@ const content: LessonContent = {
 
     // === WHAT GOES WHERE ===
     {
-      type: 'info',
-      title: 'What goes in CLAUDE.md (global context)',
-      body: "CLAUDE.md is for decisions that EVERY agent must respect regardless of what they're building. Coding style, naming conventions, directory structure, testing patterns, error handling philosophy, and forbidden patterns. Think of it as the engineering team's handbook — universal rules that create consistency across all agent output.",
+      type: 'multiple-choice',
+      question: 'What type of content belongs in CLAUDE.md (the global context layer)?',
+      options: [
+        'Feature-specific business logic and endpoint definitions',
+        'Universal rules: coding style, naming conventions, error handling, forbidden patterns',
+        'Interface contracts and data shapes between modules',
+        'Per-agent task assignments and file ownership boundaries',
+      ],
+      correctIndex: 1,
+      explanation: "CLAUDE.md is for decisions that EVERY agent must respect regardless of what they're building. Coding style, naming conventions, directory structure, testing patterns, error handling philosophy, and forbidden patterns. Think of it as the engineering team's handbook — universal rules that create consistency across all agent output.",
     },
     {
-      type: 'code-demo',
-      title: 'CLAUDE.md: global conventions for multi-agent work',
-      body: "This is what every agent in the fleet reads. Notice it's about HOW to write code, not WHAT to build. It ensures that regardless of which agent writes which feature, the output looks like one person wrote it.",
+      type: 'code-fill',
+      instruction: 'Complete this CLAUDE.md for a multi-agent project. Fill in the conventions that ensure consistency across all agents.',
       language: 'markdown',
       filename: 'CLAUDE.md',
-      code: `# Project: Team Dashboard
+      template: `# Project: Team Dashboard
 
 ## Architecture
 - Framework: Next.js 14 (App Router)
@@ -89,15 +112,15 @@ const content: LessonContent = {
 - State: React Query for server state, Zustand for client state
 
 ## Conventions
-- File naming: kebab-case for files, PascalCase for components
+- File naming: {{file_naming}}
 - Exports: Named exports only (no default exports except pages)
-- Error handling: All async functions return Result<T, Error> pattern
+- Error handling: All async functions return {{error_pattern}} pattern
 - Testing: Colocated tests (component.test.tsx next to component.tsx)
 
 ## Patterns (ALL agents must follow)
 - API responses: { data: T | null, error: string | null }
 - Components: Loading skeleton → Error state → Empty state → Data state
-- Database: Always use transactions for multi-table writes
+- Database: {{db_write_rule}}
 - Validation: Zod schemas for all input boundaries
 
 ## Forbidden
@@ -106,6 +129,12 @@ const content: LessonContent = {
 - No console.log in committed code
 - No hardcoded URLs or secrets
 - No modifying files outside your assigned directory`,
+      blanks: [
+        { id: 'file_naming', answer: 'kebab-case for files, PascalCase for components', alternatives: ['kebab-case for files, PascalCase for components', 'kebab-case files, PascalCase components'], placeholder: 'naming convention for files and components', hint: 'Two conventions: one for file names (dashes), one for component names (capitalized)' },
+        { id: 'error_pattern', answer: 'Result<T, Error>', alternatives: ['Result<T, Error>', 'Result<T,Error>', 'Result type'], placeholder: 'return type for async functions', hint: 'A type that wraps either a success value T or an Error' },
+        { id: 'db_write_rule', answer: 'Always use transactions for multi-table writes', alternatives: ['Always use transactions for multi-table writes', 'Use transactions for multi-table writes', 'transactions for multi-table writes'], placeholder: 'rule for database writes across tables', hint: 'What ensures atomicity when writing to multiple tables at once?' },
+      ],
+      explanation: "This is what every agent in the fleet reads. Notice it's about HOW to write code, not WHAT to build. It ensures that regardless of which agent writes which feature, the output looks like one person wrote it.",
     },
     {
       type: 'multiple-choice',
@@ -122,17 +151,23 @@ const content: LessonContent = {
 
     // === INTERFACE CONTRACTS ===
     {
-      type: 'info',
-      title: 'Interface contracts: typed boundaries between agents',
-      body: "Interface contracts are the most critical piece of multi-agent context. They define the exact shape of data flowing between modules built by different agents. Without them, Agent A builds a user object with `{ name: string }` and Agent B expects `{ firstName: string, lastName: string }` — and you discover the mismatch at integration time.",
+      type: 'multiple-choice',
+      question: 'What happens when agents build against different assumptions about data shapes (no shared contracts)?',
+      options: [
+        'Agents automatically negotiate a shared schema at runtime',
+        'Type mismatches surface at integration time — Agent A sends { name } but Agent B expects { firstName, lastName }',
+        'The orchestrator catches mismatches during monitoring',
+        'TypeScript prevents all cross-agent type mismatches automatically',
+      ],
+      correctIndex: 1,
+      explanation: "Interface contracts are the most critical piece of multi-agent context. They define the exact shape of data flowing between modules built by different agents. Without them, Agent A builds a user object with `{ name: string }` and Agent B expects `{ firstName: string, lastName: string }` — and you discover the mismatch at integration time.",
     },
     {
-      type: 'code-demo',
-      title: 'Interface contract file',
-      body: "This file is written by YOU (the orchestrator) before any agent starts. Every agent imports from it. NO AGENT may modify it. It defines every boundary between modules — the API response shapes, the component props, the function signatures that cross module boundaries.",
+      type: 'code-fill',
+      instruction: 'Complete this interface contract file. Fill in the critical type definitions that prevent cross-agent mismatches.',
       language: 'typescript',
       filename: 'src/contracts/index.ts',
-      code: `/**
+      template: `/**
  * INTERFACE CONTRACTS
  * Written by orchestrator. Read-only for all agents.
  * Defines every cross-module boundary.
@@ -143,7 +178,7 @@ export interface AuthUser {
   id: string
   email: string
   name: string
-  role: 'admin' | 'member' | 'viewer'
+  role: {{auth_role_type}}
   avatarUrl: string | null
 }
 
@@ -156,7 +191,7 @@ export interface AuthSession {
 // === API → UI ===
 export interface ApiResponse<T> {
   data: T | null
-  error: { code: string; message: string } | null
+  error: {{error_shape}} | null
   meta?: { page: number; total: number }
 }
 
@@ -164,29 +199,15 @@ export interface ApiResponse<T> {
 export interface DashboardStats {
   totalProjects: number
   activeMembers: number
-  velocityTrend: number[]  // last 7 days
+  velocityTrend: {{velocity_type}}
   completionRate: number   // 0-1
-}
-
-// === Activity Feed (API produces, UI consumes) ===
-export interface ActivityItem {
-  id: string
-  userId: string
-  action: 'created' | 'updated' | 'completed' | 'commented'
-  target: string
-  timestamp: string  // ISO 8601
-}
-
-// === Team Member (API produces, UI consumes) ===
-export interface TeamMember {
-  id: string
-  name: string
-  email: string
-  role: AuthUser['role']
-  avatarUrl: string | null
-  contributionCount: number
-  lastActiveAt: string  // ISO 8601
 }`,
+      blanks: [
+        { id: 'auth_role_type', answer: "'admin' | 'member' | 'viewer'", alternatives: ["'admin' | 'member' | 'viewer'", '"admin" | "member" | "viewer"'], placeholder: 'union type for user roles', hint: 'A string literal union with three role levels' },
+        { id: 'error_shape', answer: '{ code: string; message: string }', alternatives: ['{ code: string; message: string }', '{code: string; message: string}'], placeholder: 'error object shape', hint: 'An object with a code and a human-readable message, both strings' },
+        { id: 'velocity_type', answer: 'number[]', alternatives: ['number[]', 'Array<number>'], placeholder: 'type for velocity trend data', hint: 'An array of numbers representing the last 7 days of velocity' },
+      ],
+      explanation: "This file is written by YOU (the orchestrator) before any agent starts. Every agent imports from it. NO AGENT may modify it. It defines every boundary between modules — the API response shapes, the component props, the function signatures that cross module boundaries.",
     },
     {
       type: 'code-input',
@@ -231,17 +252,23 @@ export interface TeamMember {
 
     // === PER-MODULE SPECS ===
     {
-      type: 'info',
-      title: 'Per-module specs: what only one agent needs to know',
-      body: "Each agent gets a spec document that's specific to its task. This includes: the exact files to create, the business logic details, edge cases, and how to import from the contracts file. The spec should be self-contained — an agent reading CLAUDE.md + contracts + its spec should have everything needed to complete the task without asking questions.",
+      type: 'multiple-choice',
+      question: 'What should a per-module spec contain so that an agent can complete its task without asking questions?',
+      options: [
+        'Just the files to create — the agent can figure out the logic from CLAUDE.md',
+        'The exact files to create, business logic details, edge cases, and how to import from contracts',
+        'A copy of the full CLAUDE.md plus the contracts file',
+        'Only the interface contracts relevant to this module',
+      ],
+      correctIndex: 1,
+      explanation: "Each agent gets a spec document that's specific to its task. This includes: the exact files to create, the business logic details, edge cases, and how to import from the contracts file. The spec should be self-contained — an agent reading CLAUDE.md + contracts + its spec should have everything needed to complete the task without asking questions.",
     },
     {
-      type: 'code-demo',
-      title: 'Per-module spec example: API agent',
-      body: "Notice how this spec references the contracts for return types but adds API-specific details: endpoints, query parameters, pagination logic. The auth agent doesn't need to know about pagination. The UI agent doesn't need to know about database queries. Separation of concerns.",
+      type: 'code-fill',
+      instruction: 'Complete this per-module spec for the API agent. Fill in the return types, auth rules, and database patterns.',
       language: 'markdown',
       filename: 'specs/api-agent.md',
-      code: `# API Agent Spec
+      template: `# API Agent Spec
 
 ## Scope
 Build REST API endpoints in \`src/api/\`
@@ -249,7 +276,7 @@ Build REST API endpoints in \`src/api/\`
 ## Endpoints
 
 ### GET /api/dashboard/stats
-- Returns: \`ApiResponse<DashboardStats>\` (from contracts)
+- Returns: {{stats_return_type}} (from contracts)
 - Auth: Required (validate session token)
 - Cache: 60 seconds (stale-while-revalidate)
 
@@ -261,12 +288,12 @@ Build REST API endpoints in \`src/api/\`
 
 ### GET /api/team/members
 - Returns: \`ApiResponse<TeamMember[]>\`
-- Auth: Required, admin or member role
+- Auth: Required, {{members_auth_rule}}
 - Include: contributionCount (computed from last 30 days)
 
 ## Database Access
 - Use Prisma client from \`src/lib/db.ts\`
-- All queries filtered by teamId from session
+- All queries filtered by {{query_filter}} from session
 - Use \`select\` to only fetch needed fields (not select *)
 
 ## Error Handling
@@ -274,18 +301,31 @@ Build REST API endpoints in \`src/api/\`
 - 403 for insufficient role
 - 404 for resource not found
 - 500 with generic message (log full error server-side)`,
+      blanks: [
+        { id: 'stats_return_type', answer: 'ApiResponse<DashboardStats>', alternatives: ['ApiResponse<DashboardStats>', '`ApiResponse<DashboardStats>`'], placeholder: 'typed return for stats endpoint', hint: 'Use the generic ApiResponse wrapper with the DashboardStats contract type' },
+        { id: 'members_auth_rule', answer: 'admin or member role', alternatives: ['admin or member role', 'admin or member', 'role: admin | member'], placeholder: 'which roles can access?', hint: 'Viewers should not be able to list team members — only two roles can' },
+        { id: 'query_filter', answer: 'teamId', alternatives: ['teamId', 'team ID', 'teamId from session'], placeholder: 'what scopes all queries?', hint: 'Every database query must be scoped to the current user\'s team' },
+      ],
+      explanation: "Notice how this spec references the contracts for return types but adds API-specific details: endpoints, query parameters, pagination logic. The auth agent doesn't need to know about pagination. The UI agent doesn't need to know about database queries. Separation of concerns.",
     },
 
     // === KEEPING CONTEXT IN SYNC ===
     {
-      type: 'info',
-      title: 'The drift problem: context goes stale during parallel work',
-      body: "Here's the tricky part. Agent 1 builds the auth module and adds a new field to the user session (e.g., `teamId`). Meanwhile, Agent 3 is building UI components against the original contracts that don't include `teamId`. By the time you merge, the UI agent's code is built against stale context. How do you prevent this?",
+      type: 'multiple-choice',
+      question: 'Agent 1 adds a `teamId` field to the user session while Agent 3 builds UI against the original contracts. What is this called?',
+      options: [
+        'A merge conflict — Git will catch and flag it automatically',
+        'Context drift — the UI agent is building against stale assumptions',
+        'A type error — TypeScript will prevent compilation',
+        'Normal parallel development — no intervention needed',
+      ],
+      correctIndex: 1,
+      explanation: "This is context drift: Agent 1 builds the auth module and adds a new field to the user session, but Agent 3 is building UI components against the original contracts that don't include `teamId`. By the time you merge, the UI agent's code is built against stale context. Git won't catch semantic drift — only structural conflicts.",
     },
     {
-      type: 'diagram',
+      type: 'interactive-diagram',
       title: 'Context Drift Prevention',
-      body: "The solution: contracts are frozen at fleet launch. If you need to change a contract mid-flight, you pause affected agents, update the contract, and re-brief them. The orchestrator is the only entity that modifies shared context.",
+      body: 'Click through to see the freeze-pause-update-resume protocol for handling mid-flight contract changes.',
       diagram: {
         direction: 'LR',
         nodes: [
@@ -305,6 +345,23 @@ Build REST API endpoints in \`src/api/\`
           { from: 'need', to: 'launch', label: 'no', dashed: true },
         ],
       },
+      stages: [
+        {
+          highlightNodes: ['freeze'],
+          highlightEdges: [],
+          explanation: 'Before launching any agent, contracts are frozen. Every agent starts with the same shared truth. This is the critical first step.',
+        },
+        {
+          highlightNodes: ['launch'],
+          highlightEdges: [{ from: 'freeze', to: 'launch' }],
+          explanation: 'The fleet launches. All 4 agents build simultaneously against the frozen contracts. No agent modifies shared context.',
+        },
+        {
+          highlightNodes: ['need', 'pause', 'update', 'resume'],
+          highlightEdges: [{ from: 'need', to: 'pause' }, { from: 'pause', to: 'update' }, { from: 'update', to: 'resume' }],
+          explanation: 'Mid-flight change needed? Pause affected agents, update the contract (orchestrator only), re-brief paused agents with the change, then resume. Never let agents discover changes on their own.',
+        },
+      ],
     },
     {
       type: 'multiple-choice',
@@ -326,24 +383,30 @@ Build REST API endpoints in \`src/api/\`
 
     // === AVOIDING DUPLICATION ===
     {
-      type: 'info',
-      title: 'Preventing duplicate code across agents',
-      body: "Without clear boundaries, agents independently create their own utility functions, validation helpers, and type guards. You end up with `src/auth/utils.ts`, `src/api/helpers.ts`, and `src/payments/utils.ts` all containing slightly different implementations of the same logic. The fix: define shared utilities upfront and tell agents where to find them.",
+      type: 'multiple-choice',
+      question: 'Three agents each create their own `formatDate()` function in their module. What caused this duplication?',
+      options: [
+        'The agents are not smart enough to reuse code',
+        'No shared utility library was defined upfront, and agents were not told where to find common helpers',
+        'The agents deliberately chose different date formatting strategies',
+        'TypeScript does not support shared modules across worktrees',
+      ],
+      correctIndex: 1,
+      explanation: "Without clear boundaries, agents independently create their own utility functions, validation helpers, and type guards. You end up with `src/auth/utils.ts`, `src/api/helpers.ts`, and `src/payments/utils.ts` all containing slightly different implementations of the same logic. The fix: define shared utilities upfront and tell agents where to find them.",
     },
     {
-      type: 'code-demo',
-      title: 'Shared utilities strategy',
-      body: "Create a shared lib directory with common utilities before agents start. Reference it in every spec. Agents IMPORT from it but never MODIFY it. If an agent needs a utility that doesn't exist, they add it to their own module — you can extract it to shared later.",
+      type: 'code-fill',
+      instruction: 'Complete this shared utilities barrel file. Fill in the imports that prevent agents from duplicating common logic.',
       language: 'typescript',
       filename: 'src/lib/index.ts',
-      code: `/**
+      template: `/**
  * SHARED UTILITIES
  * Pre-built by orchestrator. Agents import, never modify.
  * If you need something not here, build it in your own module.
  */
 
 // Validation helpers
-export { z } from 'zod'
+export { z } from '{{validation_lib}}'
 export { validateEmail, validatePassword } from './validation'
 
 // API helpers
@@ -351,31 +414,42 @@ export { createApiResponse, createErrorResponse } from './api-helpers'
 export type { ApiResponse } from '@/contracts'
 
 // Date formatting (prevents 5 agents each writing their own)
-export { formatRelativeTime, formatISO, parseISO } from './dates'
+export { {{date_exports}} } from './dates'
 
 // Error handling
 export { AppError, isAppError, handleError } from './errors'
 
 // Auth helpers
-export { getSession, requireAuth, requireRole } from './auth'`,
+export { getSession, requireAuth, {{role_helper}} } from './auth'`,
+      blanks: [
+        { id: 'validation_lib', answer: 'zod', alternatives: ['zod', 'Zod'], placeholder: 'validation library', hint: 'The TypeScript-first schema validation library mentioned in CLAUDE.md' },
+        { id: 'date_exports', answer: 'formatRelativeTime, formatISO, parseISO', alternatives: ['formatRelativeTime, formatISO, parseISO'], placeholder: 'date utility functions', hint: 'Three functions: one for "2 hours ago" style, one to format ISO, one to parse ISO' },
+        { id: 'role_helper', answer: 'requireRole', alternatives: ['requireRole', 'checkRole'], placeholder: 'role authorization helper', hint: 'A function that checks if the user has a specific role (admin, member, viewer)' },
+      ],
+      explanation: "Create a shared lib directory with common utilities before agents start. Reference it in every spec. Agents IMPORT from it but never MODIFY it. If an agent needs a utility that doesn't exist, they add it to their own module — you can extract it to shared later.",
     },
     {
-      type: 'code-demo',
-      title: 'Spec reference to shared utilities',
-      body: "In every per-module spec, explicitly point agents to the shared lib. This single line prevents the most common duplication pattern: agents writing their own date formatters, validation functions, and API response builders.",
+      type: 'code-fill',
+      instruction: 'Complete this shared code reference section for a per-module spec. Fill in the specific utilities agents must import instead of recreating.',
       language: 'markdown',
       filename: 'specs/ui-agent.md',
-      code: `## Shared Code (DO NOT DUPLICATE)
+      template: `## Shared Code (DO NOT DUPLICATE)
 
 Import these from \`src/lib/\` — do NOT create your own versions:
-- Date formatting: \`formatRelativeTime\` (for "2 hours ago" displays)
+- Date formatting: \`{{date_function}}\` (for "2 hours ago" displays)
 - API responses: \`createApiResponse\` (standardized shape)
 - Validation: \`z\` (Zod) + \`validateEmail\`, \`validatePassword\`
-- Error handling: \`AppError\`, \`handleError\`
+- Error handling: \`{{error_class}}\`, \`handleError\`
 - Auth: \`getSession\`, \`requireAuth\`
 
 If you need a utility that doesn't exist in src/lib/, create it in
-YOUR module (src/ui/utils.ts) and note it for post-merge extraction.`,
+{{fallback_location}} and note it for post-merge extraction.`,
+      blanks: [
+        { id: 'date_function', answer: 'formatRelativeTime', alternatives: ['formatRelativeTime'], placeholder: 'relative time formatter', hint: 'The function that turns timestamps into "2 hours ago" style strings' },
+        { id: 'error_class', answer: 'AppError', alternatives: ['AppError'], placeholder: 'custom error class', hint: 'The project-wide error class defined in the shared lib' },
+        { id: 'fallback_location', answer: 'YOUR module (src/ui/utils.ts)', alternatives: ['YOUR module (src/ui/utils.ts)', 'your own module', 'src/ui/utils.ts'], placeholder: 'where to put new utilities', hint: 'If the shared lib does not have what you need, create it in your own module directory' },
+      ],
+      explanation: "In every per-module spec, explicitly point agents to the shared lib. This single line prevents the most common duplication pattern: agents writing their own date formatters, validation functions, and API response builders.",
     },
     {
       type: 'multiple-choice',
@@ -392,9 +466,16 @@ YOUR module (src/ui/utils.ts) and note it for post-merge extraction.`,
 
     // === ADVANCED: CONTEXT BUDGET ===
     {
-      type: 'info',
-      title: 'Context budget: less is more',
-      body: "A common mistake: dumping the entire CLAUDE.md, all contracts, and a 500-line spec into every agent. Agents perform better with focused context. Each agent should receive: global conventions (short), the contracts it depends on (relevant subset), and its own spec (detailed). If an agent doesn't need to know about payments, don't tell it about payments.",
+      type: 'multiple-choice',
+      question: 'An agent receives the full 500-line CLAUDE.md, all 12 interface contracts, and a 200-line spec. What is wrong with this approach?',
+      options: [
+        'Nothing — more context always means better output',
+        'The agent has too much unfocused context; it should only receive the relevant subset of contracts and a short CLAUDE.md',
+        'The spec should be longer to compensate for the large CLAUDE.md',
+        'Agents cannot process more than 100 lines of context',
+      ],
+      correctIndex: 1,
+      explanation: "Agents perform better with focused context. Each agent should receive: global conventions (short), the contracts it depends on (relevant subset), and its own spec (detailed). If an agent doesn't need to know about payments, don't tell it about payments. Less noise, better output.",
     },
     {
       type: 'checklist',

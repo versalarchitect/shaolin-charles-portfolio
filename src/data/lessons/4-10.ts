@@ -91,24 +91,52 @@ const content: LessonContent = {
 
     // === THE METRICS ===
     {
-      type: 'info',
-      title: 'Factor 1: Coupling score',
-      body: "How many other components depend on this one? A utility function used in 3 places can be rewritten trivially — swap the import, done. An auth module that 47 components import, that middleware references, that 3 services call via HTTP — that is high coupling. High coupling favors refactoring because a rewrite requires updating every touchpoint simultaneously. Even with agents, coordinating 47 file changes across a rewrite is error-prone. The strangler fig pattern (refactor by gradual replacement) handles high coupling far better.",
+      type: 'multiple-choice',
+      question: 'An auth module is imported by 47 components, referenced by middleware, and called by 3 services via HTTP. Does this favor refactoring or rewriting?',
+      options: [
+        'Rewriting — start fresh with a clean implementation',
+        'Refactoring — high coupling means a rewrite requires updating 47 files simultaneously, which is error-prone even with agents. The strangler fig pattern handles this better.',
+        'Neither — leave it alone',
+        'Rewriting with an adapter layer',
+      ],
+      correctIndex: 1,
+      explanation: "Factor 1: Coupling score. High coupling favors refactoring because a rewrite requires updating every touchpoint simultaneously. Even with agents, coordinating 47 file changes across a rewrite is error-prone. The strangler fig pattern (refactor by gradual replacement) handles high coupling far better.",
     },
     {
-      type: 'info',
-      title: 'Factor 2: Test coverage',
-      body: "High test coverage favors refactoring. If the component has 90% coverage, you can refactor aggressively — the tests catch regressions immediately. An agent can make bold changes knowing the test suite will scream if something breaks. Conversely, low test coverage favors rewriting: if you cannot safely modify the code (no tests to validate behavior), it may be better to write the new version with tests from scratch rather than trying to add tests to code you do not fully understand.",
+      type: 'multiple-choice',
+      question: 'A component has 90% test coverage but ugly code (callbacks, inconsistent naming). A different component has 10% coverage but clean architecture. Which favors refactoring vs rewriting?',
+      options: [
+        'Both should be refactored',
+        'The 90% coverage component favors refactoring (tests catch regressions). The 10% coverage component favors rewriting (no safety net for modifications).',
+        'Both should be rewritten',
+        'Coverage does not matter for this decision',
+      ],
+      correctIndex: 1,
+      explanation: "Factor 2: Test coverage. High coverage favors refactoring — the tests catch regressions immediately. An agent can make bold changes knowing tests will catch breaks. Low coverage favors rewriting: if you cannot safely modify the code, write the new version with tests from scratch.",
     },
     {
-      type: 'info',
-      title: 'Factor 3: Debt severity',
-      body: "Is the debt structural or cosmetic? Cosmetic debt — inconsistent naming, callback-style async, missing types — is refactorable. An agent can modernize the code without changing its architecture. Structural debt — circular dependencies, god objects, violation of every SOLID principle, impossibility of testing in isolation — often requires a rewrite because the structure itself is the problem. You cannot refactor a circular dependency into a clean DAG without fundamentally redesigning the module relationships.",
+      type: 'multiple-choice',
+      question: 'A module has circular dependencies and god objects (structural debt). Another has inconsistent naming and callback-style async (cosmetic debt). Which requires a rewrite?',
+      options: [
+        'Both need rewrites',
+        'The structural debt module needs a rewrite (the design itself is the problem). The cosmetic debt module can be refactored incrementally without changing architecture.',
+        'Neither needs a rewrite — both can be refactored',
+        'The cosmetic one is worse because it affects readability',
+      ],
+      correctIndex: 1,
+      explanation: "Factor 3: Debt severity. Cosmetic debt (naming, callbacks, missing types) is refactorable. Structural debt (circular dependencies, god objects, untestable design) often requires a rewrite because the structure itself is the problem. You cannot refactor a circular dependency into a clean DAG without fundamentally redesigning the module relationships.",
     },
     {
-      type: 'info',
-      title: 'Factor 4: Agent buildability',
-      body: "Can an agent rebuild this from a clear spec? Some components are pure business logic with well-defined inputs and outputs — highly agent-buildable. Others encode years of edge-case handling learned through production incidents — documented nowhere except the code itself. If the knowledge is ONLY in the code and cannot be extracted into a spec, rewriting means losing that knowledge. This favors refactoring: keep the knowledge, improve the structure around it.",
+      type: 'multiple-choice',
+      question: 'A component encodes years of edge-case handling learned through production incidents, documented nowhere except the code itself. Should you rewrite it?',
+      options: [
+        'Yes — agents can rebuild anything from a spec',
+        'No — if the knowledge is ONLY in the code and cannot be extracted into a spec, rewriting means losing that knowledge. Refactor instead: keep the knowledge, improve the structure around it.',
+        'Yes, but copy all the comments first',
+        'Yes, if you have high test coverage',
+      ],
+      correctIndex: 1,
+      explanation: "Factor 4: Agent buildability. Some components are pure business logic with well-defined inputs and outputs — highly agent-buildable. Others encode years of edge-case handling documented nowhere except the code. If the knowledge is ONLY in the code, rewriting means losing it. Refactoring keeps the knowledge while improving the structure.",
     },
     {
       type: 'multiple-choice',
@@ -130,17 +158,29 @@ const content: LessonContent = {
 
     // === THE STRANGLER FIG PATTERN ===
     {
-      type: 'info',
-      title: 'The strangler fig with agents',
-      body: "The strangler fig pattern — building the new system around the old one, gradually routing traffic to new components until the old system can be removed — was always the safest migration path. With agents, it is also the fastest. Assign one agent per component replacement. Each agent builds the new version, adds an adapter layer, and the old component shrinks as consumers migrate. Five agents can strangle five components simultaneously. The old system dies gracefully, not violently.",
+      type: 'multiple-choice',
+      question: 'The strangler fig pattern builds the new system around the old one. Why is it especially powerful with agent fleets?',
+      options: [
+        'Agents prefer incremental work',
+        'Assign one agent per component replacement — five agents can strangle five components simultaneously while the old system stays live. The old system dies gracefully, not violently.',
+        'Agents cannot do big rewrites',
+        'The pattern was designed for AI systems',
+      ],
+      correctIndex: 1,
+      explanation: "The strangler fig pattern — building the new system around the old one, gradually routing traffic to new components until the old system can be removed — was always the safest migration path. With agents, it is also the fastest. Assign one agent per component replacement. Each agent builds the new version, adds an adapter layer, and the old component shrinks as consumers migrate.",
     },
     {
-      type: 'code-demo',
-      title: 'Strangler fig adapter pattern',
-      body: 'The adapter lets old consumers keep working while new consumers use the rewritten version directly. Agents can build both paths in parallel.',
+      type: 'code-fill',
+      instruction: 'Complete this strangler fig adapter. Fill in the adapter function that wraps the modern async implementation in the old callback interface.',
       language: 'typescript',
       filename: 'packages/auth/src/adapter.ts',
-      code: "// Old interface (callback-based, used by 12 consumers)\nexport interface LegacyAuth {\n  authenticate(token: string, cb: (err: Error | null, user?: User) => void): void\n  authorize(user: User, permission: string, cb: (err: Error | null, allowed?: boolean) => void): void\n}\n\n// New interface (async, clean)\nexport interface ModernAuth {\n  authenticate(token: string): Promise<User>\n  authorize(user: User, permission: string): Promise<boolean>\n}\n\n// Adapter: wraps new implementation in old interface\n// Consumers migrate at their own pace\nexport function createLegacyAdapter(modern: ModernAuth): LegacyAuth {\n  return {\n    authenticate(token, cb) {\n      modern.authenticate(token)\n        .then(user => cb(null, user))\n        .catch(err => cb(err))\n    },\n    authorize(user, permission, cb) {\n      modern.authorize(user, permission)\n        .then(allowed => cb(null, allowed))\n        .catch(err => cb(err))\n    },\n  }\n}\n\n// Migration tracker: when all consumers use ModernAuth directly,\n// remove the adapter and the old interface\nexport const migrationStatus = {\n  totalConsumers: 12,\n  migratedToModern: 7, // Update as consumers switch\n  remainingLegacy: 5,\n}",
+      template: "// Old interface (callback-based, used by 12 consumers)\nexport interface LegacyAuth {\n  authenticate(token: string, cb: (err: Error | null, user?: User) => void): void\n}\n\n// New interface (async, clean)\nexport interface ModernAuth {\n  authenticate(token: string): Promise<User>\n}\n\n// Adapter: wraps new implementation in old interface\nexport function {{adapter_name}}(modern: ModernAuth): LegacyAuth {\n  return {\n    authenticate(token, cb) {\n      modern.authenticate(token)\n        .then(user => cb({{success_args}}))\n        .catch(err => cb({{error_args}}))\n    },\n  }\n}",
+      blanks: [
+        { id: 'adapter_name', answer: 'createLegacyAdapter', alternatives: ['createAdapter', 'legacyAdapter', 'wrapModern'], placeholder: 'adapter function name?', hint: 'A function that creates a legacy-compatible wrapper' },
+        { id: 'success_args', answer: 'null, user', alternatives: ['null, user', 'null,user'], placeholder: 'success callback args?', hint: 'Node.js callback convention: error first (null on success), then result' },
+        { id: 'error_args', answer: 'err', alternatives: ['err', 'error'], placeholder: 'error callback args?', hint: 'Node.js callback convention: pass the error as first argument' },
+      ],
+      explanation: 'The adapter lets old consumers keep working while new consumers use the rewritten version directly. Consumers migrate at their own pace. When all consumers have switched to ModernAuth, remove the adapter and the old interface.',
     },
     {
       type: 'multiple-choice',
@@ -197,22 +237,43 @@ const content: LessonContent = {
 
     // === WHEN TO ACTUALLY REWRITE ===
     {
-      type: 'info',
-      title: 'When rewriting IS the right call',
-      body: "Rewrite when all of these are true: (1) the component is poorly tested so you cannot safely refactor, (2) the business logic is well-understood and can be specified completely, (3) the coupling is low enough to swap without cascading changes, and (4) the structural debt makes incremental improvement impossible — the whole design is wrong, not just the code style. When these four align, a rewrite is faster, safer, and produces a better outcome than trying to fix what cannot be fixed incrementally.",
+      type: 'multiple-choice',
+      question: 'All four conditions must be true to justify a rewrite: (1) poorly tested, (2) well-understood business logic, (3) low coupling, (4) structural debt. A module has 92% test coverage but ugly callbacks. Should you rewrite?',
+      options: [
+        'Yes — callbacks are outdated',
+        'No — condition 1 fails (well-tested). High coverage means you CAN safely refactor. Only rewrite when you CANNOT refactor.',
+        'Yes, if agents can do it quickly',
+        'It depends on coupling alone',
+      ],
+      correctIndex: 1,
+      explanation: "Rewrite when all conditions are true: poorly tested (cannot safely refactor), well-understood logic (can be specified completely), low coupling (swap without cascading changes), and structural debt (design itself is wrong). When even one condition fails — like having high test coverage — refactoring is the better path.",
     },
     {
-      type: 'info',
-      title: 'The rewrite checklist',
-      body: "Before approving a rewrite: Can you write a complete spec that captures every edge case the old code handles? If not, you will lose behavior. Do you have integration tests that validate external behavior regardless of internal implementation? If not, you cannot verify the rewrite is equivalent. Is the component isolated enough that swapping it does not require changes to more than 3 other files? If not, the coordination cost may exceed the rewrite benefit.",
+      type: 'multiple-choice',
+      question: 'Before approving a rewrite, you must verify: can you write a complete spec capturing every edge case? You find 15 edge cases documented only as code comments, with no external spec. What does this tell you?',
+      options: [
+        'The code is well-documented, proceed with the rewrite',
+        'You will lose behavior — if the knowledge is only in the code, rewriting from a spec will miss those 15 edge cases. Either extract the knowledge first or refactor instead.',
+        'The comments are enough for the spec',
+        'Edge cases do not matter in a rewrite',
+      ],
+      correctIndex: 1,
+      explanation: "Before approving a rewrite: Can you write a complete spec that captures every edge case? If not, you will lose behavior. Do you have integration tests that validate external behavior? If not, you cannot verify equivalence. Is the component isolated enough? If not, coordination cost may exceed the benefit.",
     },
     {
-      type: 'code-demo',
-      title: 'Rewrite feasibility assessment',
-      body: 'Run this assessment before approving any rewrite. If you score below 7, refactor instead.',
+      type: 'code-fill',
+      instruction: 'Complete this rewrite feasibility assessment. Fill in the scoring criteria that determine whether to rewrite or refactor.',
       language: 'markdown',
       filename: 'docs/rewrite-assessment.md',
-      code: "# Rewrite Feasibility: [Component Name]\n\n## Scoring (0-2 per factor, 10 max)\n\n### 1. Specification Completeness (0-2)\nCan all behavior be specified without reading the source?\n- 0: Behavior is only documented in the code itself\n- 1: Partial spec exists, some edge cases undocumented\n- 2: Complete spec with all edge cases captured\nScore: ___\n\n### 2. Test Safety Net (0-2)\nDo integration tests validate external behavior?\n- 0: No tests or only unit tests of internals\n- 1: Some integration tests, incomplete coverage\n- 2: Full integration suite testing all external contracts\nScore: ___\n\n### 3. Coupling Level (0-2)\nHow isolated is this component?\n- 0: >10 direct dependents, deeply integrated\n- 1: 4-10 dependents, moderate integration\n- 2: <4 dependents, clear interface boundary\nScore: ___\n\n### 4. Structural Severity (0-2)\nIs the problem structural or cosmetic?\n- 0: Cosmetic only (naming, style, async patterns)\n- 1: Mixed (some structural issues, some cosmetic)\n- 2: Fundamental (circular deps, god object, untestable)\nScore: ___\n\n### 5. Agent Buildability (0-2)\nCan an agent rebuild this from a spec?\n- 0: Requires tribal knowledge not in any document\n- 1: Mostly specifiable, some implicit knowledge\n- 2: Pure logic, fully specifiable, no hidden context\nScore: ___\n\n## Total: ___ / 10\n- 8-10: Rewrite is clearly justified\n- 5-7: Case-by-case, consider strangler fig\n- 0-4: Refactor instead",
+      template: '# Rewrite Feasibility: [Component Name]\n\n## Scoring (0-2 per factor, 10 max)\n\n### 1. {{factor_1}} (0-2)\nCan all behavior be specified without reading the source?\n\n### 2. {{factor_2}} (0-2)\nDo integration tests validate external behavior?\n\n### 3. {{factor_3}} (0-2)\nHow isolated is this component?\n\n## Total: ___ / 10\n- {{high_score}}: Rewrite is clearly justified\n- 5-7: Case-by-case, consider strangler fig\n- {{low_score}}: Refactor instead',
+      blanks: [
+        { id: 'factor_1', answer: 'Specification Completeness', alternatives: ['Spec completeness', 'specification', 'spec'], placeholder: 'first factor?', hint: 'Can you fully describe what the code does?' },
+        { id: 'factor_2', answer: 'Test Safety Net', alternatives: ['test coverage', 'tests', 'test safety'], placeholder: 'second factor?', hint: 'Do tests validate behavior?' },
+        { id: 'factor_3', answer: 'Coupling Level', alternatives: ['coupling', 'coupling score', 'dependencies'], placeholder: 'third factor?', hint: 'How many other components depend on this?' },
+        { id: 'high_score', answer: '8-10', alternatives: ['8 to 10', '8-10 points'], placeholder: 'high score range?', hint: 'Score range that clearly justifies a rewrite' },
+        { id: 'low_score', answer: '0-4', alternatives: ['0 to 4', '0-4 points'], placeholder: 'low score range?', hint: 'Score range where refactoring is better' },
+      ],
+      explanation: 'Run this assessment before approving any rewrite. If the score is below 7, refactor instead. The assessment forces objective evaluation rather than gut-feel decisions about technical debt.',
     },
     {
       type: 'order',
@@ -256,9 +317,16 @@ const content: LessonContent = {
 
     // === CARRYING DEBT INTENTIONALLY ===
     {
-      type: 'info',
-      title: 'When debt is worth carrying',
-      body: "Not all technical debt needs to be paid. Some debt is cheap to carry: the ugly-but-working auth module costs you nothing in daily development. The code is stable. No one modifies it. Its ugliness is invisible to users. Fixing it would feel good but deliver zero business value. Carrying it intentionally — documenting WHY you are not fixing it — is a legitimate engineering decision. The question is never 'is this code perfect?' It is 'is fixing this code worth more than the next feature I could build instead?'",
+      type: 'multiple-choice',
+      question: 'An ugly-but-working auth module has no bugs, no one modifies it, and users never see its code. Should you fix it?',
+      options: [
+        'Yes — ugly code should always be cleaned up',
+        'No — some debt is cheap to carry. The question is never "is this code perfect?" but "is fixing it worth more than the next feature I could build instead?" Carry the debt intentionally and document WHY.',
+        'Yes, but only during a dedicated tech debt sprint',
+        'Ask the agents to fix it during downtime',
+      ],
+      correctIndex: 1,
+      explanation: "Not all technical debt needs to be paid. Some debt is cheap to carry: the ugly-but-working auth module costs you nothing in daily development. The code is stable, no one modifies it, and its ugliness is invisible to users. Fixing it would feel good but deliver zero business value. Carrying it intentionally — documenting WHY — is a legitimate engineering decision.",
     },
     {
       type: 'multiple-choice',
@@ -275,17 +343,29 @@ const content: LessonContent = {
 
     // === DATA-DRIVEN DECISIONS ===
     {
-      type: 'info',
-      title: 'Metrics that inform the decision',
-      body: "Do not decide on gut feel alone. Measure: Lines of code (is the module disproportionately large for what it does?). Cyclomatic complexity (are there too many branches to reason about?). Coupling (how many other modules import from it?). Change frequency (is it modified often, making debt expensive, or never, making debt free?). Test coverage (can you safely modify it?). These numbers do not make the decision for you — but they ground the conversation in reality rather than feeling.",
+      type: 'multiple-choice',
+      question: 'A module has 0 commits in 6 months and 0 bugs. Another has 45 commits in 6 months and 12 bugs. Which module\'s technical debt is MORE expensive to carry?',
+      options: [
+        'The first — zero activity means it is abandoned and risky',
+        'The second — high change frequency makes debt expensive because every modification risks regressions. The first module\'s debt is free because no one touches it.',
+        'Both are equally expensive',
+        'Neither — debt is always worth fixing',
+      ],
+      correctIndex: 1,
+      explanation: "Do not decide on gut feel alone. Measure change frequency: is it modified often (making debt expensive) or never (making debt free)? Also measure LOC, cyclomatic complexity, coupling, and test coverage. These numbers do not make the decision for you — but they ground the conversation in reality rather than feeling.",
     },
     {
-      type: 'code-demo',
-      title: 'Quick assessment script',
-      body: 'Use agents to gather these metrics before making any refactor-vs-rewrite decision. Data first, then judgment.',
+      type: 'code-fill',
+      instruction: 'Complete this module assessment script. Fill in the commands that gather the metrics you need before deciding whether to refactor or rewrite.',
       language: 'bash',
       filename: 'scripts/assess-module.sh',
-      code: "#!/bin/bash\n# Quick module health assessment\nMODULE=$1\n\necho \"=== Module Assessment: $MODULE ===\"\necho \"\"\n\n# Lines of code\necho \"LOC: $(find $MODULE -name '*.ts' | xargs wc -l | tail -1)\"\n\n# Number of files\necho \"Files: $(find $MODULE -name '*.ts' | wc -l)\"\n\n# Dependents (who imports from this module)\necho \"Dependents: $(grep -r \"from.*$MODULE\" --include='*.ts' -l | wc -l)\"\n\n# Test coverage (if coverage report exists)\nif [ -f coverage/lcov.info ]; then\n  echo \"Coverage: $(grep -A 3 \"$MODULE\" coverage/lcov.info | grep 'LF\\|LH' | head -2)\"\nfi\n\n# Change frequency (commits in last 6 months)\necho \"Commits (6mo): $(git log --since='6 months ago' --oneline -- $MODULE | wc -l)\"\n\n# Complexity (if ts-complexity available)\nif command -v npx &> /dev/null; then\n  echo \"Complexity: run 'npx ts-complexity $MODULE' for details\"\nfi",
+      template: "#!/bin/bash\n# Quick module health assessment\nMODULE=$1\n\necho \"=== Module Assessment: $MODULE ===\"\n\n# Lines of code\necho \"LOC: $(find $MODULE -name '{{file_ext}}' | xargs wc -l | tail -1)\"\n\n# Dependents (who imports from this module)\necho \"Dependents: $(grep -r \"from.*$MODULE\" --include='{{file_ext}}' {{grep_flag}} | wc -l)\"\n\n# Change frequency (commits in last 6 months)\necho \"Commits (6mo): $(git log --since='{{time_period}}' --oneline -- $MODULE | wc -l)\"",
+      blanks: [
+        { id: 'file_ext', answer: '*.ts', alternatives: ['*.ts', '*.tsx', '*.js'], placeholder: 'file extension?', hint: 'The TypeScript file extension to search for' },
+        { id: 'grep_flag', answer: '-l', alternatives: ['-l', '--files-with-matches'], placeholder: 'grep flag?', hint: 'Flag to list only filenames, not matching lines' },
+        { id: 'time_period', answer: '6 months ago', alternatives: ['6 months', '6months ago', '180 days ago'], placeholder: 'time period?', hint: 'How far back to look for change frequency' },
+      ],
+      explanation: 'Use agents to gather these metrics before making any refactor-vs-rewrite decision. Data first, then judgment. LOC shows disproportionate size. Dependents show coupling. Commit frequency shows whether debt is expensive or free to carry.',
     },
     {
       type: 'checkpoint',
@@ -295,9 +375,16 @@ const content: LessonContent = {
 
     // === SYNTHESIS ===
     {
-      type: 'info',
-      title: 'The decision is the value',
-      body: "Agent fleets make both refactoring and rewriting cheaper. That does not make the decision between them any easier — it makes it MORE important. When execution is cheap, the wrong decision costs you integration failures, lost edge cases, and deployment risk — not saved hours. Your judgment about WHICH path to take is more valuable than the ability to execute either path. The execution is commoditized. The decision is not.",
+      type: 'multiple-choice',
+      question: 'Agent fleets make both refactoring and rewriting cheaper. Does this make the decision between them easier or harder?',
+      options: [
+        'Easier — just try both and pick the winner',
+        'Harder — when execution is cheap, the wrong decision costs integration failures, lost edge cases, and deployment risk. Your judgment about WHICH path is more valuable than the ability to execute either.',
+        'Irrelevant — always rewrite when it is cheap',
+        'Easier — agents will tell you which to choose',
+      ],
+      correctIndex: 1,
+      explanation: "Agent fleets make both refactoring and rewriting cheaper. That does not make the decision any easier — it makes it MORE important. When execution is cheap, the wrong decision costs integration failures, lost edge cases, and deployment risk — not saved hours. The execution is commoditized. The decision is not.",
     },
     {
       type: 'checklist',

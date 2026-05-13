@@ -35,17 +35,24 @@ const content: LessonContent = {
 
     // === VERCEL CONFIGURATION ===
     {
-      type: 'info',
-      title: 'Diriger l\'agent à travers la configuration Vercel',
-      body: "Vercel est la cible de déploiement pour ce cours. L'agent doit produire : un vercel.json (si nécessaire), la configuration de la commande de build appropriée, les déclarations de variables d'environnement, et les paramètres spécifiques au framework. T'as pas besoin de connaître chaque option Vercel — t'as besoin de savoir quelles questions poser et quoi vérifier dans la sortie.",
+      type: 'multiple-choice',
+      question: 'Que doit produire l\'agent pour une configuration de déploiement Vercel appropriée ?',
+      options: [
+        'Uniquement un fichier vercel.json',
+        'Un vercel.json (si nécessaire), la config de commande de build, les déclarations de variables d\'environnement, et les paramètres spécifiques au framework',
+        'Uniquement les variables d\'environnement',
+        'Un Dockerfile et docker-compose.yml',
+      ],
+      correctIndex: 1,
+      explanation: "Vercel est la cible de déploiement pour ce cours. L'agent doit produire : un vercel.json (si nécessaire), la configuration de la commande de build appropriée, les déclarations de variables d'environnement, et les paramètres spécifiques au framework. T'as pas besoin de connaître chaque option Vercel — t'as besoin de savoir quelles questions poser et quoi vérifier dans la sortie.",
     },
     {
-      type: 'code-demo',
-      title: 'Spécification des variables d\'environnement',
-      body: 'Dirige l\'agent pour créer une spécification claire des variables d\'environnement qui sépare les variables publiques des secrètes.',
-      language: 'markdown',
-      filename: 'ENV_SPEC.md',
-      code: "## Environment Variables\n\n### Public (exposed to client via NEXT_PUBLIC_ prefix)\n- NEXT_PUBLIC_APP_URL — canonical URL (https://myapp.com in prod)\n- NEXT_PUBLIC_SUPABASE_URL — Supabase project URL\n- NEXT_PUBLIC_SUPABASE_ANON_KEY — Supabase anonymous/public key\n\n### Secret (server-only, never in client bundle)\n- SUPABASE_SERVICE_ROLE_KEY — admin access, server actions only\n- SESSION_SECRET — 32+ char random string for cookie signing\n- RESEND_API_KEY — email sending (Resend.com)\n\n### Per-Environment Values\n- Development: .env.local (gitignored)\n- Preview: Vercel preview environment settings\n- Production: Vercel production environment settings\n\n### CRITICAL: Never expose\n- SERVICE_ROLE_KEY in any client component\n- SESSION_SECRET in any API response\n- Raw database connection strings in error messages",
+      type: 'match',
+      instruction: 'Associe chaque variable d\'environnement à sa classification correcte :',
+      leftItems: ['NEXT_PUBLIC_APP_URL', 'SUPABASE_SERVICE_ROLE_KEY', 'NEXT_PUBLIC_SUPABASE_ANON_KEY', 'SESSION_SECRET'],
+      rightItems: ['Secret : serveur seulement, 32+ caractères pour la signature de cookies', 'Publique : sûre pour le navigateur, URL canonique', 'Secret : serveur seulement, accès admin à la base de données', 'Publique : sûre pour le navigateur, clé anonyme/publique'],
+      correctPairs: { 0: 1, 1: 2, 2: 3, 3: 0 },
+      explanation: 'Les variables avec le préfixe NEXT_PUBLIC_ sont exposées au navigateur et sûres pour le code côté client. Les variables sans ce préfixe sont des secrets serveur qui ne doivent jamais apparaître dans les composants client. Se tromper mène soit à des fonctionnalités cassées (vars publiques manquantes) soit à des brèches de sécurité (secrets exposés).',
     },
     {
       type: 'terminal',
@@ -75,17 +82,29 @@ const content: LessonContent = {
 
     // === SECURITY AUDIT ===
     {
-      type: 'info',
-      title: 'Audit de sécurité : ce que les agents manquent',
-      body: "Avant de déployer, tu audites le code de l'agent pour trois catégories de problèmes de sécurité. Premièrement : les secrets qui fuient — clés API, chaînes de connexion, ou tokens qui se retrouvent dans le code côté client ou committés dans git. Deuxièmement : les routes non protégées — des endpoints API ou des server actions qui sautent les vérifications d'authentification. Troisièmement : la surexposition de données — retourner des enregistrements complets de la base de données (incluant les champs sensibles) quand le client a besoin seulement d'un sous-ensemble. Dirige l'agent pour corriger ces problèmes avant de déployer, pas après.",
+      type: 'order',
+      instruction: 'Ordonne ces trois catégories d\'audit de sécurité du risque le plus élevé au plus bas :',
+      items: [
+        'Surexposition de données : retourner des enregistrements BD complets avec des champs sensibles',
+        'Secrets qui fuient : clés API, tokens, ou chaînes de connexion dans le code client ou git',
+        'Routes non protégées : mutations sans vérifications d\'authentification',
+      ],
+      correctOrder: [1, 2, 0],
     },
     {
-      type: 'code-demo',
-      title: 'Prompts d\'audit de sécurité',
-      body: 'Ces trois prompts attrapent les problèmes de sécurité les plus courants dans le code généré par agent.',
+      type: 'code-fill',
+      instruction: 'Complète ces prompts d\'audit de sécurité pour diriger l\'agent avant de déployer :',
       language: 'text',
       filename: 'security-audit.txt',
-      code: "AUDIT 1: Secret leakage\n\"Search the codebase for any hardcoded API keys, tokens, passwords,\nor connection strings. Check: (1) any string that looks like a key\ncommitted in source files, (2) any server-only env var accessed in\na file under src/app/ that is a client component ('use client'),\n(3) any .env file tracked by git. Report findings.\"\n\nAUDIT 2: Unprotected routes\n\"List every API route in src/app/api/ and every server action.\nFor each one, verify it checks authentication before proceeding.\nFlag any route that performs a mutation (POST/PUT/DELETE/server action)\nwithout validating the session. Report unprotected routes.\"\n\nAUDIT 3: Data over-exposure\n\"Check all API responses and server action returns. Flag any that\nreturn full database records without selecting specific fields.\nSpecifically look for: passwordHash, email in public-facing responses,\nfull user objects where only name+id are needed. Report findings.\"",
+      template: 'AUDIT 1 : Fuite de secrets\n"Cherche dans le code tout {{secret_types}} codé en dur.\nVérifie toute variable d\'env serveur accédée dans un composant {{client_marker}}."\n\nAUDIT 2 : Routes non protégées\n"Liste chaque route API et server action. Signale toute route qui effectue un\n{{mutation_types}} sans valider la {{auth_check}}."\n\nAUDIT 3 : Surexposition de données\n"Signale toute réponse API qui retourne des enregistrements BD complets sans\nsélectionner des champs spécifiques. Cherche : {{sensitive_fields}}."',
+      blanks: [
+        { id: 'secret_types', answer: 'clés API, tokens, mots de passe, ou chaînes de connexion', alternatives: ['clés API, tokens, ou mots de passe', 'secrets codés en dur'], placeholder: 'que chercher ?', hint: 'Types de secrets qui ne devraient jamais être dans le code' },
+        { id: 'client_marker', answer: "'use client'", alternatives: ['use client', '"use client"'], placeholder: 'marqueur composant client ?', hint: 'La directive React qui marque les composants client' },
+        { id: 'mutation_types', answer: 'POST/PUT/DELETE/server action', alternatives: ['mutation (POST, PUT, DELETE)', 'opération d\'écriture'], placeholder: 'types de mutation ?', hint: 'Méthodes HTTP qui modifient les données' },
+        { id: 'auth_check', answer: 'session', alternatives: ['session', 'authentification', 'auth'], placeholder: 'quoi valider ?', hint: 'Ce qui prouve qu\'un utilisateur est bien qui il prétend être' },
+        { id: 'sensitive_fields', answer: 'passwordHash, email dans les réponses publiques', alternatives: ['passwordHash, email, IDs internes'], placeholder: 'champs sensibles ?', hint: 'Champs qui ne devraient jamais être dans les réponses API publiques' },
+      ],
+      explanation: "Ces trois prompts d'audit attrapent les problèmes de sécurité les plus courants dans le code généré par agent. Dirige l'agent pour corriger ces problèmes AVANT de déployer, pas après. Les secrets qui fuient sont catastrophiques, les routes non protégées sont exploitables, et la surexposition de données viole la confiance des utilisateurs.",
     },
     {
       type: 'multiple-choice',
@@ -107,9 +126,16 @@ const content: LessonContent = {
 
     // === PREVIEW DEPLOYMENT WORKFLOW ===
     {
-      type: 'info',
-      title: 'Déploiement de prévisualisation : vérifier avant la production',
-      body: "Ne déploie jamais directement en production sans prévisualisation. Vercel crée automatiquement des déploiements de prévisualisation pour chaque push sur une branche non-main. Le workflow : pousse sur une branche de fonctionnalité, obtiens un URL de prévisualisation, vérifie que le déploiement marche avec les vraies variables d'environnement (pas localhost), vérifie que les fonctionnalités côté serveur fonctionnent correctement, puis fusionne dans main pour la production. Les déploiements de prévisualisation attrapent les bugs spécifiques à l'environnement que localhost ne révèle jamais.",
+      type: 'multiple-choice',
+      question: 'Pourquoi ne jamais déployer directement en production sans un déploiement de prévisualisation d\'abord ?',
+      options: [
+        'Les déploiements de prévisualisation sont plus rapides à construire',
+        'Vercel exige des déploiements de prévisualisation avant la production',
+        'Les déploiements de prévisualisation attrapent les bugs spécifiques à l\'environnement (vars d\'env, fonctions serveur, DNS) que localhost ne révèle jamais',
+        'Les déploiements de prévisualisation coûtent moins cher à exécuter',
+      ],
+      correctIndex: 2,
+      explanation: "Vercel crée automatiquement des déploiements de prévisualisation pour chaque push sur une branche non-main. Le workflow : pousse sur une branche, obtiens un URL de prévisualisation, vérifie que le déploiement marche avec les vraies variables d'environnement, vérifie les fonctionnalités côté serveur, puis fusionne dans main. Les prévisualisations attrapent les bugs spécifiques à l'environnement que localhost ne révèle jamais.",
     },
     {
       type: 'interactive-diagram',
@@ -174,24 +200,49 @@ const content: LessonContent = {
 
     // === DNS AND DOMAIN ===
     {
-      type: 'info',
-      title: 'DNS et domaines personnalisés',
-      body: "Si ton projet a besoin d'un domaine personnalisé, dirige l'agent pour documenter la configuration DNS requise — ne le laisse pas deviner ou halluciner des enregistrements DNS. Le patron : (1) ajoute le domaine dans le tableau de bord Vercel, (2) Vercel fournit les enregistrements DNS requis (habituellement un enregistrement A et/ou CNAME), (3) tu configures ceux-ci chez ton registraire, (4) attends la propagation (jusqu'à 48 heures, habituellement quelques minutes). L'agent peut te dire quels enregistrements sont nécessaires mais ne peut pas configurer ton registraire.",
+      type: 'order',
+      instruction: 'Ordonne les étapes pour configurer un domaine personnalisé sur Vercel :',
+      items: [
+        'Attendre la propagation DNS (jusqu\'à 48 heures, habituellement quelques minutes)',
+        'Ajouter le domaine dans le tableau de bord Vercel',
+        'Configurer les enregistrements DNS chez ton registraire (enregistrement A et/ou CNAME)',
+        'Vérifier que le certificat SSL a été auto-provisionné correctement',
+        'Mettre à jour NEXT_PUBLIC_APP_URL et les URLs de callback OAuth',
+      ],
+      correctOrder: [1, 2, 0, 3, 4],
     },
     {
-      type: 'code-demo',
-      title: 'Documentation DNS que l\'agent devrait produire',
-      body: 'Dirige l\'agent pour documenter les enregistrements DNS exacts nécessaires pour ta configuration de domaine.',
+      type: 'code-fill',
+      instruction: 'Complète cette documentation DNS que l\'agent devrait produire pour ta configuration de domaine :',
       language: 'markdown',
       filename: 'DEPLOY.md',
-      code: "## DNS Configuration\n\n### Production Domain: feedback.myapp.com\n\nAdd these records at your DNS provider:\n\n| Type  | Name     | Value              | TTL  |\n|-------|----------|--------------------|------|\n| CNAME | feedback | cname.vercel-dns.com | 3600 |\n\n### Verification\n- After adding records, verify with: `dig feedback.myapp.com CNAME`\n- Vercel dashboard shows verification status\n- SSL certificate auto-provisions once DNS propagates\n\n### Environment URL Updates\n- Update NEXT_PUBLIC_APP_URL to https://feedback.myapp.com\n- Update any OAuth callback URLs to use the new domain\n- Update CORS allowed origins if applicable",
+      template: '## Configuration DNS\n\n### Domaine de production : feedback.myapp.com\n\nAjoute cet enregistrement chez ton fournisseur DNS :\n\n| Type | Nom | Valeur | TTL |\n|------|-----|--------|-----|\n| {{record_type}} | feedback | {{record_value}} | 3600 |\n\n### Vérification\n- Après avoir ajouté les enregistrements, vérifie avec : `{{verify_cmd}}`\n- Le certificat SSL s\'auto-provisionne une fois le DNS propagé',
+      blanks: [
+        { id: 'record_type', answer: 'CNAME', alternatives: ['cname'], placeholder: 'type d\'enregistrement DNS ?', hint: 'Pointe un sous-domaine vers un autre hostname' },
+        { id: 'record_value', answer: 'cname.vercel-dns.com', alternatives: ['cname.vercel-dns.com.'], placeholder: 'valeur DNS Vercel ?', hint: 'Vercel fournit cette cible CNAME' },
+        { id: 'verify_cmd', answer: 'dig feedback.myapp.com CNAME', alternatives: ['nslookup feedback.myapp.com', 'dig +short feedback.myapp.com CNAME'], placeholder: 'commande de vérification ?', hint: 'Commande de recherche DNS pour vérifier l\'enregistrement CNAME' },
+      ],
+      explanation: 'Dirige l\'agent pour documenter les enregistrements DNS exacts nécessaires. Ne le laisse pas deviner ou halluciner des enregistrements DNS. L\'agent peut te dire quels enregistrements sont nécessaires mais ne peut pas configurer ton registraire.',
     },
 
     // === ROLLBACK STRATEGY ===
     {
-      type: 'info',
+      type: 'compare',
       title: 'Stratégie de rollback quand les choses cassent',
-      body: "Des bris en production, ça arrive. Ton plan de rollback devrait être plus rapide que ton temps de correction. Vercel garde chaque déploiement immuable — tu peux instantanément revenir à n'importe quel déploiement précédent via le tableau de bord ou le CLI. L'insight clé : le rollback, c'est pas un échec. C'est une stratégie délibérée qui sépare « arrêter l'hémorragie » de « corriger le bug ». Fais le rollback immédiatement, puis débogue calmement sur une branche sans que les utilisateurs subissent l'état cassé.",
+      body: 'Des bris en production, ça arrive. Ton plan de rollback devrait être plus rapide que ton temps de correction.',
+      question: 'Quelle approche restaure le service le plus rapidement quand la production casse ?',
+      correctSide: 'right',
+      left: {
+        label: 'Déboguer d\'abord',
+        content: '1. Investiguer le bug\n2. Écrire un correctif\n3. Pousser le correctif\n4. Attendre le build + déploiement\n5. Vérifier que le correctif marche\n\nTemps de restauration : 30-60 minutes\nUtilisateurs affectés tout le temps',
+        language: 'text',
+      },
+      right: {
+        label: 'Rollback d\'abord',
+        content: '1. Rollback au dernier déploiement qui marche\n   (instantané via dashboard/CLI Vercel)\n2. Service restauré en quelques secondes\n3. Déboguer calmement sur une branche\n4. Pousser le correctif quand prêt et testé\n\nTemps de restauration : secondes\nUtilisateurs non affectés pendant le débogage',
+        language: 'text',
+      },
+      explanation: "Le rollback, c'est pas un échec. C'est une stratégie délibérée qui sépare « arrêter l'hémorragie » de « corriger le bug ». Vercel garde chaque déploiement immuable — tu peux instantanément revenir à n'importe quel déploiement précédent.",
     },
     {
       type: 'terminal',
@@ -219,9 +270,12 @@ const content: LessonContent = {
 
     // === PRODUCTION CHECKLIST ===
     {
-      type: 'info',
-      title: 'La checklist de préparation à la production',
-      body: "Avant de fusionner dans main et déclencher un déploiement en production, vérifie ces catégories : (1) Environnement — toutes les variables définies dans Vercel pour la production, aucun URL localhost en dur. (2) Sécurité — pas de secrets qui fuient, toutes les mutations authentifiées, pas de surexposition de données. (3) Performance — pas de récupération côté client de gros ensembles de données, images optimisées, pas de scripts tiers bloquants. (4) Gestion des erreurs — les erreurs montrent des messages conviviaux, pas des stack traces. (5) SEO/Meta — titre, description, image OG configurés si c'est public.",
+      type: 'match',
+      instruction: 'Associe chaque catégorie de préparation à la production à ce que tu dois vérifier :',
+      leftItems: ['Environnement', 'Sécurité', 'Performance', 'Gestion des erreurs'],
+      rightItems: ['Les erreurs montrent des messages conviviaux, pas des stack traces', 'Toutes les variables définies dans Vercel, aucun URL localhost en dur', 'Pas de secrets qui fuient, toutes les mutations authentifiées', 'Pas de récupération côté client de gros ensembles de données, images optimisées'],
+      correctPairs: { 0: 1, 1: 2, 2: 3, 3: 0 },
+      explanation: "Avant de fusionner dans main, vérifie : (1) Environnement — toutes les variables définies, aucun URL localhost. (2) Sécurité — pas de secrets qui fuient, toutes les mutations authentifiées. (3) Performance — pas de gros fetch côté client, images optimisées. (4) Gestion des erreurs — messages conviviaux, pas de stack traces. (5) SEO/Meta — titre, description, image OG si c'est public.",
     },
     {
       type: 'terminal',
@@ -245,9 +299,16 @@ const content: LessonContent = {
 
     // === SYNTHESIS ===
     {
-      type: 'info',
-      title: 'Le déploiement comme compétence dirigée',
-      body: "Le déploiement, c'est pas une seule commande — c'est un processus de vérification en plusieurs étapes que tu diriges. L'agent fait le travail mécanique : créer les fichiers de config, écrire les templates d'environnement, effectuer les audits. Toi, tu fournis le jugement : décider ce qui a besoin d'une prévisualisation vs un déploiement direct, évaluer les trouvailles de sécurité, choisir quand faire un rollback. Après cette leçon, tu peux prendre n'importe quel projet construit par agent depuis localhost jusqu'à un URL de production avec la confiance que rien de critique n'a été manqué.",
+      type: 'multiple-choice',
+      question: 'Dans le workflow de déploiement, quel est le rôle de l\'agent vs ton rôle ?',
+      options: [
+        'L\'agent gère tout, y compris les décisions de jugement',
+        'Tu fais tout manuellement, l\'agent regarde juste',
+        'L\'agent fait le travail mécanique (config, templates, audits). Tu fournis le jugement (prévisualisation vs déploiement, évaluation de sécurité, quand faire un rollback)',
+        'L\'agent déploie, tu approuves ou rejettes simplement',
+      ],
+      correctIndex: 2,
+      explanation: "Le déploiement, c'est pas une seule commande — c'est un processus de vérification en plusieurs étapes que tu diriges. L'agent fait le travail mécanique : créer les fichiers de config, écrire les templates d'environnement, effectuer les audits. Toi, tu fournis le jugement : décider ce qui a besoin d'une prévisualisation vs un déploiement direct, évaluer les trouvailles de sécurité, choisir quand faire un rollback.",
     },
     {
       type: 'checkpoint',

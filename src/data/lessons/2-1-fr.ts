@@ -17,22 +17,29 @@ const content: LessonContent = {
 
     // === SPEC STRUCTURE ===
     {
-      type: 'info',
-      title: 'Les cinq sections d\'une bonne spec',
-      body: "Chaque spec efficace comporte cinq sections. Objectif : une phrase décrivant ce qui existe quand l'agent a terminé. Contraintes : choix technologiques, exigences de style, budgets de performance — les garde-fous. Critères d'acceptation : conditions spécifiques et testables prouvant que le travail est terminé. Limites techniques : ce que l'agent est autorisé à toucher (fichiers, packages, APIs) et ce qui est interdit. Hors périmètre : choses que l'agent pourrait raisonnablement supposer incluses mais qui sont explicitement exclues. Chaque section a un rôle différent pour garder l'agent sur la bonne voie.",
+      type: 'multiple-choice',
+      question: 'Une bonne spec d\'agent comporte cinq sections. Laquelle N\'EN fait PAS partie ?',
+      options: [
+        'Objectif : une phrase decrivant ce qui existe quand l\'agent a termine',
+        'User Stories : descriptions narratives de comment differents personas interagissent avec le produit',
+        'Criteres d\'acceptation : conditions specifiques et testables prouvant que le travail est termine',
+        'Hors perimetre : choses explicitement exclues que l\'agent pourrait autrement construire',
+      ],
+      correctIndex: 1,
+      explanation: 'Les User Stories appartiennent a un PRD (ecrit pour des humains), pas a une spec d\'agent. Les cinq sections sont : Objectif, Contraintes (garde-fous technologiques), Criteres d\'acceptation (preuve testable), Limites techniques (ce que l\'agent peut toucher), et Hors perimetre (exclusions explicites). Un agent n\'a pas besoin de contexte narratif — il a besoin de limites precises.',
     },
     {
-      type: 'diagram',
+      type: 'interactive-diagram',
       title: 'Structure de la Spec',
-      body: 'Les cinq sections forment un entonnoir allant de la vision large aux limites précises.',
+      body: 'Les cinq sections forment un entonnoir allant de la vision large aux limites precises. Parcourez chaque section pour comprendre son role.',
       diagram: {
         direction: 'TB',
         nodes: [
-          { id: 'goal', label: 'Objectif', sublabel: 'Ce qui existe une fois terminé', shape: 'rounded', highlight: true },
+          { id: 'goal', label: 'Objectif', sublabel: 'Ce qui existe une fois termine', shape: 'rounded', highlight: true },
           { id: 'constraints', label: 'Contraintes', sublabel: 'Garde-fous techno et style', shape: 'rect' },
-          { id: 'acceptance', label: 'Critères d\'acceptation', sublabel: 'Preuve testable de complétion', shape: 'rect' },
-          { id: 'boundaries', label: 'Limites techniques', sublabel: 'Autorisé et interdit', shape: 'rect' },
-          { id: 'oos', label: 'Hors périmètre', sublabel: 'Explicitement exclu', shape: 'pill' },
+          { id: 'acceptance', label: 'Criteres d\'acceptation', sublabel: 'Preuve testable de completion', shape: 'rect' },
+          { id: 'boundaries', label: 'Limites techniques', sublabel: 'Autorise et interdit', shape: 'rect' },
+          { id: 'oos', label: 'Hors perimetre', sublabel: 'Explicitement exclu', shape: 'pill' },
         ],
         edges: [
           { from: 'goal', to: 'constraints' },
@@ -41,6 +48,33 @@ const content: LessonContent = {
           { from: 'boundaries', to: 'oos' },
         ],
       },
+      stages: [
+        {
+          highlightNodes: ['goal'],
+          highlightEdges: [],
+          explanation: 'Objectif : Une phrase decrivant ce qui existe quand l\'agent a termine. « Une app web fonctionnelle ou les utilisateurs peuvent sauvegarder, taguer, chercher et supprimer des favoris. » Cela ancre tout ce qui suit.',
+        },
+        {
+          highlightNodes: ['goal', 'constraints'],
+          highlightEdges: [{ from: 'goal', to: 'constraints' }],
+          explanation: 'Contraintes : Choix technologiques, exigences de style, budgets de performance. Ce sont des garde-fous — ils empechent l\'agent de prendre des decisions technologiques non autorisees.',
+        },
+        {
+          highlightNodes: ['constraints', 'acceptance'],
+          highlightEdges: [{ from: 'constraints', to: 'acceptance' }],
+          explanation: 'Criteres d\'acceptation : Conditions specifiques et testables prouvant que le travail est termine. Chaque critere est une case a cocher que l\'agent (et vous) pouvez verifier.',
+        },
+        {
+          highlightNodes: ['acceptance', 'boundaries'],
+          highlightEdges: [{ from: 'acceptance', to: 'boundaries' }],
+          explanation: 'Limites techniques : Ce que l\'agent est autorise a toucher — fichiers, packages, APIs — et ce qui est interdit. Cela previent les effets de bord inattendus.',
+        },
+        {
+          highlightNodes: ['boundaries', 'oos'],
+          highlightEdges: [{ from: 'boundaries', to: 'oos' }],
+          explanation: 'Hors perimetre : Choses que l\'agent pourrait raisonnablement supposer incluses mais qui sont explicitement exclues. Sans cela, les agents enthousiastes vont sur-construire.',
+        },
+      ],
     },
     {
       type: 'checkpoint',
@@ -50,17 +84,17 @@ const content: LessonContent = {
 
     // === REAL EXAMPLE ===
     {
-      type: 'info',
-      title: 'Un vrai exemple : gestionnaire de favoris',
-      body: "Parcourons un exemple concret. Vous avez une idée de produit : un gestionnaire de favoris avec des tags. Pas original, mais c'est justement le point — la valeur est dans comment vous le spécifiez pour l'exécution par un agent, pas dans l'idée elle-même. Observez comment chaque section contraint l'agent sans le micro-gérer.",
-    },
-    {
-      type: 'code-demo',
-      title: 'Spec du gestionnaire de favoris',
-      body: 'Voici le markdown que vous mettriez dans un fichier CLAUDE.md ou passeriez directement à Claude Code. Remarquez : ça dit QUOI, pas COMMENT.',
+      type: 'code-fill',
+      instruction: 'Parcourons un exemple concret. Vous avez une idee de produit : un gestionnaire de favoris avec des tags. Completez les parties manquantes de cette spec — remarquez comment chaque section contraint l\'agent sans le micro-gerer. La spec dit QUOI, pas COMMENT.',
       language: 'markdown',
       filename: 'SPEC.md',
-      code: "# Bookmark Manager — Agent Spec\n\n## Goal\nA working web app where users can save, tag, search, and delete bookmarks.\n\n## Constraints\n- Next.js 15 with App Router\n- TypeScript strict mode\n- SQLite via Drizzle ORM (local file DB, no external services)\n- Tailwind CSS for styling\n- No authentication (single-user, local)\n\n## Acceptance Criteria\n- [ ] User can add a bookmark (URL + optional title)\n- [ ] User can assign multiple tags to a bookmark\n- [ ] User can filter bookmarks by tag\n- [ ] User can full-text search bookmarks by title/URL\n- [ ] User can delete a bookmark\n- [ ] All data persists across server restarts\n- [ ] App runs with `npm run dev` after `npm install`\n\n## Technical Boundaries\n- Create a new project from scratch (not modify existing)\n- Use `src/` directory structure\n- Keep all DB logic in `src/db/` directory\n- Use server actions for mutations (no API routes)\n\n## Out of Scope\n- User authentication / multi-tenancy\n- Bookmark import/export\n- Browser extension\n- Favicon fetching\n- Deployment configuration",
+      template: '# Bookmark Manager — Agent Spec\n\n## Goal\nA working web app where users can save, tag, search, and delete bookmarks.\n\n## Constraints\n- Next.js 15 with App Router\n- TypeScript strict mode\n- {{database}} (local file DB, no external services)\n- Tailwind CSS for styling\n- No authentication (single-user, local)\n\n## Acceptance Criteria\n- [ ] User can add a bookmark (URL + optional title)\n- [ ] User can assign multiple tags to a bookmark\n- [ ] User can filter bookmarks by tag\n- [ ] User can full-text search bookmarks by title/URL\n- [ ] User can delete a bookmark\n\n## Technical Boundaries\n- Create a new project from scratch (not modify existing)\n- Use `src/` directory structure\n- Keep all DB logic in `src/db/` directory\n- Use {{mutation_pattern}} for mutations (no API routes)\n\n## Out of Scope\n- User authentication / multi-tenancy\n- {{excluded_feature}}\n- Browser extension\n- Favicon fetching',
+      blanks: [
+        { id: 'database', answer: 'SQLite via Drizzle ORM', alternatives: ['SQLite + Drizzle ORM', 'Drizzle ORM + SQLite', 'SQLite with Drizzle ORM'], placeholder: 'quelle base de donnees + ORM ?', hint: 'Une BD legere basee sur fichier associee a un ORM TypeScript' },
+        { id: 'mutation_pattern', answer: 'server actions', alternatives: ['Server Actions', 'server actions', 'Server actions'], placeholder: 'quel pattern de mutation ?', hint: 'Fonctionnalite de l\'App Router Next.js qui remplace les routes API pour les soumissions de formulaire' },
+        { id: 'excluded_feature', answer: 'Bookmark import/export', alternatives: ['Import/export', 'import/export', 'Bookmark import export'], placeholder: 'quelle fonctionnalite de portabilite ?', hint: 'Une fonctionnalite courante pour migrer des favoris entre outils' },
+      ],
+      explanation: 'Nommer SQLite + Drizzle elimine une decision de base de donnees. Server actions est un choix architectural qui affecte comment toute l\'app gere les mutations. Import/export est une fonctionnalite raisonnable qu\'un agent pourrait ajouter — l\'exclure previent la derive de perimetre.',
     },
     {
       type: 'multiple-choice',
@@ -82,19 +116,34 @@ const content: LessonContent = {
 
     // === ANTI-PATTERNS ===
     {
-      type: 'info',
-      title: 'Anti-pattern de spec : trop vague',
-      body: "« Construis-moi un gestionnaire de favoris. Fais-le bien. Utilise de la techno moderne. » Ça ne dit presque rien à l'agent. C'est quoi « bien » ? C'est quoi « moderne » ? L'agent va prendre des dizaines de décisions que vous n'avez pas autorisées — choisir une base de données, une approche de style, des patterns de routing, inventer des fonctionnalités. Vous passerez plus de temps à corriger ces décisions que vous n'en avez économisé en étant bref. Le flou n'est pas de la délégation — c'est de l'abandon.",
+      type: 'compare',
+      title: 'Deux anti-patterns de spec',
+      body: 'Ces deux specs vont causer des problemes. L\'une ne dit presque rien a l\'agent. L\'autre ecrit du code en francais.',
+      question: 'Quel mode de defaillance gaspille LE PLUS de votre temps a corriger la sortie ?',
+      correctSide: 'left',
+      left: {
+        label: 'Trop vague',
+        content: '« Construis-moi un gestionnaire de\nfavoris. Fais-le bien. Utilise de\nla techno moderne. »\n\nResultat : l\'agent prend des\ndizaines de decisions non autorisees\n— choisit une BD, invente des\nfonctionnalites, choisit des\npatterns de routing.',
+        language: 'text',
+      },
+      right: {
+        label: 'Trop prescriptif',
+        content: '« Cree src/components/BookmarkCard.tsx.\nExporte un composant avec props\n{ url: string, title: string }.\nUtilise un div avec className\n\'card p-4 border rounded-lg\'... »\n\nResultat : vous ecrivez du code\nen francais. Ecrivez le code\ndirectement.',
+        language: 'text',
+      },
+      explanation: 'Trop vague cause plus de retravail car l\'agent prend des decisions architecturales que vous devez defaire. Trop prescriptif gaspille votre temps a ecrire la spec, mais la sortie est au moins previsible. Le bon equilibre : contraindre les decisions couteuses (architecture, stack, limites), laisser les decisions bon marche (nommage, details de style) a l\'agent.',
     },
     {
-      type: 'info',
-      title: 'Anti-pattern de spec : trop prescriptif',
-      body: "Le mode de défaillance opposé. « Crée un fichier à src/components/BookmarkCard.tsx. Il doit exporter un composant React qui prend les props { url: string, title: string, tags: string[] }. Utilise un div avec className 'card p-4 border rounded-lg'. À l'intérieur, rends une balise anchor... » Vous êtes en train d'écrire du code en français. Si vous savez exactement ce que chaque ligne devrait être, écrivez le code directement. Une spec devrait contraindre les décisions, pas les éliminer. Laissez l'agent utiliser son jugement à l'intérieur de vos limites.",
-    },
-    {
-      type: 'info',
-      title: 'Anti-pattern de spec : limites manquantes',
-      body: "Une spec avec un objectif clair et des critères d'acceptation mais sans limites ni exclusions de périmètre. L'agent construit tout correctement — puis ajoute aussi l'authentification, une API REST, la config Docker, un pipeline CI/CD, et des scripts de déploiement. Il voulait être utile. Sans limites explicites, l'agent optimise pour la complétude. La section Hors périmètre n'est pas optionnelle — c'est votre défense contre le dépassement de périmètre d'un constructeur enthousiaste.",
+      type: 'multiple-choice',
+      question: 'Une spec a un objectif clair et des criteres d\'acceptation mais aucune limite ni exclusion de perimetre. L\'agent construit tout correctement — puis ajoute aussi l\'authentification, la config Docker et un pipeline CI/CD. Quel anti-pattern est-ce ?',
+      options: [
+        'Trop vague — la spec n\'a pas specifie assez de details',
+        'Trop prescriptif — la spec a trop contraint l\'agent',
+        'Limites manquantes — sans exclusions explicites, l\'agent optimise pour la completude',
+        'Mauvais format — la spec aurait du etre dans CLAUDE.md au lieu d\'un prompt',
+      ],
+      correctIndex: 2,
+      explanation: 'Sans section Hors perimetre, l\'agent essaie d\'etre utile en construisant tout ce qu\'il pense que vous pourriez avoir besoin. La section Hors perimetre n\'est pas optionnelle — c\'est votre defense contre le depassement de perimetre d\'un constructeur enthousiaste.',
     },
     {
       type: 'compare',
@@ -134,49 +183,85 @@ const content: LessonContent = {
 
     // === DELIVERY METHOD ===
     {
-      type: 'info',
-      title: 'Comment l\'agent reçoit votre spec',
-      body: "Il y a deux méthodes de livraison. Premièrement : mettre la spec dans CLAUDE.md à la racine du projet. L'agent lit ce fichier automatiquement au début de chaque session. Ça fonctionne mieux pour les projets en cours où la spec évolue avec le temps. Deuxièmement : coller la spec directement dans le prompt. Ça fonctionne pour les constructions en une fois où vous voulez que l'agent scaffolde à partir de zéro. Les deux sont valides — le choix dépend de si la spec est un document vivant ou une instruction ponctuelle.",
+      type: 'multiple-choice',
+      question: 'Vous demarrez un nouveau projet qui va evoluer sur plusieurs semaines. Ou devriez-vous mettre la spec pour que l\'agent ait le contexte a chaque invocation ?',
+      options: [
+        'Dans le premier message de prompt — collez-la a chaque fois que vous demarrez une session',
+        'Dans CLAUDE.md a la racine du projet — l\'agent le lit automatiquement a chaque session',
+        'Dans un fichier README.md — emplacement standard de documentation',
+        'Dans un commentaire en haut du fichier source principal',
+      ],
+      correctIndex: 1,
+      explanation: 'CLAUDE.md a la racine du projet est lu automatiquement par Claude Code au debut de chaque session. Pour les projets en cours ou la spec evolue, c\'est la meilleure methode de livraison. Pour les constructions en une fois, coller la spec directement dans le prompt fonctionne aussi — mais ca ne persiste pas entre les sessions.',
     },
     {
-      type: 'code-demo',
-      title: 'Spec via CLAUDE.md',
-      body: 'Quand vous construisez un nouveau projet, vous commencez souvent avec la spec dans CLAUDE.md pour que l\'agent ait le contexte à chaque invocation.',
-      language: 'markdown',
-      filename: 'CLAUDE.md',
-      code: "# Bookmark Manager\n\n## Spec\n[... your full spec here ...]\n\n## Development\n- Run: `npm run dev`\n- Test: `npm test`\n- Lint: `npm run lint`\n\n## Architecture Decisions\n(Agent fills this in as it builds)",
-    },
-    {
-      type: 'code-demo',
-      title: 'Spec via prompt direct',
-      body: 'Pour les constructions en une fois, vous collez la spec directement. L\'agent l\'exécute en une seule session.',
-      language: 'text',
-      filename: 'prompt.txt',
-      code: "Build this project from scratch according to the following spec:\n\n[paste your full spec]\n\nStart by creating the project structure, then implement\neach acceptance criterion one at a time. After each one,\nverify it works before moving to the next.",
+      type: 'compare',
+      title: 'CLAUDE.md vs prompt direct',
+      body: 'Deux facons valides de livrer une spec a l\'agent. Le bon choix depend du cycle de vie de votre projet.',
+      question: 'Quelle methode est meilleure pour un projet qui evolue sur plusieurs semaines ?',
+      correctSide: 'left',
+      left: {
+        label: 'CLAUDE.md',
+        content: '# Bookmark Manager\n\n## Spec\n[... votre spec complete ici ...]\n\n## Development\n- Run: `npm run dev`\n- Test: `npm test`\n\n## Architecture Decisions\n(L\'agent remplit au fur et a mesure)\n\n✓ Persiste entre les sessions\n✓ Evolue avec le projet\n✓ Lu automatiquement par l\'agent',
+        language: 'markdown',
+      },
+      right: {
+        label: 'Prompt direct',
+        content: 'Build this project from scratch\naccording to the following spec:\n\n[collez votre spec complete]\n\nStart by creating the project\nstructure, then implement each\ncriterion one at a time.\n\n✓ Bon pour les constructions en une fois\n✓ Pas de fichier a maintenir\n✗ Doit etre re-colle a chaque session',
+        language: 'text',
+      },
+      explanation: 'CLAUDE.md est le bon choix pour les projets evolutifs — il persiste, se met a jour avec le temps, et l\'agent le lit automatiquement. Les prompts directs fonctionnent pour les constructions en une fois ou la spec est une instruction a usage unique.',
     },
 
     // === WORKFLOW DIAGRAM ===
     {
-      type: 'diagram',
+      type: 'interactive-diagram',
       title: 'De la vision produit au lancement',
-      body: 'Le flux complet de l\'idée au produit déployé. La spec est le pont entre votre vision et l\'exécution par l\'agent.',
+      body: 'Le flux complet de l\'idee au produit deploye. La spec est le pont entre votre vision et l\'execution par l\'agent. Parcourez chaque etape.',
       diagram: {
         direction: 'LR',
         nodes: [
-          { id: 'vision', label: 'Vision Produit', sublabel: 'Votre idée', shape: 'pill' },
-          { id: 'spec', label: 'Écrire la Spec', sublabel: '5 sections', shape: 'rounded', highlight: true },
-          { id: 'execute', label: 'L\'Agent Exécute', sublabel: 'Claude Code construit', shape: 'rect' },
-          { id: 'review', label: 'Réviser le Résultat', sublabel: 'Vérifier les critères', shape: 'diamond' },
-          { id: 'ship', label: 'Livrer', sublabel: 'Déployer', shape: 'pill', highlight: true },
+          { id: 'vision', label: 'Vision Produit', sublabel: 'Votre idee', shape: 'pill' },
+          { id: 'spec', label: 'Ecrire la Spec', sublabel: '5 sections', shape: 'rounded', highlight: true },
+          { id: 'execute', label: 'L\'Agent Execute', sublabel: 'Claude Code construit', shape: 'rect' },
+          { id: 'review', label: 'Reviser le Resultat', sublabel: 'Verifier les criteres', shape: 'diamond' },
+          { id: 'ship', label: 'Livrer', sublabel: 'Deployer', shape: 'pill', highlight: true },
         ],
         edges: [
           { from: 'vision', to: 'spec' },
           { from: 'spec', to: 'execute' },
           { from: 'execute', to: 'review' },
           { from: 'review', to: 'ship', label: 'pass' },
-          { from: 'review', to: 'spec', label: 'itérer', dashed: true },
+          { from: 'review', to: 'spec', label: 'iterer', dashed: true },
         ],
       },
+      stages: [
+        {
+          highlightNodes: ['vision', 'spec'],
+          highlightEdges: [{ from: 'vision', to: 'spec' }],
+          explanation: 'Vous commencez avec une idee de produit et la traduisez en spec structuree avec les cinq sections. C\'est l\'etape la plus importante — tout en aval depend de la qualite de la spec.',
+        },
+        {
+          highlightNodes: ['spec', 'execute'],
+          highlightEdges: [{ from: 'spec', to: 'execute' }],
+          explanation: 'Remettez la spec a Claude Code. L\'agent la lit (depuis CLAUDE.md ou un prompt) et construit le produit. Votre spec contraint ce qu\'il construit et comment.',
+        },
+        {
+          highlightNodes: ['execute', 'review'],
+          highlightEdges: [{ from: 'execute', to: 'review' }],
+          explanation: 'Revisez la sortie par rapport a vos criteres d\'acceptation. Est-ce que ca correspond a la spec ? Y a-t-il des ajouts inattendus ou des fonctionnalites manquantes ?',
+        },
+        {
+          highlightNodes: ['review', 'spec'],
+          highlightEdges: [{ from: 'review', to: 'spec' }],
+          explanation: 'Si quelque chose cloche, iterez : mettez a jour la spec ou donnez un prompt de suivi cible. Prevoyez 2-3 tours. Les specs parfaites n\'existent pas.',
+        },
+        {
+          highlightNodes: ['review', 'ship'],
+          highlightEdges: [{ from: 'review', to: 'ship' }],
+          explanation: 'Quand la sortie passe tous les criteres, livrez. Deployez en production. La spec, le code et la documentation CLAUDE.md voyagent ensemble.',
+        },
+      ],
     },
     {
       type: 'checkpoint',
@@ -186,14 +271,34 @@ const content: LessonContent = {
 
     // === ITERATION ===
     {
-      type: 'info',
-      title: 'Itérer après le premier résultat',
-      body: "L'agent construit. Vous révisez. Quelque chose cloche — peut-être que la disposition de l'interface n'est pas ce que vous imaginiez, ou l'agent a choisi du filtrage côté client alors que vous vouliez une recherche côté serveur. C'est normal. Le cycle d'itération est : observer ce que l'agent a construit, identifier l'écart entre le résultat et l'intention, mettre à jour la spec (ou donner un prompt de suivi ciblé), et laisser l'agent réviser. Les bonnes specs réduisent les itérations. Les specs parfaites n'existent pas. Prévoyez 2-3 tours.",
+      type: 'multiple-choice',
+      question: 'L\'agent construit votre gestionnaire de favoris. La recherche fonctionne, mais utilise du filtrage cote client au lieu de la recherche SQL cote serveur que vous vouliez. Combien de tours d\'iteration devriez-vous prevoir en travaillant avec des specs ?',
+      options: [
+        'Zero — une spec bien ecrite devrait produire une sortie parfaite du premier coup',
+        'Un — si vous avez besoin de plus d\'une revision, votre spec etait trop vague',
+        'Deux a trois tours — les bonnes specs reduisent les iterations, mais les specs parfaites n\'existent pas',
+        'Cinq ou plus — les agents ont toujours besoin de corrections lourdes',
+      ],
+      correctIndex: 2,
+      explanation: 'Prevoyez 2-3 tours d\'iteration. Le cycle est : observer ce que l\'agent a construit, identifier l\'ecart entre la sortie et l\'intention, mettre a jour la spec (ou donner un suivi cible), et laisser l\'agent reviser. Les bonnes specs reduisent les tours mais ne peuvent pas les eliminer entierement.',
     },
     {
-      type: 'info',
-      title: 'Suivis ciblés vs réécritures de spec',
-      body: "Les petites corrections ne nécessitent pas une réécriture de spec. « La recherche devrait être côté serveur avec SQL LIKE, pas du filtrage côté client » est un suivi ciblé. Mais si vous réalisez que toute l'approche est fausse — vous vouliez une extension Chrome, pas une app web — ça nécessite une réécriture de spec. La règle : si la correction est dans les limites existantes, utilisez un prompt de suivi. Si ça change les limites elles-mêmes, réécrivez la spec.",
+      type: 'compare',
+      title: 'Suivi cible vs reecriture de spec',
+      body: 'Quand quelque chose cloche dans la sortie, vous avez deux strategies de correction. Le bon choix depend de ce qui doit changer.',
+      question: 'L\'agent a utilise du filtrage cote client au lieu d\'une recherche cote serveur. Quelle correction est appropriee ?',
+      correctSide: 'left',
+      left: {
+        label: 'Suivi cible',
+        content: '« La recherche devrait etre cote\nserveur avec SQL LIKE, pas du\nfiltrage cote client. Mettez a\njour la page de favoris pour\ninterroger la base directement. »\n\n✓ La correction est dans les limites existantes\n✓ Correction rapide et chirurgicale\n✓ Pas de changement de spec necessaire',
+        language: 'text',
+      },
+      right: {
+        label: 'Reecriture de spec',
+        content: '« En fait, je veux que ce soit une\nextension Chrome au lieu d\'une app\nweb. Reecrivez la spec avec de\nnouvelles contraintes et limites. »\n\n✓ Necessaire quand les limites changent\n✓ Changement fondamental de direction\n✗ Excessif pour les petites corrections',
+        language: 'text',
+      },
+      explanation: 'Un suivi cible est le bon choix car la correction est dans les limites existantes — vous voulez toujours une app web, juste avec une implementation de recherche differente. Une reecriture de spec n\'est necessaire que quand les limites elles-memes changent (ex. : passer d\'une app web a une extension Chrome).',
     },
 
     // === INTERACTIVE EXERCISES ===
@@ -244,9 +349,16 @@ const content: LessonContent = {
 
     // === FINAL SYNTHESIS ===
     {
-      type: 'info',
-      title: 'L\'état d\'esprit de la spec',
-      body: "Écrire des specs est une nouvelle compétence qui semble maladroite au début. Vous êtes habitué à exprimer des idées à travers du code. Maintenant vous les exprimez à travers des contraintes et des critères. Le retour est énorme : une spec bien écrite vous permet de construire en heures ce qui prenait des jours. Mais la spec doit mériter cette vitesse en étant assez précise pour être exécutée. Chaque ambiguïté dans votre spec devient une décision que l'agent prend sans vous. Parfois c'est correct. Parfois c'est coûteux à corriger. Votre travail est de savoir quelles décisions comptent et de les verrouiller.",
+      type: 'multiple-choice',
+      question: 'Chaque ambiguite dans votre spec devient une decision que l\'agent prend sans vous. Lequel des suivants decrit le mieux l\'« etat d\'esprit de la spec » ?',
+      options: [
+        'Ecrivez des specs aussi detaillees que possible — couvrez chaque nom de variable et signature de fonction',
+        'Gardez les specs minimales — l\'agent sait mieux et prendra de bonnes decisions',
+        'Verrouillez les decisions qui comptent (architecture, limites) et laissez les decisions bon marche a l\'agent',
+        'Ecrivez la spec une fois et n\'iterez jamais — les revisions signifient que la spec originale etait mauvaise',
+      ],
+      correctIndex: 2,
+      explanation: 'L\'etat d\'esprit de la spec est de savoir quelles decisions sont couteuses a changer plus tard (architecture, stack techno, perimetre) et de les verrouiller. Les decisions bon marche (nommage, details de style) peuvent etre laissees a l\'agent en toute securite. Le retour : une spec bien ecrite vous permet de construire en heures ce qui prenait des jours.',
     },
     {
       type: 'checklist',

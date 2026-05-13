@@ -10,16 +10,23 @@ const content: LessonContent = {
       body: "You have internalized agent-first development. You think in task graphs, worktrees, CLAUDE.md protocols, and verification pipelines. But when you present architecture proposals to stakeholders — engineering managers, CTOs, product leads — they think in engineer-hours, sprint capacity, and team velocity. If you explain your architecture in YOUR terms, they will not understand it, will not fund it, and will not support it. Translation is not dumbing down. It is connecting your technical reality to their decision framework.",
     },
     {
-      type: 'info',
-      title: 'The translation problem',
-      body: "When you say '5 agents on parallel worktrees,' your manager hears risk. When you say 'CLAUDE.md protocols for every package,' they hear process overhead. When you say 'agent-buildable module boundaries,' they hear over-engineering. None of these interpretations are correct — but they are reasonable given the listener's mental model. Your job is to present the same architecture using language that maps to outcomes they already value: ship speed, defect rate, cost per feature, and team scalability.",
+      type: 'multiple-choice',
+      question: 'When you say "5 agents on parallel worktrees" to your engineering manager, what do they most likely hear?',
+      options: [
+        'An efficient way to parallelize development work',
+        'Risk — unfamiliar tools, unpredictable AI, hard to debug',
+        'A cost-saving measure that reduces hiring needs',
+        'The future of software development',
+      ],
+      correctIndex: 1,
+      explanation: 'Non-practitioners hear risk in unfamiliar terms. "5 agents" sounds like 5 unpredictable programs. "Worktrees" sounds like complexity. Your job is to translate: "5x development capacity with zero coordination overhead" maps to outcomes they value — ship speed, defect rate, cost per feature.',
     },
 
     // === THE TRANSLATION FRAMEWORK ===
     {
-      type: 'diagram',
+      type: 'interactive-diagram',
       title: 'Technical Reality to Business Value',
-      body: 'Every technical choice must connect to an outcome stakeholders care about.',
+      body: 'Click through each stage to understand the translation pipeline from technical decisions to stakeholder-ready messaging.',
       diagram: {
         direction: 'LR',
         nodes: [
@@ -32,11 +39,35 @@ const content: LessonContent = {
           { from: 'translate', to: 'value' },
         ],
       },
+      stages: [
+        {
+          highlightNodes: ['tech'],
+          highlightEdges: [],
+          explanation: 'You start here: "5 agents on parallel worktrees," "CLAUDE.md per package," "module boundary enforcement." These are accurate descriptions of your architecture, but they assume the listener shares your mental model. Most stakeholders do not.',
+        },
+        {
+          highlightNodes: ['tech', 'translate'],
+          highlightEdges: [{ from: 'tech', to: 'translate' }],
+          explanation: 'The translation layer is YOUR skill. For every technical choice, ask: "What outcome does this produce that my audience already cares about?" This is not dumbing down — it is connecting your work to their decision framework.',
+        },
+        {
+          highlightNodes: ['translate', 'value'],
+          highlightEdges: [{ from: 'translate', to: 'value' }],
+          explanation: '"5 agents in parallel worktrees" becomes "5x development capacity with minimal coordination overhead." "CLAUDE.md per package" becomes "self-documenting architecture — any developer productive in hours." "Verification pipeline" becomes "automated quality gate catching issues before production." Same architecture. Different language. Dramatically different reception.',
+        },
+      ],
     },
     {
-      type: 'info',
-      title: 'The translation table',
-      body: "Every agent-first concept has a business translation. '5 agents in parallel worktrees' becomes '5x development capacity with minimal coordination overhead.' 'CLAUDE.md per package' becomes 'self-documenting architecture that enables any developer to contribute immediately.' 'Module boundary enforcement' becomes 'architectural guardrails that prevent cross-team conflicts.' 'Verification pipeline' becomes 'automated quality gate that catches issues before they reach production.' Same architecture. Different language. Dramatically different reception.",
+      type: 'multiple-choice',
+      question: 'You say "module boundary enforcement via eslint rules and Nx tags." What does your engineering manager most likely hear?',
+      options: [
+        'A smart architectural decision that prevents cross-team conflicts',
+        'More process overhead and tooling complexity that slows the team down',
+        'A cost-saving measure that reduces hiring needs',
+        'An innovative approach to parallel development',
+      ],
+      correctIndex: 1,
+      explanation: 'Without translation, technical mechanisms sound like overhead to non-practitioners. "Module boundary enforcement" sounds like process bureaucracy. The same decision framed as "architectural guardrails that prevent cross-team conflicts" connects to an outcome managers already value: fewer coordination problems, fewer incidents, faster shipping.',
     },
     {
       type: 'checkpoint',
@@ -68,20 +99,24 @@ const content: LessonContent = {
 
     // === CONCRETE TRANSLATIONS ===
     {
-      type: 'code-demo',
-      title: 'Architecture proposal: technical version (what you think)',
-      body: 'This is how you might describe the architecture to yourself or another agent-first practitioner. Accurate, but impenetrable to most stakeholders.',
-      language: 'markdown',
-      filename: 'docs/architecture-internal.md',
-      code: "# Architecture: Agent-Fleet Optimized Monorepo\n\n## Design\n- Nx monorepo with enforced module boundaries via eslint\n- CLAUDE.md per package defining scope, constraints, and verification\n- Task graph decomposition for parallel agent execution\n- Git worktrees enabling 5+ simultaneous agent sessions\n- Automated verification pipeline: typecheck → test → build per package\n\n## Deployment\n- Independent deploy pipelines per package\n- API versioning enabling parallel evolution\n- Strangler fig pattern for legacy migration\n\n## Agent Protocol\n- Each agent scoped to single package via CLAUDE.md\n- No cross-package imports except @repo/shared-types\n- Agents self-verify via package-level test + build",
-    },
-    {
-      type: 'code-demo',
-      title: 'Architecture proposal: stakeholder version (what they hear)',
-      body: 'Same architecture, translated for engineering leadership. Focuses on outcomes, cost, and risk reduction.',
-      language: 'markdown',
-      filename: 'docs/architecture-proposal.md',
-      code: "# Architecture Proposal: Scalable Development Platform\n\n## Business Case\nOur current architecture requires manual coordination between developers\nworking on related features. This proposal eliminates coordination overhead\nthrough architectural boundaries, enabling parallel development at 3-5x\ncurrent velocity.\n\n## Key Outcomes\n- **Ship velocity**: 5x feature throughput without hiring\n- **Quality**: Automated verification catches 94% of defects pre-merge\n- **Onboarding**: New contributors productive in hours, not weeks\n  (self-documenting packages with clear scope definitions)\n- **Risk reduction**: Independent packages deploy independently —\n  a billing change cannot break authentication\n\n## Cost\n- 2 weeks initial setup (package boundaries + CI pipelines)\n- Zero ongoing maintenance — boundaries are enforced by tooling\n- Net savings: eliminates ~15hrs/week of cross-team coordination\n\n## Evidence\n- Pilot: billing module rebuilt in 3 days (previously estimated 3 weeks)\n- Defect rate in pilot: 0 production bugs in 45 days\n- Deploy frequency in pilot: 4x daily vs 2x weekly",
+      type: 'compare',
+      title: 'Architecture proposal: technical vs stakeholder',
+      body: 'The exact same architecture, written for two audiences. One gets blank stares. The other gets funded.',
+      left: {
+        label: 'What You Think (Technical)',
+        content: '# Agent-Fleet Optimized Monorepo\n\n- Nx monorepo with enforced module boundaries\n- CLAUDE.md per package for scope + constraints\n- Task graph decomposition for parallel agents\n- Git worktrees enabling 5+ agent sessions\n- Verification pipeline: typecheck -> test -> build\n- Independent deploy pipelines per package\n- Strangler fig pattern for legacy migration\n- Agents scoped via CLAUDE.md, no cross-imports',
+        language: 'text',
+        filename: 'docs/architecture-internal.md',
+      },
+      right: {
+        label: 'What They Hear (Stakeholder)',
+        content: '# Scalable Development Platform\n\n- 5x feature throughput without hiring\n- 94% of defects caught before production\n- New contributors productive in hours not weeks\n- A billing change cannot break authentication\n- 2 weeks setup, zero ongoing maintenance\n- Saves ~15hrs/week of coordination overhead\n- Pilot: 3-day rebuild vs 3-week estimate\n- 0 production bugs in 45-day pilot',
+        language: 'text',
+        filename: 'docs/architecture-proposal.md',
+      },
+      question: 'Which version would a VP of Engineering approve budget for?',
+      correctSide: 'right',
+      explanation: 'The stakeholder version never mentions agents, CLAUDE.md, worktrees, or eslint — these are implementation details. It leads with outcomes: speed (5x), quality (94%), cost savings (15hrs/week), and evidence (pilot results). Stakeholders fund outcomes, not mechanisms.',
     },
     {
       type: 'multiple-choice',
@@ -120,22 +155,43 @@ const content: LessonContent = {
 
     // === DEFENDING UNDER SCRUTINY ===
     {
-      type: 'info',
-      title: 'The questions you will face',
-      body: "Stakeholders will push back. 'How do you know agents will not introduce bugs?' Show your verification pipeline results — zero production defects in the pilot. 'What if the AI makes a mistake?' Show your override log and the human review gate. 'Is this just a fad?' Show your deployment frequency before and after. 'Can we hire instead?' Show the cost comparison: 5 agents cost less per month than one junior engineer, produce output 24/7, and require zero management overhead. Every objection has a data-backed answer.",
+      type: 'multiple-choice',
+      question: 'A stakeholder asks: "How do you know agents will not introduce bugs?" What is the strongest response?',
+      options: [
+        'AI has gotten very good at writing code — the error rate is low',
+        'Our verification pipeline caught every defect in the pilot — zero production bugs in 45 days, with 94% test coverage enforced automatically on every change',
+        'We review all agent-generated code manually before merging',
+        'We only use agents for simple, low-risk tasks',
+      ],
+      correctIndex: 1,
+      explanation: 'Data beats reassurance. "AI is good" is an opinion. "Zero production bugs in 45 days with automated verification" is evidence. Stakeholders trust numbers from YOUR system, not general claims about AI capability. The verification pipeline is the answer to every quality objection.',
     },
     {
-      type: 'info',
-      title: 'Show shipped results, not theory',
-      body: "The single most powerful defense is: it already works. Before proposing agent-first architecture to leadership, run a pilot. Build one feature with agents, measure the results, and present the EVIDENCE. 'Here is what we shipped last week using this approach. It took 3 days instead of 3 weeks. Zero bugs in production. Here is the commit history showing 5 parallel streams of work.' Theory is debatable. Shipped software is not.",
+      type: 'multiple-choice',
+      question: 'A VP pushes back: "Can we just hire more engineers instead of using AI?" What is the most compelling counter-argument?',
+      options: [
+        'AI is the future — we need to adopt it early',
+        '5 agents cost $47/month vs $750K/year for 5 engineers, produce output 24/7, and the pilot already proved equivalent quality with zero production bugs',
+        'Hiring takes too long in the current market',
+        'Engineers will be replaced by AI eventually anyway',
+      ],
+      correctIndex: 1,
+      explanation: 'The strongest response connects cost, evidence, and quality simultaneously. It is not about agents vs humans — it is about the specific ROI this approach has already demonstrated in YOUR codebase. The pilot results make the cost argument undeniable.',
     },
     {
-      type: 'code-demo',
-      title: 'Evidence package for stakeholder review',
-      body: 'Prepare this before any architecture proposal meeting. Hard numbers silence theoretical objections.',
+      type: 'code-fill',
+      instruction: 'Complete this evidence package that you would present before any architecture proposal meeting. Hard numbers silence theoretical objections.',
       language: 'markdown',
       filename: 'docs/pilot-results.md',
-      code: "# Pilot Results: Agent-First Architecture\n\n## Scope\nRebuilt the billing module using the proposed architecture.\n\n## Timeline Comparison\n| Metric | Traditional (est.) | Agent-First (actual) |\n|--------|-------------------|---------------------|\n| Calendar days | 15-20 | 3 |\n| Developer hours | 80-120 | 12 (direction + review) |\n| PRs merged | 8-12 | 23 (small, focused) |\n| Production bugs (30 days) | 2-4 (historical avg) | 0 |\n\n## Quality Metrics\n- Test coverage: 94% (vs 67% team average)\n- Type safety: strict mode, zero `any` usage\n- Build time: 8s (vs 45s for legacy module)\n\n## Cost\n- Agent compute: $47 total for entire rebuild\n- Human time: 12 hours @ blended rate\n- Total cost: ~$850 vs estimated $8,000-12,000 traditional\n\n## What This Means at Scale\nIf we apply this to remaining 8 modules:\n- Estimated 6 weeks total (vs 6+ months traditional)\n- Cost: ~$7,000 (vs ~$80,000 traditional)\n- Result: Modern, tested, documented, independently deployable",
+      template: '# Pilot Results: Agent-First Architecture\n\n## Scope\nRebuilt the {{pilot_module}} using the proposed architecture.\n\n## Timeline Comparison\n| Metric | Traditional (est.) | Agent-First (actual) |\n|--------|-------------------|---------------------|\n| Calendar days | 15-20 | {{calendar_days}} |\n| Developer hours | 80-120 | {{dev_hours}} (direction + review) |\n| Production bugs (30 days) | 2-4 (historical avg) | {{bug_count}} |\n\n## Cost\n- Agent compute: $47 total for entire rebuild\n- Total cost: ~$850 vs estimated ${{traditional_cost}} traditional',
+      blanks: [
+        { id: 'pilot_module', answer: 'billing module', alternatives: ['billing', 'billing service', 'payments module'], placeholder: 'which module?', hint: 'The module chosen for the pilot rebuild' },
+        { id: 'calendar_days', answer: '3', alternatives: ['3 days', 'three'], placeholder: 'how many days?', hint: 'Dramatically fewer than the 15-20 day estimate' },
+        { id: 'dev_hours', answer: '12', alternatives: ['12 hours', 'twelve'], placeholder: 'how many hours?', hint: 'Human time spent on direction and review' },
+        { id: 'bug_count', answer: '0', alternatives: ['zero', 'none'], placeholder: 'how many bugs?', hint: 'The most impressive metric in the entire report' },
+        { id: 'traditional_cost', answer: '8,000-12,000', alternatives: ['8000-12000', '8,000', '8000', '10,000'], placeholder: 'estimated cost?', hint: 'The traditional approach estimate range' },
+      ],
+      explanation: 'An evidence package with hard numbers is the single most powerful tool for defending agent-first architecture. Theory is debatable — "zero production bugs in 45 days" and "$850 vs $8,000" are not. Always run a pilot and measure results before proposing expansion.',
     },
     {
       type: 'multiple-choice',
@@ -157,14 +213,28 @@ const content: LessonContent = {
 
     // === BUILDING CREDIBILITY ===
     {
-      type: 'info',
-      title: 'Credibility is earned in deployments',
-      body: "No amount of presentation skill replaces results. The architect who deploys daily with zero rollbacks has more credibility than the architect with beautiful slides. Your credibility in proposing agent-first architecture comes from demonstrating it works in YOUR context, with YOUR codebase, under YOUR constraints. Start small. Ship something. Measure it. Then propose expanding. The proposal backed by 'here is what we already shipped' is irresistible.",
+      type: 'multiple-choice',
+      question: 'Two architects propose agent-first architecture to leadership. Architect A has beautiful slides with industry benchmarks. Architect B has a rebuilt billing module that shipped in 3 days with zero bugs. Who has more credibility?',
+      options: [
+        'Architect A — polished presentations show professionalism',
+        'Architect B — shipped results from YOUR codebase are irresistible evidence that theory and industry benchmarks cannot match',
+        'Both are equally credible — it depends on the audience',
+        'Neither — leadership needs to see a full migration plan first',
+      ],
+      correctIndex: 1,
+      explanation: 'Credibility is earned in deployments, not presentations. Industry benchmarks are interesting; YOUR pilot results are undeniable. "Here is what we already shipped" beats "here is what others have done" every time. Start small, ship something, measure it, then propose expanding.',
     },
     {
-      type: 'info',
-      title: 'The credibility ladder',
-      body: "Step 1: Use agents personally for your own tasks. Notice the velocity increase. Step 2: Rebuild one small component using agent-first principles. Measure results. Step 3: Share results informally with your team. Let curiosity build. Step 4: Propose a formal pilot on a medium-sized project. Step 5: Present pilot results to leadership with the evidence package. Step 6: Propose full architecture adoption. Each step builds on proven results from the previous step. You never ask for permission based on theory alone.",
+      type: 'multiple-choice',
+      question: 'What is the most important principle of the credibility ladder?',
+      options: [
+        'Start with a big proposal to show ambition',
+        'Each step builds on proven results from the previous step — you never ask for permission based on theory alone',
+        'Get leadership approval before doing anything with agents',
+        'Wait until AI tools are more mature before proposing adoption',
+      ],
+      correctIndex: 1,
+      explanation: 'The credibility ladder works because each step produces evidence that funds the next step. Personal use → small rebuild → informal sharing → formal pilot → leadership proposal → full adoption. You never ask for permission based on theory — only based on results you have already shipped.',
     },
     {
       type: 'order',
@@ -215,17 +285,26 @@ const content: LessonContent = {
 
     // === COMMON STAKEHOLDER PERSONAS ===
     {
-      type: 'info',
-      title: 'Know your audience',
-      body: "Different stakeholders need different translations. The CTO cares about technical risk and long-term maintainability. The VP of Engineering cares about team productivity and hiring costs. The Product Manager cares about feature delivery speed. The CFO cares about cost per feature. One architecture, four conversations. Prepare translations for each audience before the meeting, not during it.",
+      type: 'match',
+      instruction: 'Match each stakeholder role to the lead metric they care about most:',
+      leftItems: ['CTO', 'VP of Engineering', 'Product Manager', 'CFO'],
+      rightItems: ['Cost per feature ($8,000 to $850)', 'Feature delivery speed (3 weeks to 3 days)', 'Team productivity without proportional hiring', 'Technical risk and architectural entropy'],
+      correctPairs: { 0: 3, 1: 2, 2: 1, 3: 0 },
+      explanation: 'The CTO cares about technical risk and long-term maintainability. The VP of Engineering cares about team productivity and hiring costs. The Product Manager cares about feature delivery speed. The CFO cares about cost per feature. One architecture, four conversations. Prepare translations for each audience before the meeting, not during it.',
     },
     {
-      type: 'code-demo',
-      title: 'Audience-specific talking points',
-      body: 'Same architecture, four different framings. Prepare all four before any cross-functional meeting.',
+      type: 'code-fill',
+      instruction: 'Complete this audience-specific talking points document. Fill in the key metric that resonates most with each stakeholder.',
       language: 'markdown',
       filename: 'docs/talking-points.md',
-      code: "# Agent-First Architecture: Audience Translations\n\n## For the CTO\n- \"Enforced module boundaries reduce architectural entropy\"\n- \"Independent deployment reduces blast radius of any single change\"\n- \"We are building on standard patterns (monorepo, CI/CD) with better enforcement\"\n- \"Vendor-agnostic: the architecture works with any AI or with humans\"\n\n## For VP Engineering\n- \"5x throughput without proportional headcount growth\"\n- \"New contributors are productive in hours due to self-documenting packages\"\n- \"15 hours/week coordination overhead eliminated by architectural boundaries\"\n- \"Pilot team shipping 4x daily vs org average of 2x weekly\"\n\n## For Product Manager\n- \"Feature X that was estimated at 3 weeks can ship in 3 days\"\n- \"Parallel development: features do not block each other\"\n- \"Faster iteration: we can try 5 approaches in the time 1 used to take\"\n- \"Quality maintained: zero production bugs in 45-day pilot\"\n\n## For CFO\n- \"$47 compute cost vs $8,000 traditional development cost for same output\"\n- \"Hiring 5 engineers = $750K/year. Agent fleet = ~$5K/year for equivalent output\"\n- \"Reduced coordination overhead = fewer meetings = more build time\"\n- \"Lower defect rate = less emergency response cost\"",
+      template: '# Agent-First Architecture: Audience Translations\n\n## For the CTO\n- "Enforced module boundaries reduce {{cto_concern}}"\n- "Vendor-agnostic: works with any AI or with humans"\n\n## For VP Engineering\n- "{{vp_metric}} without proportional headcount growth"\n- "New contributors productive in hours via self-documenting packages"\n\n## For Product Manager\n- "Feature X estimated at 3 weeks can ship in {{pm_timeline}}"\n- "Parallel development: features do not block each other"\n\n## For CFO\n- "$47 compute cost vs ${{cfo_comparison}} traditional development cost"',
+      blanks: [
+        { id: 'cto_concern', answer: 'architectural entropy', alternatives: ['technical risk', 'system complexity', 'technical debt'], placeholder: 'what does the CTO worry about?', hint: 'The gradual degradation of system architecture over time' },
+        { id: 'vp_metric', answer: '5x throughput', alternatives: ['5x velocity', '5x development capacity', '5x feature throughput', '5x productivity'], placeholder: 'what multiplier?', hint: 'The headline throughput improvement from the pilot' },
+        { id: 'pm_timeline', answer: '3 days', alternatives: ['3 days instead of 3 weeks', 'three days', '3d'], placeholder: 'how fast?', hint: 'The actual timeline achieved in the pilot vs 3-week estimate' },
+        { id: 'cfo_comparison', answer: '8,000', alternatives: ['8000', '8,000-12,000', '8000-12000', '10,000'], placeholder: 'traditional cost?', hint: 'The traditional development cost for the same output' },
+      ],
+      explanation: 'Each stakeholder hears the same architecture through a different lens. Preparing audience-specific talking points before a cross-functional meeting means you never scramble to translate on the fly. The CTO hears risk reduction, the VP hears productivity, the PM hears speed, the CFO hears savings.',
     },
     {
       type: 'multiple-choice',
@@ -247,14 +326,24 @@ const content: LessonContent = {
 
     // === HANDLING RESISTANCE ===
     {
-      type: 'info',
-      title: 'When they say no',
-      body: "Sometimes the answer is no. Maybe the organization is not ready. Maybe there is a hiring freeze that makes 'replace hiring with agents' politically toxic. Maybe the VP had a bad experience with AI-generated code. When the answer is no: do not argue. Say 'understood.' Then keep shipping with agents personally. Keep building your evidence. Bring it back in 3 months with even stronger results. Persistence backed by data is persuasive. Arguing is not.",
-    },
-    {
-      type: 'info',
-      title: 'The long game',
-      body: "Agent-first architecture will become standard. You are early. Being early means you face resistance that will not exist in 2 years. Your job is not to convince everyone today — it is to build such undeniable results that adoption becomes obvious. Every feature you ship with agents, every bug you avoid through verification pipelines, every deadline you beat through parallel execution — these compound into a case that makes itself. Play the long game.",
+      type: 'compare',
+      title: 'When they say no: arguing vs persistence',
+      body: 'Two approaches when your proposal gets rejected. One burns bridges. The other builds an irresistible case over time.',
+      left: {
+        label: 'Arguing (Counterproductive)',
+        content: '"But the data clearly shows..."\n"You are not understanding the ROI..."\n"Every competitor will adopt this..."\n"We are falling behind by not doing this..."\n\nResult:\n- Stakeholder feels pressured\n- Your credibility decreases\n- Future proposals face more skepticism\n- You become "the AI person" (not a compliment)\n- Door closes harder each time',
+        language: 'text',
+        filename: 'arguing.txt',
+      },
+      right: {
+        label: 'Persistence with Evidence',
+        content: '"Understood. I will keep you updated."\n\nThen quietly:\n- Keep shipping with agents personally\n- Measure every win: time saved, bugs avoided\n- Share results informally with curious peers\n- Build a bigger evidence package\n- Come back in 3 months with stronger data\n\nResult:\n- Stakeholder feels respected\n- Your credibility increases\n- Results compound and speak for themselves\n- Adoption becomes obvious, not forced\n- Door stays open',
+        language: 'text',
+        filename: 'persistence.txt',
+      },
+      question: 'Which approach gets agent-first architecture adopted long-term?',
+      correctSide: 'right',
+      explanation: 'Agent-first architecture will become standard. You are early, which means you face resistance that will not exist in 2 years. Your job is not to convince everyone today — it is to build such undeniable results that adoption becomes obvious. Persistence backed by data is persuasive. Arguing is not. Play the long game.',
     },
 
     // === SYNTHESIS ===

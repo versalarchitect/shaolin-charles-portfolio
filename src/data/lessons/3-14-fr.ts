@@ -17,9 +17,16 @@ const content: LessonContent = {
 
     // === PHASE 1: DECOMPOSITION ===
     {
-      type: 'info',
-      title: 'Phase 1 : Décomposer le tableau de bord d\'équipe',
-      body: "Le produit a quatre surfaces principales : (1) Statut des projets — des cartes montrant les projets actifs, leur progression et leur statut. (2) Métriques de vélocité — des graphiques montrant la production de l'équipe dans le temps. (3) Contributions des membres — qui a fait quoi, nombre d'activités, travaux récents. (4) Fil d'activité — flux en temps réel des actions de l'équipe. Chacun correspond à un agent.",
+      type: 'multiple-choice',
+      question: 'Le tableau de bord d\'équipe a 4 surfaces : Statut des projets, Métriques de vélocité, Contributions des membres et Fil d\'activité. Comment assigner les agents ?',
+      options: [
+        'Un agent construit les quatre surfaces séquentiellement',
+        'Chaque surface correspond à un agent — quatre flux de travail parallèles',
+        'Deux agents se partagent le travail : un pour les données, un pour l\'UI',
+        'Utiliser un patron essaim avec 8 agents pour la vitesse maximale',
+      ],
+      correctIndex: 1,
+      explanation: "Le produit a quatre surfaces principales, et chacune correspond à un agent. Ça donne le parallélisme maximum : les quatre agents peuvent construire simultanément quand les contrats sont définis en amont.",
     },
     {
       type: 'diagram',
@@ -69,9 +76,16 @@ const content: LessonContent = {
 
     // === PHASE 2: WORKTREE SETUP ===
     {
-      type: 'info',
-      title: 'Phase 2 : Configurer l\'espace de travail',
-      body: "Quatre agents ont besoin de quatre environnements isolés. Les worktrees Git donnent à chaque agent son propre répertoire de travail sur sa propre branche — isolation complète avec historique partagé. Configure-les depuis une branche main propre.",
+      type: 'multiple-choice',
+      question: 'Pourquoi quatre agents parallèles ont-ils chacun besoin de leur propre worktree git ?',
+      options: [
+        'Les worktrees s\'exécutent plus vite que les branches régulières',
+        'Chaque agent a besoin d\'une isolation complète des fichiers sur sa propre branche — les worktrees fournissent des répertoires de travail séparés avec un historique partagé',
+        'Les worktrees permettent aux agents de communiquer via des fichiers partagés',
+        'Git exige des worktrees pour plus de 2 branches',
+      ],
+      correctIndex: 1,
+      explanation: "Quatre agents ont besoin de quatre environnements isolés. Les worktrees Git donnent à chaque agent son propre répertoire de travail sur sa propre branche — isolation complète avec historique partagé. Sans worktrees, les agents écraseraient les modifications des autres dans le même répertoire de travail.",
     },
     {
       type: 'terminal',
@@ -111,17 +125,23 @@ const content: LessonContent = {
 
     // === PHASE 3: WRITE CONTRACTS AND SPECS ===
     {
-      type: 'info',
-      title: 'Phase 3 : Définir les contrats et les spécifications par agent',
-      body: "Avant de lancer quelque agent que ce soit, tu écris : (1) les contrats d'interface qui définissent chaque frontière inter-modules, et (2) les spécifications par agent qui disent à chaque agent exactement quoi construire, quels fichiers lui appartiennent, et quelles contraintes suivre. Ça prend 10-15 minutes et sauve des heures de douleur d'intégration.",
+      type: 'multiple-choice',
+      question: 'Avant de lancer quelque agent que ce soit, quelles deux choses l\'orchestrateur doit-il écrire ?',
+      options: [
+        'Des suites de tests et des pipelines CI/CD',
+        'Des contrats d\'interface (frontières inter-modules) et des spécifications par agent (quoi construire, propriété des fichiers, contraintes)',
+        'CLAUDE.md et README.md',
+        'Des migrations de base de données et de la documentation API',
+      ],
+      correctIndex: 1,
+      explanation: "Avant de lancer quelque agent que ce soit, tu écris : (1) les contrats d'interface qui définissent chaque frontière inter-modules, et (2) les spécifications par agent qui disent à chaque agent exactement quoi construire, quels fichiers lui appartiennent, et quelles contraintes suivre. Ça prend 10-15 minutes et sauve des heures de douleur d'intégration.",
     },
     {
-      type: 'code-demo',
-      title: 'Contrats d\'interface pour le tableau de bord d\'équipe',
-      body: "Chaque agent importe ces types. Aucun agent ne modifie ce fichier. Il définit : ce que l'API produit, ce que l'UI consomme, ce que l'auth fournit, et à quoi ressemblent les événements temps réel.",
+      type: 'code-fill',
+      instruction: 'Complète ces contrats partagés pour le tableau de bord d\'équipe. Remplis les définitions de types critiques dont les quatre agents dépendent.',
       language: 'typescript',
       filename: 'src/contracts/dashboard.ts',
-      code: `// === Shared Contracts: Team Dashboard ===
+      template: `// === Shared Contracts: Team Dashboard ===
 // Written by orchestrator. READ-ONLY for all agents.
 
 export interface AuthUser {
@@ -136,59 +156,43 @@ export interface AuthUser {
 export interface Project {
   id: string
   name: string
-  status: 'active' | 'completed' | 'archived'
+  status: {{project_status_type}}
   progress: number  // 0-100
   memberIds: string[]
   updatedAt: string
-}
-
-export interface VelocityData {
-  date: string        // YYYY-MM-DD
-  tasksCompleted: number
-  pointsDelivered: number
-}
-
-export interface MemberContribution {
-  userId: string
-  name: string
-  avatarUrl: string | null
-  tasksCompleted: number
-  reviewsGiven: number
-  commitsCount: number
-  lastActiveAt: string
 }
 
 export interface ActivityEvent {
   id: string
   userId: string
   userName: string
-  action: 'created' | 'completed' | 'reviewed' | 'commented' | 'deployed'
+  action: {{action_union}}
   target: string
   targetType: 'task' | 'pr' | 'deploy' | 'comment'
   timestamp: string
 }
 
-export interface ApiResponse<T> {
-  data: T | null
-  error: { code: string; message: string } | null
-}
-
 export interface WsMessage {
-  type: 'activity' | 'presence' | 'update'
+  type: {{ws_type_union}}
   payload: unknown
   timestamp: string
 }`,
+      blanks: [
+        { id: 'project_status_type', answer: "'active' | 'completed' | 'archived'", alternatives: ["'active' | 'completed' | 'archived'", '"active" | "completed" | "archived"'], placeholder: 'union de statut de projet', hint: 'Trois états possibles : actif, complété ou archivé' },
+        { id: 'action_union', answer: "'created' | 'completed' | 'reviewed' | 'commented' | 'deployed'", alternatives: ["'created' | 'completed' | 'reviewed' | 'commented' | 'deployed'"], placeholder: 'types d\'actions d\'activité', hint: 'Cinq actions : created, completed, reviewed, commented, deployed' },
+        { id: 'ws_type_union', answer: "'activity' | 'presence' | 'update'", alternatives: ["'activity' | 'presence' | 'update'"], placeholder: 'types de messages WebSocket', hint: 'Trois catégories : événements d\'activité, statut de présence, mises à jour de données' },
+      ],
+      explanation: "Chaque agent importe ces types. Aucun agent ne modifie ce fichier. Il définit : ce que l'API produit, ce que l'UI consomme, ce que l'auth fournit, et à quoi ressemblent les événements temps réel.",
     },
     {
-      type: 'code-demo',
-      title: 'Spécification par agent : exemple agent UI',
-      body: "Chaque agent reçoit une spécification ciblée. Celle-ci pour l'agent UI référence les contrats, précise la propriété exacte des fichiers, décrit quoi construire, et inclut des contraintes explicites. Copie ce patron pour les quatre agents.",
+      type: 'code-fill',
+      instruction: 'Complète cette spécification d\'agent UI. Remplis les frontières de propriété de fichiers, les patrons de récupération de données et les états requis des composants.',
       language: 'markdown',
       filename: 'specs/ui-agent.md',
-      code: `# UI Agent Spec: Team Dashboard Components
+      template: `# UI Agent Spec: Team Dashboard Components
 
 ## File Ownership (STRICT)
-You own: src/components/dashboard/**
+You own: {{ui_ownership}}
 You may READ: src/contracts/*, src/lib/*
 You MUST NOT MODIFY: anything outside src/components/dashboard/
 
@@ -200,21 +204,21 @@ You MUST NOT MODIFY: anything outside src/components/dashboard/
 5. DashboardLayout — page layout composing all four components
 
 ## Data Fetching
-- Use React Query hooks (useQuery)
+- Use {{data_fetching_lib}} hooks (useQuery)
 - Endpoint paths: /api/projects, /api/velocity, /api/members, /api/activity
 - Response type: ApiResponse<T> from contracts
 
 ## Required States (EVERY component)
 - Loading: Skeleton placeholder matching final layout
 - Error: Error message with retry button
-- Empty: Helpful message ("No projects yet")
-- Success: Full data rendering with null-safe access
-
-## Constraints
-- Import types ONLY from src/contracts/
-- Use Tailwind CSS (no inline styles, no CSS modules)
-- Responsive: mobile-first, grid cols adapt at md/lg breakpoints
-- Accessible: proper aria labels, keyboard navigation`,
+- Empty: {{empty_state}}
+- Success: Full data rendering with null-safe access`,
+      blanks: [
+        { id: 'ui_ownership', answer: 'src/components/dashboard/**', alternatives: ['src/components/dashboard/**', 'src/components/dashboard/*'], placeholder: 'patron glob de répertoire', hint: 'L\'agent UI possède tout dans le répertoire des composants dashboard' },
+        { id: 'data_fetching_lib', answer: 'React Query', alternatives: ['React Query', 'TanStack Query', 'react-query'], placeholder: 'bibliothèque de récupération de données', hint: 'La bibliothèque de gestion d\'état serveur qui fournit les hooks useQuery' },
+        { id: 'empty_state', answer: 'Helpful message ("No projects yet")', alternatives: ['Helpful message ("No projects yet")', 'Helpful message', '"No projects yet"'], placeholder: 'quoi afficher quand pas de données', hint: 'Un message convivial expliquant qu\'il n\'y a pas encore de données' },
+      ],
+      explanation: "Chaque agent reçoit une spécification ciblée. Celle-ci pour l'agent UI référence les contrats, précise la propriété exacte des fichiers, décrit quoi construire, et inclut des contraintes explicites.",
     },
     {
       type: 'checklist',
@@ -237,34 +241,46 @@ You MUST NOT MODIFY: anything outside src/components/dashboard/
 
     // === PHASE 4: LAUNCH THE FLEET ===
     {
-      type: 'info',
-      title: 'Phase 4 : Lancer les quatre agents',
-      body: "C'est le moment. Quatre fenêtres de terminal (ou processus en arrière-plan). Chaque agent est pointé vers son worktree avec sa spécification. Ils vont tous commencer à construire simultanément. Ton travail passe de l'écriture à la surveillance.",
+      type: 'multiple-choice',
+      question: 'Quand tu lances les quatre agents, vers quoi ton rôle bascule-t-il ?',
+      options: [
+        'Écrire plus de code en parallèle des agents',
+        'La surveillance — tu guettes les signaux de santé et tu interviens quand c\'est nécessaire',
+        'Attendre que tous les agents finissent, puis tout réviser d\'un coup',
+        'Tester manuellement la sortie de chaque agent au fur et à mesure',
+      ],
+      correctIndex: 1,
+      explanation: "Une fois la flotte lancée, ton travail passe de l'écriture à la surveillance. Quatre fenêtres de terminal, quatre agents qui construisent simultanément. Tu vérifies les signaux de santé : fréquence des commits, erreurs TypeScript, violations de frontières.",
     },
     {
-      type: 'code-demo',
-      title: 'Commandes de lancement de la flotte',
-      body: "Ouvre quatre terminaux (ou utilise tmux/screen). Chaque agent démarre dans son propre worktree avec une instruction claire pointant vers sa spécification. Le flag --worktree assure l'isolation des fichiers.",
+      type: 'code-fill',
+      instruction: 'Complète ce script de lancement de flotte. Remplis les chemins de worktrees et les références de spécifications pour chaque agent.',
       language: 'bash',
       filename: 'scripts/launch-fleet.sh',
-      code: `#!/bin/bash
+      template: `#!/bin/bash
 # Launch all 4 agents — run each in a separate terminal
 
 # Terminal 1: Auth Agent
-claude --worktree ../worktree-auth \
+claude --worktree {{auth_worktree}} \\
   "Follow specs/auth-agent.md. Build the authentication module. Read contracts from src/contracts/."
 
 # Terminal 2: API Agent
-claude --worktree ../worktree-api \
-  "Follow specs/api-agent.md. Build all API endpoints. Read contracts from src/contracts/."
+claude --worktree ../worktree-api \\
+  "Follow {{api_spec}}. Build all API endpoints. Read contracts from src/contracts/."
 
 # Terminal 3: UI Agent
-claude --worktree ../worktree-ui \
+claude --worktree ../worktree-ui \\
   "Follow specs/ui-agent.md. Build dashboard components. Read contracts from src/contracts/."
 
 # Terminal 4: Real-time Agent
-claude --worktree ../worktree-realtime \
+claude --worktree {{realtime_worktree}} \\
   "Follow specs/realtime-agent.md. Build WebSocket server and activity feed. Read contracts from src/contracts/."`,
+      blanks: [
+        { id: 'auth_worktree', answer: '../worktree-auth', alternatives: ['../worktree-auth'], placeholder: 'chemin worktree auth', hint: 'Suis la convention : ../worktree-{module}' },
+        { id: 'api_spec', answer: 'specs/api-agent.md', alternatives: ['specs/api-agent.md'], placeholder: 'chemin spéc API', hint: 'Suis la convention : specs/{module}-agent.md' },
+        { id: 'realtime_worktree', answer: '../worktree-realtime', alternatives: ['../worktree-realtime'], placeholder: 'chemin worktree temps réel', hint: 'Suis la convention : ../worktree-{module}' },
+      ],
+      explanation: "Ouvre quatre terminaux. Chaque agent démarre dans son propre worktree avec une instruction claire pointant vers sa spécification. Le flag --worktree assure l'isolation des fichiers.",
     },
     {
       type: 'code-fill',
@@ -312,53 +328,56 @@ MERGE_ORDER="{{merge_order}}"`,
 
     // === PHASE 5: MONITOR AND INTERVENE ===
     {
-      type: 'info',
-      title: 'Phase 5 : Surveiller la flotte',
-      body: "Pendant que les agents construisent, tu es la tour de contrôle. Vérifie chaque worktree toutes les 3-5 minutes pour les signaux de santé : fréquence des commits, erreurs TypeScript, violations de frontières de fichiers. La plupart des exécutions se terminent proprement. Mais quand quelque chose tourne mal, tu le détectes tôt.",
+      type: 'multiple-choice',
+      question: 'Quels trois signaux de santé dois-tu vérifier toutes les 3-5 minutes pendant que les agents construisent ?',
+      options: [
+        'Couverture de code, taille du bundle et statut de déploiement',
+        'Fréquence des commits, erreurs TypeScript et violations de frontières de fichiers',
+        'Utilisation CPU des agents, consommation mémoire et nombre de tokens',
+        'Révisions de PR, statut du pipeline CI et conflits de fusion',
+      ],
+      correctIndex: 1,
+      explanation: "Pendant que les agents construisent, tu es la tour de contrôle. Vérifie chaque worktree toutes les 3-5 minutes : fréquence des commits (l'agent progresse-t-il ?), erreurs TypeScript (le code compile-t-il ?), et violations de frontières de fichiers (l'agent reste-t-il dans son couloir ?). La détection précoce sauve des heures.",
     },
     {
-      type: 'code-demo',
-      title: 'Boucle de surveillance de la flotte',
-      body: "Lance ceci dans un cinquième terminal. Ça te donne une vue tableau de bord de la santé des quatre agents. Vert signifie en santé (commits récents, pas d'erreurs). Jaune signifie investiguer. Rouge signifie intervenir.",
+      type: 'code-fill',
+      instruction: 'Complète ce script de surveillance de flotte. Remplis les commandes de vérification de santé qui détectent les agents bloqués et les violations de frontières.',
       language: 'bash',
       filename: 'scripts/monitor-fleet.sh',
-      code: `#!/bin/bash
+      template: `#!/bin/bash
 # Fleet health monitor — run in a 5th terminal
 
 while true; do
   clear
   echo "=== FLEET STATUS $(date +%H:%M:%S) ==="
-  echo ""
 
   for WT in auth api ui realtime; do
     DIR="../worktree-$WT"
     [ ! -d "$DIR" ] && continue
 
     # Last commit time
-    LAST=$(git -C "$DIR" log -1 --format="%cr" 2>/dev/null || echo "no commits")
-
-    # Uncommitted changes
-    CHANGES=$(git -C "$DIR" status --porcelain | wc -l | xargs)
+    LAST=$(git -C "$DIR" log -1 --format="{{commit_format}}" 2>/dev/null || echo "no commits")
 
     # TypeScript health
-    TS_ERRORS=$(cd "$DIR" && npx tsc --noEmit 2>&1 | grep -c "error TS" 2>/dev/null || echo "0")
+    TS_ERRORS=$(cd "$DIR" && {{tsc_command}} 2>&1 | grep -c "error TS" 2>/dev/null || echo "0")
 
     # Boundary check (files outside agent's domain)
     VIOLATIONS=$(git -C "$DIR" diff --name-only main 2>/dev/null | grep -v "^src/$WT" | grep -v "^src/contracts" | wc -l | xargs)
 
-    # Status color logic
+    # Status logic
     STATUS="OK"
     [ "$TS_ERRORS" -gt 5 ] && STATUS="WARN"
-    [ "$VIOLATIONS" -gt 0 ] && STATUS="BOUNDARY VIOLATION"
-
-    printf "  %-12s | %-20s | %s changes | %s TS errors | %s\\n" \
-      "$WT" "$LAST" "$CHANGES" "$TS_ERRORS" "$STATUS"
+    [ "{{violation_check}}" ] && STATUS="BOUNDARY VIOLATION"
   done
 
-  echo ""
-  echo "Press Ctrl+C to stop monitoring"
   sleep 30
 done`,
+      blanks: [
+        { id: 'commit_format', answer: '%cr', alternatives: ['%cr', '--format="%cr"'], placeholder: 'format git log', hint: 'Le placeholder de format git pour la « date relative du commit » (ex. « il y a 3 minutes »)' },
+        { id: 'tsc_command', answer: 'npx tsc --noEmit', alternatives: ['npx tsc --noEmit', 'tsc --noEmit'], placeholder: 'commande de vérification TypeScript', hint: 'Lance le compilateur TypeScript sans émettre de fichiers — juste vérifier les erreurs' },
+        { id: 'violation_check', answer: '$VIOLATIONS" -gt 0', alternatives: ['$VIOLATIONS" -gt 0', '"$VIOLATIONS" -gt 0'], placeholder: 'condition de frontière', hint: 'Vérifie si le nombre de violations est supérieur à zéro' },
+      ],
+      explanation: "Lance ceci dans un cinquième terminal. Ça te donne une vue tableau de bord de la santé des quatre agents. Vert signifie en santé, jaune signifie investiguer, rouge signifie intervenir.",
     },
     {
       type: 'multiple-choice',
@@ -380,51 +399,47 @@ done`,
 
     // === PHASE 6: CROSS-AGENT VERIFICATION ===
     {
-      type: 'info',
-      title: 'Phase 6 : Vérification inter-agents',
-      body: "Les quatre agents ont terminé leur travail. Avant de fusionner, vérifie que leurs sorties sont réellement compatibles. Les contrats devraient garantir la compatibilité — mais les agents dévient parfois. Lance des vérifications inter-agents : est-ce que les endpoints API retournent ce que l'UI attend ? Est-ce que l'auth fournit ce dont les autres modules ont besoin ? Est-ce que le module temps réel émet des événements dans la forme que l'UI consomme ?",
+      type: 'multiple-choice',
+      question: 'Les quatre agents ont fini. Pourquoi dois-tu vérifier la compatibilité inter-agents AVANT de fusionner ?',
+      options: [
+        'La fusion résout automatiquement toutes les incompatibilités de types',
+        'Git rejettera les branches incompatibles pendant la fusion',
+        'Les agents dévient parfois des contrats — attraper les incompatibilités avant la fusion empêche les erreurs de se multiplier à travers 4 branches',
+        'La vérification inter-agents est optionnelle si les contrats étaient bien définis',
+      ],
+      correctIndex: 2,
+      explanation: "Les contrats devraient garantir la compatibilité, mais les agents dévient parfois. Lance des vérifications inter-agents avant la fusion : est-ce que les endpoints API retournent ce que l'UI attend ? Attraper les incompatibilités avant la fusion empêche qu'elles se multiplient à travers 4 branches.",
     },
     {
-      type: 'code-demo',
-      title: 'Vérification de compatibilité inter-agents',
-      body: "Ce script vérifie que la sortie de l'Agent A correspond aux attentes de l'Agent B. C'est essentiellement un test d'intégration que tu lances avant l'étape de fusion. Attrape les incompatibilités ici — pas après avoir fusionné 4 branches.",
+      type: 'code-fill',
+      instruction: 'Complète ce script de vérification inter-agents. Remplis les patrons grep qui détectent les problèmes de compatibilité entre agents.',
       language: 'bash',
       filename: 'scripts/verify-compatibility.sh',
-      code: `#!/bin/bash
+      template: `#!/bin/bash
 # Cross-agent compatibility verification
 echo "=== Cross-Agent Verification ==="
 
 # 1. Check: API endpoints match what UI fetches
-echo ""
 echo "--- API ↔ UI Contract Check ---"
-# Extract fetch URLs from UI code
-UI_ENDPOINTS=$(grep -roh "fetch.*'/api/[^']*'" ../worktree-ui/src/ | sort -u)
-# Extract route definitions from API code
-API_ROUTES=$(grep -roh "router\.\(get\|post\).*'/api/[^']*'" ../worktree-api/src/ | sort -u)
+UI_ENDPOINTS=$(grep -roh "{{ui_fetch_pattern}}" ../worktree-ui/src/ | sort -u)
+API_ROUTES=$(grep -roh "router\\.\\(get\\|post\\).*'/api/[^']*'" ../worktree-api/src/ | sort -u)
 echo "UI expects: $UI_ENDPOINTS"
 echo "API provides: $API_ROUTES"
 
-# 2. Check: Auth session shape matches what others import
-echo ""
-echo "--- Auth Session Shape Check ---"
+# 2. Check: Auth exports
 AUTH_EXPORTS=$(grep "export" ../worktree-auth/src/auth/types.ts 2>/dev/null)
-echo "Auth exports: $AUTH_EXPORTS"
 
-# 3. Check: Real-time events match UI event handlers
-echo ""
-echo "--- Real-time ↔ UI Event Check ---"
-RT_EVENTS=$(grep -roh "type:.*'[^']*'" ../worktree-realtime/src/ | sort -u)
-UI_HANDLERS=$(grep -roh "case.*'[^']*'" ../worktree-ui/src/ | sort -u)
-echo "RT emits: $RT_EVENTS"
-echo "UI handles: $UI_HANDLERS"
-
-# 4. TypeScript check across all worktrees
-echo ""
+# 3. TypeScript check across all worktrees
 echo "--- TypeScript Health ---"
-for WT in auth api ui realtime; do
+for WT in {{worktree_list}}; do
   ERRORS=$(cd "../worktree-$WT" && npx tsc --noEmit 2>&1 | grep -c "error TS")
   echo "  $WT: $ERRORS errors"
 done`,
+      blanks: [
+        { id: 'ui_fetch_pattern', answer: "fetch.*'/api/[^']*'", alternatives: ["fetch.*'/api/[^']*'"], placeholder: 'patron grep pour les appels fetch UI', hint: 'Correspond aux appels fetch() qui référencent des chemins /api/ entre guillemets simples' },
+        { id: 'worktree_list', answer: 'auth api ui realtime', alternatives: ['auth api ui realtime'], placeholder: 'tous les noms de worktrees', hint: 'Liste les quatre noms de modules séparés par des espaces' },
+      ],
+      explanation: "Ce script vérifie que la sortie de l'Agent A correspond aux attentes de l'Agent B. C'est un test d'intégration avant la fusion. Attrape les incompatibilités ici — pas après avoir fusionné 4 branches.",
     },
     {
       type: 'checklist',
@@ -448,9 +463,16 @@ done`,
 
     // === PHASE 7: RESOLVE CONFLICTS AND MERGE ===
     {
-      type: 'info',
-      title: 'Phase 7 : Fusionner la flotte',
-      body: "Quatre branches, un main. Fusionne-les une à la fois dans l'ordre des dépendances : Auth d'abord (les autres peuvent en dépendre), puis API, puis UI, puis Temps réel. Après chaque fusion, lance une vérification TypeScript pour attraper les problèmes d'intégration avant qu'ils ne s'accumulent.",
+      type: 'multiple-choice',
+      question: 'Dans quel ordre fusionner les quatre branches (Auth, API, UI, Temps réel) ?',
+      options: [
+        'Fusionner les quatre simultanément pour gagner du temps',
+        'UI d\'abord (le plus visible), puis API, puis Auth, puis Temps réel',
+        'Auth d\'abord (fondation), puis API (couche de données), puis UI et Temps réel (consommateurs)',
+        'Ordre alphabétique : API, Auth, Temps réel, UI',
+      ],
+      correctIndex: 2,
+      explanation: "Fusionne dans l'ordre des dépendances : Auth d'abord (les autres dépendent des types de session), puis API (produit les données pour les consommateurs), puis UI et Temps réel (consommateurs). Après chaque fusion, lance une vérification TypeScript pour attraper les problèmes d'intégration avant qu'ils ne s'accumulent.",
     },
     {
       type: 'interactive-diagram',
@@ -545,9 +567,16 @@ done`,
       hint: 'Fusionne feat/realtime comme dernière branche',
     },
     {
-      type: 'info',
-      title: 'Gérer les conflits de fusion',
-      body: "Si les contrats ont été respectés, les conflits devraient être minimaux — principalement dans les fichiers de configuration partagés (package.json, tsconfig). Résous-les manuellement : combine les ajouts de dépendances, fusionne les alias de chemins. Si tu vois des conflits dans le code source, un agent a violé sa frontière — vérifie le journal de violations de frontières de ton moniteur.",
+      type: 'multiple-choice',
+      question: 'Tu vois des conflits de fusion dans le code source (pas juste les fichiers de config). Qu\'est-ce que ça indique ?',
+      options: [
+        'Du développement parallèle normal — résous les conflits manuellement',
+        'Un agent a violé sa frontière de propriété de fichiers — vérifie le journal de violations',
+        'Les contrats étaient mal définis et doivent être réécrits',
+        'Tu aurais dû utiliser rebase au lieu de merge',
+      ],
+      correctIndex: 1,
+      explanation: "Si les contrats ont été respectés, les conflits devraient être minimaux — principalement dans les fichiers de configuration partagés (package.json, tsconfig). Si tu vois des conflits dans le code source, un agent a violé sa frontière. Vérifie le journal de violations de frontières de ton moniteur pour identifier quel agent a dépassé son répertoire assigné.",
     },
     {
       type: 'checkpoint',
@@ -557,17 +586,23 @@ done`,
 
     // === PHASE 8: SHIP ===
     {
-      type: 'info',
-      title: 'Phase 8 : Vérification finale et livraison',
-      body: "Le code est fusionné. Lance la suite complète de vérification : vérification TypeScript, lint, build, et un test de fumée manuel des parcours utilisateur clés. Si tout passe, pousse sur main et déploie. Tu viens de livrer un produit construit par une flotte d'agents coordonnés.",
+      type: 'multiple-choice',
+      question: 'Le code est fusionné. Quelle est la séquence de vérification finale correcte avant de livrer ?',
+      options: [
+        'Juste lancer le build — si ça passe, livre',
+        'Vérification TypeScript, lint, build et test de fumée manuel des parcours utilisateur clés',
+        'Lancer les tests seulement — TypeScript et lint sont optionnels pour la livraison',
+        'Pousser sur main d\'abord, puis vérifier si le déploiement réussit',
+      ],
+      correctIndex: 1,
+      explanation: "Lance la suite complète de vérification : vérification TypeScript (les types compilent), lint (cohérence de style), build (bundle de production), et test de fumée manuel des parcours utilisateur clés. Ne pousse sur main qu'après que tout passe. Tu viens de livrer un produit construit par une flotte d'agents coordonnés.",
     },
     {
-      type: 'code-demo',
-      title: 'Séquence de livraison finale',
-      body: "La procédure complète de livraison. Le build vérifie que tous les modules compilent ensemble. Le lint attrape les problèmes de style. Le push déclenche ton pipeline de déploiement. C'est le moment de vérité.",
+      type: 'code-fill',
+      instruction: 'Complète cette séquence de livraison finale. Remplis les commandes de vérification qui doivent toutes passer avant de pousser.',
       language: 'bash',
       filename: 'scripts/ship.sh',
-      code: `#!/bin/bash
+      template: `#!/bin/bash
 # Final verification and ship
 set -e  # Exit on any error
 
@@ -575,12 +610,12 @@ echo "=== Final Verification ==="
 
 # 1. TypeScript — full project type check
 echo "Running TypeScript check..."
-npx tsc --noEmit
+{{tsc_check}}
 echo "  TypeScript: PASS"
 
 # 2. Lint — code style consistency
 echo "Running linter..."
-npm run lint
+{{lint_command}}
 echo "  Lint: PASS"
 
 # 3. Build — production bundle
@@ -588,23 +623,19 @@ echo "Running production build..."
 npm run build
 echo "  Build: PASS"
 
-# 4. Tests (if available)
-echo "Running tests..."
-npm test -- --passWithNoTests
-echo "  Tests: PASS"
-
-echo ""
 echo "=== All Checks Passed ==="
-echo ""
 
-# 5. Ship it
+# 4. Ship it
 echo "Pushing to main..."
-git push origin main
+{{push_command}}
 
-echo ""
-echo "Deployed. Team Dashboard built by 4 coordinated agents."
-echo "Total fleet time: ~15 minutes"
-echo "Equivalent serial time: ~60 minutes"`,
+echo "Deployed. Team Dashboard built by 4 coordinated agents."`,
+      blanks: [
+        { id: 'tsc_check', answer: 'npx tsc --noEmit', alternatives: ['npx tsc --noEmit', 'tsc --noEmit'], placeholder: 'commande de vérification TypeScript', hint: 'Lance le compilateur TypeScript en mode vérification seule (pas de sortie de fichiers)' },
+        { id: 'lint_command', answer: 'npm run lint', alternatives: ['npm run lint', 'npx eslint .'], placeholder: 'commande de lint', hint: 'Lance le linter du projet via les scripts npm' },
+        { id: 'push_command', answer: 'git push origin main', alternatives: ['git push origin main', 'git push'], placeholder: 'commande de push', hint: 'Pousse la branche main vers le remote origin' },
+      ],
+      explanation: "La procédure complète de livraison. Le build vérifie que tous les modules compilent ensemble. Le lint attrape les problèmes de style. Le push déclenche ton pipeline de déploiement. C'est le moment de vérité.",
     },
     {
       type: 'terminal',
@@ -632,9 +663,16 @@ echo "Equivalent serial time: ~60 minutes"`,
 
     // === RETROSPECTIVE ===
     {
-      type: 'info',
-      title: 'Rétrospective : ce que tu viens de faire',
-      body: "Tu as décomposé un produit en graphe de tâches, configuré des worktrees isolés, écrit des contrats et des spécifications, lancé 4 agents en parallèle, surveillé leur progression, vérifié la compatibilité inter-agents, résolu des conflits de fusion, et livré un produit déployable. C'est la maîtrise de l'orchestration — la compétence qui transforme les agents IA de jouets en force d'ingénierie de production.",
+      type: 'multiple-choice',
+      question: 'Quel est le nombre total de phases dans un sprint de flotte complet ?',
+      options: [
+        '4 phases : planifier, construire, tester, livrer',
+        '6 phases : décomposer, spécifications, lancer, surveiller, fusionner, livrer',
+        '8 phases : décomposer, worktrees, spécifications, lancer, surveiller, vérifier, fusionner, livrer',
+        '10 phases : plus il y a de phases, meilleur est le processus',
+      ],
+      correctIndex: 2,
+      explanation: "Tu as exécuté les 8 phases : (1) Décomposer en tâches, (2) Configurer les worktrees, (3) Écrire contrats et spécifications, (4) Lancer la flotte, (5) Surveiller la progression, (6) Vérifier la compatibilité inter-agents, (7) Fusionner dans l'ordre des dépendances, (8) Vérification finale et livraison. C'est la maîtrise de l'orchestration.",
     },
     {
       type: 'diagram',

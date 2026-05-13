@@ -22,17 +22,29 @@ const content: LessonContent = {
 
     // === SPECCING THE AUTH SYSTEM ===
     {
-      type: 'info',
-      title: 'Speccing an auth system for the agent',
-      body: "Before you tell the agent to build auth, you need a spec. A good auth spec includes: supported providers (email/password, OAuth with Google/GitHub), user roles (anonymous, authenticated, admin), protected routes (which pages require login), session handling (JWT duration, refresh strategy), and the RLS contract (who can read/write which tables). The more precise your spec, the fewer holes the agent leaves.",
+      type: 'multiple-choice',
+      question: 'Before telling the agent to build auth, you need a spec. Which section is MOST critical to include to prevent the agent from leaving security holes?',
+      options: [
+        'Supported OAuth providers (Google, GitHub)',
+        'Session handling (JWT duration, refresh strategy)',
+        'The RLS contract (who can read/write which tables)',
+        'UI design for the login page',
+      ],
+      correctIndex: 2,
+      explanation: 'The RLS contract is the most critical section. Without explicit per-table access rules, the agent will either skip RLS entirely or write overly permissive policies. Providers and session config matter, but security holes come from missing or wrong RLS policies.',
     },
     {
-      type: 'code-demo',
-      title: 'Example auth spec prompt',
-      body: 'Give the agent a structured spec like this. Notice the explicit mention of RLS requirements per table — this is what prevents the agent from skipping policies.',
+      type: 'code-fill',
+      instruction: 'Give the agent a structured auth spec. Complete the RLS contract section — this is what prevents the agent from skipping policies.',
       language: 'markdown',
       filename: 'auth-spec.md',
-      code: "## Auth Requirements\n\n### Providers\n- Email/password with confirmation\n- OAuth: Google, GitHub\n\n### Roles\n- anonymous: can read public content\n- authenticated: can CRUD own data\n- admin: full access (checked via profiles.role)\n\n### Protected Routes\n- /dashboard/* → authenticated\n- /admin/* → admin role\n- /api/private/* → authenticated\n\n### RLS Contract\n- profiles: users read own, admins read all\n- posts: anyone reads published, owner CRUDs own\n- comments: authenticated creates, owner deletes\n\n### Session\n- JWT expiry: 1 hour\n- Refresh token: 7 days\n- Redirect after login: /dashboard",
+      template: '## Auth Requirements\n\n### Providers\n- Email/password with confirmation\n- OAuth: Google, GitHub\n\n### Roles\n- anonymous: can read public content\n- authenticated: can CRUD own data\n- admin: full access (checked via profiles.role)\n\n### Protected Routes\n- /dashboard/* → authenticated\n- /admin/* → admin role\n\n### RLS Contract\n- profiles: {{profiles_policy}}\n- posts: anyone reads published, {{posts_policy}}\n- comments: {{comments_policy}}\n\n### Session\n- JWT expiry: 1 hour\n- Refresh token: 7 days',
+      blanks: [
+        { id: 'profiles_policy', answer: 'users read own, admins read all', alternatives: ['users read own, admin reads all', 'user reads own, admins read all'], placeholder: 'who reads profiles?', hint: 'Regular users see only their own, admins see everyone' },
+        { id: 'posts_policy', answer: 'owner CRUDs own', alternatives: ['owner CRUD own', 'owner creates/reads/updates/deletes own', 'owner manages own'], placeholder: 'who manages posts?', hint: 'The person who created the post should have full control' },
+        { id: 'comments_policy', answer: 'authenticated creates, owner deletes', alternatives: ['authenticated create, owner delete', 'authenticated inserts, owner deletes'], placeholder: 'who manages comments?', hint: 'Any logged-in user can create, but only the author can remove' },
+      ],
+      explanation: 'Each RLS contract entry specifies exactly who can do what. Without this, the agent will guess — and its guesses tend toward permissive policies like USING (true) that expose all data.',
     },
     {
       type: 'checkpoint',
@@ -42,9 +54,16 @@ const content: LessonContent = {
 
     // === DIRECTING SUPABASE AUTH SETUP ===
     {
-      type: 'info',
-      title: 'Directing the agent through Supabase auth',
-      body: "With your spec in hand, you direct the agent step by step. First: initialize Supabase locally. Second: set up email auth with confirmation enabled. Third: configure OAuth providers. Fourth: create the profiles table linked to auth.users. Fifth: write RLS policies for every table. The key is sequencing — if you dump everything at once, the agent will skip steps or make conflicting decisions.",
+      type: 'order',
+      instruction: 'Directing the agent through Supabase auth requires sequencing. Order these steps correctly — if you dump everything at once, the agent will skip steps or make conflicting decisions:',
+      items: [
+        'Write RLS policies for every table',
+        'Initialize Supabase locally',
+        'Create the profiles table linked to auth.users',
+        'Set up email auth with confirmation enabled',
+        'Configure OAuth providers',
+      ],
+      correctOrder: [1, 3, 4, 2, 0],
     },
     {
       type: 'terminal',
@@ -53,20 +72,29 @@ const content: LessonContent = {
       hint: 'The Supabase CLI command to scaffold local project config',
     },
     {
-      type: 'code-demo',
-      title: 'Supabase auth client setup',
-      body: 'The agent should generate something like this for client-side auth. Check that it uses the ANON key (not the service role key) and that the redirect URLs are correct.',
+      type: 'code-fill',
+      instruction: 'The agent generates the Supabase client. Verify it uses the correct key type — the WRONG key here is a critical security vulnerability.',
       language: 'typescript',
       filename: 'src/lib/supabase.ts',
-      code: "import { createClient } from '@supabase/supabase-js'\n\nconst supabaseUrl = import.meta.env.VITE_SUPABASE_URL\nconst supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY\n\nexport const supabase = createClient(supabaseUrl, supabaseAnonKey, {\n  auth: {\n    autoRefreshToken: true,\n    persistSession: true,\n    detectSessionInUrl: true,\n  },\n})",
+      template: "import { createClient } from '@supabase/supabase-js'\n\nconst supabaseUrl = import.meta.env.VITE_SUPABASE_URL\nconst supabaseKey = import.meta.env.{{env_key_name}}\n\nexport const supabase = createClient(supabaseUrl, supabaseKey, {\n  auth: {\n    autoRefreshToken: true,\n    {{session_option}}: true,\n    detectSessionInUrl: true,\n  },\n})",
+      blanks: [
+        { id: 'env_key_name', answer: 'VITE_SUPABASE_ANON_KEY', alternatives: ['VITE_SUPABASE_ANON_KEY'], placeholder: 'which env var?', hint: 'The PUBLIC key that respects RLS — NOT the service role key' },
+        { id: 'session_option', answer: 'persistSession', alternatives: ['persistSession'], placeholder: 'which auth option?', hint: 'Keeps the user logged in across browser refreshes' },
+      ],
+      explanation: 'Using VITE_SUPABASE_ANON_KEY is critical. The anon key respects RLS policies. Using the service role key in client code would bypass ALL security and expose every row in every table.',
     },
     {
-      type: 'code-demo',
-      title: 'OAuth sign-in functions',
-      body: 'The agent generates OAuth helpers. Verify the redirectTo URL matches your app and that scopes are minimal.',
+      type: 'code-fill',
+      instruction: 'The agent generates OAuth helpers. Complete the critical parts — the redirect URL must use a dynamic origin (not hardcoded) and scopes should be minimal.',
       language: 'typescript',
       filename: 'src/lib/auth.ts',
-      code: "import { supabase } from './supabase'\n\nexport async function signInWithGitHub() {\n  return supabase.auth.signInWithOAuth({\n    provider: 'github',\n    options: {\n      redirectTo: `${window.location.origin}/auth/callback`,\n      scopes: 'read:user user:email',\n    },\n  })\n}\n\nexport async function signInWithGoogle() {\n  return supabase.auth.signInWithOAuth({\n    provider: 'google',\n    options: {\n      redirectTo: `${window.location.origin}/auth/callback`,\n      queryParams: { access_type: 'offline', prompt: 'consent' },\n    },\n  })\n}\n\nexport async function signInWithEmail(email: string, password: string) {\n  return supabase.auth.signInWithPassword({ email, password })\n}",
+      template: "import { supabase } from './supabase'\n\nexport async function signInWithGitHub() {\n  const origin = {{origin_source}}\n  return supabase.auth.signInWithOAuth({\n    provider: 'github',\n    options: {\n      redirectTo: origin + '/auth/callback',\n      scopes: '{{github_scopes}}',\n    },\n  })\n}\n\nexport async function signInWithEmail(email: string, password: string) {\n  return supabase.auth.{{email_method}}({ email, password })\n}",
+      blanks: [
+        { id: 'origin_source', answer: 'window.location.origin', alternatives: ['window.location.origin'], placeholder: 'dynamic origin?', hint: 'The browser API that returns the current protocol + host' },
+        { id: 'github_scopes', answer: 'read:user user:email', alternatives: ['read:user user:email', 'user:email read:user'], placeholder: 'minimal GitHub scopes?', hint: 'Only request what you need: reading user info and email' },
+        { id: 'email_method', answer: 'signInWithPassword', alternatives: ['signInWithPassword'], placeholder: 'which Supabase method?', hint: 'The method for email + password authentication' },
+      ],
+      explanation: 'Using window.location.origin makes the redirect URL work in all environments (local dev, preview, production). Hardcoded URLs break in production. Minimal scopes follow the principle of least privilege.',
     },
     {
       type: 'checkpoint',
@@ -76,17 +104,29 @@ const content: LessonContent = {
 
     // === ROW-LEVEL SECURITY ===
     {
-      type: 'info',
-      title: 'Row-Level Security: the critical layer',
-      body: "RLS is Postgres's built-in authorization. When enabled on a table, every query must pass a policy check — even if the application code does not filter. This is defense in depth: even if your API has a bug, RLS prevents unauthorized access at the database level. The problem: agents enable RLS but write overly permissive policies, or they create new tables and forget to enable RLS entirely. A table with RLS disabled is wide open to anyone with the anon key.",
+      type: 'multiple-choice',
+      question: 'What is the biggest risk when agents create new database tables?',
+      options: [
+        'The agent might use incorrect column types',
+        'The agent might forget to add indexes for performance',
+        'The agent might forget to enable RLS entirely — leaving the table wide open to anyone with the anon key',
+        'The agent might use too many foreign keys',
+      ],
+      correctIndex: 2,
+      explanation: 'RLS is Postgres\'s built-in authorization. When enabled, every query must pass a policy check — even if application code does not filter. The biggest risk: agents create new tables and forget to enable RLS. A table with RLS disabled is wide open. Defense in depth: even if your API has a bug, RLS prevents unauthorized access at the database level.',
     },
     {
-      type: 'code-demo',
-      title: 'Proper RLS policies',
-      body: 'This is what correct RLS looks like for a profiles table. The agent should generate something equivalent. Watch for: auth.uid() used correctly, separate SELECT/INSERT/UPDATE policies, no blanket USING (true).',
+      type: 'code-fill',
+      instruction: 'Complete the RLS policies for a profiles table. Watch for: auth.uid() used correctly, separate policies per operation, no blanket USING (true).',
       language: 'sql',
       filename: 'supabase/migrations/002_rls_profiles.sql',
-      code: "-- Enable RLS\nALTER TABLE profiles ENABLE ROW LEVEL SECURITY;\n\n-- Users can read their own profile\nCREATE POLICY \"Users read own profile\"\n  ON profiles FOR SELECT\n  USING (auth.uid() = id);\n\n-- Admins can read all profiles\nCREATE POLICY \"Admins read all profiles\"\n  ON profiles FOR SELECT\n  USING (\n    EXISTS (\n      SELECT 1 FROM profiles\n      WHERE id = auth.uid() AND role = 'admin'\n    )\n  );\n\n-- Users can update their own profile\nCREATE POLICY \"Users update own profile\"\n  ON profiles FOR UPDATE\n  USING (auth.uid() = id)\n  WITH CHECK (auth.uid() = id);\n\n-- Only the trigger creates profiles (no direct INSERT for users)\nCREATE POLICY \"Service role inserts profiles\"\n  ON profiles FOR INSERT\n  WITH CHECK (auth.uid() = id);",
+      template: '-- Enable RLS\nALTER TABLE profiles ENABLE ROW LEVEL SECURITY;\n\n-- Users can read their own profile\nCREATE POLICY "Users read own profile"\n  ON profiles FOR SELECT\n  USING ({{own_profile_check}});\n\n-- Admins can read all profiles\nCREATE POLICY "Admins read all profiles"\n  ON profiles FOR SELECT\n  USING (\n    EXISTS (\n      SELECT 1 FROM profiles\n      WHERE id = auth.uid() AND role = \'{{admin_role}}\'\n    )\n  );\n\n-- Users can update their own profile\nCREATE POLICY "Users update own profile"\n  ON profiles FOR {{update_op}}\n  USING (auth.uid() = id)\n  WITH CHECK (auth.uid() = id);',
+      blanks: [
+        { id: 'own_profile_check', answer: 'auth.uid() = id', alternatives: ['auth.uid() = id'], placeholder: 'ownership check?', hint: 'Compare the authenticated user ID to the row ID' },
+        { id: 'admin_role', answer: 'admin', alternatives: ['admin'], placeholder: 'role name?', hint: 'The role string that grants full access' },
+        { id: 'update_op', answer: 'UPDATE', alternatives: ['update', 'UPDATE'], placeholder: 'which SQL operation?', hint: 'The operation that modifies existing rows' },
+      ],
+      explanation: 'auth.uid() = id restricts rows to their owner. The admin policy uses a subquery to check the role column. Separate SELECT and UPDATE policies give fine-grained control. Never use USING (true) — it allows everyone to access everything.',
     },
     {
       type: 'multiple-choice',
@@ -103,9 +143,9 @@ const content: LessonContent = {
 
     // === AUTH FLOW DIAGRAM ===
     {
-      type: 'diagram',
+      type: 'interactive-diagram',
       title: 'Auth Flow: Login to Data Access',
-      body: 'Every authenticated request passes through this flow. The RLS check happens at the database level, not in your application code.',
+      body: 'Every authenticated request passes through this flow. The RLS check happens at the database level, not in your application code. Step through each stage.',
       diagram: {
         direction: 'LR',
         nodes: [
@@ -122,6 +162,33 @@ const content: LessonContent = {
           { from: 'rls', to: 'data', label: 'pass' },
         ],
       },
+      stages: [
+        {
+          highlightNodes: ['login'],
+          highlightEdges: [],
+          explanation: 'User authenticates via email/password or OAuth. Supabase handles the provider handshake and returns a session.',
+        },
+        {
+          highlightNodes: ['login', 'session'],
+          highlightEdges: [{ from: 'login', to: 'session' }],
+          explanation: 'On success, Supabase issues a JWT containing the user ID (auth.uid()). This token is stored client-side and auto-refreshed.',
+        },
+        {
+          highlightNodes: ['session', 'request'],
+          highlightEdges: [{ from: 'session', to: 'request' }],
+          explanation: 'Every API request includes the JWT as a Bearer token. The Supabase client does this automatically.',
+        },
+        {
+          highlightNodes: ['request', 'rls'],
+          highlightEdges: [{ from: 'request', to: 'rls' }],
+          explanation: 'Postgres extracts auth.uid() from the JWT and evaluates RLS policies. This happens at the database level — your application code cannot bypass it.',
+        },
+        {
+          highlightNodes: ['rls', 'data'],
+          highlightEdges: [{ from: 'rls', to: 'data' }],
+          explanation: 'Only rows that pass the policy check are returned. If the user tries to read another user\'s data, RLS silently filters it out — no error, just empty results.',
+        },
+      ],
     },
     {
       type: 'checkpoint',
@@ -173,9 +240,16 @@ const content: LessonContent = {
 
     // === VERIFICATION METHODOLOGY ===
     {
-      type: 'info',
-      title: 'Verification methodology: test every path',
-      body: "Do not trust that the agent's code works because it ran without errors. Auth must be tested from every perspective: unauthenticated (no token), wrong role (authenticated but not admin), correct role, and cross-user (user A accessing user B's data). For each protected resource, you need to verify all four paths. The agent tested one. You test the other three.",
+      type: 'multiple-choice',
+      question: 'The agent\'s auth code runs without errors. How many access paths do you need to test for each protected resource?',
+      options: [
+        'One — if it works for an authenticated user, it works',
+        'Two — test authenticated and unauthenticated',
+        'Three — test unauthenticated, correct role, and wrong role',
+        'Four — test unauthenticated, wrong role, correct role, and cross-user (user A accessing user B\'s data)',
+      ],
+      correctIndex: 3,
+      explanation: 'Auth must be tested from every perspective: (1) unauthenticated/no token, (2) wrong role/authenticated but not admin, (3) correct role, and (4) cross-user/user A accessing user B\'s data. The agent tested one path (correct role). You test the other three. Do not trust code that merely runs without errors.',
     },
     {
       type: 'terminal',
@@ -184,12 +258,16 @@ const content: LessonContent = {
       hint: 'The Supabase CLI command that drops and recreates your local database',
     },
     {
-      type: 'code-demo',
-      title: 'Testing RLS from the terminal',
-      body: 'Use the Supabase CLI to test queries as different roles. This simulates what an attacker would see.',
+      type: 'code-fill',
+      instruction: 'Test RLS from the terminal by simulating different access levels. Complete the curl commands that verify security from an attacker\'s perspective.',
       language: 'bash',
       filename: 'test-rls.sh',
-      code: "# Test as anonymous (no auth) — should return empty or error\ncurl 'http://localhost:54321/rest/v1/profiles' \\\n  -H 'apikey: YOUR_ANON_KEY' \\\n  -H 'Authorization: Bearer YOUR_ANON_KEY'\n\n# Test as authenticated user — should see only own data\ncurl 'http://localhost:54321/rest/v1/profiles' \\\n  -H 'apikey: YOUR_ANON_KEY' \\\n  -H 'Authorization: Bearer USER_JWT_TOKEN'\n\n# Test cross-user access — user A trying to UPDATE user B's row\ncurl -X PATCH 'http://localhost:54321/rest/v1/profiles?id=eq.USER_B_ID' \\\n  -H 'apikey: YOUR_ANON_KEY' \\\n  -H 'Authorization: Bearer USER_A_JWT' \\\n  -H 'Content-Type: application/json' \\\n  -d '{\"display_name\": \"hacked\"}'",
+      template: "# Test as anonymous (no auth) — should return empty or error\ncurl 'http://localhost:54321/rest/v1/profiles' \\\n  -H 'apikey: YOUR_ANON_KEY' \\\n  -H 'Authorization: Bearer YOUR_ANON_KEY'\n\n# Test cross-user access — user A trying to UPDATE user B's row\ncurl -X {{http_method}} 'http://localhost:54321/rest/v1/profiles?id=eq.USER_B_ID' \\\n  -H 'apikey: YOUR_ANON_KEY' \\\n  -H 'Authorization: Bearer {{whose_token}}' \\\n  -H 'Content-Type: application/json' \\\n  -d '{\"display_name\": \"hacked\"}'",
+      blanks: [
+        { id: 'http_method', answer: 'PATCH', alternatives: ['PATCH', 'patch'], placeholder: 'which HTTP method?', hint: 'The HTTP method for partial updates' },
+        { id: 'whose_token', answer: 'USER_A_JWT', alternatives: ['USER_A_JWT', 'USER_A_TOKEN'], placeholder: 'whose JWT?', hint: 'The attacker (user A) is trying to modify user B\'s row' },
+      ],
+      explanation: 'PATCH is used for partial updates. The cross-user test uses USER_A\'s token to attempt modifying USER_B\'s row. If RLS is correct, this request will fail silently (0 rows affected) or return an error.',
     },
     {
       type: 'multiple-choice',
@@ -211,17 +289,28 @@ const content: LessonContent = {
 
     // === COMMON AGENT SECURITY HOLES ===
     {
-      type: 'info',
-      title: 'Common agent security holes',
-      body: "After reviewing hundreds of agent-generated auth implementations, these are the top failures: (1) New tables created without RLS enabled. (2) Policies that use USING (true) — allowing all access. (3) Service role key used in client-side code (bypasses all RLS). (4) Missing WITH CHECK on INSERT/UPDATE policies. (5) No policy separation between roles — one policy does everything. (6) Hardcoded redirect URLs that break in production. (7) Missing email confirmation requirement — accounts created without verification.",
+      type: 'order',
+      instruction: 'Rank the top agent-generated security holes from MOST dangerous (first) to least (last):',
+      items: [
+        'Service role key used in client-side code (bypasses all RLS)',
+        'New tables created without RLS enabled',
+        'Missing WITH CHECK on INSERT/UPDATE policies',
+        'Hardcoded redirect URLs that break in production',
+        'Policies that use USING (true) — allowing all access',
+      ],
+      correctOrder: [0, 1, 4, 2, 3],
     },
     {
-      type: 'code-demo',
+      type: 'code-diff',
       title: 'Spot the security hole',
-      body: 'The agent generated this code. Can you spot the critical security vulnerability?',
+      body: 'The agent generated the "before" code. The "after" shows the fix. Can you identify the critical vulnerability?',
       language: 'typescript',
       filename: 'src/lib/admin.ts',
-      code: "import { createClient } from '@supabase/supabase-js'\n\n// DANGER: Agent used service role key in client code!\nconst supabase = createClient(\n  import.meta.env.VITE_SUPABASE_URL,\n  import.meta.env.VITE_SUPABASE_SERVICE_ROLE_KEY // <-- THIS BYPASSES ALL RLS\n)\n\nexport async function getUsers() {\n  const { data } = await supabase.from('profiles').select('*')\n  return data\n}",
+      before: "import { createClient } from '@supabase/supabase-js'\n\nconst supabase = createClient(\n  import.meta.env.VITE_SUPABASE_URL,\n  import.meta.env.VITE_SUPABASE_SERVICE_ROLE_KEY\n)\n\nexport async function getUsers() {\n  const { data } = await supabase.from('profiles').select('*')\n  return data\n}",
+      after: "import { createClient } from '@supabase/supabase-js'\n\nconst supabase = createClient(\n  import.meta.env.VITE_SUPABASE_URL,\n  import.meta.env.VITE_SUPABASE_ANON_KEY\n)\n\nexport async function getUsers() {\n  const { data } = await supabase.from('profiles').select('*')\n  return data\n}",
+      question: 'What makes VITE_SUPABASE_SERVICE_ROLE_KEY dangerous in client-side code?',
+      highlightLines: [4],
+      explanation: 'The service role key bypasses ALL RLS checks. Any VITE_ prefixed env var is bundled into the browser JavaScript. Anyone can extract it from the bundle and access every row in every table. The fix: use VITE_SUPABASE_ANON_KEY which respects RLS policies.',
     },
     {
       type: 'multiple-choice',
@@ -238,9 +327,22 @@ const content: LessonContent = {
 
     // === TARGETED FEEDBACK ===
     {
-      type: 'info',
-      title: 'Targeted feedback: telling the agent what is wrong',
-      body: "When you find a hole, do not say \"fix the auth.\" That is too vague and the agent will make a different mistake. Be surgical: \"The profiles table has RLS enabled but the SELECT policy uses USING (true) which allows any authenticated user to read all profiles. Replace it with USING (auth.uid() = id) so users can only read their own profile. Admins should have a separate policy checking profiles.role = 'admin'.\" Specific, actionable, testable.",
+      type: 'compare',
+      title: 'Vague vs surgical security feedback',
+      body: 'When you find a security hole, the way you tell the agent matters. One approach leads to a different mistake. The other gets it fixed.',
+      question: 'Which feedback will reliably fix the security hole?',
+      correctSide: 'right',
+      left: {
+        label: 'Too vague',
+        content: '"Fix the auth."\n\nResult: Agent makes a DIFFERENT\nmistake. Maybe it removes USING\n(true) but replaces it with\nanother overly permissive policy.\n\nVagueness + security = disaster.',
+        language: 'text',
+      },
+      right: {
+        label: 'Surgical',
+        content: '"The profiles table SELECT policy\nuses USING (true) — replace with\nUSING (auth.uid() = id).\nAdd a separate admin policy\nchecking profiles.role = \'admin\'."\n\nSpecific. Actionable. Testable.',
+        language: 'text',
+      },
+      explanation: 'Surgical feedback names the table, the policy, the problem, and the fix. The agent can verify the correction mechanically. Vague feedback like "fix the auth" gives the agent room to make a different mistake — dangerous when security is at stake.',
     },
     {
       type: 'code-input',

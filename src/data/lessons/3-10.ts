@@ -104,18 +104,24 @@ const content: LessonContent = {
 
     // === DETECTION SIGNALS ===
     {
-      type: 'info',
-      title: 'Detection signals: how to know an agent is failing',
-      body: "You can't watch four terminal windows simultaneously. You need automated signals. The three clearest indicators of a failing agent: (1) output doesn't match spec structure, (2) tests fail that should pass given the spec, (3) the agent is stuck in a loop — editing the same file repeatedly or producing increasingly incoherent output.",
+      type: 'multiple-choice',
+      question: 'What are the three clearest indicators that an agent in your fleet is failing?',
+      options: [
+        'Slow execution time, high memory usage, and large file sizes',
+        'Output does not match spec structure, tests fail, and the agent edits the same file repeatedly',
+        'No git commits, no terminal output, and no network activity',
+        'Type errors, lint warnings, and missing dependencies',
+      ],
+      correctIndex: 1,
+      explanation: "You can't watch four terminals simultaneously. The three clearest automated signals: (1) output doesn't match spec structure, (2) tests fail that should pass given the spec, (3) the agent is stuck in a loop — editing the same file repeatedly or producing increasingly incoherent output.",
     },
     {
-      type: 'code-demo',
-      title: 'Quick health check script for a fleet',
-      body: "Run this periodically while your fleet is executing. It checks each worktree for signs of trouble: uncommitted churn (same files modified repeatedly), test failures, and TypeScript errors. A healthy agent produces steady commits. A failing agent produces churn.",
+      type: 'code-fill',
+      instruction: 'Complete the fleet health check script. Fill in the git commands that detect agent trouble: file churn, TypeScript errors, and commit activity.',
       language: 'bash',
       filename: 'scripts/fleet-health.sh',
-      code: `#!/bin/bash
-# Quick fleet health check — run every 2-3 minutes
+      template: `#!/bin/bash
+# Quick fleet health check -- run every 2-3 minutes
 
 WORKTREES=("auth" "api" "ui" "payments")
 
@@ -123,24 +129,48 @@ for wt in "\${WORKTREES[@]}"; do
   echo "=== Agent: $wt ==="
   cd "../worktree-$wt" 2>/dev/null || { echo "  [MISSING]"; continue; }
 
-  # Signal 1: Uncommitted file churn (same files modified 3+ times)
-  CHURN=$(git diff --stat | wc -l)
+  # Signal 1: Uncommitted file churn
+  CHURN=$(___BLANK_1___ | wc -l)
   if [ "$CHURN" -gt 20 ]; then
     echo "  [WARN] High churn: $CHURN files modified without commit"
   fi
 
   # Signal 2: TypeScript errors
-  ERRORS=$(npx tsc --noEmit 2>&1 | grep "error TS" | wc -l)
+  ERRORS=$(___BLANK_2___ 2>&1 | grep "error TS" | wc -l)
   if [ "$ERRORS" -gt 0 ]; then
     echo "  [WARN] $ERRORS TypeScript errors"
   fi
 
-  # Signal 3: Recent commit activity (healthy = commits every few minutes)
-  LAST_COMMIT=$(git log -1 --format="%cr" 2>/dev/null)
+  # Signal 3: Recent commit activity
+  LAST_COMMIT=$(___BLANK_3___ 2>/dev/null)
   echo "  Last commit: $LAST_COMMIT"
 
   cd - > /dev/null
 done`,
+      blanks: [
+        {
+          id: 'BLANK_1',
+          answer: 'git diff --stat',
+          alternatives: ['git diff --stat'],
+          hint: 'Git command that shows a summary of changed files (file names and change counts)',
+          placeholder: 'git diff command',
+        },
+        {
+          id: 'BLANK_2',
+          answer: 'npx tsc --noEmit',
+          alternatives: ['npx tsc --noEmit', 'bunx tsc --noEmit'],
+          hint: 'Run the TypeScript compiler in check-only mode',
+          placeholder: 'typecheck command',
+        },
+        {
+          id: 'BLANK_3',
+          answer: 'git log -1 --format="%cr"',
+          alternatives: ['git log -1 --format="%cr"', "git log -1 --format='%cr'"],
+          hint: 'Show the relative time of the most recent commit (e.g., "3 minutes ago")',
+          placeholder: 'last commit time command',
+        },
+      ],
+      explanation: '`git diff --stat` shows uncommitted file churn — more than 20 modified files without a commit signals trouble. `npx tsc --noEmit` catches accumulating type errors. `git log -1 --format="%cr"` shows when the last commit was — healthy agents commit every few minutes.',
     },
     {
       type: 'multiple-choice',
@@ -157,9 +187,16 @@ done`,
 
     // === ISOLATION TECHNIQUES ===
     {
-      type: 'info',
-      title: 'Isolation: containing the damage',
-      body: "Once you've detected a failing agent, isolate it immediately. The goal: prevent its bad state from affecting other agents or the main branch. With git worktrees, isolation is clean — each agent works in its own worktree. You stash or reset the bad worktree without touching anything else.",
+      type: 'multiple-choice',
+      question: 'You have detected a failing agent. What is the primary goal of the isolation step?',
+      options: [
+        'Understand why the agent failed before taking any action',
+        'Prevent the agent\'s bad state from affecting other agents or the main branch',
+        'Restart the agent with the same spec to see if it works the second time',
+        'Delete the agent\'s worktree and start from scratch',
+      ],
+      correctIndex: 1,
+      explanation: "Isolate immediately to prevent the bad state from affecting other agents or main. With git worktrees, isolation is clean — each agent works in its own worktree. Stash or reset the bad worktree without touching anything else. Analysis comes after isolation, not before.",
     },
     {
       type: 'terminal',
@@ -180,35 +217,53 @@ done`,
       hint: 'Use git checkout -- . to discard all working directory changes',
     },
     {
-      type: 'code-demo',
-      title: 'Full isolation procedure',
-      body: "Here's the complete isolation sequence. Stop the agent, preserve its work for post-mortem analysis, then clean the worktree. The stash preserves evidence — you'll want to understand WHY the agent failed so you can write a better spec for the recovery attempt.",
+      type: 'code-fill',
+      instruction: 'Complete the isolation script that preserves the failed agent\'s work, checks for bad commits, and resets to a clean state.',
       language: 'bash',
       filename: 'scripts/isolate-agent.sh',
-      code: `#!/bin/bash
-# Isolate a failing agent's worktree
+      template: `#!/bin/bash
 AGENT=$1  # e.g., "payments"
 WORKTREE="../worktree-$AGENT"
 
 echo "Isolating agent: $AGENT"
 
-# 1. Stop the agent process (if running via claude --worktree)
-# The agent's terminal session — Ctrl+C or kill the process
+# 1. Preserve the failed state for analysis
+git -C "$WORKTREE" ___BLANK_1___
 
-# 2. Preserve the failed state for analysis
-git -C "$WORKTREE" stash push -m "failed-attempt-$(date +%s)"
-
-# 3. Check if any commits were made (might need to revert)
-BAD_COMMITS=$(git -C "$WORKTREE" log main..HEAD --oneline | wc -l)
+# 2. Check if any commits were made
+BAD_COMMITS=$(git -C "$WORKTREE" ___BLANK_2___ | wc -l)
 if [ "$BAD_COMMITS" -gt 0 ]; then
   echo "  $BAD_COMMITS commits to review before merging"
-  git -C "$WORKTREE" log main..HEAD --oneline
 fi
 
-# 4. Reset to clean state
-git -C "$WORKTREE" reset --hard main
+# 3. Reset to clean state
+git -C "$WORKTREE" ___BLANK_3___
 
 echo "Worktree clean. Ready for recovery agent."`,
+      blanks: [
+        {
+          id: 'BLANK_1',
+          answer: 'stash push -m "failed-attempt-$(date +%s)"',
+          alternatives: ['stash push -m "failed-attempt-$(date +%s)"', 'stash push -m "failed-attempt"', 'stash'],
+          hint: 'Git command to save changes with a descriptive message containing a timestamp',
+          placeholder: 'stash command with message',
+        },
+        {
+          id: 'BLANK_2',
+          answer: 'log main..HEAD --oneline',
+          alternatives: ['log main..HEAD --oneline', 'log main..HEAD'],
+          hint: 'Show commits on this branch that are not on main (one line each)',
+          placeholder: 'log command for branch commits',
+        },
+        {
+          id: 'BLANK_3',
+          answer: 'reset --hard main',
+          alternatives: ['reset --hard main'],
+          hint: 'Forcefully reset to match the main branch exactly',
+          placeholder: 'hard reset command',
+        },
+      ],
+      explanation: 'The stash preserves evidence for post-mortem analysis. `log main..HEAD` shows commits the agent made (might need reverting). `reset --hard main` returns the worktree to a clean state. The sequence: preserve -> inspect -> reset. Never skip the stash — you need to understand WHY the agent failed.',
     },
     {
       type: 'checkpoint',
@@ -218,35 +273,22 @@ echo "Worktree clean. Ready for recovery agent."`,
 
     // === RECOVERY STRATEGIES ===
     {
-      type: 'info',
-      title: 'Recovery: launching a fresh agent with better context',
-      body: "Isolation is done. Now you need the work completed. Don't just re-run the same spec — the agent failed for a reason. Analyze the stashed work to understand what went wrong, then improve the spec. Common fixes: more explicit file boundaries, a concrete example of expected output, or breaking the task into smaller sub-tasks.",
-    },
-    {
-      type: 'code-demo',
-      title: 'Post-mortem: diagnosing agent failure',
-      body: "Before re-launching, understand WHY the agent failed. Look at the stashed diff for patterns. These three patterns cover 90% of agent failures in fleet operations.",
-      language: 'bash',
-      filename: 'scripts/diagnose-failure.sh',
-      code: `# Inspect the failed attempt
-git -C ../worktree-payments stash show -p
-
-# Common failure patterns to look for:
-
-# Pattern 1: Circular edits (same file modified repeatedly)
-# Look for: file appears multiple times in stash, contradictory changes
-# Cause: Agent couldn't resolve a type error or test failure
-# Fix: Provide the correct type/interface in the spec
-
-# Pattern 2: Scope creep (agent modified files outside its domain)
-# Look for: changes in src/auth/* or src/api/* from the payments agent
-# Cause: Agent decided it needed to "fix" something in another domain
-# Fix: Explicitly list forbidden files in the recovery spec
-
-# Pattern 3: Wrong abstraction (built something completely different)
-# Look for: file structure doesn't match spec at all
-# Cause: Agent misinterpreted the task
-# Fix: Include a concrete example of expected file output`,
+      type: 'compare',
+      title: 'Recovery: re-run same spec vs improved spec',
+      body: 'After isolating a failing agent, you need to complete the work. Two approaches:',
+      question: 'Which approach prevents the same failure from recurring?',
+      correctSide: 'right',
+      left: {
+        label: 'Re-run same spec',
+        content: '# Just restart the agent\nclaude --worktree ../worktree-payments \\\n  "Follow specs/payments.md"\n\n# Problems:\n# - Same spec = same failure mode\n# - No constraints learned from failure\n# - Agent may loop on the same issue\n# - No file boundaries added\n# - No concrete examples provided\n\n# Result: 70% chance of same failure',
+        language: 'bash',
+      },
+      right: {
+        label: 'Improved spec with constraints',
+        content: '# 1. Analyze the stash first\ngit -C ../worktree-payments stash show -p\n\n# 2. Identify the failure pattern:\n# - Circular edits? Add type/interface to spec\n# - Scope creep? Add DO NOT MODIFY list\n# - Wrong abstraction? Add concrete example\n\n# 3. Launch with improved spec\nclaude --worktree ../worktree-payments \\\n  "Follow specs/payments-recovery.md"\n\n# Result: Failure mode eliminated',
+        language: 'bash',
+      },
+      explanation: "Never re-run the same spec — the agent failed for a reason. Analyze the stashed work to find the failure pattern, then improve the spec with explicit constraints, file boundaries, and concrete examples. Common fixes: more explicit file boundaries, a concrete example of expected output, or breaking the task into smaller sub-tasks.",
     },
     {
       type: 'multiple-choice',
@@ -263,49 +305,59 @@ git -C ../worktree-payments stash show -p
 
     // === IMPROVED SPEC FOR RECOVERY ===
     {
-      type: 'code-demo',
-      title: 'Recovery spec: what to add after failure',
-      body: "The recovery spec includes everything the original spec had, PLUS explicit constraints learned from the failure. Notice the 'DO NOT' section and the concrete output example — these prevent the same failure mode from recurring.",
+      type: 'code-fill',
+      instruction: 'Complete the recovery spec with explicit constraints learned from the failure. Fill in the file ownership rules and the DO NOT restrictions.',
       language: 'markdown',
       filename: 'specs/payments-recovery.md',
-      code: `## Recovery: Payments Agent (Attempt 2)
+      template: `## Recovery: Payments Agent (Attempt 2)
 
 ### Task
 Build Stripe payment integration in src/payments/
 
 ### File Ownership (STRICT)
-You own: src/payments/**
+You own: ___BLANK_1___
 You may READ: src/types/contracts.ts, src/auth/types.ts
-You MUST NOT MODIFY: anything outside src/payments/
+You MUST NOT MODIFY: ___BLANK_2___
 
 ### DO NOT
 - Modify src/types/contracts.ts (use it as-is)
-- Import from src/auth/ internals (only from src/auth/types.ts)
+- Import from src/auth/ internals (only from ___BLANK_3___)
 - Create new top-level directories
 - Install new dependencies without noting them
 
 ### Expected Output Structure
-\`\`\`
 src/payments/
-├── index.ts          # Public API: createCheckout, getSubscription
-├── stripe-client.ts  # Stripe SDK wrapper
-├── webhooks.ts       # Stripe webhook handler
-├── types.ts          # Internal payment types
-└── __tests__/
-    ├── checkout.test.ts
-    └── webhooks.test.ts
-\`\`\`
-
-### Concrete Example
-Here's what src/payments/index.ts should look like:
-\`\`\`typescript
-import type { User } from '@/types/contracts'
-import { stripe } from './stripe-client'
-
-export async function createCheckout(user: User, priceId: string) {
-  // ...implementation
-}
-\`\`\``,
+  index.ts          # Public API: createCheckout, getSubscription
+  stripe-client.ts  # Stripe SDK wrapper
+  webhooks.ts       # Stripe webhook handler
+  types.ts          # Internal payment types
+  __tests__/
+    checkout.test.ts
+    webhooks.test.ts`,
+      blanks: [
+        {
+          id: 'BLANK_1',
+          answer: 'src/payments/**',
+          alternatives: ['src/payments/**', 'src/payments/*'],
+          hint: 'The agent owns everything under the payments directory',
+          placeholder: 'owned path glob',
+        },
+        {
+          id: 'BLANK_2',
+          answer: 'anything outside src/payments/',
+          alternatives: ['anything outside src/payments/', 'anything outside src/payments', 'files outside src/payments/'],
+          hint: 'The agent must not modify files outside its owned directory',
+          placeholder: 'forbidden modification scope',
+        },
+        {
+          id: 'BLANK_3',
+          answer: 'src/auth/types.ts',
+          alternatives: ['src/auth/types.ts'],
+          hint: 'The only auth file the agent is allowed to import from — only the public types',
+          placeholder: 'allowed auth import',
+        },
+      ],
+      explanation: 'The recovery spec adds explicit constraints learned from the failure: strict file ownership (`src/payments/**` only), read-only access to shared contracts, and a concrete DO NOT list. The concrete output structure and example prevent the agent from building the wrong abstraction. These constraints eliminate the failure modes found in the post-mortem.',
     },
     {
       type: 'terminal',
@@ -316,14 +368,21 @@ export async function createCheckout(user: User, priceId: string) {
 
     // === CASCADE PREVENTION ===
     {
-      type: 'info',
-      title: 'Preventing cascade failures',
-      body: "The worst scenario: one agent fails, and in trying to fix itself, it breaks something that affects other agents. Example: the API agent can't resolve a type error, so it modifies the shared contracts file — now the UI and payments agents (working against the old contract) are silently building against the wrong types. Prevention is about architecture, not luck.",
+      type: 'multiple-choice',
+      question: 'The API agent cannot resolve a type error, so it modifies the shared contracts file. What happens to the other agents?',
+      options: [
+        'Nothing — each agent works in its own worktree',
+        'The UI and payments agents are now silently building against wrong types — a cascade failure',
+        'The other agents automatically pull the contract changes',
+        'The pipeline catches this before it affects anyone',
+      ],
+      correctIndex: 1,
+      explanation: "This is the worst cascade scenario. The UI and payments agents (working against the old contract) are now silently building against wrong types. Their code will compile but produce runtime errors. Prevention is about architecture, not luck: shared contracts must be read-only for agents.",
     },
     {
-      type: 'diagram',
+      type: 'interactive-diagram',
       title: 'Cascade Prevention Architecture',
-      body: "The key structural defense: agents import from shared contracts but never modify them. Each agent owns a boundary (its directory) and exposes only what it explicitly exports. The orchestrator (you) is the only one who modifies shared resources.",
+      body: "The key structural defense: agents import from shared contracts but never modify them. The orchestrator (you) is the only one who modifies shared resources.",
       diagram: {
         direction: 'TB',
         nodes: [
@@ -342,6 +401,22 @@ export async function createCheckout(user: User, priceId: string) {
           { from: 'orch', to: 'contracts', label: 'writes' },
         ],
       },
+      stages: [
+        {
+          highlightNodes: ['contracts'],
+          explanation: 'Shared contracts (types, interfaces, configs) are the foundation that all agents build against. They define the agreements between modules.',
+        },
+        {
+          highlightNodes: ['contracts', 'auth', 'api', 'ui', 'pay'],
+          highlightEdges: [{ from: 'contracts', to: 'auth' }, { from: 'contracts', to: 'api' }, { from: 'contracts', to: 'ui' }, { from: 'contracts', to: 'pay' }],
+          explanation: 'All four agents READ from shared contracts. Each agent owns its own directory (src/auth/*, src/api/*, etc.) and only modifies files within that boundary.',
+        },
+        {
+          highlightNodes: ['orch', 'contracts'],
+          highlightEdges: [{ from: 'orch', to: 'contracts' }],
+          explanation: 'Only the orchestrator (you) can WRITE to shared contracts. If a contract needs changing, pause all affected agents first, update the contract, then resume. This prevents cascading type mismatches.',
+        },
+      ],
     },
     {
       type: 'checklist',

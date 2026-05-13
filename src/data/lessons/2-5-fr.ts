@@ -17,19 +17,34 @@ const content: LessonContent = {
 
     // === SYMPTOMS ===
     {
-      type: 'info',
-      title: 'Symptôme 1 : Contredire les décisions antérieures',
-      body: "L'agent a mis en place un store Zustand à l'étape 3, puis à l'étape 15 crée un React Context pour le même état. Il a choisi des classes Tailwind pour l'espacement au début, puis commence à utiliser des styles inline. Ces contradictions sont le signal le plus clair d'épuisement de contexte — l'agent a perdu l'accès à son raisonnement antérieur.",
+      type: 'compare',
+      title: 'Symptome : contredire les decisions anterieures',
+      body: 'L\'agent fait des choix en debut de session, puis fait les choix opposes plus tard. Ce n\'est pas de l\'indecision — c\'est une perte de memoire.',
+      question: 'Quel cote montre l\'epuisement de contexte ?',
+      correctSide: 'right',
+      left: {
+        label: 'Debut de session (etape 3)',
+        content: "// L'agent met en place un store Zustand\nimport { create } from 'zustand'\n\nconst useAuthStore = create((set) => ({\n  user: null,\n  setUser: (user) => set({ user }),\n}))\n\n// Utilise Tailwind pour l'espacement\n<div className=\"p-6 mt-4 gap-3\">",
+        language: 'typescript',
+      },
+      right: {
+        label: 'Fin de session (etape 15)',
+        content: "// L'agent cree un React Context pour le MEME etat\nconst AuthContext = createContext(null)\n\nfunction AuthProvider({ children }) {\n  const [user, setUser] = useState(null)\n  // ...\n}\n\n// Maintenant utilise des styles inline\n<div style={{ padding: 24, marginTop: 16 }}>",
+        language: 'typescript',
+      },
+      explanation: 'L\'agent a mis en place Zustand et Tailwind au debut, puis est passe a React Context et styles inline plus tard. Il n\'a pas change d\'avis — il a perdu l\'acces a ces decisions anterieures. Cette contradiction est le signal le plus clair d\'epuisement de contexte.',
     },
     {
-      type: 'info',
-      title: 'Symptôme 2 : Re-poser des questions déjà répondues',
-      body: "L'agent demande « quelle base de données utilisez-vous ? » alors qu'il a déjà configuré Drizzle avec SQLite il y a une heure. Ou il propose une structure de fichiers que vous aviez déjà validée. Quand l'agent pose des questions dont les réponses existent plus tôt dans la conversation, le contexte antérieur a été compacté.",
-    },
-    {
-      type: 'info',
-      title: 'Symptôme 3 : Qualité de code en déclin',
-      body: "La gestion des erreurs devient incohérente. Les types qui étaient stricts deviennent des casts `any` lâches. Les fonctions qui étaient bien documentées plus tôt n'ont plus de commentaires. L'agent n'est pas paresseux — il a perdu le contexte stylistique du début de la session où ces patterns avaient été établis.",
+      type: 'multiple-choice',
+      question: 'L\'agent demande "quelle base de donnees utilisez-vous ?" alors qu\'il a deja configure Drizzle avec SQLite il y a une heure. Qu\'est-ce que cela indique ?',
+      options: [
+        'L\'agent veut confirmer votre choix avant de continuer',
+        'L\'agent suggere que vous pourriez vouloir changer de base de donnees',
+        'Epuisement de contexte — la conversation de configuration anterieure a ete compactee',
+        'L\'agent teste votre connaissance du projet',
+      ],
+      correctIndex: 2,
+      explanation: 'Quand l\'agent re-pose des questions dont les reponses existent plus tot dans la conversation, le contexte anterieur a ete compacte. Combine avec la baisse de qualite du code (types stricts devenant des casts `any`, gestion d\'erreurs manquante), ce sont les trois symptomes cles : contradictions, questions repetees, et declin de qualite.',
     },
     {
       type: 'multiple-choice',
@@ -51,9 +66,16 @@ const content: LessonContent = {
 
     // === STRUCTURING TASKS ===
     {
-      type: 'info',
-      title: 'Stratégie : placer les décisions critiques en premier',
-      body: "Mettez vos décisions architecturales les plus importantes au début de la session quand le contexte est frais. Ne gardez pas les choses difficiles pour plus tard. Si votre schéma de base de données, votre design d'API et vos patterns de gestion d'erreurs sont établis dans les premiers 20% de la session, ils ont la meilleure chance de survivre à la compaction. L'agent construit un modèle mental à partir du contexte initial — assurez-vous que ce modèle contient vos patterns de plus haute priorité.",
+      type: 'multiple-choice',
+      question: 'Quand devez-vous etablir vos decisions architecturales les plus importantes dans une session agent ?',
+      options: [
+        'Au milieu de la session quand l\'agent s\'est echauffe',
+        'A la toute fin pour qu\'elles soient les plus fraiches dans le contexte',
+        'Dans les premiers 20% de la session quand le contexte est le plus complet et detaille',
+        'Peu importe — l\'agent se souvient de tout de maniere egale',
+      ],
+      correctIndex: 2,
+      explanation: 'Placez les decisions critiques en premier. Le schema de BD, le design d\'API et les patterns de gestion d\'erreurs etablis dans les premiers 20% de la session ont la meilleure chance de survivre a la compaction du contexte. L\'agent construit son modele mental a partir du contexte initial — assurez-vous que ce modele contient vos patterns prioritaires avant que la fenetre se remplisse.',
     },
     {
       type: 'interactive-diagram',
@@ -106,17 +128,30 @@ const content: LessonContent = {
       ],
     },
     {
-      type: 'info',
-      title: 'Stratégie : travailler par blocs ciblés',
-      body: "Au lieu d'une session marathon, divisez la construction en blocs logiques : « Mettre en place la couche base de données », « Construire les endpoints API », « Brancher le frontend ». Chaque bloc devrait être complétable dans une fenêtre de contexte confortable. Quand un bloc est terminé, commitez le travail, puis repartez à neuf pour le bloc suivant. Le code sur le disque devient la source de vérité, pas l'historique de conversation.",
+      type: 'multiple-choice',
+      question: 'Pourquoi devriez-vous decouper une construction en blocs a travers des sessions fraiches au lieu d\'une session marathon ?',
+      options: [
+        'Les agents travaillent plus vite dans des sessions courtes',
+        'Ca reduit vos couts d\'API',
+        'Le code sur le disque devient la source de verite — l\'historique de conversation est compacte mais le code commite persiste',
+        'L\'agent refuse de travailler sur de longues sessions',
+      ],
+      correctIndex: 2,
+      explanation: 'Chaque bloc produit du code fonctionnel et commite. Quand vous commencez une session fraiche, l\'agent lit votre codebase et CLAUDE.md — pas la conversation compactee. Le code sur le disque est toujours la source de verite authoritative, immune aux limites de la fenetre de contexte.',
     },
     {
-      type: 'code-demo',
-      title: 'Découper une session de construction',
-      body: 'Planifiez vos prompts comme des unités discrètes et complétables. Chaque bloc devrait produire du code fonctionnel et commité.',
+      type: 'code-fill',
+      instruction: 'Completez ce plan de session avec les bons criteres de completion pour chaque bloc :',
       language: 'markdown',
       filename: 'session-plan.md',
-      code: "# Build Plan: Invoice Generator\n\n## Chunk 1 (fresh session)\n- Set up project: Next.js + Drizzle + SQLite\n- Define schema: invoices, line_items, clients\n- Seed with test data\n- Commit when: `bun run db:push` works + seed runs\n\n## Chunk 2 (fresh session)\n- CRUD API for invoices (all endpoints)\n- Error handling pattern: { success, data, error }\n- Commit when: all endpoints tested via curl\n\n## Chunk 3 (fresh session)\n- Invoice PDF generation\n- Email sending via Resend\n- Commit when: PDF renders correctly + email sends\n\n## Chunk 4 (fresh session)\n- Frontend: invoice list, create form, detail view\n- Commit when: full flow works in browser",
+      template: '# Plan de Construction : Generateur de Factures\n\n## Bloc 1 (session fraiche)\n- Config projet : Next.js + Drizzle + SQLite\n- Definir schema : invoices, line_items, clients\n- Commit quand : `{{chunk1_done}}` fonctionne + seed tourne\n\n## Bloc 2 (session fraiche)\n- API CRUD pour factures (tous les endpoints)\n- Pattern erreur : { success, data, error }\n- Commit quand : tous les endpoints testes via {{chunk2_tool}}\n\n## Bloc 3 (session fraiche)\n- Generation PDF facture + email via {{email_service}}\n- Commit quand : PDF rend correctement + email envoye\n\n## Bloc 4 (session fraiche)\n- Frontend : liste factures, formulaire creation, vue detail\n- Commit quand : flux complet fonctionne dans le {{chunk4_where}}',
+      blanks: [
+        { id: 'chunk1_done', answer: 'bun run db:push', alternatives: ['npm run db:push', 'npx drizzle-kit push'], placeholder: 'quelle commande ?', hint: 'La commande qui applique le schema a la base de donnees' },
+        { id: 'chunk2_tool', answer: 'curl', alternatives: ['Postman', 'httpie', 'insomnia'], placeholder: 'outil de test ?', hint: 'Client HTTP en ligne de commande' },
+        { id: 'email_service', answer: 'Resend', alternatives: ['resend', 'SendGrid', 'sendgrid'], placeholder: 'quel service ?', hint: 'Service d\'API email moderne' },
+        { id: 'chunk4_where', answer: 'navigateur', alternatives: ['browser', 'Browser', 'Navigateur'], placeholder: 'ou ?', hint: 'Ou les utilisateurs finaux interagissent avec le frontend' },
+      ],
+      explanation: 'Chaque bloc a un critere de completion clair — un test verifiable qui prouve que le travail est fait. Ca empeche les blocs a moitie finis de deborder dans la session suivante et vous donne confiance que le code est solide avant de passer a la suite.',
     },
     {
       type: 'checkpoint',
@@ -126,9 +161,16 @@ const content: LessonContent = {
 
     // === WHEN TO START FRESH ===
     {
-      type: 'info',
-      title: 'Quand repartir à neuf vs continuer',
-      body: "Repartez à neuf quand : (1) l'agent contredit des décisions antérieures, (2) vous remarquez une baisse de qualité, (3) vous êtes sur le point de changer de zone dans le codebase, (4) la conversation a dépassé environ 50 échanges. Continuez quand : l'agent est en pleine tâche et produit un résultat cohérent, vous itérez sur un seul fichier ou fonction, la session est encore jeune. Le coût de repartir à neuf est faible — l'agent lit votre CLAUDE.md et les fichiers du codebase au démarrage. Le coût de continuer dans un contexte épuisé est élevé — du mauvais code qui a l'air plausible.",
+      type: 'multiple-choice',
+      question: 'A quel moment devriez-vous definitivement commencer une session fraiche ?',
+      options: [
+        'Apres chaque 10 messages pour etre sur',
+        'Seulement quand l\'agent vous dit explicitement que le contexte est plein',
+        'Quand vous voyez des contradictions, une baisse de qualite, ou vous etes sur le point de changer de zone du codebase (surtout apres ~50 echanges)',
+        'Jamais — des sessions plus longues sont toujours meilleures pour la continuite',
+      ],
+      correctIndex: 2,
+      explanation: 'Repartez a neuf quand l\'agent contredit des decisions anterieures, que la qualite decline, que vous changez de zone du codebase, ou que la conversation depasse ~50 echanges. Le cout de repartir a neuf est faible (l\'agent lit CLAUDE.md au demarrage). Le cout de continuer dans un contexte epuise est eleve — du mauvais code qui a l\'air plausible.',
     },
     {
       type: 'terminal',
@@ -151,30 +193,48 @@ const content: LessonContent = {
 
     // === CLAUDE.MD AS PERSISTENT CONTEXT ===
     {
-      type: 'info',
-      title: 'CLAUDE.md : votre mémoire persistante',
-      body: "CLAUDE.md est lu au début de chaque session. Contrairement à l'historique de conversation, il n'est jamais compacté. Ça en fait l'endroit parfait pour les décisions qui doivent survivre entre les sessions : choix de stack technique, patterns de code, conventions de structure de fichiers, règles de nommage. Tout ce que vous vous retrouvez à répéter à l'agent appartient à CLAUDE.md. Voyez-le comme du contexte persistant de session qui transcende les conversations individuelles.",
+      type: 'multiple-choice',
+      question: 'Pourquoi CLAUDE.md est-il le meilleur endroit pour les decisions architecturales ?',
+      options: [
+        'C\'est le seul fichier que l\'agent peut lire',
+        'Il est lu au demarrage de session et n\'est jamais compacte — contrairement a l\'historique de conversation qui est avec pertes',
+        'Il est automatiquement synchronise dans le cloud',
+        'L\'agent le priorise par rapport a tous les autres fichiers de code',
+      ],
+      correctIndex: 1,
+      explanation: 'CLAUDE.md est lu au debut de chaque session. Contrairement a l\'historique de conversation, il n\'est jamais compacte. Ca en fait l\'endroit parfait pour les decisions qui doivent survivre entre les sessions : choix de stack, patterns de code, conventions de structure de fichiers, regles de nommage. Tout ce que vous repetez a l\'agent appartient a CLAUDE.md.',
     },
     {
-      type: 'code-demo',
-      title: 'CLAUDE.md comme ancre de contexte',
-      body: 'Les patterns et décisions clés vont ici pour que l\'agent ne les perde jamais, quelle que soit la longueur de la session.',
+      type: 'code-fill',
+      instruction: 'Completez ce CLAUDE.md pour ancrer les decisions critiques entre les sessions :',
       language: 'markdown',
       filename: 'CLAUDE.md',
-      code: "# Invoice Generator\n\n## Architecture Decisions (DO NOT DEVIATE)\n- All API responses: `{ success: boolean, data?: T, error?: string }`\n- Error handling: try/catch in every server action, never throw to client\n- Styling: Tailwind only — no CSS modules, no inline styles\n- State: Zustand for client state, server actions for mutations\n- Files: kebab-case, one component per file\n\n## Completed\n- [x] Database schema + migrations\n- [x] CRUD API with proper error responses\n- [ ] PDF generation\n- [ ] Frontend views\n\n## Current Conventions\n- Toast notifications via sonner (already installed)\n- Form validation via zod schemas in `src/schemas/`\n- All dates stored as ISO strings, displayed via date-fns",
+      template: '# Generateur de Factures\n\n## Decisions d\'Architecture (NE PAS DEVIER)\n- Toutes les reponses API : `{ success: boolean, data?: T, error?: string }`\n- Gestion erreurs : {{error_pattern}} dans chaque server action, jamais throw au client\n- Styling : {{styling_tool}} seulement — pas de CSS modules, pas de styles inline\n- Etat : {{state_lib}} pour l\'etat client, server actions pour les mutations\n- Fichiers : {{naming_convention}}, un composant par fichier',
+      blanks: [
+        { id: 'error_pattern', answer: 'try/catch', alternatives: ['try-catch', 'try catch'], placeholder: 'pattern d\'erreur ?', hint: 'Le mecanisme standard de gestion d\'erreurs JS' },
+        { id: 'styling_tool', answer: 'Tailwind', alternatives: ['tailwind', 'TailwindCSS', 'Tailwind CSS'], placeholder: 'quel outil ?', hint: 'Framework CSS utility-first' },
+        { id: 'state_lib', answer: 'Zustand', alternatives: ['zustand'], placeholder: 'quelle librairie ?', hint: 'Librairie legere de gestion d\'etat React' },
+        { id: 'naming_convention', answer: 'kebab-case', alternatives: ['kebab case', 'kebab_case'], placeholder: 'style de nommage ?', hint: 'mots-separes-par-des-tirets' },
+      ],
+      explanation: 'Ces decisions dans CLAUDE.md servent de memoire persistante. Quand l\'agent demarre une nouvelle session, il lit ceci et connait immediatement les conventions du projet — pas besoin de re-expliquer, pas de risque de perte par compaction du contexte.',
     },
     {
-      type: 'info',
-      title: 'Fichiers spec comme suppléments de contexte',
-      body: "Pour les projets plus gros, CLAUDE.md lie à des fichiers de spec. Vous pouvez dire à l'agent : « Lis SPEC.md avant de commencer. » Ces fichiers sont lus à la demande — ils consomment du contexte mais fournissent à l'agent des spécifications complètes quand nécessaire. Gardez les specs modulaires : un fichier par zone de fonctionnalité. L'agent lit seulement ce dont il a besoin pour la tâche en cours.",
-    },
-    {
-      type: 'code-demo',
-      title: 'Référencer des specs depuis CLAUDE.md',
-      body: 'Liez vers des specs détaillées pour que l\'agent puisse les charger à la demande sans gonfler chaque session.',
-      language: 'markdown',
-      filename: 'CLAUDE.md',
-      code: "# Project Specs\n\nBefore working on a feature, read the relevant spec:\n- Payment flow: `specs/payments.md`\n- Email templates: `specs/emails.md`\n- PDF generation: `specs/pdf.md`\n\nAlways check the spec before making architectural decisions\nin that feature area.",
+      type: 'compare',
+      title: 'Spec monolithique vs specs modulaires',
+      body: 'Pour les projets plus gros, comment vous organisez les specs affecte la consommation de contexte.',
+      question: 'Quelle approche utilise le contexte plus efficacement ?',
+      correctSide: 'right',
+      left: {
+        label: 'Tout dans CLAUDE.md',
+        content: '# CLAUDE.md (2000 lignes)\n\n## Flux de Paiement\n[500 lignes de spec paiement...]\n\n## Templates Email\n[400 lignes de spec email...]\n\n## Generation PDF\n[300 lignes de spec PDF...]\n\n## Flux Auth\n[400 lignes de spec auth...]\n\n// L\'agent lit TOUT ca au demarrage\n// Meme s\'il travaille sur une seule feature\n// Gaspille du contexte sur des specs non pertinentes',
+        language: 'markdown',
+      },
+      right: {
+        label: 'Fichiers spec modulaires',
+        content: '# CLAUDE.md (50 lignes)\n\nAvant de travailler sur une feature, lis sa spec :\n- Paiement : `specs/payments.md`\n- Email : `specs/emails.md`\n- PDF : `specs/pdf.md`\n\n// L\'agent lit seulement CLAUDE.md au demarrage\n// Charge la spec specifique a la demande :\n// "Lis specs/payments.md avant de commencer"\n// Contexte utilise seulement pour la feature pertinente',
+        language: 'markdown',
+      },
+      explanation: 'Les specs modulaires permettent a l\'agent de charger seulement ce dont il a besoin. Un CLAUDE.md de 2000 lignes gaspille du contexte a chaque session. Gardez CLAUDE.md court (decisions, conventions) et liez vers des fichiers de spec detailles que l\'agent lit a la demande pour des features specifiques.',
     },
     {
       type: 'checkpoint',
@@ -226,9 +286,16 @@ const content: LessonContent = {
 
     // === PRACTICAL WORKFLOW ===
     {
-      type: 'info',
-      title: 'Le flux d\'hygiène de session',
-      body: "Avant de commencer : mettez à jour CLAUDE.md avec le travail complété de la dernière session. Au démarrage : vérifiez que l'agent a le bon contexte en lui demandant de résumer sa compréhension. En cours de session : si vous remarquez de la dérive, essayez d'abord un rappel ciblé. Si la dérive persiste sur plusieurs patterns, commitez ce qui fonctionne, puis repartez à neuf. En fin de session : commitez tout le code fonctionnel, mettez à jour CLAUDE.md avec les nouvelles décisions prises, notez ce qui reste à faire.",
+      type: 'multiple-choice',
+      question: 'Que devriez-vous faire EN PREMIER au demarrage d\'une nouvelle session agent ?',
+      options: [
+        'Commencer a coder immediatement pour gagner du temps',
+        'Demander a l\'agent de lire chaque fichier du projet',
+        'Mettre a jour CLAUDE.md avec le travail complete de la derniere session, puis verifier la comprehension de l\'agent',
+        'Supprimer l\'historique de conversation de la session precedente',
+      ],
+      correctIndex: 2,
+      explanation: 'Avant de commencer : mettez a jour CLAUDE.md avec le travail complete. Au demarrage : verifiez le contexte de l\'agent en lui demandant de resumer sa comprehension. En cours de session : essayez des rappels cibles pour la derive. Si la derive persiste, commitez et repartez a neuf. En fin de session : commitez le code fonctionnel et mettez a jour CLAUDE.md avec les nouvelles decisions.',
     },
     {
       type: 'order',

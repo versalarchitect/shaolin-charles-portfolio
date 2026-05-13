@@ -104,18 +104,24 @@ const content: LessonContent = {
 
     // === DETECTION SIGNALS ===
     {
-      type: 'info',
-      title: 'Signaux de détection : comment savoir qu\'un agent échoue',
-      body: "Tu ne peux pas surveiller quatre fenêtres de terminal simultanément. Tu as besoin de signaux automatisés. Les trois indicateurs les plus clairs d'un agent en échec : (1) la sortie ne correspond pas à la structure de la spec, (2) des tests échouent qui devraient passer vu la spec, (3) l'agent est coincé dans une boucle — il édite le même fichier à répétition ou produit une sortie de plus en plus incohérente.",
+      type: 'multiple-choice',
+      question: 'Quels sont les trois indicateurs les plus clairs qu\'un agent de ta flotte est en échec ?',
+      options: [
+        'Temps d\'exécution lent, haute utilisation mémoire, et gros fichiers',
+        'La sortie ne correspond pas à la structure de la spec, les tests échouent, et l\'agent édite le même fichier à répétition',
+        'Pas de commits git, pas de sortie terminal, et pas d\'activité réseau',
+        'Erreurs de types, avertissements de lint, et dépendances manquantes',
+      ],
+      correctIndex: 1,
+      explanation: "Tu ne peux pas surveiller quatre terminaux simultanément. Les trois signaux automatisés les plus clairs : (1) la sortie ne correspond pas à la structure de la spec, (2) des tests échouent qui devraient passer vu la spec, (3) l'agent est coincé dans une boucle — il édite le même fichier à répétition ou produit une sortie de plus en plus incohérente.",
     },
     {
-      type: 'code-demo',
-      title: 'Script de vérification rapide de la santé d\'une flotte',
-      body: "Exécute ceci périodiquement pendant que ta flotte travaille. Il vérifie chaque worktree pour des signes de problèmes : des modifications non commitées excessives (mêmes fichiers modifiés à répétition), des échecs de tests, et des erreurs TypeScript. Un agent en santé produit des commits réguliers. Un agent en échec produit du remous.",
+      type: 'code-fill',
+      instruction: 'Complète le script de vérification de santé de flotte. Remplis les commandes git qui détectent les problèmes d\'agent : remous de fichiers, erreurs TypeScript, et activité de commits.',
       language: 'bash',
       filename: 'scripts/fleet-health.sh',
-      code: `#!/bin/bash
-# Quick fleet health check — run every 2-3 minutes
+      template: `#!/bin/bash
+# Quick fleet health check -- run every 2-3 minutes
 
 WORKTREES=("auth" "api" "ui" "payments")
 
@@ -123,24 +129,48 @@ for wt in "\${WORKTREES[@]}"; do
   echo "=== Agent: $wt ==="
   cd "../worktree-$wt" 2>/dev/null || { echo "  [MISSING]"; continue; }
 
-  # Signal 1: Uncommitted file churn (same files modified 3+ times)
-  CHURN=$(git diff --stat | wc -l)
+  # Signal 1: Uncommitted file churn
+  CHURN=$(___BLANK_1___ | wc -l)
   if [ "$CHURN" -gt 20 ]; then
     echo "  [WARN] High churn: $CHURN files modified without commit"
   fi
 
   # Signal 2: TypeScript errors
-  ERRORS=$(npx tsc --noEmit 2>&1 | grep "error TS" | wc -l)
+  ERRORS=$(___BLANK_2___ 2>&1 | grep "error TS" | wc -l)
   if [ "$ERRORS" -gt 0 ]; then
     echo "  [WARN] $ERRORS TypeScript errors"
   fi
 
-  # Signal 3: Recent commit activity (healthy = commits every few minutes)
-  LAST_COMMIT=$(git log -1 --format="%cr" 2>/dev/null)
+  # Signal 3: Recent commit activity
+  LAST_COMMIT=$(___BLANK_3___ 2>/dev/null)
   echo "  Last commit: $LAST_COMMIT"
 
   cd - > /dev/null
 done`,
+      blanks: [
+        {
+          id: 'BLANK_1',
+          answer: 'git diff --stat',
+          alternatives: ['git diff --stat'],
+          hint: 'Commande git qui montre un résumé des fichiers modifiés (noms et compteurs)',
+          placeholder: 'commande git diff',
+        },
+        {
+          id: 'BLANK_2',
+          answer: 'npx tsc --noEmit',
+          alternatives: ['npx tsc --noEmit', 'bunx tsc --noEmit'],
+          hint: 'Exécute le compilateur TypeScript en mode vérification seule',
+          placeholder: 'commande de vérification de types',
+        },
+        {
+          id: 'BLANK_3',
+          answer: 'git log -1 --format="%cr"',
+          alternatives: ['git log -1 --format="%cr"', "git log -1 --format='%cr'"],
+          hint: 'Montre le temps relatif du commit le plus récent (ex: « il y a 3 minutes »)',
+          placeholder: 'commande du dernier commit',
+        },
+      ],
+      explanation: '`git diff --stat` montre le remous de fichiers non commités — plus de 20 fichiers modifiés sans commit signale un problème. `npx tsc --noEmit` attrape les erreurs de types qui s\'accumulent. `git log -1 --format="%cr"` montre quand était le dernier commit — les agents en santé commitent toutes les quelques minutes.',
     },
     {
       type: 'multiple-choice',
@@ -157,9 +187,16 @@ done`,
 
     // === ISOLATION TECHNIQUES ===
     {
-      type: 'info',
-      title: 'Isolation : contenir les dégâts',
-      body: "Une fois que tu as détecté un agent en échec, isole-le immédiatement. L'objectif : empêcher son mauvais état d'affecter les autres agents ou la branche principale. Avec les worktrees git, l'isolation est propre — chaque agent travaille dans son propre worktree. Tu stash ou reset le mauvais worktree sans toucher à rien d'autre.",
+      type: 'multiple-choice',
+      question: 'Tu as détecté un agent en échec. Quel est l\'objectif principal de l\'étape d\'isolation ?',
+      options: [
+        'Comprendre pourquoi l\'agent a échoué avant de prendre toute action',
+        'Empêcher le mauvais état de l\'agent d\'affecter les autres agents ou la branche principale',
+        'Redémarrer l\'agent avec la même spec pour voir si ça marche la deuxième fois',
+        'Supprimer le worktree de l\'agent et recommencer de zéro',
+      ],
+      correctIndex: 1,
+      explanation: "Isole immédiatement pour empêcher le mauvais état d'affecter les autres agents ou main. Avec les worktrees git, l'isolation est propre — chaque agent travaille dans son propre worktree. Stash ou reset le mauvais worktree sans toucher à rien d'autre. L'analyse vient après l'isolation, pas avant.",
     },
     {
       type: 'terminal',
@@ -180,35 +217,53 @@ done`,
       hint: 'Utilise git checkout -- . pour abandonner toutes les modifications du répertoire de travail',
     },
     {
-      type: 'code-demo',
-      title: 'Procédure d\'isolation complète',
-      body: "Voici la séquence d'isolation complète. Arrête l'agent, préserve son travail pour l'analyse post-mortem, puis nettoie le worktree. Le stash préserve les preuves — tu voudras comprendre POURQUOI l'agent a échoué pour écrire une meilleure spec pour la tentative de récupération.",
+      type: 'code-fill',
+      instruction: 'Complète le script d\'isolation qui préserve le travail de l\'agent en échec, vérifie les mauvais commits, et réinitialise à un état propre.',
       language: 'bash',
       filename: 'scripts/isolate-agent.sh',
-      code: `#!/bin/bash
-# Isolate a failing agent's worktree
+      template: `#!/bin/bash
 AGENT=$1  # e.g., "payments"
 WORKTREE="../worktree-$AGENT"
 
 echo "Isolating agent: $AGENT"
 
-# 1. Stop the agent process (if running via claude --worktree)
-# The agent's terminal session — Ctrl+C or kill the process
+# 1. Preserve the failed state for analysis
+git -C "$WORKTREE" ___BLANK_1___
 
-# 2. Preserve the failed state for analysis
-git -C "$WORKTREE" stash push -m "failed-attempt-$(date +%s)"
-
-# 3. Check if any commits were made (might need to revert)
-BAD_COMMITS=$(git -C "$WORKTREE" log main..HEAD --oneline | wc -l)
+# 2. Check if any commits were made
+BAD_COMMITS=$(git -C "$WORKTREE" ___BLANK_2___ | wc -l)
 if [ "$BAD_COMMITS" -gt 0 ]; then
   echo "  $BAD_COMMITS commits to review before merging"
-  git -C "$WORKTREE" log main..HEAD --oneline
 fi
 
-# 4. Reset to clean state
-git -C "$WORKTREE" reset --hard main
+# 3. Reset to clean state
+git -C "$WORKTREE" ___BLANK_3___
 
 echo "Worktree clean. Ready for recovery agent."`,
+      blanks: [
+        {
+          id: 'BLANK_1',
+          answer: 'stash push -m "failed-attempt-$(date +%s)"',
+          alternatives: ['stash push -m "failed-attempt-$(date +%s)"', 'stash push -m "failed-attempt"', 'stash'],
+          hint: 'Commande git pour sauver les modifications avec un message descriptif contenant un timestamp',
+          placeholder: 'commande stash avec message',
+        },
+        {
+          id: 'BLANK_2',
+          answer: 'log main..HEAD --oneline',
+          alternatives: ['log main..HEAD --oneline', 'log main..HEAD'],
+          hint: 'Montrer les commits sur cette branche qui ne sont pas sur main (une ligne chacun)',
+          placeholder: 'commande log pour commits de branche',
+        },
+        {
+          id: 'BLANK_3',
+          answer: 'reset --hard main',
+          alternatives: ['reset --hard main'],
+          hint: 'Réinitialiser de force pour correspondre exactement à la branche main',
+          placeholder: 'commande de reset hard',
+        },
+      ],
+      explanation: 'Le stash préserve les preuves pour l\'analyse post-mortem. `log main..HEAD` montre les commits que l\'agent a faits (pourraient nécessiter un revert). `reset --hard main` ramène le worktree à un état propre. La séquence : préserver -> inspecter -> réinitialiser. Ne saute jamais le stash — tu as besoin de comprendre POURQUOI l\'agent a échoué.',
     },
     {
       type: 'checkpoint',
@@ -218,35 +273,22 @@ echo "Worktree clean. Ready for recovery agent."`,
 
     // === RECOVERY STRATEGIES ===
     {
-      type: 'info',
-      title: 'Récupération : lancer un nouvel agent avec un meilleur contexte',
-      body: "L'isolation est faite. Maintenant tu as besoin que le travail soit complété. Ne relance pas juste la même spec — l'agent a échoué pour une raison. Analyse le travail stashé pour comprendre ce qui a mal tourné, puis améliore la spec. Corrections courantes : des limites de fichiers plus explicites, un exemple concret de la sortie attendue, ou découper la tâche en sous-tâches plus petites.",
-    },
-    {
-      type: 'code-demo',
-      title: 'Post-mortem : diagnostiquer l\'échec d\'un agent',
-      body: "Avant de relancer, comprends POURQUOI l'agent a échoué. Regarde le diff du stash pour des patrons. Ces trois patrons couvrent 90 % des échecs d'agents dans les opérations de flotte.",
-      language: 'bash',
-      filename: 'scripts/diagnose-failure.sh',
-      code: `# Inspect the failed attempt
-git -C ../worktree-payments stash show -p
-
-# Common failure patterns to look for:
-
-# Pattern 1: Circular edits (same file modified repeatedly)
-# Look for: file appears multiple times in stash, contradictory changes
-# Cause: Agent couldn't resolve a type error or test failure
-# Fix: Provide the correct type/interface in the spec
-
-# Pattern 2: Scope creep (agent modified files outside its domain)
-# Look for: changes in src/auth/* or src/api/* from the payments agent
-# Cause: Agent decided it needed to "fix" something in another domain
-# Fix: Explicitly list forbidden files in the recovery spec
-
-# Pattern 3: Wrong abstraction (built something completely different)
-# Look for: file structure doesn't match spec at all
-# Cause: Agent misinterpreted the task
-# Fix: Include a concrete example of expected file output`,
+      type: 'compare',
+      title: 'Récupération : relancer la même spec vs spec améliorée',
+      body: 'Après avoir isolé un agent en échec, tu dois compléter le travail. Deux approches :',
+      question: 'Quelle approche empêche le même échec de se reproduire ?',
+      correctSide: 'right',
+      left: {
+        label: 'Relancer la même spec',
+        content: '# Juste redémarrer l\'agent\nclaude --worktree ../worktree-payments \\\n  "Follow specs/payments.md"\n\n# Problèmes :\n# - Même spec = même mode d\'échec\n# - Pas de contraintes apprises de l\'échec\n# - L\'agent peut boucler sur le même problème\n# - Pas de limites de fichiers ajoutées\n# - Pas d\'exemples concrets fournis\n\n# Résultat : 70 % de chance du même échec',
+        language: 'bash',
+      },
+      right: {
+        label: 'Spec améliorée avec contraintes',
+        content: '# 1. Analyser le stash d\'abord\ngit -C ../worktree-payments stash show -p\n\n# 2. Identifier le patron d\'échec :\n# - Éditions circulaires ? Ajouter type/interface à la spec\n# - Scope creep ? Ajouter liste NE PAS MODIFIER\n# - Mauvaise abstraction ? Ajouter exemple concret\n\n# 3. Lancer avec spec améliorée\nclaude --worktree ../worktree-payments \\\n  "Follow specs/payments-recovery.md"\n\n# Résultat : Mode d\'échec éliminé',
+        language: 'bash',
+      },
+      explanation: "Ne relance jamais la même spec — l'agent a échoué pour une raison. Analyse le travail stashé pour trouver le patron d'échec, puis améliore la spec avec des contraintes explicites, des limites de fichiers et des exemples concrets. Corrections courantes : des limites de fichiers plus explicites, un exemple concret de la sortie attendue, ou découper la tâche en sous-tâches plus petites.",
     },
     {
       type: 'multiple-choice',
@@ -263,49 +305,59 @@ git -C ../worktree-payments stash show -p
 
     // === IMPROVED SPEC FOR RECOVERY ===
     {
-      type: 'code-demo',
-      title: 'Spec de récupération : quoi ajouter après un échec',
-      body: "La spec de récupération inclut tout ce que la spec originale avait, PLUS des contraintes explicites apprises de l'échec. Remarque la section « NE PAS FAIRE » et l'exemple concret de sortie — ceux-ci empêchent le même mode d'échec de se reproduire.",
+      type: 'code-fill',
+      instruction: 'Complète la spec de récupération avec des contraintes explicites apprises de l\'échec. Remplis les règles de propriété de fichiers et les restrictions NE PAS FAIRE.',
       language: 'markdown',
       filename: 'specs/payments-recovery.md',
-      code: `## Recovery: Payments Agent (Attempt 2)
+      template: `## Recovery: Payments Agent (Attempt 2)
 
 ### Task
 Build Stripe payment integration in src/payments/
 
 ### File Ownership (STRICT)
-You own: src/payments/**
+You own: ___BLANK_1___
 You may READ: src/types/contracts.ts, src/auth/types.ts
-You MUST NOT MODIFY: anything outside src/payments/
+You MUST NOT MODIFY: ___BLANK_2___
 
 ### DO NOT
 - Modify src/types/contracts.ts (use it as-is)
-- Import from src/auth/ internals (only from src/auth/types.ts)
+- Import from src/auth/ internals (only from ___BLANK_3___)
 - Create new top-level directories
 - Install new dependencies without noting them
 
 ### Expected Output Structure
-\`\`\`
 src/payments/
-├── index.ts          # Public API: createCheckout, getSubscription
-├── stripe-client.ts  # Stripe SDK wrapper
-├── webhooks.ts       # Stripe webhook handler
-├── types.ts          # Internal payment types
-└── __tests__/
-    ├── checkout.test.ts
-    └── webhooks.test.ts
-\`\`\`
-
-### Concrete Example
-Here's what src/payments/index.ts should look like:
-\`\`\`typescript
-import type { User } from '@/types/contracts'
-import { stripe } from './stripe-client'
-
-export async function createCheckout(user: User, priceId: string) {
-  // ...implementation
-}
-\`\`\``,
+  index.ts          # Public API: createCheckout, getSubscription
+  stripe-client.ts  # Stripe SDK wrapper
+  webhooks.ts       # Stripe webhook handler
+  types.ts          # Internal payment types
+  __tests__/
+    checkout.test.ts
+    webhooks.test.ts`,
+      blanks: [
+        {
+          id: 'BLANK_1',
+          answer: 'src/payments/**',
+          alternatives: ['src/payments/**', 'src/payments/*'],
+          hint: 'L\'agent possède tout sous le répertoire payments',
+          placeholder: 'glob du chemin possédé',
+        },
+        {
+          id: 'BLANK_2',
+          answer: 'anything outside src/payments/',
+          alternatives: ['anything outside src/payments/', 'anything outside src/payments', 'tout en dehors de src/payments/'],
+          hint: 'L\'agent ne doit pas modifier les fichiers en dehors de son répertoire possédé',
+          placeholder: 'portée de modification interdite',
+        },
+        {
+          id: 'BLANK_3',
+          answer: 'src/auth/types.ts',
+          alternatives: ['src/auth/types.ts'],
+          hint: 'Le seul fichier auth que l\'agent est autorisé à importer — seulement les types publics',
+          placeholder: 'import auth autorisé',
+        },
+      ],
+      explanation: 'La spec de récupération ajoute des contraintes explicites apprises de l\'échec : propriété stricte des fichiers (`src/payments/**` uniquement), accès en lecture seule aux contrats partagés, et une liste concrète NE PAS FAIRE. Ces contraintes éliminent les modes d\'échec trouvés dans le post-mortem.',
     },
     {
       type: 'terminal',
@@ -316,14 +368,21 @@ export async function createCheckout(user: User, priceId: string) {
 
     // === CASCADE PREVENTION ===
     {
-      type: 'info',
-      title: 'Prévenir les échecs en cascade',
-      body: "Le pire scénario : un agent échoue, et en essayant de se corriger, il casse quelque chose qui affecte les autres agents. Exemple : l'agent API n'arrive pas à résoudre une erreur de type, alors il modifie le fichier de contrats partagé — maintenant les agents UI et payments (qui travaillent avec l'ancien contrat) construisent silencieusement sur les mauvais types. La prévention est une question d'architecture, pas de chance.",
+      type: 'multiple-choice',
+      question: 'L\'agent API n\'arrive pas à résoudre une erreur de type, alors il modifie le fichier de contrats partagé. Que se passe-t-il pour les autres agents ?',
+      options: [
+        'Rien — chaque agent travaille dans son propre worktree',
+        'Les agents UI et payments construisent maintenant silencieusement sur les mauvais types — un échec en cascade',
+        'Les autres agents récupèrent automatiquement les changements de contrat',
+        'Le pipeline attrape ça avant que ça affecte qui que ce soit',
+      ],
+      correctIndex: 1,
+      explanation: "C'est le pire scénario de cascade. Les agents UI et payments (qui travaillent avec l'ancien contrat) construisent maintenant silencieusement sur les mauvais types. Leur code compilera mais produira des erreurs à l'exécution. La prévention est une question d'architecture : les contrats partagés doivent être en lecture seule pour les agents.",
     },
     {
-      type: 'diagram',
+      type: 'interactive-diagram',
       title: 'Architecture de prévention des cascades',
-      body: "La défense structurelle clé : les agents importent depuis les contrats partagés mais ne les modifient jamais. Chaque agent possède un périmètre (son répertoire) et n'expose que ce qu'il exporte explicitement. L'orchestrateur (toi) est le seul qui modifie les ressources partagées.",
+      body: "La défense structurelle clé : les agents importent depuis les contrats partagés mais ne les modifient jamais. L'orchestrateur (toi) est le seul qui modifie les ressources partagées.",
       diagram: {
         direction: 'TB',
         nodes: [
@@ -342,6 +401,22 @@ export async function createCheckout(user: User, priceId: string) {
           { from: 'orch', to: 'contracts', label: 'écrit' },
         ],
       },
+      stages: [
+        {
+          highlightNodes: ['contracts'],
+          explanation: 'Les contrats partagés (types, interfaces, configs) sont la fondation sur laquelle tous les agents construisent. Ils définissent les accords entre les modules.',
+        },
+        {
+          highlightNodes: ['contracts', 'auth', 'api', 'ui', 'pay'],
+          highlightEdges: [{ from: 'contracts', to: 'auth' }, { from: 'contracts', to: 'api' }, { from: 'contracts', to: 'ui' }, { from: 'contracts', to: 'pay' }],
+          explanation: 'Les quatre agents LISENT depuis les contrats partagés. Chaque agent possède son propre répertoire (src/auth/*, src/api/*, etc.) et ne modifie que les fichiers dans cette limite.',
+        },
+        {
+          highlightNodes: ['orch', 'contracts'],
+          highlightEdges: [{ from: 'orch', to: 'contracts' }],
+          explanation: 'Seul l\'orchestrateur (toi) peut ÉCRIRE dans les contrats partagés. Si un contrat doit changer, mets en pause tous les agents concernés d\'abord, mets à jour le contrat, puis reprends. Ça prévient les décalages de types en cascade.',
+        },
+      ],
     },
     {
       type: 'checklist',

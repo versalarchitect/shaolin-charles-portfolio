@@ -17,9 +17,9 @@ const content: LessonContent = {
 
     // === THE TASTE FILTER ===
     {
-      type: 'diagram',
+      type: 'interactive-diagram',
       title: 'The Taste Filter',
-      body: 'Agents produce functional output. Your taste filter elevates it to excellent output.',
+      body: 'Click through to see how your taste filter transforms functional output into excellent output.',
       diagram: {
         direction: 'LR',
         nodes: [
@@ -35,6 +35,28 @@ const content: LessonContent = {
           { from: 'iterate', to: 'agent', dashed: true },
         ],
       },
+      stages: [
+        {
+          highlightNodes: ['agent'],
+          highlightEdges: [],
+          explanation: 'The agent produces output that works. It passes tests, compiles, and does what was asked. But functional correctness is a low bar — it is necessary but not sufficient.',
+        },
+        {
+          highlightNodes: ['agent', 'taste'],
+          highlightEdges: [{ from: 'agent', to: 'taste' }],
+          explanation: 'Your taste filter evaluates beyond correctness. Is it simple? Is it coherent with existing patterns? Is it proportional to the problem? These questions require judgment, not computation.',
+        },
+        {
+          highlightNodes: ['taste', 'excellent'],
+          highlightEdges: [{ from: 'taste', to: 'excellent' }],
+          explanation: 'When output passes your taste filter, it is not just functional — it is elegant, coherent with the system, and right for the context. This is the quality bar that separates good products from great ones.',
+        },
+        {
+          highlightNodes: ['taste', 'iterate', 'agent'],
+          highlightEdges: [{ from: 'taste', to: 'iterate' }, { from: 'iterate', to: 'agent' }],
+          explanation: 'When output does not pass, you iterate: refine the spec, add constraints, and regenerate. Each iteration gets closer to excellent. The taste filter is not a gate — it is a feedback loop.',
+        },
+      ],
     },
     {
       type: 'checkpoint',
@@ -44,19 +66,40 @@ const content: LessonContent = {
 
     // === DIMENSIONS OF TASTE ===
     {
-      type: 'info',
-      title: 'Dimension 1: Simplicity',
-      body: "An agent asked to build a notification system will often produce a comprehensive solution: multiple notification channels, a queue, retry logic, templates, user preferences, delivery tracking. All functional. But if your app has 200 users and needs email notifications for password resets — that solution is a liability, not an asset. Taste says: a single function that calls SendGrid is correct. The agent produced what was asked for. Taste decides what SHOULD have been asked for.",
+      type: 'multiple-choice',
+      question: 'An agent builds a comprehensive notification system (queue, retry logic, templates, preferences) for an app with 200 users that only needs password reset emails. What does taste say?',
+      options: [
+        'Ship it — comprehensive solutions are always better',
+        'The solution is a liability, not an asset. A single function calling SendGrid is correct. The agent produced what was asked for; taste decides what SHOULD have been asked for.',
+        'Add more features since the foundation is there',
+        'Keep it but disable the unused features',
+      ],
+      correctIndex: 1,
+      explanation: "Dimension 1: Simplicity. An agent asked to build a notification system will often produce a comprehensive solution. All functional. But if your app has 200 users and needs email notifications for password resets — that solution is a liability, not an asset. Taste says: a single function that calls SendGrid is correct. The agent produced what was asked for. Taste decides what SHOULD have been asked for.",
     },
     {
-      type: 'info',
-      title: 'Dimension 2: Coherence',
-      body: "Your codebase uses functional patterns: pure functions, composition, immutable data. The agent writes a class with mutable state. It works. Tests pass. But it violates the system's voice. Six months from now, someone reads this class and assumes classes are acceptable here — now you have two patterns. Taste enforces consistency not because one style is better, but because mixed styles create cognitive overhead for every future reader (human or agent).",
+      type: 'multiple-choice',
+      question: 'Your codebase uses functional patterns (pure functions, composition, immutable data). An agent writes a class with mutable state that works and passes tests. What is the taste problem?',
+      options: [
+        'Classes are always worse than functions',
+        'The agent should have used TypeScript interfaces',
+        'It violates the system\'s voice — mixed styles create cognitive overhead for every future reader, and someone will assume classes are acceptable here',
+        'Mutable state is always a bug risk',
+      ],
+      correctIndex: 2,
+      explanation: "Dimension 2: Coherence. Taste enforces consistency not because one style is better, but because mixed styles create cognitive overhead for every future reader (human or agent). Six months from now, someone reads this class and assumes classes are acceptable here — now you have two patterns competing.",
     },
     {
-      type: 'info',
-      title: 'Dimension 3: Proportionality',
-      body: "Is this solution proportional to the problem? A 500-line abstraction to avoid repeating 3 lines of code is disproportionate. A hand-rolled state machine for a two-state toggle is disproportionate. Taste calibrates the investment of complexity against the severity of the problem. Agents cannot do this because they do not feel the ongoing cost of maintaining complex code — they only see the immediate problem being solved.",
+      type: 'multiple-choice',
+      question: 'An agent creates a 500-line abstraction to avoid repeating 3 lines of code. What taste dimension does this violate?',
+      options: [
+        'Simplicity — the code is too complex',
+        'Coherence — it does not match existing patterns',
+        'Proportionality — the investment of complexity vastly exceeds the severity of the problem being solved',
+        'Necessity — the code is not needed',
+      ],
+      correctIndex: 2,
+      explanation: "Dimension 3: Proportionality. Is this solution proportional to the problem? A 500-line abstraction to avoid repeating 3 lines of code is disproportionate. Taste calibrates the investment of complexity against the severity of the problem. Agents cannot do this because they do not feel the ongoing cost of maintaining complex code — they only see the immediate problem being solved.",
     },
     {
       type: 'multiple-choice',
@@ -78,9 +121,16 @@ const content: LessonContent = {
 
     // === ELEGANCE VS CLEVERNESS ===
     {
-      type: 'info',
-      title: 'Elegance is not cleverness',
-      body: "Agents love clever solutions. One-liners that chain 6 array methods. Type gymnastics that infer everything. Recursive templates that generate themselves. These are impressive feats of programming — and terrible production code. Elegance is the OPPOSITE of cleverness. Elegance is when the solution is so simple that it feels obvious in retrospect. When you read elegant code, you think 'of course.' When you read clever code, you think 'what?'",
+      type: 'multiple-choice',
+      question: 'An agent produces a one-liner chaining 6 array methods with type gymnastics. It is impressive and correct. Is this elegant code?',
+      options: [
+        'Yes — fewer lines means better code',
+        'No — elegance is the OPPOSITE of cleverness. Elegant code feels obvious in retrospect. When you read it, you think "of course." Clever code makes you think "what?"',
+        'Yes — if it passes tests, it is good enough',
+        'It depends on the performance characteristics',
+      ],
+      correctIndex: 1,
+      explanation: "Agents love clever solutions. One-liners that chain 6 array methods. Type gymnastics that infer everything. These are impressive feats of programming — and terrible production code. Elegance is the OPPOSITE of cleverness. Elegance is when the solution is so simple that it feels obvious in retrospect. When you read elegant code, you think 'of course.' When you read clever code, you think 'what?'",
     },
     {
       type: 'compare',
@@ -165,14 +215,24 @@ const content: LessonContent = {
 
     // === YOUR AESTHETIC AS FILTER ===
     {
-      type: 'info',
-      title: 'Developing your aesthetic',
-      body: "Taste is not innate — it is developed through exposure and practice. Read excellent codebases (Go standard library, SQLite source, Redis internals). Notice what makes them satisfying: clarity, consistency, proportion. Then apply that standard to agent output. Over time, you develop an internal sense of 'this is right' that fires before you can articulate why. That sense is your competitive advantage — it is pattern recognition trained on thousands of evaluated examples.",
-    },
-    {
-      type: 'info',
-      title: 'The curation role',
-      body: "In an agent-augmented world, your role shifts from producer to curator. A museum curator does not paint — they decide what goes on the wall and what goes in storage. They create coherence from a collection of individual works. You do the same: agents produce. You select, arrange, and refine. The final system reflects your taste, not the agent's. This is not laziness — curation at the system level requires more judgment than writing any individual component.",
+      type: 'compare',
+      title: 'Producer mindset vs Curator mindset',
+      body: 'In an agent-augmented world, your role shifts. Which mindset produces better systems?',
+      left: {
+        label: 'Producer (Write Everything)',
+        content: 'You write every line of code yourself.\n\nOutput per day: 200-400 LOC\nQuality: varies with your energy\nConsistency: YOUR patterns only\nBottleneck: YOUR typing speed\n\nThe system reflects your ability\nto produce under time pressure.\n\nLimitation: you are the ceiling.',
+        language: 'text',
+        filename: 'producer.txt',
+      },
+      right: {
+        label: 'Curator (Select + Refine)',
+        content: 'Agents produce. You evaluate.\n\nOutput per day: 2000-5000 LOC reviewed\nQuality: consistent (taste filter applied)\nConsistency: YOUR standards, enforced\nBottleneck: YOUR judgment speed\n\nThe system reflects your taste\napplied to enormous agent output.\n\nAdvantage: judgment scales, typing does not.',
+        language: 'text',
+        filename: 'curator.txt',
+      },
+      question: 'Which role produces better systems at scale?',
+      correctSide: 'right',
+      explanation: "Taste is not innate — it is developed through exposure and practice. Read excellent codebases (Go standard library, SQLite source, Redis internals). In an agent-augmented world, your role shifts from producer to curator. A museum curator does not paint — they decide what goes on the wall. You do the same: agents produce, you select, arrange, and refine. Curation at the system level requires more judgment than writing any individual component.",
     },
     {
       type: 'multiple-choice',
@@ -194,14 +254,28 @@ const content: LessonContent = {
 
     // === WHAT TO CUT ===
     {
-      type: 'info',
-      title: 'Taste is knowing what to cut',
-      body: "An agent will never say 'do not build this feature.' It will never suggest removing a component. It optimizes for completeness — more is better in its training distribution. But the best products are defined by what they EXCLUDE. Taste is the courage to cut: this feature is technically possible and someone asked for it and the agent built it perfectly — and it still should not exist because it complicates the product without proportional value.",
+      type: 'multiple-choice',
+      question: 'An agent will never say "do not build this feature." Why is knowing what to cut the hardest taste skill?',
+      options: [
+        'Because cutting features wastes the agent\'s work',
+        'Because agents optimize for completeness, but the best products are defined by what they EXCLUDE. Taste is the courage to cut something well-built that should not exist.',
+        'Because stakeholders always want more features',
+        'Because agents cannot build features that should be cut',
+      ],
+      correctIndex: 1,
+      explanation: "An agent will never say 'do not build this feature.' It will never suggest removing a component. It optimizes for completeness — more is better in its training distribution. But the best products are defined by what they EXCLUDE. Taste is the courage to cut: this feature is technically possible and someone asked for it and the agent built it perfectly — and it still should not exist because it complicates the product without proportional value.",
     },
     {
-      type: 'info',
-      title: 'The feature test',
-      body: "Before shipping any agent-built feature, apply the feature test. One: if this feature disappeared tomorrow, would users notice within a week? Two: does this feature make the core experience better or does it dilute attention? Three: does this feature require ongoing maintenance disproportionate to its usage? If the answers are no, dilutes, and yes — cut it. The agent built it well. You are cutting it wisely. Production is what taste lets through, not what ability can produce.",
+      type: 'multiple-choice',
+      question: 'Before shipping an agent-built feature, you apply the feature test. The answers are: users would NOT notice if it disappeared, it DILUTES the core experience, and it requires DISPROPORTIONATE maintenance. What do you do?',
+      options: [
+        'Ship it anyway — someone asked for it',
+        'Cut it. The agent built it well. You are cutting it wisely. Production is what taste lets through, not what ability can produce.',
+        'Simplify it and ship a reduced version',
+        'Ask users if they want it first',
+      ],
+      correctIndex: 1,
+      explanation: "Before shipping any agent-built feature, apply the feature test. One: if this feature disappeared tomorrow, would users notice within a week? Two: does this feature make the core experience better or does it dilute attention? Three: does this feature require ongoing maintenance disproportionate to its usage? If the answers are no, dilutes, and yes — cut it.",
     },
     {
       type: 'multiple-choice',
@@ -223,17 +297,32 @@ const content: LessonContent = {
 
     // === TASTE IN PRACTICE ===
     {
-      type: 'info',
-      title: 'Building a taste rubric',
-      body: "Make your taste explicit. Before reviewing agent output, write down your evaluation criteria: Is it proportional? Is it coherent with the existing system? Is it simple enough that the next person (or agent) can understand it in 30 seconds? Does it solve a problem worth solving? When you have a rubric, you are not relying on mood — you are applying consistent judgment. Over time, this rubric evolves as your taste refines.",
+      type: 'multiple-choice',
+      question: 'Why should you write down evaluation criteria BEFORE reviewing agent output, rather than judging by feel?',
+      options: [
+        'To create documentation for the team',
+        'When you have a rubric, you apply consistent judgment instead of relying on mood. Over time, the rubric evolves as your taste refines.',
+        'To slow down the review process and be more careful',
+        'Because agents need written criteria to improve',
+      ],
+      correctIndex: 1,
+      explanation: "Make your taste explicit. Before reviewing agent output, write down your evaluation criteria: Is it proportional? Is it coherent with the existing system? Is it simple enough that the next person can understand it in 30 seconds? Does it solve a problem worth solving? When you have a rubric, you are not relying on mood — you are applying consistent judgment.",
     },
     {
-      type: 'code-demo',
-      title: 'Taste rubric for agent output review',
-      body: 'Apply this rubric to every significant piece of agent-generated code before merging. Not every item applies to every change — but scanning the list catches the majority of taste failures.',
+      type: 'code-fill',
+      instruction: 'Complete this taste rubric for reviewing agent output. Fill in the key evaluation questions for each dimension.',
       language: 'markdown',
       filename: 'REVIEW_RUBRIC.md',
-      code: "# Agent Output Review Rubric\n\n## Proportionality (most common taste failure)\n- [ ] Is the solution proportional to the problem?\n- [ ] Could this be done in significantly fewer lines without losing clarity?\n- [ ] Does this abstraction earn its complexity?\n\n## Coherence\n- [ ] Does this match the existing patterns in the codebase?\n- [ ] If it introduces a new pattern, is the old pattern deprecated?\n- [ ] Would a future reader understand the style without context?\n\n## Simplicity\n- [ ] Can I explain this to a colleague in one sentence?\n- [ ] Are there any clever tricks that should be rewritten plainly?\n- [ ] Does it use the simplest tool that solves the problem?\n\n## Necessity\n- [ ] Does this solve a problem that actually exists (not a hypothetical)?\n- [ ] If I deleted this, would anything break within 30 days?\n- [ ] Is the ongoing maintenance cost justified by the usage?",
+      template: '# Agent Output Review Rubric\n\n## Proportionality (most common taste failure)\n- [ ] Is the solution {{proportional_q}}?\n- [ ] Does this abstraction {{complexity_q}}?\n\n## Coherence\n- [ ] Does this match {{pattern_q}}?\n- [ ] Would a future reader {{readability_q}}?\n\n## Necessity\n- [ ] Does this solve a problem that {{exists_q}}?\n- [ ] If I deleted this, would {{deletion_q}}?',
+      blanks: [
+        { id: 'proportional_q', answer: 'proportional to the problem', alternatives: ['proportional', 'proportionate to the problem', 'sized correctly for the problem'], placeholder: 'proportionality check?', hint: 'Does the solution match the problem size?' },
+        { id: 'complexity_q', answer: 'earn its complexity', alternatives: ['justify its complexity', 'warrant its complexity', 'earn the complexity'], placeholder: 'complexity check?', hint: 'Is the abstraction worth the overhead?' },
+        { id: 'pattern_q', answer: 'the existing patterns in the codebase', alternatives: ['existing patterns', 'current codebase patterns', 'the existing code style'], placeholder: 'pattern match check?', hint: 'Consistency with what already exists' },
+        { id: 'readability_q', answer: 'understand the style without context', alternatives: ['understand it without context', 'read it without extra context', 'understand without explanation'], placeholder: 'readability check?', hint: 'Can someone new understand it immediately?' },
+        { id: 'exists_q', answer: 'actually exists', alternatives: ['actually exists (not a hypothetical)', 'is real', 'exists today'], placeholder: 'necessity check?', hint: 'Real problem or hypothetical one?' },
+        { id: 'deletion_q', answer: 'anything break within 30 days', alternatives: ['anything break', 'users notice', 'something break in 30 days'], placeholder: 'deletion test?', hint: 'What happens if this code disappears?' },
+      ],
+      explanation: 'Apply this rubric to every significant piece of agent-generated code before merging. Not every item applies to every change — but scanning the list catches the majority of taste failures. The rubric makes your implicit judgment explicit and consistent.',
     },
     {
       type: 'order',
@@ -255,14 +344,28 @@ const content: LessonContent = {
 
     // === THE IRREPLACEABLE SKILL ===
     {
-      type: 'info',
-      title: 'Why this is the moat',
-      body: "Code generation will become commoditized. Testing will be automated. Deployment will be autonomous. What cannot be automated is the judgment about what to build, how simple to make it, and when to say no. That judgment — taste — is trained over years of building, shipping, maintaining, and seeing the consequences of decisions. It cannot be distilled into a prompt. It cannot be taught to a model. It is experiential, contextual, and deeply human. Invest in it relentlessly.",
+      type: 'multiple-choice',
+      question: 'Code generation, testing, and deployment will all be automated. What CANNOT be automated?',
+      options: [
+        'Writing complex algorithms',
+        'Debugging production issues',
+        'The judgment about what to build, how simple to make it, and when to say no — taste is experiential, contextual, and deeply human',
+        'Configuring CI/CD pipelines',
+      ],
+      correctIndex: 2,
+      explanation: "Code generation will become commoditized. Testing will be automated. Deployment will be autonomous. What cannot be automated is the judgment about what to build, how simple to make it, and when to say no. That judgment — taste — is trained over years of building, shipping, maintaining, and seeing the consequences of decisions. It cannot be distilled into a prompt. It cannot be taught to a model. Invest in it relentlessly.",
     },
     {
-      type: 'info',
-      title: 'The practitioner who has taste',
-      body: "They review agent output and immediately see: this abstraction will not survive the next feature request. They look at a proposed architecture and feel: this will become a maintenance burden in 6 months. They evaluate a feature and know: this dilutes the product without adding proportional value. They cannot always articulate WHY in real-time — the judgment fires faster than the explanation. But they are right often enough that their team trusts the instinct. This is where you are heading.",
+      type: 'multiple-choice',
+      question: 'A practitioner with taste reviews agent output and immediately sees "this abstraction will not survive the next feature request." What skill is this?',
+      options: [
+        'Technical knowledge of design patterns',
+        'Pattern recognition trained on years of building, shipping, and seeing consequences — judgment that fires faster than explanation',
+        'Pessimism about agent capabilities',
+        'Experience with a specific programming language',
+      ],
+      correctIndex: 1,
+      explanation: "The practitioner with taste reviews agent output and immediately sees problems that are not visible in tests or metrics. They look at a proposed architecture and feel it will become a maintenance burden. They evaluate a feature and know it dilutes the product. They cannot always articulate WHY in real-time — the judgment fires faster than the explanation. But they are right often enough that their team trusts the instinct. This is where you are heading.",
     },
     {
       type: 'checklist',

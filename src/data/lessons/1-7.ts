@@ -72,9 +72,16 @@ const content: LessonContent = {
 
     // === CORE CONCEPTS ===
     {
-      type: 'info',
-      title: 'The three layers',
-      body: "Every MCP interaction has three layers. The Client is your AI agent (Claude Code). It decides when to use a tool and sends the request. The Protocol is JSON-RPC 2.0 — a lightweight message format that wraps method names and parameters. The Server is your code that receives the request, does the actual work (query a database, call an API, read a file system), and returns the result. The client never touches the external service directly. The server is the boundary.",
+      type: 'multiple-choice',
+      question: 'In MCP, which layer is the boundary that the AI client never crosses?',
+      options: [
+        'The Client — it limits what tools the AI can see',
+        'The Protocol — JSON-RPC blocks unauthorized requests',
+        'The Server — the AI never touches external services directly',
+        'The Transport — stdio prevents direct API access',
+      ],
+      correctIndex: 2,
+      explanation: 'Every MCP interaction has three layers. The Client (Claude Code) decides when to use a tool. The Protocol (JSON-RPC 2.0) carries the message. The Server receives the request, does the actual work, and returns the result. The client never touches the external service directly — the server is the trust boundary.',
     },
     {
       type: 'multiple-choice',
@@ -91,9 +98,9 @@ const content: LessonContent = {
 
     // === SERVER TYPES DIAGRAM 2 ===
     {
-      type: 'diagram',
+      type: 'interactive-diagram',
       title: 'MCP Server Types',
-      body: 'One protocol connects your agent to many different tool categories. Each server exposes a specialized capability.',
+      body: 'Click through each stage to learn what types of servers your agent can connect to.',
       diagram: {
         direction: 'TB',
         nodes: [
@@ -110,11 +117,28 @@ const content: LessonContent = {
           { from: 'protocol', to: 'api' },
         ],
       },
-    },
-    {
-      type: 'info',
-      title: 'Common MCP server categories',
-      body: "File system servers let the agent read and write files outside its sandbox. Database servers expose SQL or NoSQL queries — Supabase, Postgres, SQLite. API servers wrap external services like GitHub, Vercel, Stripe, or Slack. Browser servers give the agent a real headless browser for scraping or testing. Custom servers are anything you build: internal tools, proprietary APIs, hardware controllers. The ecosystem is growing fast because building a server is straightforward.",
+      stages: [
+        {
+          highlightNodes: ['agent', 'protocol'],
+          highlightEdges: [{ from: 'agent', to: 'protocol' }],
+          explanation: 'One protocol connects your agent to many different tool categories. The MCP protocol is the universal connector — like USB for AI tools.',
+        },
+        {
+          highlightNodes: ['protocol', 'fs'],
+          highlightEdges: [{ from: 'protocol', to: 'fs' }],
+          explanation: 'File system servers let the agent read and write files outside its sandbox. This extends the agent beyond the project directory.',
+        },
+        {
+          highlightNodes: ['protocol', 'db'],
+          highlightEdges: [{ from: 'protocol', to: 'db' }],
+          explanation: 'Database servers expose SQL or NoSQL queries — Supabase, Postgres, SQLite. The agent can query data, inspect schemas, and even run migrations.',
+        },
+        {
+          highlightNodes: ['protocol', 'api'],
+          highlightEdges: [{ from: 'protocol', to: 'api' }],
+          explanation: 'API servers wrap external services like GitHub, Vercel, Stripe, or Slack. Browser servers give headless browser automation. Custom servers are anything you build. The ecosystem grows fast because building a server is straightforward.',
+        },
+      ],
     },
     {
       type: 'checkpoint',
@@ -124,17 +148,28 @@ const content: LessonContent = {
 
     // === CONFIGURATION ===
     {
-      type: 'info',
-      title: 'Configuring MCP servers',
-      body: "You tell Claude Code about MCP servers through configuration files. There are two levels: project-level config in .claude/settings.json (shared with your team via git) and user-level config in ~/.claude/settings.json (personal, not committed). Each server entry specifies the command to launch it, any arguments, and optional environment variables for secrets like API keys.",
+      type: 'multiple-choice',
+      question: 'MCP server configs can live at two levels. Which level is shared with your team via git?',
+      options: [
+        '~/.claude/settings.json (user-level)',
+        '.claude/settings.json (project-level)',
+        'package.json (dependencies)',
+        'CLAUDE.md (instructions)',
+      ],
+      correctIndex: 1,
+      explanation: 'Project-level config in .claude/settings.json is committed to git and shared with the team. User-level config in ~/.claude/settings.json is personal and not committed. Each server entry specifies the command to launch it, arguments, and optional environment variables for secrets.',
     },
     {
-      type: 'code-demo',
-      title: 'Project-level MCP config',
-      body: 'This configuration registers two MCP servers. Claude Code launches them as child processes and communicates over stdio.',
+      type: 'code-fill',
+      instruction: 'Complete this MCP configuration to register a Supabase server that Claude Code launches as a child process:',
       language: 'json',
-      filename: '.claude/settings.json',
-      code: '{\n  "mcpServers": {\n    "filesystem": {\n      "command": "npx",\n      "args": [\n        "-y",\n        "@modelcontextprotocol/server-filesystem",\n        "/Users/you/projects"\n      ]\n    },\n    "supabase": {\n      "command": "npx",\n      "args": ["-y", "@supabase/mcp-server"],\n      "env": {\n        "SUPABASE_ACCESS_TOKEN": "your-token"\n      }\n    }\n  }\n}',
+      template: '{\n  "{{config_key}}": {\n    "supabase": {\n      "{{launch_key}}": "npx",\n      "args": ["-y", "@supabase/mcp-server"],\n      "{{secrets_key}}": {\n        "SUPABASE_ACCESS_TOKEN": "your-token"\n      }\n    }\n  }\n}',
+      blanks: [
+        { id: 'config_key', answer: 'mcpServers', alternatives: ['mcpservers'], placeholder: 'top-level key?', hint: 'The JSON key that holds all MCP server configurations' },
+        { id: 'launch_key', answer: 'command', placeholder: 'how to start?', hint: 'The key that tells Claude Code what executable to run' },
+        { id: 'secrets_key', answer: 'env', alternatives: ['environment'], placeholder: 'secrets key?', hint: 'The key for environment variables like API tokens' },
+      ],
+      explanation: 'The "mcpServers" key holds all server configs. Each server needs a "command" (the executable), "args" (command arguments), and optionally "env" for secret environment variables like API tokens.',
     },
     {
       type: 'code-input',
@@ -146,9 +181,22 @@ const content: LessonContent = {
 
     // === TOOLS VS RESOURCES ===
     {
-      type: 'info',
+      type: 'compare',
       title: 'Tools vs Resources',
-      body: "MCP servers expose two types of capabilities. Tools are actions — they do something: write a file, run a query, send a message, create a deployment. They have side effects. Resources are data — they provide information: read a file, list tables, fetch configuration, get current status. The distinction matters because Claude Code treats them differently. Tools require explicit approval (they change things). Resources are read-only and safer to auto-approve.",
+      body: 'MCP servers expose two types of capabilities that Claude Code treats very differently.',
+      question: 'Which type requires explicit user approval before executing?',
+      correctSide: 'left',
+      left: {
+        label: 'Tools (Actions)',
+        content: "// Tools DO something — they have side effects\n\n- Write a file to disk\n- Run a database query that modifies data\n- Send a Slack message\n- Create a Vercel deployment\n- Delete a row from a table\n\n→ Require explicit approval\n→ They change state",
+        language: 'text',
+      },
+      right: {
+        label: 'Resources (Data)',
+        content: "// Resources PROVIDE information — read-only\n\n- Read a file's contents\n- List database tables\n- Fetch current configuration\n- Get deployment status\n- Check server health\n\n→ Safer to auto-approve\n→ They only read state",
+        language: 'text',
+      },
+      explanation: 'Tools are actions with side effects — they change things. Claude Code requires explicit approval for tools. Resources are read-only data fetches — safer to auto-approve because they cannot modify state.',
     },
     {
       type: 'multiple-choice',
@@ -170,17 +218,17 @@ const content: LessonContent = {
 
     // === BUILDING A SERVER ===
     {
-      type: 'info',
-      title: 'Building your own MCP server',
-      body: "The official @modelcontextprotocol/sdk package makes it straightforward. You create a server instance, register tools with their input schemas, implement the handler functions, and start the server on stdio. The server listens for JSON-RPC requests from Claude Code, executes the matching tool, and returns the result. A minimal server can be under 40 lines of code.",
-    },
-    {
-      type: 'code-demo',
-      title: 'Minimal MCP server: read a file',
-      body: 'A complete MCP server that exposes a single tool — reading a file and returning its contents. This is the simplest possible server you can build.',
+      type: 'code-fill',
+      instruction: 'Complete this minimal MCP server that reads a file and returns its contents. A server can be under 40 lines of code:',
       language: 'typescript',
       filename: 'my-mcp-server.ts',
-      code: "import { McpServer } from \"@modelcontextprotocol/sdk/server/mcp.js\";\nimport { StdioServerTransport } from \"@modelcontextprotocol/sdk/server/stdio.js\";\nimport { readFile } from \"fs/promises\";\nimport { z } from \"zod\";\n\nconst server = new McpServer({\n  name: \"file-reader\",\n  version: \"1.0.0\",\n});\n\nserver.tool(\n  \"read_file\",\n  \"Read a file from disk and return its contents\",\n  { path: z.string().describe(\"Absolute file path\") },\n  async ({ path }) => {\n    const text = await readFile(path, \"utf-8\");\n    return {\n      content: [{ type: \"text\", text }],\n    };\n  }\n);\n\nconst transport = new StdioServerTransport();\nawait server.connect(transport);",
+      template: "import { McpServer } from \"@modelcontextprotocol/sdk/server/mcp.js\";\nimport { {{transport_class}} } from \"@modelcontextprotocol/sdk/server/stdio.js\";\nimport { readFile } from \"fs/promises\";\nimport { z } from \"zod\";\n\nconst server = new McpServer({\n  name: \"file-reader\",\n  version: \"1.0.0\",\n});\n\nserver.{{register_method}}(\n  \"read_file\",\n  \"Read a file from disk and return its contents\",\n  { path: z.string().describe(\"Absolute file path\") },\n  async ({ path }) => {\n    const text = await readFile(path, \"utf-8\");\n    return {\n      content: [{ type: \"text\", text }],\n    };\n  }\n);\n\nconst transport = new {{transport_class}}();\nawait server.{{connect_method}}(transport);",
+      blanks: [
+        { id: 'transport_class', answer: 'StdioServerTransport', alternatives: ['stdioservertransport'], placeholder: 'transport class?', hint: 'Claude Code communicates with MCP servers over stdio — what is the transport class?' },
+        { id: 'register_method', answer: 'tool', placeholder: 'register method?', hint: 'The method on McpServer to register a new tool' },
+        { id: 'connect_method', answer: 'connect', placeholder: 'start method?', hint: 'The method that starts the server listening on the transport' },
+      ],
+      explanation: 'Import StdioServerTransport for stdio communication. Use server.tool() to register tools with schemas and handlers. Call server.connect(transport) to start listening for JSON-RPC requests from Claude Code.',
     },
     {
       type: 'order',
@@ -197,12 +245,16 @@ const content: LessonContent = {
 
     // === REGISTERING YOUR SERVER ===
     {
-      type: 'code-demo',
-      title: 'Register your custom server',
-      body: 'Point Claude Code at your server by adding it to your MCP config. The command runs your server script directly with Node or tsx.',
+      type: 'code-fill',
+      instruction: 'Register your custom MCP server in the config. Point Claude Code at your server script:',
       language: 'json',
       filename: '.claude/settings.json',
-      code: '{\n  "mcpServers": {\n    "file-reader": {\n      "command": "npx",\n      "args": ["tsx", "my-mcp-server.ts"]\n    }\n  }\n}',
+      template: '{\n  "mcpServers": {\n    "{{server_name}}": {\n      "command": "{{package_runner}}",\n      "args": ["tsx", "my-mcp-server.ts"]\n    }\n  }\n}',
+      blanks: [
+        { id: 'server_name', answer: 'file-reader', alternatives: ['file_reader', 'filereader'], placeholder: 'server name?', hint: 'Name it after what it does — it reads files' },
+        { id: 'package_runner', answer: 'npx', alternatives: ['bunx'], placeholder: 'run command?', hint: 'The Node.js package runner that executes tsx without installing globally' },
+      ],
+      explanation: 'The server name "file-reader" becomes how Claude Code references this server. "npx" runs the tsx TypeScript executor without installing it globally. The args array passes "tsx" and your server script path.',
     },
     {
       type: 'terminal',
@@ -218,17 +270,34 @@ const content: LessonContent = {
 
     // === DEBUGGING ===
     {
-      type: 'info',
-      title: 'Debugging MCP connections',
-      body: "MCP connections fail silently more often than they fail loudly. The most common issues: the server binary is not found (wrong path or missing npx package), environment variables are missing (API key not set), port conflicts (another process on the same port), and timeouts (the server takes too long to start). When an MCP tool does not appear in Claude Code, it almost always means the server failed to launch — not that the tool is misconfigured.",
+      type: 'match',
+      instruction: 'Match each MCP failure symptom to its most likely fix:',
+      leftItems: [
+        'Server binary not found',
+        'Tool does not appear in Claude Code',
+        'Authentication error from external API',
+        'Server takes too long to respond',
+      ],
+      rightItems: [
+        'Check the command path and ensure npx package is installed',
+        'The server failed to launch — check /mcp status output',
+        'Environment variables are missing or incorrect in the env config',
+        'Increase timeout or check if the server has blocking startup logic',
+      ],
+      correctPairs: { 0: 0, 1: 1, 2: 2, 3: 3 },
+      explanation: 'MCP connections fail silently more often than loudly. When a tool does not appear, the server almost always failed to launch. Use /mcp inside Claude Code to check server status. Common fixes: verify command paths, check env vars, and ensure packages are installed.',
     },
     {
-      type: 'code-demo',
-      title: 'Debugging checklist in Claude Code',
-      body: 'Use the /mcp command inside Claude Code to check server status. It shows which servers are connected, which failed, and what tools are available.',
+      type: 'code-fill',
+      instruction: 'Use the debugging command inside Claude Code to check which servers are connected:',
       language: 'text',
-      filename: 'debug-commands.txt',
-      code: "# Inside Claude Code, check MCP status:\n/mcp\n\n# Common output when a server fails:\n# ✗ my-server — failed to start\n#   Error: Cannot find module '@modelcontextprotocol/sdk'\n\n# Fix: ensure the package is installed or use npx -y\n# Fix: check that env vars are set correctly\n# Fix: verify the command path is correct",
+      template: "# Inside Claude Code, check MCP status:\n{{debug_command}}\n\n# Common output when a server fails:\n# {{fail_symbol}} my-server — failed to start\n#   Error: Cannot find module '@modelcontextprotocol/sdk'\n\n# Fix: ensure the package is installed or use npx {{auto_flag}}",
+      blanks: [
+        { id: 'debug_command', answer: '/mcp', placeholder: 'slash command?', hint: 'A three-letter slash command standing for Model Context Protocol' },
+        { id: 'fail_symbol', answer: '✗', alternatives: ['x', 'X', '✕'], placeholder: 'failure icon?', hint: 'The symbol that indicates a failed server (opposite of a checkmark)' },
+        { id: 'auto_flag', answer: '-y', alternatives: ['--yes'], placeholder: 'auto-install flag?', hint: 'The npx flag that automatically answers "yes" to install prompts' },
+      ],
+      explanation: 'The /mcp command shows server status. Failed servers display with ✗. Use npx -y to auto-install packages without prompting. Always check /mcp first when a tool is missing.',
     },
     {
       type: 'multiple-choice',
@@ -250,17 +319,34 @@ const content: LessonContent = {
 
     // === REAL-WORLD PRACTICE ===
     {
-      type: 'info',
-      title: 'Real-world MCP ecosystem',
-      body: "The MCP ecosystem already includes dozens of production-ready servers. Supabase exposes database queries and schema management. Vercel provides deployment status and log inspection. GitHub lets the agent read issues, PRs, and commit history. Puppeteer and Playwright give browser automation. Stripe exposes payment operations. Each server is a standalone process that Claude Code manages as a child process — launch, communicate, shut down.",
+      type: 'match',
+      instruction: 'Match each MCP server to what it gives your agent:',
+      leftItems: [
+        'Supabase MCP',
+        'GitHub MCP',
+        'Puppeteer MCP',
+        'Stripe MCP',
+      ],
+      rightItems: [
+        'Database queries and schema management',
+        'Issues, PRs, and commit history',
+        'Headless browser automation for scraping and testing',
+        'Payment operations and customer data',
+      ],
+      correctPairs: { 0: 0, 1: 1, 2: 2, 3: 3 },
+      explanation: 'The MCP ecosystem includes dozens of production-ready servers. Each is a standalone process that Claude Code manages as a child process — launch, communicate, shut down. A real project might connect three or four servers simultaneously.',
     },
     {
-      type: 'code-demo',
-      title: 'Multi-server config',
-      body: 'A real project might connect three or four servers. Each one adds a category of capabilities to your agent.',
+      type: 'code-fill',
+      instruction: 'Complete this multi-server config. Each server adds a category of capabilities to your agent:',
       language: 'json',
-      filename: '.claude/settings.json',
-      code: '{\n  "mcpServers": {\n    "supabase": {\n      "command": "npx",\n      "args": ["-y", "@supabase/mcp-server"],\n      "env": {\n        "SUPABASE_ACCESS_TOKEN": "${SUPABASE_TOKEN}"\n      }\n    },\n    "github": {\n      "command": "npx",\n      "args": ["-y", "@modelcontextprotocol/server-github"],\n      "env": {\n        "GITHUB_TOKEN": "${GH_TOKEN}"\n      }\n    },\n    "filesystem": {\n      "command": "npx",\n      "args": [\n        "-y",\n        "@modelcontextprotocol/server-filesystem",\n        "/home/user/docs"\n      ]\n    }\n  }\n}',
+      template: '{\n  "mcpServers": {\n    "supabase": {\n      "command": "npx",\n      "args": ["-y", "@supabase/mcp-server"],\n      "env": {\n        "SUPABASE_ACCESS_TOKEN": "{{token_syntax}}"\n      }\n    },\n    "{{vcs_server}}": {\n      "command": "npx",\n      "args": ["-y", "@modelcontextprotocol/server-github"],\n      "env": {\n        "{{token_key}}": "${GH_TOKEN}"\n      }\n    }\n  }\n}',
+      blanks: [
+        { id: 'token_syntax', answer: '${SUPABASE_TOKEN}', alternatives: ['$SUPABASE_TOKEN', '${SUPABASE_ACCESS_TOKEN}'], placeholder: 'env var reference?', hint: 'Reference an environment variable using ${VAR_NAME} syntax' },
+        { id: 'vcs_server', answer: 'github', alternatives: ['GitHub'], placeholder: 'server name?', hint: 'The version control service that hosts your repos' },
+        { id: 'token_key', answer: 'GITHUB_TOKEN', alternatives: ['GH_TOKEN', 'GITHUB_ACCESS_TOKEN'], placeholder: 'token env var?', hint: 'The standard environment variable name for GitHub authentication' },
+      ],
+      explanation: 'Use ${VAR_NAME} syntax to reference environment variables — this prevents secrets from being committed to git. Each server is named descriptively and gets its own auth credentials through the env config.',
     },
     {
       type: 'multiple-choice',
@@ -277,9 +363,16 @@ const content: LessonContent = {
 
     // === SECURITY ===
     {
-      type: 'info',
-      title: 'Security boundaries',
-      body: "Every MCP server runs as a child process with the same permissions as your user account. If you give an MCP server your database credentials, the agent can run any query the server allows. This is powerful but demands caution. Use read-only tokens when possible. Scope API keys to the minimum required permissions. Review which tools a server exposes before connecting it. Claude Code shows tool approval prompts for side-effecting actions, but the server itself is the real trust boundary.",
+      type: 'multiple-choice',
+      question: 'An MCP server runs with the same permissions as your user account. What is the MOST important security practice?',
+      options: [
+        'Only use MCP servers written in TypeScript',
+        'Scope API keys to minimum required permissions and use read-only tokens when possible',
+        'Always run MCP servers in Docker containers',
+        'Restrict MCP to localhost connections only',
+      ],
+      correctIndex: 1,
+      explanation: 'Every MCP server runs as a child process with your permissions. If you give it database credentials, the agent can run any query the server allows. Use read-only tokens when possible, scope API keys to minimum permissions, and review which tools a server exposes before connecting it. The server itself is the real trust boundary.',
     },
 
     // === MATCH EXERCISE ===

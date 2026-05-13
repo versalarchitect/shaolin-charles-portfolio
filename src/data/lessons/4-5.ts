@@ -10,16 +10,23 @@ const content: LessonContent = {
       body: "Take any production system — an e-commerce platform, a SaaS product, an internal tool. Now ask one question: could a coordinated agent fleet build and maintain this? Not \"could an agent write some of the code\" — but could agents own it end-to-end? Build new features in parallel. Fix bugs without breaking unrelated modules. Extend it without tribal knowledge. The Teardown Methodology gives you a systematic way to answer this question and produce an actionable redesign proposal.",
     },
     {
-      type: 'info',
-      title: 'Why teardowns matter',
-      body: "Every codebase you inherit, join, or grow past a certain size needs this analysis. Most production systems were designed for human teams — they rely on tribal knowledge, implicit conventions, and shared mental models that agents cannot access. The Teardown reveals exactly where these human-dependent assumptions live and gives you a concrete plan to eliminate them. The output is not a rewrite — it is a targeted set of changes that transform a human-native system into an agent-native one.",
+      type: 'multiple-choice',
+      question: 'Why do most production systems need a teardown before agents can effectively build and maintain them?',
+      options: [
+        'The code is too old and needs to be rewritten',
+        'They were designed for human teams — relying on tribal knowledge, implicit conventions, and shared mental models that agents cannot access',
+        'Agents cannot read large codebases',
+        'The programming language is not AI-compatible',
+      ],
+      correctIndex: 1,
+      explanation: 'Most production systems were designed for human teams — they rely on tribal knowledge, implicit conventions, and shared mental models that agents cannot access. The Teardown reveals exactly where these human-dependent assumptions live and gives you a concrete plan to eliminate them. The output is not a rewrite — it is a targeted set of changes that transform a human-native system into an agent-native one.',
     },
 
     // === THE METHODOLOGY ===
     {
-      type: 'diagram',
+      type: 'interactive-diagram',
       title: 'The Teardown Methodology',
-      body: 'Four phases, each producing a specific artifact. The final output is a scored report with redesign recommendations.',
+      body: 'Walk through each phase, understanding what it produces and how they connect.',
       diagram: {
         direction: 'LR',
         nodes: [
@@ -34,6 +41,27 @@ const content: LessonContent = {
           { from: 'blockers', to: 'redesign' },
         ],
       },
+      stages: [
+        {
+          highlightNodes: ['map'],
+          explanation: 'Phase 1: Map every component — document responsibility, dependencies, dependents, and data stores. Output: a complete component inventory with dependency graph.',
+        },
+        {
+          highlightNodes: ['map', 'score'],
+          highlightEdges: [{ from: 'map', to: 'score' }],
+          explanation: 'Phase 2: Score each component on 5 factors (1-5 each): Boundaries, Patterns, Contracts, Knowledge, Isolation. Total 5-25. Below 10 = agent-hostile.',
+        },
+        {
+          highlightNodes: ['score', 'blockers'],
+          highlightEdges: [{ from: 'score', to: 'blockers' }],
+          explanation: 'Phase 3: For each low-scoring component, identify specific actionable blockers — not "it is complex" but "order files split across 4 directories." Each blocker becomes a fix task.',
+        },
+        {
+          highlightNodes: ['blockers', 'redesign'],
+          highlightEdges: [{ from: 'blockers', to: 'redesign' }],
+          explanation: 'Phase 4: Propose targeted fixes prioritized by impact. Boundary fixes unlock findability. Contract fixes unlock parallelism. Knowledge fixes unlock autonomy. Output: actionable redesign plan with effort estimates.',
+        },
+      ],
     },
     {
       type: 'interactive-diagram',
@@ -160,17 +188,31 @@ const content: LessonContent = {
 
     // === PHASE 1: MAP ===
     {
-      type: 'info',
-      title: 'Phase 1: Map Components',
-      body: "List every component in the system. Not classes or functions — system components. A component is a cohesive unit that could theoretically be owned by one agent. Examples: user authentication, payment processing, order management, email notifications, admin dashboard, API gateway. For each component, document: its responsibility (one sentence), its dependencies (what it calls), its dependents (what calls it), and its data stores (what databases/caches it reads/writes).",
+      type: 'multiple-choice',
+      question: 'In Phase 1 (Map), what is a "component" in the teardown methodology?',
+      options: [
+        'A React component or UI element',
+        'A class or function in the codebase',
+        'A cohesive unit that could theoretically be owned by one agent — like user auth, payment processing, or order management',
+        'A database table or API endpoint',
+      ],
+      correctIndex: 2,
+      explanation: 'Not classes or functions — system components. A component is a cohesive unit that could theoretically be owned by one agent. For each, document: responsibility (one sentence), dependencies (what it calls), dependents (what calls it), and data stores (what databases/caches it reads/writes).',
     },
     {
-      type: 'code-demo',
-      title: 'Phase 1 output: Component map',
-      body: 'A real component map for an e-commerce platform. Each component is documented with its boundaries and dependencies.',
+      type: 'code-fill',
+      instruction: 'Complete this component map entry for an e-commerce Orders component. Fill in the dependencies, dependents, and file distribution.',
       language: 'markdown',
+      template: '## 4. Orders & Checkout\n- Responsibility: Place orders, track status, handle fulfillment\n- Dependencies: Cart, ___, Inventory, ___\n- Dependents: ___, Analytics\n- Data: orders table, order_items table, ___\n- Files: 24 files across ___ directories',
+      blanks: [
+        { id: 'dep1', answer: 'Payments', alternatives: ['Payment', 'payments'], hint: 'Orders need to charge customers', placeholder: 'component name' },
+        { id: 'dep2', answer: 'Email Service', alternatives: ['Email', 'Emails', 'Notifications'], hint: 'Orders send confirmation emails', placeholder: 'component name' },
+        { id: 'dependent', answer: 'Admin Dashboard', alternatives: ['Admin', 'Dashboard'], hint: 'Admins need to see and manage orders', placeholder: 'component name' },
+        { id: 'table', answer: 'order_events table', alternatives: ['order_events', 'order_status table'], hint: 'A table tracking order state changes', placeholder: 'table name' },
+        { id: 'dirs', answer: '4', alternatives: ['four'], hint: 'Files scattered across too many directories is a red flag', placeholder: 'number' },
+      ],
       filename: 'teardown-phase1.md',
-      code: "# Component Map: E-Commerce Platform\n\n## 1. User Auth\n- Responsibility: Registration, login, session management, password reset\n- Dependencies: Email Service (sends verification emails)\n- Dependents: ALL other components (check auth state)\n- Data: users table, sessions table\n- Files: 12 files across 3 directories\n\n## 2. Product Catalog\n- Responsibility: CRUD products, categories, search, filtering\n- Dependencies: Image Service (product photos)\n- Dependents: Orders, Cart, Admin Dashboard\n- Data: products table, categories table, product_images table\n- Files: 18 files across 2 directories\n\n## 3. Shopping Cart\n- Responsibility: Add/remove items, calculate totals, apply coupons\n- Dependencies: Product Catalog (price lookup), User Auth (cart ownership)\n- Dependents: Checkout/Orders\n- Data: carts table, cart_items table\n- Files: 8 files in 1 directory\n\n## 4. Orders & Checkout\n- Responsibility: Place orders, track status, handle fulfillment\n- Dependencies: Cart, Payments, Inventory, Email Service\n- Dependents: Admin Dashboard, Analytics\n- Data: orders table, order_items table, order_events table\n- Files: 24 files across 4 directories\n\n## 5. Payments\n- Responsibility: Charge cards, process refunds, handle webhooks\n- Dependencies: Stripe SDK, User Auth\n- Dependents: Orders\n- Data: payments table, refunds table\n- Files: 9 files in 1 directory\n\n## 6. Email Service\n- Responsibility: Send transactional emails (verification, receipts, shipping)\n- Dependencies: Template engine, SMTP provider\n- Dependents: Auth, Orders, Marketing\n- Data: email_logs table\n- Files: 14 files across 2 directories",
+      explanation: 'Orders & Checkout depends on 4 components (Cart, Payments, Inventory, Email) and is spread across 4 directories. This makes it the hardest component for agents — high dependency count + scattered files = lowest agent-buildability. The component map reveals this immediately.',
     },
     {
       type: 'multiple-choice',
@@ -192,22 +234,36 @@ const content: LessonContent = {
 
     // === PHASE 2: SCORE ===
     {
-      type: 'info',
-      title: 'Phase 2: Score Agent-Buildability',
-      body: "For each component, score it on five factors that determine whether an agent can effectively build and maintain it. Each factor scored 1-5 (1 = agent-hostile, 5 = agent-friendly). The factors: (1) Clear Boundaries — can an agent know what files belong to this component without guessing? (2) Consistent Patterns — do all files follow the same structure? (3) Testable Contracts — are the interfaces well-defined and testable? (4) No Tribal Knowledge — can an agent understand this without asking a human? (5) Isolation — can it be modified without affecting other components?",
+      type: 'match',
+      instruction: 'Match each buildability factor to what it measures:',
+      leftItems: ['Clear Boundaries', 'Consistent Patterns', 'Testable Contracts', 'No Tribal Knowledge', 'Isolation'],
+      rightItems: ['Can an agent find all files without guessing?', 'Do all files follow the same structure?', 'Are interfaces well-defined and testable?', 'Can an agent understand without asking a human?', 'Can it be modified without affecting other components?'],
+      correctPairs: { 0: 0, 1: 1, 2: 2, 3: 3, 4: 4 },
+      explanation: 'Each factor scored 1-5 (1 = agent-hostile, 5 = agent-friendly). Total score 5-25. Below 10 means agent-hostile and requires redesign. 15-19 is workable. 20-25 is agent-native.',
     },
     {
-      type: 'code-demo',
-      title: 'Phase 2 output: Scorecard',
-      body: 'Scoring each component reveals exactly where agent-buildability breaks down.',
-      language: 'markdown',
-      filename: 'teardown-phase2.md',
-      code: "# Agent-Buildability Scores\n\n## Scoring Key\n- Boundaries: Can agent find all files? (1-5)\n- Patterns: Consistent file structure? (1-5)\n- Contracts: Well-defined testable interfaces? (1-5)\n- Knowledge: Zero tribal knowledge needed? (1-5)\n- Isolation: Modifiable without side effects? (1-5)\n\n| Component       | Bounds | Pattern | Contract | Knowledge | Isolation | TOTAL |\n|-----------------|--------|---------|----------|-----------|-----------|-------|\n| User Auth       |   4    |    4    |    3     |     3     |     2     |  16   |\n| Product Catalog |   3    |    3    |    4     |     4     |     4     |  18   |\n| Shopping Cart   |   5    |    5    |    4     |     5     |     3     |  22   |\n| Orders          |   2    |    2    |    2     |     2     |     1     |   9   |\n| Payments        |   5    |    5    |    5     |     4     |     4     |  23   |\n| Email Service   |   3    |    3    |    3     |     2     |     3     |  14   |\n\n## Interpretation\n- 20-25: Agent-native. Agents can own this component.\n- 15-19: Workable. Minor improvements needed.\n- 10-14: Friction. Agents struggle, need guidance.\n-  5-9:  Agent-hostile. Requires redesign for agent ownership.\n\n## Priority Targets: Orders (9), Email Service (14)",
+      type: 'multiple-choice',
+      question: 'A component scores: Boundaries 5, Patterns 5, Contracts 4, Knowledge 5, Isolation 3. Total: 22. What does this mean?',
+      options: [
+        'Agent-hostile — requires redesign',
+        'Friction — agents struggle, need guidance',
+        'Workable — minor improvements needed',
+        'Agent-native — agents can own this component',
+      ],
+      correctIndex: 3,
+      explanation: 'Scores 20-25 mean agent-native: agents can own this component. 15-19 is workable (minor improvements needed). 10-14 is friction (agents struggle). 5-9 is agent-hostile (requires redesign). The component with 22 is in great shape — agents can work autonomously on it.',
     },
     {
-      type: 'info',
-      title: 'What each score means',
-      body: "A Boundaries score of 2 means files are scattered across multiple directories with no clear ownership. A Patterns score of 2 means each file uses different conventions (some use classes, some functions, naming is inconsistent). A Contracts score of 2 means the module's interface is implicit — you have to read the implementation to know what it exposes. A Knowledge score of 2 means there are undocumented assumptions an agent will miss (\"we never delete orders\" or \"this field is always in UTC\"). An Isolation score of 1 means modifying this component reliably breaks others.",
+      type: 'multiple-choice',
+      question: 'A component has Boundaries score 2 and Isolation score 1. What do these low scores tell you?',
+      options: [
+        'The code is buggy and needs testing',
+        'Files are scattered across multiple directories with no clear ownership (Boundaries 2), and modifying this component reliably breaks others (Isolation 1)',
+        'The component needs more documentation',
+        'The patterns are inconsistent',
+      ],
+      correctIndex: 1,
+      explanation: 'Boundaries 2 means files scattered with no clear ownership — an agent cannot list "all files for this component" in one command. Isolation 1 means modifying this component reliably breaks others — tight coupling makes independent work impossible. These are the two most critical factors to fix first.',
     },
     {
       type: 'checkpoint',
@@ -217,17 +273,32 @@ const content: LessonContent = {
 
     // === PHASE 3: BLOCKERS ===
     {
-      type: 'info',
-      title: 'Phase 3: Identify Blockers',
-      body: "For each low-scoring component, identify the specific blockers — the concrete things that make it agent-hostile. These are not vague observations (\"it is complex\") but actionable findings: \"The order state machine is not documented anywhere — an agent will not know valid state transitions.\" \"Order files are in src/controllers/, src/services/, src/jobs/, and src/events/ — four directories with no clear connection.\" \"The total calculation depends on 3 undocumented business rules stored in a shared utility.\" Each blocker becomes a task in Phase 4.",
+      type: 'compare',
+      title: 'Vague observations vs actionable blockers',
+      body: 'Phase 3 produces specific, measurable findings — not vague observations. Each blocker becomes a fix task in Phase 4.',
+      left: {
+        label: 'Vague Observation (Useless)',
+        content: '"The orders component is complex"\n"It has too many dependencies"\n"The code is hard to follow"\n"Testing is difficult"\n"There is tech debt"\n\nResult:\n- No clear fix action\n- No way to measure improvement\n- No priority ranking\n- Every developer has a different\n  interpretation',
+        language: 'text',
+        filename: 'vague.txt',
+      },
+      right: {
+        label: 'Actionable Blocker (Useful)',
+        content: 'B1: Order files split across 4 dirs:\n  controllers/, services/, jobs/, events/\nB2: No feature directory — agent cannot\n  list "all order files" in one command\nC1: No defined interface between\n  Orders <-> Payments (direct imports)\nK1: "shipped orders cannot be cancelled"\n  — undocumented rule\nI1: Modifying order total logic breaks\n  cart display (shared function)\n\nResult:\n- Clear fix for each blocker\n- Measurable improvement per fix\n- Priority by impact on agent work',
+        language: 'text',
+        filename: 'actionable.txt',
+      },
+      question: 'Which type of finding can be turned into a concrete fix task?',
+      correctSide: 'right',
+      explanation: 'Blockers must be specific and actionable. "The order state machine is not documented" becomes "Create CLAUDE.md with state transitions." "Files in 4 directories" becomes "Move all to src/features/orders/." Each blocker maps directly to a fix task with measurable improvement.',
     },
     {
-      type: 'code-demo',
-      title: 'Phase 3 output: Blocker analysis for Orders component',
-      body: 'Each blocker is specific, measurable, and directly actionable. No vague observations.',
-      language: 'markdown',
-      filename: 'teardown-phase3.md',
-      code: "# Blockers: Orders & Checkout (Score: 9/25)\n\n## Boundary Blockers (Score: 2)\n- B1: Order files split across 4 dirs: controllers/, services/, jobs/, events/\n- B2: No feature directory — agent cannot list \"all order files\" in one command\n- B3: Shared utility `calculateOrderTotal` in lib/utils.ts (not owned by Orders)\n\n## Pattern Blockers (Score: 2)\n- P1: Controller uses class syntax, service uses functions, job uses factory pattern\n- P2: Some files use camelCase, others kebab-case (orderService vs order-events)\n- P3: Tests in 2 locations: __tests__/orders/ AND orders.test.ts files\n\n## Contract Blockers (Score: 2)\n- C1: No defined interface between Orders ↔ Payments (direct function imports)\n- C2: Order status changes via direct DB update (no state machine or validation)\n- C3: Three callers reach into order internals (bypass public methods)\n\n## Knowledge Blockers (Score: 2)\n- K1: \"Orders with status 'shipped' cannot be cancelled\" — undocumented rule\n- K2: Total calculation includes tax logic that varies by state — buried in utility\n- K3: Webhook from Stripe updates order status — not obvious from order code\n\n## Isolation Blockers (Score: 1)\n- I1: Modifying order total logic breaks cart display (shared function)\n- I2: Order events trigger 5 side effects in other modules (tightly coupled)\n- I3: Order table has foreign keys to 4 other tables with cascade deletes",
+      type: 'match',
+      instruction: 'Match each blocker type to the scoring factor it corresponds to:',
+      leftItems: ['Order files split across 4 directories', 'Controller uses classes, service uses functions', 'No defined interface between Orders and Payments', '"Shipped orders cannot be cancelled" — undocumented', 'Modifying order total breaks cart display'],
+      rightItems: ['Boundaries (score: 2)', 'Patterns (score: 2)', 'Contracts (score: 2)', 'Knowledge (score: 2)', 'Isolation (score: 1)'],
+      correctPairs: { 0: 0, 1: 1, 2: 2, 3: 3, 4: 4 },
+      explanation: 'Each blocker maps to the scoring factor it degrades. Scattered files degrade Boundaries. Inconsistent conventions degrade Patterns. Missing interfaces degrade Contracts. Undocumented rules degrade Knowledge. Shared functions that break other modules degrade Isolation.',
     },
     {
       type: 'multiple-choice',
@@ -249,17 +320,29 @@ const content: LessonContent = {
 
     // === PHASE 4: REDESIGN ===
     {
-      type: 'info',
-      title: 'Phase 4: Propose Redesign',
-      body: "For each blocker, propose a specific fix. Not a rewrite — a targeted intervention. Boundary blockers get a directory restructure (move files to one feature directory). Pattern blockers get a conventions document plus a refactoring pass. Contract blockers get explicit interface definitions. Knowledge blockers get documentation in CLAUDE.md plus code enforcement. Isolation blockers get decoupling (events instead of direct calls). Prioritize by impact: which fixes unlock the most parallel agent work?",
+      type: 'match',
+      instruction: 'Match each blocker type to its targeted fix:',
+      leftItems: ['Boundary blockers (files scattered)', 'Pattern blockers (inconsistent conventions)', 'Contract blockers (no defined interfaces)', 'Knowledge blockers (undocumented rules)', 'Isolation blockers (tight coupling)'],
+      rightItems: ['Directory restructure to one feature directory', 'Conventions document plus refactoring pass', 'Explicit interface definitions between modules', 'Documentation in CLAUDE.md plus code enforcement', 'Events instead of direct calls (decoupling)'],
+      correctPairs: { 0: 0, 1: 1, 2: 2, 3: 3, 4: 4 },
+      explanation: 'For each blocker, propose a specific fix. Not a rewrite — a targeted intervention. Boundary fixes unlock findability. Contract fixes unlock parallelism. Knowledge fixes unlock autonomy. Prioritize by impact on parallel agent work.',
     },
     {
-      type: 'code-demo',
-      title: 'Phase 4 output: Redesign proposal (Orders)',
-      body: 'Each fix targets a specific blocker. Prioritized by impact on agent-buildability.',
+      type: 'code-fill',
+      instruction: 'Complete this redesign proposal for the Orders component. Fill in the fixes, effort estimates, and score improvements.',
       language: 'markdown',
+      template: '# Redesign Proposal: Orders & Checkout\n\n## Priority 1: Boundaries (unlocks findability)\n- Move all order files to ___\n- Estimated effort: ___ hours\n- Impact: Boundaries score 2 → 5\n\n## Priority 2: Contracts (unlocks parallel work)\n- Define ___ (types + interface)\n- Implement ___: Order.transition(from, to)\n- Estimated effort: 4 hours\n\n## Priority 3: Knowledge (unlocks autonomous work)\n- Create src/features/orders/___\n- Estimated effort: ___ hour\n- Impact: Knowledge score 2 → 5\n\n## Projected Final Score: 9 → ___',
+      blanks: [
+        { id: 'target-dir', answer: 'src/features/orders/', alternatives: ['src/features/orders', 'features/orders/'], hint: 'The standard feature directory location', placeholder: 'directory path' },
+        { id: 'effort-1', answer: '2', alternatives: ['3', '1'], hint: 'Moving files is relatively quick', placeholder: 'number' },
+        { id: 'contract-name', answer: 'OrderPaymentContract', alternatives: ['OrderPayment contract', 'order-payment contract'], hint: 'The interface between Orders and Payments', placeholder: 'contract name' },
+        { id: 'mechanism', answer: 'state machine', alternatives: ['a state machine', 'state-machine'], hint: 'A pattern that enforces valid state transitions', placeholder: 'mechanism' },
+        { id: 'doc-file', answer: 'CLAUDE.md', alternatives: ['claude.md'], hint: 'The agent instruction file for this module', placeholder: 'filename' },
+        { id: 'effort-3', answer: '1', alternatives: ['2'], hint: 'Documenting rules is fast', placeholder: 'number' },
+        { id: 'final-score', answer: '23', alternatives: ['22', '24'], hint: 'From agent-hostile (9) to agent-native (20+)', placeholder: 'score' },
+      ],
       filename: 'teardown-phase4.md',
-      code: "# Redesign Proposal: Orders & Checkout\n\n## Priority 1: Boundaries (unlocks findability)\n- Move all order files to src/features/orders/\n- Extract `calculateOrderTotal` from lib/utils.ts into orders/\n- Estimated effort: 2 hours\n- Impact: Boundaries score 2 → 5\n\n## Priority 2: Contracts (unlocks parallel work)\n- Define OrderPaymentContract (types + interface)\n- Implement state machine: Order.transition(from, to) with validation\n- Replace direct imports with contract-based communication\n- Estimated effort: 4 hours\n- Impact: Contracts score 2 → 4, Isolation 1 → 3\n\n## Priority 3: Knowledge (unlocks autonomous agent work)\n- Create src/features/orders/CLAUDE.md with all business rules\n- Document state machine transitions (which states can reach which)\n- Document tax calculation rules with examples\n- Estimated effort: 1 hour\n- Impact: Knowledge score 2 → 5\n\n## Priority 4: Patterns (unlocks consistency)\n- Refactor all order files to function-based pattern\n- Rename to consistent convention: orders.handler.ts, orders.service.ts\n- Collocate tests: orders.test.ts in same directory\n- Estimated effort: 2 hours\n- Impact: Patterns score 2 → 5\n\n## Priority 5: Isolation (unlocks independence)\n- Replace direct side effects with event emissions\n- Other modules subscribe to order events (do not call order functions)\n- Remove cascade deletes — use soft-delete with cleanup job\n- Estimated effort: 6 hours\n- Impact: Isolation score 1 → 4\n\n## Projected Final Score: 9 → 23 (from agent-hostile to agent-native)\n## Total Estimated Effort: 15 hours",
+      explanation: 'Each fix targets a specific blocker with estimated effort and projected score improvement. Total estimated effort: 15 hours to go from 9/25 (agent-hostile) to 23/25 (agent-native). The biggest wins come from Boundaries (findability) and Contracts (parallelism) — fix those first.',
     },
     {
       type: 'order',
@@ -281,14 +364,28 @@ const content: LessonContent = {
 
     // === AGENT-BUILDABILITY FACTORS DEEP DIVE ===
     {
-      type: 'info',
-      title: 'Factor: Tribal knowledge elimination',
-      body: "Tribal knowledge is anything a human \"just knows\" that is not in the code or documented. Business rules (\"we always round up on tax\"). Implicit conventions (\"handlers never call other handlers directly\"). Historical context (\"we use that deprecated API because the new one has a bug in edge cases\"). Deployment quirks (\"never deploy on Fridays — the batch job runs Saturday morning\"). Every piece of tribal knowledge is a landmine for agents. They will violate it, cause bugs, and you will spend time debugging something that \"everyone knows.\" Document it or enforce it in code.",
+      type: 'multiple-choice',
+      question: 'Which of these is an example of tribal knowledge that is a landmine for agents?',
+      options: [
+        'A well-documented API endpoint',
+        '"We always round up on tax" — a business rule that is not in the code or documented anywhere',
+        'A typed interface in a contract file',
+        'A test that verifies state machine transitions',
+      ],
+      correctIndex: 1,
+      explanation: 'Tribal knowledge is anything a human "just knows" that is not in the code or documented. Business rules ("we always round up on tax"). Implicit conventions ("handlers never call other handlers directly"). Deployment quirks ("never deploy on Fridays"). Every piece is a landmine for agents. They will violate it. Document it or enforce it in code.',
     },
     {
-      type: 'info',
-      title: 'Factor: Testable contracts',
-      body: "If you cannot test the boundary between two modules, an agent cannot verify its work is correct. A testable contract means: (1) The interface is typed — TypeScript catches mismatches at compile time. (2) The behavior is specified — there are tests that verify the contract is honored. (3) The contract is independently mockable — an agent can test its module without running the entire system. Every module should be testable in isolation. If testing Module A requires running Module B, the boundary between them is not clean enough.",
+      type: 'multiple-choice',
+      question: 'What makes a contract "testable" for agents?',
+      options: [
+        'It has many comments explaining the code',
+        'It is typed (TypeScript catches mismatches), behavior is specified (tests verify the contract), and it is independently mockable (test module A without running module B)',
+        'It uses the latest testing framework',
+        'It has 100% code coverage',
+      ],
+      correctIndex: 1,
+      explanation: 'A testable contract means: (1) The interface is typed — TypeScript catches mismatches at compile time. (2) The behavior is specified — tests verify the contract is honored. (3) The contract is independently mockable — an agent can test its module without running the entire system. If testing Module A requires running Module B, the boundary is not clean enough.',
     },
     {
       type: 'multiple-choice',
@@ -305,14 +402,28 @@ const content: LessonContent = {
 
     // === SYNTHESIS ===
     {
-      type: 'info',
-      title: 'When to run a teardown',
-      body: "Run a teardown when: (1) You inherit a codebase and plan to use agents heavily. (2) Agent conflict rates exceed 15% despite good CLAUDE.md documentation. (3) Agents consistently produce incorrect code in specific areas (indicates tribal knowledge or unclear boundaries). (4) You are planning a significant new feature and want to ensure agent-friendly architecture. The teardown takes 2-4 hours for a mid-size system. The redesign implementation takes days to weeks — but the payoff is permanent improvement in agent productivity.",
+      type: 'multiple-choice',
+      question: 'When should you run a teardown? Select the scenario that does NOT warrant a teardown.',
+      options: [
+        'You inherit a codebase and plan to use agents heavily',
+        'Agent conflict rates exceed 15% despite good CLAUDE.md documentation',
+        'Your existing codebase has 100% test coverage and clear module boundaries already',
+        'Agents consistently produce incorrect code in specific areas of the codebase',
+      ],
+      correctIndex: 2,
+      explanation: 'Run a teardown when: (1) You inherit a codebase for heavy agent use. (2) Conflict rates exceed 15%. (3) Agents consistently fail in specific areas. (4) Planning a significant new feature. If your codebase already has clear boundaries and good coverage, the teardown would confirm it is agent-ready — not require redesign.',
     },
     {
-      type: 'info',
-      title: 'The teardown mindset',
-      body: "The Teardown is not about judging legacy code. Legacy code was built for human teams with human assumptions. That was appropriate at the time. The Teardown acknowledges the new reality: agents are your builders now, and they have different requirements. Clear boundaries instead of tribal knowledge. Explicit contracts instead of implicit conventions. Documented rules instead of team culture. This is not a criticism of the old way — it is adaptation to a new capability.",
+      type: 'multiple-choice',
+      question: 'The Teardown Methodology is primarily about:',
+      options: [
+        'Judging legacy code and criticizing past decisions',
+        'Rewriting the entire codebase from scratch',
+        'Adapting a human-native system to agent-native requirements — clear boundaries, explicit contracts, documented rules instead of tribal knowledge',
+        'Adding more documentation to every file',
+      ],
+      correctIndex: 2,
+      explanation: 'The Teardown is not about judging legacy code. Legacy code was built for human teams with human assumptions — appropriate at the time. The Teardown acknowledges the new reality: agents are your builders, and they need clear boundaries instead of tribal knowledge, explicit contracts instead of implicit conventions, documented rules instead of team culture. Adaptation, not criticism.',
     },
     {
       type: 'checklist',

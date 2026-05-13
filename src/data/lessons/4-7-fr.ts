@@ -17,9 +17,16 @@ const content: LessonContent = {
 
     // === FAILURE MODES ===
     {
-      type: 'info',
-      title: 'Trois catégories où les agents échouent',
-      body: "Premièrement : les problèmes nouveaux. Si personne n'a écrit sur ton ensemble de contraintes spécifiques sur Internet, les agents interpolent à partir d'exemples adjacents — mal. Deuxièmement : les cas limites de ton domaine. L'agent ne sait pas que ton SLA est de 50 ms, que ta base de données tourne sur un serveur de 2015 avec 4 Go de RAM, ou que ton équipe de conformité refuse tout ce qui touche aux données personnelles. Troisièmement : les contraintes organisationnelles. Les réalités politiques, les compétences de l'équipe, les budgets de migration et le contexte de dette technique qu'aucun modèle ne peut déduire d'un prompt.",
+      type: 'multiple-choice',
+      question: 'Un agent recommande une stratégie de cache pour ton système. Il ne sait pas que ton SLA est de 50 ms, que ta base de données tourne sur un serveur de 2015 avec 4 Go de RAM, et que ton équipe de conformité refuse tout ce qui touche aux données personnelles. Quelle catégorie de défaillance cela représente-t-il ?',
+      options: [
+        'Problème nouveau — personne n\'a écrit sur ce scénario',
+        'Cas limite de ton domaine — l\'agent manque de contexte critique sur tes contraintes spécifiques',
+        'Contrainte organisationnelle — l\'agent ne peut pas déduire les réalités politiques',
+        'Biais d\'entraînement — l\'agent puise dans des données biaisées',
+      ],
+      correctIndex: 1,
+      explanation: "Les agents échouent dans trois catégories. Premièrement : les problèmes nouveaux où personne n'a écrit sur ton ensemble de contraintes spécifiques. Deuxièmement : les cas limites de ton domaine — l'agent ne connaît pas ton SLA, les specs de ton serveur ou tes règles de conformité. Troisièmement : les contraintes organisationnelles comme les compétences de l'équipe, les budgets de migration et les réalités politiques. Ce scénario est un cas limite du domaine : la recommandation de l'agent ignore les limitations matérielles, les exigences de performance et les règles de conformité dont on ne lui a jamais parlé.",
     },
     {
       type: 'interactive-diagram',
@@ -77,17 +84,29 @@ const content: LessonContent = {
 
     // === OVERRIDE CRITERIA ===
     {
-      type: 'info',
-      title: 'Construire des critères d\'outrepassement',
-      body: "Il te faut un cadre, pas des intuitions vagues. Pose-toi quatre questions. Un : est-ce que l'agent a accès à la contrainte qui compte le plus ? Si tu ne lui as pas parlé de ton équipe de 4 personnes ou de tes exigences de conformité, sa recommandation repose sur des données incomplètes — outrepasse. Deux : est-ce que la recommandation se base sur une bonne pratique générale ou une analyse spécifique de ta codebase ? Les conseils généraux échouent à l'échelle spécifique. Trois : as-tu déjà vu ce patron échouer dans des contextes similaires ? Ton expérience vécue est une donnée que le modèle n'a pas. Quatre : quel est le coût de se tromper ? Si c'est réversible, essaie la voie de l'agent. Si c'est irréversible, fie-toi à ton instinct.",
+      type: 'multiple-choice',
+      question: 'Tu construis des critères d\'outrepassement. Un agent recommande des réplicas en lecture PostgreSQL mais ne sait pas que ton équipe ops, c\'est une seule personne. Laquelle des quatre questions d\'outrepassement échoue ici ?',
+      options: [
+        'Est-ce que la recommandation se base sur une analyse spécifique de ta codebase ?',
+        'Est-ce que l\'agent a accès à la contrainte qui compte le plus ?',
+        'As-tu déjà vu ce patron échouer dans des contextes similaires ?',
+        'Quel est le coût de se tromper ?',
+      ],
+      correctIndex: 1,
+      explanation: "Il te faut un cadre, pas des intuitions vagues. Pose-toi quatre questions. Un : est-ce que l'agent a accès à la contrainte qui compte le plus ? Si tu ne lui as pas parlé de ton équipe de 4 personnes ou de tes exigences de conformité, sa recommandation repose sur des données incomplètes — outrepasse. Deux : est-ce que la recommandation se base sur une bonne pratique générale ou une analyse spécifique ? Trois : as-tu déjà vu ce patron échouer ? Quatre : quel est le coût de se tromper — si c'est réversible, essaie la voie de l'agent ; si c'est irréversible, fie-toi à ton instinct. Ce scénario échoue à la question un : l'agent manque la contrainte critique (équipe ops d'une personne).",
     },
     {
-      type: 'code-demo',
-      title: 'Journal de décisions d\'outrepassement',
-      body: 'Consigne chaque décision d\'outrepassement et son résultat. Ça calibre ton jugement au fil du temps — tu apprends quand tu avais raison d\'outrepasser et quand tu aurais dû écouter.',
+      type: 'code-fill',
+      instruction: 'Complète ce journal de décisions d\'outrepassement. Remplis les blancs pour documenter chaque outrepassement avec sa justification et son résultat — ça calibre ton jugement au fil du temps.',
       language: 'markdown',
       filename: 'OVERRIDE_LOG.md',
-      code: "# Override Decision Log\n\n## 2026-04-28: Database choice\n- **Agent recommendation**: PostgreSQL with read replicas\n- **My override**: SQLite with Litestream replication\n- **Rationale**: Single-server deployment, <1000 concurrent users,\n  ops team is one person (me). Postgres overhead not justified.\n- **Outcome (30 days)**: Correct. Zero ops incidents. p99 latency 12ms.\n  Agent's recommendation would have added 3 services to maintain.\n\n## 2026-04-15: API design\n- **Agent recommendation**: REST with OpenAPI spec\n- **My override**: tRPC with end-to-end types\n- **Rationale**: Full-stack TypeScript, no external consumers,\n  team already knows tRPC. OpenAPI overhead adds no value here.\n- **Outcome (30 days)**: Correct. Ship velocity 2x what REST would allow.\n\n## 2026-04-02: State management\n- **Agent recommendation**: Zustand for client state\n- **My override**: React Query + URL state only\n- **Outcome (30 days)**: Partially wrong. Needed local UI state for\n  a complex form wizard. Added Zustand in week 3. Should have listened.",
+      template: '# Override Decision Log\n\n## 2026-04-28: Database choice\n- **Agent recommendation**: PostgreSQL with read replicas\n- **My override**: {{db_override}}\n- **Rationale**: Single-server deployment, <1000 concurrent users,\n  ops team is one person (me). Postgres overhead not justified.\n- **Outcome (30 days)**: {{db_outcome}}\n\n## 2026-04-15: API design\n- **Agent recommendation**: REST with OpenAPI spec\n- **My override**: {{api_override}}\n- **Rationale**: Full-stack TypeScript, no external consumers,\n  team already knows tRPC. OpenAPI overhead adds no value here.\n- **Outcome (30 days)**: Correct. Ship velocity 2x what REST would allow.',
+      blanks: [
+        { id: 'db_override', answer: 'SQLite with Litestream replication', alternatives: ['SQLite', 'sqlite', 'SQLite with Litestream', 'Litestream'], placeholder: 'ton choix de base de données ?', hint: 'Une base de données embarquée légère avec réplication en streaming' },
+        { id: 'db_outcome', answer: 'Correct. Zero ops incidents. p99 latency 12ms.', alternatives: ['Correct', 'correct', 'Zero ops incidents', 'zero incidents'], placeholder: 'que s\'est-il passé après 30 jours ?', hint: 'L\'outrepassement a été validé — zéro problème opérationnel' },
+        { id: 'api_override', answer: 'tRPC with end-to-end types', alternatives: ['tRPC', 'trpc', 'tRPC with types', 'end-to-end typed RPC'], placeholder: 'ton choix d\'API ?', hint: 'Un framework RPC TypeScript-first avec sécurité de types complète' },
+      ],
+      explanation: 'Consigner chaque décision d\'outrepassement et son résultat calibre ton jugement au fil du temps. Tu apprends quand tu avais raison d\'outrepasser (choix de base de données, design d\'API) et quand tu aurais dû écouter. Le journal crée une boucle de rétroaction qui rend tes futurs outrepassements plus précis.',
     },
     {
       type: 'multiple-choice',
@@ -109,14 +128,24 @@ const content: LessonContent = {
 
     // === THE PARADOX ===
     {
-      type: 'info',
-      title: 'Le paradoxe de l\'outrepassement',
-      body: "Voici la tension : tu as besoin que les agents soient utiles. Si tu outrepasses chaque recommandation, pourquoi les utiliser ? La réponse, c'est l'asymétrie. Les agents ont raison 90 % du temps sur les détails d'implémentation — comment structurer un composant, quelle API appeler, comment écrire un test. Ils se trompent 30 à 40 % du temps sur les décisions architecturales qui dépendent d'un contexte qu'ils ne peuvent pas voir. Ton travail, c'est de savoir dans quelle catégorie tu te trouves. Laisse les agents gérer l'implémentation. Outrepasse sur l'architecture, la stratégie, et tout ce qui nécessite du contexte sur ton équipe, tes échéanciers ou tes contraintes.",
-    },
-    {
-      type: 'info',
-      title: 'Calibration de la confiance',
-      body: "La confiance de l'agent ne corrèle pas avec la justesse sur les problèmes nouveaux. Un modèle va dire « la meilleure approche est X » avec la même confiance linguistique, que X soit bien établi ou une extrapolation hallucinée. Tu ne peux pas utiliser le niveau de confiance de l'agent comme signal. Utilise plutôt ta propre confiance : si tu as une expérience directe du domaine du problème et que la recommandation de l'agent contredit cette expérience, ton expérience l'emporte. Si tu es en terrain inconnu et que l'agent cite un raisonnement spécifique et vérifiable, penche vers l'agent.",
+      type: 'compare',
+      title: 'Le paradoxe de l\'outrepassement : quand faire confiance vs quand outrepasser',
+      body: 'Les agents ont raison 90 % du temps sur l\'implémentation, tort 30-40 % sur l\'architecture. Ton travail, c\'est de savoir dans quelle catégorie tu te trouves.',
+      left: {
+        label: 'Faire confiance à l\'agent (Implémentation)',
+        content: 'L\'agent a RAISON 90 % du temps sur :\n\n- Comment structurer un composant\n- Quelle API appeler\n- Comment écrire un test\n- Syntaxe et patrons\n- Usage spécifique aux bibliothèques\n\nPourquoi : c\'est bien documenté,\nlargement couvert dans les données\nd\'entraînement. L\'agent a vu des\nmilliers d\'exemples et peut faire\nde la correspondance de patrons\navec précision.\n\nTon rôle : accepter et avancer vite.',
+        language: 'text',
+        filename: 'confiance-agent.txt',
+      },
+      right: {
+        label: 'Outrepasser l\'agent (Architecture)',
+        content: 'L\'agent a TORT 30-40 % du temps sur :\n\n- Décisions d\'architecture\n- Choix technologiques pour TON contexte\n- Compromis équipe/échéancier/contraintes\n- Décisions construire vs acheter\n- Quand NE PAS construire quelque chose\n\nPourquoi : ça dépend d\'un contexte que\nl\'agent ne peut pas voir — taille de\nl\'équipe, SLA, conformité, budget,\nréalité politique. Les données\nd\'entraînement biaisent vers la\n« meilleure pratique », pas TA pratique.\n\nTon rôle : évaluer et outrepasser.',
+        language: 'text',
+        filename: 'outrepasser-agent.txt',
+      },
+      question: 'Quand devrais-tu pencher vers l\'outrepassement ?',
+      correctSide: 'right',
+      explanation: "Le paradoxe de l'outrepassement : tu as besoin que les agents soient utiles, mais tu dois savoir quand les ignorer. La réponse, c'est l'asymétrie. Fais confiance aux agents sur les détails d'implémentation. Outrepasse sur l'architecture, la stratégie, et tout ce qui nécessite du contexte sur ton équipe, tes échéanciers ou tes contraintes. La confiance de l'agent ne corrèle pas avec la justesse sur les problèmes nouveaux — utilise TA confiance, pas la leur, comme signal décisif.",
     },
     {
       type: 'multiple-choice',
@@ -197,9 +226,16 @@ const content: LessonContent = {
 
     // === PRACTICAL SCENARIOS ===
     {
-      type: 'info',
-      title: 'Scénario : le refactoring qui ne devrait pas avoir lieu',
-      body: "Ta flotte d'agents analyse ta codebase et recommande de refactoriser ton module d'authentification. Le code est laid, utilise des callbacks au lieu d'async/await, et n'a pas de tests. Par chaque métrique objective, il a besoin d'un refactoring. Mais tu sais : ce code n'a pas eu de bogue depuis 18 mois. Il gère 50K requêtes d'auth par jour. L'équipe de conformité a approuvé exactement cette implémentation. Refactoriser introduit du risque avec zéro bénéfice côté utilisateur. Les agents ne peuvent pas savoir que la stabilité et l'approbation de conformité ont plus de valeur que l'esthétique du code ici.",
+      type: 'multiple-choice',
+      question: 'Ta flotte d\'agents recommande de refactoriser un module auth laid (callbacks, pas de tests). Mais ce code n\'a eu aucun bogue en 18 mois, gère 50K requêtes quotidiennes, et la conformité a approuvé cette implémentation exacte. Que fais-tu ?',
+      options: [
+        'Refactoriser — les métriques de qualité de code montrent clairement qu\'il faut améliorer',
+        'Outrepasser — la stabilité et l\'approbation de conformité l\'emportent sur l\'esthétique du code quand il y a zéro bénéfice côté utilisateur',
+        'Refactoriser mais garder l\'ancien code en sauvegarde',
+        'Demander aux agents d\'ajouter des tests d\'abord, puis refactoriser',
+      ],
+      correctIndex: 1,
+      explanation: "Les agents ne peuvent pas savoir que la stabilité et l'approbation de conformité ont plus de valeur que l'esthétique du code ici. Par chaque métrique objective, le code a besoin d'un refactoring — il est laid, utilise des callbacks, et n'a pas de tests. Mais ton savoir du domaine te dit : 18 mois de zéro bogues, 50K requêtes quotidiennes gérées de façon fiable, et la conformité a approuvé exactement cette implémentation. Refactoriser introduit du risque avec zéro bénéfice côté utilisateur. Outrepasse.",
     },
     {
       type: 'multiple-choice',
@@ -214,9 +250,16 @@ const content: LessonContent = {
       explanation: 'C\'est un scénario d\'outrepassement classique. Les agents recommandent les microservices parce que c\'est le patron dominant dans leurs données d\'entraînement pour « mettre à l\'échelle » des systèmes. Mais ton système n\'a pas de problème de mise à l\'échelle — il a un avantage de vélocité de livraison que les microservices détruiraient pour une équipe de deux.',
     },
     {
-      type: 'info',
-      title: 'Scénario : le choix technologique qui semble mauvais',
-      body: "Tu choisis SQLite pour une application web en production. Chaque agent te dit que c'est une erreur — utilise PostgreSQL, ça s'adapte mieux, ça gère mieux la concurrence. Mais tu sais : ton app sert 500 utilisateurs, tourne sur un seul VPS à 20 $/mois, et SQLite en mode WAL gère 10x ta charge prévue. La simplicité opérationnelle de zéro serveur de base de données, zéro connection pooling, zéro scripts de sauvegarde (juste copier un fichier) vaut plus que la scalabilité théorique dont tu n'auras jamais besoin. Les agents optimisent pour le cas général. Toi, tu optimises pour TON cas.",
+      type: 'multiple-choice',
+      question: 'Tu choisis SQLite pour une app web en production. Chaque agent dit d\'utiliser PostgreSQL pour un meilleur passage à l\'échelle et la concurrence. Ton app sert 500 utilisateurs sur un VPS à 20 $/mois. SQLite en mode WAL gère 10x ta charge. Qui a raison ?',
+      options: [
+        'Les agents — PostgreSQL est objectivement meilleur pour la production',
+        'Toi — la simplicité opérationnelle (zéro serveur de BD, zéro connection pooling, sauvegarde = copier un fichier) l\'emporte sur la scalabilité théorique dont tu n\'auras jamais besoin',
+        'Compromis — utiliser PostgreSQL mais sur le même VPS',
+        'Aucun — utiliser un service de base de données gérée à la place',
+      ],
+      correctIndex: 1,
+      explanation: "Les agents optimisent pour le cas général. Toi, tu optimises pour TON cas. Ton app sert 500 utilisateurs, tourne sur un seul serveur, et SQLite en mode WAL gère 10x ta charge prévue. La simplicité opérationnelle de zéro serveur de base de données, zéro connection pooling et sauvegarde-par-copie-de-fichier vaut plus que la scalabilité théorique dont tu n'auras jamais besoin. C'est un outrepassement classique : les agents manquent de contexte sur tes contraintes spécifiques.",
     },
     {
       type: 'checkpoint',
@@ -226,17 +269,30 @@ const content: LessonContent = {
 
     // === DOCUMENTING OVERRIDES ===
     {
-      type: 'info',
-      title: 'Pourquoi la documentation est importante',
-      body: "Les décisions d'outrepassement sont invisibles par défaut. Dans six mois, un nouveau membre de l'équipe (ou toi, ayant oublié) regardera ton choix SQLite et pensera que c'est une erreur. Sans documentation, il va le « corriger » — en introduisant exactement la complexité que tu as évitée. Chaque outrepassement a besoin de trois choses : ce qui était recommandé, pourquoi tu as outrepassé, et quel résultat tu attends. Puis reviens-y à 30, 60 et 90 jours. Ça crée une boucle de rétroaction qui calibre ton jugement au fil du temps.",
+      type: 'multiple-choice',
+      question: 'Dans six mois, un nouveau membre de l\'équipe voit ton choix SQLite et pense que c\'est une erreur. Sans documentation, que se passe-t-il ?',
+      options: [
+        'Rien — il va te demander',
+        'Il le « corrige » en migrant vers PostgreSQL, introduisant exactement la complexité que tu as évitée',
+        'Il l\'améliore en ajoutant du connection pooling',
+        'Il écrit des tests pour le code SQLite',
+      ],
+      correctIndex: 1,
+      explanation: "Les décisions d'outrepassement sont invisibles par défaut. Sans documentation, quelqu'un va « corriger » ton choix intentionnel — en introduisant exactement la complexité que tu as évitée. Chaque outrepassement a besoin de trois choses : ce qui était recommandé, pourquoi tu as outrepassé, et quel résultat tu attends. Puis reviens-y à 30, 60 et 90 jours. Ça crée une boucle de rétroaction qui calibre ton jugement au fil du temps.",
     },
     {
-      type: 'code-demo',
-      title: 'Architecture Decision Record avec contexte d\'outrepassement',
-      body: 'Les ADR sont le format standard. Ajouter une section « Outrepassement d\'agent » rend le raisonnement explicite et vérifiable.',
+      type: 'code-fill',
+      instruction: 'Complète cet Architecture Decision Record. Remplis les blancs pour la justification d\'outrepassement et les résultats attendus afin de rendre le raisonnement explicite et vérifiable.',
       language: 'markdown',
       filename: 'docs/adr/003-database-choice.md',
-      code: "# ADR-003: SQLite for production database\n\n## Status: Accepted\n\n## Context\nWe need a database for user data (~500 users, ~10K records).\n\n## Agent Recommendation\nAll consulted agents recommended PostgreSQL citing:\n- Better concurrency model\n- Broader ecosystem (extensions, tooling)\n- Industry standard for production web apps\n\n## Decision: Override — Use SQLite with WAL mode\n\n## Rationale for Override\n1. **Agents lack deployment context**: Single VPS, no container\n   orchestration, one-person ops team\n2. **Agents optimize for scale we do not have**: 500 users is\n   well within SQLite's capabilities (tested to 10K concurrent reads)\n3. **Operational simplicity**: No connection pooling, no separate\n   backup system, no version management\n4. **Cost**: $0/month vs $15-50/month for managed Postgres\n\n## Expected Outcome\n- Zero database-related ops incidents in first 6 months\n- Sub-10ms query times for all operations\n- Backup = copy one file to S3\n\n## Revisit: 2026-10-28 (6 months)\n## Escalation trigger: >2000 concurrent users OR write contention",
+      template: '# ADR-003: SQLite for production database\n\n## Status: Accepted\n\n## Context\nWe need a database for user data (~500 users, ~10K records).\n\n## Agent Recommendation\nAll consulted agents recommended PostgreSQL.\n\n## Decision: Override — Use SQLite with WAL mode\n\n## Rationale for Override\n1. **Agents lack context**: {{context_gap}}\n2. **Agents optimize for scale we do not have**: {{scale_reality}}\n3. **Operational simplicity**: {{ops_benefit}}\n\n## Expected Outcome\n- {{expected_metric}}\n- Backup = copy one file to S3\n\n## Revisit: 2026-10-28 (6 months)',
+      blanks: [
+        { id: 'context_gap', answer: 'Single VPS, one-person ops team', alternatives: ['single server', 'one person ops', 'no container orchestration', 'single VPS, no orchestration'], placeholder: 'quel contexte manque aux agents ?', hint: 'Tes contraintes de déploiement et d\'équipe' },
+        { id: 'scale_reality', answer: '500 users is well within SQLite capabilities', alternatives: ['500 users', 'well within SQLite limits', 'SQLite handles our scale', 'we only have 500 users'], placeholder: 'pourquoi l\'échelle n\'est pas un problème ?', hint: 'Ton nombre réel d\'utilisateurs vs la capacité de SQLite' },
+        { id: 'ops_benefit', answer: 'No connection pooling, no separate backup system', alternatives: ['no connection pooling', 'zero operational overhead', 'no separate database server', 'no backup scripts needed'], placeholder: 'quelle complexité opérationnelle évites-tu ?', hint: 'Quelle infrastructure SQLite élimine-t-il ?' },
+        { id: 'expected_metric', answer: 'Zero database-related ops incidents in 6 months', alternatives: ['zero ops incidents', 'no database incidents', 'zero incidents in 6 months', 'sub-10ms query times'], placeholder: 'quel résultat mesurable attends-tu ?', hint: 'Une métrique spécifique pour valider l\'outrepassement' },
+      ],
+      explanation: 'Les ADR avec une section « Outrepassement d\'agent » rendent ton raisonnement explicite et vérifiable. Ils protègent contre les futurs membres de l\'équipe qui « corrigeraient » ton choix intentionnel, et créent un registre pour calibrer ton jugement d\'outrepassement au fil du temps.',
     },
     {
       type: 'order',
@@ -253,9 +309,16 @@ const content: LessonContent = {
 
     // === CALIBRATION OVER TIME ===
     {
-      type: 'info',
-      title: 'Calibrer ton instinct d\'outrepassement',
-      body: "Suis tes outrepassements. Après 20 à 30 décisions consignées, des patrons émergent. Peut-être que tu outrepasses correctement 85 % du temps sur les décisions d'infrastructure, mais incorrectement 60 % du temps sur l'architecture frontend. Ces données te disent où ton jugement est fort (continue d'outrepasser) et où il est faible (écoute davantage les agents). Le but n'est pas d'outrepasser plus ou moins — c'est d'outrepasser avec précision. Ton journal d'outrepassement est ton instrument de calibration.",
+      type: 'multiple-choice',
+      question: 'Après avoir consigné 25 décisions d\'outrepassement, tu constates que tu outrepasses correctement 85 % du temps sur l\'infrastructure, mais incorrectement 60 % du temps sur l\'architecture frontend. Que te disent ces données ?',
+      options: [
+        'Tu devrais arrêter d\'outrepasser complètement',
+        'Tu devrais outrepasser plus souvent pour acquérir de l\'expérience',
+        'Ton jugement est fort sur l\'infrastructure (continue d\'outrepasser) et faible sur le frontend (écoute davantage les agents dans ce domaine)',
+        'Les agents sont meilleurs sur tout ce qui touche au frontend',
+      ],
+      correctIndex: 2,
+      explanation: "Suis tes outrepassements. Après 20 à 30 décisions consignées, des patrons émergent. Les données te disent où ton jugement est fort (continue d'outrepasser) et où il est faible (écoute davantage les agents). Le but n'est pas d'outrepasser plus ou moins — c'est d'outrepasser avec précision. Ton journal d'outrepassement est ton instrument de calibration. La précision par domaine compte plus que la fréquence globale d'outrepassement.",
     },
     {
       type: 'multiple-choice',
@@ -277,9 +340,16 @@ const content: LessonContent = {
 
     // === SYNTHESIS ===
     {
-      type: 'info',
-      title: 'La méta-compétence',
-      body: "Le jugement d'outrepassement est la compétence qui sépare un opérateur d'agents d'un architecte d'agents. Les opérateurs prennent ce que les agents leur donnent. Les architectes évaluent, filtrent et parfois rejettent — pas par ego, mais par un contexte durement acquis qu'aucun modèle ne peut accéder. Ton expérience, ta connaissance de ton équipe, ta compréhension de tes contraintes — ce ne sont pas des bogues dans le processus. C'EST le processus. L'agent est un conseiller puissant. Toi, tu es le décideur. N'abdique jamais ce rôle, peu importe à quel point le conseiller semble confiant.",
+      type: 'multiple-choice',
+      question: 'Quelle est la différence clé entre un « opérateur d\'agents » et un « architecte d\'agents » ?',
+      options: [
+        'Les opérateurs utilisent plus d\'agents que les architectes',
+        'Les architectes écrivent de meilleurs prompts que les opérateurs',
+        'Les opérateurs prennent ce que les agents leur donnent ; les architectes évaluent, filtrent et parfois rejettent basé sur un contexte durement acquis qu\'aucun modèle ne peut accéder',
+        'Les architectes construisent leurs propres modèles d\'IA',
+      ],
+      correctIndex: 2,
+      explanation: "Le jugement d'outrepassement est la méta-compétence qui sépare les opérateurs des architectes. Les opérateurs prennent ce que les agents leur donnent. Les architectes évaluent, filtrent et parfois rejettent — pas par ego, mais par un contexte qu'aucun modèle ne peut accéder. Ton expérience, ta connaissance de ton équipe, ta compréhension de tes contraintes — ce ne sont pas des bogues dans le processus. C'EST le processus. L'agent est un conseiller puissant. Toi, tu es le décideur.",
     },
     {
       type: 'checklist',

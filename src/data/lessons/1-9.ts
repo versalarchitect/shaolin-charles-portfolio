@@ -22,9 +22,16 @@ const content: LessonContent = {
 
     // === BRANCH STRATEGY ===
     {
-      type: 'info',
-      title: 'Branch-per-feature with agents',
-      body: "Create a new branch for every task you give an agent. Even if the task seems small. Branches are cheap. A branch gives you isolation (agent changes do not touch main until reviewed), rollback (delete the branch if the agent goes off track), and visibility (you can see all agent work in your branch list). Name branches descriptively: feat/add-auth-flow, fix/pagination-off-by-one, refactor/extract-api-client. Include the scope of the change in the name.",
+      type: 'multiple-choice',
+      question: 'Why should you create a new branch for EVERY task you give an agent, even small ones?',
+      options: [
+        'Branches make git commands run faster',
+        'Branches give isolation, rollback, and visibility for agent work',
+        'Agents cannot commit to the main branch',
+        'Multiple branches reduce merge conflicts automatically',
+      ],
+      correctIndex: 1,
+      explanation: 'Branches are cheap but provide three critical benefits: isolation (agent changes stay separate from main), rollback (delete the branch if the agent goes off track), and visibility (you can see all agent work in your branch list). Name branches descriptively: feat/add-auth-flow, fix/pagination-off-by-one.',
     },
     {
       type: 'terminal',
@@ -33,9 +40,9 @@ const content: LessonContent = {
       hint: 'Use git checkout -b followed by the branch name',
     },
     {
-      type: 'diagram',
+      type: 'interactive-diagram',
       title: 'Agent Branch Workflow',
-      body: 'Each agent task lives on its own branch. The human reviews before merging to main. Multiple agents can work in parallel on separate branches.',
+      body: 'Click through each stage to see how agent branches flow from creation through review to merge.',
       diagram: {
         direction: 'LR',
         nodes: [
@@ -55,6 +62,28 @@ const content: LessonContent = {
           { from: 'review', to: 'main', label: 'merge' },
         ],
       },
+      stages: [
+        {
+          highlightNodes: ['main'],
+          highlightEdges: [],
+          explanation: 'Main is the protected branch. No agent — and no human — pushes directly here. All changes come through reviewed pull requests.',
+        },
+        {
+          highlightNodes: ['main', 'feat1', 'feat2', 'feat3'],
+          highlightEdges: [{ from: 'main', to: 'feat1' }, { from: 'main', to: 'feat2' }, { from: 'main', to: 'feat3' }],
+          explanation: 'Each agent task gets its own branch. Multiple agents work in parallel without interfering with each other. Name branches descriptively with prefixes like feat/, fix/, refactor/.',
+        },
+        {
+          highlightNodes: ['feat1', 'feat2', 'feat3', 'review'],
+          highlightEdges: [{ from: 'feat1', to: 'review' }, { from: 'feat2', to: 'review' }, { from: 'feat3', to: 'review' }],
+          explanation: 'Agents push their branches and open PRs. Every change passes through the human review gate — checking for logic errors, security issues, and scope creep.',
+        },
+        {
+          highlightNodes: ['review', 'main'],
+          highlightEdges: [{ from: 'review', to: 'main' }],
+          explanation: 'After review and approval, changes merge to main. The human stays in control of what ships to production.',
+        },
+      ],
     },
 
     // === INTERACTIVE: COMPARE, CODE-FILL, INTERACTIVE-DIAGRAM ===
@@ -138,17 +167,22 @@ const content: LessonContent = {
 
     // === COMMIT HYGIENE ===
     {
-      type: 'info',
-      title: 'Commit messages for agent-generated code',
-      body: "Agents produce code fast, but the commit message still matters — maybe more than usual. When you review a PR weeks later, the commit message is your only context for why the agent made a choice. Good practice: use conventional commits (feat:, fix:, refactor:), describe the intent not the implementation, and include a Co-Authored-By trailer for the agent. Claude Code does this automatically when you ask it to commit. Never accept a commit message like \"update files\" or \"make changes\".",
-    },
-    {
-      type: 'code-demo',
-      title: 'Good vs bad agent commit messages',
-      body: 'The commit message should explain why the change exists. The diff already shows what changed.',
-      language: 'text',
-      filename: 'commit-examples.txt',
-      code: "# BAD - tells you nothing\ngit commit -m \"update auth\"\ngit commit -m \"fix bug\"\ngit commit -m \"changes from Claude\"\n\n# GOOD - explains intent and scope\ngit commit -m \"feat(auth): add refresh token rotation to prevent session hijacking\"\ngit commit -m \"fix(api): handle null response from payments webhook\"\ngit commit -m \"refactor(db): extract query builder to reduce duplication in user service\"\n\n# With Co-Authored-By (added automatically by Claude Code)\ngit commit -m \"feat(settings): add user preferences page with theme toggle\n\nCo-Authored-By: Claude <noreply@anthropic.com>\"",
+      type: 'compare',
+      title: 'Bad vs good agent commit messages',
+      body: 'The commit message is your only context weeks later for why the agent made a choice.',
+      question: 'Which style gives reviewers the context they need?',
+      correctSide: 'right',
+      left: {
+        label: 'Bad (tells you nothing)',
+        content: "git commit -m \"update auth\"\ngit commit -m \"fix bug\"\ngit commit -m \"changes from Claude\"\ngit commit -m \"update files\"\n\n→ What was updated? Which bug?\n→ No scope, no intent, no context\n→ Useless when reviewing weeks later\n→ Impossible to git bisect effectively",
+        language: 'text',
+      },
+      right: {
+        label: 'Good (explains intent)',
+        content: "git commit -m \"feat(auth): add refresh\n  token rotation to prevent session\n  hijacking\"\ngit commit -m \"fix(api): handle null\n  response from payments webhook\"\ngit commit -m \"refactor(db): extract\n  query builder to reduce duplication\"\n\n→ Type + scope + why\n→ Conventional commit format\n→ Reviewable context weeks later",
+        language: 'text',
+      },
+      explanation: 'Good commit messages use conventional format (type(scope): description), explain WHY the change exists (not what changed — the diff shows that), and include a Co-Authored-By trailer for the agent. Never accept vague messages from agents.',
     },
     {
       type: 'multiple-choice',
@@ -165,17 +199,35 @@ const content: LessonContent = {
 
     // === REVIEWING AGENT PRs ===
     {
-      type: 'info',
-      title: 'Reviewing pull requests from agents',
-      body: "Agent PRs need the same review rigor as human PRs — but different focus areas. Agents rarely have typos or style issues (they follow linters). Instead, look for: logic errors the agent could not catch without running the code, over-engineering (agents love abstracting too early), missing edge cases, security issues (agents sometimes expose secrets or skip auth checks), and unnecessary changes to files outside the task scope. Skim fast, focus deep on business logic.",
+      type: 'match',
+      instruction: 'When reviewing agent PRs, match each review focus to what you are looking for:',
+      leftItems: [
+        'Logic errors',
+        'Over-engineering',
+        'Security issues',
+        'Scope creep',
+      ],
+      rightItems: [
+        'Bugs the agent cannot catch without running the code',
+        'Premature abstractions and unnecessary complexity',
+        'Exposed secrets, skipped auth checks, SQL injection',
+        'Changes to files outside the assigned task',
+      ],
+      correctPairs: { 0: 0, 1: 1, 2: 2, 3: 3 },
+      explanation: 'Agent PRs need the same rigor as human PRs but different focus. Agents rarely have style issues (they follow linters). Instead, focus deep on logic errors, over-engineering, security, and scope creep. Skim fast, focus deep on business logic.',
     },
     {
-      type: 'code-demo',
-      title: 'PR review commands',
-      body: 'Use these git commands to efficiently review agent-generated PRs. Focus on understanding the scope first, then dive into specifics.',
+      type: 'code-fill',
+      instruction: 'Complete these git commands to efficiently review an agent PR. Focus on scope first, then dive into specifics:',
       language: 'bash',
       filename: 'review-workflow.sh',
-      code: "# See all files changed in the PR branch\ngit diff --stat main...HEAD\n\n# Review changes file by file\ngit diff main...HEAD -- src/auth/\n\n# See commit history (check for logical grouping)\ngit log --oneline main..HEAD\n\n# Check if agent touched files outside its scope\ngit diff --name-only main...HEAD | grep -v '^src/auth/'\n\n# Interactive review with GitHub CLI\ngh pr diff 42\ngh pr review 42 --comment -b \"LGTM — logic is sound, tests cover edge cases\"",
+      template: "# See all files changed in the PR branch\ngit diff {{stat_flag}} main...HEAD\n\n# Review changes in a specific directory\ngit diff main...HEAD -- src/auth/\n\n# Check if agent touched files outside its scope\ngit diff {{names_flag}} main...HEAD | grep -v '^src/auth/'\n\n# Review with GitHub CLI\ngh pr {{review_cmd}} 42",
+      blanks: [
+        { id: 'stat_flag', answer: '--stat', alternatives: ['--stats'], placeholder: 'summary flag?', hint: 'The git diff flag that shows a summary of files changed and lines added/removed' },
+        { id: 'names_flag', answer: '--name-only', alternatives: ['--names-only', '--nameonly'], placeholder: 'filenames flag?', hint: 'The git diff flag that shows only file names, not the actual changes' },
+        { id: 'review_cmd', answer: 'diff', alternatives: ['review'], placeholder: 'gh pr ___?', hint: 'The gh pr subcommand that shows the PR diff' },
+      ],
+      explanation: 'Use --stat for a high-level summary of changes, --name-only to check scope (did the agent touch files outside its task?), and gh pr diff to review the full PR. Efficient review means scope first, then business logic deep-dive.',
     },
     {
       type: 'multiple-choice',
@@ -197,17 +249,29 @@ const content: LessonContent = {
 
     // === MERGE CONFLICTS ===
     {
-      type: 'info',
-      title: 'Handling merge conflicts in agent workflows',
-      body: "Merge conflicts happen more often with agents because multiple agents may work in parallel on related files. Prevention is better than cure: before starting an agent on a task, pull the latest main. Keep agent branches short-lived (merge within hours, not days). When conflicts do occur, do not ask the agent to resolve them blindly — it does not have context about what the other branch intended. Instead: review both sides, decide the correct resolution yourself, then let the agent implement it.",
+      type: 'multiple-choice',
+      question: 'When an agent branch has merge conflicts, what should you do?',
+      options: [
+        'Ask the agent to resolve the conflicts automatically',
+        'Review both sides yourself, decide the resolution, then let the agent implement it',
+        'Delete the branch and start over',
+        'Force-push the agent branch to overwrite main',
+      ],
+      correctIndex: 1,
+      explanation: 'Never ask an agent to resolve conflicts blindly — it has no context about what the other branch intended. Review both sides yourself, decide the correct resolution, then let the agent implement it. Prevention is better: pull latest main before starting, and keep agent branches short-lived.',
     },
     {
-      type: 'code-demo',
-      title: 'Resolving conflicts safely',
-      body: 'When an agent branch conflicts with main, rebase onto the latest main and resolve conflicts with full context.',
+      type: 'code-fill',
+      instruction: 'Complete the conflict resolution workflow. Rebase the agent branch onto the latest main:',
       language: 'bash',
       filename: 'resolve-conflicts.sh',
-      code: "# Update main first\ngit checkout main && git pull\n\n# Switch to the agent branch and rebase\ngit checkout feat/add-auth\ngit rebase main\n\n# If conflicts appear:\n# 1. Open the conflicted files\n# 2. Understand BOTH sides (yours and main)\n# 3. Resolve manually — don't guess\n# 4. Continue the rebase\ngit add <resolved-files>\ngit rebase --continue\n\n# If the rebase is too messy, abort and merge instead\ngit rebase --abort\ngit merge main",
+      template: "# Update main first\ngit checkout main && git pull\n\n# Switch to the agent branch and rebase\ngit checkout {{branch_name}}\ngit {{rebase_cmd}} main\n\n# If conflicts appear:\n# 1. Open the conflicted files\n# 2. Understand BOTH sides\n# 3. Resolve manually\ngit add <resolved-files>\ngit rebase {{continue_flag}}\n\n# If too messy, abort and merge instead\ngit rebase --abort\ngit merge main",
+      blanks: [
+        { id: 'branch_name', answer: 'feat/add-auth', alternatives: ['feat/auth'], placeholder: 'branch name?', hint: 'The feature branch the agent was working on' },
+        { id: 'rebase_cmd', answer: 'rebase', placeholder: 'replay command?', hint: 'The git command that replays your commits on top of another branch' },
+        { id: 'continue_flag', answer: '--continue', placeholder: 'resume flag?', hint: 'The rebase flag that continues after you resolve a conflict' },
+      ],
+      explanation: 'First update main with git pull. Switch to the agent branch and rebase onto main. Resolve conflicts manually (never blindly), then git rebase --continue. If the rebase is too messy, abort and use git merge instead.',
     },
     {
       type: 'terminal',
@@ -218,17 +282,17 @@ const content: LessonContent = {
 
     // === GIT WORKTREES ===
     {
-      type: 'info',
-      title: 'Git worktrees for parallel agent work',
-      body: "When you want multiple agents working simultaneously on different branches of the same repo, git worktrees are the solution. A worktree creates a separate working directory linked to the same repository. Each worktree can have a different branch checked out. This means you can have Agent A working in /project-feat-auth and Agent B working in /project-fix-pagination — same repo, no conflicts, no stashing, no switching branches. Each agent has its own clean workspace.",
-    },
-    {
-      type: 'code-demo',
-      title: 'Setting up worktrees for parallel agents',
-      body: 'Create separate working directories for each agent task. They share the same git history but have independent file states.',
+      type: 'code-fill',
+      instruction: 'Set up git worktrees for parallel agent work. Each worktree creates a separate working directory linked to the same repo:',
       language: 'bash',
       filename: 'worktree-setup.sh',
-      code: "# Create a worktree for a feature branch\ngit worktree add ../project-feat-auth feat/add-auth\n\n# Create another worktree for a different task\ngit worktree add ../project-fix-pagination fix/pagination\n\n# List all active worktrees\ngit worktree list\n# /Users/you/project             abc1234 [main]\n# /Users/you/project-feat-auth   def5678 [feat/add-auth]\n# /Users/you/project-fix-pagination ghi9012 [fix/pagination]\n\n# Each agent works in its own directory — no interference\n# Agent 1: cd ../project-feat-auth && claude\n# Agent 2: cd ../project-fix-pagination && claude\n\n# When done, clean up\ngit worktree remove ../project-feat-auth\ngit worktree remove ../project-fix-pagination",
+      template: "# Create a worktree for a feature branch\ngit worktree {{add_cmd}} ../project-feat-auth feat/add-auth\n\n# Create another worktree for a different task\ngit worktree {{add_cmd}} ../project-fix-pagination fix/pagination\n\n# List all active worktrees\ngit worktree {{list_cmd}}\n\n# Each agent works in its own directory — no interference\n# Agent 1: cd ../project-feat-auth && claude\n# Agent 2: cd ../project-fix-pagination && claude\n\n# When done, clean up\ngit worktree {{remove_cmd}} ../project-feat-auth",
+      blanks: [
+        { id: 'add_cmd', answer: 'add', placeholder: 'create subcommand?', hint: 'The git worktree subcommand that creates a new worktree directory' },
+        { id: 'list_cmd', answer: 'list', placeholder: 'show subcommand?', hint: 'The git worktree subcommand that shows all active worktrees' },
+        { id: 'remove_cmd', answer: 'remove', placeholder: 'cleanup subcommand?', hint: 'The git worktree subcommand that deletes a worktree when you are done' },
+      ],
+      explanation: 'Git worktrees create separate working directories linked to the same repository. Use "add" to create, "list" to see all active worktrees, and "remove" to clean up. Each agent gets its own directory and branch — no stashing, no context switching.',
     },
     {
       type: 'multiple-choice',
@@ -245,17 +309,28 @@ const content: LessonContent = {
 
     // === BEST PRACTICES ===
     {
-      type: 'info',
-      title: 'The golden rules',
-      body: "Here are the non-negotiable rules for git with agents. One: never let agents push to main directly — always use a PR with review. Two: never let agents force-push or rewrite history on shared branches. Three: keep agent branches short-lived — merge or delete within a day. Four: always verify the agent's changes build and pass tests before merging. Five: use branch protection rules to enforce these constraints even when you are in a hurry.",
+      type: 'multiple-choice',
+      question: 'Which of these is a NON-NEGOTIABLE rule for git with agents?',
+      options: [
+        'Agents should commit directly to main to save time',
+        'Force-push is fine if the agent is confident',
+        'Never let agents push to main directly — always use a PR with review',
+        'Agent branches should stay open for weeks to accumulate changes',
+      ],
+      correctIndex: 2,
+      explanation: 'The golden rules: 1) Never push to main directly. 2) Never force-push or rewrite history. 3) Keep branches short-lived. 4) Verify builds and tests before merging. 5) Use branch protection to enforce these even when in a hurry.',
     },
     {
-      type: 'code-demo',
-      title: 'Branch protection for agent safety',
-      body: 'Configure your repository to prevent agents (and humans) from bypassing review. These settings are applied on GitHub/GitLab.',
+      type: 'code-fill',
+      instruction: 'Configure branch protection via GitHub CLI. Prevent agents and humans from bypassing review:',
       language: 'bash',
       filename: 'branch-protection.sh',
-      code: "# Set up branch protection via GitHub CLI\ngh api repos/{owner}/{repo}/branches/main/protection -X PUT -f \\\n  required_pull_request_reviews.required_approving_review_count=1 \\\n  required_status_checks.strict=true \\\n  enforce_admins=true \\\n  allow_force_pushes=false \\\n  allow_deletions=false\n\n# Result: no one (human or agent) can:\n# - Push directly to main\n# - Force push to main\n# - Merge without an approval\n# - Merge with failing CI checks",
+      template: "# Set up branch protection via GitHub CLI\ngh api repos/{owner}/{repo}/branches/main/protection -X PUT -f \\\n  required_pull_request_reviews.required_approving_review_count={{min_reviews}} \\\n  required_status_checks.strict=true \\\n  enforce_admins=true \\\n  allow_force_pushes={{force_push}} \\\n  allow_deletions=false\n\n# Result: no one can push directly, force push, or skip review",
+      blanks: [
+        { id: 'min_reviews', answer: '1', alternatives: ['2'], placeholder: 'how many approvals?', hint: 'The minimum number of approving reviews required — at least one person must review' },
+        { id: 'force_push', answer: 'false', placeholder: 'allow force push?', hint: 'Force pushing rewrites history and is one of the golden rule violations' },
+      ],
+      explanation: 'Require at least 1 approving review, enforce strict status checks (CI must pass), and set allow_force_pushes to false. This ensures no one — human or agent — can bypass review, even when in a hurry.',
     },
 
     // === WORKFLOW EXERCISE ===

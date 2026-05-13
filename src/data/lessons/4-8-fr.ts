@@ -17,9 +17,9 @@ const content: LessonContent = {
 
     // === THE CONSTRAINT PARADOX ===
     {
-      type: 'diagram',
+      type: 'interactive-diagram',
       title: 'Le paradoxe des contraintes',
-      body: 'Plus de règles signifie moins de délibération, moins de conflits et une exécution parallèle plus rapide.',
+      body: 'Clique pour voir pourquoi plus de règles signifie moins de délibération, moins de conflits et une exécution parallèle plus rapide.',
       diagram: {
         direction: 'LR',
         nodes: [
@@ -33,6 +33,28 @@ const content: LessonContent = {
           { from: 'constrained', to: 'fast', label: 'permet' },
         ],
       },
+      stages: [
+        {
+          highlightNodes: ['unconstrained'],
+          highlightEdges: [],
+          explanation: 'Un système sans contraintes a peu de règles. Les agents peuvent choisir n\'importe quelle technologie, écrire du code n\'importe où, et faire des choix indépendants. Ça semble être de la liberté — mais ça mène au chaos.',
+        },
+        {
+          highlightNodes: ['unconstrained', 'slow'],
+          highlightEdges: [{ from: 'unconstrained', to: 'slow' }],
+          explanation: 'Sans contraintes, les agents font des choix conflictuels : un choisit Zustand, un autre Jotai, un troisième invente son propre patron. Tu passes plus de temps à résoudre des conflits qu\'à profiter du parallélisme.',
+        },
+        {
+          highlightNodes: ['constrained'],
+          highlightEdges: [],
+          explanation: 'Un système contraint a des limites explicites : choix technologiques, chemins de fichiers, exclusions de portée, budgets de performance. Chaque point de décision est pré-décidé.',
+        },
+        {
+          highlightNodes: ['constrained', 'fast'],
+          highlightEdges: [{ from: 'constrained', to: 'fast' }],
+          explanation: 'Les contraintes éliminent la délibération. Les agents exécutent immédiatement dans leurs voies. Aucun conflit, aucune réunion de coordination, aucun retravail. Paradoxalement, plus de règles créent plus de vitesse.',
+        },
+      ],
     },
     {
       type: 'checkpoint',
@@ -140,25 +162,42 @@ const content: LessonContent = {
 
     // === MONOREPO BOUNDARIES ===
     {
-      type: 'info',
-      title: 'Les limites de monorepo comme garde-fous d\'agents',
-      body: "Un monorepo sans limites, c'est juste un dossier avec plusieurs projets dedans. Les limites de packages — déclarations de dépendances explicites, cibles de build isolées, restrictions d'import renforcées — le transforment en un système où les agents peuvent travailler en parallèle sans se marcher sur les pieds. Si l'agent A travaille dans packages/auth et l'agent B dans packages/billing, et qu'aucun ne peut importer les modules internes de l'autre, ils ne peuvent pas créer de conflits. La limite EST ce qui permet le parallélisme.",
+      type: 'multiple-choice',
+      question: 'Qu\'est-ce qui transforme un monorepo de « juste un dossier avec plusieurs projets » en un système permettant le travail parallèle d\'agents ?',
+      options: [
+        'Utiliser un outil monorepo comme Nx ou Turborepo',
+        'Les limites de packages — déclarations de dépendances explicites, cibles de build isolées et restrictions d\'import renforcées',
+        'Avoir un package.json partagé à la racine',
+        'Mettre chaque projet dans son propre répertoire',
+      ],
+      correctIndex: 1,
+      explanation: "Un monorepo sans limites, c'est juste un dossier avec plusieurs projets dedans. Les limites de packages — déclarations de dépendances explicites, cibles de build isolées, restrictions d'import renforcées — le transforment en un système où les agents peuvent travailler en parallèle sans se marcher sur les pieds. La limite EST ce qui permet le parallélisme.",
     },
     {
-      type: 'code-demo',
-      title: 'Application des limites de packages',
-      body: 'Cette configuration de projet Nx empêche les agents de franchir les limites entre packages. Chaque package déclare son API publique explicitement.',
+      type: 'code-fill',
+      instruction: 'Complète cette configuration de projet Nx qui empêche les agents de franchir les limites entre packages. Remplis les tags et les cibles de build.',
       language: 'json',
       filename: 'packages/auth/project.json',
-      code: "{\n  \"name\": \"auth\",\n  \"tags\": [\"scope:auth\", \"type:domain\"],\n  \"implicitDependencies\": [],\n  \"targets\": {\n    \"build\": { \"executor\": \"@nx/tsc:tsc\" },\n    \"test\": { \"executor\": \"@nx/jest:jest\" },\n    \"lint\": { \"executor\": \"@nx/eslint:lint\" }\n  }\n}",
+      template: '{\n  "name": "auth",\n  "tags": ["{{scope_tag}}", "{{type_tag}}"],\n  "implicitDependencies": [],\n  "targets": {\n    "build": { "executor": "{{build_executor}}" },\n    "test": { "executor": "@nx/jest:jest" },\n    "lint": { "executor": "@nx/eslint:lint" }\n  }\n}',
+      blanks: [
+        { id: 'scope_tag', answer: 'scope:auth', alternatives: ['scope: auth', 'auth'], placeholder: 'tag de portée ?', hint: 'Tag identifiant à quel domaine ce package appartient' },
+        { id: 'type_tag', answer: 'type:domain', alternatives: ['type: domain', 'domain', 'type:lib'], placeholder: 'tag de type ?', hint: 'Tag identifiant le type de package (domain, util, shared, etc.)' },
+        { id: 'build_executor', answer: '@nx/tsc:tsc', alternatives: ['@nx/tsc', 'tsc', '@nx/js:tsc'], placeholder: 'executeur de build ?', hint: 'L\'executeur Nx pour la compilation TypeScript' },
+      ],
+      explanation: 'Les configurations de projet Nx avec des tags de portée permettent l\'application des limites de modules. Chaque package déclare ce qu\'il est (scope:auth, type:domain) pour que les règles de lint puissent restreindre quels packages peuvent dépendre de quels autres.',
     },
     {
-      type: 'code-demo',
-      title: 'Règle de lint empêchant les imports inter-limites',
-      body: 'Les règles de limites de modules Nx font des imports invalides une erreur de build — les agents ne peuvent littéralement pas violer la contrainte.',
+      type: 'code-fill',
+      instruction: 'Complète cette règle ESLint qui applique les limites de modules. Remplis les contraintes de dépendances pour que auth ne puisse importer que depuis shared et auth.',
       language: 'json',
       filename: '.eslintrc.json',
-      code: "{\n  \"rules\": {\n    \"@nx/enforce-module-boundaries\": [\n      \"error\",\n      {\n        \"depConstraints\": [\n          {\n            \"sourceTag\": \"scope:auth\",\n            \"onlyDependOnLibsWithTags\": [\"scope:shared\", \"scope:auth\"]\n          },\n          {\n            \"sourceTag\": \"scope:billing\",\n            \"onlyDependOnLibsWithTags\": [\"scope:shared\", \"scope:billing\"]\n          },\n          {\n            \"sourceTag\": \"scope:shared\",\n            \"onlyDependOnLibsWithTags\": [\"scope:shared\"]\n          }\n        ]\n      }\n    ]\n  }\n}",
+      template: '{\n  "rules": {\n    "@nx/enforce-module-boundaries": [\n      "error",\n      {\n        "depConstraints": [\n          {\n            "sourceTag": "scope:auth",\n            "onlyDependOnLibsWithTags": ["{{auth_deps}}"]\n          },\n          {\n            "sourceTag": "scope:billing",\n            "onlyDependOnLibsWithTags": ["{{billing_deps}}"]\n          },\n          {\n            "sourceTag": "scope:shared",\n            "onlyDependOnLibsWithTags": ["{{shared_deps}}"]\n          }\n        ]\n      }\n    ]\n  }\n}',
+      blanks: [
+        { id: 'auth_deps', answer: 'scope:shared", "scope:auth', alternatives: ['scope:shared, scope:auth', 'shared, auth'], placeholder: 'auth peut dépendre de... ?', hint: 'Auth devrait dépendre des utilitaires partagés et de sa propre portée' },
+        { id: 'billing_deps', answer: 'scope:shared", "scope:billing', alternatives: ['scope:shared, scope:billing', 'shared, billing'], placeholder: 'billing peut dépendre de... ?', hint: 'Billing devrait dépendre des utilitaires partagés et de sa propre portée' },
+        { id: 'shared_deps', answer: 'scope:shared', alternatives: ['shared', 'seulement shared'], placeholder: 'shared peut dépendre de... ?', hint: 'Shared ne devrait dépendre que de lui-même — aucun package de domaine' },
+      ],
+      explanation: 'Les règles de limites de modules Nx font des imports invalides une erreur de build. Les agents ne peuvent littéralement pas violer ces contraintes — le build attrape les violations à la vitesse où les agents les créent.',
     },
     {
       type: 'multiple-choice',
@@ -180,17 +219,30 @@ const content: LessonContent = {
 
     // === DEPLOYMENT CONTRACTS ===
     {
-      type: 'info',
-      title: 'Les contrats de déploiement qui forcent des interfaces propres',
-      body: "Un contrat de déploiement dit : ce package se déploie indépendamment. Cette seule affirmation force une discipline énorme. Si auth se déploie sans billing, alors auth ne peut pas importer les modules internes de billing. Si billing se déploie sans le frontend, alors billing doit exposer une API versionnée. L'indépendance de déploiement force la propreté des interfaces — et des interfaces propres, c'est ce qui permet aux agents de construire des composants en isolation sans avoir besoin de comprendre tout le système.",
+      type: 'multiple-choice',
+      question: 'Un contrat de déploiement déclare : « ce package se déploie indépendamment ». Que force cette seule affirmation ?',
+      options: [
+        'Le package doit utiliser des conteneurs Docker',
+        'Auth ne peut pas importer les modules internes de billing, billing doit exposer une API versionnée — l\'indépendance de déploiement force la propreté des interfaces',
+        'Chaque package a besoin de son propre dépôt',
+        'Les packages doivent être écrits dans des langages différents',
+      ],
+      correctIndex: 1,
+      explanation: "Un contrat de déploiement force une discipline énorme. Si auth se déploie sans billing, alors auth ne peut pas importer les modules internes de billing. Si billing se déploie sans le frontend, alors billing doit exposer une API versionnée. L'indépendance de déploiement force la propreté des interfaces — et des interfaces propres, c'est ce qui permet aux agents de construire des composants en isolation.",
     },
     {
-      type: 'code-demo',
-      title: 'Contrat de déploiement dans CLAUDE.md',
-      body: 'Cette contrainte dans ton CLAUDE.md dit à chaque agent : ton travail doit être déployable indépendamment. Pas question de traverser les unités de déploiement.',
+      type: 'code-fill',
+      instruction: 'Complète ce contrat de déploiement CLAUDE.md. Remplis les règles qui assurent la déployabilité indépendante.',
       language: 'markdown',
       filename: 'packages/billing/CLAUDE.md',
-      code: "# Billing Service\n\n## Deployment Contract\nThis package deploys independently via its own CI pipeline.\n\n### Rules for all agents:\n1. **No imports from other packages** except `@repo/shared-types`\n2. **All external communication** via HTTP API or message queue\n3. **Database**: Own schema, own migrations, own connection\n4. **Environment**: Must boot with only its own .env variables\n5. **Tests**: Must pass with no other service running\n\n### Public API (what other packages consume):\n- POST /api/billing/create-subscription\n- POST /api/billing/cancel-subscription\n- GET  /api/billing/status/:userId\n- Webhook: billing.subscription.changed\n\n### Off-limits:\n- Direct database queries from other services\n- Importing internal modules (use the HTTP API)\n- Shared mutable state",
+      template: '# Billing Service\n\n## Deployment Contract\nThis package deploys independently via its own CI pipeline.\n\n### Rules for all agents:\n1. **No imports from other packages** except {{shared_import}}\n2. **All external communication** via {{comm_method}}\n3. **Database**: {{db_rule}}\n4. **Tests**: {{test_rule}}\n\n### Public API:\n- POST /api/billing/create-subscription\n- POST /api/billing/cancel-subscription\n- GET  /api/billing/status/:userId',
+      blanks: [
+        { id: 'shared_import', answer: '@repo/shared-types', alternatives: ['shared-types', 'shared types', '@repo/types'], placeholder: 'import autorisé ?', hint: 'Le seul package dont tous les domaines peuvent dépendre' },
+        { id: 'comm_method', answer: 'HTTP API or message queue', alternatives: ['HTTP API', 'API or events', 'HTTP or message queue', 'typed API'], placeholder: 'méthode de communication ?', hint: 'Deux canaux de communication inter-services approuvés' },
+        { id: 'db_rule', answer: 'Own schema, own migrations, own connection', alternatives: ['own schema', 'independent database', 'own schema and migrations', 'separate schema'], placeholder: 'règle de propriété BD ?', hint: 'Chaque package gère ses propres données indépendamment' },
+        { id: 'test_rule', answer: 'Must pass with no other service running', alternatives: ['pass independently', 'pass in isolation', 'run without dependencies', 'independent tests'], placeholder: 'règle d\'isolation des tests ?', hint: 'Les tests prouvent que le package fonctionne seul' },
+      ],
+      explanation: 'Un contrat de déploiement dans CLAUDE.md dit à chaque agent : ton travail doit être déployable indépendamment. Chaque blanc rempli élimine une catégorie de couplage qui empêcherait le travail parallèle des agents.',
     },
     {
       type: 'multiple-choice',
@@ -207,17 +259,29 @@ const content: LessonContent = {
 
     // === API VERSIONING ===
     {
-      type: 'info',
-      title: 'Le versionnage d\'API permet l\'évolution parallèle',
-      body: "Sans versionnage, modifier une API casse tous les consommateurs simultanément. Avec le versionnage, l'agent A peut construire la v2 d'un endpoint pendant que l'agent B continue de consommer la v1. Quand l'agent B est prêt à migrer, il passe à la v2 selon son propre calendrier. Aucune coordination, aucun blocage, aucun conflit de fusion. Le versionnage est la contrainte temporelle — il permet à différentes parties du système d'évoluer à différentes vitesses sans se casser mutuellement.",
+      type: 'multiple-choice',
+      question: 'Sans versionnage d\'API, modifier un endpoint casse tous les consommateurs simultanément. Avec le versionnage, que devient possible ?',
+      options: [
+        'Tu peux supprimer les anciens endpoints immédiatement',
+        'L\'agent A construit la v2 pendant que l\'agent B continue de consommer la v1 — chacun évolue selon son propre calendrier avec zéro coordination',
+        'Tous les agents doivent mettre à jour en même temps',
+        'Une seule version peut exister à la fois',
+      ],
+      correctIndex: 1,
+      explanation: "Sans versionnage, modifier une API casse tous les consommateurs simultanément. Avec le versionnage, l'agent A peut construire la v2 pendant que l'agent B continue de consommer la v1. Aucune coordination, aucun blocage, aucun conflit de fusion. Le versionnage est la contrainte temporelle — il permet à différentes parties du système d'évoluer à différentes vitesses sans se casser mutuellement.",
     },
     {
-      type: 'code-demo',
-      title: 'Contrat d\'API versionné',
-      body: 'Les deux versions coexistent. L\'agent qui construit le nouveau flux de paiement utilise la v2. L\'agent qui maintient l\'ancien checkout utilise la v1. Aucun conflit.',
+      type: 'code-fill',
+      instruction: 'Complète cette API versionnée. Remplis le chemin de l\'endpoint v2, le paramètre supplémentaire et les liens d\'action HATEOAS.',
       language: 'typescript',
       filename: 'packages/api/src/routes/subscriptions.ts',
-      code: "// v1 — stable, consumed by legacy checkout\nrouter.post('/v1/subscriptions', async (req, res) => {\n  const { planId, userId } = req.body\n  const sub = await createSubscription({ planId, userId })\n  return res.json({ id: sub.id, status: sub.status })\n})\n\n// v2 — new response shape, consumed by new dashboard\nrouter.post('/v2/subscriptions', async (req, res) => {\n  const { planId, userId, metadata } = req.body\n  const sub = await createSubscription({ planId, userId, metadata })\n  return res.json({\n    subscription: {\n      id: sub.id,\n      status: sub.status,\n      plan: sub.plan,\n      currentPeriodEnd: sub.currentPeriodEnd,\n    },\n    actions: {\n      cancel: `/v2/subscriptions/${sub.id}/cancel`,\n      upgrade: `/v2/subscriptions/${sub.id}/upgrade`,\n    },\n  })\n})",
+      template: "// v1 — stable, consumed by legacy checkout\nrouter.post('/v1/subscriptions', async (req, res) => {\n  const { planId, userId } = req.body\n  const sub = await createSubscription({ planId, userId })\n  return res.json({ id: sub.id, status: sub.status })\n})\n\n// v2 — new response shape, consumed by new dashboard\nrouter.post('{{v2_path}}', async (req, res) => {\n  const { planId, userId, {{extra_param}} } = req.body\n  const sub = await createSubscription({ planId, userId, {{extra_param}} })\n  return res.json({\n    subscription: { id: sub.id, status: sub.status },\n    actions: {\n      cancel: `{{cancel_action}}`,\n    },\n  })\n})",
+      blanks: [
+        { id: 'v2_path', answer: '/v2/subscriptions', alternatives: ['/v2/subscriptions/', 'v2/subscriptions'], placeholder: 'chemin de l\'endpoint v2 ?', hint: 'Même ressource, préfixe de version différent' },
+        { id: 'extra_param', answer: 'metadata', alternatives: ['meta', 'options', 'extra'], placeholder: 'nouveau paramètre v2 ?', hint: 'Données supplémentaires que la nouvelle version accepte' },
+        { id: 'cancel_action', answer: '/v2/subscriptions/${sub.id}/cancel', alternatives: ['/v2/subscriptions/cancel', 'cancel endpoint'], placeholder: 'URL de l\'action d\'annulation ?', hint: 'Un lien HATEOAS vers l\'endpoint d\'annulation' },
+      ],
+      explanation: 'Les deux versions coexistent. L\'agent qui construit le nouveau flux de paiement utilise la v2. L\'agent qui maintient l\'ancien checkout utilise la v1. Aucun conflit. Le versionnage d\'API est la contrainte temporelle qui permet l\'évolution parallèle.',
     },
     {
       type: 'checkpoint',
@@ -227,14 +291,28 @@ const content: LessonContent = {
 
     // === EVALUATING CONSTRAINTS ===
     {
-      type: 'info',
-      title: 'Cette contrainte aide-t-elle ou nuit-elle ?',
-      body: "Toutes les contraintes ne sont pas bonnes. Une contrainte qui force les agents à écrire du code passe-partout sans prévenir d'erreurs, c'est de la friction pure. Une contrainte qui prévient des catégories d'erreurs sans ajouter de cérémonie, c'est de la valeur pure. Le test : est-ce que cette contrainte prévient un vrai problème qui est survenu (ou surviendrait probablement) durant le développement parallèle par agents ? Si oui, garde-la. Si elle n'existe que parce que « c'est une bonne pratique » mais n'a jamais rien attrapé — supprime-la. Les contraintes mortes ralentissent ta flotte sans bénéfice.",
+      type: 'multiple-choice',
+      question: 'Une contrainte force les agents à écrire du code passe-partout pour chaque fichier mais n\'a jamais attrapé une seule erreur. Que devrais-tu en faire ?',
+      options: [
+        'La garder — le code passe-partout impose la cohérence',
+        'La supprimer — une contrainte qui ajoute de la cérémonie sans prévenir de vraies erreurs est de la friction pure. Les contraintes mortes ralentissent ta flotte sans bénéfice.',
+        'Rendre le code passe-partout optionnel',
+        'Ajouter plus de code passe-partout pour être complet',
+      ],
+      correctIndex: 1,
+      explanation: "Toutes les contraintes ne sont pas bonnes. Le test : est-ce que cette contrainte prévient un vrai problème qui est survenu (ou surviendrait probablement) durant le développement parallèle par agents ? Si oui, garde-la. Si elle n'existe que parce que « c'est une bonne pratique » mais n'a jamais rien attrapé — supprime-la. Les contraintes mortes ralentissent ta flotte sans bénéfice.",
     },
     {
-      type: 'info',
-      title: 'Signes d\'une contrainte utile',
-      body: "Les contraintes utiles partagent trois propriétés. Premièrement : elles sont automatisables — le système les applique, pas la revue humaine. Deuxièmement : elles attrapent de vraies erreurs — tu peux pointer un incident spécifique qu'elles auraient prévenu. Troisièmement : elles ne nécessitent pas la conscience de l'agent — la contrainte fonctionne même si l'agent ne la connaît pas (comme une règle de lint qui fait échouer le build). Si ta contrainte nécessite que l'agent « se souvienne » de faire quelque chose, c'est pas une contrainte — c'est un souhait.",
+      type: 'multiple-choice',
+      question: 'Une contrainte exige que les agents « se souviennent » d\'ajouter une entrée de changelog pour chaque PR. Est-ce une vraie contrainte ?',
+      options: [
+        'Oui — ça impose la discipline de documentation',
+        'Non — si ça nécessite que l\'agent « se souvienne » de quelque chose, c\'est un souhait, pas une contrainte. Les vraies contraintes sont automatisables, attrapent de vraies erreurs et fonctionnent sans que l\'agent en ait conscience.',
+        'Oui, si tu le rappelles aux agents dans le prompt',
+        'Seulement si tu l\'ajoutes au CLAUDE.md',
+      ],
+      correctIndex: 1,
+      explanation: "Les contraintes utiles partagent trois propriétés. Premièrement : elles sont automatisables — le système les applique, pas la revue humaine. Deuxièmement : elles attrapent de vraies erreurs. Troisièmement : elles ne nécessitent pas la conscience de l'agent — la contrainte fonctionne même si l'agent ne la connaît pas. Si ta contrainte nécessite que l'agent « se souvienne » de faire quelque chose, c'est pas une contrainte — c'est un souhait.",
     },
     {
       type: 'multiple-choice',
@@ -249,9 +327,16 @@ const content: LessonContent = {
       explanation: 'Les entrées de changelog nécessitent de comprendre l\'impact côté utilisateur — quelque chose avec lequel les agents ont du mal pour les refactorings internes. Cette contrainte ajoute de la cérémonie à chaque PR sans attraper d\'erreurs. Les trois autres sont applicables, automatisées et préviennent de vrais problèmes (erreurs de types, violations de limites, perte de données).',
     },
     {
-      type: 'info',
-      title: 'Signes d\'une contrainte nuisible',
-      body: "Les contraintes nuisibles ressemblent à : commentaires de code obligatoires (les agents génèrent des commentaires verbeux qui n'apportent rien), documents de conception requis avant l'implémentation (les agents construisent plus vite qu'ils n'écrivent de la doc), flux d'approbation forcés pour les chemins non critiques (bloque le travail parallèle). Le test est toujours : est-ce que cette contrainte prévient un problème qui compte, ou est-ce qu'elle freine la vélocité sans bénéfice compensatoire ? Sois impitoyable pour supprimer les contraintes qui servaient aux humains mais qui obstruent les agents.",
+      type: 'multiple-choice',
+      question: 'Laquelle de ces contraintes est nuisible — elle servait aux humains mais obstrue les agents ?',
+      options: [
+        'TypeScript en mode strict avec zéro usage de any',
+        'Documents de conception requis avant l\'implémentation — les agents construisent plus vite qu\'ils n\'écrivent de la doc, créant de la friction pure',
+        'Limites de modules renforcées via des règles de lint',
+        'Suites de tests indépendantes par package',
+      ],
+      correctIndex: 1,
+      explanation: "Les contraintes nuisibles ressemblent à : commentaires de code obligatoires (les agents génèrent des commentaires verbeux qui n'apportent rien), documents de conception requis avant l'implémentation (les agents construisent plus vite qu'ils n'écrivent de la doc), flux d'approbation forcés pour les chemins non critiques (bloque le travail parallèle). Sois impitoyable pour supprimer les contraintes qui servaient aux humains mais qui obstruent les agents.",
     },
     {
       type: 'order',
@@ -273,17 +358,32 @@ const content: LessonContent = {
 
     // === CONSTRAINT ARCHITECTURE ===
     {
-      type: 'info',
-      title: 'Concevoir les contraintes comme un système',
-      body: "Les contraintes individuelles sont utiles. Les contraintes conçues comme un système imbriqué sont transformatrices. Les limites de modules empêchent les imports inter-packages. Les contrats de déploiement empêchent l'état partagé. Le versionnage d'API empêche les changements cassants. Le mode strict de TypeScript empêche les erreurs de types. Ensemble, ils créent un environnement où N'IMPORTE QUEL agent peut travailler sur N'IMPORTE QUEL package à N'IMPORTE QUEL moment sans coordination. C'est le but : le parallélisme à zéro coordination grâce à des contraintes systématiques.",
+      type: 'multiple-choice',
+      question: 'Quelle est la différence entre des contraintes individuelles et un SYSTÈME de contraintes ?',
+      options: [
+        'Un système a juste plus de contraintes',
+        'Les contraintes individuelles sont utiles ; les contraintes imbriquées sont transformatrices — limites de modules + contrats de déploiement + versionnage d\'API + types stricts ensemble créent un environnement où N\'IMPORTE QUEL agent travaille sur N\'IMPORTE QUEL package avec zéro coordination',
+        'Un système nécessite plus de documentation',
+        'Les contraintes individuelles sont plus rapides à implémenter',
+      ],
+      correctIndex: 1,
+      explanation: "Les contraintes individuelles sont utiles. Les contraintes conçues comme un système imbriqué sont transformatrices. Ensemble, elles créent un environnement où N'IMPORTE QUEL agent peut travailler sur N'IMPORTE QUEL package à N'IMPORTE QUEL moment sans coordination. C'est le but : le parallélisme à zéro coordination grâce à des contraintes systématiques.",
     },
     {
-      type: 'code-demo',
-      title: 'Vue d\'ensemble du système de contraintes',
-      body: 'Un système de contraintes bien conçu dans CLAUDE.md donne à chaque agent une autonomie complète dans sa portée désignée.',
+      type: 'code-fill',
+      instruction: 'Complète ce CLAUDE.md de système de contraintes. Remplis les règles de chaque couche qui ensemble permettent le parallélisme à zéro coordination des agents.',
       language: 'markdown',
       filename: 'CLAUDE.md',
-      code: "# System Constraints (applies to ALL agents)\n\n## Layer 1: Isolation\n- Each package has its own CLAUDE.md with scope-specific rules\n- No package may import another package's internal modules\n- Each package has independent test suite that runs in isolation\n\n## Layer 2: Communication\n- Cross-package communication: HTTP API or event bus ONLY\n- All APIs are versioned (v1, v2, etc.) — never break consumers\n- Shared types live in @repo/shared-types — the only cross-cut\n\n## Layer 3: Verification\n- TypeScript strict mode — no `any`, no implicit returns\n- 80% test coverage minimum on business logic\n- Build must succeed independently per package\n\n## Layer 4: Evolution\n- New packages: create with `nx g @repo/plugin:package`\n- Deprecation: mark old version, add new version, migrate callers\n- Removal: only after zero imports of old version for 30 days\n\n## What this enables:\n- Any agent can work on any package without coordination\n- 5 agents on 5 packages simultaneously = zero conflicts\n- Merge order does not matter if all packages pass independently",
+      template: '# System Constraints (applies to ALL agents)\n\n## Layer 1: Isolation\n- No package may import another package\'s {{isolation_rule}}\n- Each package has independent test suite that runs in {{test_mode}}\n\n## Layer 2: Communication\n- Cross-package communication: {{comm_channels}} ONLY\n- Shared types live in {{types_location}} — the only cross-cut\n\n## Layer 3: Verification\n- TypeScript {{ts_mode}} — no `any`, no implicit returns\n- Build must succeed {{build_scope}}',
+      blanks: [
+        { id: 'isolation_rule', answer: 'internal modules', alternatives: ['internals', 'internal code', 'private modules'], placeholder: 'quoi ne peut pas être importé ?', hint: 'Les détails d\'implémentation privés des autres packages' },
+        { id: 'test_mode', answer: 'isolation', alternatives: ['independently', 'alone', 'without other packages'], placeholder: 'exigence de test ?', hint: 'Les tests prouvent que le package fonctionne sans autres services' },
+        { id: 'comm_channels', answer: 'HTTP API or event bus', alternatives: ['API or events', 'HTTP or message queue'], placeholder: 'communication approuvée ?', hint: 'Deux méthodes de communication inter-packages approuvées' },
+        { id: 'types_location', answer: '@repo/shared-types', alternatives: ['shared-types', '@repo/types'], placeholder: 'où vivent les types partagés ?', hint: 'Le seul package que tous les domaines partagent' },
+        { id: 'ts_mode', answer: 'strict mode', alternatives: ['strict', 'strict mode enabled'], placeholder: 'config TypeScript ?', hint: 'La configuration TypeScript la plus stricte' },
+        { id: 'build_scope', answer: 'independently per package', alternatives: ['per package', 'independently'], placeholder: 'exigence de build ?', hint: 'Chaque package doit se construire seul' },
+      ],
+      explanation: 'Un système de contraintes bien conçu dans CLAUDE.md donne à chaque agent une autonomie complète dans sa portée désignée. 5 agents sur 5 packages simultanément signifie zéro conflits.',
     },
     {
       type: 'multiple-choice',
@@ -300,14 +400,36 @@ const content: LessonContent = {
 
     // === REAL-WORLD APPLICATION ===
     {
-      type: 'info',
-      title: 'De la théorie à ta codebase',
-      body: "Commence par une seule contrainte. La contrainte de plus haute valeur pour toute équipe qui adopte des flottes d'agents, c'est l'application des limites de modules. Ça prévient immédiatement le mode de défaillance le plus courant du développement parallèle par agents : les imports conflictuels. Ajoute-la, applique-la avec de l'outillage (pas juste de la documentation), et observe comment le parallélisme des agents s'améliore. Ensuite ajoute les contrats de déploiement. Puis le versionnage d'API. Couche par couche, tu construis un environnement où les agents peuvent sprinter sans se faire trébucher.",
+      type: 'multiple-choice',
+      question: 'Quelle est la PREMIÈRE contrainte de plus haute valeur à ajouter quand on adopte des flottes d\'agents ?',
+      options: [
+        'Le versionnage d\'API entre tous les services',
+        'L\'application des limites de modules — ça prévient immédiatement le mode de défaillance le plus courant : les imports conflictuels',
+        'TypeScript en mode strict dans toute la codebase',
+        'Les commentaires de code requis sur toutes les fonctions',
+      ],
+      correctIndex: 1,
+      explanation: "Commence par une seule contrainte. La contrainte de plus haute valeur pour toute équipe qui adopte des flottes d'agents, c'est l'application des limites de modules. Ça prévient immédiatement le mode de défaillance le plus courant du développement parallèle par agents : les imports conflictuels. Ensuite ajoute les contrats de déploiement. Puis le versionnage d'API. Couche par couche.",
     },
     {
-      type: 'info',
-      title: 'Les contraintes comme avantage compétitif',
-      body: "Ton compétiteur a 10 ingénieurs qui écrivent du code manuellement. Toi, tu as 2 ingénieurs qui dirigent des flottes d'agents à travers un système bien contraint. Leurs ingénieurs ont besoin de réunions, de revues de code et de coordination pour éviter les conflits. Tes agents n'ont besoin de rien de tout ça — les contraintes gèrent la coordination automatiquement. Ta fréquence de livraison est 5x la leur. Ton taux de défauts est plus bas parce que les contraintes attrapent les erreurs au moment de l'écriture, pas au moment de la revue. Le système de contraintes n'est pas une surcharge — c'est l'architecture qui rend la vélocité des flottes d'agents possible. C'est ton avantage défensif.",
+      type: 'compare',
+      title: 'Coordination manuelle vs Coordination automatisée par contraintes',
+      body: 'Ton compétiteur a 10 ingénieurs. Toi, 2 ingénieurs qui dirigent des flottes d\'agents. Qui livre plus vite ?',
+      left: {
+        label: '10 ingénieurs (Manuel)',
+        content: 'Méthode de coordination :\n- Réunions quotidiennes\n- Revues de code PR (2-4h de délai)\n- Comités d\'architecture\n- Threads Slack sur les conflits\n- Sessions de planification de sprint\n\nRésultat :\n- 2x déploiements par semaine\n- Conflits inter-équipes chaque semaine\n- 15+ heures/semaine en réunions\n- Défauts attrapés au moment de la revue\n- Embaucher plus = plus de coordination',
+        language: 'text',
+        filename: 'manuel.txt',
+      },
+      right: {
+        label: '2 ingénieurs + Flotte d\'agents (Contraintes)',
+        content: 'Méthode de coordination :\n- Limites de modules (lint renforcé)\n- Contrats de déploiement (CI renforcé)\n- Versionnage d\'API (build renforcé)\n- Vérification de types (compilateur renforcé)\n- Zéro réunion nécessaire\n\nRésultat :\n- 10x déploiements par semaine\n- Zéro conflit inter-packages\n- 0 heure/semaine en coordination\n- Défauts attrapés au moment de l\'écriture\n- Mise à l\'échelle = plus d\'agents, pas plus d\'embauche',
+        language: 'text',
+        filename: 'contraintes.txt',
+      },
+      question: 'Quelle approche rend la vélocité des flottes d\'agents possible ?',
+      correctSide: 'right',
+      explanation: "Le système de contraintes n'est pas une surcharge — c'est l'architecture qui rend la vélocité des flottes d'agents possible. C'est ton avantage défensif. Tes agents n'ont besoin de zéro réunion, zéro revue de code, zéro coordination. Les contraintes gèrent tout automatiquement.",
     },
     {
       type: 'checkpoint',

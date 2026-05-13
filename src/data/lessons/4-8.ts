@@ -17,9 +17,9 @@ const content: LessonContent = {
 
     // === THE CONSTRAINT PARADOX ===
     {
-      type: 'diagram',
+      type: 'interactive-diagram',
       title: 'The Constraint Paradox',
-      body: 'More rules means less deliberation, less conflict, and faster parallel execution.',
+      body: 'Click through to see why more rules means less deliberation, less conflict, and faster parallel execution.',
       diagram: {
         direction: 'LR',
         nodes: [
@@ -33,6 +33,28 @@ const content: LessonContent = {
           { from: 'constrained', to: 'fast', label: 'enables' },
         ],
       },
+      stages: [
+        {
+          highlightNodes: ['unconstrained'],
+          highlightEdges: [],
+          explanation: 'An unconstrained system has few rules. Agents can pick any technology, write code anywhere, and make independent choices. Sounds like freedom — but it leads to chaos.',
+        },
+        {
+          highlightNodes: ['unconstrained', 'slow'],
+          highlightEdges: [{ from: 'unconstrained', to: 'slow' }],
+          explanation: 'Without constraints, agents make conflicting choices: one picks Zustand, another picks Jotai, a third invents its own pattern. You spend more time resolving conflicts than you saved with parallelism.',
+        },
+        {
+          highlightNodes: ['constrained'],
+          highlightEdges: [],
+          explanation: 'A constrained system has explicit boundaries: technology choices, file paths, scope exclusions, performance budgets. Every decision point is pre-decided.',
+        },
+        {
+          highlightNodes: ['constrained', 'fast'],
+          highlightEdges: [{ from: 'constrained', to: 'fast' }],
+          explanation: 'Constraints eliminate deliberation. Agents execute immediately within their lanes. No conflicts, no coordination meetings, no rework. Paradoxically, more rules create more speed.',
+        },
+      ],
     },
     {
       type: 'checkpoint',
@@ -140,25 +162,42 @@ const content: LessonContent = {
 
     // === MONOREPO BOUNDARIES ===
     {
-      type: 'info',
-      title: 'Monorepo boundaries as agent guardrails',
-      body: "A monorepo without boundaries is just a folder with multiple projects in it. Package boundaries — explicit dependency declarations, isolated build targets, enforced import restrictions — turn it into a system where agents can work in parallel without stepping on each other. If Agent A works in packages/auth and Agent B works in packages/billing, and neither can import from the other's internals, they cannot create conflicts. The boundary IS the parallelism enabler.",
+      type: 'multiple-choice',
+      question: 'What transforms a monorepo from "just a folder with multiple projects" into a system enabling parallel agent work?',
+      options: [
+        'Using a monorepo tool like Nx or Turborepo',
+        'Package boundaries — explicit dependency declarations, isolated build targets, and enforced import restrictions',
+        'Having a shared package.json at the root',
+        'Putting each project in its own directory',
+      ],
+      correctIndex: 1,
+      explanation: "A monorepo without boundaries is just a folder with multiple projects in it. Package boundaries — explicit dependency declarations, isolated build targets, enforced import restrictions — turn it into a system where agents can work in parallel without stepping on each other. If Agent A works in packages/auth and Agent B works in packages/billing, and neither can import from the other's internals, they cannot create conflicts. The boundary IS the parallelism enabler.",
     },
     {
-      type: 'code-demo',
-      title: 'Package boundary enforcement',
-      body: 'This Nx project configuration prevents agents from reaching across package boundaries. Each package declares its public API explicitly.',
+      type: 'code-fill',
+      instruction: 'Complete this Nx project configuration that prevents agents from reaching across package boundaries. Fill in the tags and build targets.',
       language: 'json',
       filename: 'packages/auth/project.json',
-      code: "{\n  \"name\": \"auth\",\n  \"tags\": [\"scope:auth\", \"type:domain\"],\n  \"implicitDependencies\": [],\n  \"targets\": {\n    \"build\": { \"executor\": \"@nx/tsc:tsc\" },\n    \"test\": { \"executor\": \"@nx/jest:jest\" },\n    \"lint\": { \"executor\": \"@nx/eslint:lint\" }\n  }\n}",
+      template: '{\n  "name": "auth",\n  "tags": ["{{scope_tag}}", "{{type_tag}}"],\n  "implicitDependencies": [],\n  "targets": {\n    "build": { "executor": "{{build_executor}}" },\n    "test": { "executor": "@nx/jest:jest" },\n    "lint": { "executor": "@nx/eslint:lint" }\n  }\n}',
+      blanks: [
+        { id: 'scope_tag', answer: 'scope:auth', alternatives: ['scope: auth', 'auth'], placeholder: 'scope tag?', hint: 'Tag identifying which domain this package belongs to' },
+        { id: 'type_tag', answer: 'type:domain', alternatives: ['type: domain', 'domain', 'type:lib'], placeholder: 'type tag?', hint: 'Tag identifying the package type (domain, util, shared, etc.)' },
+        { id: 'build_executor', answer: '@nx/tsc:tsc', alternatives: ['@nx/tsc', 'tsc', '@nx/js:tsc'], placeholder: 'build executor?', hint: 'The Nx executor for TypeScript compilation' },
+      ],
+      explanation: 'Nx project configurations with scope tags enable module boundary enforcement. Each package declares what it is (scope:auth, type:domain) so lint rules can restrict which packages can depend on which. Agents literally cannot violate these constraints because invalid imports fail the build.',
     },
     {
-      type: 'code-demo',
-      title: 'Lint rule preventing cross-boundary imports',
-      body: 'Nx module boundary rules make invalid imports a build error — agents literally cannot violate the constraint.',
+      type: 'code-fill',
+      instruction: 'Complete this ESLint rule that enforces module boundaries. Fill in the dependency constraints so auth can only import from shared and auth.',
       language: 'json',
       filename: '.eslintrc.json',
-      code: "{\n  \"rules\": {\n    \"@nx/enforce-module-boundaries\": [\n      \"error\",\n      {\n        \"depConstraints\": [\n          {\n            \"sourceTag\": \"scope:auth\",\n            \"onlyDependOnLibsWithTags\": [\"scope:shared\", \"scope:auth\"]\n          },\n          {\n            \"sourceTag\": \"scope:billing\",\n            \"onlyDependOnLibsWithTags\": [\"scope:shared\", \"scope:billing\"]\n          },\n          {\n            \"sourceTag\": \"scope:shared\",\n            \"onlyDependOnLibsWithTags\": [\"scope:shared\"]\n          }\n        ]\n      }\n    ]\n  }\n}",
+      template: '{\n  "rules": {\n    "@nx/enforce-module-boundaries": [\n      "error",\n      {\n        "depConstraints": [\n          {\n            "sourceTag": "scope:auth",\n            "onlyDependOnLibsWithTags": ["{{auth_deps}}"]\n          },\n          {\n            "sourceTag": "scope:billing",\n            "onlyDependOnLibsWithTags": ["{{billing_deps}}"]\n          },\n          {\n            "sourceTag": "scope:shared",\n            "onlyDependOnLibsWithTags": ["{{shared_deps}}"]\n          }\n        ]\n      }\n    ]\n  }\n}',
+      blanks: [
+        { id: 'auth_deps', answer: 'scope:shared", "scope:auth', alternatives: ['scope:shared, scope:auth', 'shared, auth'], placeholder: 'auth can depend on...?', hint: 'Auth should depend on shared utilities and its own scope' },
+        { id: 'billing_deps', answer: 'scope:shared", "scope:billing', alternatives: ['scope:shared, scope:billing', 'shared, billing'], placeholder: 'billing can depend on...?', hint: 'Billing should depend on shared utilities and its own scope' },
+        { id: 'shared_deps', answer: 'scope:shared', alternatives: ['shared', 'only shared'], placeholder: 'shared can depend on...?', hint: 'Shared should only depend on itself — no domain packages' },
+      ],
+      explanation: 'Nx module boundary rules make invalid imports a build error. Auth can import from shared and auth. Billing from shared and billing. Shared only from itself. Agents literally cannot violate these constraints — the build catches violations at the speed agents create them.',
     },
     {
       type: 'multiple-choice',
@@ -180,17 +219,30 @@ const content: LessonContent = {
 
     // === DEPLOYMENT CONTRACTS ===
     {
-      type: 'info',
-      title: 'Deployment contracts that force clean interfaces',
-      body: "A deployment contract says: this package deploys independently. That single statement forces enormous discipline. If auth deploys without billing, then auth cannot import billing internals. If billing deploys without the frontend, then billing must expose a versioned API. Deployment independence forces interface cleanliness — and clean interfaces are what let agents build components in isolation without needing to understand the whole system.",
+      type: 'multiple-choice',
+      question: 'A deployment contract states: "this package deploys independently." What does that single statement force?',
+      options: [
+        'The package must use Docker containers',
+        'Auth cannot import billing internals, billing must expose a versioned API — deployment independence forces interface cleanliness',
+        'Each package needs its own repository',
+        'Packages must be written in different languages',
+      ],
+      correctIndex: 1,
+      explanation: "A deployment contract forces enormous discipline. If auth deploys without billing, then auth cannot import billing internals. If billing deploys without the frontend, then billing must expose a versioned API. Deployment independence forces interface cleanliness — and clean interfaces are what let agents build components in isolation without needing to understand the whole system.",
     },
     {
-      type: 'code-demo',
-      title: 'CLAUDE.md deployment contract',
-      body: 'This constraint in your CLAUDE.md tells every agent: your work must be independently deployable. No reaching across deployment units.',
+      type: 'code-fill',
+      instruction: 'Complete this CLAUDE.md deployment contract. Fill in the rules that ensure independent deployability.',
       language: 'markdown',
       filename: 'packages/billing/CLAUDE.md',
-      code: "# Billing Service\n\n## Deployment Contract\nThis package deploys independently via its own CI pipeline.\n\n### Rules for all agents:\n1. **No imports from other packages** except `@repo/shared-types`\n2. **All external communication** via HTTP API or message queue\n3. **Database**: Own schema, own migrations, own connection\n4. **Environment**: Must boot with only its own .env variables\n5. **Tests**: Must pass with no other service running\n\n### Public API (what other packages consume):\n- POST /api/billing/create-subscription\n- POST /api/billing/cancel-subscription\n- GET  /api/billing/status/:userId\n- Webhook: billing.subscription.changed\n\n### Off-limits:\n- Direct database queries from other services\n- Importing internal modules (use the HTTP API)\n- Shared mutable state",
+      template: '# Billing Service\n\n## Deployment Contract\nThis package deploys independently via its own CI pipeline.\n\n### Rules for all agents:\n1. **No imports from other packages** except {{shared_import}}\n2. **All external communication** via {{comm_method}}\n3. **Database**: {{db_rule}}\n4. **Tests**: {{test_rule}}\n\n### Public API:\n- POST /api/billing/create-subscription\n- POST /api/billing/cancel-subscription\n- GET  /api/billing/status/:userId',
+      blanks: [
+        { id: 'shared_import', answer: '@repo/shared-types', alternatives: ['shared-types', 'shared types', '@repo/types'], placeholder: 'allowed import?', hint: 'The one package all domains can depend on' },
+        { id: 'comm_method', answer: 'HTTP API or message queue', alternatives: ['HTTP API', 'API or events', 'HTTP or message queue', 'typed API'], placeholder: 'communication method?', hint: 'Two approved cross-service communication channels' },
+        { id: 'db_rule', answer: 'Own schema, own migrations, own connection', alternatives: ['own schema', 'independent database', 'own schema and migrations', 'separate schema'], placeholder: 'database ownership rule?', hint: 'Each package manages its own data independently' },
+        { id: 'test_rule', answer: 'Must pass with no other service running', alternatives: ['pass independently', 'pass in isolation', 'run without dependencies', 'independent tests'], placeholder: 'test isolation rule?', hint: 'Tests prove the package works alone' },
+      ],
+      explanation: 'A CLAUDE.md deployment contract tells every agent: your work must be independently deployable. No reaching across deployment units. Each filled blank eliminates a category of coupling that would prevent parallel agent work.',
     },
     {
       type: 'multiple-choice',
@@ -207,17 +259,29 @@ const content: LessonContent = {
 
     // === API VERSIONING ===
     {
-      type: 'info',
-      title: 'API versioning enables parallel evolution',
-      body: "Without versioning, changing an API breaks every consumer simultaneously. With versioning, Agent A can build v2 of an endpoint while Agent B continues consuming v1. When Agent B is ready to migrate, it moves to v2 on its own timeline. No coordination, no blocking, no merge conflicts. Versioning is the temporal constraint — it lets different parts of the system evolve at different speeds without breaking each other.",
+      type: 'multiple-choice',
+      question: 'Without API versioning, changing an endpoint breaks every consumer simultaneously. With versioning, what becomes possible?',
+      options: [
+        'You can delete old endpoints immediately',
+        'Agent A builds v2 while Agent B continues consuming v1 — each evolves on its own timeline with zero coordination',
+        'All agents must upgrade at the same time',
+        'Only one version can exist at a time',
+      ],
+      correctIndex: 1,
+      explanation: "Without versioning, changing an API breaks every consumer simultaneously. With versioning, Agent A can build v2 of an endpoint while Agent B continues consuming v1. When Agent B is ready to migrate, it moves to v2 on its own timeline. No coordination, no blocking, no merge conflicts. Versioning is the temporal constraint — it lets different parts of the system evolve at different speeds without breaking each other.",
     },
     {
-      type: 'code-demo',
-      title: 'Versioned API contract',
-      body: 'Both versions coexist. Agent building the new payment flow uses v2. Agent maintaining the old checkout uses v1. No conflict.',
+      type: 'code-fill',
+      instruction: 'Complete this versioned API. Fill in the v2 endpoint path, the additional parameter, and the HATEOAS action links.',
       language: 'typescript',
       filename: 'packages/api/src/routes/subscriptions.ts',
-      code: "// v1 — stable, consumed by legacy checkout\nrouter.post('/v1/subscriptions', async (req, res) => {\n  const { planId, userId } = req.body\n  const sub = await createSubscription({ planId, userId })\n  return res.json({ id: sub.id, status: sub.status })\n})\n\n// v2 — new response shape, consumed by new dashboard\nrouter.post('/v2/subscriptions', async (req, res) => {\n  const { planId, userId, metadata } = req.body\n  const sub = await createSubscription({ planId, userId, metadata })\n  return res.json({\n    subscription: {\n      id: sub.id,\n      status: sub.status,\n      plan: sub.plan,\n      currentPeriodEnd: sub.currentPeriodEnd,\n    },\n    actions: {\n      cancel: `/v2/subscriptions/${sub.id}/cancel`,\n      upgrade: `/v2/subscriptions/${sub.id}/upgrade`,\n    },\n  })\n})",
+      template: "// v1 — stable, consumed by legacy checkout\nrouter.post('/v1/subscriptions', async (req, res) => {\n  const { planId, userId } = req.body\n  const sub = await createSubscription({ planId, userId })\n  return res.json({ id: sub.id, status: sub.status })\n})\n\n// v2 — new response shape, consumed by new dashboard\nrouter.post('{{v2_path}}', async (req, res) => {\n  const { planId, userId, {{extra_param}} } = req.body\n  const sub = await createSubscription({ planId, userId, {{extra_param}} })\n  return res.json({\n    subscription: { id: sub.id, status: sub.status },\n    actions: {\n      cancel: `{{cancel_action}}`,\n    },\n  })\n})",
+      blanks: [
+        { id: 'v2_path', answer: '/v2/subscriptions', alternatives: ['/v2/subscriptions/', 'v2/subscriptions'], placeholder: 'v2 endpoint path?', hint: 'Same resource, different version prefix' },
+        { id: 'extra_param', answer: 'metadata', alternatives: ['meta', 'options', 'extra'], placeholder: 'new v2 parameter?', hint: 'Additional data the new version accepts' },
+        { id: 'cancel_action', answer: '/v2/subscriptions/${sub.id}/cancel', alternatives: ['/v2/subscriptions/cancel', 'cancel endpoint'], placeholder: 'cancel action URL?', hint: 'A HATEOAS link to the cancel endpoint' },
+      ],
+      explanation: 'Both versions coexist. The agent building the new payment flow uses v2. The agent maintaining the old checkout uses v1. No conflict. API versioning is the temporal constraint that enables parallel evolution.',
     },
     {
       type: 'checkpoint',
@@ -227,14 +291,28 @@ const content: LessonContent = {
 
     // === EVALUATING CONSTRAINTS ===
     {
-      type: 'info',
-      title: 'Is this constraint helping or hurting?',
-      body: "Not all constraints are good. A constraint that forces agents to write boilerplate without preventing errors is pure friction. A constraint that prevents classes of errors without adding ceremony is pure value. The test: does this constraint prevent a real problem that has occurred (or would likely occur) during agent-parallel development? If yes, keep it. If it only exists because 'it is best practice' but has never caught anything — remove it. Dead constraints slow your fleet for no benefit.",
+      type: 'multiple-choice',
+      question: 'A constraint forces agents to write boilerplate code for every file but has never caught an actual error. What should you do with it?',
+      options: [
+        'Keep it — boilerplate enforces consistency',
+        'Remove it — a constraint that adds ceremony without preventing real errors is pure friction. Dead constraints slow your fleet for no benefit.',
+        'Make the boilerplate optional',
+        'Add more boilerplate to be thorough',
+      ],
+      correctIndex: 1,
+      explanation: "Not all constraints are good. The test: does this constraint prevent a real problem that has occurred (or would likely occur) during agent-parallel development? If yes, keep it. If it only exists because 'it is best practice' but has never caught anything — remove it. Dead constraints slow your fleet for no benefit. A constraint that prevents errors without ceremony is pure value. One that adds ceremony without catching errors is pure friction.",
     },
     {
-      type: 'info',
-      title: 'Signs of a helpful constraint',
-      body: "Helpful constraints share three properties. First: they are automatable — the system enforces them, not human review. Second: they catch real errors — you can point to a specific incident they would have prevented. Third: they do not require agent awareness — the constraint works even if the agent does not know about it (like a lint rule that fails the build). If your constraint requires the agent to 'remember' to do something, it is not a constraint — it is a wish.",
+      type: 'multiple-choice',
+      question: 'A constraint requires agents to "remember" to add a changelog entry for every PR. Is this a real constraint?',
+      options: [
+        'Yes — it enforces documentation discipline',
+        'No — if it requires the agent to "remember" something, it is a wish, not a constraint. Real constraints are automatable, catch real errors, and work without agent awareness.',
+        'Yes, if you remind agents in the prompt',
+        'Only if you add it to CLAUDE.md',
+      ],
+      correctIndex: 1,
+      explanation: "Helpful constraints share three properties. First: they are automatable — the system enforces them, not human review. Second: they catch real errors — you can point to a specific incident they would have prevented. Third: they do not require agent awareness — the constraint works even if the agent does not know about it (like a lint rule that fails the build). If your constraint requires the agent to 'remember' to do something, it is not a constraint — it is a wish.",
     },
     {
       type: 'multiple-choice',
@@ -249,9 +327,16 @@ const content: LessonContent = {
       explanation: 'Changelog entries require understanding user-facing impact — something agents struggle with for internal refactors. This constraint adds ceremony to every PR without catching errors. The other three are enforceable, automated, and prevent real problems (type errors, boundary violations, data loss).',
     },
     {
-      type: 'info',
-      title: 'Signs of a harmful constraint',
-      body: "Harmful constraints look like: mandatory code comments (agents generate verbose comments that add nothing), required design documents before implementation (agents build faster than they write docs), forced approval workflows for non-critical paths (blocks parallel work). The test is always: does this constraint prevent a problem that matters, or does it prevent velocity without offsetting benefit? Be ruthless about removing constraints that served humans but obstruct agents.",
+      type: 'multiple-choice',
+      question: 'Which of these is a harmful constraint that served humans but obstructs agents?',
+      options: [
+        'TypeScript strict mode with zero any usage',
+        'Required design documents before implementation — agents build faster than they write docs, creating pure friction',
+        'Enforced module boundaries via lint rules',
+        'Independent test suites per package',
+      ],
+      correctIndex: 1,
+      explanation: "Harmful constraints look like: mandatory code comments (agents generate verbose comments that add nothing), required design documents before implementation (agents build faster than they write docs), forced approval workflows for non-critical paths (blocks parallel work). The test is always: does this constraint prevent a problem that matters, or does it prevent velocity without offsetting benefit? Be ruthless about removing constraints that served humans but obstruct agents.",
     },
     {
       type: 'order',
@@ -273,17 +358,32 @@ const content: LessonContent = {
 
     // === CONSTRAINT ARCHITECTURE ===
     {
-      type: 'info',
-      title: 'Designing constraints as a system',
-      body: "Individual constraints are useful. Constraints designed as an interlocking system are transformative. Module boundaries prevent cross-package imports. Deployment contracts prevent shared state. API versioning prevents breaking changes. TypeScript strict mode prevents type mismatches. Together, they create an environment where ANY agent can work on ANY package at ANY time without coordination. That is the goal: zero-coordination parallelism through systematic constraints.",
+      type: 'multiple-choice',
+      question: 'What is the difference between individual constraints and a constraint SYSTEM?',
+      options: [
+        'A system just has more constraints',
+        'Individual constraints are useful; interlocking constraints are transformative — module boundaries + deployment contracts + API versioning + strict types together create an environment where ANY agent works on ANY package with zero coordination',
+        'A system requires more documentation',
+        'Individual constraints are faster to implement',
+      ],
+      correctIndex: 1,
+      explanation: "Individual constraints are useful. Constraints designed as an interlocking system are transformative. Module boundaries prevent cross-package imports. Deployment contracts prevent shared state. API versioning prevents breaking changes. TypeScript strict mode prevents type mismatches. Together, they create an environment where ANY agent can work on ANY package at ANY time without coordination. That is the goal: zero-coordination parallelism through systematic constraints.",
     },
     {
-      type: 'code-demo',
-      title: 'Constraint system overview',
-      body: 'A well-designed constraint system in CLAUDE.md gives every agent complete autonomy within its designated scope.',
+      type: 'code-fill',
+      instruction: 'Complete this constraint system CLAUDE.md. Fill in the rules for each layer that together enable zero-coordination agent parallelism.',
       language: 'markdown',
       filename: 'CLAUDE.md',
-      code: "# System Constraints (applies to ALL agents)\n\n## Layer 1: Isolation\n- Each package has its own CLAUDE.md with scope-specific rules\n- No package may import another package's internal modules\n- Each package has independent test suite that runs in isolation\n\n## Layer 2: Communication\n- Cross-package communication: HTTP API or event bus ONLY\n- All APIs are versioned (v1, v2, etc.) — never break consumers\n- Shared types live in @repo/shared-types — the only cross-cut\n\n## Layer 3: Verification\n- TypeScript strict mode — no `any`, no implicit returns\n- 80% test coverage minimum on business logic\n- Build must succeed independently per package\n\n## Layer 4: Evolution\n- New packages: create with `nx g @repo/plugin:package`\n- Deprecation: mark old version, add new version, migrate callers\n- Removal: only after zero imports of old version for 30 days\n\n## What this enables:\n- Any agent can work on any package without coordination\n- 5 agents on 5 packages simultaneously = zero conflicts\n- Merge order does not matter if all packages pass independently",
+      template: '# System Constraints (applies to ALL agents)\n\n## Layer 1: Isolation\n- No package may import another package\'s {{isolation_rule}}\n- Each package has independent test suite that runs in {{test_mode}}\n\n## Layer 2: Communication\n- Cross-package communication: {{comm_channels}} ONLY\n- Shared types live in {{types_location}} — the only cross-cut\n\n## Layer 3: Verification\n- TypeScript {{ts_mode}} — no `any`, no implicit returns\n- Build must succeed {{build_scope}}',
+      blanks: [
+        { id: 'isolation_rule', answer: 'internal modules', alternatives: ['internals', 'internal code', 'private modules', 'internal files'], placeholder: 'what cannot be imported?', hint: 'The private implementation details of other packages' },
+        { id: 'test_mode', answer: 'isolation', alternatives: ['independently', 'alone', 'without other packages'], placeholder: 'test requirement?', hint: 'Tests prove the package works without other services' },
+        { id: 'comm_channels', answer: 'HTTP API or event bus', alternatives: ['API or events', 'HTTP or message queue', 'typed API or event bus'], placeholder: 'approved communication?', hint: 'Two approved cross-package communication methods' },
+        { id: 'types_location', answer: '@repo/shared-types', alternatives: ['shared-types', '@repo/types', 'the shared types package'], placeholder: 'where do shared types live?', hint: 'The one package all domains share' },
+        { id: 'ts_mode', answer: 'strict mode', alternatives: ['strict', 'strict mode enabled'], placeholder: 'TypeScript config?', hint: 'The strictest TypeScript configuration' },
+        { id: 'build_scope', answer: 'independently per package', alternatives: ['per package', 'independently', 'for each package'], placeholder: 'build requirement?', hint: 'Each package must build on its own' },
+      ],
+      explanation: 'A well-designed constraint system in CLAUDE.md gives every agent complete autonomy within its designated scope. Any agent can work on any package without coordination. 5 agents on 5 packages simultaneously means zero conflicts. Merge order does not matter if all packages pass independently.',
     },
     {
       type: 'multiple-choice',
@@ -300,14 +400,36 @@ const content: LessonContent = {
 
     // === REAL-WORLD APPLICATION ===
     {
-      type: 'info',
-      title: 'From theory to your codebase',
-      body: "Start with one constraint. The highest-value first constraint for any team adopting agent fleets is module boundary enforcement. It immediately prevents the most common agent-parallel failure mode: conflicting imports. Add it, enforce it with tooling (not just documentation), and observe how agent parallelism improves. Then add deployment contracts. Then API versioning. Layer by layer, you build an environment where agents can sprint without tripping over each other.",
+      type: 'multiple-choice',
+      question: 'What is the highest-value FIRST constraint to add when adopting agent fleets?',
+      options: [
+        'API versioning between all services',
+        'Module boundary enforcement — it immediately prevents the most common agent-parallel failure mode: conflicting imports',
+        'TypeScript strict mode across the codebase',
+        'Required code comments on all functions',
+      ],
+      correctIndex: 1,
+      explanation: "Start with one constraint. The highest-value first constraint for any team adopting agent fleets is module boundary enforcement. It immediately prevents the most common agent-parallel failure mode: conflicting imports. Add it, enforce it with tooling (not just documentation), and observe how agent parallelism improves. Then add deployment contracts. Then API versioning. Layer by layer, you build an environment where agents can sprint without tripping over each other.",
     },
     {
-      type: 'info',
-      title: 'Constraints as competitive advantage',
-      body: "Your competitor has 10 engineers writing code manually. You have 2 engineers directing agent fleets across a well-constrained system. Their engineers need meetings, code review, and coordination to avoid conflicts. Your agents need none of that — the constraints handle coordination automatically. Your ship frequency is 5x theirs. Your defect rate is lower because constraints catch errors at write-time, not review-time. The constraint system is not overhead — it is the architecture that makes agent-fleet velocity possible. It is your moat.",
+      type: 'compare',
+      title: 'Manual coordination vs Constraint-automated coordination',
+      body: 'Your competitor has 10 engineers. You have 2 engineers directing agent fleets. Who ships faster?',
+      left: {
+        label: '10 Engineers (Manual)',
+        content: 'Coordination method:\n- Daily standup meetings\n- PR code reviews (2-4 hour turnaround)\n- Architecture review boards\n- Slack threads about conflicts\n- Sprint planning sessions\n\nResult:\n- 2x deploys per week\n- Cross-team conflicts weekly\n- 15+ hours/week in meetings\n- Defects caught at review-time\n- Hiring more means more coordination',
+        language: 'text',
+        filename: 'manual.txt',
+      },
+      right: {
+        label: '2 Engineers + Agent Fleet (Constraints)',
+        content: 'Coordination method:\n- Module boundaries (lint enforced)\n- Deployment contracts (CI enforced)\n- API versioning (build enforced)\n- Type checking (compiler enforced)\n- Zero meetings needed\n\nResult:\n- 10x deploys per week\n- Zero cross-package conflicts\n- 0 hours/week in coordination\n- Defects caught at write-time\n- Scaling = more agents, not more hiring',
+        language: 'text',
+        filename: 'constraints.txt',
+      },
+      question: 'Which approach makes agent-fleet velocity possible?',
+      correctSide: 'right',
+      explanation: "The constraint system is not overhead — it is the architecture that makes agent-fleet velocity possible. It is your moat. Your agents need zero meetings, zero code review, zero coordination. The constraints handle it automatically. Your ship frequency is 5x the competition. Your defect rate is lower because constraints catch errors at write-time, not review-time.",
     },
     {
       type: 'checkpoint',

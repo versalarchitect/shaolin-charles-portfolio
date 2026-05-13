@@ -17,9 +17,16 @@ const content: LessonContent = {
 
     // === PHASE 1: DECOMPOSITION ===
     {
-      type: 'info',
-      title: 'Phase 1: Decompose the Team Dashboard',
-      body: "The product has four main surfaces: (1) Project Status — cards showing active projects, their progress, and status. (2) Velocity Metrics — charts showing team output over time. (3) Member Contributions — who did what, activity counts, recent work. (4) Activity Feed — real-time stream of team actions. Each maps to one agent.",
+      type: 'multiple-choice',
+      question: 'The Team Dashboard has 4 surfaces: Project Status, Velocity Metrics, Member Contributions, and Activity Feed. How should you map agents?',
+      options: [
+        'One agent builds all four surfaces sequentially',
+        'Each surface maps to one agent — four parallel workstreams',
+        'Two agents split the work: one for data, one for UI',
+        'Use a swarm pattern with 8 agents for maximum speed',
+      ],
+      correctIndex: 1,
+      explanation: "The product has four main surfaces, and each maps to one agent. This gives you maximum parallelism: all four agents can build simultaneously when contracts are defined upfront.",
     },
     {
       type: 'diagram',
@@ -69,9 +76,16 @@ const content: LessonContent = {
 
     // === PHASE 2: WORKTREE SETUP ===
     {
-      type: 'info',
-      title: 'Phase 2: Set Up the Workspace',
-      body: "Four agents need four isolated environments. Git worktrees give each agent its own working directory on its own branch — complete isolation with shared history. Set them up from a clean main branch.",
+      type: 'multiple-choice',
+      question: 'Why do four parallel agents each need their own git worktree?',
+      options: [
+        'Worktrees run faster than regular branches',
+        'Each agent needs complete file isolation on its own branch — worktrees provide separate working directories with shared history',
+        'Worktrees allow agents to communicate through shared files',
+        'Git requires worktrees for more than 2 branches',
+      ],
+      correctIndex: 1,
+      explanation: "Four agents need four isolated environments. Git worktrees give each agent its own working directory on its own branch — complete isolation with shared history. Without worktrees, agents would overwrite each other's changes in the same working directory.",
     },
     {
       type: 'terminal',
@@ -111,17 +125,23 @@ const content: LessonContent = {
 
     // === PHASE 3: WRITE CONTRACTS AND SPECS ===
     {
-      type: 'info',
-      title: 'Phase 3: Define Contracts and Per-Agent Specs',
-      body: "Before launching any agent, you write: (1) the interface contracts that define every cross-module boundary, and (2) per-agent specs that tell each agent exactly what to build, which files to own, and what constraints to follow. This takes 10-15 minutes and saves hours of integration pain.",
+      type: 'multiple-choice',
+      question: 'Before launching any agent, what two things must the orchestrator write?',
+      options: [
+        'Test suites and CI/CD pipelines',
+        'Interface contracts (cross-module boundaries) and per-agent specs (what to build, file ownership, constraints)',
+        'CLAUDE.md and README.md',
+        'Database migrations and API documentation',
+      ],
+      correctIndex: 1,
+      explanation: "Before launching any agent, you write: (1) the interface contracts that define every cross-module boundary, and (2) per-agent specs that tell each agent exactly what to build, which files to own, and what constraints to follow. This takes 10-15 minutes and saves hours of integration pain.",
     },
     {
-      type: 'code-demo',
-      title: 'Interface contracts for the Team Dashboard',
-      body: "Every agent imports these types. No agent modifies this file. It defines: what the API produces, what the UI consumes, what auth provides, and what real-time events look like.",
+      type: 'code-fill',
+      instruction: 'Complete these shared contracts for the Team Dashboard. Fill in the critical type definitions that all four agents depend on.',
       language: 'typescript',
       filename: 'src/contracts/dashboard.ts',
-      code: `// === Shared Contracts: Team Dashboard ===
+      template: `// === Shared Contracts: Team Dashboard ===
 // Written by orchestrator. READ-ONLY for all agents.
 
 export interface AuthUser {
@@ -136,59 +156,43 @@ export interface AuthUser {
 export interface Project {
   id: string
   name: string
-  status: 'active' | 'completed' | 'archived'
+  status: {{project_status_type}}
   progress: number  // 0-100
   memberIds: string[]
   updatedAt: string
-}
-
-export interface VelocityData {
-  date: string        // YYYY-MM-DD
-  tasksCompleted: number
-  pointsDelivered: number
-}
-
-export interface MemberContribution {
-  userId: string
-  name: string
-  avatarUrl: string | null
-  tasksCompleted: number
-  reviewsGiven: number
-  commitsCount: number
-  lastActiveAt: string
 }
 
 export interface ActivityEvent {
   id: string
   userId: string
   userName: string
-  action: 'created' | 'completed' | 'reviewed' | 'commented' | 'deployed'
+  action: {{action_union}}
   target: string
   targetType: 'task' | 'pr' | 'deploy' | 'comment'
   timestamp: string
 }
 
-export interface ApiResponse<T> {
-  data: T | null
-  error: { code: string; message: string } | null
-}
-
 export interface WsMessage {
-  type: 'activity' | 'presence' | 'update'
+  type: {{ws_type_union}}
   payload: unknown
   timestamp: string
 }`,
+      blanks: [
+        { id: 'project_status_type', answer: "'active' | 'completed' | 'archived'", alternatives: ["'active' | 'completed' | 'archived'", '"active" | "completed" | "archived"'], placeholder: 'project status union', hint: 'Three possible states: active, completed, or archived' },
+        { id: 'action_union', answer: "'created' | 'completed' | 'reviewed' | 'commented' | 'deployed'", alternatives: ["'created' | 'completed' | 'reviewed' | 'commented' | 'deployed'"], placeholder: 'activity action types', hint: 'Five actions: created, completed, reviewed, commented, deployed' },
+        { id: 'ws_type_union', answer: "'activity' | 'presence' | 'update'", alternatives: ["'activity' | 'presence' | 'update'"], placeholder: 'WebSocket message types', hint: 'Three categories: activity events, presence status, data updates' },
+      ],
+      explanation: "Every agent imports these types. No agent modifies this file. It defines: what the API produces, what the UI consumes, what auth provides, and what real-time events look like.",
     },
     {
-      type: 'code-demo',
-      title: 'Per-agent spec: UI agent example',
-      body: "Each agent gets a focused spec. This one for the UI agent references the contracts, specifies exact file ownership, describes what to build, and includes explicit constraints. Copy this pattern for all four agents.",
+      type: 'code-fill',
+      instruction: 'Complete this UI agent spec. Fill in the file ownership boundaries, data fetching patterns, and required component states.',
       language: 'markdown',
       filename: 'specs/ui-agent.md',
-      code: `# UI Agent Spec: Team Dashboard Components
+      template: `# UI Agent Spec: Team Dashboard Components
 
 ## File Ownership (STRICT)
-You own: src/components/dashboard/**
+You own: {{ui_ownership}}
 You may READ: src/contracts/*, src/lib/*
 You MUST NOT MODIFY: anything outside src/components/dashboard/
 
@@ -200,21 +204,21 @@ You MUST NOT MODIFY: anything outside src/components/dashboard/
 5. DashboardLayout — page layout composing all four components
 
 ## Data Fetching
-- Use React Query hooks (useQuery)
+- Use {{data_fetching_lib}} hooks (useQuery)
 - Endpoint paths: /api/projects, /api/velocity, /api/members, /api/activity
 - Response type: ApiResponse<T> from contracts
 
 ## Required States (EVERY component)
 - Loading: Skeleton placeholder matching final layout
 - Error: Error message with retry button
-- Empty: Helpful message ("No projects yet")
-- Success: Full data rendering with null-safe access
-
-## Constraints
-- Import types ONLY from src/contracts/
-- Use Tailwind CSS (no inline styles, no CSS modules)
-- Responsive: mobile-first, grid cols adapt at md/lg breakpoints
-- Accessible: proper aria labels, keyboard navigation`,
+- Empty: {{empty_state}}
+- Success: Full data rendering with null-safe access`,
+      blanks: [
+        { id: 'ui_ownership', answer: 'src/components/dashboard/**', alternatives: ['src/components/dashboard/**', 'src/components/dashboard/*'], placeholder: 'directory glob pattern', hint: 'The UI agent owns everything inside the dashboard components directory' },
+        { id: 'data_fetching_lib', answer: 'React Query', alternatives: ['React Query', 'TanStack Query', 'react-query'], placeholder: 'data fetching library', hint: 'The server-state management library that provides useQuery hooks' },
+        { id: 'empty_state', answer: 'Helpful message ("No projects yet")', alternatives: ['Helpful message ("No projects yet")', 'Helpful message', '"No projects yet"'], placeholder: 'what to show when no data', hint: 'A user-friendly message explaining there is no data yet' },
+      ],
+      explanation: "Each agent gets a focused spec. This one for the UI agent references the contracts, specifies exact file ownership, describes what to build, and includes explicit constraints. Copy this pattern for all four agents.",
     },
     {
       type: 'checklist',
@@ -237,34 +241,46 @@ You MUST NOT MODIFY: anything outside src/components/dashboard/
 
     // === PHASE 4: LAUNCH THE FLEET ===
     {
-      type: 'info',
-      title: 'Phase 4: Launch All Four Agents',
-      body: "This is the moment. Four terminal windows (or background processes). Each agent gets pointed at its worktree with its spec. They'll all start building simultaneously. Your job shifts from writing to monitoring.",
+      type: 'multiple-choice',
+      question: 'When you launch all four agents, what does your role shift to?',
+      options: [
+        'Writing more code alongside the agents',
+        'Monitoring — you watch for health signals and intervene when needed',
+        'Waiting until all agents finish, then reviewing everything at once',
+        'Manually testing each agent\'s output as they produce it',
+      ],
+      correctIndex: 1,
+      explanation: "Once the fleet launches, your job shifts from writing to monitoring. Four terminal windows, four agents building simultaneously. You check for health signals: commit frequency, TypeScript errors, boundary violations.",
     },
     {
-      type: 'code-demo',
-      title: 'Fleet launch commands',
-      body: "Open four terminals (or use tmux/screen). Each agent starts in its own worktree with a clear instruction pointing to its spec. The --worktree flag ensures file isolation.",
+      type: 'code-fill',
+      instruction: 'Complete this fleet launch script. Fill in the worktree paths and spec references for each agent.',
       language: 'bash',
       filename: 'scripts/launch-fleet.sh',
-      code: `#!/bin/bash
+      template: `#!/bin/bash
 # Launch all 4 agents — run each in a separate terminal
 
 # Terminal 1: Auth Agent
-claude --worktree ../worktree-auth \
+claude --worktree {{auth_worktree}} \\
   "Follow specs/auth-agent.md. Build the authentication module. Read contracts from src/contracts/."
 
 # Terminal 2: API Agent
-claude --worktree ../worktree-api \
-  "Follow specs/api-agent.md. Build all API endpoints. Read contracts from src/contracts/."
+claude --worktree ../worktree-api \\
+  "Follow {{api_spec}}. Build all API endpoints. Read contracts from src/contracts/."
 
 # Terminal 3: UI Agent
-claude --worktree ../worktree-ui \
+claude --worktree ../worktree-ui \\
   "Follow specs/ui-agent.md. Build dashboard components. Read contracts from src/contracts/."
 
 # Terminal 4: Real-time Agent
-claude --worktree ../worktree-realtime \
+claude --worktree {{realtime_worktree}} \\
   "Follow specs/realtime-agent.md. Build WebSocket server and activity feed. Read contracts from src/contracts/."`,
+      blanks: [
+        { id: 'auth_worktree', answer: '../worktree-auth', alternatives: ['../worktree-auth'], placeholder: 'auth worktree path', hint: 'Follow the convention: ../worktree-{module}' },
+        { id: 'api_spec', answer: 'specs/api-agent.md', alternatives: ['specs/api-agent.md'], placeholder: 'API spec path', hint: 'Follow the convention: specs/{module}-agent.md' },
+        { id: 'realtime_worktree', answer: '../worktree-realtime', alternatives: ['../worktree-realtime'], placeholder: 'realtime worktree path', hint: 'Follow the convention: ../worktree-{module}' },
+      ],
+      explanation: "Open four terminals. Each agent starts in its own worktree with a clear instruction pointing to its spec. The --worktree flag ensures file isolation.",
     },
     {
       type: 'code-fill',
@@ -312,53 +328,56 @@ MERGE_ORDER="{{merge_order}}"`,
 
     // === PHASE 5: MONITOR AND INTERVENE ===
     {
-      type: 'info',
-      title: 'Phase 5: Monitor the Fleet',
-      body: "While agents build, you're the control tower. Check each worktree every 3-5 minutes for health signals: commit frequency, TypeScript errors, file boundary violations. Most runs complete cleanly. But when something goes wrong, you catch it early.",
+      type: 'multiple-choice',
+      question: 'What three health signals should you check every 3-5 minutes while agents build?',
+      options: [
+        'Code coverage, bundle size, and deploy status',
+        'Commit frequency, TypeScript errors, and file boundary violations',
+        'Agent CPU usage, memory consumption, and token count',
+        'PR reviews, CI pipeline status, and merge conflicts',
+      ],
+      correctIndex: 1,
+      explanation: "While agents build, you're the control tower. Check each worktree every 3-5 minutes for: commit frequency (is the agent making progress?), TypeScript errors (is the code compiling?), and file boundary violations (is the agent staying in its lane?). Most runs complete cleanly, but early detection saves hours.",
     },
     {
-      type: 'code-demo',
-      title: 'Fleet monitoring loop',
-      body: "Run this in a fifth terminal. It gives you a dashboard view of all four agents' health. Green means healthy (recent commits, no errors). Yellow means investigate. Red means intervene.",
+      type: 'code-fill',
+      instruction: 'Complete this fleet monitoring script. Fill in the health check commands that detect stuck agents and boundary violations.',
       language: 'bash',
       filename: 'scripts/monitor-fleet.sh',
-      code: `#!/bin/bash
+      template: `#!/bin/bash
 # Fleet health monitor — run in a 5th terminal
 
 while true; do
   clear
   echo "=== FLEET STATUS $(date +%H:%M:%S) ==="
-  echo ""
 
   for WT in auth api ui realtime; do
     DIR="../worktree-$WT"
     [ ! -d "$DIR" ] && continue
 
     # Last commit time
-    LAST=$(git -C "$DIR" log -1 --format="%cr" 2>/dev/null || echo "no commits")
-
-    # Uncommitted changes
-    CHANGES=$(git -C "$DIR" status --porcelain | wc -l | xargs)
+    LAST=$(git -C "$DIR" log -1 --format="{{commit_format}}" 2>/dev/null || echo "no commits")
 
     # TypeScript health
-    TS_ERRORS=$(cd "$DIR" && npx tsc --noEmit 2>&1 | grep -c "error TS" 2>/dev/null || echo "0")
+    TS_ERRORS=$(cd "$DIR" && {{tsc_command}} 2>&1 | grep -c "error TS" 2>/dev/null || echo "0")
 
     # Boundary check (files outside agent's domain)
     VIOLATIONS=$(git -C "$DIR" diff --name-only main 2>/dev/null | grep -v "^src/$WT" | grep -v "^src/contracts" | wc -l | xargs)
 
-    # Status color logic
+    # Status logic
     STATUS="OK"
     [ "$TS_ERRORS" -gt 5 ] && STATUS="WARN"
-    [ "$VIOLATIONS" -gt 0 ] && STATUS="BOUNDARY VIOLATION"
-
-    printf "  %-12s | %-20s | %s changes | %s TS errors | %s\\n" \
-      "$WT" "$LAST" "$CHANGES" "$TS_ERRORS" "$STATUS"
+    [ "{{violation_check}}" ] && STATUS="BOUNDARY VIOLATION"
   done
 
-  echo ""
-  echo "Press Ctrl+C to stop monitoring"
   sleep 30
 done`,
+      blanks: [
+        { id: 'commit_format', answer: '%cr', alternatives: ['%cr', '--format="%cr"'], placeholder: 'git log format', hint: 'The git format placeholder for "relative commit date" (e.g., "3 minutes ago")' },
+        { id: 'tsc_command', answer: 'npx tsc --noEmit', alternatives: ['npx tsc --noEmit', 'tsc --noEmit'], placeholder: 'TypeScript check command', hint: 'Run the TypeScript compiler without emitting files — just check for errors' },
+        { id: 'violation_check', answer: '$VIOLATIONS" -gt 0', alternatives: ['$VIOLATIONS" -gt 0', '"$VIOLATIONS" -gt 0'], placeholder: 'boundary condition', hint: 'Check if the violation count is greater than zero' },
+      ],
+      explanation: "Run this in a fifth terminal. It gives you a dashboard view of all four agents' health. Green means healthy (recent commits, no errors). Yellow means investigate. Red means intervene.",
     },
     {
       type: 'multiple-choice',
@@ -380,51 +399,47 @@ done`,
 
     // === PHASE 6: CROSS-AGENT VERIFICATION ===
     {
-      type: 'info',
-      title: 'Phase 6: Cross-Agent Verification',
-      body: "All four agents have completed their work. Before merging, verify that their outputs are actually compatible. The contracts should guarantee compatibility — but agents sometimes deviate. Run cross-agent checks: do the API endpoints return what the UI expects? Does auth provide what other modules need? Does the real-time module emit events in the shape the UI consumes?",
+      type: 'multiple-choice',
+      question: 'All four agents are done. Why must you verify cross-agent compatibility BEFORE merging?',
+      options: [
+        'Merging automatically resolves all type mismatches',
+        'Git will reject incompatible branches during merge',
+        'Agents sometimes deviate from contracts — catching mismatches before merge prevents compounding errors across 4 branches',
+        'Cross-agent verification is optional if contracts were well-defined',
+      ],
+      correctIndex: 2,
+      explanation: "Contracts should guarantee compatibility, but agents sometimes deviate. Run cross-agent checks before merging: do API endpoints return what the UI expects? Does auth provide what others need? Catching mismatches before merge prevents them from compounding across 4 branches.",
     },
     {
-      type: 'code-demo',
-      title: 'Cross-agent compatibility check',
-      body: "This script checks that Agent A's output matches Agent B's expectations. It's essentially an integration test you run before the merge step. Catch mismatches here — not after merging 4 branches.",
+      type: 'code-fill',
+      instruction: 'Complete this cross-agent verification script. Fill in the grep patterns that detect compatibility issues between agents.',
       language: 'bash',
       filename: 'scripts/verify-compatibility.sh',
-      code: `#!/bin/bash
+      template: `#!/bin/bash
 # Cross-agent compatibility verification
 echo "=== Cross-Agent Verification ==="
 
 # 1. Check: API endpoints match what UI fetches
-echo ""
 echo "--- API ↔ UI Contract Check ---"
-# Extract fetch URLs from UI code
-UI_ENDPOINTS=$(grep -roh "fetch.*'/api/[^']*'" ../worktree-ui/src/ | sort -u)
-# Extract route definitions from API code
-API_ROUTES=$(grep -roh "router\.\(get\|post\).*'/api/[^']*'" ../worktree-api/src/ | sort -u)
+UI_ENDPOINTS=$(grep -roh "{{ui_fetch_pattern}}" ../worktree-ui/src/ | sort -u)
+API_ROUTES=$(grep -roh "router\\.\\(get\\|post\\).*'/api/[^']*'" ../worktree-api/src/ | sort -u)
 echo "UI expects: $UI_ENDPOINTS"
 echo "API provides: $API_ROUTES"
 
-# 2. Check: Auth session shape matches what others import
-echo ""
-echo "--- Auth Session Shape Check ---"
+# 2. Check: Auth exports
 AUTH_EXPORTS=$(grep "export" ../worktree-auth/src/auth/types.ts 2>/dev/null)
-echo "Auth exports: $AUTH_EXPORTS"
 
-# 3. Check: Real-time events match UI event handlers
-echo ""
-echo "--- Real-time ↔ UI Event Check ---"
-RT_EVENTS=$(grep -roh "type:.*'[^']*'" ../worktree-realtime/src/ | sort -u)
-UI_HANDLERS=$(grep -roh "case.*'[^']*'" ../worktree-ui/src/ | sort -u)
-echo "RT emits: $RT_EVENTS"
-echo "UI handles: $UI_HANDLERS"
-
-# 4. TypeScript check across all worktrees
-echo ""
+# 3. TypeScript check across all worktrees
 echo "--- TypeScript Health ---"
-for WT in auth api ui realtime; do
+for WT in {{worktree_list}}; do
   ERRORS=$(cd "../worktree-$WT" && npx tsc --noEmit 2>&1 | grep -c "error TS")
   echo "  $WT: $ERRORS errors"
 done`,
+      blanks: [
+        { id: 'ui_fetch_pattern', answer: "fetch.*'/api/[^']*'", alternatives: ["fetch.*'/api/[^']*'"], placeholder: 'grep pattern for UI fetch calls', hint: 'Match fetch() calls that reference /api/ paths in single quotes' },
+        { id: 'worktree_list', answer: 'auth api ui realtime', alternatives: ['auth api ui realtime'], placeholder: 'all worktree names', hint: 'List all four module names separated by spaces' },
+      ],
+      explanation: "This script checks that Agent A's output matches Agent B's expectations. It's essentially an integration test you run before the merge step. Catch mismatches here — not after merging 4 branches.",
     },
     {
       type: 'checklist',
@@ -448,9 +463,16 @@ done`,
 
     // === PHASE 7: RESOLVE CONFLICTS AND MERGE ===
     {
-      type: 'info',
-      title: 'Phase 7: Merge the Fleet',
-      body: "Four branches, one main. Merge them one at a time in dependency order: Auth first (others may depend on it), then API, then UI, then Real-time. After each merge, run TypeScript check to catch any integration issues before they compound.",
+      type: 'multiple-choice',
+      question: 'In what order should you merge four agent branches (Auth, API, UI, Real-time)?',
+      options: [
+        'Merge all four simultaneously to save time',
+        'UI first (most visible), then API, then Auth, then Real-time',
+        'Auth first (foundation), then API (data layer), then UI and Real-time (consumers)',
+        'Alphabetical order: API, Auth, Real-time, UI',
+      ],
+      correctIndex: 2,
+      explanation: "Merge in dependency order: Auth first (others may depend on session types), then API (produces data for consumers), then UI and Real-time (consumers of the data). After each merge, run TypeScript check to catch integration issues before they compound.",
     },
     {
       type: 'interactive-diagram',
@@ -545,9 +567,16 @@ done`,
       hint: 'Merge feat/realtime as the final branch',
     },
     {
-      type: 'info',
-      title: 'Handling merge conflicts',
-      body: "If contracts were respected, conflicts should be minimal — mostly in shared config files (package.json, tsconfig). Resolve these manually: combine dependency additions, merge path aliases. If you see conflicts in source code, an agent violated its boundary — check the boundary violation log from your monitor.",
+      type: 'multiple-choice',
+      question: 'You see merge conflicts in source code (not just config files). What does this indicate?',
+      options: [
+        'Normal parallel development — resolve the conflicts manually',
+        'An agent violated its file ownership boundary — check the boundary violation log',
+        'The contracts were poorly defined and need rewriting',
+        'You should have used rebase instead of merge',
+      ],
+      correctIndex: 1,
+      explanation: "If contracts were respected, conflicts should be minimal — mostly in shared config files (package.json, tsconfig). If you see conflicts in source code, an agent violated its boundary. Check the boundary violation log from your monitor to identify which agent strayed outside its assigned directory.",
     },
     {
       type: 'checkpoint',
@@ -557,17 +586,23 @@ done`,
 
     // === PHASE 8: SHIP ===
     {
-      type: 'info',
-      title: 'Phase 8: Final Verification and Ship',
-      body: "The code is merged. Run the full verification suite: TypeScript check, lint, build, and a manual smoke test of the key user flows. If everything passes, push to main and deploy. You just shipped a product built by a coordinated agent fleet.",
+      type: 'multiple-choice',
+      question: 'The code is merged. What is the correct final verification sequence before shipping?',
+      options: [
+        'Just run the build — if it passes, ship it',
+        'TypeScript check, lint, build, and manual smoke test of key user flows',
+        'Run tests only — TypeScript and lint are optional for shipping',
+        'Push to main first, then check if the deployment succeeds',
+      ],
+      correctIndex: 1,
+      explanation: "Run the full verification suite: TypeScript check (types compile), lint (style consistency), build (production bundle), and a manual smoke test of key user flows. Only push to main after everything passes. You just shipped a product built by a coordinated agent fleet.",
     },
     {
-      type: 'code-demo',
-      title: 'Final ship sequence',
-      body: "The complete ship procedure. Build verifies all modules compile together. Lint catches style issues. The push triggers your deployment pipeline. This is the moment of truth.",
+      type: 'code-fill',
+      instruction: 'Complete this final ship sequence. Fill in the verification commands that must all pass before pushing.',
       language: 'bash',
       filename: 'scripts/ship.sh',
-      code: `#!/bin/bash
+      template: `#!/bin/bash
 # Final verification and ship
 set -e  # Exit on any error
 
@@ -575,12 +610,12 @@ echo "=== Final Verification ==="
 
 # 1. TypeScript — full project type check
 echo "Running TypeScript check..."
-npx tsc --noEmit
+{{tsc_check}}
 echo "  TypeScript: PASS"
 
 # 2. Lint — code style consistency
 echo "Running linter..."
-npm run lint
+{{lint_command}}
 echo "  Lint: PASS"
 
 # 3. Build — production bundle
@@ -588,23 +623,19 @@ echo "Running production build..."
 npm run build
 echo "  Build: PASS"
 
-# 4. Tests (if available)
-echo "Running tests..."
-npm test -- --passWithNoTests
-echo "  Tests: PASS"
-
-echo ""
 echo "=== All Checks Passed ==="
-echo ""
 
-# 5. Ship it
+# 4. Ship it
 echo "Pushing to main..."
-git push origin main
+{{push_command}}
 
-echo ""
-echo "Deployed. Team Dashboard built by 4 coordinated agents."
-echo "Total fleet time: ~15 minutes"
-echo "Equivalent serial time: ~60 minutes"`,
+echo "Deployed. Team Dashboard built by 4 coordinated agents."`,
+      blanks: [
+        { id: 'tsc_check', answer: 'npx tsc --noEmit', alternatives: ['npx tsc --noEmit', 'tsc --noEmit'], placeholder: 'TypeScript check command', hint: 'Run the TypeScript compiler in check-only mode (no file output)' },
+        { id: 'lint_command', answer: 'npm run lint', alternatives: ['npm run lint', 'npx eslint .'], placeholder: 'lint command', hint: 'Run the project linter via npm scripts' },
+        { id: 'push_command', answer: 'git push origin main', alternatives: ['git push origin main', 'git push'], placeholder: 'push command', hint: 'Push the main branch to the origin remote' },
+      ],
+      explanation: "The complete ship procedure. Build verifies all modules compile together. Lint catches style issues. The push triggers your deployment pipeline. This is the moment of truth.",
     },
     {
       type: 'terminal',
@@ -632,9 +663,16 @@ echo "Equivalent serial time: ~60 minutes"`,
 
     // === RETROSPECTIVE ===
     {
-      type: 'info',
-      title: 'Retrospective: What You Just Did',
-      body: "You decomposed a product into a task graph, set up isolated worktrees, wrote contracts and specs, launched 4 parallel agents, monitored their progress, verified cross-agent compatibility, resolved merge conflicts, and shipped a deployable product. This is orchestration mastery — the skill that turns AI agents from toys into a production engineering force.",
+      type: 'multiple-choice',
+      question: 'What is the total number of phases in a complete fleet sprint?',
+      options: [
+        '4 phases: plan, build, test, ship',
+        '6 phases: decompose, specs, launch, monitor, merge, ship',
+        '8 phases: decompose, worktrees, specs, launch, monitor, verify, merge, ship',
+        '10 phases: the more phases, the better the process',
+      ],
+      correctIndex: 2,
+      explanation: "You executed all 8 phases: (1) Decompose into tasks, (2) Set up worktrees, (3) Write contracts and specs, (4) Launch the fleet, (5) Monitor progress, (6) Verify cross-agent compatibility, (7) Merge in dependency order, (8) Final verification and ship. This is orchestration mastery.",
     },
     {
       type: 'diagram',
