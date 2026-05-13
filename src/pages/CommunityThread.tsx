@@ -18,6 +18,7 @@ import {
   Keyboard,
   Loader2,
 } from 'lucide-react'
+import { supabase } from '@/lib/supabase'
 import { BlurFadeIn, SpotlightCard } from '@/components/ui/aaa-effects'
 import { categories } from '@/data/community'
 import { useAuth } from '@/hooks/use-auth'
@@ -266,7 +267,7 @@ export default function CommunityThread() {
     const channel = subscribeToReplies(threadId, () => {
       fetchReplies(threadId, user?.id).then(setReplies)
     })
-    return () => { channel.unsubscribe() }
+    return () => { supabase.removeChannel(channel) }
   }, [threadId, user?.id])
 
   // Auto-resize textarea

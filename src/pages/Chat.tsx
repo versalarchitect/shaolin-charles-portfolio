@@ -20,6 +20,7 @@ import {
 import data from '@emoji-mart/data'
 import Picker from '@emoji-mart/react'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { supabase } from '@/lib/supabase'
 import { useAuth } from '@/hooks/use-auth'
 import { useTheme } from '@/components/theme-provider'
 import {
@@ -695,14 +696,14 @@ export default function Chat() {
       requestAnimationFrame(() => scrollToBottom(false))
     })
 
-    subscriptionRef.current?.unsubscribe()
+    if (subscriptionRef.current) supabase.removeChannel(subscriptionRef.current)
     subscriptionRef.current = subscribeToMessages(activeChannelId, (msg) => {
       setMessages((prev) => [...prev, msg])
       requestAnimationFrame(() => scrollToBottom(true))
     })
 
     return () => {
-      subscriptionRef.current?.unsubscribe()
+      if (subscriptionRef.current) supabase.removeChannel(subscriptionRef.current)
     }
   }, [activeChannelId, scrollToBottom])
 

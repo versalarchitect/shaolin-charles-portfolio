@@ -298,12 +298,13 @@ export function subscribeToReplies(
   threadId: string,
   callback: () => void,
 ) {
-  return supabase
-    .channel(`replies:${threadId}`)
+  const channel = supabase
+    .channel(`replies:${threadId}:${Date.now()}`)
     .on(
       'postgres_changes',
       { event: 'INSERT', schema: 'public', table: 'community_replies', filter: `thread_id=eq.${threadId}` },
       callback,
     )
     .subscribe()
+  return channel
 }

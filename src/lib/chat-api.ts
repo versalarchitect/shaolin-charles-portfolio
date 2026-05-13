@@ -72,7 +72,7 @@ export function subscribeToMessages(
   callback: (message: ChatMessage) => void,
 ) {
   return supabase
-    .channel(`chat:${channelId}`)
+    .channel(`chat:${channelId}:${Date.now()}`)
     .on(
       'postgres_changes',
       {
