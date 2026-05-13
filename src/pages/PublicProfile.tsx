@@ -154,7 +154,7 @@ export default function PublicProfile() {
     : null
 
   const stats = [
-    { icon: Zap, label: 'Total XP', value: profile.total_xp.toLocaleString(), badge: topPercent !== null ? `Top ${topPercent}%` : undefined },
+    { icon: Zap, label: 'Total XP', value: (profile.total_xp ?? 0).toLocaleString(), badge: topPercent !== null ? `Top ${topPercent}%` : undefined },
     { icon: Flame, label: 'Streak', value: `${profile.current_streak} days` },
     { icon: BookOpen, label: 'Achievements', value: `${profile.unlocked_achievements.length}` },
     { icon: Trophy, label: 'Rank', value: profile.rank },
@@ -165,7 +165,7 @@ export default function PublicProfile() {
   const handleShare = useCallback(async () => {
     const shareData = {
       title: `${profile.display_name}'s Profile`,
-      text: `${profile.rank} rank · ${profile.total_xp.toLocaleString()} XP · ${profile.current_streak}-day streak`,
+      text: `${profile.rank} rank · ${(profile.total_xp ?? 0).toLocaleString()} XP · ${profile.current_streak}-day streak`,
       url: profileUrl,
     }
 
@@ -192,7 +192,7 @@ export default function PublicProfile() {
     <>
       <SEO
         title={`${profile.display_name}'s Profile — The Agentic SaaS Course`}
-        description={`${profile.rank} rank · ${profile.total_xp.toLocaleString()} XP · ${profile.current_streak}-day streak · ${profile.unlocked_achievements.length} achievements`}
+        description={`${profile.rank} rank · ${(profile.total_xp ?? 0).toLocaleString()} XP · ${profile.current_streak ?? 0}-day streak · ${(profile.unlocked_achievements ?? []).length} achievements`}
         path={`profile/${userId}`}
         type="profile"
         jsonLd={{
