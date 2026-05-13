@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'motion/react'
 import {
   Check,
   Copy,
+  ChevronLeft,
   ChevronRight,
   Lightbulb,
   Terminal,
@@ -17,6 +18,7 @@ import { loadLessonContent } from '@/data/lessons'
 import { FlowDiagram } from '@/components/ui/flow-diagram'
 import { awardExplorerXp, recordStepResult } from '@/stores/progress'
 import { highlightCode } from '@/lib/syntax-highlight'
+import { computeLineDiff } from '@/lib/line-diff'
 
 // ============================================================================
 // Step components
@@ -820,6 +822,605 @@ function CompareStep({
   )
 }
 
+function CodeDiffStep({ step }: { step: Extract<LessonStep, { type: 'code-diff' }> }) {
+  const diff = useMemo(() => computeLineDiff(step.before, step.after), [step.before, step.after])
+
+  return (
+    <div className="space-y-4">
+      <h2 className="text-xl font-bold tracking-tight">{step.title}</h2>
+      {step.body && <p className="text-foreground/70 leading-relaxed">{step.body}</p>}
+      <div className="relative rounded-xl border border-foreground/[0.08] bg-foreground/[0.03] overflow-hidden">
+        {step.filename && (
+          <div className="px-4 py-2 border-b border-foreground/[0.06] text-[11px] font-mono text-foreground/40">
+            {step.filename}
+          </div>
+        )}
+        <div className="overflow-x-auto text-sm font-mono leading-relaxed">
+          {diff.map((line, i) => (
+            <div
+              key={i}
+              className={`flex ${
+                line.type === 'removed'
+                  ? 'bg-red-500/[0.07]'
+                  : line.type === 'added'
+                    ? 'bg-green-500/[0.07]'
+                    : ''
+              }`}
+            >
+              <span className="text-foreground/25 text-right w-8 select-none text-[11px] font-mono shrink-0 py-0.5 px-1">
+                {line.oldLineNo ?? ''}
+              </span>
+              <span className="text-foreground/25 text-right w-8 select-none text-[11px] font-mono shrink-0 py-0.5 px-1">
+                {line.newLineNo ?? ''}
+              </span>
+              <span
+                className={`w-4 shrink-0 text-center select-none py-0.5 ${
+                  line.type === 'removed'
+                    ? 'text-red-400/60'
+                    : line.type === 'added'
+                      ? 'text-green-400/60'
+                      : 'text-foreground/20'
+                }`}
+              >
+                {line.type === 'removed' ? '-' : line.type === 'added' ? '+' : ' '}
+              </span>
+              <span className="flex-1 py-0.5 pr-4">
+                {highlightCode(line.content, step.language)}
+              </span>
+            </div>
+          ))}
+        </div>
+      </div>
+      {step.explanation && (
+        <p className="text-sm text-foreground/50 leading-relaxed">{step.explanation}</p>
+      )}
+    </div>
+  )
+}
+
+function InteractiveDiagramStep({
+  step,
+  onComplete,
+}: {
+  step: Extract<LessonStep, { type: 'interactive-diagram' }>
+  onComplete: () => void
+}) {
+  const [currentStage, setCurrentStage] = useState(-1)
+  const [completed, setCompleted] = useState(false)
+
+  const stages = step.stages
+  const totalStages = stages.length
+
+  const stageNodes = useMemo(() => {
+    if (currentStage < 0) return step.diagram.nodes
+    return step.diagram.nodes.map((n) => ({
+      ...n,
+      highlight: stages[currentStage].highlightNodes.includes(n.id),
+    }))
+  }, [currentStage, step.diagram.nodes, stages])
+
+  const goNextStage = () => {
+    const next = currentStage + 1
+    if (next < totalStages) {
+      setCurrentStage(next)
+    }
+    if (next === totalStages - 1 && !completed) {
+      setCompleted(true)
+      onComplete()
+    }
+  }
+
+  const goPrevStage = () => {
+    if (currentStage > 0) {
+      setCurrentStage(currentStage - 1)
+    }
+  }
+
+  const beginWalkthrough = () => {
+    setCurrentStage(0)
+    if (totalStages === 1 && !completed) {
+      setCompleted(true)
+      onComplete()
+    }
+  }
+
+  return (
+    <div className="space-y-4">
+      <h2 className="text-xl font-bold tracking-tight">{step.title}</h2>
+      {step.body && <p className="text-foreground/70 leading-relaxed">{step.body}</p>}
+
+      <div className="rounded-xl border border-foreground/[0.08] bg-foreground/[0.02] p-4">
+        <FlowDiagram
+          nodes={stageNodes}
+          edges={step.diagram.edges}
+          direction={step.diagram.direction}
+        />
+      </div>
+
+      {/* Explanation text */}
+      {currentStage >= 0 && (
+        <div className="min-h-[48px]">
+          <AnimatePresence mode="wait">
+            <motion.p
+              key={currentStage}
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -8 }}
+              transition={{ duration: 0.2, ease: 'easeOut' }}
+              className="text-foreground/70 text-sm leading-relaxed"
+            >
+              {stages[currentStage].explanation}
+            </motion.p>
+          </AnimatePresence>
+        </div>
+      )}
+
+      {/* Stage dots */}
+      {currentStage >= 0 && totalStages > 1 && (
+        <div className="flex gap-1 justify-center">
+          {stages.map((_, i) => (
+            <div
+              key={i}
+              className={`w-2 h-2 rounded-full transition-colors ${
+                i === currentStage
+                  ? 'bg-foreground/40'
+                  : 'bg-foreground/[0.08]'
+              }`}
+            />
+          ))}
+        </div>
+      )}
+
+      {/* Controls */}
+      {currentStage < 0 ? (
+        <div className="flex justify-center">
+          <Button
+            onClick={beginWalkthrough}
+            className="font-mono gap-2 text-sm"
+          >
+            Begin walkthrough
+            <ChevronRight className="w-4 h-4" />
+          </Button>
+        </div>
+      ) : (
+        <div className="flex items-center justify-between">
+          <button
+            type="button"
+            onClick={goPrevStage}
+            disabled={currentStage === 0}
+            className="flex items-center gap-1 font-mono text-sm text-foreground/40 hover:text-foreground/70 disabled:opacity-20 disabled:cursor-not-allowed transition-colors"
+          >
+            <ChevronLeft className="w-4 h-4" />
+            Prev
+          </button>
+          <span className="font-mono text-xs text-foreground/30">
+            {currentStage + 1} / {totalStages}
+          </span>
+          <button
+            type="button"
+            onClick={goNextStage}
+            disabled={currentStage === totalStages - 1}
+            className="flex items-center gap-1 font-mono text-sm text-foreground/40 hover:text-foreground/70 disabled:opacity-20 disabled:cursor-not-allowed transition-colors"
+          >
+            Next
+            <ChevronRight className="w-4 h-4" />
+          </button>
+        </div>
+      )}
+    </div>
+  )
+}
+
+function PromptLabStep({
+  step,
+  onComplete,
+}: {
+  step: Extract<LessonStep, { type: 'prompt-lab' }>
+  onComplete: () => void
+}) {
+  const [prompt, setPrompt] = useState(step.starterPrompt || '')
+  const [response, setResponse] = useState<{
+    response: string
+    quality: 'poor' | 'good' | 'excellent'
+    feedback: string
+  } | null>(null)
+  const [submitted, setSubmitted] = useState(false)
+  const { t } = useTranslation()
+
+  const findResponse = useCallback(
+    (text: string) => {
+      const lower = text.toLowerCase()
+      const matches = step.responses
+        .filter((r) => r.triggerKeywords.every((kw) => lower.includes(kw.toLowerCase())))
+        .sort((a, b) => b.triggerKeywords.length - a.triggerKeywords.length)
+      return matches[0] || null
+    },
+    [step.responses],
+  )
+
+  const handleSend = () => {
+    if (!prompt.trim()) return
+    const match = findResponse(prompt)
+    if (match) {
+      setResponse({ response: match.response, quality: match.quality, feedback: match.feedback })
+    } else {
+      setResponse({
+        response: step.fallbackResponse.response,
+        quality: 'poor',
+        feedback: step.fallbackResponse.feedback,
+      })
+    }
+    setSubmitted(true)
+  }
+
+  const handleRetry = () => {
+    setResponse(null)
+    setSubmitted(false)
+  }
+
+  useEffect(() => {
+    if (submitted && response && (response.quality === 'good' || response.quality === 'excellent')) {
+      const timer = setTimeout(onComplete, 1200)
+      return () => clearTimeout(timer)
+    }
+  }, [submitted, response, onComplete])
+
+  const qualityStyles: Record<string, string> = {
+    poor: 'bg-red-500/10 text-red-400/80 border border-red-500/20',
+    good: 'bg-foreground/[0.06] text-foreground/60 border border-foreground/10',
+    excellent: 'bg-green-500/10 text-green-400/80 border border-green-500/20',
+  }
+
+  return (
+    <div className="space-y-4">
+      {/* Scenario block */}
+      <div className="rounded-xl bg-foreground/[0.02] border border-foreground/[0.06] p-4 mb-4">
+        <span className="text-[10px] font-mono text-foreground/30 uppercase tracking-wider">
+          Scenario
+        </span>
+        <p className="text-foreground/70 leading-relaxed mt-2">{step.scenario}</p>
+      </div>
+
+      {/* Instruction */}
+      <p className="text-foreground/70 leading-relaxed text-lg">{step.instruction}</p>
+
+      {/* Prompt textarea */}
+      <textarea
+        value={prompt}
+        onChange={(e) => setPrompt(e.target.value)}
+        disabled={submitted}
+        placeholder="Write your prompt here..."
+        className="w-full min-h-[120px] bg-foreground/[0.03] border border-foreground/[0.08] rounded-xl p-4 font-mono text-sm text-foreground/80 outline-none resize-y focus:border-foreground/20 transition-colors disabled:opacity-60"
+        spellCheck={false}
+      />
+
+      {/* Send button */}
+      {!submitted && (
+        <div className="flex justify-end">
+          <Button
+            onClick={handleSend}
+            disabled={!prompt.trim()}
+            className="font-mono gap-2 h-12 px-6"
+            size="lg"
+          >
+            Send
+            <ArrowRight className="w-4 h-4" />
+          </Button>
+        </div>
+      )}
+
+      {/* Response display */}
+      <AnimatePresence>
+        {submitted && response && (
+          <motion.div
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            transition={{ duration: 0.35, ease: 'easeOut' }}
+            className="space-y-3"
+          >
+            {/* Chat bubble */}
+            <div className="rounded-xl bg-foreground/[0.03] border border-foreground/[0.08] p-5">
+              <div className="flex items-start gap-3">
+                <div className="w-8 h-8 rounded-lg bg-foreground/[0.06] border border-foreground/10 flex items-center justify-center shrink-0 mt-0.5">
+                  <Zap className="w-4 h-4 text-foreground/50" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <span className="text-[10px] font-mono text-foreground/30 uppercase tracking-wider">
+                    AI Response
+                  </span>
+                  <p className="text-foreground/80 leading-relaxed mt-1.5">{response.response}</p>
+                </div>
+              </div>
+            </div>
+
+            {/* Quality badge + feedback */}
+            <div className="flex items-start gap-3 px-1">
+              <span
+                className={`inline-flex items-center px-2.5 py-1 rounded-full text-[11px] font-mono font-medium shrink-0 ${qualityStyles[response.quality]}`}
+              >
+                {response.quality.toUpperCase()}
+              </span>
+              <p className="text-sm text-foreground/50 leading-relaxed">{response.feedback}</p>
+            </div>
+
+            {/* Retry button for poor quality */}
+            {response.quality === 'poor' && (
+              <div className="flex justify-end pt-1">
+                <Button
+                  onClick={handleRetry}
+                  variant="outline"
+                  className="font-mono gap-2"
+                >
+                  <RotateCcw className="w-4 h-4" />
+                  {t('gamification.tryAgain')}
+                </Button>
+              </div>
+            )}
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  )
+}
+
+function MatchStep({
+  step,
+  onComplete,
+}: {
+  step: Extract<LessonStep, { type: 'match' }>
+  onComplete: () => void
+}) {
+  const { t } = useTranslation()
+  const [selectedLeft, setSelectedLeft] = useState<number | null>(null)
+  const [pairs, setPairs] = useState<Map<number, number>>(new Map())
+  const [submitted, setSubmitted] = useState(false)
+  const [results, setResults] = useState<Map<number, boolean>>(new Map())
+
+  const containerRef = useRef<HTMLDivElement>(null)
+  const leftRefs = useRef<Map<number, HTMLButtonElement>>(new Map())
+  const rightRefs = useRef<Map<number, HTMLButtonElement>>(new Map())
+  const [, forceUpdate] = useState(0)
+
+  // Force re-render after mount so SVG lines can compute positions from refs
+  useEffect(() => { forceUpdate((n) => n + 1) }, [])
+
+  const handleLeftClick = (index: number) => {
+    if (submitted) return
+    if (selectedLeft === index) {
+      setSelectedLeft(null)
+    } else if (pairs.has(index)) {
+      // Clicking an already-paired left item removes that pair
+      setPairs((prev) => {
+        const next = new Map(prev)
+        next.delete(index)
+        return next
+      })
+      setSelectedLeft(null)
+    } else {
+      setSelectedLeft(index)
+    }
+  }
+
+  const handleRightClick = (index: number) => {
+    if (submitted || selectedLeft === null) return
+    setPairs((prev) => {
+      const next = new Map(prev)
+      // Remove any existing pair that already maps to this right index
+      for (const [k, v] of next) {
+        if (v === index) next.delete(k)
+      }
+      next.set(selectedLeft, index)
+      return next
+    })
+    setSelectedLeft(null)
+  }
+
+  const handleCheck = () => {
+    const newResults = new Map<number, boolean>()
+    for (const [leftIdx, rightIdx] of pairs) {
+      newResults.set(leftIdx, step.correctPairs[leftIdx] === rightIdx)
+    }
+    setResults(newResults)
+    setSubmitted(true)
+
+    const allPairsCorrect =
+      pairs.size === step.leftItems.length &&
+      Array.from(newResults.values()).every(Boolean)
+
+    if (allPairsCorrect) {
+      setTimeout(onComplete, 800)
+    }
+  }
+
+  const handleRetry = () => {
+    setPairs(new Map())
+    setResults(new Map())
+    setSubmitted(false)
+    setSelectedLeft(null)
+  }
+
+  const allCorrect =
+    submitted &&
+    pairs.size === step.leftItems.length &&
+    Array.from(results.values()).every(Boolean)
+
+  // Get element position relative to the container
+  const getRelativePos = (el: HTMLElement | undefined) => {
+    if (!el || !containerRef.current) return null
+    const cr = containerRef.current.getBoundingClientRect()
+    const er = el.getBoundingClientRect()
+    return { x: er.left - cr.left, y: er.top - cr.top, w: er.width, h: er.height }
+  }
+
+  // Build cubic bezier from right edge of left item to left edge of right item
+  const buildMatchPath = (leftIdx: number, rightIdx: number): string | null => {
+    const lp = getRelativePos(leftRefs.current.get(leftIdx))
+    const rp = getRelativePos(rightRefs.current.get(rightIdx))
+    if (!lp || !rp) return null
+    const sx = lp.x + lp.w
+    const sy = lp.y + lp.h / 2
+    const ex = rp.x
+    const ey = rp.y + rp.h / 2
+    const mx = (sx + ex) / 2
+    return `M${sx},${sy} C${mx},${sy} ${mx},${ey} ${ex},${ey}`
+  }
+
+  // Find which left index is paired to a given right index
+  const rightPairedFrom = (rightIdx: number): number | null => {
+    for (const [k, v] of pairs) {
+      if (v === rightIdx) return k
+    }
+    return null
+  }
+
+  return (
+    <div className="space-y-5">
+      <p className="text-foreground/70 leading-relaxed text-lg">{step.instruction}</p>
+
+      <div ref={containerRef} className="relative">
+        {/* SVG overlay for connection lines */}
+        <svg
+          className="absolute inset-0 pointer-events-none"
+          width="100%"
+          height="100%"
+          style={{ overflow: 'visible' }}
+        >
+          {Array.from(pairs.entries()).map(([leftIdx, rightIdx]) => {
+            const d = buildMatchPath(leftIdx, rightIdx)
+            if (!d) return null
+            const result = results.get(leftIdx)
+            const colorClass =
+              submitted && result === true
+                ? 'text-green-500/40'
+                : submitted && result === false
+                  ? 'text-red-500/40'
+                  : 'text-foreground/20'
+            return (
+              <motion.path
+                key={`${leftIdx}-${rightIdx}`}
+                d={d}
+                fill="none"
+                stroke="currentColor"
+                strokeWidth={2}
+                strokeLinecap="round"
+                className={colorClass}
+                initial={{ pathLength: 0, opacity: 0 }}
+                animate={{ pathLength: 1, opacity: 1 }}
+                transition={{ duration: 0.3, ease: 'easeOut' }}
+              />
+            )
+          })}
+        </svg>
+
+        <div className="grid grid-cols-2 gap-6">
+          {/* Left column */}
+          <div className="space-y-2.5">
+            {step.leftItems.map((item, i) => {
+              const isPaired = pairs.has(i)
+              const isSelected = selectedLeft === i
+              const result = results.get(i)
+              const isCorrect = submitted && result === true
+              const isWrong = submitted && result === false
+
+              return (
+                <motion.button
+                  key={i}
+                  ref={(el) => { if (el) leftRefs.current.set(i, el); else leftRefs.current.delete(i) }}
+                  type="button"
+                  onClick={() => handleLeftClick(i)}
+                  whileTap={!submitted ? { scale: 0.98 } : undefined}
+                  className={`
+                    w-full text-left rounded-xl border-2 px-5 py-4 transition-all text-sm font-medium
+                    ${isCorrect
+                      ? 'border-green-500/30 bg-green-500/5 text-foreground'
+                      : isWrong
+                        ? 'border-red-500/30 bg-red-500/5 text-foreground/70'
+                        : isSelected
+                          ? 'border-foreground/30 bg-foreground/[0.06] text-foreground'
+                          : isPaired
+                            ? 'border-foreground/20 bg-foreground/[0.04] text-foreground/80'
+                            : 'border-foreground/[0.08] bg-foreground/[0.02] text-foreground/70 hover:border-foreground/15 hover:bg-foreground/[0.04]'
+                    }
+                  `}
+                >
+                  {item}
+                </motion.button>
+              )
+            })}
+          </div>
+
+          {/* Right column */}
+          <div className="space-y-2.5">
+            {step.rightItems.map((item, i) => {
+              const pairedFrom = rightPairedFrom(i)
+              const isPaired = pairedFrom !== null
+              const result = pairedFrom !== null ? results.get(pairedFrom) : undefined
+              const isCorrect = submitted && result === true
+              const isWrong = submitted && result === false
+
+              return (
+                <motion.button
+                  key={i}
+                  ref={(el) => { if (el) rightRefs.current.set(i, el); else rightRefs.current.delete(i) }}
+                  type="button"
+                  onClick={() => handleRightClick(i)}
+                  whileTap={!submitted ? { scale: 0.98 } : undefined}
+                  className={`
+                    w-full text-left rounded-xl border-2 px-5 py-4 transition-all text-sm font-medium
+                    ${isCorrect
+                      ? 'border-green-500/30 bg-green-500/5 text-foreground'
+                      : isWrong
+                        ? 'border-red-500/30 bg-red-500/5 text-foreground/70'
+                        : isPaired
+                          ? 'border-foreground/20 bg-foreground/[0.04] text-foreground/80'
+                          : selectedLeft !== null
+                            ? 'border-foreground/[0.08] bg-foreground/[0.02] text-foreground/70 hover:border-foreground/15 hover:bg-foreground/[0.04] cursor-pointer'
+                            : 'border-foreground/[0.08] bg-foreground/[0.02] text-foreground/70'
+                    }
+                  `}
+                >
+                  {item}
+                </motion.button>
+              )
+            })}
+          </div>
+        </div>
+      </div>
+
+      {submitted && step.explanation && allCorrect && (
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="rounded-xl px-5 py-4 bg-green-500/10 border border-green-500/20"
+        >
+          <p className="text-sm leading-relaxed text-green-300/80">{step.explanation}</p>
+        </motion.div>
+      )}
+
+      <div className="flex justify-end gap-3">
+        {submitted && !allCorrect && (
+          <Button onClick={handleRetry} variant="outline" className="font-mono gap-2">
+            <RotateCcw className="w-4 h-4" />
+            {t('gamification.tryAgain')}
+          </Button>
+        )}
+        {!allCorrect && !submitted && (
+          <Button
+            onClick={handleCheck}
+            disabled={pairs.size === 0}
+            className="font-mono gap-2 h-12 px-6"
+            size="lg"
+          >
+            {t('gamification.check')}
+            <ChevronRight className="w-4 h-4" />
+          </Button>
+        )}
+      </div>
+    </div>
+  )
+}
+
 // ============================================================================
 // Step renderer
 // ============================================================================
@@ -854,6 +1455,14 @@ function StepRenderer({
       return <CodeFillStep step={step} onComplete={onComplete} />
     case 'compare':
       return <CompareStep step={step} onComplete={onComplete} />
+    case 'code-diff':
+      return <CodeDiffStep step={step} />
+    case 'interactive-diagram':
+      return <InteractiveDiagramStep step={step} onComplete={onComplete} />
+    case 'prompt-lab':
+      return <PromptLabStep step={step} onComplete={onComplete} />
+    case 'match':
+      return <MatchStep step={step} onComplete={onComplete} />
     default:
       return null
   }
@@ -863,9 +1472,10 @@ function StepRenderer({
 // Main player
 // ============================================================================
 
-const PASSIVE_STEP_TYPES = new Set(['info', 'code-demo', 'checkpoint', 'diagram'])
+const PASSIVE_STEP_TYPES = new Set(['info', 'code-demo', 'checkpoint', 'diagram', 'code-diff'])
 
 function isPassiveStep(step: LessonStep): boolean {
+  if (step.type === 'code-diff' && step.question) return false
   if (PASSIVE_STEP_TYPES.has(step.type)) return true
   if (step.type === 'compare' && !step.question) return true
   return false

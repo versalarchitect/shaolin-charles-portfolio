@@ -158,6 +158,28 @@ const content: LessonContent = {
       message: 'Full ladder mapped!',
     },
 
+    // === MATCH EXERCISE ===
+    {
+      type: 'match',
+      instruction: 'Match each tool level to its description:',
+      leftItems: [
+        'Level 1: Paste',
+        'Level 2: Skill',
+        'Level 3: Script',
+        'Level 4: Agent',
+        'Level 5: MCP',
+      ],
+      rightItems: [
+        'Copy output from AI chat into your editor',
+        'AI edits files directly in your project',
+        'AI runs a sequence of predefined steps',
+        'AI plans and executes autonomously',
+        'AI connects to external tools and APIs',
+      ],
+      correctPairs: { 0: 0, 1: 1, 2: 2, 3: 3, 4: 4 },
+      explanation: 'Each level gives the AI more autonomy. Paste is manual copy-paste. Skill means inline editing. Script automates steps. Agent plans independently. MCP extends capabilities beyond the local machine.',
+    },
+
     // === DECISION FLOW ===
     {
       type: 'diagram',

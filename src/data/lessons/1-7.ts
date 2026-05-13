@@ -17,9 +17,9 @@ const content: LessonContent = {
 
     // === ARCHITECTURE DIAGRAM 1 ===
     {
-      type: 'diagram',
+      type: 'interactive-diagram',
       title: 'MCP Request Flow',
-      body: 'A single request travels from Claude Code through the MCP protocol layer to the external world and back. JSON-RPC is the wire format at every boundary.',
+      body: 'Click through each stage to follow a request from your agent to an external service and back.',
       diagram: {
         direction: 'LR',
         nodes: [
@@ -36,6 +36,33 @@ const content: LessonContent = {
           { from: 'tool', to: 'api', label: 'HTTP/SDK' },
         ],
       },
+      stages: [
+        {
+          highlightNodes: ['claude'],
+          highlightEdges: [],
+          explanation: 'It starts with Claude Code. The model decides it needs external data — a database query, a deployment status check, a file outside the sandbox — and selects the right MCP tool.',
+        },
+        {
+          highlightNodes: ['claude', 'request'],
+          highlightEdges: [{ from: 'claude', to: 'request' }],
+          explanation: 'Claude Code serializes the tool call into a JSON-RPC 2.0 message — method name, parameters, and a unique request ID. This is the universal wire format for all MCP communication.',
+        },
+        {
+          highlightNodes: ['request', 'server'],
+          highlightEdges: [{ from: 'request', to: 'server' }],
+          explanation: 'The JSON-RPC message reaches your MCP server process. The server parses the method name, validates the parameters against the tool schema, and routes to the correct handler.',
+        },
+        {
+          highlightNodes: ['server', 'tool'],
+          highlightEdges: [{ from: 'server', to: 'tool' }],
+          explanation: 'The server invokes the tool handler — your code that does the actual work. This is where the MCP boundary ends and your custom logic begins.',
+        },
+        {
+          highlightNodes: ['tool', 'api'],
+          highlightEdges: [{ from: 'tool', to: 'api' }],
+          explanation: 'The tool handler reaches out to the external service — an HTTP call to a REST API, an SDK method to query a database, a filesystem read. The result flows back through the same chain to Claude Code.',
+        },
+      ],
     },
     {
       type: 'checkpoint',
@@ -253,6 +280,28 @@ const content: LessonContent = {
       type: 'info',
       title: 'Security boundaries',
       body: "Every MCP server runs as a child process with the same permissions as your user account. If you give an MCP server your database credentials, the agent can run any query the server allows. This is powerful but demands caution. Use read-only tokens when possible. Scope API keys to the minimum required permissions. Review which tools a server exposes before connecting it. Claude Code shows tool approval prompts for side-effecting actions, but the server itself is the real trust boundary.",
+    },
+
+    // === MATCH EXERCISE ===
+    {
+      type: 'match',
+      instruction: 'Match each MCP concept to its role:',
+      leftItems: [
+        'MCP Client',
+        'MCP Server',
+        'Tool',
+        'Resource',
+        'Transport',
+      ],
+      rightItems: [
+        'The AI agent that sends requests',
+        'A program that exposes capabilities',
+        'An action the AI can execute',
+        'Data the AI can read',
+        'The communication channel (stdio, HTTP)',
+      ],
+      correctPairs: { 0: 0, 1: 1, 2: 2, 3: 3, 4: 4 },
+      explanation: 'MCP separates concerns: the client (AI) requests, the server exposes, tools perform actions, resources provide data, and the transport carries messages between them.',
     },
 
     // === FINAL EXERCISES ===

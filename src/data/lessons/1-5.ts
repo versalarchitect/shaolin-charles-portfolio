@@ -253,6 +253,38 @@ const content: LessonContent = {
       hint: 'Use claude to generate a spec file with all five sections',
     },
 
+    // === PROMPT LAB: WRITE A SPEC PROMPT ===
+    {
+      type: 'prompt-lab',
+      instruction: 'Write a prompt that instructs an AI agent to build a feature. Include the key elements of a good spec.',
+      scenario: 'You need a contact form on your website. It should have name, email, and message fields, validate inputs, and send submissions to a Supabase table. You want to give this to Claude Code as a single prompt.',
+      starterPrompt: 'Build me a contact form.',
+      responses: [
+        {
+          triggerKeywords: ['acceptance criteria', 'constraint', 'goal'],
+          response: '✅ I\'ll build the contact form according to your spec.\n\nPlan:\n1. Create /contact route with form component\n2. Add name (required, 2-50 chars), email (valid format), message (required, 10-500 chars) fields\n3. Validate on submit, show inline errors\n4. Insert to Supabase `contact_submissions` table\n5. Show success toast on completion\n\nStarting implementation...',
+          quality: 'excellent',
+          feedback: 'Your prompt included the three pillars of a good spec: a clear goal, specific constraints, and testable acceptance criteria. The agent can execute this with minimal back-and-forth.',
+        },
+        {
+          triggerKeywords: ['name', 'email', 'message', 'supabase'],
+          response: 'I\'ll create a contact form with name, email, and message fields that saves to Supabase. I\'ll add validation and a success message.\n\nShould I also add:\n- Rate limiting?\n- Email notifications?\n- A captcha?\n\nLet me know before I start.',
+          quality: 'good',
+          feedback: 'You specified the inputs and output destination, which is a good start. But without explicit constraints and acceptance criteria, the agent asks follow-up questions instead of executing. Add boundaries to eliminate those questions.',
+        },
+        {
+          triggerKeywords: ['contact', 'form'],
+          response: 'I\'ll build a contact form for you! Let me set up a full contact page with:\n- Name, email, phone, subject, and message fields\n- Form validation with error states\n- Email sending via Resend API\n- Rate limiting with Redis\n- Success/error pages\n- Responsive design\n\nCreating the project structure...',
+          quality: 'poor',
+          feedback: 'Too vague. The agent invented fields (phone, subject), picked technologies you didn\'t ask for (Resend, Redis), and added scope you didn\'t request. A spec with explicit constraints and an Out of Scope section would prevent this.',
+        },
+      ],
+      fallbackResponse: {
+        response: 'I\'ll build a contact form. Let me figure out the details as I go...',
+        feedback: 'Your prompt didn\'t include enough spec elements. Try including: a one-sentence goal, the specific fields needed, where data should be saved, and what the agent should NOT build.',
+      },
+    },
+
     // === FINAL SYNTHESIS ===
     {
       type: 'checklist',

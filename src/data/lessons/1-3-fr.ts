@@ -158,6 +158,28 @@ const content: LessonContent = {
       message: 'Échelle complète cartographiée !',
     },
 
+    // === MATCH EXERCISE ===
+    {
+      type: 'match',
+      instruction: 'Associez chaque niveau d\'outil à sa description :',
+      leftItems: [
+        'Level 1: Paste',
+        'Level 2: Skill',
+        'Level 3: Script',
+        'Level 4: Agent',
+        'Level 5: MCP',
+      ],
+      rightItems: [
+        'Copier la sortie du chat IA dans votre éditeur',
+        'L\'IA édite les fichiers directement dans votre projet',
+        'L\'IA exécute une séquence d\'étapes prédéfinies',
+        'L\'IA planifie et exécute de manière autonome',
+        'L\'IA se connecte à des outils et API externes',
+      ],
+      correctPairs: { 0: 0, 1: 1, 2: 2, 3: 3, 4: 4 },
+      explanation: 'Chaque niveau donne plus d\'autonomie à l\'IA. Paste est du copier-coller manuel. Skill signifie l\'édition en ligne. Script automatise les étapes. Agent planifie indépendamment. MCP étend les capacités au-delà de la machine locale.',
+    },
+
     // === DECISION FLOW ===
     {
       type: 'diagram',

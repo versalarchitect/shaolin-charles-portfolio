@@ -253,6 +253,38 @@ const content: LessonContent = {
       hint: 'Utilise claude pour générer un fichier de spec avec les cinq sections',
     },
 
+    // === PROMPT LAB : ÉCRIRE UN PROMPT DE SPEC ===
+    {
+      type: 'prompt-lab',
+      instruction: 'Écris un prompt qui demande à un agent IA de construire une fonctionnalité. Inclus les éléments clés d\'une bonne spec.',
+      scenario: 'Tu as besoin d\'un formulaire de contact sur ton site web. Il doit avoir des champs nom, email et message, valider les entrées, et envoyer les soumissions dans une table Supabase. Tu veux donner ça à Claude Code en un seul prompt.',
+      starterPrompt: 'Construis-moi un formulaire de contact.',
+      responses: [
+        {
+          triggerKeywords: ['acceptance criteria', 'constraint', 'goal'],
+          response: '✅ Je vais construire le formulaire de contact selon ta spec.\n\nPlan :\n1. Créer la route /contact avec un composant formulaire\n2. Ajouter les champs nom (requis, 2-50 caractères), email (format valide), message (requis, 10-500 caractères)\n3. Valider à la soumission, afficher les erreurs en ligne\n4. Insérer dans la table Supabase `contact_submissions`\n5. Afficher un toast de succès à la fin\n\nDémarrage de l\'implémentation...',
+          quality: 'excellent',
+          feedback: 'Ton prompt incluait les trois piliers d\'une bonne spec : un objectif clair, des contraintes spécifiques, et des critères d\'acceptation testables. L\'agent peut exécuter ça avec un minimum d\'allers-retours.',
+        },
+        {
+          triggerKeywords: ['name', 'email', 'message', 'supabase'],
+          response: 'Je vais créer un formulaire de contact avec des champs nom, email et message qui sauvegarde dans Supabase. J\'ajouterai la validation et un message de succès.\n\nDois-je aussi ajouter :\n- Du rate limiting ?\n- Des notifications par email ?\n- Un captcha ?\n\nDis-moi avant que je commence.',
+          quality: 'good',
+          feedback: 'Tu as spécifié les entrées et la destination, c\'est un bon début. Mais sans contraintes explicites et critères d\'acceptation, l\'agent pose des questions de suivi au lieu d\'exécuter. Ajoute des limites pour éliminer ces questions.',
+        },
+        {
+          triggerKeywords: ['contact', 'form'],
+          response: 'Je vais construire un formulaire de contact pour toi ! Je mets en place une page de contact complète avec :\n- Champs nom, email, téléphone, sujet et message\n- Validation du formulaire avec états d\'erreur\n- Envoi d\'email via Resend API\n- Rate limiting avec Redis\n- Pages de succès/erreur\n- Design responsive\n\nCréation de la structure du projet...',
+          quality: 'poor',
+          feedback: 'Trop vague. L\'agent a inventé des champs (téléphone, sujet), choisi des technologies que tu n\'as pas demandées (Resend, Redis), et ajouté du périmètre non demandé. Une spec avec des contraintes explicites et une section Hors Périmètre empêcherait ça.',
+        },
+      ],
+      fallbackResponse: {
+        response: 'Je vais construire un formulaire de contact. Je vais déterminer les détails au fur et à mesure...',
+        feedback: 'Ton prompt n\'incluait pas assez d\'éléments de spec. Essaie d\'inclure : un objectif en une phrase, les champs spécifiques nécessaires, où les données doivent être sauvegardées, et ce que l\'agent ne doit PAS construire.',
+      },
+    },
+
     // === FINAL SYNTHESIS ===
     {
       type: 'checklist',

@@ -255,6 +255,26 @@ Static content only.`,
       message: 'You know the failure modes and how to prevent them.',
     },
 
+    // === MATCH EXERCISE ===
+    {
+      type: 'match',
+      instruction: 'Match each decomposition strategy to its best use case:',
+      leftItems: [
+        'Fan-out / Fan-in',
+        'Pipeline',
+        'Specialist delegation',
+        'Competitive',
+      ],
+      rightItems: [
+        'Process data through sequential stages',
+        'Run identical tasks in parallel, merge results',
+        'Route tasks to domain-expert agents',
+        'Have multiple agents solve the same problem, pick the best',
+      ],
+      correctPairs: { 0: 1, 1: 0, 2: 2, 3: 3 },
+      explanation: 'Fan-out parallelizes identical work. Pipeline chains sequential stages. Specialist delegation routes by expertise. Competitive redundancy ensures quality through comparison.',
+    },
+
     // === HANDS-ON EXERCISE ===
     {
       type: 'info',

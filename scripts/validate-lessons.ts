@@ -116,6 +116,54 @@ function validateStep(lessonId: string, index: number, step: LessonStep): Issue[
       }
       break
     }
+    case 'match': {
+      const pairCount = Object.keys(step.correctPairs).length
+      if (pairCount === 0) {
+        issues.push(make('error', 'match has no correctPairs'))
+      }
+      for (const [left, right] of Object.entries(step.correctPairs)) {
+        const li = Number(left)
+        const ri = right as number
+        if (li < 0 || li >= step.leftItems.length) {
+          issues.push(make('error', `match correctPairs key ${li} out of bounds for ${step.leftItems.length} leftItems`))
+        }
+        if (ri < 0 || ri >= step.rightItems.length) {
+          issues.push(make('error', `match correctPairs value ${ri} out of bounds for ${step.rightItems.length} rightItems`))
+        }
+      }
+      break
+    }
+    case 'code-diff': {
+      if (!step.before.trim()) issues.push(make('warning', 'code-diff before is empty'))
+      if (!step.after.trim()) issues.push(make('warning', 'code-diff after is empty'))
+      break
+    }
+    case 'interactive-diagram': {
+      const nodeIds = new Set(step.diagram.nodes.map((n) => n.id))
+      if (step.stages.length === 0) {
+        issues.push(make('error', 'interactive-diagram has no stages'))
+      }
+      for (let si = 0; si < step.stages.length; si++) {
+        const stage = step.stages[si]
+        for (const nid of stage.highlightNodes) {
+          if (!nodeIds.has(nid)) {
+            issues.push(make('error', `interactive-diagram stage ${si} references unknown node "${nid}"`))
+          }
+        }
+      }
+      break
+    }
+    case 'prompt-lab': {
+      if (step.responses.length === 0) {
+        issues.push(make('error', 'prompt-lab has no responses'))
+      }
+      for (const r of step.responses) {
+        if (r.triggerKeywords.length === 0) {
+          issues.push(make('warning', 'prompt-lab response has no triggerKeywords'))
+        }
+      }
+      break
+    }
   }
 
   return issues

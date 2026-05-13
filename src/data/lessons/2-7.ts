@@ -84,6 +84,16 @@ const content: LessonContent = {
       body: "When giving corrections, add \"Only modify [specific files]\" or \"Do not change [specific files].\" Without this constraint, the agent may propagate changes through the codebase — updating imports, refactoring callers, changing tests — creating a cascade of modifications you did not review. Scope your corrections as tightly as possible.",
     },
     {
+      type: 'code-diff',
+      title: 'Before and after a targeted redirect',
+      body: 'The agent originally used client-side filtering. After a targeted redirect ("use SQL WHERE clause for server-side filtering"), it fixed the approach.',
+      language: 'typescript',
+      filename: 'src/hooks/useBookmarks.ts',
+      before: 'export function useBookmarks(searchTerm: string) {\n  const [bookmarks, setBookmarks] = useState<Bookmark[]>([])\n\n  useEffect(() => {\n    supabase.from("bookmarks").select("*").then(({ data }) => {\n      const filtered = data?.filter(b =>\n        b.title.toLowerCase().includes(searchTerm.toLowerCase())\n      ) || []\n      setBookmarks(filtered)\n    })\n  }, [searchTerm])\n\n  return bookmarks\n}',
+      after: 'export function useBookmarks(searchTerm: string) {\n  const [bookmarks, setBookmarks] = useState<Bookmark[]>([])\n\n  useEffect(() => {\n    const query = supabase.from("bookmarks").select("*")\n    if (searchTerm) {\n      query.ilike("title", `%${searchTerm}%`)\n    }\n    query.then(({ data }) => {\n      setBookmarks(data || [])\n    })\n  }, [searchTerm])\n\n  return bookmarks\n}',
+      explanation: 'Server-side filtering with SQL is more efficient — it avoids downloading all records to the client. A targeted redirect (specifying "use SQL WHERE") gives the agent a clear fix without rewriting the whole spec.',
+    },
+    {
       type: 'code-input',
       instruction: 'Write a targeted correction for this problem: the agent created user authentication using localStorage, but your spec says to use HTTP-only cookies. Target the file src/lib/auth.ts.',
       placeholder: 'In src/lib/auth.ts, change...',
@@ -170,6 +180,32 @@ const content: LessonContent = {
         'Assess scope: surface issue or architectural mismatch',
       ],
       correctOrder: [1, 4, 2, 3, 0],
+    },
+
+    // === PROMPT LAB: REDIRECT AN AGENT ===
+    {
+      type: 'prompt-lab',
+      instruction: 'The agent used client-side filtering instead of server-side. Write a redirect prompt to fix this specific issue.',
+      scenario: 'You asked the agent to add search to a bookmarks page. It fetched ALL bookmarks from Supabase and filtered them in JavaScript using .filter(). This works but is slow with many bookmarks. You want it to use Supabase\'s .ilike() for server-side filtering instead.',
+      starterPrompt: 'This is wrong. Fix it.',
+      responses: [
+        {
+          triggerKeywords: ['ilike', 'server', 'supabase', 'filter'],
+          response: 'You\'re right — I should filter at the database level instead of in the client. I\'ll update the query to use Supabase\'s `.ilike()` method on the title column.\n\nChanging:\n```\nconst filtered = data.filter(b => b.title.includes(term))\n```\nTo:\n```\nquery.ilike("title", `%${term}%`)\n```\n\nThis moves filtering to PostgreSQL where it belongs.',
+          quality: 'excellent',
+          feedback: 'Specific, actionable, and targeted. You named the exact method (.ilike), the reason (server-side), and the technology (Supabase). The agent knows exactly what to change without guessing.',
+        },
+        {
+          triggerKeywords: ['server', 'database', 'query'],
+          response: 'I\'ll move the filtering to the server side. Let me update the database query to handle the search.\n\nDo you want me to use:\n1. PostgreSQL LIKE\n2. Full-text search with tsvector\n3. A search index like Meilisearch?\n\nPlease advise.',
+          quality: 'good',
+          feedback: 'You identified the problem (should be server-side) but left the implementation open. The agent is asking follow-up questions instead of executing. Name the specific method (ilike, LIKE, etc.) to eliminate the decision point.',
+        },
+      ],
+      fallbackResponse: {
+        response: 'I\'m not sure what\'s wrong. The search is working — it finds matching bookmarks. Could you be more specific about what to fix?',
+        feedback: 'Your redirect was too vague. The agent doesn\'t know what\'s wrong. A good redirect names: (1) what the agent did wrong, (2) what it should do instead, and (3) the specific method or approach to use.',
+      },
     },
 
     // === PREVENTION ===

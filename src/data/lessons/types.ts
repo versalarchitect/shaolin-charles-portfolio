@@ -30,6 +30,19 @@ export interface ComparePanel {
   filename?: string
 }
 
+export interface DiagramStage {
+  highlightNodes: string[]
+  highlightEdges?: Array<{ from: string; to: string }>
+  explanation: string
+}
+
+export interface PromptLabResponse {
+  triggerKeywords: string[]
+  response: string
+  quality: 'poor' | 'good' | 'excellent'
+  feedback: string
+}
+
 export type LessonStep =
   | { type: 'info'; title: string; body: string }
   | { type: 'code-demo'; title?: string; body: string; code: string; language: string; filename?: string }
@@ -42,6 +55,10 @@ export type LessonStep =
   | { type: 'diagram'; title: string; body?: string; diagram: DiagramData }
   | { type: 'code-fill'; instruction: string; language: string; template: string; blanks: CodeFillBlank[]; filename?: string; explanation?: string }
   | { type: 'compare'; title: string; body?: string; left: ComparePanel; right: ComparePanel; question?: string; correctSide?: 'left' | 'right'; explanation?: string }
+  | { type: 'match'; instruction: string; leftItems: string[]; rightItems: string[]; correctPairs: Record<number, number>; explanation?: string }
+  | { type: 'code-diff'; title: string; body?: string; language: string; filename?: string; before: string; after: string; question?: string; highlightLines?: number[]; explanation?: string }
+  | { type: 'interactive-diagram'; title: string; body?: string; diagram: DiagramData; stages: DiagramStage[] }
+  | { type: 'prompt-lab'; instruction: string; scenario: string; starterPrompt?: string; responses: PromptLabResponse[]; fallbackResponse: { response: string; feedback: string } }
 
 export interface LessonContent {
   lessonId: string

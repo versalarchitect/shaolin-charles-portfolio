@@ -73,9 +73,9 @@ const content: LessonContent = {
 
     // === DIAGRAM 1: THE PIPELINE ===
     {
-      type: 'diagram',
+      type: 'interactive-diagram',
       title: 'From Prompt to Response',
-      body: 'This is the full pipeline that runs every time you send a message. Each stage transforms the data into a form the next stage needs.',
+      body: 'Click through each stage to see how your message transforms into a response.',
       diagram: {
         direction: 'LR',
         nodes: [
@@ -94,6 +94,38 @@ const content: LessonContent = {
           { from: 'generate', to: 'response' },
         ],
       },
+      stages: [
+        {
+          highlightNodes: ['prompt'],
+          highlightEdges: [],
+          explanation: 'It starts with your text. The raw characters you type — "Explain recursion in Python" — enter the pipeline as a string.',
+        },
+        {
+          highlightNodes: ['prompt', 'tokenize'],
+          highlightEdges: [{ from: 'prompt', to: 'tokenize' }],
+          explanation: 'The tokenizer breaks your text into subword pieces. "Explain" → one token. "recursion" → "recur" + "sion". Each token gets a numeric ID.',
+        },
+        {
+          highlightNodes: ['tokenize', 'embed'],
+          highlightEdges: [{ from: 'tokenize', to: 'embed' }],
+          explanation: 'Each token ID is mapped to a high-dimensional vector (embedding) that captures its meaning. Similar words land near each other in this space.',
+        },
+        {
+          highlightNodes: ['embed', 'attend'],
+          highlightEdges: [{ from: 'embed', to: 'attend' }],
+          explanation: 'Attention compares every token to every other token, computing relevance scores. This is where the model figures out that "it" refers to "recursion", not "Python".',
+        },
+        {
+          highlightNodes: ['attend', 'generate'],
+          highlightEdges: [{ from: 'attend', to: 'generate' }],
+          explanation: 'The model predicts the most likely next token based on the attention-weighted context. It picks one token, appends it, and repeats.',
+        },
+        {
+          highlightNodes: ['generate', 'response'],
+          highlightEdges: [{ from: 'generate', to: 'response' }],
+          explanation: 'Token by token, the full response is assembled. The generation stops when the model produces a special end-of-sequence token.',
+        },
+      ],
     },
 
     // === ATTENTION ===

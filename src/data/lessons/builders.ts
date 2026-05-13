@@ -1,4 +1,4 @@
-import type { LessonStep, DiagramData, CodeFillBlank, ComparePanel } from './types'
+import type { LessonStep, DiagramData, CodeFillBlank, ComparePanel, DiagramStage, PromptLabResponse } from './types'
 
 /**
  * Type-safe step builder functions that validate at authoring time
@@ -50,6 +50,22 @@ export const step = {
 
   compare: (title: string, left: ComparePanel, right: ComparePanel, opts?: { body?: string; question?: string; correctSide?: 'left' | 'right'; explanation?: string }): LessonStep => ({
     type: 'compare', title, left, right, body: opts?.body, question: opts?.question, correctSide: opts?.correctSide, explanation: opts?.explanation,
+  }),
+
+  match: (instruction: string, leftItems: string[], rightItems: string[], correctPairs: Record<number, number>, explanation?: string): LessonStep => ({
+    type: 'match', instruction, leftItems, rightItems, correctPairs, explanation,
+  }),
+
+  codeDiff: (title: string, language: string, before: string, after: string, opts?: { body?: string; filename?: string; question?: string; highlightLines?: number[]; explanation?: string }): LessonStep => ({
+    type: 'code-diff', title, language, before, after, ...opts,
+  }),
+
+  interactiveDiagram: (title: string, diagram: DiagramData, stages: DiagramStage[], body?: string): LessonStep => ({
+    type: 'interactive-diagram', title, diagram, stages, body,
+  }),
+
+  promptLab: (instruction: string, scenario: string, responses: PromptLabResponse[], fallbackResponse: { response: string; feedback: string }, opts?: { starterPrompt?: string }): LessonStep => ({
+    type: 'prompt-lab', instruction, scenario, responses, fallbackResponse, starterPrompt: opts?.starterPrompt,
   }),
 }
 

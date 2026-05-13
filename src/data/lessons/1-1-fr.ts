@@ -73,9 +73,9 @@ const content: LessonContent = {
 
     // === DIAGRAM 1: THE PIPELINE ===
     {
-      type: 'diagram',
+      type: 'interactive-diagram',
       title: 'Du prompt à la réponse',
-      body: 'Voici le pipeline complet qui s\'exécute chaque fois que tu envoies un message. Chaque étape transforme les données dans la forme dont l\'étape suivante a besoin.',
+      body: 'Clique sur chaque étape pour voir comment ton message se transforme en réponse.',
       diagram: {
         direction: 'LR',
         nodes: [
@@ -94,6 +94,38 @@ const content: LessonContent = {
           { from: 'generate', to: 'response' },
         ],
       },
+      stages: [
+        {
+          highlightNodes: ['prompt'],
+          highlightEdges: [],
+          explanation: 'Tout commence par ton texte. Les caractères bruts que tu tapes — « Explique la récursion en Python » — entrent dans le pipeline sous forme de chaîne de caractères.',
+        },
+        {
+          highlightNodes: ['prompt', 'tokenize'],
+          highlightEdges: [{ from: 'prompt', to: 'tokenize' }],
+          explanation: 'Le tokenizer découpe ton texte en fragments de sous-mots. « Explain » → un token. « recursion » → « recur » + « sion ». Chaque token reçoit un identifiant numérique.',
+        },
+        {
+          highlightNodes: ['tokenize', 'embed'],
+          highlightEdges: [{ from: 'tokenize', to: 'embed' }],
+          explanation: 'Chaque identifiant de token est mappé à un vecteur de haute dimension (embedding) qui capture son sens. Les mots similaires atterrissent proches les uns des autres dans cet espace.',
+        },
+        {
+          highlightNodes: ['embed', 'attend'],
+          highlightEdges: [{ from: 'embed', to: 'attend' }],
+          explanation: 'L\'attention compare chaque token à tous les autres, calculant des scores de pertinence. C\'est ici que le modèle comprend que « il » réfère à « récursion », pas à « Python ».',
+        },
+        {
+          highlightNodes: ['attend', 'generate'],
+          highlightEdges: [{ from: 'attend', to: 'generate' }],
+          explanation: 'Le modèle prédit le token suivant le plus probable en fonction du contexte pondéré par l\'attention. Il choisit un token, l\'ajoute, et recommence.',
+        },
+        {
+          highlightNodes: ['generate', 'response'],
+          highlightEdges: [{ from: 'generate', to: 'response' }],
+          explanation: 'Token par token, la réponse complète est assemblée. La génération s\'arrête quand le modèle produit un token spécial de fin de séquence.',
+        },
+      ],
     },
 
     // === ATTENTION ===

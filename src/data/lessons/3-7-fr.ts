@@ -114,6 +114,15 @@ app.route('/api/health', healthRoutes)
 export default app`,
     },
     {
+      type: 'code-diff',
+      title: 'Résoudre un conflit de fusion',
+      body: 'Voici une vraie résolution de conflit. L\'agent de gauche a ajouté la gestion d\'erreurs, l\'agent de droite a ajouté la journalisation. La résolution conserve les deux changements dans un ordre logique.',
+      language: 'typescript',
+      filename: 'src/api/handler.ts',
+      before: 'export async function handleRequest(req: Request) {\n  const data = await fetchData(req.url)\n  return new Response(JSON.stringify(data))\n}',
+      after: 'export async function handleRequest(req: Request) {\n  try {\n    console.log(`[API] Processing ${req.url}`)\n    const data = await fetchData(req.url)\n    console.log(`[API] Success: ${data.length} items`)\n    return new Response(JSON.stringify(data))\n  } catch (error) {\n    console.error(`[API] Failed: ${error.message}`)\n    return new Response(JSON.stringify({ error: error.message }), { status: 500 })\n  }\n}',
+    },
+    {
       type: 'checkpoint',
       xp: 5,
       message: 'Tu résous les conflits en comprenant l\'intention, pas en choisissant un camp.',

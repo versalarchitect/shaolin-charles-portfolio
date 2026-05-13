@@ -114,6 +114,15 @@ app.route('/api/health', healthRoutes)
 export default app`,
     },
     {
+      type: 'code-diff',
+      title: 'Resolving a merge conflict',
+      body: 'Here is a real conflict resolution. The left agent added error handling, the right agent added logging. The resolution keeps both changes in a logical order.',
+      language: 'typescript',
+      filename: 'src/api/handler.ts',
+      before: 'export async function handleRequest(req: Request) {\n  const data = await fetchData(req.url)\n  return new Response(JSON.stringify(data))\n}',
+      after: 'export async function handleRequest(req: Request) {\n  try {\n    console.log(`[API] Processing ${req.url}`)\n    const data = await fetchData(req.url)\n    console.log(`[API] Success: ${data.length} items`)\n    return new Response(JSON.stringify(data))\n  } catch (error) {\n    console.error(`[API] Failed: ${error.message}`)\n    return new Response(JSON.stringify({ error: error.message }), { status: 500 })\n  }\n}',
+    },
+    {
       type: 'checkpoint',
       xp: 5,
       message: 'You resolve conflicts by understanding intent, not just picking sides.',

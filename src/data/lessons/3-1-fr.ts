@@ -255,6 +255,26 @@ Static content only.`,
       message: 'Vous connaissez les modes d\'échec et comment les prévenir.',
     },
 
+    // === MATCH EXERCISE ===
+    {
+      type: 'match',
+      instruction: 'Associez chaque stratégie de décomposition à son meilleur cas d\'utilisation :',
+      leftItems: [
+        'Fan-out / Fan-in',
+        'Pipeline',
+        'Specialist delegation',
+        'Competitive',
+      ],
+      rightItems: [
+        'Traiter les données à travers des étapes séquentielles',
+        'Exécuter des tâches identiques en parallèle, fusionner les résultats',
+        'Diriger les tâches vers des agents experts du domaine',
+        'Faire résoudre le même problème par plusieurs agents, choisir le meilleur',
+      ],
+      correctPairs: { 0: 1, 1: 0, 2: 2, 3: 3 },
+      explanation: 'Fan-out parallélise le travail identique. Pipeline enchaîne les étapes séquentielles. La délégation spécialisée route par expertise. La redondance compétitive assure la qualité par la comparaison.',
+    },
+
     // === HANDS-ON EXERCISE ===
     {
       type: 'info',

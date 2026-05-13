@@ -17,9 +17,9 @@ const content: LessonContent = {
 
     // === ARCHITECTURE DIAGRAM 1 ===
     {
-      type: 'diagram',
+      type: 'interactive-diagram',
       title: 'Flux de requête MCP',
-      body: 'Une requête unique voyage de Claude Code à travers la couche de protocole MCP vers le monde extérieur et retour. JSON-RPC est le format de transmission à chaque frontière.',
+      body: 'Clique sur chaque étape pour suivre une requête de ton agent vers un service externe et retour.',
       diagram: {
         direction: 'LR',
         nodes: [
@@ -36,6 +36,33 @@ const content: LessonContent = {
           { from: 'tool', to: 'api', label: 'HTTP/SDK' },
         ],
       },
+      stages: [
+        {
+          highlightNodes: ['claude'],
+          highlightEdges: [],
+          explanation: 'Tout commence avec Claude Code. Le modèle décide qu\'il a besoin de données externes — une requête de base de données, un statut de déploiement, un fichier hors du bac à sable — et sélectionne le bon outil MCP.',
+        },
+        {
+          highlightNodes: ['claude', 'request'],
+          highlightEdges: [{ from: 'claude', to: 'request' }],
+          explanation: 'Claude Code sérialise l\'appel d\'outil en un message JSON-RPC 2.0 — nom de méthode, paramètres et un identifiant de requête unique. C\'est le format de transmission universel pour toute communication MCP.',
+        },
+        {
+          highlightNodes: ['request', 'server'],
+          highlightEdges: [{ from: 'request', to: 'server' }],
+          explanation: 'Le message JSON-RPC atteint ton processus serveur MCP. Le serveur parse le nom de la méthode, valide les paramètres contre le schéma de l\'outil et route vers le bon handler.',
+        },
+        {
+          highlightNodes: ['server', 'tool'],
+          highlightEdges: [{ from: 'server', to: 'tool' }],
+          explanation: 'Le serveur invoque le handler de l\'outil — ton code qui fait le vrai travail. C\'est ici que la frontière MCP se termine et que ta logique personnalisée commence.',
+        },
+        {
+          highlightNodes: ['tool', 'api'],
+          highlightEdges: [{ from: 'tool', to: 'api' }],
+          explanation: 'Le handler de l\'outil contacte le service externe — un appel HTTP vers une API REST, une méthode SDK pour interroger une base de données, une lecture de fichier. Le résultat remonte par la même chaîne jusqu\'à Claude Code.',
+        },
+      ],
     },
     {
       type: 'checkpoint',
@@ -253,6 +280,28 @@ const content: LessonContent = {
       type: 'info',
       title: 'Frontières de sécurité',
       body: "Chaque serveur MCP tourne comme un processus enfant avec les mêmes permissions que ton compte utilisateur. Si tu donnes à un serveur MCP tes identifiants de base de données, l'agent peut exécuter n'importe quelle requête que le serveur autorise. C'est puissant mais demande de la prudence. Utilise des tokens en lecture seule quand c'est possible. Limite les clés API aux permissions minimales requises. Vérifie quels outils un serveur expose avant de le connecter. Claude Code montre des invites d'approbation pour les actions avec effets secondaires, mais le serveur lui-même est la vraie frontière de confiance.",
+    },
+
+    // === MATCH EXERCISE ===
+    {
+      type: 'match',
+      instruction: 'Associez chaque concept MCP à son rôle :',
+      leftItems: [
+        'MCP Client',
+        'MCP Server',
+        'Tool',
+        'Resource',
+        'Transport',
+      ],
+      rightItems: [
+        'L\'agent IA qui envoie les requêtes',
+        'Un programme qui expose des capacités',
+        'Une action que l\'IA peut exécuter',
+        'Des données que l\'IA peut lire',
+        'Le canal de communication (stdio, HTTP)',
+      ],
+      correctPairs: { 0: 0, 1: 1, 2: 2, 3: 3, 4: 4 },
+      explanation: 'MCP sépare les responsabilités : le client (IA) envoie des requêtes, le serveur expose des capacités, les outils effectuent des actions, les ressources fournissent des données, et le transport transmet les messages entre eux.',
     },
 
     // === FINAL EXERCISES ===

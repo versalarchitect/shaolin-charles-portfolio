@@ -84,6 +84,16 @@ const content: LessonContent = {
       body: "Quand vous donnez des corrections, ajoutez « Ne modifier que [fichiers spécifiques] » ou « Ne pas changer [fichiers spécifiques] ». Sans cette contrainte, l'agent pourrait propager les changements dans tout le codebase — mettant à jour les imports, refactorant les appelants, changeant les tests — créant une cascade de modifications que vous n'avez pas révisées. Réduisez le périmètre de vos corrections autant que possible.",
     },
     {
+      type: 'code-diff',
+      title: 'Avant et après une redirection ciblée',
+      body: 'L\'agent utilisait initialement un filtrage côté client. Après une redirection ciblée (« utilise une clause SQL WHERE pour le filtrage côté serveur »), il a corrigé l\'approche.',
+      language: 'typescript',
+      filename: 'src/hooks/useBookmarks.ts',
+      before: 'export function useBookmarks(searchTerm: string) {\n  const [bookmarks, setBookmarks] = useState<Bookmark[]>([])\n\n  useEffect(() => {\n    supabase.from("bookmarks").select("*").then(({ data }) => {\n      const filtered = data?.filter(b =>\n        b.title.toLowerCase().includes(searchTerm.toLowerCase())\n      ) || []\n      setBookmarks(filtered)\n    })\n  }, [searchTerm])\n\n  return bookmarks\n}',
+      after: 'export function useBookmarks(searchTerm: string) {\n  const [bookmarks, setBookmarks] = useState<Bookmark[]>([])\n\n  useEffect(() => {\n    const query = supabase.from("bookmarks").select("*")\n    if (searchTerm) {\n      query.ilike("title", `%${searchTerm}%`)\n    }\n    query.then(({ data }) => {\n      setBookmarks(data || [])\n    })\n  }, [searchTerm])\n\n  return bookmarks\n}',
+      explanation: 'Le filtrage côté serveur avec SQL est plus efficace -- il évite de télécharger tous les enregistrements vers le client. Une redirection ciblée (spécifiant « utilise SQL WHERE ») donne à l\'agent une correction claire sans réécrire toute la spec.',
+    },
+    {
       type: 'code-input',
       instruction: 'Écrivez une correction ciblée pour ce problème : l\'agent a créé l\'authentification utilisateur en utilisant localStorage, mais votre spec dit d\'utiliser des cookies HTTP-only. Ciblez le fichier src/lib/auth.ts.',
       placeholder: 'In src/lib/auth.ts, change...',
@@ -170,6 +180,32 @@ const content: LessonContent = {
         'Évaluer la portée : problème de surface ou désaccord architectural',
       ],
       correctOrder: [1, 4, 2, 3, 0],
+    },
+
+    // === PROMPT LAB : REDIRIGER UN AGENT ===
+    {
+      type: 'prompt-lab',
+      instruction: 'L\'agent a utilisé du filtrage côté client au lieu du côté serveur. Écris un prompt de redirection pour corriger ce problème spécifique.',
+      scenario: 'Tu as demandé à l\'agent d\'ajouter une recherche à une page de favoris. Il a récupéré TOUS les favoris depuis Supabase et les a filtrés en JavaScript avec .filter(). Ça fonctionne mais c\'est lent avec beaucoup de favoris. Tu veux qu\'il utilise .ilike() de Supabase pour du filtrage côté serveur à la place.',
+      starterPrompt: 'C\'est faux. Corrige.',
+      responses: [
+        {
+          triggerKeywords: ['ilike', 'server', 'supabase', 'filter'],
+          response: 'Tu as raison — je devrais filtrer au niveau de la base de données plutôt que côté client. Je vais mettre à jour la requête pour utiliser la méthode `.ilike()` de Supabase sur la colonne title.\n\nChangement :\n```\nconst filtered = data.filter(b => b.title.includes(term))\n```\nVers :\n```\nquery.ilike("title", `%${term}%`)\n```\n\nCela déplace le filtrage vers PostgreSQL, là où il doit être.',
+          quality: 'excellent',
+          feedback: 'Spécifique, actionnable et ciblé. Tu as nommé la méthode exacte (.ilike), la raison (côté serveur), et la technologie (Supabase). L\'agent sait exactement quoi changer sans deviner.',
+        },
+        {
+          triggerKeywords: ['server', 'database', 'query'],
+          response: 'Je vais déplacer le filtrage côté serveur. Laisse-moi mettre à jour la requête de base de données pour gérer la recherche.\n\nVeux-tu que j\'utilise :\n1. PostgreSQL LIKE\n2. Recherche plein texte avec tsvector\n3. Un index de recherche comme Meilisearch ?\n\nDis-moi.',
+          quality: 'good',
+          feedback: 'Tu as identifié le problème (devrait être côté serveur) mais laissé l\'implémentation ouverte. L\'agent pose des questions de suivi au lieu d\'exécuter. Nomme la méthode spécifique (ilike, LIKE, etc.) pour éliminer le point de décision.',
+        },
+      ],
+      fallbackResponse: {
+        response: 'Je ne suis pas sûr de ce qui ne va pas. La recherche fonctionne — elle trouve les favoris correspondants. Pouvez-vous être plus précis sur ce qu\'il faut corriger ?',
+        feedback: 'Ta redirection était trop vague. L\'agent ne sait pas ce qui ne va pas. Une bonne redirection nomme : (1) ce que l\'agent a fait de travers, (2) ce qu\'il devrait faire à la place, et (3) la méthode ou l\'approche spécifique à utiliser.',
+      },
     },
 
     // === PREVENTION ===
