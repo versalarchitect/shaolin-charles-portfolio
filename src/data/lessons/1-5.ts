@@ -81,6 +81,26 @@ const content: LessonContent = {
       code: '# Feature: [Title]\n\n## Goal\n[One sentence describing what this feature does.]\n\n## Inputs\n- [What data does this feature receive?]\n- [What format? What types?]\n- [Where does the data come from?]\n\n## Outputs\n- [What does this feature produce?]\n- [What format? What types?]\n- [Where does the output go?]\n\n## Constraints\n- [Technology restrictions]\n- [Performance requirements]\n- [What this feature must NOT do]\n- [Dependencies or compatibility rules]\n\n## Acceptance Criteria\n- [ ] [Criterion 1 -- specific and verifiable]\n- [ ] [Criterion 2 -- specific and verifiable]\n- [ ] [Criterion 3 -- specific and verifiable]',
     },
 
+    // === COMPARE: VAGUE VS SPECIFIC ===
+    {
+      type: 'compare',
+      title: 'Vague vs Specific: spot the difference',
+      body: 'Look at these two instructions for the same feature. One gives the agent room to guess. The other removes ambiguity.',
+      question: 'Which instruction will produce more reliable agent output?',
+      correctSide: 'right',
+      left: {
+        label: 'Vague',
+        content: 'Build me a settings page.\nMake it look good.\nUse modern tech.\nAdd the usual fields.',
+        language: 'text',
+      },
+      right: {
+        label: 'Specific',
+        content: 'Build a /settings page with 3 fields:\n- display_name (string, 2-50 chars)\n- email (valid email format)\n- notify_email (boolean toggle)\n\nSave to Supabase profiles table.\nUse existing Button/Input from @/components/ui.\nDo NOT add password or avatar features.',
+        language: 'text',
+      },
+      explanation: 'The specific version constrains every decision point: which fields, what validation, where to save, what components to use, and what NOT to build. The vague version forces the agent to guess on all of those, leading to output that rarely matches your intent.',
+    },
+
     // === REAL EXAMPLE ===
     {
       type: 'info',
@@ -174,14 +194,24 @@ const content: LessonContent = {
     {
       type: 'info',
       title: 'Practice: write your own spec',
-      body: "Time to practice. You will write a spec for a simple feature: a dark mode toggle. This toggle should switch the site between light and dark themes. Think about what inputs it receives, what outputs it produces, what constraints apply, and what acceptance criteria you would check.",
+      body: "Time to practice. You will fill in a spec for a simple feature: a dark mode toggle. This toggle should switch the site between light and dark themes. Think about what inputs it receives, what outputs it produces, what constraints apply, and what acceptance criteria you would check.",
     },
     {
-      type: 'code-input',
-      instruction: 'A spec\'s Goal section should be exactly one sentence. Write a Goal for a dark mode toggle feature:',
-      placeholder: 'Allow users to...',
-      answer: 'Allow users to switch between light and dark themes with a toggle button in the header',
-      hint: 'One sentence: who can do what, where',
+      type: 'code-fill',
+      instruction: 'Complete this spec by filling in the blanks. Each blank needs a specific, concrete answer.',
+      language: 'markdown',
+      filename: 'specs/dark-mode.md',
+      template: '# Feature: Dark Mode Toggle\n\n## Goal\nAllow users to {{goal_action}} with a toggle button in the {{goal_location}}.\n\n## Inputs\n- Current theme from {{input_source}}\n- User click on toggle button\n\n## Outputs\n- Updated CSS class on the {{output_target}} element\n- Theme preference saved to {{output_storage}}\n\n## Constraints\n- Must NOT add {{constraint_exclusion}}\n- Use existing UI components only\n\n## Acceptance Criteria\n- [ ] Toggle renders in the header\n- [ ] Clicking switches between light and dark\n- [ ] Choice persists across {{criteria_persist}}',
+      blanks: [
+        { id: 'goal_action', answer: 'switch between light and dark themes', alternatives: ['toggle between light and dark themes', 'switch between light and dark mode'], placeholder: 'what action?', hint: 'What do users do with themes?' },
+        { id: 'goal_location', answer: 'header', alternatives: ['navbar', 'navigation bar', 'nav'], placeholder: 'where?' },
+        { id: 'input_source', answer: 'localStorage', alternatives: ['local storage', 'localstorage', 'browser storage'], placeholder: 'stored where?', hint: 'Client-side key-value storage' },
+        { id: 'output_target', answer: 'html', alternatives: ['document', 'body', 'root'], placeholder: 'which element?', hint: 'The root element of the page' },
+        { id: 'output_storage', answer: 'localStorage', alternatives: ['local storage', 'localstorage'], placeholder: 'persisted where?' },
+        { id: 'constraint_exclusion', answer: 'custom color picker', alternatives: ['color picker', 'accent colors', 'custom themes', 'a color picker'], placeholder: 'what feature to exclude?', hint: 'A common scope creep item for theme features' },
+        { id: 'criteria_persist', answer: 'page reloads', alternatives: ['page refreshes', 'refreshes', 'reloads', 'browser sessions', 'sessions'], placeholder: 'across what?' },
+      ],
+      explanation: 'Each blank removes a decision the agent would otherwise make on its own. The more specific your spec, the fewer revision cycles you need.',
     },
     {
       type: 'multiple-choice',

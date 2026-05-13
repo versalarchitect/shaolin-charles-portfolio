@@ -89,6 +89,33 @@ function validateStep(lessonId: string, index: number, step: LessonStep): Issue[
       }
       break
     }
+    case 'code-fill': {
+      const blankIds = new Set(step.blanks.map((b) => b.id))
+      const templateBlanks = [...step.template.matchAll(/\{\{([^}]+)\}\}/g)].map((m) => m[1])
+      for (const id of templateBlanks) {
+        if (!blankIds.has(id)) {
+          issues.push(make('error', `template references blank "{{${id}}}" but no blank with that id exists`))
+        }
+      }
+      for (const blank of step.blanks) {
+        if (!templateBlanks.includes(blank.id)) {
+          issues.push(make('warning', `blank "${blank.id}" is defined but not referenced in template`))
+        }
+        if (!blank.answer.trim()) {
+          issues.push(make('error', `blank "${blank.id}" has empty answer`))
+        }
+      }
+      break
+    }
+    case 'compare': {
+      if (step.question && !step.correctSide) {
+        issues.push(make('error', 'compare has question but no correctSide'))
+      }
+      if (step.correctSide && !step.question) {
+        issues.push(make('warning', 'compare has correctSide but no question'))
+      }
+      break
+    }
   }
 
   return issues

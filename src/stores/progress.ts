@@ -24,8 +24,18 @@ export interface XpEvent {
   multipliers?: string[]
 }
 
+export interface StepResult {
+  lessonId: string
+  stepIndex: number
+  stepType: string
+  correct: boolean
+  attempts: number
+  lastAttempted: string
+}
+
 export interface ProgressState {
   lessonProgress: Record<string, LessonProgress>
+  stepResults: Record<string, StepResult>
   totalXp: number
   currentStreak: number
   longestStreak: number
@@ -54,6 +64,7 @@ export interface ProgressState {
 
 const defaultState: ProgressState = {
   lessonProgress: {},
+  stepResults: {},
   totalXp: 0,
   currentStreak: 0,
   longestStreak: 0,
@@ -799,6 +810,27 @@ export function awardExplorerXp(amount: number, eventKey: string) {
   }
   xpLog = [event, ...xpLog].slice(0, 50)
 
+  persist()
+  emit()
+}
+
+export function recordStepResult(lessonId: string, stepIndex: number, stepType: string, correct: boolean) {
+  const key = `${lessonId}:${stepIndex}`
+  const existing = state.stepResults[key]
+  state = {
+    ...state,
+    stepResults: {
+      ...state.stepResults,
+      [key]: {
+        lessonId,
+        stepIndex,
+        stepType,
+        correct: existing ? (existing.correct || correct) : correct,
+        attempts: existing ? existing.attempts + 1 : 1,
+        lastAttempted: new Date().toISOString(),
+      },
+    },
+  }
   persist()
   emit()
 }

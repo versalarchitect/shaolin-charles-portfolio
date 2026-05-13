@@ -1,4 +1,4 @@
-import type { LessonStep, DiagramData } from './types'
+import type { LessonStep, DiagramData, CodeFillBlank, ComparePanel } from './types'
 
 /**
  * Type-safe step builder functions that validate at authoring time
@@ -43,6 +43,14 @@ export const step = {
   checkpoint: (xp: number, message: string): LessonStep => ({ type: 'checkpoint', xp, message }),
 
   diagram: (title: string, diagram: DiagramData, body?: string): LessonStep => ({ type: 'diagram', title, diagram, body }),
+
+  codeFill: (instruction: string, language: string, template: string, blanks: CodeFillBlank[], opts?: { filename?: string; explanation?: string }): LessonStep => ({
+    type: 'code-fill', instruction, language, template, blanks, filename: opts?.filename, explanation: opts?.explanation,
+  }),
+
+  compare: (title: string, left: ComparePanel, right: ComparePanel, opts?: { body?: string; question?: string; correctSide?: 'left' | 'right'; explanation?: string }): LessonStep => ({
+    type: 'compare', title, left, right, body: opts?.body, question: opts?.question, correctSide: opts?.correctSide, explanation: opts?.explanation,
+  }),
 }
 
 /**

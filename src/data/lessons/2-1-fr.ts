@@ -97,6 +97,24 @@ const content: LessonContent = {
       body: "Une spec avec un objectif clair et des critères d'acceptation mais sans limites ni exclusions de périmètre. L'agent construit tout correctement — puis ajoute aussi l'authentification, une API REST, la config Docker, un pipeline CI/CD, et des scripts de déploiement. Il voulait être utile. Sans limites explicites, l'agent optimise pour la complétude. La section Hors périmètre n'est pas optionnelle — c'est votre défense contre le dépassement de périmètre d'un constructeur enthousiaste.",
     },
     {
+      type: 'compare',
+      title: 'Identifie l\'anti-pattern',
+      body: 'Une de ces specs contraint l\'agent. L\'autre écrit du code en anglais.',
+      question: 'Quel côté est l\'approche correcte ?',
+      correctSide: 'left',
+      left: {
+        label: 'Contrainte',
+        content: '## Constraints\n- Use Tailwind CSS for all styling\n- No authentication — single user only\n- Keep database logic in src/db/\n- SQLite via Drizzle ORM',
+        language: 'markdown',
+      },
+      right: {
+        label: 'Trop prescriptif',
+        content: '## Implementation\n- Create src/components/BookmarkCard.tsx\n- Export component with props { url: string }\n- Use a div with className "card p-4 border"\n- Inside render an anchor tag with href={url}',
+        language: 'markdown',
+      },
+      explanation: 'Le côté gauche pose des garde-fous — quels outils utiliser, ce qui est interdit. Le côté droit dicte la structure exacte du code. Si tu connais le JSX exact, écris-le toi-même. Une spec contraint les décisions sans les prendre.',
+    },
+    {
       type: 'multiple-choice',
       question: 'Quelle instruction de spec est un anti-pattern ?',
       options: [
@@ -202,6 +220,19 @@ const content: LessonContent = {
       ],
       correctIndex: 1,
       explanation: 'Les agents ont un biais vers l\'aide et la complétude. Si un élément Hors périmètre est vague ou facile à manquer, l\'agent pourrait le construire quand même. Rendez les exclusions explicites, visibles et sans ambiguïté. Répétez les exclusions critiques dans les contraintes si nécessaire.',
+    },
+    {
+      type: 'code-fill',
+      instruction: 'Complète cette section Hors périmètre pour le gestionnaire de favoris. Réfléchis à ce qu\'un agent enthousiaste pourrait ajouter que tu ne veux explicitement PAS.',
+      language: 'markdown',
+      filename: 'SPEC.md',
+      template: '## Out of Scope\n- {{scope_1}}\n- Bookmark import/export\n- {{scope_2}}\n- Favicon fetching\n- {{scope_3}}',
+      blanks: [
+        { id: 'scope_1', answer: 'User authentication', alternatives: ['Authentication', 'User auth', 'Auth', 'Multi-tenancy', 'User authentication / multi-tenancy'], placeholder: 'quelle fonctionnalité de connexion ?', hint: 'La spec dit utilisateur unique, local' },
+        { id: 'scope_2', answer: 'Browser extension', alternatives: ['Chrome extension', 'browser extension', 'Extension'], placeholder: 'quelle fonctionnalité navigateur ?', hint: 'Une façon courante de sauvegarder des favoris' },
+        { id: 'scope_3', answer: 'Deployment configuration', alternatives: ['Deployment', 'Deploy config', 'Deployment config', 'CI/CD', 'Docker'], placeholder: 'quelle infrastructure ?', hint: 'La spec se concentre sur le développement local' },
+      ],
+      explanation: 'Chaque exclusion empêche une forme spécifique de dérive de périmètre. Un agent enthousiaste pourrait raisonnablement ajouter n\'importe laquelle de ces fonctionnalités « utiles » sans qu\'on lui dise de ne pas le faire.',
     },
     {
       type: 'code-input',

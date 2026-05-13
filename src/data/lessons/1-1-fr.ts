@@ -103,11 +103,22 @@ const content: LessonContent = {
       body: "L'attention est le mécanisme qui permet au modèle de décider quelles parties de l'entrée comptent le plus pour générer chaque mot de la sortie. Quand tu écris « Le chat s'est assis sur le tapis parce qu'il était fatigué », le modèle utilise l'attention pour comprendre que « il » réfère à « chat », pas à « tapis ». Il fait ça en calculant un score de pertinence entre chaque paire de tokens. Les paires avec des scores élevés s'influencent mutuellement davantage.",
     },
     {
-      type: 'code-demo',
+      type: 'compare',
       title: 'L\'attention en pratique',
-      body: "L'attention explique pourquoi la structure du prompt est importante. Le modèle pèse chaque token par rapport à tous les autres. Placer l'instruction la plus importante à la fin (plus près du début de la génération) donne souvent de meilleurs résultats.",
-      language: 'text',
-      code: '# Weaker — key instruction buried in the middle:\n"Write a function that sorts a list. Make it Python. Use type hints. Return only code."\n\n# Stronger — key instruction at the end:\n"Write a Python function with type hints that sorts a list. Return only code."',
+      body: 'L\'attention explique pourquoi la structure du prompt est importante. Le modèle pèse chaque token par rapport à tous les autres. Placer l\'instruction la plus importante à la fin donne souvent de meilleurs résultats.',
+      question: 'Quelle structure de prompt produira une sortie plus fiable ?',
+      correctSide: 'right',
+      left: {
+        label: 'Plus faible',
+        content: '"Write a function that sorts a list. Make it Python. Use type hints. Return only code."',
+        language: 'text',
+      },
+      right: {
+        label: 'Plus forte',
+        content: '"Write a Python function with type hints that sorts a list. Return only code."',
+        language: 'text',
+      },
+      explanation: 'La version plus forte place la contrainte la plus importante (« Return only code ») à la fin, là où la génération commence. Le modèle pondère plus fortement les tokens récents, donc la dernière instruction a le plus de poids.',
     },
     {
       type: 'order',

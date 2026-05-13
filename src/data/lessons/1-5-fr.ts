@@ -81,6 +81,26 @@ const content: LessonContent = {
       code: '# Feature: [Title]\n\n## Goal\n[One sentence describing what this feature does.]\n\n## Inputs\n- [What data does this feature receive?]\n- [What format? What types?]\n- [Where does the data come from?]\n\n## Outputs\n- [What does this feature produce?]\n- [What format? What types?]\n- [Where does the output go?]\n\n## Constraints\n- [Technology restrictions]\n- [Performance requirements]\n- [What this feature must NOT do]\n- [Dependencies or compatibility rules]\n\n## Acceptance Criteria\n- [ ] [Criterion 1 -- specific and verifiable]\n- [ ] [Criterion 2 -- specific and verifiable]\n- [ ] [Criterion 3 -- specific and verifiable]',
     },
 
+    // === COMPARE: VAGUE VS SPECIFIC ===
+    {
+      type: 'compare',
+      title: 'Vague vs Spécifique : trouve la différence',
+      body: 'Regarde ces deux instructions pour la même fonctionnalité. L\'une laisse l\'agent deviner. L\'autre supprime l\'ambiguïté.',
+      question: 'Quelle instruction produira une sortie d\'agent plus fiable ?',
+      correctSide: 'right',
+      left: {
+        label: 'Vague',
+        content: 'Construis-moi une page de paramètres.\nFais que ça ait l\'air bien.\nUtilise de la tech moderne.\nAjoute les champs habituels.',
+        language: 'text',
+      },
+      right: {
+        label: 'Spécifique',
+        content: 'Construis une page /settings avec 3 champs :\n- display_name (string, 2-50 chars)\n- email (format email valide)\n- notify_email (toggle boolean)\n\nSauvegarde dans la table Supabase profiles.\nUtilise les Button/Input existants de @/components/ui.\nNe PAS ajouter mot de passe ou avatar.',
+        language: 'text',
+      },
+      explanation: 'La version spécifique contraint chaque point de décision : quels champs, quelle validation, où sauvegarder, quels composants utiliser, et quoi NE PAS construire. La version vague force l\'agent à deviner sur tous ces points, menant à une sortie qui correspond rarement à ton intention.',
+    },
+
     // === REAL EXAMPLE ===
     {
       type: 'info',
@@ -173,15 +193,25 @@ const content: LessonContent = {
     // === PRACTICE: WRITE A SPEC ===
     {
       type: 'info',
-      title: 'Pratique : écris ta propre spec',
-      body: "C'est l'heure de pratiquer. Tu vas écrire une spec pour une fonctionnalité simple : un toggle de mode sombre. Ce toggle devrait basculer le site entre les thèmes clair et sombre. Réfléchis aux entrées qu'il reçoit, aux sorties qu'il produit, aux contraintes qui s'appliquent, et aux critères d'acceptation que tu vérifierais.",
+      title: 'Pratique : complète ta propre spec',
+      body: "C'est l'heure de pratiquer. Tu vas compléter une spec pour une fonctionnalité simple : un toggle de mode sombre. Ce toggle devrait basculer le site entre les thèmes clair et sombre. Réfléchis aux entrées qu'il reçoit, aux sorties qu'il produit, aux contraintes qui s'appliquent, et aux critères d'acceptation que tu vérifierais.",
     },
     {
-      type: 'code-input',
-      instruction: 'La section Objectif d\'une spec doit faire exactement une phrase. Écris un objectif pour une fonctionnalité de toggle de mode sombre :',
-      placeholder: 'Allow users to...',
-      answer: 'Allow users to switch between light and dark themes with a toggle button in the header',
-      hint: 'Une phrase : qui peut faire quoi, où',
+      type: 'code-fill',
+      instruction: 'Complète cette spec en remplissant les blancs. Chaque blanc nécessite une réponse spécifique et concrète.',
+      language: 'markdown',
+      filename: 'specs/dark-mode.md',
+      template: '# Feature: Dark Mode Toggle\n\n## Goal\nAllow users to {{goal_action}} with a toggle button in the {{goal_location}}.\n\n## Inputs\n- Current theme from {{input_source}}\n- User click on toggle button\n\n## Outputs\n- Updated CSS class on the {{output_target}} element\n- Theme preference saved to {{output_storage}}\n\n## Constraints\n- Must NOT add {{constraint_exclusion}}\n- Use existing UI components only\n\n## Acceptance Criteria\n- [ ] Toggle renders in the header\n- [ ] Clicking switches between light and dark\n- [ ] Choice persists across {{criteria_persist}}',
+      blanks: [
+        { id: 'goal_action', answer: 'switch between light and dark themes', alternatives: ['toggle between light and dark themes', 'switch between light and dark mode'], placeholder: 'quelle action ?', hint: 'Que font les utilisateurs avec les thèmes ?' },
+        { id: 'goal_location', answer: 'header', alternatives: ['navbar', 'navigation bar', 'nav'], placeholder: 'où ?' },
+        { id: 'input_source', answer: 'localStorage', alternatives: ['local storage', 'localstorage', 'browser storage'], placeholder: 'stocké où ?', hint: 'Stockage clé-valeur côté client' },
+        { id: 'output_target', answer: 'html', alternatives: ['document', 'body', 'root'], placeholder: 'quel élément ?', hint: 'L\'élément racine de la page' },
+        { id: 'output_storage', answer: 'localStorage', alternatives: ['local storage', 'localstorage'], placeholder: 'persisté où ?' },
+        { id: 'constraint_exclusion', answer: 'custom color picker', alternatives: ['color picker', 'accent colors', 'custom themes', 'a color picker'], placeholder: 'quelle fonctionnalité exclure ?', hint: 'Un élément courant de dérive de périmètre pour les thèmes' },
+        { id: 'criteria_persist', answer: 'page reloads', alternatives: ['page refreshes', 'refreshes', 'reloads', 'browser sessions', 'sessions'], placeholder: 'à travers quoi ?' },
+      ],
+      explanation: 'Chaque blanc supprime une décision que l\'agent prendrait autrement de son propre chef. Plus ta spec est spécifique, moins tu as besoin de cycles de révision.',
     },
     {
       type: 'multiple-choice',

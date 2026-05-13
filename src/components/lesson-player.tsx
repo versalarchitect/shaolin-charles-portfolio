@@ -15,7 +15,8 @@ import { Button } from '@/components/ui/button'
 import type { LessonStep, LessonContent } from '@/data/lessons/types'
 import { loadLessonContent } from '@/data/lessons'
 import { FlowDiagram } from '@/components/ui/flow-diagram'
-import { awardExplorerXp } from '@/stores/progress'
+import { awardExplorerXp, recordStepResult } from '@/stores/progress'
+import { highlightCode } from '@/lib/syntax-highlight'
 
 // ============================================================================
 // Step components
@@ -57,8 +58,8 @@ function CodeDemoStep({ step }: { step: Extract<LessonStep, { type: 'code-demo' 
         >
           {copied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
         </button>
-        <pre className="p-4 overflow-x-auto text-sm font-mono text-foreground/80 leading-relaxed">
-          <code>{step.code}</code>
+        <pre className="p-4 overflow-x-auto text-sm font-mono leading-relaxed">
+          <code>{highlightCode(step.code, step.language)}</code>
         </pre>
       </div>
     </div>
@@ -561,6 +562,264 @@ function DiagramStep({ step }: { step: Extract<LessonStep, { type: 'diagram' }> 
   )
 }
 
+function CodeFillStep({
+  step,
+  onComplete,
+}: {
+  step: Extract<LessonStep, { type: 'code-fill' }>
+  onComplete: () => void
+}) {
+  const { t } = useTranslation()
+  const [values, setValues] = useState<Record<string, string>>(() =>
+    Object.fromEntries(step.blanks.map((b) => [b.id, '']))
+  )
+  const [results, setResults] = useState<Record<string, boolean | null>>(() =>
+    Object.fromEntries(step.blanks.map((b) => [b.id, null]))
+  )
+  const [submitted, setSubmitted] = useState(false)
+  const [allCorrect, setAllCorrect] = useState(false)
+
+  const handleCheck = () => {
+    const newResults: Record<string, boolean> = {}
+    const normalize = (s: string) => s.trim().replace(/\s+/g, ' ').toLowerCase()
+
+    let correct = true
+    for (const blank of step.blanks) {
+      const val = normalize(values[blank.id])
+      const accepted = [blank.answer, ...(blank.alternatives || [])].map(normalize)
+      const isCorrect = accepted.includes(val)
+      newResults[blank.id] = isCorrect
+      if (!isCorrect) correct = false
+    }
+
+    setResults(newResults)
+    setSubmitted(true)
+    setAllCorrect(correct)
+    if (correct) setTimeout(onComplete, 800)
+  }
+
+  const handleRetry = () => {
+    const resetResults: Record<string, null> = {}
+    for (const blank of step.blanks) {
+      if (!results[blank.id]) resetResults[blank.id] = null
+    }
+    setResults((prev) => ({ ...prev, ...resetResults }))
+    setSubmitted(false)
+  }
+
+  const parts = step.template.split(/(\{\{[^}]+\}\})/g)
+
+  return (
+    <div className="space-y-4">
+      <p className="text-foreground/70 leading-relaxed text-lg">{step.instruction}</p>
+      <div className="rounded-xl border border-foreground/[0.08] bg-foreground/[0.03] overflow-hidden">
+        {step.filename && (
+          <div className="px-4 py-2 border-b border-foreground/[0.06] text-[11px] font-mono text-foreground/40">
+            {step.filename}
+          </div>
+        )}
+        <pre className="p-4 overflow-x-auto text-sm font-mono leading-relaxed whitespace-pre-wrap">
+          <code>
+            {parts.map((part, i) => {
+              const match = part.match(/^\{\{(.+)\}\}$/)
+              if (!match) return <span key={i}>{highlightCode(part, step.language)}</span>
+
+              const blankId = match[1]
+              const blank = step.blanks.find((b) => b.id === blankId)
+              if (!blank) return <span key={i}>{part}</span>
+
+              const result = results[blankId]
+              const isCorrect = result === true
+              const isWrong = result === false
+
+              return (
+                <span key={i} className="inline-block align-baseline">
+                  <input
+                    type="text"
+                    value={values[blankId]}
+                    onChange={(e) => {
+                      setValues((prev) => ({ ...prev, [blankId]: e.target.value }))
+                      if (submitted) setSubmitted(false)
+                    }}
+                    placeholder={blank.placeholder || '___'}
+                    disabled={isCorrect}
+                    className={`
+                      inline-block bg-foreground/[0.04] font-mono text-sm outline-none
+                      border-b-2 px-2 py-0.5 min-w-[80px] transition-colors
+                      ${isCorrect
+                        ? 'border-green-500/50 text-green-400'
+                        : isWrong
+                          ? 'border-red-500/50 text-red-400'
+                          : 'border-foreground/20 text-foreground/80 focus:border-foreground/40'
+                      }
+                    `}
+                    style={{ width: `${Math.max(80, (blank.answer.length + 2) * 8.5)}px` }}
+                    spellCheck={false}
+                  />
+                  {isWrong && blank.hint && (
+                    <span className="text-[10px] text-foreground/35 ml-1">{blank.hint}</span>
+                  )}
+                </span>
+              )
+            })}
+          </code>
+        </pre>
+      </div>
+
+      {submitted && step.explanation && allCorrect && (
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="rounded-xl px-5 py-4 bg-green-500/10 border border-green-500/20"
+        >
+          <p className="text-sm leading-relaxed text-green-300/80">{step.explanation}</p>
+        </motion.div>
+      )}
+
+      <div className="flex justify-end gap-3">
+        {submitted && !allCorrect && (
+          <Button onClick={handleRetry} variant="outline" className="font-mono gap-2">
+            <RotateCcw className="w-4 h-4" />
+            {t('gamification.tryAgain')}
+          </Button>
+        )}
+        {!allCorrect && (
+          <Button
+            onClick={handleCheck}
+            disabled={Object.values(values).some((v) => !v.trim())}
+            className="font-mono gap-2 h-12 px-6"
+            size="lg"
+          >
+            {t('gamification.check')}
+            <ChevronRight className="w-4 h-4" />
+          </Button>
+        )}
+      </div>
+    </div>
+  )
+}
+
+function CompareStep({
+  step,
+  onComplete,
+}: {
+  step: Extract<LessonStep, { type: 'compare' }>
+  onComplete: () => void
+}) {
+  const { t } = useTranslation()
+  const [selected, setSelected] = useState<'left' | 'right' | null>(null)
+  const [submitted, setSubmitted] = useState(false)
+  const isInteractive = !!step.question && !!step.correctSide
+  const isCorrect = submitted && selected === step.correctSide
+
+  const handleSelect = (side: 'left' | 'right') => {
+    if (submitted) return
+    setSelected(side)
+  }
+
+  const handleSubmit = () => {
+    if (!selected) return
+    setSubmitted(true)
+    if (selected === step.correctSide) setTimeout(onComplete, 1200)
+  }
+
+  const renderPanel = (panel: typeof step.left, side: 'left' | 'right') => {
+    const isSelected = selected === side
+    const isRight = submitted && side === step.correctSide
+    const isWrong = submitted && isSelected && side !== step.correctSide
+
+    return (
+      <div
+        className={`
+          rounded-xl border-2 overflow-hidden transition-all
+          ${isInteractive ? 'cursor-pointer' : ''}
+          ${isRight
+            ? 'border-green-500/40 bg-green-500/5'
+            : isWrong
+              ? 'border-red-500/40 bg-red-500/5'
+              : isSelected
+                ? 'border-foreground/30 bg-foreground/[0.04]'
+                : 'border-foreground/[0.08] bg-foreground/[0.02] hover:border-foreground/15'
+          }
+        `}
+        onClick={isInteractive ? () => handleSelect(side) : undefined}
+        onKeyDown={isInteractive ? (e) => { if (e.key === 'Enter') handleSelect(side) } : undefined}
+        role={isInteractive ? 'button' : undefined}
+        tabIndex={isInteractive ? 0 : undefined}
+      >
+        <div className="px-4 py-2.5 border-b border-foreground/[0.06] flex items-center justify-between">
+          <span className="text-xs font-mono font-semibold text-foreground/60 uppercase tracking-wider">
+            {panel.label}
+          </span>
+          {isRight && <Check className="w-4 h-4 text-green-500" />}
+        </div>
+        {panel.filename && (
+          <div className="px-4 py-1.5 border-b border-foreground/[0.04] text-[11px] font-mono text-foreground/35">
+            {panel.filename}
+          </div>
+        )}
+        <pre className="p-4 overflow-x-auto text-sm font-mono leading-relaxed">
+          <code>{panel.language ? highlightCode(panel.content, panel.language) : panel.content}</code>
+        </pre>
+      </div>
+    )
+  }
+
+  return (
+    <div className="space-y-4">
+      <h2 className="text-xl font-bold tracking-tight">{step.title}</h2>
+      {step.body && <p className="text-foreground/70 leading-relaxed">{step.body}</p>}
+      {isInteractive && step.question && (
+        <p className="text-foreground/80 font-medium">{step.question}</p>
+      )}
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+        {renderPanel(step.left, 'left')}
+        {renderPanel(step.right, 'right')}
+      </div>
+
+      {submitted && step.explanation && (
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          className={`rounded-xl px-5 py-4 ${isCorrect ? 'bg-green-500/10 border border-green-500/20' : 'bg-red-500/10 border border-red-500/20'}`}
+        >
+          <p className={`text-sm leading-relaxed ${isCorrect ? 'text-green-300/80' : 'text-red-300/80'}`}>
+            {isCorrect ? step.explanation : `Not quite. ${step.explanation}`}
+          </p>
+        </motion.div>
+      )}
+
+      {isInteractive && !submitted && (
+        <div className="flex justify-end">
+          <Button
+            onClick={handleSubmit}
+            disabled={!selected}
+            className="font-mono gap-2 h-12 px-6"
+            size="lg"
+          >
+            {t('gamification.check')}
+            <ChevronRight className="w-4 h-4" />
+          </Button>
+        </div>
+      )}
+
+      {submitted && !isCorrect && isInteractive && (
+        <div className="flex justify-end">
+          <Button
+            onClick={() => { setSelected(null); setSubmitted(false) }}
+            variant="outline"
+            className="font-mono gap-2"
+          >
+            <RotateCcw className="w-4 h-4" />
+            {t('gamification.tryAgain')}
+          </Button>
+        </div>
+      )}
+    </div>
+  )
+}
+
 // ============================================================================
 // Step renderer
 // ============================================================================
@@ -591,6 +850,10 @@ function StepRenderer({
       return <CheckpointStep step={step} />
     case 'diagram':
       return <DiagramStep step={step} />
+    case 'code-fill':
+      return <CodeFillStep step={step} onComplete={onComplete} />
+    case 'compare':
+      return <CompareStep step={step} onComplete={onComplete} />
     default:
       return null
   }
@@ -600,7 +863,13 @@ function StepRenderer({
 // Main player
 // ============================================================================
 
-const PASSIVE_STEPS = new Set(['info', 'code-demo', 'checkpoint', 'diagram'])
+const PASSIVE_STEP_TYPES = new Set(['info', 'code-demo', 'checkpoint', 'diagram'])
+
+function isPassiveStep(step: LessonStep): boolean {
+  if (PASSIVE_STEP_TYPES.has(step.type)) return true
+  if (step.type === 'compare' && !step.question) return true
+  return false
+}
 
 export function LessonPlayer({ lessonId }: { lessonId: string }) {
   const [content, setContent] = useState<LessonContent | null>(null)
@@ -622,7 +891,7 @@ export function LessonPlayer({ lessonId }: { lessonId: string }) {
 
   const totalSteps = content?.steps.length ?? 0
   const step = content?.steps[currentStep]
-  const isPassive = step ? PASSIVE_STEPS.has(step.type) : false
+  const isPassive = step ? isPassiveStep(step) : false
   const isStepCompleted = completedSteps.has(currentStep)
   const isLastStep = currentStep === totalSteps - 1
   const progressPercent = totalSteps > 0 ? Math.round(((currentStep + 1) / totalSteps) * 100) : 0

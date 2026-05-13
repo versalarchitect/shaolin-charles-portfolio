@@ -97,6 +97,24 @@ const content: LessonContent = {
       body: "A spec with a clear goal and acceptance criteria but no boundaries or scope exclusions. The agent builds everything correctly — then also adds authentication, a REST API, Docker config, CI/CD pipeline, and deployment scripts. It was being helpful. Without explicit boundaries, the agent optimizes for completeness. The Out of Scope section is not optional — it is your defense against scope creep from an eager builder.",
     },
     {
+      type: 'compare',
+      title: 'Spot the anti-pattern',
+      body: 'One of these specs constrains the agent. The other writes code in English.',
+      question: 'Which side is the correct approach?',
+      correctSide: 'left',
+      left: {
+        label: 'Constraint',
+        content: '## Constraints\n- Use Tailwind CSS for all styling\n- No authentication — single user only\n- Keep database logic in src/db/\n- SQLite via Drizzle ORM',
+        language: 'markdown',
+      },
+      right: {
+        label: 'Too prescriptive',
+        content: '## Implementation\n- Create src/components/BookmarkCard.tsx\n- Export component with props { url: string }\n- Use a div with className "card p-4 border"\n- Inside render an anchor tag with href={url}',
+        language: 'markdown',
+      },
+      explanation: 'The left side sets guardrails — which tools to use, what is off-limits. The right side dictates exact code structure. If you know the exact JSX, just write it yourself. A spec constrains decisions without making them.',
+    },
+    {
       type: 'multiple-choice',
       question: 'Which spec instruction is an anti-pattern?',
       options: [
@@ -202,6 +220,19 @@ const content: LessonContent = {
       ],
       correctIndex: 1,
       explanation: 'Agents are biased toward helpfulness and completeness. If an Out of Scope item is vague or easy to miss, the agent may build it anyway. Make exclusions explicit, prominent, and unambiguous. Repeat critical exclusions in constraints if needed.',
+    },
+    {
+      type: 'code-fill',
+      instruction: 'Complete this Out of Scope section for the bookmark manager. Think about what an eager agent might add that you explicitly do NOT want.',
+      language: 'markdown',
+      filename: 'SPEC.md',
+      template: '## Out of Scope\n- {{scope_1}}\n- Bookmark import/export\n- {{scope_2}}\n- Favicon fetching\n- {{scope_3}}',
+      blanks: [
+        { id: 'scope_1', answer: 'User authentication', alternatives: ['Authentication', 'User auth', 'Auth', 'Multi-tenancy', 'User authentication / multi-tenancy'], placeholder: 'what login feature?', hint: 'The spec says single-user, local' },
+        { id: 'scope_2', answer: 'Browser extension', alternatives: ['Chrome extension', 'browser extension', 'Extension'], placeholder: 'what browser feature?', hint: 'A common way to save bookmarks' },
+        { id: 'scope_3', answer: 'Deployment configuration', alternatives: ['Deployment', 'Deploy config', 'Deployment config', 'CI/CD', 'Docker'], placeholder: 'what infrastructure?', hint: 'The spec focuses on local development' },
+      ],
+      explanation: 'Each exclusion prevents a specific form of scope creep. An eager agent might reasonably add any of these "helpful" features without being told not to.',
     },
     {
       type: 'code-input',

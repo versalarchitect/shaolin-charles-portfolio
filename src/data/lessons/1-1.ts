@@ -103,11 +103,22 @@ const content: LessonContent = {
       body: "Attention is how the AI decides which parts of your message are most important for each word it writes back. For example, in \"The cat sat on the mat because it was tired,\" the AI uses attention to figure out that \"it\" refers to \"the cat,\" not \"the mat.\" It compares every word to every other word and gives higher importance to the most relevant pairs.",
     },
     {
-      type: 'code-demo',
+      type: 'compare',
       title: 'Attention in practice',
-      body: "Attention is why prompt structure matters. The model weighs every token against every other token. Putting the most important instruction last (closer to where generation begins) often gets better results.",
-      language: 'text',
-      code: '# Weaker — key instruction buried in the middle:\n"Write a function that sorts a list. Make it Python. Use type hints. Return only code."\n\n# Stronger — key instruction at the end:\n"Write a Python function with type hints that sorts a list. Return only code."',
+      body: 'Attention is why prompt structure matters. The model weighs every token against every other token. Putting the most important instruction last (closer to where generation begins) often gets better results.',
+      question: 'Which prompt structure will produce more reliable output?',
+      correctSide: 'right',
+      left: {
+        label: 'Weaker',
+        content: '"Write a function that sorts a list. Make it Python. Use type hints. Return only code."',
+        language: 'text',
+      },
+      right: {
+        label: 'Stronger',
+        content: '"Write a Python function with type hints that sorts a list. Return only code."',
+        language: 'text',
+      },
+      explanation: 'The stronger version puts the most important constraint ("Return only code") at the end, closest to where generation begins. The model attends most strongly to recent tokens, so the final instruction carries the most weight.',
     },
     {
       type: 'order',
