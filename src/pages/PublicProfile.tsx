@@ -138,6 +138,33 @@ export default function PublicProfile() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userId])
 
+  const profileUrl = `https://charlesjackson.dev/profile/${userId}`
+
+  const handleShare = useCallback(async () => {
+    if (!profile) return
+    const shareData = {
+      title: `${profile.display_name}'s Profile`,
+      text: `${profile.rank} rank · ${(profile.total_xp ?? 0).toLocaleString()} XP · ${profile.current_streak}-day streak`,
+      url: profileUrl,
+    }
+
+    if (navigator.share) {
+      try {
+        await navigator.share(shareData)
+        return
+      } catch (err) {
+        if (err instanceof Error && err.name === 'AbortError') return
+      }
+    }
+
+    try {
+      await navigator.clipboard.writeText(profileUrl)
+      toast.success(t('publicProfile.profileLinkCopied'))
+    } catch {
+      window.prompt('Copy this link:', profileUrl)
+    }
+  }, [profile, profileUrl, t])
+
   if (loading) return <ProfileSkeleton />
   if (error) return <ErrorState onRetry={loadProfile} />
   if (notFound || !profile) return <NotFoundState />
@@ -163,34 +190,6 @@ export default function PublicProfile() {
     { icon: BookOpen, label: t('publicProfile.achievements'), value: `${profile.unlocked_achievements.length}` },
     { icon: Trophy, label: t('publicProfile.rank'), value: profile.rank },
   ]
-
-  const profileUrl = `https://charlesjackson.dev/profile/${userId}`
-
-  const handleShare = useCallback(async () => {
-    const shareData = {
-      title: `${profile.display_name}'s Profile`,
-      text: `${profile.rank} rank · ${(profile.total_xp ?? 0).toLocaleString()} XP · ${profile.current_streak}-day streak`,
-      url: profileUrl,
-    }
-
-    if (navigator.share) {
-      try {
-        await navigator.share(shareData)
-        return
-      } catch (err) {
-        if (err instanceof Error && err.name === 'AbortError') return
-        // Fall through to clipboard fallback
-      }
-    }
-
-    try {
-      await navigator.clipboard.writeText(profileUrl)
-      toast.success(t('publicProfile.profileLinkCopied'))
-    } catch {
-      // Final fallback: prompt-based copy
-      window.prompt('Copy this link:', profileUrl)
-    }
-  }, [profile, profileUrl])
 
   return (
     <>
