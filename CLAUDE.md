@@ -1,5 +1,7 @@
 # Charles Portfolio - Development Guidelines
 
+> Design philosophy (animation-first, visual density, shadcn/ui) is inherited from `~/code/CLAUDE.md`. Project rules below extend but never override the global defaults.
+
 ## Project Overview
 
 Personal portfolio website for Charles Jackson showcasing projects, skills, and 3D art experiments.
@@ -152,9 +154,7 @@ Phases 1–4 and partial Phase 6 complete. 284 active facts from 59 source event
 
 ## Design Philosophy
 
-**Sophistication is in subtlety.**
-
-Restraint is more impressive than excess. A single well-placed animation beats ten competing effects. Let the content breathe. The best design disappears - users notice the experience, not the techniques.
+Monochromatic theme with depth. Every section earns its scroll through visual substance and animation.
 
 ## Content Guidelines
 
@@ -262,10 +262,8 @@ import { IntersectionGrid } from '@/components/ui/gradient-background'
 - Subtle animations (gentle float, slight rotation)
 - Should complement, not distract from main content
 
-### Animation Philosophy
-- Subtle and purposeful
-- No jarring transitions
-- Use Framer Motion for smooth interactions
+### Animation Tools
+- Framer Motion for smooth interactions
 - Magnetic buttons for interactive elements
 
 ### Opacity & Transparency Scale
