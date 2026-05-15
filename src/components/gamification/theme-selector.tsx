@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next'
 import { motion } from 'motion/react'
 import { Check, Lock, Palette, RotateCcw } from 'lucide-react'
 import { useTheme, type CosmeticTheme } from '@/components/theme-provider'
@@ -108,6 +109,7 @@ function ThemeSwatch({ colors }: { colors: [string, string, string] }) {
 export function ThemeSelector() {
   const { cosmeticTheme, setCosmeticTheme, resolvedTheme } = useTheme()
   const progress = useProgress()
+  const { t } = useTranslation()
 
   return (
     <div className="space-y-4">
@@ -115,7 +117,7 @@ export function ThemeSelector() {
         <div className="flex items-center gap-2">
           <Palette className="w-4 h-4 text-foreground/60" />
           <h2 className="text-sm font-mono uppercase tracking-wider text-foreground/40">
-            Cosmetic Themes
+            {t('themeSelector.title')}
           </h2>
         </div>
         {cosmeticTheme && (
@@ -127,7 +129,7 @@ export function ThemeSelector() {
             whileTap={{ scale: 0.98 }}
           >
             <RotateCcw className="w-3 h-3" />
-            Reset
+            {t('themeSelector.reset')}
           </motion.button>
         )}
       </div>

@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from 'react'
+import { useTranslation } from 'react-i18next'
 import { toast } from 'sonner'
 import { useParams, Link, useNavigate } from 'react-router-dom'
 import { motion, AnimatePresence } from 'motion/react'
@@ -54,6 +55,7 @@ function formatDuration(minutes: number): string {
 
 
 function LessonNavCard({ lesson, direction, disabled }: { lesson: Lesson | null; direction: 'prev' | 'next'; disabled?: boolean }) {
+  const { t } = useTranslation()
   const isPrev = direction === 'prev'
   const Arrow = isPrev ? ArrowLeft : ArrowRight
 
@@ -63,8 +65,8 @@ function LessonNavCard({ lesson, direction, disabled }: { lesson: Lesson | null;
         <div className={`flex items-center ${isPrev ? '' : 'justify-end'} gap-3`}>
           {isPrev && <Arrow className="w-4 h-4 text-foreground/30 shrink-0" />}
           <div className={isPrev ? '' : 'text-right'}>
-            <p className="text-[10px] font-mono text-foreground/30 mb-0.5">{isPrev ? 'Previous' : 'Next'}</p>
-            <p className="text-sm text-foreground/30">{isPrev ? 'First lesson' : 'Course complete!'}</p>
+            <p className="text-[10px] font-mono text-foreground/30 mb-0.5">{isPrev ? t('learn.previous') : t('learn.next')}</p>
+            <p className="text-sm text-foreground/30">{isPrev ? t('learn.firstLesson') : t('learn.courseCompleteNav')}</p>
           </div>
           {!isPrev && <Arrow className="w-4 h-4 text-foreground/30 shrink-0" />}
         </div>
@@ -77,7 +79,7 @@ function LessonNavCard({ lesson, direction, disabled }: { lesson: Lesson | null;
       <div className="rounded-xl bg-foreground/[0.01] border border-foreground/[0.05] p-4 opacity-40">
         <div className="flex items-center justify-end gap-3">
           <div className="text-right min-w-0">
-            <p className="text-[10px] font-mono text-foreground/30 mb-0.5">Next</p>
+            <p className="text-[10px] font-mono text-foreground/30 mb-0.5">{t('learn.next')}</p>
             <p className="text-sm text-foreground/30 truncate"><Lock className="w-3 h-3 inline mr-1" />{lesson.title}</p>
           </div>
           <ArrowRight className="w-4 h-4 text-foreground/30 shrink-0" />
@@ -91,7 +93,7 @@ function LessonNavCard({ lesson, direction, disabled }: { lesson: Lesson | null;
       <div className={`flex items-center ${isPrev ? '' : 'justify-end'} gap-3`}>
         {isPrev && <Arrow className="w-4 h-4 text-foreground/40 group-hover:text-foreground/70 group-hover:-translate-x-1 transition-all shrink-0" />}
         <div className={`min-w-0 ${isPrev ? '' : 'text-right'}`}>
-          <p className="text-[10px] font-mono text-foreground/40 mb-0.5">{isPrev ? 'Previous' : 'Next'}</p>
+          <p className="text-[10px] font-mono text-foreground/40 mb-0.5">{isPrev ? t('learn.previous') : t('learn.next')}</p>
           <p className="text-sm font-medium text-foreground/70 group-hover:text-foreground/90 truncate transition-colors">
             {isPrev ? <><span className="font-mono text-foreground/40 mr-1">{lesson.number}</span>{lesson.title}</> : <>{lesson.title}<span className="font-mono text-foreground/40 ml-1">{lesson.number}</span></>}
           </p>
@@ -103,6 +105,7 @@ function LessonNavCard({ lesson, direction, disabled }: { lesson: Lesson | null;
 }
 
 function LockedState({ lessonTitle }: { lessonTitle: string }) {
+  const { t } = useTranslation()
   return (
     <div className="p-6 lg:p-8 max-w-2xl mx-auto">
       <div className="text-center space-y-6 py-24">
@@ -113,15 +116,15 @@ function LockedState({ lessonTitle }: { lessonTitle: string }) {
         >
           <Lock className="w-7 h-7 text-foreground/40" />
         </motion.div>
-        <h1 className="text-2xl font-bold">Lesson Locked</h1>
+        <h1 className="text-2xl font-bold">{t('learn.lessonLocked')}</h1>
         <p className="text-foreground/60 leading-relaxed max-w-md mx-auto">
-          Complete the previous lessons to unlock{' '}
+          {t('learn.completePrevious')}{' '}
           <span className="text-foreground/80 font-medium">"{lessonTitle}"</span>.
         </p>
         <Link to="/course/dashboard">
           <Button variant="outline" className="gap-2 font-mono">
             <ArrowLeft className="w-4 h-4" />
-            Back to Dashboard
+            {t('learn.backToDashboard')}
           </Button>
         </Link>
       </div>
@@ -130,6 +133,7 @@ function LockedState({ lessonTitle }: { lessonTitle: string }) {
 }
 
 function BookmarkButton({ lessonId }: { lessonId: string }) {
+  const { t } = useTranslation()
   useBookmarks()
   const bookmarked = isBookmarked(lessonId)
 
@@ -137,7 +141,7 @@ function BookmarkButton({ lessonId }: { lessonId: string }) {
     <motion.button
       onClick={() => {
         toggleBookmark(lessonId)
-        toast(bookmarked ? 'Bookmark removed' : 'Lesson bookmarked', { duration: 2000 })
+        toast(bookmarked ? t('learn.bookmarkRemoved') : t('learn.lessonBookmarked'), { duration: 2000 })
       }}
       whileTap={{ scale: 0.85 }}
       animate={bookmarked ? { scale: [1, 1.25, 1] } : undefined}
@@ -153,16 +157,17 @@ function BookmarkButton({ lessonId }: { lessonId: string }) {
 }
 
 function LessonNotFound() {
+  const { t } = useTranslation()
   return (
     <div className="p-6 lg:p-8 max-w-2xl mx-auto">
       <div className="text-center space-y-6 py-24">
-        <h1 className="text-6xl font-bold text-foreground/10">404</h1>
-        <h2 className="text-2xl font-bold">Lesson Not Found</h2>
-        <p className="text-foreground/60">This lesson doesn't exist or may have been moved.</p>
+        <h1 className="text-6xl font-bold text-foreground/10">{t('learn.notFound')}</h1>
+        <h2 className="text-2xl font-bold">{t('learn.lessonNotFound')}</h2>
+        <p className="text-foreground/60">{t('learn.lessonNotFoundDesc')}</p>
         <Link to="/course/dashboard">
           <Button className="gap-2 font-mono">
             <ArrowLeft className="w-4 h-4" />
-            Back to Dashboard
+            {t('learn.backToDashboard')}
           </Button>
         </Link>
       </div>
@@ -171,6 +176,7 @@ function LessonNotFound() {
 }
 
 export default function Learn() {
+  const { t } = useTranslation()
   const { lessonId } = useParams<{ lessonId: string }>()
   const navigate = useNavigate()
   const progress = useProgress()
@@ -226,7 +232,7 @@ export default function Learn() {
   if (!found) {
     return (
       <>
-        <SEO title="Lesson Not Found" description="This lesson could not be found." noindex />
+        <SEO title={t('learn.lessonNotFound')} description="This lesson could not be found." noindex />
         <LessonNotFound />
       </>
     )
@@ -315,7 +321,7 @@ export default function Learn() {
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.7 }}
               >
-                Lesson completed!
+                {t('learn.lessonCompleted')}
               </motion.p>
 
               {adjacent.next && (
@@ -326,7 +332,7 @@ export default function Learn() {
                 >
                   <Link to={`/course/learn/${adjacent.next.id}`} onClick={() => setShowCelebration(false)}>
                     <Button size="lg" className="gap-2 font-mono group">
-                      Continue to next lesson
+                      {t('learn.continueToNext')}
                       <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                     </Button>
                   </Link>
@@ -347,7 +353,7 @@ export default function Learn() {
               className="flex items-center gap-1.5 hover:text-foreground transition-colors shrink-0"
             >
               <ArrowLeft className="w-4 h-4" />
-              <span className="hidden sm:inline">Dashboard</span>
+              <span className="hidden sm:inline">{t('gamification.dashboard')}</span>
             </Link>
             <ChevronRight className="w-3.5 h-3.5 shrink-0 text-foreground/25" />
             <span className="truncate text-foreground/35">
@@ -368,7 +374,7 @@ export default function Learn() {
             {lesson.isCapstone && (
               <span className="text-xs font-mono px-2.5 py-1 bg-foreground/10 rounded border border-foreground/15 text-foreground/70 flex items-center gap-1">
                 <Award className="w-3 h-3" />
-                Capstone
+                {t('learn.capstone')}
               </span>
             )}
           </div>
@@ -399,7 +405,7 @@ export default function Learn() {
             {isCompleted && (
               <span className="flex items-center gap-1.5 text-sm font-mono text-green-500">
                 <Check className="w-3.5 h-3.5" />
-                Completed
+                {t('gamification.completed')}
               </span>
             )}
             <ComboIndicator />
@@ -423,7 +429,7 @@ export default function Learn() {
         {/* Learning objectives */}
         {lesson.objectives.length > 0 && (
           <div className="mt-10">
-            <h2 className="text-xl font-bold mb-4">Learning Objectives</h2>
+            <h2 className="text-xl font-bold mb-4">{t('learn.learningObjectives')}</h2>
             <div className="rounded-xl border border-foreground/[0.08] bg-foreground/[0.02] p-5">
               <div className="space-y-3">
                 {lesson.objectives.map((objective, i) => (
@@ -447,7 +453,7 @@ export default function Learn() {
         {/* Tools used */}
         {lesson.tools.length > 0 && (
           <div className="mt-8">
-            <h2 className="text-xl font-bold mb-4">Tools Used</h2>
+            <h2 className="text-xl font-bold mb-4">{t('learn.toolsUsed')}</h2>
             <div className="flex flex-wrap gap-2">
               {lesson.tools.map((tool) => (
                 <span
@@ -471,10 +477,10 @@ export default function Learn() {
               <div className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-foreground/[0.03] border border-foreground/10">
                 <Check className="w-4 h-4 text-green-500" />
                 <span className="font-mono text-sm text-foreground/70">
-                  Completed — {lesson.xp} XP earned
+                  {t('gamification.completed')} — {lesson.xp} XP {t('curriculum.progress.earned')}
                 </span>
               </div>
-              <p className="text-xs text-foreground/40 font-mono">You can review this lesson anytime</p>
+              <p className="text-xs text-foreground/40 font-mono">{t('learn.reviewAnytime')}</p>
             </div>
           ) : (
             <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
@@ -484,7 +490,7 @@ export default function Learn() {
                 onClick={handleComplete}
               >
                 <Check className="w-4 h-4 mr-2" />
-                Mark as Complete
+                {t('learn.markAsComplete')}
                 <span className="ml-2 text-xs opacity-70">+{lesson.xp} XP</span>
               </Button>
             </motion.div>

@@ -14,9 +14,9 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
   const isDashboard = pathname === '/course/dashboard'
 
   return (
-    <div className="flex min-h-screen" style={{ fontFamily: 'var(--font-inter)' }}>
+    <div className="flex h-[100dvh]" style={{ fontFamily: 'var(--font-inter)' }}>
       <AppSidebar />
-      <main id="main-content" className="flex-1 lg:ml-64 pt-14 lg:pt-0">
+      <main id="main-content" className="flex-1 flex flex-col lg:ml-64 pt-14 lg:pt-0 overflow-hidden">
         {!isDashboard && (
           <Suspense fallback={null}>
             <GamificationErrorBoundary silent>
@@ -25,7 +25,7 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
           </Suspense>
         )}
         {!isDashboard && (
-          <div className="px-6 lg:px-8 pt-6">
+          <div className="px-6 lg:px-8 pt-6 shrink-0">
             <Suspense fallback={null}>
               <GamificationErrorBoundary silent>
                 <StreakWarning />
@@ -33,7 +33,9 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
             </Suspense>
           </div>
         )}
-        {children}
+        <div className="flex-1 min-h-0 overflow-y-auto">
+          {children}
+        </div>
       </main>
       <Suspense fallback={null}>
         <GamificationErrorBoundary silent>

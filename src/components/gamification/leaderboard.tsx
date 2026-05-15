@@ -1,4 +1,5 @@
 import { motion } from 'motion/react'
+import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
 import { Flame, Trophy, Zap } from 'lucide-react'
 import type { LeaderboardEntry } from '@/lib/leaderboard-api'
@@ -57,6 +58,7 @@ function SkeletonRow({ index }: { index: number }) {
 }
 
 export function Leaderboard({ entries, currentUserId, title, loading }: LeaderboardProps) {
+  const { t } = useTranslation()
   if (loading) {
     return (
       <div className="space-y-3">
@@ -88,16 +90,16 @@ export function Leaderboard({ entries, currentUserId, title, loading }: Leaderbo
             >
               <Trophy className="w-6 h-6 text-foreground/25" />
             </motion.div>
-            <p className="text-sm text-foreground/50 mb-1">No rankings yet</p>
+            <p className="text-sm text-foreground/50 mb-1">{t('leaderboardComponent.noRankings')}</p>
             <p className="text-xs text-foreground/30 font-mono mb-4">
-              Complete lessons to earn XP and claim your spot
+              {t('leaderboardComponent.noRankingsDesc')}
             </p>
             <Link
               to="/course/modules/foundations/lessons/what-is-agentic"
               className="inline-flex items-center gap-1.5 text-xs font-mono text-foreground/50 hover:text-foreground/70 transition-colors px-3 py-1.5 rounded-lg border border-foreground/[0.08] hover:bg-foreground/[0.04]"
             >
               <Zap className="w-3 h-3" />
-              Start your first lesson
+              {t('leaderboardComponent.startFirstLesson')}
             </Link>
           </li>
         )}

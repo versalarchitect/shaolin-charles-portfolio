@@ -1,5 +1,6 @@
 import { useMemo, useState, useCallback } from 'react'
 import { Link } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import { motion } from 'motion/react'
 import { Check, Lock } from 'lucide-react'
 import { CURRICULUM } from '@/data/curriculum'
@@ -232,6 +233,7 @@ function NodeCircle({
 
 export function SkillTree({ compact = false }: SkillTreeProps) {
   useProgress()
+  const { t } = useTranslation()
 
   const { nodes, totalWidth, totalHeight, labelW, tierGap, capstoneSize } =
     useLayout(compact)
@@ -341,7 +343,7 @@ export function SkillTree({ compact = false }: SkillTreeProps) {
       {/* Section header */}
       {!compact && (
         <h2 className="text-sm font-mono uppercase tracking-wider text-foreground/40 mb-3">
-          Skill Tree
+          {t('skillTree.title')}
         </h2>
       )}
 
@@ -357,7 +359,7 @@ export function SkillTree({ compact = false }: SkillTreeProps) {
           className="block"
           style={{ minWidth: totalWidth + 16 }}
           role="group"
-          aria-label="Skill tree: course lesson progression map"
+          aria-label={t('skillTree.ariaLabel')}
         >
           {/* Connections */}
           {connections.map((c, i) => {

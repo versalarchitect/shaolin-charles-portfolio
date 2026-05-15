@@ -1,4 +1,5 @@
 import { motion } from 'motion/react'
+import { useTranslation } from 'react-i18next'
 import {
   Workflow,
   Layers,
@@ -24,61 +25,63 @@ interface BentoItem {
 }
 
 export function BentoGrid() {
+  const { t } = useTranslation()
+
   const bentoItems: BentoItem[] = [
     {
       icon: Workflow,
-      title: 'Multi-Agent Orchestration',
-      description: 'Coordinate multiple AI agents working in parallel on complex tasks. Learn when to split work, how to verify outputs, and how to merge agent contributions into a coherent whole.',
+      title: t('bentoGrid.multiAgentOrchestration'),
+      description: t('bentoGrid.multiAgentDesc'),
       tags: ['Parallel Agents', 'Task Splitting', 'Verification', 'Merging'],
       className: 'md:col-span-2 md:row-span-2',
       featured: true,
     },
     {
       icon: Layers,
-      title: 'The Tool Ladder',
-      description: 'paste → skill → script → agent → MCP',
+      title: t('bentoGrid.toolLadder'),
+      description: t('bentoGrid.toolLadderDesc'),
       tags: ['Right Tool', 'Right Job'],
     },
     {
       icon: Eye,
-      title: 'Read Before Generate',
-      description: 'Understanding before creation',
+      title: t('bentoGrid.readBeforeGenerate'),
+      description: t('bentoGrid.readBeforeGenerateDesc'),
       tags: ['Codebase Audit', 'Context'],
     },
     {
       icon: FileText,
-      title: 'Spec-Driven Development',
-      description: 'Define before you build',
+      title: t('bentoGrid.specDriven'),
+      description: t('bentoGrid.specDrivenDesc'),
       tags: ['Specs', 'Constraints'],
     },
     {
       icon: Bot,
-      title: 'Agent-First Workflows',
-      description: 'Design work around agents',
+      title: t('bentoGrid.agentFirst'),
+      description: t('bentoGrid.agentFirstDesc'),
       tags: ['MCP Servers', 'Skills'],
     },
     {
       icon: Bug,
-      title: 'Error-First Debugging',
-      description: 'Read the error, not the prompt',
+      title: t('bentoGrid.errorFirst'),
+      description: t('bentoGrid.errorFirstDesc'),
       tags: ['Stack Traces', 'Root Cause'],
     },
     {
       icon: Shield,
-      title: 'Own Your Constraints',
-      description: 'Limits are design parameters',
+      title: t('bentoGrid.ownConstraints'),
+      description: t('bentoGrid.ownConstraintsDesc'),
       tags: ['Token Budgets', 'Context'],
     },
     {
       icon: TestTube,
-      title: 'Test What Matters',
-      description: 'Confidence over coverage',
+      title: t('bentoGrid.testMatters'),
+      description: t('bentoGrid.testMattersDesc'),
       tags: ['Critical Paths', 'E2E'],
     },
     {
       icon: PenTool,
-      title: 'Taste Is the Moat',
-      description: 'AI generates. You judge.',
+      title: t('bentoGrid.tasteIsMoat'),
+      description: t('bentoGrid.tasteIsMoatDesc'),
       tags: ['Judgment', 'Quality'],
     },
   ]
@@ -206,15 +209,17 @@ function BentoCard({
 }
 
 export function SkillBadges() {
+  const { t } = useTranslation()
+
   const concepts = [
-    { name: 'Agent Orchestration', context: 'Core' },
-    { name: 'Tool Ladder', context: 'T1–T4' },
-    { name: 'Spec Writing', context: 'T1–T4' },
-    { name: 'MCP Servers', context: 'T1–T4' },
-    { name: 'Error-First Debug', context: 'T1–T4' },
-    { name: 'System Teardowns', context: 'T4' },
-    { name: 'Capstone Shipping', context: 'T1–T4' },
-    { name: 'Judgment', context: 'Core' },
+    { name: t('bentoGrid.agentOrchestration'), context: 'Core' },
+    { name: t('bentoGrid.toolLadderBadge'), context: 'T1–T4' },
+    { name: t('bentoGrid.specWriting'), context: 'T1–T4' },
+    { name: t('bentoGrid.mcpServers'), context: 'T1–T4' },
+    { name: t('bentoGrid.errorFirstDebug'), context: 'T1–T4' },
+    { name: t('bentoGrid.systemTeardowns'), context: 'T4' },
+    { name: t('bentoGrid.capstoneShipping'), context: 'T1–T4' },
+    { name: t('bentoGrid.judgment'), context: 'Core' },
   ]
 
   return (

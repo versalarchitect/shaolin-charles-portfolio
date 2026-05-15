@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useParams, Link } from 'react-router-dom'
 import { motion } from 'motion/react'
 import { Zap, Flame, Trophy, BookOpen, ArrowLeft, UserX, RefreshCw, Share2 } from 'lucide-react'
@@ -34,6 +35,7 @@ function ProfileSkeleton() {
 }
 
 function NotFoundState() {
+  const { t } = useTranslation()
   return (
     <div className="max-w-2xl mx-auto px-6 py-20 flex items-center justify-center">
       <motion.div
@@ -46,18 +48,18 @@ function NotFoundState() {
           <UserX className="w-7 h-7 text-foreground/20" />
         </div>
         <p className="text-[10px] font-mono uppercase tracking-[0.2em] text-foreground/25 mb-2">
-          404
+          {t('publicProfile.notFound')}
         </p>
-        <h1 className="text-xl font-semibold text-foreground/80 mb-2">Profile Not Found</h1>
+        <h1 className="text-xl font-semibold text-foreground/80 mb-2">{t('publicProfile.profileNotFound')}</h1>
         <p className="text-sm text-foreground/40 font-mono mb-6">
-          This user doesn't exist or hasn't set up their profile yet.
+          {t('publicProfile.profileNotFoundDesc')}
         </p>
         <Link
           to="/"
           className="inline-flex items-center gap-2 text-sm font-mono text-foreground/60 hover:text-foreground/80 transition-colors px-4 py-2 rounded-lg border border-foreground/[0.08] hover:bg-foreground/[0.04]"
         >
           <ArrowLeft className="w-4 h-4" />
-          Go to Home
+          {t('publicProfile.goToHome')}
         </Link>
       </motion.div>
     </div>
@@ -65,6 +67,7 @@ function NotFoundState() {
 }
 
 function ErrorState({ onRetry }: { onRetry: () => void }) {
+  const { t } = useTranslation()
   return (
     <div className="max-w-2xl mx-auto px-6 py-20 flex items-center justify-center">
       <motion.div
@@ -75,14 +78,14 @@ function ErrorState({ onRetry }: { onRetry: () => void }) {
       >
         <RefreshCw className="w-6 h-6 mx-auto mb-4 text-foreground/20" />
         <p className="text-sm text-foreground/50 mb-4">
-          Couldn't load profile data.
+          {t('publicProfile.couldntLoad')}
         </p>
         <button
           onClick={onRetry}
           className="inline-flex items-center gap-2 text-xs font-mono text-foreground/60 hover:text-foreground/80 transition-colors px-3 py-1.5 rounded-lg border border-foreground/[0.08] hover:bg-foreground/[0.04]"
         >
           <RefreshCw className="w-3 h-3" />
-          Retry
+          {t('publicProfile.retry')}
         </button>
       </motion.div>
     </div>
@@ -90,6 +93,7 @@ function ErrorState({ onRetry }: { onRetry: () => void }) {
 }
 
 export default function PublicProfile() {
+  const { t } = useTranslation()
   const { userId } = useParams<{ userId: string }>()
   const [profile, setProfile] = useState<PublicProfileData | null>(null)
   const [percentile, setPercentile] = useState<number | null>(null)
@@ -154,10 +158,10 @@ export default function PublicProfile() {
     : null
 
   const stats = [
-    { icon: Zap, label: 'Total XP', value: (profile.total_xp ?? 0).toLocaleString(), badge: topPercent !== null ? `Top ${topPercent}%` : undefined },
-    { icon: Flame, label: 'Streak', value: `${profile.current_streak} days` },
-    { icon: BookOpen, label: 'Achievements', value: `${profile.unlocked_achievements.length}` },
-    { icon: Trophy, label: 'Rank', value: profile.rank },
+    { icon: Zap, label: t('publicProfile.totalXp'), value: (profile.total_xp ?? 0).toLocaleString(), badge: topPercent !== null ? `Top ${topPercent}%` : undefined },
+    { icon: Flame, label: t('publicProfile.streak'), value: `${profile.current_streak} days` },
+    { icon: BookOpen, label: t('publicProfile.achievements'), value: `${profile.unlocked_achievements.length}` },
+    { icon: Trophy, label: t('publicProfile.rank'), value: profile.rank },
   ]
 
   const profileUrl = `https://charlesjackson.dev/profile/${userId}`
@@ -181,7 +185,7 @@ export default function PublicProfile() {
 
     try {
       await navigator.clipboard.writeText(profileUrl)
-      toast.success('Profile link copied!')
+      toast.success(t('publicProfile.profileLinkCopied'))
     } catch {
       // Final fallback: prompt-based copy
       window.prompt('Copy this link:', profileUrl)
@@ -249,7 +253,7 @@ export default function PublicProfile() {
               whileTap={{ scale: 0.97 }}
             >
               <Share2 className="w-3 h-3" />
-              Share Profile
+              {t('publicProfile.shareProfile')}
             </motion.button>
           </div>
 
@@ -284,7 +288,7 @@ export default function PublicProfile() {
           >
             <div className="flex items-center gap-2 mb-4">
               <Trophy className="w-4 h-4 text-foreground/40" />
-              <span className="text-sm font-mono font-medium text-foreground/60">Achievements</span>
+              <span className="text-sm font-mono font-medium text-foreground/60">{t('publicProfile.achievements')}</span>
               <span className="text-[10px] font-mono text-foreground/30 ml-auto">
                 {unlockedAchievementData.length}/{ACHIEVEMENTS.length}
               </span>
@@ -293,7 +297,7 @@ export default function PublicProfile() {
             {unlockedAchievementData.length === 0 ? (
               <div className="text-center py-6">
                 <Trophy className="w-6 h-6 mx-auto mb-2 text-foreground/15" />
-                <p className="text-xs text-foreground/30 font-mono">No achievements unlocked yet</p>
+                <p className="text-xs text-foreground/30 font-mono">{t('publicProfile.noAchievements')}</p>
               </div>
             ) : (
               <div className="flex flex-wrap gap-2">

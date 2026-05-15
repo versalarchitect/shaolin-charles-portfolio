@@ -1,10 +1,12 @@
 import { useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { motion } from 'motion/react'
 import { Clock, Target, Sparkles, Zap } from 'lucide-react'
 import { useProgress, getWeeklyChallenges } from '@/stores/progress'
 import type { WeeklyChallenge } from '@/stores/progress'
 
 function useWeeklyCountdown() {
+  const { t } = useTranslation()
   const [timeLeft, setTimeLeft] = useState(() => {
     const now = new Date()
     const nextMonday = new Date(now)
@@ -33,12 +35,13 @@ function useWeeklyCountdown() {
   const days = Math.floor(totalHours / 24)
   const hours = totalHours % 24
 
-  const label = days > 0 ? `Resets in ${days}d ${hours}h` : `Resets in ${hours}h`
+  const label = days > 0 ? `${t('weeklyChallenges.resetsIn')} ${days}d ${hours}h` : `${t('weeklyChallenges.resetsIn')} ${hours}h`
 
   return { label }
 }
 
 export function WeeklyChallenges() {
+  const { t } = useTranslation()
   useProgress()
   const challenges = getWeeklyChallenges()
   const completedCount = challenges.filter((c) => c.completed).length
@@ -48,7 +51,7 @@ export function WeeklyChallenges() {
     <div className="space-y-3">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <h2 className="text-sm font-mono uppercase tracking-wider text-foreground/40">Weekly Challenges</h2>
+          <h2 className="text-sm font-mono uppercase tracking-wider text-foreground/40">{t('weeklyChallenges.title')}</h2>
           <span className="flex items-center gap-1 text-[10px] font-mono text-foreground/30">
             <Clock className="w-3 h-3" />
             {countdownLabel}

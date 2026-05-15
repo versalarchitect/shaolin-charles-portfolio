@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect, useCallback, type KeyboardEvent } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useParams, Link, Navigate } from 'react-router-dom'
 import { SEO } from '@/components/SEO'
 import { Button } from '@/components/ui/button'
@@ -154,6 +155,7 @@ function ReplyCard({
   userId?: string
   onLikeToggle: (replyId: string) => void
 }) {
+  const { t } = useTranslation()
   const isInstructor = reply.author_tier === 'Instructor'
 
   return (
@@ -208,7 +210,7 @@ function ReplyCard({
             </button>
             <button className="flex items-center gap-1.5 text-[11px] text-foreground/25 hover:text-foreground/50 transition-colors font-mono cursor-pointer">
               <CornerDownRight className="w-3 h-3" />
-              Reply
+              {t('communityThread.reply')}
             </button>
           </div>
         </div>
@@ -218,6 +220,7 @@ function ReplyCard({
 }
 
 export default function CommunityThread() {
+  const { t } = useTranslation()
   const { threadId } = useParams<{ threadId: string }>()
   const { user } = useAuth()
   const [thread, setThread] = useState<Thread | null>(null)
@@ -313,7 +316,7 @@ export default function CommunityThread() {
     try {
       const result = await toggleBookmark(user.id, threadId)
       setBookmarked(result)
-      toast.success(result ? 'Thread saved' : 'Bookmark removed')
+      toast.success(result ? t('communityThread.threadSaved') : t('communityThread.bookmarkRemoved'))
     } catch {
       toast.error('Failed to update bookmark')
     }
@@ -406,7 +409,7 @@ export default function CommunityThread() {
               className="inline-flex items-center gap-2 text-sm text-foreground/40 hover:text-foreground/70 transition-colors mb-6 group font-mono"
             >
               <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
-              Back to Community
+              {t('communityThread.backToCommunity')}
             </Link>
           </BlurFadeIn>
 
@@ -465,7 +468,7 @@ export default function CommunityThread() {
                       <ThumbsUp
                         className={`w-3.5 h-3.5 ${liked ? 'fill-foreground/40' : ''}`}
                       />
-                      Like
+                      {t('communityThread.like')}
                     </button>
                     <button
                       onClick={handleBookmark}
@@ -478,14 +481,14 @@ export default function CommunityThread() {
                       <Bookmark
                         className={`w-3.5 h-3.5 ${bookmarked ? 'fill-foreground/40' : ''}`}
                       />
-                      {bookmarked ? 'Saved' : 'Save'}
+                      {bookmarked ? t('communityThread.saved') : t('communityThread.save')}
                     </button>
                     <button
                       onClick={handleShare}
                       className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-mono text-foreground/30 hover:bg-foreground/[0.04] hover:text-foreground/50 transition-all cursor-pointer"
                     >
                       <Share2 className="w-3.5 h-3.5" />
-                      {copied ? 'Copied!' : 'Share'}
+                      {copied ? t('communityThread.copied') : t('communityThread.share')}
                     </button>
                   </div>
 
@@ -494,7 +497,7 @@ export default function CommunityThread() {
                     className="flex items-center gap-1.5 text-xs text-foreground/30 font-mono hover:text-foreground/50 transition-colors cursor-pointer"
                   >
                     <MessageSquare className="w-3.5 h-3.5" />
-                    {replies.length} {replies.length === 1 ? 'reply' : 'replies'}
+                    {replies.length} {replies.length === 1 ? t('communityThread.reply') : t('communityThread.replies')}
                   </button>
                 </div>
               </div>
@@ -506,7 +509,7 @@ export default function CommunityThread() {
             <BlurFadeIn delay={0.1}>
               <div className="flex items-center justify-between mb-5">
                 <h2 className="text-sm font-mono font-semibold text-foreground/50 uppercase tracking-wider">
-                  Replies ({replies.length})
+                  {t('communityThread.replies')} ({replies.length})
                 </h2>
               </div>
             </BlurFadeIn>
@@ -534,8 +537,8 @@ export default function CommunityThread() {
                   className="w-full flex items-center justify-center gap-2 py-3 rounded-xl border border-dashed border-foreground/[0.08] text-xs font-mono text-foreground/35 hover:text-foreground/60 hover:border-foreground/[0.15] hover:bg-foreground/[0.02] transition-all cursor-pointer mb-8"
                 >
                   <ChevronDown className="w-3.5 h-3.5" />
-                  Show {hiddenCount} more{' '}
-                  {hiddenCount === 1 ? 'reply' : 'replies'}
+                  {t('communityThread.showMore').replace('{count}', String(hiddenCount))}{' '}
+                  {hiddenCount === 1 ? t('communityThread.reply') : t('communityThread.replies')}
                 </button>
               </BlurFadeIn>
             )}
@@ -545,7 +548,7 @@ export default function CommunityThread() {
                 <div className="text-center py-12 text-foreground/30">
                   <MessageSquare className="w-8 h-8 mx-auto mb-3 text-foreground/15" />
                   <p className="text-sm font-mono">
-                    No replies yet. Be the first to respond.
+                    {t('communityThread.noReplies')}
                   </p>
                 </div>
               </BlurFadeIn>
@@ -564,7 +567,7 @@ export default function CommunityThread() {
                     value={replyText}
                     onChange={(e) => setReplyText(e.target.value)}
                     onKeyDown={handleKeyDown}
-                    placeholder="Write a reply..."
+                    placeholder={t('communityThread.writeReply')}
                     rows={1}
                     className="w-full bg-foreground/[0.04] border border-foreground/[0.08] rounded-xl px-4 py-3 pr-12 text-sm text-foreground/80 placeholder:text-foreground/20 focus:outline-none focus:border-foreground/[0.15] focus:bg-foreground/[0.06] transition-all resize-none font-mono min-h-[44px] max-h-[200px]"
                   />
@@ -589,7 +592,7 @@ export default function CommunityThread() {
                     <Send className="h-3.5 w-3.5 group-hover:translate-x-0.5 transition-transform" />
                   )}
                   <span className="hidden sm:inline ml-1.5">
-                    {posting ? 'Posting...' : 'Post'}
+                    {posting ? t('community.posting') : t('communityThread.post')}
                   </span>
                 </Button>
               </div>

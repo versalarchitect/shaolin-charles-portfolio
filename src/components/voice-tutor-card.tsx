@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { motion, AnimatePresence } from 'motion/react'
 import { Mic, Radio, ChevronRight, PhoneOff, MicOff, Bot, User } from 'lucide-react'
 import { Button } from './ui/button'
@@ -7,6 +8,7 @@ import { useLiveKitVoice } from '@/hooks/use-livekit-voice'
 import { isLiveKitConfigured } from '@/lib/livekit'
 
 export function VoiceTutorCard() {
+  const { t } = useTranslation()
   const [expanded, setExpanded] = useState(false)
   const voice = useLiveKitVoice('dashboard')
 
@@ -19,10 +21,10 @@ export function VoiceTutorCard() {
           </div>
           <div>
             <p className="text-[10px] font-mono text-foreground/30 uppercase tracking-wider mb-0.5">
-              Voice Tutor
+              {t('voiceTutor.title')}
             </p>
             <p className="text-sm text-foreground/40">
-              Configure <code className="text-[11px] font-mono bg-foreground/[0.06] px-1.5 py-0.5 rounded">VITE_LIVEKIT_URL</code> to enable
+              {t('voiceTutor.configure')}
             </p>
           </div>
         </div>
@@ -45,10 +47,10 @@ export function VoiceTutorCard() {
             </div>
             <div>
               <p className="text-[10px] font-mono text-foreground/40 uppercase tracking-wider mb-0.5">
-                Voice Tutor
+                {t('voiceTutor.title')}
               </p>
               <p className="font-medium text-foreground/90 group-hover:text-foreground transition-colors">
-                Start a voice session with your AI tutor
+                {t('voiceTutor.startSession')}
               </p>
             </div>
           </div>
@@ -60,13 +62,13 @@ export function VoiceTutorCard() {
 
   const statusText = (() => {
     if (voice.connectionState === 'connected') {
-      if (voice.agentIsSpeaking) return 'Speaking...'
-      if (voice.isSpeaking) return 'Listening...'
-      return 'Ready'
+      if (voice.agentIsSpeaking) return t('voiceTutor.speaking')
+      if (voice.isSpeaking) return t('voiceTutor.listening')
+      return t('voiceTutor.ready')
     }
-    if (voice.connectionState === 'connecting') return 'Connecting...'
-    if (voice.connectionState === 'error') return voice.error || 'Error'
-    return 'Disconnected'
+    if (voice.connectionState === 'connecting') return t('voiceTutor.connecting')
+    if (voice.connectionState === 'error') return voice.error || t('voiceTutor.error')
+    return t('voiceTutor.disconnected')
   })()
 
   return (
@@ -78,7 +80,7 @@ export function VoiceTutorCard() {
       <div className="flex items-center justify-between px-5 py-3 border-b border-foreground/[0.06]">
         <div className="flex items-center gap-2">
           <Radio className="w-3.5 h-3.5 text-foreground/50" />
-          <span className="text-xs font-mono text-foreground/50">Voice Tutor</span>
+          <span className="text-xs font-mono text-foreground/50">{t('voiceTutor.title')}</span>
           <span className="text-[9px] font-mono text-foreground/30">— {statusText}</span>
         </div>
         <button
@@ -86,7 +88,7 @@ export function VoiceTutorCard() {
           onClick={() => { voice.disconnect(); setExpanded(false) }}
           className="text-[10px] font-mono text-foreground/30 hover:text-foreground/60 transition-colors"
         >
-          Collapse
+          {t('voiceTutor.collapse')}
         </button>
       </div>
 
@@ -125,7 +127,7 @@ export function VoiceTutorCard() {
                 className="w-full font-mono gap-2 group"
               >
                 <Mic className="w-4 h-4" />
-                Start voice session
+                {t('voiceTutor.startVoiceSession')}
                 <ChevronRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
               </Button>
             )}
@@ -148,7 +150,7 @@ export function VoiceTutorCard() {
                   className={`flex-1 font-mono text-xs ${voice.isMuted ? 'border-red-500/30 text-red-400' : ''}`}
                   disabled={voice.connectionState !== 'connected'}
                 >
-                  {voice.isMuted ? <><MicOff className="w-3 h-3 mr-1" /> Unmute</> : <><Mic className="w-3 h-3 mr-1" /> Mute</>}
+                  {voice.isMuted ? <><MicOff className="w-3 h-3 mr-1" /> {t('voiceTutor.unmute')}</> : <><Mic className="w-3 h-3 mr-1" /> {t('voiceTutor.mute')}</>}
                 </Button>
                 <Button
                   onClick={voice.disconnect}
@@ -156,7 +158,7 @@ export function VoiceTutorCard() {
                   size="sm"
                   className="font-mono text-xs border-red-500/20 text-red-400 hover:bg-red-500/10"
                 >
-                  <PhoneOff className="w-3 h-3 mr-1" /> End
+                  <PhoneOff className="w-3 h-3 mr-1" /> {t('voiceTutor.end')}
                 </Button>
               </div>
             )}

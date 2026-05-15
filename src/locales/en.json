@@ -93,7 +93,12 @@
           "Spotting when AI drifts off course and how to catch it early",
           "Directing an AI to build and publish a working tool from a brief"
         ],
-        "tags": ["AI Basics", "Clear Instructions", "Problem Solving", "Tool Selection"]
+        "tags": [
+          "AI Basics",
+          "Clear Instructions",
+          "Problem Solving",
+          "Tool Selection"
+        ]
       },
       "consulting": {
         "title": "Section 2 — Build Your First Product",
@@ -105,7 +110,12 @@
           "Building user accounts, database, and payments with one AI agent",
           "Shipping a complete product you directed, not coded yourself"
         ],
-        "tags": ["Briefs", "Quality Checks", "Building", "Shipping"]
+        "tags": [
+          "Briefs",
+          "Quality Checks",
+          "Building",
+          "Shipping"
+        ]
       },
       "mvp": {
         "title": "Section 3 — Run a Team of AI Agents",
@@ -117,7 +127,12 @@
           "Breaking big features into focused tasks that don't conflict",
           "Coordinating AI work and resolving disagreements between agents"
         ],
-        "tags": ["AI Teams", "Parallel Work", "Coordination", "Speed"]
+        "tags": [
+          "AI Teams",
+          "Parallel Work",
+          "Coordination",
+          "Speed"
+        ]
       },
       "codeReview": {
         "title": "Section 4 — Design Your Own Workflows",
@@ -129,7 +144,12 @@
           "Knowing when to trust, redirect, or override an AI's decision",
           "Developing strategic judgment — the skill AI can't replicate"
         ],
-        "tags": ["Strategy", "Workflows", "Systems Thinking", "Judgment"]
+        "tags": [
+          "Strategy",
+          "Workflows",
+          "Systems Thinking",
+          "Judgment"
+        ]
       }
     },
     "skills": {
@@ -649,32 +669,56 @@
       "particleGalaxy": {
         "title": "Particle Galaxy",
         "description": "Interactive 3D galaxy simulation with 100,000 particles. GPU-accelerated physics and custom shaders for realistic star formations.",
-        "tech": ["Three.js", "WebGL", "GLSL"]
+        "tech": [
+          "Three.js",
+          "WebGL",
+          "GLSL"
+        ]
       },
       "fluidSimulation": {
         "title": "Fluid Dynamics",
         "description": "Real-time fluid simulation using Navier-Stokes equations. Touch-reactive with beautiful color blending.",
-        "tech": ["WebGL", "Fragment Shaders", "Math"]
+        "tech": [
+          "WebGL",
+          "Fragment Shaders",
+          "Math"
+        ]
       },
       "geometricPatterns": {
         "title": "Geometric Patterns",
         "description": "Procedurally generated geometric art using recursive algorithms. Each refresh creates a unique composition.",
-        "tech": ["Canvas API", "Algorithms", "Color Theory"]
+        "tech": [
+          "Canvas API",
+          "Algorithms",
+          "Color Theory"
+        ]
       },
       "morphingShapes": {
         "title": "Morphing Shapes",
         "description": "Pure CSS morphing animations with no JavaScript. Smooth shape transitions using CSS custom properties.",
-        "tech": ["CSS", "Keyframes", "Custom Properties"]
+        "tech": [
+          "CSS",
+          "Keyframes",
+          "Custom Properties"
+        ]
       },
       "audioVisualizer": {
         "title": "Audio Reactive",
         "description": "WebAudio-powered visualizer that responds to music in real-time. Frequency analysis drives particle behavior.",
-        "tech": ["Web Audio API", "Three.js", "FFT"]
+        "tech": [
+          "Web Audio API",
+          "Three.js",
+          "FFT"
+        ]
       },
       "raymarching": {
         "title": "Raymarched Worlds",
         "description": "Procedural 3D scenes rendered entirely in fragment shaders. Signed distance functions create infinite detail.",
-        "tech": ["GLSL", "Raymarching", "SDF"]
+        "tech": [
+          "GLSL",
+          "Raymarching",
+          "SDF"
+        ]
       }
     },
     "featured": {
@@ -794,37 +838,67 @@
         "title": "Monte Carlo Simulations",
         "description": "Probabilistic modeling through repeated random sampling",
         "details": "Running thousands of simulations to map probability distributions and quantify uncertainty. Essential for modeling complex systems where analytical solutions are intractable.",
-        "applications": ["Risk Analysis", "Financial Modeling", "Decision Support", "Scenario Planning"]
+        "applications": [
+          "Risk Analysis",
+          "Financial Modeling",
+          "Decision Support",
+          "Scenario Planning"
+        ]
       },
       "transformers": {
         "title": "Transformer Models",
         "description": "Attention-based architectures for sequence modeling",
         "details": "Building and fine-tuning transformer-based models for sequence prediction, leveraging self-attention mechanisms to capture long-range dependencies in data.",
-        "applications": ["Time Series", "Sequence Prediction", "Pattern Recognition", "Feature Extraction"]
+        "applications": [
+          "Time Series",
+          "Sequence Prediction",
+          "Pattern Recognition",
+          "Feature Extraction"
+        ]
       },
       "deepLearning": {
         "title": "Deep Neural Networks",
         "description": "Multi-layer architectures for learning complex patterns",
         "details": "Designing neural network architectures optimized for specific prediction tasks. From feedforward networks to recurrent architectures, choosing the right topology matters.",
-        "applications": ["Classification", "Regression", "Anomaly Detection", "Embeddings"]
+        "applications": [
+          "Classification",
+          "Regression",
+          "Anomaly Detection",
+          "Embeddings"
+        ]
       },
       "nlp": {
         "title": "Natural Language Processing",
         "description": "Extracting structure and meaning from text",
         "details": "Processing and understanding human language to extract insights, from named entity recognition to semantic analysis and information extraction.",
-        "applications": ["Text Analysis", "Information Extraction", "Document Processing", "Search"]
+        "applications": [
+          "Text Analysis",
+          "Information Extraction",
+          "Document Processing",
+          "Search"
+        ]
       },
       "sentiment": {
         "title": "Sentiment Analysis",
         "description": "Quantifying opinion and emotion from text",
         "details": "Analyzing text to determine sentiment polarity and emotional tone. Useful for understanding market sentiment, customer feedback, and public opinion.",
-        "applications": ["Market Analysis", "Customer Feedback", "Social Listening", "Brand Monitoring"]
+        "applications": [
+          "Market Analysis",
+          "Customer Feedback",
+          "Social Listening",
+          "Brand Monitoring"
+        ]
       },
       "bayesian": {
         "title": "Bayesian Inference",
         "description": "Updating beliefs with evidence",
         "details": "Using Bayes' theorem to update probability estimates as new data arrives. The mathematical foundation for learning from evidence and quantifying uncertainty.",
-        "applications": ["A/B Testing", "Parameter Estimation", "Uncertainty Quantification", "Decision Theory"]
+        "applications": [
+          "A/B Testing",
+          "Parameter Estimation",
+          "Uncertainty Quantification",
+          "Decision Theory"
+        ]
       }
     },
     "why": {
@@ -875,5 +949,686 @@
       "title": "Let's Talk Predictions",
       "subtitle": "Interested in discussing mathematical modeling, machine learning, or prediction systems? I love geeking out about this stuff."
     }
+  },
+  "curriculum": {
+    "meta": {
+      "title": "Curriculum — The Agentic SaaS Course",
+      "description": "52 hours across 51 lessons and 4 tiers. From the basics to directing teams of AI agents."
+    },
+    "hero": {
+      "badge": "Full Curriculum",
+      "title": "From zero to",
+      "titleHighlight": "directing AI teams.",
+      "subtitle": "52 hours across 51 interactive lessons. Each section takes you deeper into directing AI agents — from understanding how they work to running entire teams. You advance by shipping real projects."
+    },
+    "stats": {
+      "totalHours": "Total Hours",
+      "lessons": "Lessons",
+      "principles": "Principles",
+      "milestoneProjects": "Milestone Projects"
+    },
+    "breakdown": {
+      "title": "Course Breakdown",
+      "subtitle": "Each section builds on the last. You advance by completing a milestone project that proves you're ready for the next level."
+    },
+    "milestoneProject": "Milestone Project",
+    "cta": {
+      "title": "Ready to start directing AI?",
+      "subtitle": "52 hours. 4 real-world projects. Principles that outlast the next AI release.",
+      "startLearning": "Start Learning",
+      "viewPricing": "View Pricing"
+    },
+    "app": {
+      "title": "Curriculum",
+      "subtitle": "Each section builds on the last. The milestone project from each section proves you're ready for the next.",
+      "courseOverview": "Course Overview",
+      "hours": "Hours",
+      "lessons": "Lessons",
+      "sections": "Sections",
+      "totalXp": "Total XP",
+      "jumpToSection": "Jump to Section",
+      "milestoneProjects": "Milestone Projects",
+      "complete": "Complete",
+      "courseComplete": "Course Complete"
+    },
+    "progress": {
+      "yourProgress": "Your Progress",
+      "complete": "complete",
+      "earned": "earned",
+      "completed": "completed"
+    }
+  },
+  "selfUpdatingCourse": {
+    "meta": {
+      "title": "Self-Updating Course — Always Current, Never Outdated",
+      "description": "A living course that updates itself as AI technology evolves. Every fact verified against live sources."
+    },
+    "hero": {
+      "badge": "Self-Updating Course",
+      "title": "A Course That",
+      "titleBreak": "Never Goes Stale",
+      "subtitle": "The AI landscape moves fast. This course moves with it. Every lesson is continuously verified against live sources — so you learn what's true right now, not what was true six months ago.",
+      "verifiedFacts": "Verified Facts",
+      "lessons": "Lessons",
+      "modules": "Modules",
+      "exploreCurriculum": "Explore Curriculum",
+      "viewPricing": "View Pricing",
+      "contentLastVerified": "Content last verified"
+    },
+    "promises": {
+      "title": "What Makes This Course Different",
+      "subtitle": "Most AI courses go stale within weeks of launching. This one can't.",
+      "alwaysCurrent": {
+        "title": "Always Current",
+        "description": "When AI tools change, pricing shifts, or new features launch — your course content updates automatically. No stale information. No outdated examples."
+      },
+      "factVerified": {
+        "title": "Fact-Verified",
+        "description": "Every claim in every lesson is backed by a verified, sourced fact. Not opinions. Not \"as of last year.\" Verified against the latest official documentation."
+      },
+      "realTimeAwareness": {
+        "title": "Real-Time Awareness",
+        "description": "The course monitors dozens of official sources continuously. New AI tool release? Pricing change? Feature update? The course knows before you do."
+      },
+      "transparentFreshness": {
+        "title": "Transparent Freshness",
+        "description": "Every section shows when it was last verified. You always know exactly how current the material is — down to the hour."
+      }
+    },
+    "freshness": {
+      "title": "Course Freshness",
+      "subtitle": "Live data showing how current your course content is, right now.",
+      "verifiedFacts": "verified facts",
+      "contentSections": "content sections",
+      "sourcesIndexed": "sources indexed",
+      "lastVerified": "last verified",
+      "knowledgeCoverage": "Knowledge Coverage"
+    },
+    "courseSection": {
+      "title": "Course Curriculum",
+      "subtitle": "Three modules. Nine lessons. Every section grounded in verified, current facts.",
+      "module": "Module",
+      "lessons": "lessons"
+    },
+    "cta": {
+      "title": "Stop Learning Yesterday's AI",
+      "subtitle": "Enroll in a course that stays current as fast as AI evolves.",
+      "enrollNow": "Enroll Now",
+      "viewFullCurriculum": "View Full Curriculum",
+      "factVerifiedContent": "Fact-verified content",
+      "alwaysCurrent": "Always current",
+      "transparentFreshness": "Transparent freshness"
+    }
+  },
+  "login": {
+    "meta": {
+      "title": "Log In — The Agentic SaaS Course",
+      "description": "Sign in to access your course materials, track your progress, and submit capstones."
+    },
+    "branding": {
+      "title": "The tools change.",
+      "titleHighlight": "The principles don't.",
+      "subtitle": "52 hours. 4 capstones. 8 principles that outlast the next model release. Sign in to access your course materials and track your progress.",
+      "instruction": "Instruction",
+      "lessons": "Lessons",
+      "capstones": "Capstones"
+    },
+    "backToHome": "Back to home",
+    "welcomeBack": "Welcome back",
+    "createAccount": "Create your account",
+    "resetPassword": "Reset your password",
+    "magicLinkTitle": "Sign in with magic link",
+    "signinSubtitle": "Sign in to access your course materials",
+    "signupSubtitle": "Get started with the Agentic SaaS Course",
+    "forgotSubtitle": "Enter your email and we'll send you a reset link",
+    "magicSubtitle": "Enter your email and we'll send you a sign-in link",
+    "continueWithGoogle": "Continue with Google",
+    "or": "or",
+    "email": "Email",
+    "password": "Password",
+    "useMagicLink": "Use magic link instead",
+    "forgotPassword": "Forgot password?",
+    "signIn": "Sign In",
+    "createAccountBtn": "Create Account",
+    "sendResetLink": "Send Reset Link",
+    "sendMagicLink": "Send Magic Link",
+    "noAccount": "Don't have an account?",
+    "signUp": "Sign up",
+    "hasAccount": "Already have an account?",
+    "rememberPassword": "Remember your password?",
+    "preferPassword": "Prefer to use a password?",
+    "signedIn": "Signed in successfully",
+    "checkEmail": "Check your email to confirm your account",
+    "resetLinkSent": "Password reset link sent to your email",
+    "magicLinkSent": "Magic link sent — check your email"
+  },
+  "learn": {
+    "lessonLocked": "Lesson Locked",
+    "completePrevious": "Complete the previous lessons to unlock",
+    "backToDashboard": "Back to Dashboard",
+    "notFound": "404",
+    "lessonNotFound": "Lesson Not Found",
+    "lessonNotFoundDesc": "This lesson doesn't exist or may have been moved.",
+    "previous": "Previous",
+    "next": "Next",
+    "firstLesson": "First lesson",
+    "courseCompleteNav": "Course complete!",
+    "capstone": "Capstone",
+    "learningObjectives": "Learning Objectives",
+    "toolsUsed": "Tools Used",
+    "completedXpEarned": "Completed — {xp} XP earned",
+    "reviewAnytime": "You can review this lesson anytime",
+    "markAsComplete": "Mark as Complete",
+    "lessonCompleted": "Lesson completed!",
+    "continueToNext": "Continue to next lesson",
+    "bookmarkRemoved": "Bookmark removed",
+    "lessonBookmarked": "Lesson bookmarked"
+  },
+  "community": {
+    "title": "Community",
+    "subtitle": "Connect with fellow builders. Get answers. Ship together.",
+    "newThread": "New Thread",
+    "submitQuestion": "Submit Question",
+    "members": "Members",
+    "online": "Online",
+    "threads": "Threads",
+    "thisWeek": "This week",
+    "discussions": "Discussions",
+    "announcements": "Announcements",
+    "noThreads": "No threads yet. Start a discussion!",
+    "officeHours": "Office Hours",
+    "withCharles": "with Charles",
+    "everyThursday": "Every Thursday",
+    "recurringWeekly": "Recurring weekly",
+    "officeHoursDesc": "Submit questions before each session. Priority goes to capstone students.",
+    "submitAQuestion": "Submit a Question",
+    "leaderboard": "Leaderboard",
+    "thisMonth": "This month",
+    "you": "You",
+    "guidelines": "Guidelines",
+    "newThreadTitle": "New Thread",
+    "threadTitle": "Thread title",
+    "writePost": "Write your post... (supports **bold** and )",
+    "category": "Category",
+    "cancel": "Cancel",
+    "posting": "Posting...",
+    "postThread": "Post Thread",
+    "threadCreated": "Thread created",
+    "failedCreateThread": "Failed to create thread",
+    "submitQuestionTitle": "Submit a Question",
+    "submitQuestionDesc": "Ask a question for the next Office Hours session. Priority goes to capstone students.",
+    "yourQuestion": "Your Question",
+    "whatToAsk": "What would you like to ask?",
+    "context": "Context",
+    "contextOptional": "optional",
+    "contextPlaceholder": "Any relevant context — what you've tried, error messages, links to your code...",
+    "submitting": "Submitting...",
+    "questionSubmitted": "Question submitted — check your email client",
+    "failedSubmitQuestion": "Failed to submit question"
+  },
+  "communityThread": {
+    "backToCommunity": "Back to Community",
+    "like": "Like",
+    "save": "Save",
+    "saved": "Saved",
+    "share": "Share",
+    "copied": "Copied!",
+    "reply": "Reply",
+    "replies": "Replies",
+    "showMore": "Show {count} more",
+    "noReplies": "No replies yet. Be the first to respond.",
+    "writeReply": "Write a reply...",
+    "post": "Post",
+    "threadSaved": "Thread saved",
+    "bookmarkRemoved": "Bookmark removed"
+  },
+  "leaderboardPage": {
+    "title": "Leaderboard",
+    "subtitle": "See how you rank against other learners.",
+    "allTime": "All Time",
+    "thisWeek": "This Week",
+    "topLearnersAllTime": "Top Learners — All Time",
+    "topLearnersThisWeek": "Top Learners — This Week",
+    "yourPosition": "Your Position",
+    "keepGoing": "Keep going",
+    "earnXpToClimb": "Earn XP to climb the ranks",
+    "earnXp": "Earn XP",
+    "couldntLoad": "Couldn't load leaderboard data.",
+    "retry": "Retry"
+  },
+  "profile": {
+    "settings": "Settings",
+    "manageAccount": "Manage your account and preferences",
+    "profileTab": "Profile",
+    "statsTab": "Stats & Badges",
+    "appearanceTab": "Appearance",
+    "preferencesTab": "Preferences",
+    "shareTab": "Share",
+    "photo": "Photo",
+    "photoDesc": "This will be displayed on your profile and in the community.",
+    "uploadPhoto": "Upload photo",
+    "remove": "Remove",
+    "photoLimit": "JPG, PNG or WebP. Max 2 MB.",
+    "personalInfo": "Personal information",
+    "personalInfoDesc": "Update your name as it appears across the platform.",
+    "firstName": "First name",
+    "lastName": "Last name",
+    "displayName": "Display name",
+    "displayNameNote": "This name appears on the leaderboard and your public profile.",
+    "saving": "Saving...",
+    "saveChanges": "Save changes",
+    "emailAddress": "Email address",
+    "emailDesc": "Your email is used for sign-in and cannot be changed.",
+    "featuredAchievement": "Featured Achievement",
+    "featuredAchievementDesc": "Select an achievement to showcase on your public profile.",
+    "earnToFeature": "Earn achievements to feature one on your profile",
+    "titleSection": "Title",
+    "titleDesc": "Choose a title to display alongside your name.",
+    "levelProgress": "Level & Progress",
+    "levelProgressDesc": "Your current rank and XP breakdown.",
+    "currentRank": "Current Rank",
+    "dayStreak": "Day Streak",
+    "completePercent": "Complete",
+    "activeStreakBonus": "Active streak bonus:",
+    "xpMultiplier": "XP multiplier",
+    "personalRecords": "Personal Records",
+    "personalRecordsDesc": "Your best achievements and all-time stats.",
+    "longestStreak": "Longest Streak",
+    "totalLessonsCompleted": "Total Lessons Completed",
+    "achievementsUnlocked": "Achievements Unlocked",
+    "activeDays": "Active Days",
+    "dailyXpGoal": "Daily XP Goal",
+    "badges": "Badges",
+    "badgesDesc": "Earned achievements displayed on your profile.",
+    "completeToEarnBadges": "Complete lessons to earn badges",
+    "cosmeticThemes": "Cosmetic Themes",
+    "cosmeticThemesDesc": "Unlock and apply visual themes as you progress.",
+    "shareProgress": "Share Your Progress",
+    "shareProgressDesc": "Generate a shareable card or view your public profile.",
+    "viewPublicProfile": "View Public Profile",
+    "sound": "Sound",
+    "soundDesc": "Control audio feedback for interactions and achievements.",
+    "soundEffects": "Sound Effects",
+    "soundEffectsDesc": "Play sounds for XP, achievements, and combos",
+    "volume": "Volume",
+    "testSound": "Test Sound",
+    "notifications": "Notifications",
+    "notificationsDesc": "Choose which in-app notifications and popups to display.",
+    "smartTips": "Smart Tips",
+    "smartTipsDesc": "Contextual learning nudges",
+    "streakWarnings": "Streak Warnings",
+    "streakWarningsDesc": "Evening streak reminders",
+    "dailyReward": "Daily Reward",
+    "dailyRewardDesc": "Daily login bonus popup",
+    "explorerToasts": "Explorer Toasts",
+    "explorerToastsDesc": "XP notifications when exploring",
+    "photoUpdated": "Photo updated",
+    "photoRemoved": "Photo removed",
+    "profileUpdated": "Profile updated",
+    "titleSet": "Title set to",
+    "featuredUpdated": "Featured achievement updated",
+    "featuredCleared": "Featured achievement cleared",
+    "imageFileError": "Please select an image file",
+    "imageSizeError": "Image must be under 2 MB"
+  },
+  "publicProfile": {
+    "notFound": "404",
+    "profileNotFound": "Profile Not Found",
+    "profileNotFoundDesc": "This user doesn't exist or hasn't set up their profile yet.",
+    "goToHome": "Go to Home",
+    "couldntLoad": "Couldn't load profile data.",
+    "retry": "Retry",
+    "totalXp": "Total XP",
+    "streak": "Streak",
+    "achievements": "Achievements",
+    "rank": "Rank",
+    "noAchievements": "No achievements unlocked yet",
+    "shareProfile": "Share Profile",
+    "profileLinkCopied": "Profile link copied!"
+  },
+  "enrollSuccess": {
+    "meta": {
+      "title": "Welcome — You're Enrolled",
+      "description": "Welcome to The Agentic SaaS Course. Your enrollment is confirmed."
+    },
+    "title": "You're in.",
+    "subtitle": "Your enrollment in The Agentic SaaS Course is confirmed. Welcome to the journey from zero to directing teams of AI agents.",
+    "checkEmailNote": "Check your email for login credentials and next steps. The Getting Started section is ready for you.",
+    "checkYourEmail": "Check Your Email",
+    "checkEmailDesc": "Login credentials and course access link sent to your email.",
+    "getStarted": "Get Started",
+    "getStartedDesc": "Set up your workspace, meet your AI agent, and publish your first project.",
+    "goToDashboard": "Go to Dashboard",
+    "joinCommunity": "Join the Community"
+  },
+  "secretVault": {
+    "classified": "Classified",
+    "title": "The Vault",
+    "subtitle": "Your complete progress archive and hidden records",
+    "securityVerified": "Security clearance verified",
+    "accessGranted": "ACCESS GRANTED",
+    "decrypting": "DECRYPTING VAULT CONTENTS...",
+    "hallOfFame": "Hall of Fame",
+    "hallOfFameDesc": "Peak accomplishments",
+    "achievementTimeline": "Achievement Timeline",
+    "achievementTimelineDesc": "Chronological unlock history",
+    "learningJourney": "Learning Journey",
+    "learningJourneyDesc": "Full chronological timeline",
+    "allTimeStats": "All Time Stats",
+    "allTimeStatsDesc": "Detailed breakdown",
+    "easterEggs": "Easter Eggs",
+    "easterEggsDesc": "Hidden discoveries",
+    "unlockables": "Unlockables",
+    "unlockablesDesc": "Collection progress",
+    "totalXp": "Total XP",
+    "currentStreak": "Current Streak",
+    "longestStreak": "Longest Streak",
+    "lessonsDone": "Lessons Done",
+    "xpSources": "XP Sources (recent)",
+    "toolMastery": "Tool Mastery",
+    "peakRank": "Peak Rank",
+    "bestStreak": "Best Streak",
+    "courseProgress": "Course Progress",
+    "totalAchievements": "Total Achievements",
+    "challengesConquered": "Challenges Conquered",
+    "journeyBegins": "Your journey begins when you earn your first achievement",
+    "completeToFill": "Complete lessons and challenges to fill this timeline",
+    "found": "FOUND"
+  },
+  "chat": {
+    "title": "Chat",
+    "channels": "Channels",
+    "loadingMessages": "Loading messages...",
+    "welcomeTo": "Welcome to",
+    "startConversation": "Start the conversation.",
+    "beginningOfChannel": "beginning of channel",
+    "signInToChat": "Sign in to chat...",
+    "message": "Message",
+    "addReaction": "Add reaction",
+    "replyInThread": "Reply in thread",
+    "liveRealtime": "Live — Realtime"
+  },
+  "sidebar": {
+    "dashboard": "Dashboard",
+    "curriculum": "Curriculum",
+    "leaderboard": "Leaderboard",
+    "analytics": "Analytics",
+    "community": "Community",
+    "knowledgeBase": "Knowledge Base",
+    "chat": "Chat",
+    "settings": "Settings",
+    "pipeline": "Pipeline",
+    "studentAgent": "Student Agent",
+    "viewProfile": "View Profile",
+    "signOut": "Sign Out",
+    "xpTo": "XP to",
+    "streak": "streak",
+    "lessons": "lessons"
+  },
+  "commandMenu": {
+    "placeholder": "Where to?",
+    "noResults": "No results found.",
+    "navigate": "navigate",
+    "open": "open",
+    "course": "Course",
+    "personal": "Personal",
+    "myCourse": "My Course",
+    "quickActions": "Quick Actions",
+    "home": "Home",
+    "curriculum": "Curriculum",
+    "principles": "Principles",
+    "pricingTiers": "Pricing & Tiers",
+    "blog": "Blog",
+    "aboutCharles": "About Charles",
+    "projects": "Projects",
+    "experiments": "Experiments",
+    "contact": "Contact",
+    "dashboard": "Dashboard",
+    "community": "Community",
+    "chat": "Chat",
+    "profile": "Profile",
+    "goToDashboard": "Go to Dashboard",
+    "goToLeaderboard": "Go to Leaderboard",
+    "goToSettings": "Go to Settings",
+    "goToVault": "Go to Vault",
+    "shareProgress": "Share Progress",
+    "viewPublicProfile": "View Public Profile"
+  },
+  "cookies": {
+    "message": "This site uses cookies for analytics.",
+    "accept": "OK",
+    "decline": "No"
+  },
+  "errors": {
+    "somethingWentWrong": "Something went wrong",
+    "unexpectedError": "An unexpected error occurred. Please try refreshing the page.",
+    "refresh": "Refresh",
+    "goHome": "Go home",
+    "retry": "Retry"
+  },
+  "bentoGrid": {
+    "multiAgentOrchestration": "Multi-Agent Orchestration",
+    "multiAgentDesc": "Coordinate multiple AI agents working in parallel on complex tasks. Learn when to split work, how to verify outputs, and how to merge agent contributions into a coherent whole.",
+    "toolLadder": "The Tool Ladder",
+    "toolLadderDesc": "paste → skill → script → agent → MCP",
+    "readBeforeGenerate": "Read Before Generate",
+    "readBeforeGenerateDesc": "Understanding before creation",
+    "specDriven": "Spec-Driven Development",
+    "specDrivenDesc": "Define before you build",
+    "agentFirst": "Agent-First Workflows",
+    "agentFirstDesc": "Design work around agents",
+    "errorFirst": "Error-First Debugging",
+    "errorFirstDesc": "Read the error, not the prompt",
+    "ownConstraints": "Own Your Constraints",
+    "ownConstraintsDesc": "Limits are design parameters",
+    "testMatters": "Test What Matters",
+    "testMattersDesc": "Confidence over coverage",
+    "tasteIsMoat": "Taste Is the Moat",
+    "tasteIsMoatDesc": "AI generates. You judge.",
+    "agentOrchestration": "Agent Orchestration",
+    "toolLadderBadge": "Tool Ladder",
+    "specWriting": "Spec Writing",
+    "mcpServers": "MCP Servers",
+    "errorFirstDebug": "Error-First Debug",
+    "systemTeardowns": "System Teardowns",
+    "capstoneShipping": "Capstone Shipping",
+    "judgment": "Judgment"
+  },
+  "pageLoading": {
+    "loading": "Loading...",
+    "keepGoing": "keep going...",
+    "typeAlong": "type along if you want",
+    "wpm": "wpm"
+  },
+  "voiceTutor": {
+    "title": "Voice Tutor",
+    "configure": "Configure VITE_LIVEKIT_URL to enable",
+    "startSession": "Start a voice session with your AI tutor",
+    "speaking": "Speaking...",
+    "listening": "Listening...",
+    "ready": "Ready",
+    "connecting": "Connecting...",
+    "error": "Error",
+    "disconnected": "Disconnected",
+    "collapse": "Collapse",
+    "startVoiceSession": "Start voice session",
+    "mute": "Mute",
+    "unmute": "Unmute",
+    "end": "End"
+  },
+  "activityFeed": {
+    "recentActivity": "Recent Activity",
+    "noActivity": "No activity yet",
+    "startLearning": "Start learning to build your timeline.",
+    "showMore": "Show more"
+  },
+  "certificate": {
+    "locked": "Certificate Locked",
+    "completeToUnlock": "Complete the course to unlock your certificate",
+    "title": "Certificate of Completion",
+    "download": "Download Certificate",
+    "share": "Share",
+    "generating": "Generating preview...",
+    "pdfTitle": "The Agentic SaaS Course - Certificate of Completion"
+  },
+  "comparisonCard": {
+    "howYouCompare": "How You Compare",
+    "youreFirst": "You're #1!",
+    "topPercent": "Top",
+    "aboveAverage": "Above average",
+    "beFirst": "Be the first one here!",
+    "compareNote": "You'll see how you compare once more learners join",
+    "yourPoints": "Your Points",
+    "yourStreak": "Your Streak",
+    "lessons": "Lessons",
+    "comparedAgainst": "Compared against"
+  },
+  "explorerProgress": {
+    "explorer": "Explorer",
+    "xpEarned": "XP earned",
+    "noPages": "No pages explored yet",
+    "startExploring": "Start exploring the site to earn curiosity XP!"
+  },
+  "focusTimer": {
+    "title": "Focus Timer",
+    "autoBreak": "Auto-break",
+    "session": "Session",
+    "of": "of",
+    "focusing": "Focusing",
+    "break": "Break",
+    "paused": "Paused",
+    "allDone": "Great work! All sessions done.",
+    "ready": "Ready",
+    "totalFocusTime": "Total Focus Time",
+    "sessionsCompleted": "Sessions Completed",
+    "bestStreak": "Best Streak"
+  },
+  "journeyTimeline": {
+    "emptyTitle": "Your timeline begins when you complete your first lesson",
+    "emptySubtitle": "Each milestone will appear here chronologically",
+    "showMore": "Show more",
+    "timeline": "Timeline"
+  },
+  "leaderboardComponent": {
+    "noRankings": "No rankings yet",
+    "noRankingsDesc": "Complete lessons to earn XP and claim your spot",
+    "startFirstLesson": "Start your first lesson"
+  },
+  "lessonRating": {
+    "howWas": "How was this lesson?",
+    "rating": "Rating",
+    "difficulty": "Difficulty",
+    "thanks": "Thanks for rating! +3 XP",
+    "rate": "Rate"
+  },
+  "notificationCenter": {
+    "title": "Notifications",
+    "markAllRead": "Mark all read",
+    "noNotifications": "No notifications yet",
+    "levelUp": "Level Up!",
+    "streakAlert": "Streak!",
+    "challenge": "Challenge:",
+    "unlocked": "Unlocked"
+  },
+  "quickActions": {
+    "resumeLesson": "Resume lesson",
+    "dailyChallenges": "Daily challenges",
+    "focusTimer": "Focus timer",
+    "shareProgress": "Share progress",
+    "commandMenu": "Command menu"
+  },
+  "shareCard": {
+    "title": "Share Your Progress",
+    "subtitle": "Download or share your achievement card",
+    "share": "Share",
+    "shared": "Shared!",
+    "copyLink": "Copy Link",
+    "copied": "Copied!"
+  },
+  "achievementsGrid": {
+    "complete1": "Complete 1 lesson",
+    "completeTier": "Complete tier",
+    "complete3InDay": "Complete 3 in one day"
+  },
+  "statusBadge": {
+    "completed": "Completed",
+    "inProgress": "In Progress",
+    "available": "Available",
+    "locked": "Locked"
+  },
+  "skillTree": {
+    "title": "Skill Tree",
+    "ariaLabel": "Skill tree: course lesson progression map"
+  },
+  "streakCalendar": {
+    "activity": "Activity",
+    "lastDays": "Last {count} Days",
+    "dayStreak": "day streak",
+    "less": "Less",
+    "more": "More"
+  },
+  "streakFreeze": {
+    "title": "Streak Freeze",
+    "ready": "Ready",
+    "readyDesc": "Ready to protect your streak if you miss a day",
+    "usedThisWeek": "Used this week",
+    "locked": "Locked",
+    "lockedDesc": "Maintain a 3-day streak to unlock",
+    "weeklyRecharge": "Weekly Recharge",
+    "buyExtra": "Buy extra freeze: 50 XP",
+    "needMore": "Need {xp} more XP",
+    "purchased": "Extra streak freeze purchased! Your streak is protected.",
+    "yourXp": "Your XP"
+  },
+  "streakWarning": {
+    "endsTonight": "Your streak ends tonight!",
+    "dontLose": "Don't lose your streak!",
+    "resetsIn": "Your streak resets soon",
+    "dismiss": "Dismiss"
+  },
+  "themeSelector": {
+    "title": "Cosmetic Themes",
+    "reset": "Reset",
+    "unlockBy": "Unlock by reaching"
+  },
+  "tierProgress": {
+    "title": "Progress by Tier"
+  },
+  "toolMastery": {
+    "title": "Tool Mastery",
+    "empty": "Complete lessons to level up your tools"
+  },
+  "unlockGate": {
+    "rank": "rank",
+    "dayStreak": "day streak",
+    "achievements": "achievements"
+  },
+  "unlockablesGrid": {
+    "themes": "Themes",
+    "secretPages": "Secret Pages",
+    "bonusContent": "Bonus Content",
+    "badges": "Badges",
+    "unlocked": "Unlocked",
+    "locked": "Locked",
+    "comingSoon": "Coming soon"
+  },
+  "weeklyChallenges": {
+    "title": "Weekly Challenges",
+    "resetsIn": "Resets in",
+    "claimReward": "Claim reward",
+    "failed": "Challenge failed"
+  },
+  "lessonContent": {
+    "loading": "Loading lesson content...",
+    "comingSoon": "Lesson content coming soon.",
+    "tip": "Tip:",
+    "warning": "Warning:",
+    "note": "Note:"
+  },
+  "recentProjects": {
+    "title": "Recent Projects",
+    "subtitle": "Production systems I've built and shipped.",
+    "lookingDeeper": "Looking for deeper technical case studies?",
+    "viewPortfolio": "View Technical Portfolio"
   }
 }

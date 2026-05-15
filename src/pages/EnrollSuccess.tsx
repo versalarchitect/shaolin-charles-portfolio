@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import { SEO } from '@/components/SEO'
 import { Button } from '@/components/ui/button'
 import { motion } from 'motion/react'
@@ -7,11 +8,12 @@ import { BlurFadeIn } from '@/components/ui/aaa-effects'
 import { SectionSpots, Section } from '@/components/ui/gradient-background'
 
 export default function EnrollSuccess() {
+  const { t } = useTranslation()
   return (
     <>
       <SEO
-        title="Welcome — You're Enrolled"
-        description="Welcome to The Agentic SaaS Course. Your enrollment is confirmed."
+        title={t('enrollSuccess.meta.title')}
+        description={t('enrollSuccess.meta.description')}
         path="/enroll/success"
         noindex
       />
@@ -33,16 +35,16 @@ export default function EnrollSuccess() {
 
             <BlurFadeIn delay={0.1} immediate>
               <h1 className="text-4xl md:text-5xl font-bold tracking-tight mb-6">
-                You're in.
+                {t('enrollSuccess.title')}
               </h1>
             </BlurFadeIn>
 
             <BlurFadeIn delay={0.2} immediate>
               <p className="text-lg text-muted-foreground leading-relaxed mb-4">
-                Your enrollment in The Agentic SaaS Course is confirmed. Welcome to the journey from zero to directing teams of AI agents.
+                {t('enrollSuccess.subtitle')}
               </p>
               <p className="text-muted-foreground mb-10">
-                Check your email for login credentials and next steps. The Getting Started section is ready for you.
+                {t('enrollSuccess.checkEmailNote')}
               </p>
             </BlurFadeIn>
 
@@ -50,13 +52,13 @@ export default function EnrollSuccess() {
               <div className="grid sm:grid-cols-2 gap-4 max-w-md mx-auto mb-10">
                 <div className="p-5 rounded-xl border border-foreground/10 bg-foreground/[0.02] text-left">
                   <Mail className="w-5 h-5 text-muted-foreground mb-3" />
-                  <h3 className="text-sm font-semibold mb-1">Check Your Email</h3>
-                  <p className="text-xs text-muted-foreground">Login credentials and course access link sent to your email.</p>
+                  <h3 className="text-sm font-semibold mb-1">{t('enrollSuccess.checkYourEmail')}</h3>
+                  <p className="text-xs text-muted-foreground">{t('enrollSuccess.checkEmailDesc')}</p>
                 </div>
                 <div className="p-5 rounded-xl border border-foreground/10 bg-foreground/[0.02] text-left">
                   <BookOpen className="w-5 h-5 text-muted-foreground mb-3" />
-                  <h3 className="text-sm font-semibold mb-1">Get Started</h3>
-                  <p className="text-xs text-muted-foreground">Set up your workspace, meet your AI agent, and publish your first project.</p>
+                  <h3 className="text-sm font-semibold mb-1">{t('enrollSuccess.getStarted')}</h3>
+                  <p className="text-xs text-muted-foreground">{t('enrollSuccess.getStartedDesc')}</p>
                 </div>
               </div>
             </BlurFadeIn>
@@ -65,12 +67,12 @@ export default function EnrollSuccess() {
               <div className="flex flex-wrap justify-center gap-4">
                 <Button size="lg" className="font-mono group" asChild>
                   <Link to="/course/dashboard">
-                    Go to Dashboard
+                    {t('enrollSuccess.goToDashboard')}
                     <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
                   </Link>
                 </Button>
                 <Button size="lg" variant="outline" className="font-mono" asChild>
-                  <Link to="/course/community">Join the Community</Link>
+                  <Link to="/course/community">{t('enrollSuccess.joinCommunity')}</Link>
                 </Button>
               </div>
             </BlurFadeIn>

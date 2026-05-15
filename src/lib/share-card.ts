@@ -1,6 +1,6 @@
 export interface ShareCardData {
   displayName: string
-  rank: string // 'Bronze' | 'Silver' | 'Gold' | 'Platinum' | 'Diamond'
+  rank: string
   totalXp: number
   currentStreak: number
   lessonsCompleted: number
@@ -11,270 +11,473 @@ export interface ShareCardData {
   avatarUrl?: string
 }
 
-const CARD_WIDTH = 1200
-const CARD_HEIGHT = 630
+const W = 1200
+const H = 630
 
-const COLORS = {
-  bg: '#0a0a0a',
-  gridLine: 'rgba(255, 255, 255, 0.04)',
-  muted: 'rgba(255, 255, 255, 0.4)',
-  subtle: 'rgba(255, 255, 255, 0.6)',
-  text: 'rgba(255, 255, 255, 0.9)',
-  white: '#ffffff',
-  separator: 'rgba(255, 255, 255, 0.08)',
+const RANK_THEMES: Record<string, { primary: string; glow: string; bgTint: string }> = {
+  Starter: {
+    primary: 'rgba(205, 127, 50, 0.9)',
+    glow: 'rgba(205, 127, 50, 0.15)',
+    bgTint: 'rgba(205, 127, 50, 0.03)',
+  },
+  Builder: {
+    primary: 'rgba(192, 192, 210, 0.9)',
+    glow: 'rgba(192, 192, 210, 0.15)',
+    bgTint: 'rgba(192, 192, 210, 0.03)',
+  },
+  Leader: {
+    primary: 'rgba(255, 215, 0, 0.9)',
+    glow: 'rgba(255, 215, 0, 0.12)',
+    bgTint: 'rgba(255, 215, 0, 0.03)',
+  },
+  Strategist: {
+    primary: 'rgba(160, 200, 230, 0.9)',
+    glow: 'rgba(160, 200, 230, 0.12)',
+    bgTint: 'rgba(160, 200, 230, 0.03)',
+  },
+  Visionary: {
+    primary: 'rgba(185, 242, 255, 0.95)',
+    glow: 'rgba(185, 242, 255, 0.15)',
+    bgTint: 'rgba(185, 242, 255, 0.03)',
+  },
 }
 
-const RANK_COLORS: Record<string, string> = {
-  Bronze: 'rgba(205, 127, 50, 0.8)',
-  Silver: 'rgba(192, 192, 192, 0.8)',
-  Gold: 'rgba(255, 215, 0, 0.8)',
-  Platinum: 'rgba(180, 200, 220, 0.9)',
-  Diamond: 'rgba(185, 242, 255, 0.9)',
+function getTheme(rank: string) {
+  return RANK_THEMES[rank] || RANK_THEMES.Starter
+}
+
+function drawBackground(ctx: CanvasRenderingContext2D, rank: string) {
+  const theme = getTheme(rank)
+
+  // Base: deep gradient
+  const bg = ctx.createLinearGradient(0, 0, 0, H)
+  bg.addColorStop(0, '#0c0c0e')
+  bg.addColorStop(0.5, '#0a0a0c')
+  bg.addColorStop(1, '#08080a')
+  ctx.fillStyle = bg
+  ctx.fillRect(0, 0, W, H)
+
+  // Ambient rank-colored glow behind center
+  const glow = ctx.createRadialGradient(W / 2, H * 0.42, 0, W / 2, H * 0.42, 320)
+  glow.addColorStop(0, theme.glow)
+  glow.addColorStop(0.5, theme.bgTint)
+  glow.addColorStop(1, 'transparent')
+  ctx.fillStyle = glow
+  ctx.fillRect(0, 0, W, H)
+
+  // Subtle corner vignettes
+  const corners = [
+    [0, 0],
+    [W, 0],
+    [0, H],
+    [W, H],
+  ]
+  for (const [cx, cy] of corners) {
+    const v = ctx.createRadialGradient(cx, cy, 0, cx, cy, 400)
+    v.addColorStop(0, 'rgba(0, 0, 0, 0.3)')
+    v.addColorStop(1, 'transparent')
+    ctx.fillStyle = v
+    ctx.fillRect(0, 0, W, H)
+  }
 }
 
 function drawGrid(ctx: CanvasRenderingContext2D) {
-  ctx.strokeStyle = COLORS.gridLine
+  ctx.strokeStyle = 'rgba(255, 255, 255, 0.025)'
   ctx.lineWidth = 1
 
-  // Vertical lines
-  const vSpacing = 80
-  for (let x = vSpacing; x < CARD_WIDTH; x += vSpacing) {
+  const spacing = 80
+  for (let x = spacing; x < W; x += spacing) {
     ctx.beginPath()
     ctx.moveTo(x, 0)
-    ctx.lineTo(x, CARD_HEIGHT)
+    ctx.lineTo(x, H)
     ctx.stroke()
   }
-
-  // Horizontal lines
-  const hSpacing = 80
-  for (let y = hSpacing; y < CARD_HEIGHT; y += hSpacing) {
+  for (let y = spacing; y < H; y += spacing) {
     ctx.beginPath()
     ctx.moveTo(0, y)
-    ctx.lineTo(CARD_WIDTH, y)
+    ctx.lineTo(W, y)
+    ctx.stroke()
+  }
+
+  // "+" markers at corners of content area
+  const pad = 40
+  const markerSize = 8
+  const markerColor = 'rgba(255, 255, 255, 0.08)'
+  const positions = [
+    [pad, pad],
+    [W - pad, pad],
+    [pad, H - pad],
+    [W - pad, H - pad],
+  ]
+
+  ctx.strokeStyle = markerColor
+  ctx.lineWidth = 1.5
+  for (const [mx, my] of positions) {
+    ctx.beginPath()
+    ctx.moveTo(mx - markerSize, my)
+    ctx.lineTo(mx + markerSize, my)
+    ctx.stroke()
+    ctx.beginPath()
+    ctx.moveTo(mx, my - markerSize)
+    ctx.lineTo(mx, my + markerSize)
     ctx.stroke()
   }
 }
 
-function drawRankShape(ctx: CanvasRenderingContext2D, rank: string, cx: number, cy: number, size: number) {
-  const color = RANK_COLORS[rank] || RANK_COLORS.Bronze
+function drawCornerBrackets(ctx: CanvasRenderingContext2D, rank: string) {
+  const theme = getTheme(rank)
+  const inset = 24
+  const len = 40
+  const color = theme.primary.replace(/[\d.]+\)$/, '0.25)')
+
   ctx.strokeStyle = color
-  ctx.lineWidth = 2.5
-  ctx.fillStyle = color.replace(/[\d.]+\)$/, '0.1)')
+  ctx.lineWidth = 1.5
 
-  switch (rank) {
-    case 'Diamond': {
-      // Diamond shape (rotated square)
-      ctx.beginPath()
-      ctx.moveTo(cx, cy - size)
-      ctx.lineTo(cx + size * 0.7, cy)
-      ctx.lineTo(cx, cy + size)
-      ctx.lineTo(cx - size * 0.7, cy)
-      ctx.closePath()
-      ctx.fill()
-      ctx.stroke()
-      // Inner facets
-      ctx.beginPath()
-      ctx.moveTo(cx, cy - size * 0.5)
-      ctx.lineTo(cx + size * 0.35, cy)
-      ctx.lineTo(cx, cy + size * 0.5)
-      ctx.lineTo(cx - size * 0.35, cy)
-      ctx.closePath()
-      ctx.stroke()
-      break
-    }
-    case 'Platinum': {
-      // Pentagon
-      const sides = 5
-      ctx.beginPath()
-      for (let i = 0; i < sides; i++) {
-        const angle = (Math.PI * 2 * i) / sides - Math.PI / 2
-        const x = cx + size * Math.cos(angle)
-        const y = cy + size * Math.sin(angle)
-        if (i === 0) ctx.moveTo(x, y)
-        else ctx.lineTo(x, y)
-      }
-      ctx.closePath()
-      ctx.fill()
-      ctx.stroke()
-      break
-    }
-    case 'Gold': {
-      // Hexagon
-      const sides = 6
-      ctx.beginPath()
-      for (let i = 0; i < sides; i++) {
-        const angle = (Math.PI * 2 * i) / sides - Math.PI / 6
-        const x = cx + size * Math.cos(angle)
-        const y = cy + size * Math.sin(angle)
-        if (i === 0) ctx.moveTo(x, y)
-        else ctx.lineTo(x, y)
-      }
-      ctx.closePath()
-      ctx.fill()
-      ctx.stroke()
-      break
-    }
-    case 'Silver': {
-      // Shield
-      ctx.beginPath()
-      ctx.moveTo(cx - size * 0.65, cy - size * 0.8)
-      ctx.lineTo(cx + size * 0.65, cy - size * 0.8)
-      ctx.lineTo(cx + size * 0.65, cy + size * 0.2)
-      ctx.lineTo(cx, cy + size)
-      ctx.lineTo(cx - size * 0.65, cy + size * 0.2)
-      ctx.closePath()
-      ctx.fill()
-      ctx.stroke()
-      break
-    }
-    default: {
-      // Bronze: Circle
-      ctx.beginPath()
-      ctx.arc(cx, cy, size, 0, Math.PI * 2)
-      ctx.fill()
-      ctx.stroke()
-      break
-    }
-  }
+  // Top-left
+  ctx.beginPath()
+  ctx.moveTo(inset, inset + len)
+  ctx.lineTo(inset, inset)
+  ctx.lineTo(inset + len, inset)
+  ctx.stroke()
 
-  // Rank label inside shape
-  ctx.fillStyle = color
-  ctx.font = 'bold 20px "Geist", "SF Mono", "Fira Code", monospace'
-  ctx.textAlign = 'center'
-  ctx.textBaseline = 'middle'
-  ctx.fillText(rank.toUpperCase(), cx, cy)
+  // Top-right
+  ctx.beginPath()
+  ctx.moveTo(W - inset - len, inset)
+  ctx.lineTo(W - inset, inset)
+  ctx.lineTo(W - inset, inset + len)
+  ctx.stroke()
+
+  // Bottom-left
+  ctx.beginPath()
+  ctx.moveTo(inset, H - inset - len)
+  ctx.lineTo(inset, H - inset)
+  ctx.lineTo(inset + len, H - inset)
+  ctx.stroke()
+
+  // Bottom-right
+  ctx.beginPath()
+  ctx.moveTo(W - inset - len, H - inset)
+  ctx.lineTo(W - inset, H - inset)
+  ctx.lineTo(W - inset, H - inset - len)
+  ctx.stroke()
 }
 
-function drawInitials(ctx: CanvasRenderingContext2D, name: string, cx: number, cy: number) {
+function drawTopAccent(ctx: CanvasRenderingContext2D, rank: string) {
+  const theme = getTheme(rank)
+  const g = ctx.createLinearGradient(0, 0, W, 0)
+  g.addColorStop(0, 'transparent')
+  g.addColorStop(0.25, theme.primary.replace(/[\d.]+\)$/, '0.6)'))
+  g.addColorStop(0.5, theme.primary)
+  g.addColorStop(0.75, theme.primary.replace(/[\d.]+\)$/, '0.6)'))
+  g.addColorStop(1, 'transparent')
+  ctx.fillStyle = g
+  ctx.fillRect(0, 0, W, 2)
+
+  // Soft glow beneath
+  const glow = ctx.createLinearGradient(0, 0, 0, 30)
+  glow.addColorStop(0, theme.primary.replace(/[\d.]+\)$/, '0.08)'))
+  glow.addColorStop(1, 'transparent')
+  ctx.fillStyle = glow
+  ctx.fillRect(0, 0, W, 30)
+}
+
+function drawBottomAccent(ctx: CanvasRenderingContext2D, rank: string) {
+  const theme = getTheme(rank)
+  const g = ctx.createLinearGradient(0, H - 2, W, H - 2)
+  g.addColorStop(0, 'transparent')
+  g.addColorStop(0.25, theme.primary.replace(/[\d.]+\)$/, '0.6)'))
+  g.addColorStop(0.5, theme.primary)
+  g.addColorStop(0.75, theme.primary.replace(/[\d.]+\)$/, '0.6)'))
+  g.addColorStop(1, 'transparent')
+  ctx.fillStyle = g
+  ctx.fillRect(0, H - 2, W, 2)
+}
+
+function drawAvatar(ctx: CanvasRenderingContext2D, name: string, rank: string, cx: number, cy: number) {
+  const theme = getTheme(rank)
+  const radius = 32
+
+  // Outer glow ring
+  ctx.strokeStyle = theme.primary.replace(/[\d.]+\)$/, '0.35)')
+  ctx.lineWidth = 2
+  ctx.beginPath()
+  ctx.arc(cx, cy, radius + 6, 0, Math.PI * 2)
+  ctx.stroke()
+
+  // Inner circle bg
+  ctx.fillStyle = 'rgba(255, 255, 255, 0.05)'
+  ctx.beginPath()
+  ctx.arc(cx, cy, radius, 0, Math.PI * 2)
+  ctx.fill()
+
+  // Border
+  ctx.strokeStyle = 'rgba(255, 255, 255, 0.1)'
+  ctx.lineWidth = 1
+  ctx.stroke()
+
+  // Initials
   const initials = name
     .split(' ')
-    .map((part) => part.charAt(0).toUpperCase())
+    .map((p) => p.charAt(0).toUpperCase())
     .slice(0, 2)
     .join('')
 
-  ctx.fillStyle = 'rgba(255, 255, 255, 0.06)'
-  ctx.beginPath()
-  ctx.arc(cx, cy, 28, 0, Math.PI * 2)
-  ctx.fill()
-
-  ctx.fillStyle = COLORS.subtle
-  ctx.font = 'bold 18px "Geist", system-ui, sans-serif'
+  ctx.fillStyle = 'rgba(255, 255, 255, 0.7)'
+  ctx.font = 'bold 22px "Geist", system-ui, sans-serif'
   ctx.textAlign = 'center'
   ctx.textBaseline = 'middle'
   ctx.fillText(initials, cx, cy)
 }
 
+function drawRankBadge(ctx: CanvasRenderingContext2D, rank: string, cx: number, cy: number) {
+  const theme = getTheme(rank)
+
+  // Ambient glow behind badge
+  const glow = ctx.createRadialGradient(cx, cy, 0, cx, cy, 90)
+  glow.addColorStop(0, theme.glow)
+  glow.addColorStop(1, 'transparent')
+  ctx.fillStyle = glow
+  ctx.beginPath()
+  ctx.arc(cx, cy, 90, 0, Math.PI * 2)
+  ctx.fill()
+
+  // Badge background pill
+  const labelText = rank.toUpperCase()
+  ctx.font = 'bold 14px "Geist Mono", "SF Mono", monospace'
+  const textWidth = ctx.measureText(labelText).width
+  const pillW = textWidth + 40
+  const pillH = 36
+  const pillR = pillH / 2
+
+  // Pill fill
+  ctx.fillStyle = theme.primary.replace(/[\d.]+\)$/, '0.12)')
+  roundRect(ctx, cx - pillW / 2, cy - pillH / 2, pillW, pillH, pillR)
+  ctx.fill()
+
+  // Pill border
+  ctx.strokeStyle = theme.primary.replace(/[\d.]+\)$/, '0.5)')
+  ctx.lineWidth = 1.5
+  roundRect(ctx, cx - pillW / 2, cy - pillH / 2, pillW, pillH, pillR)
+  ctx.stroke()
+
+  // Label
+  ctx.fillStyle = theme.primary
+  ctx.font = 'bold 14px "Geist Mono", "SF Mono", monospace'
+  ctx.textAlign = 'center'
+  ctx.textBaseline = 'middle'
+  ctx.fillText(labelText, cx, cy + 1)
+
+  // Decorative dots flanking the badge
+  const dotY = cy
+  const dotOffset = pillW / 2 + 16
+  ctx.fillStyle = theme.primary.replace(/[\d.]+\)$/, '0.3)')
+  ctx.beginPath()
+  ctx.arc(cx - dotOffset, dotY, 2, 0, Math.PI * 2)
+  ctx.fill()
+  ctx.beginPath()
+  ctx.arc(cx + dotOffset, dotY, 2, 0, Math.PI * 2)
+  ctx.fill()
+
+  // Thin connecting lines from dots outward
+  ctx.strokeStyle = theme.primary.replace(/[\d.]+\)$/, '0.1)')
+  ctx.lineWidth = 1
+  ctx.beginPath()
+  ctx.moveTo(cx - dotOffset - 4, dotY)
+  ctx.lineTo(cx - dotOffset - 40, dotY)
+  ctx.stroke()
+  ctx.beginPath()
+  ctx.moveTo(cx + dotOffset + 4, dotY)
+  ctx.lineTo(cx + dotOffset + 40, dotY)
+  ctx.stroke()
+}
+
+function drawStatCards(ctx: CanvasRenderingContext2D, stats: { value: string; label: string }[], y: number, rank: string) {
+  const theme = getTheme(rank)
+  const cardCount = stats.length
+  const totalWidth = W - 120
+  const gap = 12
+  const cardW = (totalWidth - gap * (cardCount - 1)) / cardCount
+  const cardH = 72
+  const startX = 60
+  const radius = 12
+
+  stats.forEach((stat, i) => {
+    const x = startX + i * (cardW + gap)
+
+    // Card background
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.02)'
+    roundRect(ctx, x, y, cardW, cardH, radius)
+    ctx.fill()
+
+    // Card border
+    ctx.strokeStyle = 'rgba(255, 255, 255, 0.06)'
+    ctx.lineWidth = 1
+    roundRect(ctx, x, y, cardW, cardH, radius)
+    ctx.stroke()
+
+    // Value
+    ctx.font = 'bold 26px "Geist", system-ui, sans-serif'
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.9)'
+    ctx.textAlign = 'center'
+    ctx.textBaseline = 'top'
+    ctx.fillText(stat.value, x + cardW / 2, y + 14)
+
+    // Label
+    ctx.font = '10px "Geist Mono", "SF Mono", monospace'
+    ctx.fillStyle = theme.primary.replace(/[\d.]+\)$/, '0.5)')
+    ctx.textAlign = 'center'
+    ctx.fillText(stat.label, x + cardW / 2, y + 48)
+  })
+}
+
+function drawSeparator(ctx: CanvasRenderingContext2D, y: number) {
+  const g = ctx.createLinearGradient(80, y, W - 80, y)
+  g.addColorStop(0, 'transparent')
+  g.addColorStop(0.15, 'rgba(255, 255, 255, 0.06)')
+  g.addColorStop(0.5, 'rgba(255, 255, 255, 0.08)')
+  g.addColorStop(0.85, 'rgba(255, 255, 255, 0.06)')
+  g.addColorStop(1, 'transparent')
+  ctx.fillStyle = g
+  ctx.fillRect(80, y, W - 160, 1)
+}
+
+function roundRect(ctx: CanvasRenderingContext2D, x: number, y: number, w: number, h: number, r: number) {
+  ctx.beginPath()
+  ctx.moveTo(x + r, y)
+  ctx.lineTo(x + w - r, y)
+  ctx.arcTo(x + w, y, x + w, y + r, r)
+  ctx.lineTo(x + w, y + h - r)
+  ctx.arcTo(x + w, y + h, x + w - r, y + h, r)
+  ctx.lineTo(x + r, y + h)
+  ctx.arcTo(x, y + h, x, y + h - r, r)
+  ctx.lineTo(x, y + r)
+  ctx.arcTo(x, y, x + r, y, r)
+  ctx.closePath()
+}
+
+function drawProgressBar(ctx: CanvasRenderingContext2D, percent: number, y: number, rank: string) {
+  const theme = getTheme(rank)
+  const barX = 60
+  const barW = W - 120
+  const barH = 6
+  const radius = barH / 2
+
+  // Track
+  ctx.fillStyle = 'rgba(255, 255, 255, 0.04)'
+  roundRect(ctx, barX, y, barW, barH, radius)
+  ctx.fill()
+
+  // Fill
+  if (percent > 0) {
+    const fillW = Math.max(barH, barW * (percent / 100))
+    const grad = ctx.createLinearGradient(barX, y, barX + fillW, y)
+    grad.addColorStop(0, theme.primary.replace(/[\d.]+\)$/, '0.3)'))
+    grad.addColorStop(1, theme.primary.replace(/[\d.]+\)$/, '0.6)'))
+    ctx.fillStyle = grad
+    roundRect(ctx, barX, y, fillW, barH, radius)
+    ctx.fill()
+  }
+
+  // Percentage label
+  ctx.font = '10px "Geist Mono", "SF Mono", monospace'
+  ctx.fillStyle = 'rgba(255, 255, 255, 0.3)'
+  ctx.textAlign = 'right'
+  ctx.textBaseline = 'top'
+  ctx.fillText(`${Math.round(percent)}% complete`, barX + barW, y + barH + 6)
+}
+
 export async function generateShareCard(data: ShareCardData): Promise<Blob> {
   const canvas = document.createElement('canvas')
-  canvas.width = CARD_WIDTH
-  canvas.height = CARD_HEIGHT
+  canvas.width = W
+  canvas.height = H
   const ctx = canvas.getContext('2d')!
 
-  // Background
-  ctx.fillStyle = COLORS.bg
-  ctx.fillRect(0, 0, CARD_WIDTH, CARD_HEIGHT)
-
-  // Grid
+  // === Background layers ===
+  drawBackground(ctx, data.rank)
   drawGrid(ctx)
+  drawTopAccent(ctx, data.rank)
+  drawBottomAccent(ctx, data.rank)
+  drawCornerBrackets(ctx, data.rank)
 
-  // Top-left: site URL
-  ctx.font = '13px "Geist Mono", "SF Mono", "Fira Code", monospace'
-  ctx.fillStyle = COLORS.muted
+  // === Header row ===
+  ctx.font = '12px "Geist Mono", "SF Mono", monospace'
+  ctx.fillStyle = 'rgba(255, 255, 255, 0.3)'
   ctx.textAlign = 'left'
   ctx.textBaseline = 'top'
-  ctx.fillText('charlesjackson.dev', 48, 40)
+  ctx.fillText('charlesjackson.dev', 56, 48)
 
-  // Top-right: date
   ctx.textAlign = 'right'
-  ctx.fillText(new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }), CARD_WIDTH - 48, 40)
+  ctx.fillText(
+    new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }),
+    W - 56,
+    48,
+  )
 
-  // Avatar / Initials area (small, near name)
-  const nameY = 120
+  // === Avatar ===
+  const avatarY = 130
   if (data.avatarUrl) {
     try {
       const img = await loadImage(data.avatarUrl)
+      const r = 32
       ctx.save()
       ctx.beginPath()
-      ctx.arc(CARD_WIDTH / 2, nameY - 50, 28, 0, Math.PI * 2)
+      ctx.arc(W / 2, avatarY, r, 0, Math.PI * 2)
       ctx.clip()
-      ctx.drawImage(img, CARD_WIDTH / 2 - 28, nameY - 78, 56, 56)
+      ctx.drawImage(img, W / 2 - r, avatarY - r, r * 2, r * 2)
       ctx.restore()
+
+      const theme = getTheme(data.rank)
+      ctx.strokeStyle = theme.primary.replace(/[\d.]+\)$/, '0.35)')
+      ctx.lineWidth = 2
+      ctx.beginPath()
+      ctx.arc(W / 2, avatarY, r + 6, 0, Math.PI * 2)
+      ctx.stroke()
     } catch {
-      drawInitials(ctx, data.displayName, CARD_WIDTH / 2, nameY - 50)
+      drawAvatar(ctx, data.displayName, data.rank, W / 2, avatarY)
     }
   } else {
-    drawInitials(ctx, data.displayName, CARD_WIDTH / 2, nameY - 50)
+    drawAvatar(ctx, data.displayName, data.rank, W / 2, avatarY)
   }
 
-  // Display name
-  ctx.font = 'bold 36px "Geist", system-ui, sans-serif'
-  ctx.fillStyle = COLORS.text
+  // === Display name ===
+  const nameY = avatarY + 52
+  ctx.font = 'bold 32px "Geist", system-ui, sans-serif'
+  ctx.fillStyle = 'rgba(255, 255, 255, 0.95)'
   ctx.textAlign = 'center'
   ctx.textBaseline = 'top'
-  ctx.fillText(data.displayName, CARD_WIDTH / 2, nameY)
+  ctx.fillText(data.displayName, W / 2, nameY)
 
-  // Active title
-  ctx.font = '16px "Geist Mono", "SF Mono", "Fira Code", monospace'
-  ctx.fillStyle = COLORS.muted
-  ctx.fillText(data.activeTitle, CARD_WIDTH / 2, nameY + 48)
+  // === Active title ===
+  ctx.font = '14px "Geist Mono", "SF Mono", monospace'
+  ctx.fillStyle = 'rgba(255, 255, 255, 0.35)'
+  ctx.fillText(data.activeTitle, W / 2, nameY + 42)
 
-  // Center: Rank badge
-  const rankCenterY = 290
-  drawRankShape(ctx, data.rank, CARD_WIDTH / 2, rankCenterY, 60)
+  // === Rank badge ===
+  drawRankBadge(ctx, data.rank, W / 2, nameY + 110)
 
-  // Stats row
-  const statsY = 420
+  // === Stats ===
+  const statsY = nameY + 170
   const stats = [
     { value: formatXp(data.totalXp), label: 'XP' },
-    { value: `${data.currentStreak}`, label: 'DAY STREAK', prefix: '/' },
+    { value: `${data.currentStreak}`, label: 'DAY STREAK' },
     { value: `${data.lessonsCompleted}/${data.totalLessons}`, label: 'LESSONS' },
     { value: `${data.achievementsEarned}/${data.totalAchievements}`, label: 'ACHIEVEMENTS' },
   ]
+  drawStatCards(ctx, stats, statsY, data.rank)
 
-  const statWidth = CARD_WIDTH / stats.length
-  stats.forEach((stat, i) => {
-    const x = statWidth * i + statWidth / 2
+  // === Progress bar ===
+  const completionPercent = data.totalLessons > 0 ? (data.lessonsCompleted / data.totalLessons) * 100 : 0
+  drawProgressBar(ctx, completionPercent, statsY + 96, data.rank)
 
-    // Value
-    ctx.font = 'bold 28px "Geist", system-ui, sans-serif'
-    ctx.fillStyle = COLORS.text
-    ctx.textAlign = 'center'
-    ctx.textBaseline = 'top'
+  // === Separator ===
+  drawSeparator(ctx, statsY + 132)
 
-    const displayValue = stat.prefix ? `${stat.prefix} ${stat.value}` : stat.value
-    ctx.fillText(displayValue, x, statsY)
-
-    // Label
-    ctx.font = '11px "Geist Mono", "SF Mono", "Fira Code", monospace'
-    ctx.fillStyle = COLORS.muted
-    ctx.fillText(stat.label, x, statsY + 38)
-  })
-
-  // Separator line (gradient)
-  const sepY = 510
-  const gradient = ctx.createLinearGradient(100, sepY, CARD_WIDTH - 100, sepY)
-  gradient.addColorStop(0, 'transparent')
-  gradient.addColorStop(0.2, COLORS.separator)
-  gradient.addColorStop(0.8, COLORS.separator)
-  gradient.addColorStop(1, 'transparent')
-  ctx.fillStyle = gradient
-  ctx.fillRect(100, sepY, CARD_WIDTH - 200, 1)
-
-  // Bottom text
-  ctx.font = '13px "Geist Mono", "SF Mono", "Fira Code", monospace'
-  ctx.fillStyle = COLORS.muted
+  // === Footer ===
+  ctx.font = '12px "Geist Mono", "SF Mono", monospace'
+  ctx.fillStyle = 'rgba(255, 255, 255, 0.25)'
   ctx.textAlign = 'center'
   ctx.textBaseline = 'top'
-  ctx.fillText('The Agentic SaaS Course — Built with dedication', CARD_WIDTH / 2, 540)
-
-  // Bottom border accent
-  const bottomGradient = ctx.createLinearGradient(0, CARD_HEIGHT - 3, CARD_WIDTH, CARD_HEIGHT - 3)
-  bottomGradient.addColorStop(0, 'transparent')
-  bottomGradient.addColorStop(0.3, RANK_COLORS[data.rank] || RANK_COLORS.Bronze)
-  bottomGradient.addColorStop(0.7, RANK_COLORS[data.rank] || RANK_COLORS.Bronze)
-  bottomGradient.addColorStop(1, 'transparent')
-  ctx.fillStyle = bottomGradient
-  ctx.fillRect(0, CARD_HEIGHT - 3, CARD_WIDTH, 3)
+  ctx.fillText('The Agentic SaaS Course', W / 2, statsY + 150)
 
   return new Promise<Blob>((resolve, reject) => {
     canvas.toBlob((blob) => {
@@ -298,7 +501,6 @@ export function downloadShareCard(blob: Blob, filename?: string): void {
 }
 
 export async function shareCard(blob: Blob, title: string): Promise<boolean> {
-  // Web Share API with file support
   if (navigator.share && navigator.canShare) {
     const file = new File([blob], 'progress-card.png', { type: 'image/png' })
     const shareData = { title, files: [file] }
@@ -309,19 +511,14 @@ export async function shareCard(blob: Blob, title: string): Promise<boolean> {
         return true
       } catch (err) {
         if (err instanceof Error && err.name === 'AbortError') return false
-        // Fall through to clipboard fallback
       }
     }
   }
 
-  // Clipboard fallback
   try {
-    await navigator.clipboard.write([
-      new ClipboardItem({ 'image/png': blob }),
-    ])
+    await navigator.clipboard.write([new ClipboardItem({ 'image/png': blob })])
     return true
   } catch {
-    // Final fallback: download
     downloadShareCard(blob)
     return true
   }

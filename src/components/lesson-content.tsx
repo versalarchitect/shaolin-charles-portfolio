@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Check, Copy, Lightbulb, AlertTriangle } from 'lucide-react'
 import type { ContentBlock, LessonContent } from '@/data/lessons/types'
 import { loadLessonContent } from '@/data/lessons'
@@ -66,19 +67,21 @@ function StepsBlock({ items }: { items: { title: string; body: string; code?: st
 }
 
 function TipBlock({ text }: { text: string }) {
+  const { t } = useTranslation()
   return (
     <div className="flex gap-3 rounded-lg border border-foreground/10 bg-foreground/[0.03] px-4 py-3 mb-4">
       <Lightbulb className="w-4 h-4 text-foreground/40 shrink-0 mt-0.5" />
-      <p className="text-sm text-foreground/70 leading-relaxed">{text}</p>
+      <p className="text-sm text-foreground/70 leading-relaxed"><strong>{t('lessonContent.tip')}</strong> {text}</p>
     </div>
   )
 }
 
 function WarningBlock({ text }: { text: string }) {
+  const { t } = useTranslation()
   return (
     <div className="flex gap-3 rounded-lg border border-foreground/20 bg-foreground/[0.05] px-4 py-3 mb-4">
       <AlertTriangle className="w-4 h-4 text-foreground/50 shrink-0 mt-0.5" />
-      <p className="text-sm text-foreground/70 leading-relaxed">{text}</p>
+      <p className="text-sm text-foreground/70 leading-relaxed"><strong>{t('lessonContent.warning')}</strong> {text}</p>
     </div>
   )
 }
@@ -152,6 +155,7 @@ function ContentBlockRenderer({ block }: { block: ContentBlock }) {
 }
 
 export function LessonContentRenderer({ lessonId }: { lessonId: string }) {
+  const { t } = useTranslation()
   const [content, setContent] = useState<LessonContent | null>(null)
   const [loading, setLoading] = useState(true)
 
@@ -166,7 +170,7 @@ export function LessonContentRenderer({ lessonId }: { lessonId: string }) {
   if (loading) {
     return (
       <div className="py-8 text-center">
-        <p className="text-sm font-mono text-foreground/40">Loading lesson content...</p>
+        <p className="text-sm font-mono text-foreground/40">{t('lessonContent.loading')}</p>
       </div>
     )
   }
@@ -174,7 +178,7 @@ export function LessonContentRenderer({ lessonId }: { lessonId: string }) {
   if (!content) {
     return (
       <div className="py-8 text-center">
-        <p className="text-sm font-mono text-foreground/40">Lesson content coming soon.</p>
+        <p className="text-sm font-mono text-foreground/40">{t('lessonContent.comingSoon')}</p>
       </div>
     )
   }

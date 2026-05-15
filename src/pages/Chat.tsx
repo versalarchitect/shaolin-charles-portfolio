@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
+import { useTranslation } from 'react-i18next'
 import { motion, AnimatePresence } from 'motion/react'
 import {
   Hash,
@@ -30,6 +31,9 @@ import {
   subscribeToMessages,
 } from '@/lib/chat-api'
 import type { ChatChannel, ChatMessage } from '@/lib/chat-api'
+import { createMentionNotifications } from '@/lib/chat-mentions'
+import { MentionPopover } from '@/components/gamification/mention-popover'
+import type { MentionPopoverHandle } from '@/components/gamification/mention-popover'
 
 /* ─── Helpers ─── */
 
@@ -77,7 +81,7 @@ function isSameDay(a: string, b: string) {
 
 function renderContent(text: string) {
   const parts: React.ReactNode[] = []
-  const regex = /(`[^`]+`)|(\*\*[^*]+\*\*)|(\bhttps?:\/\/\S+)/g
+  const regex = /(@\[([^\]]+)\]\(([^)]+)\))|(#\[([^\]]+)\]\(([^)]+)\))|(`[^`]+`)|(\*\*[^*]+\*\*)|(\bhttps?:\/\/\S+)/g
   let last = 0
   let match: RegExpExecArray | null
 
@@ -85,30 +89,51 @@ function renderContent(text: string) {
     if (match.index > last) parts.push(text.slice(last, match.index))
 
     if (match[1]) {
+      // @[Display Name](user_id) → mention pill
+      parts.push(
+        <span
+          key={match.index}
+          className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-md bg-foreground/[0.08] text-foreground/90 text-[13px] font-semibold cursor-default"
+        >
+          @{match[2]}
+        </span>,
+      )
+    } else if (match[4]) {
+      // #[1.3 Title](lesson-id) → lesson link
+      parts.push(
+        <a
+          key={match.index}
+          href={`/course/learn/${match[6]}`}
+          className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-md bg-foreground/[0.06] text-foreground/80 text-[13px] font-mono hover:bg-foreground/10 hover:text-foreground transition-colors"
+        >
+          {match[5]}
+        </a>,
+      )
+    } else if (match[7]) {
       parts.push(
         <code
           key={match.index}
           className="px-1.5 py-0.5 rounded bg-foreground/[0.06] text-[13px] font-mono text-foreground/90"
         >
-          {match[1].slice(1, -1)}
+          {match[7].slice(1, -1)}
         </code>,
       )
-    } else if (match[2]) {
+    } else if (match[8]) {
       parts.push(
         <strong key={match.index} className="font-semibold text-foreground">
-          {match[2].slice(2, -2)}
+          {match[8].slice(2, -2)}
         </strong>,
       )
-    } else if (match[3]) {
+    } else if (match[9]) {
       parts.push(
         <a
           key={match.index}
-          href={match[3]}
+          href={match[9]}
           target="_blank"
           rel="noopener noreferrer"
           className="text-foreground/70 underline underline-offset-2 decoration-foreground/20 hover:text-foreground hover:decoration-foreground/40 transition-colors"
         >
-          {match[3]}
+          {match[9]}
         </a>,
       )
     }
@@ -206,6 +231,7 @@ function MessageGroup({
   isOwn: boolean
   currentUser?: { user_metadata?: Record<string, string>; email?: string } | null
 }) {
+  const { t } = useTranslation()
   const first = messages[0]
   const [hovered, setHovered] = useState(false)
 
@@ -241,14 +267,14 @@ function MessageGroup({
             <button
               type="button"
               className="p-1.5 rounded-md text-foreground/40 hover:text-foreground/70 hover:bg-foreground/[0.06] transition-colors"
-              title="Add reaction"
+              title={t('chat.addReaction')}
             >
               <SmilePlus className="w-3.5 h-3.5" />
             </button>
             <button
               type="button"
               className="p-1.5 rounded-md text-foreground/40 hover:text-foreground/70 hover:bg-foreground/[0.06] transition-colors"
-              title="Reply in thread"
+              title={t('chat.replyInThread')}
             >
               <CornerDownRight className="w-3.5 h-3.5" />
             </button>
@@ -316,14 +342,16 @@ function ChannelList({
   unread: Set<string>
   onClose?: () => void
 }) {
+  const { t } = useTranslation()
+
   return (
     <div className="flex flex-col h-full">
       {/* Header */}
       <div className="px-4 pt-5 pb-4 flex items-center justify-between">
         <div>
-          <h2 className="text-sm font-semibold text-foreground">Chat</h2>
+          <h2 className="text-sm font-semibold text-foreground">{t('chat.title')}</h2>
           <p className="text-[10px] font-mono text-foreground/35 mt-0.5">
-            {channels.length} channels
+            {channels.length} {t('chat.channels').toLowerCase()}
           </p>
         </div>
         {onClose && (
@@ -342,7 +370,7 @@ function ChannelList({
       {/* Section label */}
       <div className="px-4 py-1.5">
         <span className="text-[10px] font-mono font-bold text-foreground/35 uppercase tracking-[0.15em]">
-          Channels
+          {t('chat.channels')}
         </span>
       </div>
 
@@ -395,7 +423,7 @@ function ChannelList({
             <div className="absolute inset-0 w-2 h-2 rounded-full bg-emerald-500 animate-ping opacity-30" />
           </div>
           <span className="text-[10px] font-mono text-foreground/30">
-            Live — Realtime
+            {t('chat.liveRealtime')}
           </span>
         </div>
       </div>
@@ -456,6 +484,24 @@ function EmojiPickerPopover({
 
 /* ─── Composer ─── */
 
+function detectMentionTrigger(text: string, cursorPos: number): { triggerChar: '@' | '#'; query: string; startPos: number } | null {
+  let i = cursorPos - 1
+  while (i >= 0) {
+    const ch = text[i]
+    if (ch === '@' || ch === '#') {
+      if (i === 0 || /\s/.test(text[i - 1])) {
+        const query = text.slice(i + 1, cursorPos)
+        if (ch === '@' && query.includes(' ')) return null
+        return { triggerChar: ch as '@' | '#', query, startPos: i }
+      }
+      return null
+    }
+    if (ch === '\n') return null
+    i--
+  }
+  return null
+}
+
 function ChatComposer({
   channelName,
   onSend,
@@ -465,9 +511,16 @@ function ChatComposer({
   onSend: (content: string) => void
   disabled: boolean
 }) {
+  const { t } = useTranslation()
   const [text, setText] = useState('')
   const [showEmoji, setShowEmoji] = useState(false)
+  const [mentionState, setMentionState] = useState<{
+    triggerChar: '@' | '#'
+    query: string
+    startPos: number
+  } | null>(null)
   const textareaRef = useRef<HTMLTextAreaElement>(null)
+  const mentionRef = useRef<MentionPopoverHandle>(null)
   const { resolvedTheme } = useTheme()
 
   const handleSend = useCallback(() => {
@@ -476,12 +529,37 @@ function ChatComposer({
     onSend(trimmed)
     setText('')
     setShowEmoji(false)
+    setMentionState(null)
     if (textareaRef.current) {
       textareaRef.current.style.height = 'auto'
     }
   }, [text, disabled, onSend])
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
+    // When mention popover is active, capture nav keys
+    if (mentionState) {
+      if (e.key === 'ArrowUp') {
+        e.preventDefault()
+        mentionRef.current?.navigateUp()
+        return
+      }
+      if (e.key === 'ArrowDown') {
+        e.preventDefault()
+        mentionRef.current?.navigateDown()
+        return
+      }
+      if (e.key === 'Enter' || e.key === 'Tab') {
+        e.preventDefault()
+        const handled = mentionRef.current?.selectActive()
+        if (handled) return
+      }
+      if (e.key === 'Escape') {
+        e.preventDefault()
+        setMentionState(null)
+        return
+      }
+    }
+
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault()
       handleSend()
@@ -491,12 +569,47 @@ function ChatComposer({
     }
   }
 
+  const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    const newText = e.target.value
+    setText(newText)
+
+    requestAnimationFrame(() => {
+      const ta = textareaRef.current
+      if (!ta) return
+      const cursor = ta.selectionStart
+      const trigger = detectMentionTrigger(newText, cursor)
+      setMentionState(trigger)
+    })
+  }
+
   const handleInput = () => {
     const ta = textareaRef.current
     if (!ta) return
     ta.style.height = 'auto'
     ta.style.height = `${Math.min(ta.scrollHeight, 160)}px`
   }
+
+  const handleMentionSelect = useCallback(
+    (formatted: string) => {
+      if (!mentionState) return
+      const ta = textareaRef.current
+      const cursor = ta?.selectionStart ?? text.length
+      const before = text.slice(0, mentionState.startPos)
+      const after = text.slice(cursor)
+      const newText = before + formatted + ' ' + after
+      setText(newText)
+      setMentionState(null)
+
+      requestAnimationFrame(() => {
+        if (ta) {
+          ta.focus()
+          const pos = before.length + formatted.length + 1
+          ta.setSelectionRange(pos, pos)
+        }
+      })
+    },
+    [mentionState, text],
+  )
 
   const insertEmoji = useCallback(
     (emoji: string) => {
@@ -523,7 +636,7 @@ function ChatComposer({
   )
 
   return (
-    <div className="px-5 pb-4 pt-2 relative">
+    <div className="px-5 pb-4 pt-2 relative shrink-0">
       {/* Emoji picker */}
       <AnimatePresence>
         {showEmoji && (
@@ -538,19 +651,32 @@ function ChatComposer({
         )}
       </AnimatePresence>
 
+      {/* Mention popover */}
+      <AnimatePresence>
+        {mentionState && (
+          <MentionPopover
+            ref={mentionRef}
+            triggerChar={mentionState.triggerChar}
+            query={mentionState.query}
+            onSelect={handleMentionSelect}
+            onClose={() => setMentionState(null)}
+          />
+        )}
+      </AnimatePresence>
+
       <div className="rounded-xl border border-foreground/[0.08] bg-foreground/[0.015] focus-within:border-foreground/[0.14] transition-colors overflow-hidden">
         {/* Input area */}
         <div className="flex items-end gap-1 px-4 py-3">
           <textarea
             ref={textareaRef}
             value={text}
-            onChange={(e) => setText(e.target.value)}
+            onChange={handleChange}
             onInput={handleInput}
             onKeyDown={handleKeyDown}
             placeholder={
               disabled
-                ? 'Sign in to chat...'
-                : `Message #${channelName}`
+                ? t('chat.signInToChat')
+                : `${t('chat.message')} #${channelName}`
             }
             disabled={disabled}
             rows={1}
@@ -609,6 +735,7 @@ function EmptyChannel({
   name: string
   description: string | null
 }) {
+  const { t } = useTranslation()
   const meta = CHANNEL_META[name]
   const Icon = meta?.icon || Hash
 
@@ -624,14 +751,14 @@ function EmptyChannel({
           <Icon className={`w-6 h-6 ${meta?.color || 'text-foreground/40'}`} />
         </div>
         <h3 className="text-xl font-semibold text-foreground mb-2">
-          Welcome to #{name}
+          {t('chat.welcomeTo')} #{name}
         </h3>
         <p className="text-sm text-foreground/50 font-mono leading-relaxed">
-          {description || 'Start the conversation.'}
+          {description || t('chat.startConversation')}
         </p>
         <div className="mt-6 flex items-center justify-center gap-2 text-[11px] font-mono text-foreground/25">
           <div className="w-8 h-px bg-foreground/[0.06]" />
-          <span>beginning of channel</span>
+          <span>{t('chat.beginningOfChannel')}</span>
           <div className="w-8 h-px bg-foreground/[0.06]" />
         </div>
       </motion.div>
@@ -642,6 +769,7 @@ function EmptyChannel({
 /* ─── Main ─── */
 
 export default function Chat() {
+  const { t } = useTranslation()
   const { user } = useAuth()
   const [channels, setChannels] = useState<ChatChannel[]>([])
   const [activeChannelId, setActiveChannelId] = useState('')
@@ -715,14 +843,25 @@ export default function Chat() {
       const name = meta.display_name || user.email?.split('@')[0] || 'Student'
       const initial = name.slice(0, 2).toUpperCase()
 
-      await sendMessage(activeChannelId, content, {
+      const msg = await sendMessage(activeChannelId, content, {
         id: user.id,
         name,
         initial,
         tier: meta.tier || 'Student',
       })
+
+      if (msg) {
+        createMentionNotifications({
+          messageId: msg.id,
+          channelId: activeChannelId,
+          channelName: activeChannel?.name || '',
+          senderId: user.id,
+          senderName: name,
+          content,
+        }).catch(() => {})
+      }
     },
-    [user, activeChannelId],
+    [user, activeChannelId, activeChannel],
   )
 
   const handleChannelSelect = useCallback((id: string) => {
@@ -733,7 +872,7 @@ export default function Chat() {
   const groups = buildGroups(messages)
 
   return (
-    <div className="flex h-[calc(100vh-56px)] lg:h-screen overflow-hidden lg:pt-3">
+    <div className="flex h-full overflow-hidden">
       {/* ── Channel sidebar (desktop) ── */}
       <div className="hidden md:flex flex-col w-[220px] border-r border-foreground/[0.05] bg-foreground/[0.008] shrink-0">
         <ChannelList
@@ -822,7 +961,7 @@ export default function Chat() {
               <div className="flex flex-col items-center gap-3">
                 <div className="w-5 h-5 border-2 border-foreground/[0.06] border-t-foreground/30 rounded-full animate-spin" />
                 <span className="text-[11px] font-mono text-foreground/30">
-                  Loading messages...
+                  {t('chat.loadingMessages')}
                 </span>
               </div>
             </div>

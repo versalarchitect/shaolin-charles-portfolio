@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
 import { motion, AnimatePresence } from 'motion/react'
 import {
@@ -23,6 +24,7 @@ import { useUnlockState } from '@/components/gamification/unlock-gate'
 import { ACHIEVEMENTS } from '@/data/curriculum'
 
 function AccessGrantedAnimation({ onComplete }: { onComplete: () => void }) {
+  const { t } = useTranslation()
   useEffect(() => {
     const timer = setTimeout(onComplete, 3800)
     return () => clearTimeout(timer)
@@ -114,7 +116,7 @@ function AccessGrantedAnimation({ onComplete }: { onComplete: () => void }) {
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 1.4 }}
           >
-            Security clearance verified
+            {t('secretVault.securityVerified')}
           </motion.p>
           <motion.h1
             className="text-2xl font-mono font-bold tracking-tight text-foreground/80"
@@ -122,7 +124,7 @@ function AccessGrantedAnimation({ onComplete }: { onComplete: () => void }) {
             animate={{ opacity: 1, clipPath: 'inset(0 0% 0 0)' }}
             transition={{ delay: 1.6, duration: 0.5, ease: 'easeOut' }}
           >
-            ACCESS GRANTED
+            {t('secretVault.accessGranted')}
           </motion.h1>
         </motion.div>
 
@@ -148,7 +150,7 @@ function AccessGrantedAnimation({ onComplete }: { onComplete: () => void }) {
           animate={{ opacity: [0, 1, 1, 0] }}
           transition={{ duration: 1.5, delay: 2.4, times: [0, 0.1, 0.8, 1] }}
         >
-          DECRYPTING VAULT CONTENTS...
+          {t('secretVault.decrypting')}
         </motion.p>
       </div>
     </motion.div>
@@ -156,6 +158,7 @@ function AccessGrantedAnimation({ onComplete }: { onComplete: () => void }) {
 }
 
 function AchievementTimeline() {
+  const { t } = useTranslation()
   const progress = useProgress()
   const unlockedAchievements = ACHIEVEMENTS.filter((a) =>
     progress.unlockedAchievements.includes(a.id)
@@ -173,10 +176,10 @@ function AchievementTimeline() {
           <Trophy className="w-4 h-4 text-foreground/15" />
         </div>
         <p className="text-xs text-foreground/35 font-mono mb-1">
-          Your journey begins when you earn your first achievement
+          {t('secretVault.journeyBegins')}
         </p>
         <p className="text-[10px] text-foreground/20 font-mono">
-          Complete lessons and challenges to fill this timeline
+          {t('secretVault.completeToFill')}
         </p>
       </div>
     )
@@ -217,6 +220,7 @@ function AchievementTimeline() {
 }
 
 function AllTimeStats() {
+  const { t } = useTranslation()
   const progress = useProgress()
   const level = getLevel()
   const overall = getOverallProgress()
@@ -230,12 +234,12 @@ function AllTimeStats() {
   }, {})
 
   const stats = [
-    { icon: Zap, label: 'Total XP', value: progress.totalXp.toLocaleString() },
-    { icon: Trophy, label: 'Rank', value: level.name },
-    { icon: Flame, label: 'Current Streak', value: `${progress.currentStreak}d` },
-    { icon: Star, label: 'Longest Streak', value: `${progress.longestStreak}d` },
-    { icon: Target, label: 'Lessons Done', value: `${overall.completed}/${overall.total}` },
-    { icon: Clock, label: 'Achievements', value: `${progress.unlockedAchievements.length}/${ACHIEVEMENTS.length}` },
+    { icon: Zap, label: t('secretVault.totalXp'), value: progress.totalXp.toLocaleString() },
+    { icon: Trophy, label: t('publicProfile.rank'), value: level.name },
+    { icon: Flame, label: t('secretVault.currentStreak'), value: `${progress.currentStreak}d` },
+    { icon: Star, label: t('secretVault.longestStreak'), value: `${progress.longestStreak}d` },
+    { icon: Target, label: t('secretVault.lessonsDone'), value: `${overall.completed}/${overall.total}` },
+    { icon: Clock, label: t('publicProfile.achievements'), value: `${progress.unlockedAchievements.length}/${ACHIEVEMENTS.length}` },
   ]
 
   return (
@@ -264,7 +268,7 @@ function AllTimeStats() {
       {Object.keys(xpByType).length > 0 && (
         <div className="rounded-xl border border-foreground/[0.06] bg-foreground/[0.015] p-4">
           <h4 className="text-[10px] font-mono uppercase tracking-wider text-foreground/30 mb-3">
-            XP Sources (recent)
+            {t('secretVault.xpSources')}
           </h4>
           <div className="space-y-2">
             {Object.entries(xpByType)
@@ -283,7 +287,7 @@ function AllTimeStats() {
       {toolMastery.length > 0 && (
         <div className="rounded-xl border border-foreground/[0.06] bg-foreground/[0.015] p-4">
           <h4 className="text-[10px] font-mono uppercase tracking-wider text-foreground/30 mb-3">
-            Tool Mastery
+            {t('secretVault.toolMastery')}
           </h4>
           <div className="space-y-2">
             {toolMastery.slice(0, 6).map(({ tool, xp, level }) => (
@@ -303,6 +307,7 @@ function AllTimeStats() {
 }
 
 function EasterEggsList() {
+  const { t } = useTranslation()
   const progress = useProgress()
 
   // Define easter eggs (some found based on achievements, others hinted)
@@ -341,7 +346,7 @@ function EasterEggsList() {
             {egg.hint}
           </p>
           {egg.found && (
-            <span className="text-[9px] font-mono text-foreground/25">FOUND</span>
+            <span className="text-[9px] font-mono text-foreground/25">{t('secretVault.found')}</span>
           )}
         </div>
       ))}
@@ -350,16 +355,17 @@ function EasterEggsList() {
 }
 
 function HallOfFame() {
+  const { t } = useTranslation()
   const progress = useProgress()
   const level = getLevel()
   const overall = getOverallProgress()
 
   const accomplishments = [
-    { label: 'Peak Rank', value: level.name, show: true },
-    { label: 'Best Streak', value: `${progress.longestStreak} days`, show: progress.longestStreak > 0 },
-    { label: 'Course Progress', value: `${overall.percent}%`, show: overall.percent > 0 },
-    { label: 'Total Achievements', value: `${progress.unlockedAchievements.length}`, show: progress.unlockedAchievements.length > 0 },
-    { label: 'Challenges Conquered', value: `${progress.totalChallengesCompleted}`, show: progress.totalChallengesCompleted > 0 },
+    { label: t('secretVault.peakRank'), value: level.name, show: true },
+    { label: t('secretVault.bestStreak'), value: `${progress.longestStreak} days`, show: progress.longestStreak > 0 },
+    { label: t('secretVault.courseProgress'), value: `${overall.percent}%`, show: overall.percent > 0 },
+    { label: t('secretVault.totalAchievements'), value: `${progress.unlockedAchievements.length}`, show: progress.unlockedAchievements.length > 0 },
+    { label: t('secretVault.challengesConquered'), value: `${progress.totalChallengesCompleted}`, show: progress.totalChallengesCompleted > 0 },
   ].filter((a) => a.show)
 
   return (
@@ -382,6 +388,7 @@ function HallOfFame() {
 }
 
 export default function SecretVault() {
+  const { t } = useTranslation()
   const navigate = useNavigate()
   const unlockState = useUnlockState()
   const [showIntro, setShowIntro] = useState(false)
@@ -408,8 +415,8 @@ export default function SecretVault() {
   return (
     <>
       <SEO
-        title="The Vault | Secret Archive"
-        description="Your hidden achievement archive and progress dashboard"
+        title={t('secretVault.title')}
+        description={t('secretVault.subtitle')}
         noindex
       />
 
@@ -430,46 +437,46 @@ export default function SecretVault() {
           <div className="flex items-center gap-2 mb-2">
             <Shield className="w-4 h-4 text-foreground/30" />
             <span className="text-[10px] font-mono uppercase tracking-[0.2em] text-foreground/25">
-              Classified
+              {t('secretVault.classified')}
             </span>
           </div>
           <h1 className="text-2xl font-mono font-bold text-foreground/80 tracking-tight">
-            The Vault
+            {t('secretVault.title')}
           </h1>
           <p className="text-sm text-foreground/40 mt-1">
-            Your complete progress archive and hidden records
+            {t('secretVault.subtitle')}
           </p>
         </div>
 
         {/* Sections */}
         <div className="space-y-10">
           {/* Hall of Fame */}
-          <VaultSection title="Hall of Fame" subtitle="Peak accomplishments">
+          <VaultSection title={t('secretVault.hallOfFame')} subtitle={t('secretVault.hallOfFameDesc')}>
             <HallOfFame />
           </VaultSection>
 
           {/* Achievement Timeline */}
-          <VaultSection title="Achievement Timeline" subtitle="Chronological unlock history">
+          <VaultSection title={t('secretVault.achievementTimeline')} subtitle={t('secretVault.achievementTimelineDesc')}>
             <AchievementTimeline />
           </VaultSection>
 
           {/* Learning Journey */}
-          <VaultSection title="Learning Journey" subtitle="Full chronological timeline">
+          <VaultSection title={t('secretVault.learningJourney')} subtitle={t('secretVault.learningJourneyDesc')}>
             <JourneyTimeline />
           </VaultSection>
 
           {/* All Time Stats */}
-          <VaultSection title="All Time Stats" subtitle="Detailed breakdown">
+          <VaultSection title={t('secretVault.allTimeStats')} subtitle={t('secretVault.allTimeStatsDesc')}>
             <AllTimeStats />
           </VaultSection>
 
           {/* Easter Eggs */}
-          <VaultSection title="Easter Eggs" subtitle="Hidden discoveries">
+          <VaultSection title={t('secretVault.easterEggs')} subtitle={t('secretVault.easterEggsDesc')}>
             <EasterEggsList />
           </VaultSection>
 
           {/* Unlockables Progress */}
-          <VaultSection title="Unlockables" subtitle="Collection progress">
+          <VaultSection title={t('secretVault.unlockables')} subtitle={t('secretVault.unlockablesDesc')}>
             <UnlockablesGrid showCategories compact={false} />
           </VaultSection>
         </div>

@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { motion, AnimatePresence } from 'motion/react'
 import { Star } from 'lucide-react'
 import { useRatings, getRating, setRating } from '@/stores/ratings'
@@ -17,6 +18,7 @@ function StarButton({ filled, hovered, onClick, onHover, onLeave }: {
   onHover: () => void
   onLeave: () => void
 }) {
+  const { t } = useTranslation()
   return (
     <motion.button
       type="button"
@@ -25,7 +27,7 @@ function StarButton({ filled, hovered, onClick, onHover, onLeave }: {
       onMouseLeave={onLeave}
       whileTap={{ scale: 0.85 }}
       className="p-0.5 transition-colors"
-      aria-label="Rate"
+      aria-label={t('lessonRating.rate')}
     >
       <Star
         className={`w-5 h-5 transition-colors duration-150 ${
@@ -39,6 +41,7 @@ function StarButton({ filled, hovered, onClick, onHover, onLeave }: {
 }
 
 export function LessonRating({ lessonId }: LessonRatingProps) {
+  const { t } = useTranslation()
   useRatings()
   const existing = getRating(lessonId)
 
@@ -84,7 +87,7 @@ export function LessonRating({ lessonId }: LessonRatingProps) {
             className="text-center py-2"
           >
             <p className="text-sm font-mono text-foreground/60">
-              Thanks for rating! +3 XP
+              {t('lessonRating.thanks')}
             </p>
           </motion.div>
         ) : (
@@ -96,12 +99,12 @@ export function LessonRating({ lessonId }: LessonRatingProps) {
             className="space-y-4"
           >
             <p className="text-sm font-medium text-foreground/70">
-              How was this lesson?
+              {t('lessonRating.howWas')}
             </p>
 
             {/* Star rating */}
             <div className="space-y-1.5">
-              <p className="text-xs font-mono text-foreground/40">Rating</p>
+              <p className="text-xs font-mono text-foreground/40">{t('lessonRating.rating')}</p>
               <div className="flex items-center gap-0.5">
                 {[1, 2, 3, 4, 5].map((star) => (
                   <StarButton
@@ -127,7 +130,7 @@ export function LessonRating({ lessonId }: LessonRatingProps) {
 
             {/* Difficulty selector */}
             <div className="space-y-1.5">
-              <p className="text-xs font-mono text-foreground/40">Difficulty</p>
+              <p className="text-xs font-mono text-foreground/40">{t('lessonRating.difficulty')}</p>
               <div className="flex items-center gap-1.5">
                 {DIFFICULTY_LABELS.map((label, i) => {
                   const level = i + 1

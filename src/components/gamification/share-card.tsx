@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState, useCallback, type KeyboardEvent as ReactKeyboardEvent } from 'react'
+import { useTranslation } from 'react-i18next'
 import { motion, AnimatePresence } from 'motion/react'
 import { X, Download, Share2, Link2, Check, Loader2 } from 'lucide-react'
 import { generateShareCard, downloadShareCard, shareCard, type ShareCardData } from '@/lib/share-card'
@@ -15,20 +16,24 @@ export function ShareCard({ onClose }: ShareCardProps) {
   const modalRef = useRef<HTMLDivElement>(null)
   const previousFocusRef = useRef<HTMLElement | null>(null)
   const progress = useProgress()
+  const { t } = useTranslation()
   const [loading, setLoading] = useState(true)
   const [copied, setCopied] = useState(false)
   const [shared, setShared] = useState(false)
 
+  const level = getLevel()
+  const title = getActiveTitle()
+
   const cardData: ShareCardData = {
     displayName: 'Student',
-    rank: getLevel().name,
+    rank: level.name,
     totalXp: progress.totalXp,
     currentStreak: progress.currentStreak,
     lessonsCompleted: Object.values(progress.lessonProgress).filter((p) => p.status === 'completed').length,
     totalLessons: ALL_LESSONS.length,
     achievementsEarned: progress.unlockedAchievements.length,
     totalAchievements: ACHIEVEMENTS.length,
-    activeTitle: getActiveTitle().name,
+    activeTitle: title.name,
   }
 
   const renderCard = useCallback(async () => {
@@ -168,8 +173,8 @@ export function ShareCard({ onClose }: ShareCardProps) {
           {/* Header */}
           <div className="flex items-center justify-between mb-4">
             <div>
-              <h2 className="text-lg font-bold">Share Your Progress</h2>
-              <p className="text-xs font-mono text-foreground/40">Download or share your achievement card</p>
+              <h2 className="text-lg font-bold">{t('shareCard.title')}</h2>
+              <p className="text-xs font-mono text-foreground/40">{t('shareCard.subtitle')}</p>
             </div>
             {onClose && (
               <button
@@ -214,7 +219,7 @@ export function ShareCard({ onClose }: ShareCardProps) {
               className="flex-1 flex items-center justify-center gap-2 h-10 rounded-lg bg-foreground text-background text-sm font-mono font-semibold hover:bg-foreground/90 transition-all disabled:opacity-40"
             >
               {shared ? <Check className="w-4 h-4" /> : <Share2 className="w-4 h-4" />}
-              {shared ? 'Shared!' : 'Share'}
+              {shared ? t('shareCard.shared') : t('shareCard.share')}
             </button>
             <button
               onClick={handleCopyLink}
@@ -222,7 +227,7 @@ export function ShareCard({ onClose }: ShareCardProps) {
               className="flex-1 sm:flex-none flex items-center justify-center gap-2 h-10 px-4 rounded-lg bg-foreground/5 border border-foreground/10 text-sm font-mono text-foreground/80 hover:bg-foreground/10 hover:border-foreground/20 transition-all disabled:opacity-40"
             >
               {copied ? <Check className="w-4 h-4" /> : <Link2 className="w-4 h-4" />}
-              {copied ? 'Copied!' : 'Copy Link'}
+              {copied ? t('shareCard.copied') : t('shareCard.copyLink')}
             </button>
           </div>
         </motion.div>

@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react'
+import { useTranslation } from 'react-i18next'
 import { motion } from 'motion/react'
 import { Crown, Award, Trophy, Star, Target, Check, Zap, Lock } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
@@ -21,19 +22,20 @@ export function StatCard({ icon: Icon, label, children }: { icon: LucideIcon; la
   )
 }
 
-const STATUS_STYLES: Record<string, { bg: string; text: string; icon: ReactNode; label: string }> = {
-  completed: { bg: 'bg-green-500/20', text: 'text-green-500', icon: <Check className="w-3 h-3" />, label: 'Completed' },
-  in_progress: { bg: 'bg-foreground/10', text: 'text-foreground/70', icon: <span className="w-1.5 h-1.5 rounded-full bg-foreground/60 animate-pulse" />, label: 'In Progress' },
-  available: { bg: 'bg-foreground/5', text: 'text-foreground/60', icon: <Zap className="w-3 h-3" />, label: 'Available' },
-  locked: { bg: 'bg-foreground/5', text: 'text-foreground/40', icon: <Lock className="w-3 h-3" />, label: 'Locked' },
+const STATUS_STYLES: Record<string, { bg: string; text: string; icon: ReactNode; labelKey: string }> = {
+  completed: { bg: 'bg-green-500/20', text: 'text-green-500', icon: <Check className="w-3 h-3" />, labelKey: 'statusBadge.completed' },
+  in_progress: { bg: 'bg-foreground/10', text: 'text-foreground/70', icon: <span className="w-1.5 h-1.5 rounded-full bg-foreground/60 animate-pulse" />, labelKey: 'statusBadge.inProgress' },
+  available: { bg: 'bg-foreground/5', text: 'text-foreground/60', icon: <Zap className="w-3 h-3" />, labelKey: 'statusBadge.available' },
+  locked: { bg: 'bg-foreground/5', text: 'text-foreground/40', icon: <Lock className="w-3 h-3" />, labelKey: 'statusBadge.locked' },
 }
 
 export function StatusBadge({ status }: { status: string }) {
+  const { t } = useTranslation()
   const style = STATUS_STYLES[status] || STATUS_STYLES.locked
   return (
     <span className={`px-2.5 py-1 ${style.bg} ${style.text} text-xs font-mono rounded flex items-center gap-1.5`}>
       {style.icon}
-      {style.label}
+      {t(style.labelKey)}
     </span>
   )
 }

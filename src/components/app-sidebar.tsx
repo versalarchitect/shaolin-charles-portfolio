@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { motion, AnimatePresence } from 'motion/react'
 import {
@@ -37,14 +38,14 @@ import { StreakBadge } from '@/components/gamification/streak-badge'
 import { NotificationCenter } from '@/components/gamification/notification-center'
 
 const NAV_ITEMS = [
-  { label: 'Dashboard', href: '/course/dashboard', icon: LayoutDashboard },
-  { label: 'Curriculum', href: '/course/curriculum', icon: BookOpen },
-  { label: 'Leaderboard', href: '/course/leaderboard', icon: Trophy },
-  { label: 'Analytics', href: '/course/analytics', icon: BarChart3 },
-  { label: 'Community', href: '/course/community', icon: Users },
-  { label: 'Knowledge Base', href: '/course/knowledge-base', icon: Brain },
-  { label: 'Chat', href: '/course/chat', icon: MessageSquare },
-  { label: 'Settings', href: '/course/profile', icon: Settings },
+  { labelKey: 'sidebar.dashboard', href: '/course/dashboard', icon: LayoutDashboard },
+  { labelKey: 'sidebar.curriculum', href: '/course/curriculum', icon: BookOpen },
+  { labelKey: 'sidebar.leaderboard', href: '/course/leaderboard', icon: Trophy },
+  { labelKey: 'sidebar.analytics', href: '/course/analytics', icon: BarChart3 },
+  { labelKey: 'sidebar.community', href: '/course/community', icon: Users },
+  { labelKey: 'sidebar.knowledgeBase', href: '/course/knowledge-base', icon: Brain },
+  { labelKey: 'sidebar.chat', href: '/course/chat', icon: MessageSquare },
+  { labelKey: 'sidebar.settings', href: '/course/profile', icon: Settings },
 ]
 
 function LevelIcon({ levelName, className }: { levelName: string; className?: string }) {
@@ -96,6 +97,7 @@ function SidebarProfile({
   email: string
   onSignOut: () => void
 }) {
+  const { t } = useTranslation()
   const progress = useProgress()
   const level = getLevel()
   const nextLevel = getNextLevel()
@@ -250,7 +252,7 @@ function SidebarProfile({
         </div>
         {nextLevel && (
           <p className="text-[9px] font-mono text-foreground/30 mb-2 text-right">
-            {xpIntoLevel}/{xpForLevel} XP to {nextLevel.name}
+            {xpIntoLevel}/{xpForLevel} {t('sidebar.xpTo')} {nextLevel.name}
           </p>
         )}
 
@@ -258,7 +260,7 @@ function SidebarProfile({
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-1">
             <StreakFlame streak={progress.currentStreak} />
-            <span className="text-[10px] font-mono text-foreground/40">{progress.currentStreak}d streak</span>
+            <span className="text-[10px] font-mono text-foreground/40">{progress.currentStreak}d {t('sidebar.streak')}</span>
             {progress.currentStreak >= 3 && (
               <StreakBadge streak={progress.currentStreak} className="!px-1.5 !py-0.5 !text-[9px] scale-75 origin-left" />
             )}
@@ -269,7 +271,7 @@ function SidebarProfile({
             )}
           </div>
           <span className="text-[10px] font-mono text-foreground/30">
-            {overall.completed}/{TOTAL_LESSONS} lessons
+            {overall.completed}/{TOTAL_LESSONS} {t('sidebar.lessons')}
           </span>
         </div>
       </div>
@@ -280,7 +282,7 @@ function SidebarProfile({
         className="flex items-center gap-3 w-full px-3 py-1.5 rounded-lg text-[11px] font-medium font-mono text-foreground/40 hover:text-foreground/70 hover:bg-foreground/[0.05] transition-colors"
       >
         <Settings className="w-3.5 h-3.5 shrink-0" />
-        View Profile
+        {t('sidebar.viewProfile')}
       </Link>
 
       {/* Sign out */}
@@ -290,13 +292,14 @@ function SidebarProfile({
         className="flex items-center gap-3 w-full px-3 py-2 rounded-lg text-sm font-medium font-mono text-foreground/40 hover:text-foreground/70 hover:bg-foreground/5 transition-colors"
       >
         <LogOut className="w-4 h-4 shrink-0" />
-        Sign Out
+        {t('sidebar.signOut')}
       </button>
     </div>
   )
 }
 
 function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
+  const { t } = useTranslation()
   const location = useLocation()
   const navigate = useNavigate()
   const { user } = useAuth()
@@ -355,7 +358,7 @@ function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
               `}
             >
               <item.icon className="w-4 h-4 shrink-0" />
-              {item.label}
+              {t(item.labelKey)}
             </Link>
           )
         })}
@@ -376,7 +379,7 @@ function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
               `}
             >
               <Briefcase className="w-4 h-4 shrink-0" />
-              Pipeline
+              {t('sidebar.pipeline')}
             </Link>
           )
         })()}
@@ -397,7 +400,7 @@ function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
               `}
             >
               <Bot className="w-4 h-4 shrink-0" />
-              Student Agent
+              {t('sidebar.studentAgent')}
             </Link>
           )
         })()}

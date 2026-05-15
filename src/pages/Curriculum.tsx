@@ -1,4 +1,5 @@
 import { Link, useLocation } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import { SEO } from '@/components/SEO'
 import { Button } from '@/components/ui/button'
 import { motion } from 'motion/react'
@@ -63,6 +64,7 @@ export default function Curriculum() {
 }
 
 function ProgressBanner() {
+  const { t } = useTranslation()
   const progressState = useProgress()
   const { completed, total, percent } = getOverallProgress()
 
@@ -75,17 +77,17 @@ function ProgressBanner() {
           <div className="flex items-center gap-3 text-sm">
             <Trophy className="w-4 h-4 text-foreground/60" />
             <span className="text-foreground/70 font-mono">
-              Your Progress: <span className="text-foreground/90 font-semibold">{completed}/{total} lessons</span>
+              {t('curriculum.progress.yourProgress')}: <span className="text-foreground/90 font-semibold">{completed}/{total} {t('curriculum.app.lessons').toLowerCase()}</span>
               {' · '}
-              <span className="text-foreground/90 font-semibold">{percent}% complete</span>
+              <span className="text-foreground/90 font-semibold">{percent}% {t('curriculum.progress.complete')}</span>
               {' · '}
-              <span className="text-foreground/90 font-semibold">{progressState.totalXp.toLocaleString()} XP</span> earned
+              <span className="text-foreground/90 font-semibold">{progressState.totalXp.toLocaleString()} XP</span> {t('curriculum.progress.earned')}
             </span>
           </div>
           {percent === 100 && (
             <span className="text-xs font-mono px-2.5 py-1 rounded-full bg-foreground/10 text-foreground/70 flex items-center gap-1.5">
               <Check className="w-3 h-3" />
-              Course Complete
+              {t('curriculum.app.courseComplete')}
             </span>
           )}
         </div>
@@ -103,6 +105,7 @@ function ProgressBanner() {
 }
 
 function TierProgressIndicator({ tierId }: { tierId: string }) {
+  const { t } = useTranslation()
   const tierProgress = getTierProgress(tierId)
 
   if (tierProgress.completed === 0) return null
@@ -111,7 +114,7 @@ function TierProgressIndicator({ tierId }: { tierId: string }) {
     <div className="mt-3">
       <div className="flex items-center gap-2 mb-1.5">
         <span className="text-xs font-mono text-foreground/40">
-          {tierProgress.completed}/{tierProgress.total} completed
+          {tierProgress.completed}/{tierProgress.total} {t('curriculum.progress.completed')}
         </span>
         {tierProgress.percent === 100 && (
           <span className="flex items-center gap-1 text-[10px] font-mono text-foreground/50">
@@ -132,7 +135,8 @@ function TierProgressIndicator({ tierId }: { tierId: string }) {
 }
 
 function AppCurriculum() {
-  const totalHours = CURRICULUM.reduce((sum, t) => sum + t.hours, 0)
+  const { t } = useTranslation()
+  const totalHours = CURRICULUM.reduce((sum, tier) => sum + tier.hours, 0)
   useProgress()
   const { multiplier } = getStreakMultiplier()
 
@@ -144,9 +148,9 @@ function AppCurriculum() {
           <div className="mb-8">
             <div className="flex items-center justify-between">
               <div>
-                <h1 className="text-2xl font-bold tracking-tight mb-2">Curriculum</h1>
+                <h1 className="text-2xl font-bold tracking-tight mb-2">{t('curriculum.app.title')}</h1>
                 <p className="text-sm text-muted-foreground">
-                  Each section builds on the last. The milestone project from each section proves you're ready for the next.
+                  {t('curriculum.app.subtitle')}
                 </p>
               </div>
               {multiplier > 1 && (
@@ -179,7 +183,7 @@ function AppCurriculum() {
                           <h2 className="text-lg font-bold">{tier.title}</h2>
                           {tierProgress.percent === 100 && (
                             <span className="flex items-center gap-1 text-[10px] font-mono px-2 py-0.5 rounded-full bg-foreground/10 text-foreground/60">
-                              <Check className="w-3 h-3" /> Complete
+                              <Check className="w-3 h-3" /> {t('curriculum.app.complete')}
                             </span>
                           )}
                         </div>
@@ -222,7 +226,7 @@ function AppCurriculum() {
                     <div className="px-5 py-3 border-t border-foreground/[0.06] bg-foreground/[0.02]">
                       <div className="flex items-center gap-2">
                         <GraduationCap className="w-3.5 h-3.5 text-foreground/60" />
-                        <span className="text-xs font-mono text-foreground/60">Milestone Project:</span>
+                        <span className="text-xs font-mono text-foreground/60">{t('curriculum.milestoneProject')}:</span>
                         <span className="text-xs text-foreground/80">{tier.capstone}</span>
                         <span className="text-[10px] font-mono ml-auto text-foreground/30">
                           +{tier.lessonDetails.find(l => l.isCapstone)?.xp || 0} XP
@@ -241,33 +245,33 @@ function AppCurriculum() {
           <div className="sticky top-8 space-y-6">
             {/* Course Overview */}
             <div className="rounded-xl border border-foreground/10 bg-foreground/[0.02] p-5">
-              <h3 className="text-xs font-mono uppercase tracking-wide text-foreground/40 mb-4">Course Overview</h3>
+              <h3 className="text-xs font-mono uppercase tracking-wide text-foreground/40 mb-4">{t('curriculum.app.courseOverview')}</h3>
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <div className="flex items-center gap-1.5 mb-1">
                     <Clock className="w-3 h-3 text-foreground/40" />
-                    <span className="text-xs text-foreground/40">Hours</span>
+                    <span className="text-xs text-foreground/40">{t('curriculum.app.hours')}</span>
                   </div>
                   <span className="text-2xl font-bold font-mono">{totalHours}</span>
                 </div>
                 <div>
                   <div className="flex items-center gap-1.5 mb-1">
                     <BookOpen className="w-3 h-3 text-foreground/40" />
-                    <span className="text-xs text-foreground/40">Lessons</span>
+                    <span className="text-xs text-foreground/40">{t('curriculum.app.lessons')}</span>
                   </div>
                   <span className="text-2xl font-bold font-mono">{TOTAL_LESSONS}</span>
                 </div>
                 <div>
                   <div className="flex items-center gap-1.5 mb-1">
                     <Layers className="w-3 h-3 text-foreground/40" />
-                    <span className="text-xs text-foreground/40">Sections</span>
+                    <span className="text-xs text-foreground/40">{t('curriculum.app.sections')}</span>
                   </div>
                   <span className="text-2xl font-bold font-mono">4</span>
                 </div>
                 <div>
                   <div className="flex items-center gap-1.5 mb-1">
                     <Zap className="w-3 h-3 text-foreground/40" />
-                    <span className="text-xs text-foreground/40">Total XP</span>
+                    <span className="text-xs text-foreground/40">{t('curriculum.app.totalXp')}</span>
                   </div>
                   <span className="text-2xl font-bold font-mono">{TOTAL_XP.toLocaleString()}</span>
                 </div>
@@ -276,7 +280,7 @@ function AppCurriculum() {
 
             {/* Tier Navigation */}
             <div className="rounded-xl border border-foreground/10 bg-foreground/[0.02] p-5">
-              <h3 className="text-xs font-mono uppercase tracking-wide text-foreground/40 mb-4">Jump to Section</h3>
+              <h3 className="text-xs font-mono uppercase tracking-wide text-foreground/40 mb-4">{t('curriculum.app.jumpToSection')}</h3>
               <nav className="space-y-1">
                 {tiers.map((tier) => {
                   const Icon = tier.icon
@@ -308,7 +312,7 @@ function AppCurriculum() {
             <div className="rounded-xl border border-foreground/10 bg-foreground/[0.02] p-5">
               <h3 className="text-xs font-mono uppercase tracking-wide text-foreground/40 mb-4">
                 <Trophy className="w-3 h-3 inline-block mr-1.5 -mt-0.5" />
-                Milestone Projects
+                {t('curriculum.app.milestoneProjects')}
               </h3>
               <div className="space-y-3">
                 {tiers.filter(t => t.capstone).map((tier) => (
@@ -334,6 +338,7 @@ function AppCurriculum() {
 }
 
 function MarketingCurriculum() {
+  const { t } = useTranslation()
   const { isLoggedIn } = useAuth()
   // Initialize progress store if user is logged in (needed for getLessonStatus/getTierProgress)
   useProgress()
@@ -342,8 +347,8 @@ function MarketingCurriculum() {
     <>
       {isLoggedIn && <ProgressBanner />}
       <SEO
-        title="Curriculum — The Agentic SaaS Course"
-        description="52 hours across 51 lessons and 4 tiers. From the basics to directing teams of AI agents. Learn to direct a single agent, coordinate multiple agents in parallel, and design complete agent workflows."
+        title={t('curriculum.meta.title')}
+        description={t('curriculum.meta.description')}
         path="/curriculum"
         image="/og-image.png"
         imageAlt="Curriculum — The Agentic SaaS Course: 52 hours, 51 lessons, 4 tiers"
@@ -368,20 +373,20 @@ function MarketingCurriculum() {
             <BlurFadeIn delay={0} immediate>
               <div className="inline-flex items-center gap-2 px-4 py-2 bg-foreground/5 backdrop-blur-sm border border-foreground/10 rounded-full mb-8">
                 <BookOpen className="w-4 h-4 text-foreground/60" />
-                <span className="text-xs font-mono text-foreground/60">Full Curriculum</span>
+                <span className="text-xs font-mono text-foreground/60">{t('curriculum.hero.badge')}</span>
               </div>
             </BlurFadeIn>
 
             <BlurFadeIn delay={0.1} immediate>
               <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight mb-8 leading-[1.1]">
-                From zero to{' '}
-                <span className="text-muted-foreground">directing AI teams.</span>
+                {t('curriculum.hero.title')}{' '}
+                <span className="text-muted-foreground">{t('curriculum.hero.titleHighlight')}</span>
               </h1>
             </BlurFadeIn>
 
             <BlurFadeIn delay={0.2} immediate>
               <p className="text-lg md:text-xl text-muted-foreground leading-relaxed max-w-2xl">
-                52 hours across 51 interactive lessons. Each section takes you deeper into directing AI agents — from understanding how they work to running entire teams. You advance by shipping real projects.
+                {t('curriculum.hero.subtitle')}
               </p>
             </BlurFadeIn>
           </div>
@@ -393,10 +398,10 @@ function MarketingCurriculum() {
         <div className="container mx-auto px-6 lg:px-8 relative z-10">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-12">
             {[
-              { value: 52, suffix: 'h', label: 'Total Hours' },
-              { value: 51, suffix: '', label: 'Lessons' },
-              { value: 8, suffix: '', label: 'Principles' },
-              { value: 4, suffix: '', label: 'Milestone Projects' },
+              { value: 52, suffix: 'h', label: t('curriculum.stats.totalHours') },
+              { value: 51, suffix: '', label: t('curriculum.stats.lessons') },
+              { value: 8, suffix: '', label: t('curriculum.stats.principles') },
+              { value: 4, suffix: '', label: t('curriculum.stats.milestoneProjects') },
             ].map(({ value, suffix, label }, index) => (
               <motion.div
                 key={label}
@@ -421,10 +426,10 @@ function MarketingCurriculum() {
         <div className="container mx-auto px-6 lg:px-8 relative z-10">
           <ScrollFadeIn className="mb-16">
             <h2 className="text-3xl md:text-4xl font-bold tracking-tight mb-4">
-              Course Breakdown
+              {t('curriculum.breakdown.title')}
             </h2>
             <p className="text-muted-foreground max-w-2xl">
-              Each section builds on the last. You advance by completing a milestone project that proves you're ready for the next level.
+              {t('curriculum.breakdown.subtitle')}
             </p>
           </ScrollFadeIn>
 
@@ -468,7 +473,7 @@ function MarketingCurriculum() {
                     {/* Lessons */}
                     <div className="mb-6">
                       <h4 className="text-sm font-mono text-muted-foreground mb-3 uppercase tracking-wide">
-                        Lessons
+                        {t('curriculum.app.lessons')}
                       </h4>
                       <div className="space-y-1.5">
                         {tier.lessonDetails.map((lesson) => (
@@ -482,7 +487,7 @@ function MarketingCurriculum() {
                       <div className="p-4 rounded-lg bg-foreground/[0.03] border border-foreground/5 mb-4">
                         <div className="flex items-center gap-2 mb-1.5">
                           <GraduationCap className="w-4 h-4 text-foreground/60" />
-                          <span className="text-sm font-mono text-foreground/60">Milestone Project</span>
+                          <span className="text-sm font-mono text-foreground/60">{t('curriculum.milestoneProject')}</span>
                         </div>
                         <p className="text-sm text-foreground/80">{tier.capstone}</p>
                       </div>
@@ -513,21 +518,21 @@ function MarketingCurriculum() {
         <div className="container mx-auto px-6 lg:px-8 relative z-10">
           <ScrollFadeIn className="text-center max-w-3xl mx-auto">
             <h2 className="text-3xl md:text-4xl font-bold tracking-tight mb-6">
-              Ready to start directing AI?
+              {t('curriculum.cta.title')}
             </h2>
             <p className="text-muted-foreground text-lg mb-8">
-              52 hours. 4 real-world projects. Principles that outlast the next AI release.
+              {t('curriculum.cta.subtitle')}
             </p>
             <div className="flex flex-wrap justify-center gap-4">
               <Button size="lg" className="font-mono group" asChild>
                 <Link to="/course/dashboard">
-                  Start Learning
+                  {t('curriculum.cta.startLearning')}
                   <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
                 </Link>
               </Button>
               <Button size="lg" variant="outline" className="font-mono group" asChild>
                 <Link to="/tiers">
-                  View Pricing
+                  {t('curriculum.cta.viewPricing')}
                   <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
                 </Link>
               </Button>

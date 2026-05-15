@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback, useRef } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import { motion, AnimatePresence, useReducedMotion } from 'motion/react'
 import { Plus, Play, Target, Timer, Share2, Command } from 'lucide-react'
 import { useCommandMenu } from '@/components/command-menu'
@@ -33,6 +34,7 @@ export function QuickActionsFab() {
   const { pathname } = useLocation()
   const { setOpen: openCommandMenu } = useCommandMenu()
   const prefersReducedMotion = useReducedMotion()
+  const { t } = useTranslation()
 
   // Only show on course pages
   const isCourseRoute = pathname.startsWith('/course/')
@@ -41,7 +43,7 @@ export function QuickActionsFab() {
   const actions: QuickAction[] = [
     {
       id: 'resume',
-      label: 'Resume lesson',
+      label: t('quickActions.resumeLesson'),
       icon: Play,
       action: () => {
         const next = getNextLessonPath()
@@ -52,13 +54,13 @@ export function QuickActionsFab() {
     },
     {
       id: 'challenges',
-      label: 'Daily challenges',
+      label: t('quickActions.dailyChallenges'),
       icon: Target,
       action: () => {
         navigate('/course/dashboard')
         // Allow navigation to complete then scroll to challenges section
         setTimeout(() => {
-          const el = document.getElementById('weekly-challenges')
+          const el = document.getElementById('challenges')
           el?.scrollIntoView({ behavior: 'smooth', block: 'start' })
         }, 100)
         setExpanded(false)
@@ -66,12 +68,12 @@ export function QuickActionsFab() {
     },
     {
       id: 'focus',
-      label: 'Focus timer',
+      label: t('quickActions.focusTimer'),
       icon: Timer,
       action: () => {
         navigate('/course/dashboard')
         setTimeout(() => {
-          const el = document.getElementById('focus-timer')
+          const el = document.getElementById('challenges')
           el?.scrollIntoView({ behavior: 'smooth', block: 'start' })
         }, 100)
         setExpanded(false)
@@ -79,7 +81,7 @@ export function QuickActionsFab() {
     },
     {
       id: 'share',
-      label: 'Share progress',
+      label: t('quickActions.shareProgress'),
       icon: Share2,
       action: () => {
         window.dispatchEvent(new CustomEvent('open-share-card'))
@@ -88,7 +90,7 @@ export function QuickActionsFab() {
     },
     {
       id: 'command',
-      label: 'Command menu',
+      label: t('quickActions.commandMenu'),
       icon: Command,
       action: () => {
         openCommandMenu(true)

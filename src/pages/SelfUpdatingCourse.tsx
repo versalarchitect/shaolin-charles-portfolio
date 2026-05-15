@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import { motion } from 'motion/react'
 import {
   ArrowRight,
@@ -23,30 +24,26 @@ import {
 } from '@/components/ui/aaa-effects'
 import { useCourseStats, timeAgo } from '@/hooks/use-course-stats'
 
-const PROMISES = [
+const PROMISE_KEYS = [
   {
     icon: RefreshCw,
-    title: 'Always Current',
-    description:
-      'When AI tools change, pricing shifts, or new features launch — your course content updates automatically. No stale information. No outdated examples.',
+    titleKey: 'selfUpdatingCourse.promises.alwaysCurrent.title',
+    descKey: 'selfUpdatingCourse.promises.alwaysCurrent.description',
   },
   {
     icon: ShieldCheck,
-    title: 'Fact-Verified',
-    description:
-      'Every claim in every lesson is backed by a verified, sourced fact. Not opinions. Not "as of last year." Verified against the latest official documentation.',
+    titleKey: 'selfUpdatingCourse.promises.factVerified.title',
+    descKey: 'selfUpdatingCourse.promises.factVerified.description',
   },
   {
     icon: Clock,
-    title: 'Real-Time Awareness',
-    description:
-      'The course monitors dozens of official sources continuously. New AI tool release? Pricing change? Feature update? The course knows before you do.',
+    titleKey: 'selfUpdatingCourse.promises.realTimeAwareness.title',
+    descKey: 'selfUpdatingCourse.promises.realTimeAwareness.description',
   },
   {
     icon: TrendingUp,
-    title: 'Transparent Freshness',
-    description:
-      'Every section shows when it was last verified. You always know exactly how current the material is — down to the hour.',
+    titleKey: 'selfUpdatingCourse.promises.transparentFreshness.title',
+    descKey: 'selfUpdatingCourse.promises.transparentFreshness.description',
   },
 ]
 
@@ -99,13 +96,14 @@ function StatCard({
 }
 
 export default function SelfUpdatingCourse() {
+  const { t } = useTranslation()
   const { stats, loading } = useCourseStats()
 
   return (
     <>
       <SEO
-        title="Self-Updating Course — Always Current, Never Outdated"
-        description="A living course that updates itself as AI technology evolves. Every fact verified against live sources. Every section always current. You always learn what's true right now."
+        title={t('selfUpdatingCourse.meta.title')}
+        description={t('selfUpdatingCourse.meta.description')}
         path="self-updating-course"
         keywords="self-updating ai course, always current ai course, ai for entrepreneurs, never outdated, verified ai content"
       />
@@ -120,30 +118,29 @@ export default function SelfUpdatingCourse() {
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-500 opacity-75" />
                 <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500" />
               </span>
-              Self-Updating Course
+              {t('selfUpdatingCourse.hero.badge')}
             </span>
           </BlurFadeIn>
 
           <BlurFadeIn delay={0.1}>
             <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold tracking-tight text-foreground mb-6">
-              A Course That
+              {t('selfUpdatingCourse.hero.title')}
               <br />
-              Never Goes Stale
+              {t('selfUpdatingCourse.hero.titleBreak')}
             </h1>
           </BlurFadeIn>
 
           <BlurFadeIn delay={0.2}>
             <p className="text-lg md:text-xl text-foreground/60 max-w-2xl mx-auto mb-12 leading-relaxed">
-              The AI landscape moves fast. This course moves with it. Every lesson is continuously verified against live sources — so you learn what&apos;s true{' '}
-              <span className="italic text-foreground/80">right now</span>, not what was true six months ago.
+              {t('selfUpdatingCourse.hero.subtitle')}
             </p>
           </BlurFadeIn>
 
           <BlurFadeIn delay={0.3}>
             <div className="grid grid-cols-3 gap-6 md:gap-8 mb-12 max-w-lg mx-auto">
-              <StatCard label="Verified Facts" value={stats?.activeFacts ?? 0} loading={loading} />
-              <StatCard label="Lessons" value={stats?.lessons ?? 0} loading={loading} />
-              <StatCard label="Modules" value={stats?.modules ?? 0} loading={loading} />
+              <StatCard label={t('selfUpdatingCourse.hero.verifiedFacts')} value={stats?.activeFacts ?? 0} loading={loading} />
+              <StatCard label={t('selfUpdatingCourse.hero.lessons')} value={stats?.lessons ?? 0} loading={loading} />
+              <StatCard label={t('selfUpdatingCourse.hero.modules')} value={stats?.modules ?? 0} loading={loading} />
             </div>
           </BlurFadeIn>
 
@@ -151,13 +148,13 @@ export default function SelfUpdatingCourse() {
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-8">
               <Button asChild size="lg" className="h-12 px-8 font-mono group">
                 <Link to="/curriculum">
-                  Explore Curriculum
+                  {t('selfUpdatingCourse.hero.exploreCurriculum')}
                   <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
                 </Link>
               </Button>
               <Button asChild variant="outline" size="lg" className="h-12 px-8 font-mono">
                 <Link to="/tiers">
-                  View Pricing
+                  {t('selfUpdatingCourse.hero.viewPricing')}
                 </Link>
               </Button>
             </div>
@@ -168,7 +165,7 @@ export default function SelfUpdatingCourse() {
               {loading ? (
                 <Skeleton className="h-4 w-36 mx-auto" />
               ) : stats?.lastPipelineRun ? (
-                <>Content last verified {timeAgo(stats.lastPipelineRun)}</>
+                <>{t('selfUpdatingCourse.hero.contentLastVerified')} {timeAgo(stats.lastPipelineRun)}</>
               ) : null}
             </p>
           </BlurFadeIn>
@@ -181,17 +178,17 @@ export default function SelfUpdatingCourse() {
         <div className="relative max-w-5xl mx-auto">
           <ScrollFadeIn>
             <h2 className="text-3xl md:text-4xl font-bold text-center text-foreground mb-4">
-              What Makes This Course Different
+              {t('selfUpdatingCourse.promises.title')}
             </h2>
             <p className="text-foreground/50 text-center max-w-xl mx-auto mb-16">
-              Most AI courses go stale within weeks of launching. This one can&apos;t.
+              {t('selfUpdatingCourse.promises.subtitle')}
             </p>
           </ScrollFadeIn>
 
           <StaggerContainer className="grid grid-cols-1 md:grid-cols-2 gap-4" staggerDelay={0.1}>
-            {PROMISES.map((item, i) => (
+            {PROMISE_KEYS.map((item, i) => (
               <motion.div
-                key={item.title}
+                key={item.titleKey}
                 variants={staggerItemVariants}
                 className="relative rounded-xl border border-foreground/[0.08] bg-foreground/[0.02] p-6 hover:border-foreground/15 transition-colors"
               >
@@ -201,8 +198,8 @@ export default function SelfUpdatingCourse() {
                 <div className="flex items-center justify-center w-10 h-10 rounded-lg bg-foreground/5 mb-4">
                   <item.icon className="h-5 w-5 text-foreground/60" />
                 </div>
-                <h3 className="font-semibold text-foreground mb-2">{item.title}</h3>
-                <p className="text-sm text-foreground/50 leading-relaxed">{item.description}</p>
+                <h3 className="font-semibold text-foreground mb-2">{t(item.titleKey)}</h3>
+                <p className="text-sm text-foreground/50 leading-relaxed">{t(item.descKey)}</p>
               </motion.div>
             ))}
           </StaggerContainer>
@@ -215,10 +212,10 @@ export default function SelfUpdatingCourse() {
         <div className="relative max-w-3xl mx-auto">
           <ScrollFadeIn>
             <h2 className="text-3xl md:text-4xl font-bold text-center text-foreground mb-4">
-              Course Freshness
+              {t('selfUpdatingCourse.freshness.title')}
             </h2>
             <p className="text-foreground/50 text-center max-w-xl mx-auto mb-12">
-              Live data showing how current your course content is, right now.
+              {t('selfUpdatingCourse.freshness.subtitle')}
             </p>
           </ScrollFadeIn>
 
@@ -229,19 +226,19 @@ export default function SelfUpdatingCourse() {
                   <p className="text-2xl font-bold font-mono text-foreground">
                     {loading ? <Skeleton className="h-8 w-12" /> : <AnimatedNumber value={stats?.activeFacts ?? 0} />}
                   </p>
-                  <p className="text-xs font-mono text-foreground/40 mt-1">verified facts</p>
+                  <p className="text-xs font-mono text-foreground/40 mt-1">{t('selfUpdatingCourse.freshness.verifiedFacts')}</p>
                 </div>
                 <div>
                   <p className="text-2xl font-bold font-mono text-foreground">
                     {loading ? <Skeleton className="h-8 w-12" /> : <AnimatedNumber value={stats?.contentBlocks ?? 0} />}
                   </p>
-                  <p className="text-xs font-mono text-foreground/40 mt-1">content sections</p>
+                  <p className="text-xs font-mono text-foreground/40 mt-1">{t('selfUpdatingCourse.freshness.contentSections')}</p>
                 </div>
                 <div>
                   <p className="text-2xl font-bold font-mono text-foreground">
                     {loading ? <Skeleton className="h-8 w-12" /> : <AnimatedNumber value={stats?.sourceEvents ?? 0} />}
                   </p>
-                  <p className="text-xs font-mono text-foreground/40 mt-1">sources indexed</p>
+                  <p className="text-xs font-mono text-foreground/40 mt-1">{t('selfUpdatingCourse.freshness.sourcesIndexed')}</p>
                 </div>
                 <div>
                   <p className="text-2xl font-bold font-mono text-foreground">
@@ -253,13 +250,13 @@ export default function SelfUpdatingCourse() {
                       '...'
                     )}
                   </p>
-                  <p className="text-xs font-mono text-foreground/40 mt-1">last verified</p>
+                  <p className="text-xs font-mono text-foreground/40 mt-1">{t('selfUpdatingCourse.freshness.lastVerified')}</p>
                 </div>
               </div>
 
               {!loading && stats?.factsByCategory && (
                 <div className="space-y-2 pt-4 border-t border-foreground/5">
-                  <p className="text-xs font-mono text-foreground/30 uppercase tracking-wider mb-3">Knowledge Coverage</p>
+                  <p className="text-xs font-mono text-foreground/30 uppercase tracking-wider mb-3">{t('selfUpdatingCourse.freshness.knowledgeCoverage')}</p>
                   {Object.entries(stats.factsByCategory)
                     .sort(([, a], [, b]) => b - a)
                     .slice(0, 5)
@@ -296,10 +293,10 @@ export default function SelfUpdatingCourse() {
         <div className="relative max-w-5xl mx-auto">
           <ScrollFadeIn>
             <h2 className="text-3xl md:text-4xl font-bold text-center text-foreground mb-4">
-              Course Curriculum
+              {t('selfUpdatingCourse.courseSection.title')}
             </h2>
             <p className="text-foreground/50 text-center max-w-xl mx-auto mb-16">
-              Three modules. Nine lessons. Every section grounded in verified, current facts.
+              {t('selfUpdatingCourse.courseSection.subtitle')}
             </p>
           </ScrollFadeIn>
 
@@ -314,13 +311,13 @@ export default function SelfUpdatingCourse() {
                     <div className="flex items-center gap-2 mb-4">
                       <BookOpen className="h-4 w-4 text-foreground/40" />
                       <span className="text-xs font-mono text-foreground/40 uppercase tracking-wider">
-                        Module {mod.number}
+                        {t('selfUpdatingCourse.courseSection.module')} {mod.number}
                       </span>
                     </div>
                     <h3 className="text-lg font-semibold text-foreground mb-3 leading-snug">
                       {mod.title}
                     </h3>
-                    <p className="text-sm text-foreground/50 mb-5">{mod.lessons} lessons</p>
+                    <p className="text-sm text-foreground/50 mb-5">{mod.lessons} {t('selfUpdatingCourse.courseSection.lessons')}</p>
                     <div className="flex flex-wrap gap-2">
                       {mod.tags.map((tag) => (
                         <span
@@ -346,29 +343,29 @@ export default function SelfUpdatingCourse() {
           <ScrollFadeIn>
             <Layers className="h-8 w-8 text-foreground/20 mx-auto mb-6" />
             <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
-              Stop Learning Yesterday&apos;s AI
+              {t('selfUpdatingCourse.cta.title')}
             </h2>
             <p className="text-foreground/50 mb-8 max-w-lg mx-auto">
-              Enroll in a course that stays current as fast as AI evolves.
+              {t('selfUpdatingCourse.cta.subtitle')}
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
               <Button asChild size="lg" className="h-12 px-8 font-mono group">
                 <Link to="/tiers">
-                  Enroll Now
+                  {t('selfUpdatingCourse.cta.enrollNow')}
                   <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
                 </Link>
               </Button>
               <Button asChild variant="outline" size="lg" className="h-12 px-8 font-mono">
                 <Link to="/curriculum">
-                  View Full Curriculum
+                  {t('selfUpdatingCourse.cta.viewFullCurriculum')}
                 </Link>
               </Button>
             </div>
             <div className="mt-8 flex flex-wrap items-center justify-center gap-4 text-sm text-foreground/40">
-              {['Fact-verified content', 'Always current', 'Transparent freshness'].map((item) => (
-                <span key={item} className="flex items-center gap-1.5">
+              {(['selfUpdatingCourse.cta.factVerifiedContent', 'selfUpdatingCourse.cta.alwaysCurrent', 'selfUpdatingCourse.cta.transparentFreshness'] as const).map((key) => (
+                <span key={key} className="flex items-center gap-1.5">
                   <Check className="h-3.5 w-3.5" />
-                  {item}
+                  {t(key)}
                 </span>
               ))}
             </div>

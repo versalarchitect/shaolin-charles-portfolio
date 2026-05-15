@@ -1,9 +1,12 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
+import { useTranslation } from 'react-i18next'
+import { useNavigate } from 'react-router-dom'
 import { motion, AnimatePresence } from 'motion/react'
-import { Bell, Check } from 'lucide-react'
-import { useNotifications, markRead, markAllRead, addNotification } from '@/stores/notifications'
+import { Bell, Check, AtSign } from 'lucide-react'
+import { useNotifications, markRead, markAllRead, addNotification, initServerNotifications } from '@/stores/notifications'
 import { onProgressEvent } from '@/stores/progress'
 import type { ProgressEvent } from '@/stores/progress'
+import { useAuth } from '@/hooks/use-auth'
 
 function relativeTime(timestamp: number): string {
   const diff = Date.now() - timestamp
@@ -24,17 +27,27 @@ function getDefaultIcon(type: string): string {
     case 'streak': return '\u{1F525}'
     case 'challenge': return '\u{1F3AF}'
     case 'explorer': return '\u{1F9ED}'
+    case 'mention': return '@'
     case 'system': return '\u{1F514}'
     default: return '\u{1F514}'
   }
 }
 
 export function NotificationCenter() {
+  const { t } = useTranslation()
+  const navigate = useNavigate()
+  const { user } = useAuth()
   const [open, setOpen] = useState(false)
   const [bounce, setBounce] = useState(false)
   const { notifications, unreadCount } = useNotifications()
   const panelRef = useRef<HTMLDivElement>(null)
   const buttonRef = useRef<HTMLButtonElement>(null)
+
+  // Init server-side mention notifications
+  useEffect(() => {
+    if (!user) return
+    return initServerNotifications(user.id)
+  }, [user])
 
   // Listen to progress events and create notifications
   useEffect(() => {
@@ -114,6 +127,17 @@ export function NotificationCenter() {
     }
   }, [open, handleClickOutside, handleEscape])
 
+  const handleNotificationClick = useCallback(
+    (n: typeof notifications[number]) => {
+      if (!n.read) markRead(n.id)
+      if (n.type === 'mention') {
+        setOpen(false)
+        navigate('/course/chat')
+      }
+    },
+    [navigate],
+  )
+
   return (
     <div className="relative">
       {/* Bell button */}
@@ -147,18 +171,18 @@ export function NotificationCenter() {
             transition={{ duration: 0.15, ease: [0.4, 0, 0.2, 1] }}
             role="dialog"
             aria-label="Notifications"
-            className="absolute bottom-full left-0 mb-2 w-72 rounded-xl border border-foreground/[0.08] bg-background shadow-lg overflow-hidden z-50"
+            className="absolute bottom-full left-0 mb-2 w-80 rounded-xl border border-foreground/[0.08] bg-background shadow-lg overflow-hidden z-50"
           >
             {/* Header */}
             <div className="flex items-center justify-between px-4 py-3 border-b border-foreground/[0.06]">
-              <span className="text-sm font-mono font-semibold text-foreground/80">Notifications</span>
+              <span className="text-sm font-mono font-semibold text-foreground/80">{t('notificationCenter.title')}</span>
               {unreadCount > 0 && (
                 <button
                   onClick={() => markAllRead()}
                   className="flex items-center gap-1 text-[10px] font-mono text-foreground/40 hover:text-foreground/70 transition-colors"
                 >
                   <Check className="w-3 h-3" />
-                  Mark all read
+                  {t('notificationCenter.markAllRead')}
                 </button>
               )}
             </div>
@@ -168,21 +192,27 @@ export function NotificationCenter() {
               {notifications.length === 0 ? (
                 <li className="px-4 py-8 text-center list-none">
                   <Bell className="w-8 h-8 text-foreground/10 mx-auto mb-2" aria-hidden="true" />
-                  <p className="text-xs font-mono text-foreground/30">No notifications yet</p>
+                  <p className="text-xs font-mono text-foreground/30">{t('notificationCenter.noNotifications')}</p>
                 </li>
               ) : (
                 notifications.map((n) => (
                   <li key={n.id} role="listitem" className="list-none">
                     <button
-                      onClick={() => { if (!n.read) markRead(n.id) }}
+                      onClick={() => handleNotificationClick(n)}
                       aria-label={`${n.read ? '' : 'Unread: '}${n.title}. ${n.description}. ${relativeTime(n.timestamp)}`}
                       className={`w-full text-left px-4 py-3 flex items-start gap-3 hover:bg-foreground/[0.03] transition-colors ${
                         !n.read ? 'border-l-2 border-foreground/30' : 'border-l-2 border-transparent opacity-60'
                       }`}
                     >
-                      <span className="text-base leading-none mt-0.5 shrink-0" aria-hidden="true">
-                        {n.icon || getDefaultIcon(n.type)}
-                      </span>
+                      {n.type === 'mention' ? (
+                        <span className="flex items-center justify-center w-6 h-6 rounded-md bg-foreground/[0.08] mt-0.5 shrink-0">
+                          <AtSign className="w-3.5 h-3.5 text-foreground/60" />
+                        </span>
+                      ) : (
+                        <span className="text-base leading-none mt-0.5 shrink-0" aria-hidden="true">
+                          {n.icon || getDefaultIcon(n.type)}
+                        </span>
+                      )}
                       <div className="flex-1 min-w-0">
                         <p className="text-xs font-medium text-foreground/80 truncate">{n.title}</p>
                         <p className="text-[10px] text-foreground/50 truncate mt-0.5">{n.description}</p>

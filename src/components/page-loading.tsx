@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback, useRef } from 'react'
+import { useTranslation } from 'react-i18next'
 import { motion, AnimatePresence } from 'motion/react'
 import { awardExplorerXp } from '@/stores/progress'
 
@@ -28,6 +29,7 @@ function pickQuote(): string {
 }
 
 function TypingChallenge() {
+  const { t } = useTranslation()
   const [quote] = useState(pickQuote)
   const [revealIndex, setRevealIndex] = useState(0)
   const [userInput, setUserInput] = useState('')
@@ -91,7 +93,7 @@ function TypingChallenge() {
     >
       {/* Prompt */}
       <p className="text-xs font-mono text-foreground/30 mb-3 text-center">
-        {isTyping ? 'keep going...' : 'type along if you want'}
+        {isTyping ? t('pageLoading.keepGoing') : t('pageLoading.typeAlong')}
       </p>
 
       {/* Quote display */}
@@ -145,7 +147,7 @@ function TypingChallenge() {
             className="mt-3 flex items-center justify-center gap-3 text-xs font-mono"
           >
             <span className="text-foreground/50">
-              {wpm} wpm
+              {wpm} {t('pageLoading.wpm')}
             </span>
             <span className="text-foreground/60 px-2 py-0.5 bg-foreground/[0.05] rounded border border-foreground/10">
               +2 XP
@@ -158,6 +160,7 @@ function TypingChallenge() {
 }
 
 export default function PageLoading() {
+  const { t } = useTranslation()
   const [showChallenge, setShowChallenge] = useState(false)
 
   useEffect(() => {
@@ -169,7 +172,7 @@ export default function PageLoading() {
     <div className="min-h-[60vh] flex items-center justify-center">
       <div className="space-y-4 text-center w-full">
         <div className="w-16 h-16 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto" />
-        <p className="text-muted-foreground">Loading...</p>
+        <p className="text-muted-foreground">{t('pageLoading.loading')}</p>
 
         <AnimatePresence>
           {showChallenge && (

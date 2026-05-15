@@ -1,4 +1,5 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
 import { motion, AnimatePresence } from 'motion/react'
 import {
@@ -30,7 +31,7 @@ import { useProgress, getLevel } from '@/stores/progress'
 
 interface CommandItem {
   id: string
-  label: string
+  labelKey: string
   href?: string
   action?: () => void
   icon: typeof Home
@@ -41,30 +42,30 @@ interface CommandItem {
 
 interface CommandGroup {
   id: string
-  label: string
+  labelKey: string
   items: CommandItem[]
 }
 
 const INSTRUCTOR_ITEMS: CommandItem[] = [
-  { id: 'home', label: 'Home', href: '/', icon: Home, keywords: ['landing', 'main'] },
-  { id: 'curriculum', label: 'Curriculum', href: '/curriculum', icon: BookOpen, keywords: ['course', 'lessons', 'learn'] },
-  { id: 'principles', label: 'Principles', href: '/principles', icon: Shield, keywords: ['philosophy', 'values'] },
-  { id: 'tiers', label: 'Pricing & Tiers', href: '/tiers', icon: Layers, keywords: ['pricing', 'plans', 'enroll'] },
-  { id: 'blog', label: 'Blog', href: '/blog', icon: PenLine, keywords: ['articles', 'posts', 'writing'] },
-  { id: 'instructor', label: 'About Charles', href: '/instructor', icon: User, keywords: ['bio', 'about', 'instructor', 'charles'] },
+  { id: 'home', labelKey: 'commandMenu.home', href: '/', icon: Home, keywords: ['landing', 'main'] },
+  { id: 'curriculum', labelKey: 'commandMenu.curriculum', href: '/curriculum', icon: BookOpen, keywords: ['course', 'lessons', 'learn'] },
+  { id: 'principles', labelKey: 'commandMenu.principles', href: '/principles', icon: Shield, keywords: ['philosophy', 'values'] },
+  { id: 'tiers', labelKey: 'commandMenu.pricingTiers', href: '/tiers', icon: Layers, keywords: ['pricing', 'plans', 'enroll'] },
+  { id: 'blog', labelKey: 'commandMenu.blog', href: '/blog', icon: PenLine, keywords: ['articles', 'posts', 'writing'] },
+  { id: 'instructor', labelKey: 'commandMenu.aboutCharles', href: '/instructor', icon: User, keywords: ['bio', 'about', 'instructor', 'charles'] },
 ]
 
 const PERSONAL_ITEMS: CommandItem[] = [
-  { id: 'projects', label: 'Projects', href: '/projects', icon: FolderOpen, keywords: ['work', 'portfolio', 'builds'] },
-  { id: 'art', label: 'Experiments', href: '/art', icon: Palette, keywords: ['art', '3d', 'creative', 'generative'] },
-  { id: 'contact', label: 'Contact', href: '/contact', icon: Mail, keywords: ['email', 'reach', 'connect'] },
+  { id: 'projects', labelKey: 'commandMenu.projects', href: '/projects', icon: FolderOpen, keywords: ['work', 'portfolio', 'builds'] },
+  { id: 'art', labelKey: 'commandMenu.experiments', href: '/art', icon: Palette, keywords: ['art', '3d', 'creative', 'generative'] },
+  { id: 'contact', labelKey: 'commandMenu.contact', href: '/contact', icon: Mail, keywords: ['email', 'reach', 'connect'] },
 ]
 
 const COURSE_ITEMS: CommandItem[] = [
-  { id: 'dashboard', label: 'Dashboard', href: '/course/dashboard', icon: LayoutDashboard, keywords: ['progress', 'stats'] },
-  { id: 'community', label: 'Community', href: '/course/community', icon: Users, keywords: ['forum', 'discuss'] },
-  { id: 'chat', label: 'Chat', href: '/course/chat', icon: MessageSquare, keywords: ['ai', 'assistant'] },
-  { id: 'profile', label: 'Profile', href: '/course/profile', icon: UserCircle, keywords: ['account', 'settings'] },
+  { id: 'dashboard', labelKey: 'commandMenu.dashboard', href: '/course/dashboard', icon: LayoutDashboard, keywords: ['progress', 'stats'] },
+  { id: 'community', labelKey: 'commandMenu.community', href: '/course/community', icon: Users, keywords: ['forum', 'discuss'] },
+  { id: 'chat', labelKey: 'commandMenu.chat', href: '/course/chat', icon: MessageSquare, keywords: ['ai', 'assistant'] },
+  { id: 'profile', labelKey: 'commandMenu.profile', href: '/course/profile', icon: UserCircle, keywords: ['account', 'settings'] },
 ]
 
 const CommandMenuContext = createContext<{
@@ -140,6 +141,7 @@ export function CommandMenuProvider({ children }: { children: React.ReactNode })
 
 function CommandMenuDialog({ navigateRef }: { navigateRef: React.MutableRefObject<((path: string) => void) | null> }) {
   const { open, setOpen } = useCommandMenu()
+  const { t } = useTranslation()
   const { isLoggedIn, user } = useAuth()
   const progress = useProgress()
   const navigate = useNavigate()
@@ -167,18 +169,18 @@ function CommandMenuDialog({ navigateRef }: { navigateRef: React.MutableRefObjec
 
   const gamificationItems = useMemo<CommandItem[]>(() => {
     const items: CommandItem[] = [
-      { id: 'go-dashboard', label: 'Go to Dashboard', href: '/course/dashboard', icon: LayoutDashboard, keywords: ['progress', 'home'], shortcut: 'G D' },
-      { id: 'go-leaderboard', label: 'Go to Leaderboard', href: '/course/leaderboard', icon: Trophy, keywords: ['rank', 'compete', 'top'], shortcut: 'G L' },
-      { id: 'go-settings', label: 'Go to Settings', href: '/course/profile', icon: Settings, keywords: ['preferences', 'account'], shortcut: 'G S' },
+      { id: 'go-dashboard', labelKey: 'commandMenu.goToDashboard', href: '/course/dashboard', icon: LayoutDashboard, keywords: ['progress', 'home'], shortcut: 'G D' },
+      { id: 'go-leaderboard', labelKey: 'commandMenu.goToLeaderboard', href: '/course/leaderboard', icon: Trophy, keywords: ['rank', 'compete', 'top'], shortcut: 'G L' },
+      { id: 'go-settings', labelKey: 'commandMenu.goToSettings', href: '/course/profile', icon: Settings, keywords: ['preferences', 'account'], shortcut: 'G S' },
     ]
 
     if (vaultUnlocked) {
-      items.push({ id: 'go-vault', label: 'Go to Vault', href: '/course/vault', icon: Lock, keywords: ['secret', 'hidden', 'achievements'], shortcut: 'G V' })
+      items.push({ id: 'go-vault', labelKey: 'commandMenu.goToVault', href: '/course/vault', icon: Lock, keywords: ['secret', 'hidden', 'achievements'], shortcut: 'G V' })
     }
 
     items.push({
       id: 'share-progress',
-      label: 'Share Progress',
+      labelKey: 'commandMenu.shareProgress',
       icon: Share2,
       keywords: ['share', 'card', 'social'],
       action: () => {
@@ -189,7 +191,7 @@ function CommandMenuDialog({ navigateRef }: { navigateRef: React.MutableRefObjec
     if (user) {
       items.push({
         id: 'view-public-profile',
-        label: 'View Public Profile',
+        labelKey: 'commandMenu.viewPublicProfile',
         icon: ExternalLink,
         keywords: ['public', 'profile', 'external'],
         action: () => {
@@ -203,12 +205,12 @@ function CommandMenuDialog({ navigateRef }: { navigateRef: React.MutableRefObjec
 
   const groups = useMemo<CommandGroup[]>(() => {
     const g: CommandGroup[] = [
-      { id: 'instructor', label: 'Course', items: INSTRUCTOR_ITEMS },
-      { id: 'personal', label: 'Personal', items: PERSONAL_ITEMS },
+      { id: 'instructor', labelKey: 'commandMenu.course', items: INSTRUCTOR_ITEMS },
+      { id: 'personal', labelKey: 'commandMenu.personal', items: PERSONAL_ITEMS },
     ]
     if (isLoggedIn) {
-      g.push({ id: 'course', label: 'My Course', items: COURSE_ITEMS })
-      g.push({ id: 'gamification', label: 'Quick Actions', items: gamificationItems })
+      g.push({ id: 'course', labelKey: 'commandMenu.myCourse', items: COURSE_ITEMS })
+      g.push({ id: 'gamification', labelKey: 'commandMenu.quickActions', items: gamificationItems })
     }
     return g
   }, [isLoggedIn, gamificationItems])
@@ -222,12 +224,12 @@ function CommandMenuDialog({ navigateRef }: { navigateRef: React.MutableRefObjec
         ...group,
         items: group.items.filter(
           (item) =>
-            item.label.toLowerCase().includes(q) ||
+            t(item.labelKey).toLowerCase().includes(q) ||
             item.keywords?.some((kw) => kw.includes(q))
         ),
       }))
       .filter((group) => group.items.length > 0)
-  }, [groups, query])
+  }, [groups, query, t])
 
   const allItems = useMemo(
     () => filtered.flatMap((g) => g.items),
@@ -313,7 +315,7 @@ function CommandMenuDialog({ navigateRef }: { navigateRef: React.MutableRefObjec
                 <input
                   ref={inputRef}
                   type="text"
-                  placeholder="Where to?"
+                  placeholder={t('commandMenu.placeholder')}
                   value={query}
                   onChange={(e) => setQuery(e.target.value)}
                   className="flex-1 bg-transparent py-3.5 text-sm text-foreground placeholder:text-foreground/30 outline-none"
@@ -327,13 +329,13 @@ function CommandMenuDialog({ navigateRef }: { navigateRef: React.MutableRefObjec
               <div ref={listRef} className="max-h-[50vh] overflow-y-auto overscroll-contain p-2">
                 {filtered.length === 0 ? (
                   <div className="py-8 text-center text-sm text-foreground/30">
-                    No results found.
+                    {t('commandMenu.noResults')}
                   </div>
                 ) : (
                   filtered.map((group) => (
                     <div key={group.id} className="mb-1 last:mb-0">
                       <div className="px-2 py-1.5 text-[10px] font-mono uppercase tracking-wider text-foreground/30">
-                        {group.label}
+                        {t(group.labelKey)}
                       </div>
                       {group.items.map((item) => {
                         const thisIndex = itemIndex++
@@ -354,7 +356,7 @@ function CommandMenuDialog({ navigateRef }: { navigateRef: React.MutableRefObjec
                             `}
                           >
                             <Icon className="h-4 w-4 shrink-0" />
-                            <span className="flex-1 text-left">{item.label}</span>
+                            <span className="flex-1 text-left">{t(item.labelKey)}</span>
                             {item.shortcut && (
                               <kbd className="hidden sm:inline-flex items-center gap-0.5 rounded border border-foreground/10 bg-foreground/[0.04] px-1.5 py-0.5 text-[10px] font-mono text-foreground/25">
                                 {item.shortcut}
@@ -376,11 +378,11 @@ function CommandMenuDialog({ navigateRef }: { navigateRef: React.MutableRefObjec
                 <div className="flex items-center gap-3 text-[10px] text-foreground/25 font-mono">
                   <span className="flex items-center gap-1">
                     <kbd className="rounded border border-foreground/10 bg-foreground/[0.04] px-1 py-0.5">↑↓</kbd>
-                    navigate
+                    {t('commandMenu.navigate')}
                   </span>
                   <span className="flex items-center gap-1">
                     <kbd className="rounded border border-foreground/10 bg-foreground/[0.04] px-1 py-0.5">↵</kbd>
-                    open
+                    {t('commandMenu.open')}
                   </span>
                 </div>
                 <div className="flex items-center gap-1 text-[10px] text-foreground/25 font-mono">

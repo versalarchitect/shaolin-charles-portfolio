@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { motion, AnimatePresence } from 'motion/react'
 import { Play, Pause, RotateCcw, Timer, Coffee, Trophy, Volume2, VolumeX } from 'lucide-react'
 import { awardExplorerXp } from '@/stores/progress'
@@ -95,6 +96,7 @@ function playChime() {
 // ─── Component ───────────────────────────────────────────────────────────────
 
 export function FocusTimer() {
+  const { t } = useTranslation()
   const [timerState, setTimerState] = useState<TimerState>('idle')
   const [duration, setDuration] = useState<number>(25)
   const [secondsLeft, setSecondsLeft] = useState(25 * 60)
@@ -248,12 +250,12 @@ export function FocusTimer() {
             <Timer className="w-3.5 h-3.5 text-foreground/60" />
           </div>
           <span className="text-sm font-mono uppercase tracking-wider text-foreground/50">
-            Focus Timer
+            {t('focusTimer.title')}
           </span>
         </div>
         {timerState !== 'idle' && timerState !== 'complete' && (
           <span className="text-[10px] font-mono text-foreground/40">
-            Session {Math.min(cycleSessionCount + 1, SESSIONS_PER_CYCLE)} of {SESSIONS_PER_CYCLE}
+            {t('focusTimer.session')} {Math.min(cycleSessionCount + 1, SESSIONS_PER_CYCLE)} {t('focusTimer.of')} {SESSIONS_PER_CYCLE}
           </span>
         )}
       </div>
@@ -298,7 +300,7 @@ export function FocusTimer() {
                 <div className="w-7 h-4 rounded-full bg-foreground/[0.08] peer-checked:bg-foreground/20 transition-colors relative">
                   <div className={`absolute top-0.5 w-3 h-3 rounded-full bg-foreground/50 transition-all ${autoBreak ? 'left-3.5' : 'left-0.5'}`} />
                 </div>
-                <span className="text-[10px] font-mono text-foreground/40">Auto-break</span>
+                <span className="text-[10px] font-mono text-foreground/40">{t('focusTimer.autoBreak')}</span>
               </label>
 
               <button
@@ -354,13 +356,13 @@ export function FocusTimer() {
                   <span
                     role="timer"
                     aria-live="polite"
-                    aria-label={`${timerState === 'break' ? 'Break' : timerState === 'paused' ? 'Paused' : 'Focus'} timer: ${minutes} minutes and ${seconds} seconds remaining`}
+                    aria-label={`${timerState === 'break' ? t('focusTimer.break') : timerState === 'paused' ? t('focusTimer.paused') : t('focusTimer.focusing')} timer: ${minutes} minutes and ${seconds} seconds remaining`}
                     className="text-2xl font-mono font-bold leading-none tracking-tight"
                   >
                     {timeDisplay}
                   </span>
                   <span className="text-[10px] font-mono text-foreground/40 mt-1" aria-hidden="true">
-                    {timerState === 'break' ? 'Break' : timerState === 'paused' ? 'Paused' : 'Focusing'}
+                    {timerState === 'break' ? t('focusTimer.break') : timerState === 'paused' ? t('focusTimer.paused') : t('focusTimer.focusing')}
                   </span>
                 </div>
               </div>
@@ -423,7 +425,7 @@ export function FocusTimer() {
               <Trophy className="w-5 h-5 text-foreground/60" />
             </div>
             <div>
-              <p className="text-sm font-medium text-foreground/80">Great work! All sessions done.</p>
+              <p className="text-sm font-medium text-foreground/80">{t('focusTimer.allDone')}</p>
               <p className="text-xs text-foreground/40 mt-1">
                 {sessionCount} sessions &middot; {sessionCount * duration} minutes focused
               </p>
@@ -450,6 +452,7 @@ export function FocusTimer() {
 // ─── Focus Stats (for Analytics page) ────────────────────────────────────────
 
 export function FocusStatsCard() {
+  const { t } = useTranslation()
   const [stats, setStats] = useState<FocusStats>(loadFocusStats)
 
   useEffect(() => {
@@ -468,19 +471,19 @@ export function FocusStatsCard() {
         <p className="text-2xl font-mono font-bold text-foreground/80">
           {hours > 0 ? `${hours}h ${mins}m` : `${mins}m`}
         </p>
-        <p className="text-[10px] font-mono text-foreground/50 mt-1">Total Focus Time</p>
+        <p className="text-[10px] font-mono text-foreground/50 mt-1">{t('focusTimer.totalFocusTime')}</p>
       </div>
       <div className="rounded-lg border border-foreground/[0.08] bg-foreground/[0.03] p-4 text-center">
         <p className="text-2xl font-mono font-bold text-foreground/80">
           {stats.sessionsCompleted}
         </p>
-        <p className="text-[10px] font-mono text-foreground/50 mt-1">Sessions Completed</p>
+        <p className="text-[10px] font-mono text-foreground/50 mt-1">{t('focusTimer.sessionsCompleted')}</p>
       </div>
       <div className="rounded-lg border border-foreground/[0.08] bg-foreground/[0.03] p-4 text-center">
         <p className="text-2xl font-mono font-bold text-foreground/80">
           {stats.bestStreak}
         </p>
-        <p className="text-[10px] font-mono text-foreground/50 mt-1">Best Streak</p>
+        <p className="text-[10px] font-mono text-foreground/50 mt-1">{t('focusTimer.bestStreak')}</p>
       </div>
     </div>
   )

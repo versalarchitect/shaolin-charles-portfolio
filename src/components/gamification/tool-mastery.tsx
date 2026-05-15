@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { motion } from 'motion/react';
 import { Wrench } from 'lucide-react';
 import { getToolMastery, useProgress } from '@/stores/progress';
@@ -11,18 +12,19 @@ const LEVEL_COLORS: Record<string, string> = {
 
 export function ToolMastery() {
   useProgress();
+  const { t } = useTranslation();
   const tools = getToolMastery();
 
   if (tools.length === 0) {
     return (
       <div className="space-y-3">
         <h2 className="text-sm font-mono uppercase tracking-wider text-foreground/40">
-          Tool Mastery
+          {t('toolMastery.title')}
         </h2>
         <div className="rounded-xl border border-foreground/[0.08] bg-foreground/[0.02] p-6 text-center">
           <Wrench className="w-6 h-6 mx-auto mb-2 text-foreground/15" />
           <p className="text-xs text-foreground/30 font-mono">
-            Complete lessons to level up your tools
+            {t('toolMastery.empty')}
           </p>
         </div>
       </div>
@@ -32,7 +34,7 @@ export function ToolMastery() {
   return (
     <div className="space-y-3">
       <h2 className="text-sm font-mono uppercase tracking-wider text-foreground/40">
-        Tool Mastery
+        {t('toolMastery.title')}
       </h2>
       <div className="rounded-xl border border-foreground/[0.08] bg-foreground/[0.02] overflow-hidden">
         {tools.slice(0, 8).map((t, i) => (

@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import { motion } from 'motion/react'
 import { ExternalLink, ArrowLeft, ArrowRight } from 'lucide-react'
 import { SEO } from '@/components/SEO'
@@ -111,6 +112,7 @@ const PROJECTS = [
 ]
 
 export default function RecentProjects() {
+  const { t } = useTranslation()
   return (
     <>
       <SEO
@@ -135,10 +137,9 @@ export default function RecentProjects() {
 
           <BlurFadeIn delay={0.1} immediate>
             <span className="text-xs font-mono text-foreground/40 uppercase tracking-widest">Portfolio</span>
-            <h1 className="text-4xl md:text-5xl font-bold mt-3 mb-4">Recent Projects</h1>
+            <h1 className="text-4xl md:text-5xl font-bold mt-3 mb-4">{t('recentProjects.title')}</h1>
             <p className="text-lg text-muted-foreground max-w-2xl">
-              Production systems I've built and shipped — from AI platforms and self-updating courses
-              to urban farming management and private deal pipelines.
+              {t('recentProjects.subtitle')}
             </p>
           </BlurFadeIn>
         </div>
@@ -228,13 +229,13 @@ export default function RecentProjects() {
           <ScrollFadeIn delay={0.2}>
             <div className="text-center mt-12">
               <p className="text-sm text-foreground/30 mb-4">
-                Looking for deeper technical case studies?
+                {t('recentProjects.lookingDeeper')}
               </p>
               <Link
                 to="/projects"
                 className="inline-flex items-center gap-2 px-6 py-3 rounded-lg text-sm font-mono font-medium bg-foreground text-background hover:bg-foreground/90 transition-colors"
               >
-                View Technical Portfolio
+                {t('recentProjects.viewPortfolio')}
                 <ArrowRight className="w-4 h-4" />
               </Link>
             </div>

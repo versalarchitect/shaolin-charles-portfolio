@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import { motion, AnimatePresence } from 'motion/react'
 import { Flame, X, Shield, ArrowRight } from 'lucide-react'
 import { useProgress, getLessonStatus } from '@/stores/progress'
@@ -41,6 +42,7 @@ function getTodayString(): string {
 
 export function StreakWarning() {
   const progress = useProgress()
+  const { t } = useTranslation()
   const [now, setNow] = useState(() => new Date())
   const dismissedRef = useRef(false)
   const [dismissed, setDismissed] = useState(false)
@@ -173,7 +175,7 @@ export function StreakWarning() {
             <button
               onClick={handleDismiss}
               className="shrink-0 p-1 rounded-md text-foreground/40 hover:text-foreground/70 hover:bg-foreground/[0.05] transition-colors"
-              aria-label="Dismiss streak warning"
+              aria-label={t('streakWarning.dismiss')}
             >
               <X className="w-3.5 h-3.5" />
             </button>

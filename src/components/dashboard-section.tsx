@@ -53,7 +53,7 @@ export function DashboardSection({
   }, [id])
 
   return (
-    <div className={cn('space-y-4', className)}>
+    <div id={id} className={cn('space-y-4', className)}>
       <button
         type="button"
         onClick={toggle}

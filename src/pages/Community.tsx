@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
 import { SEO } from '@/components/SEO'
 import { Button } from '@/components/ui/button'
@@ -104,26 +105,27 @@ function Avatar({ initials, size = 'sm' }: { initials: string; size?: 'sm' | 'md
 // ---------------------------------------------------------------------------
 
 function StatsHeader({ threadCount, onNewThread, onSubmitQuestion }: { threadCount: number; onNewThread: () => void; onSubmitQuestion: () => void }) {
+  const { t } = useTranslation()
   return (
     <BlurFadeIn delay={0}>
       <div className="mb-8">
         <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 mb-6">
           <div>
             <h1 className="text-3xl md:text-4xl font-bold tracking-tight mb-2">
-              Community
+              {t('community.title')}
             </h1>
             <p className="text-muted-foreground">
-              Connect with fellow builders. Get answers. Ship together.
+              {t('community.subtitle')}
             </p>
           </div>
           <div className="flex gap-2 sm:flex-shrink-0">
             <Button size="lg" className="h-11 px-5 font-mono group" onClick={onNewThread}>
               <Plus className="mr-2 h-4 w-4" />
-              New Thread
+              {t('community.newThread')}
             </Button>
             <Button size="lg" variant="outline" className="h-11 px-5 font-mono group" onClick={onSubmitQuestion}>
               <Send className="mr-2 h-4 w-4" />
-              <span className="hidden sm:inline">Submit Question</span>
+              <span className="hidden sm:inline">{t('community.submitQuestion')}</span>
             </Button>
           </div>
         </div>
@@ -132,7 +134,7 @@ function StatsHeader({ threadCount, onNewThread, onSubmitQuestion }: { threadCou
           <div className="rounded-xl border border-foreground/[0.08] bg-foreground/[0.02] p-3.5">
             <div className="flex items-center gap-2 mb-1.5">
               <Users className="w-3.5 h-3.5 text-foreground/40" />
-              <span className="text-[10px] font-mono uppercase tracking-wider text-foreground/30">Members</span>
+              <span className="text-[10px] font-mono uppercase tracking-wider text-foreground/30">{t('community.members')}</span>
             </div>
             <p className="text-xl font-mono font-semibold"><AnimatedNumber value={47} duration={1.2} /></p>
           </div>
@@ -142,21 +144,21 @@ function StatsHeader({ threadCount, onNewThread, onSubmitQuestion }: { threadCou
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-500 opacity-75" />
                 <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500" />
               </span>
-              <span className="text-[10px] font-mono uppercase tracking-wider text-foreground/30">Online</span>
+              <span className="text-[10px] font-mono uppercase tracking-wider text-foreground/30">{t('community.online')}</span>
             </div>
             <p className="text-xl font-mono font-semibold"><AnimatedNumber value={12} duration={1.2} /></p>
           </div>
           <div className="rounded-xl border border-foreground/[0.08] bg-foreground/[0.02] p-3.5">
             <div className="flex items-center gap-2 mb-1.5">
               <MessageSquare className="w-3.5 h-3.5 text-foreground/40" />
-              <span className="text-[10px] font-mono uppercase tracking-wider text-foreground/30">Threads</span>
+              <span className="text-[10px] font-mono uppercase tracking-wider text-foreground/30">{t('community.threads')}</span>
             </div>
             <p className="text-xl font-mono font-semibold"><AnimatedNumber value={threadCount} duration={1.2} /></p>
           </div>
           <div className="rounded-xl border border-foreground/[0.08] bg-foreground/[0.02] p-3.5">
             <div className="flex items-center gap-2 mb-1.5">
               <TrendingUp className="w-3.5 h-3.5 text-foreground/40" />
-              <span className="text-[10px] font-mono uppercase tracking-wider text-foreground/30">This week</span>
+              <span className="text-[10px] font-mono uppercase tracking-wider text-foreground/30">{t('community.thisWeek')}</span>
             </div>
             <p className="text-xl font-mono font-semibold">+<AnimatedNumber value={23} duration={1.2} /></p>
           </div>
@@ -167,6 +169,8 @@ function StatsHeader({ threadCount, onNewThread, onSubmitQuestion }: { threadCou
 }
 
 function DiscussionsTab({ threads, loading }: { threads: Thread[]; loading: boolean }) {
+  const { t } = useTranslation()
+
   if (loading) {
     return (
       <div className="flex items-center justify-center py-16">
@@ -195,7 +199,7 @@ function DiscussionsTab({ threads, loading }: { threads: Thread[]; loading: bool
       {threads.length === 0 && (
         <div className="text-center py-16 text-foreground/30">
           <MessageSquare className="w-8 h-8 mx-auto mb-3 text-foreground/15" />
-          <p className="text-sm font-mono">No threads yet. Start a discussion!</p>
+          <p className="text-sm font-mono">{t('community.noThreads')}</p>
         </div>
       )}
     </div>
@@ -297,6 +301,7 @@ function AnnouncementsTab() {
 }
 
 function OfficeHoursCard({ onSubmitQuestion }: { onSubmitQuestion: () => void }) {
+  const { t } = useTranslation()
   return (
     <BlurFadeIn delay={0.15}>
       <SpotlightCard className="rounded-xl border border-foreground/[0.08] bg-foreground/[0.02] overflow-hidden">
@@ -306,15 +311,15 @@ function OfficeHoursCard({ onSubmitQuestion }: { onSubmitQuestion: () => void })
               <Video className="w-4 h-4 text-foreground/60" />
             </div>
             <div>
-              <h3 className="text-sm font-semibold">Office Hours</h3>
-              <p className="text-[11px] text-foreground/40 font-mono">with Charles</p>
+              <h3 className="text-sm font-semibold">{t('community.officeHours')}</h3>
+              <p className="text-[11px] text-foreground/40 font-mono">{t('community.withCharles')}</p>
             </div>
           </div>
 
           <div className="rounded-lg bg-foreground/[0.03] border border-foreground/[0.06] p-3 mb-3">
             <div className="flex items-center gap-2 mb-1">
               <Calendar className="w-3.5 h-3.5 text-foreground/40" />
-              <span className="text-xs font-mono text-foreground/60">Every Thursday</span>
+              <span className="text-xs font-mono text-foreground/60">{t('community.everyThursday')}</span>
             </div>
             <div className="flex items-baseline gap-1.5">
               <span className="text-2xl font-bold font-mono">7 PM</span>
@@ -325,16 +330,16 @@ function OfficeHoursCard({ onSubmitQuestion }: { onSubmitQuestion: () => void })
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-500 opacity-75" />
                 <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-green-500" />
               </span>
-              Recurring weekly
+              {t('community.recurringWeekly')}
             </div>
           </div>
 
           <p className="text-xs text-foreground/40 leading-relaxed mb-3">
-            Submit questions before each session. Priority goes to capstone students.
+            {t('community.officeHoursDesc')}
           </p>
 
           <Button size="sm" className="w-full h-9 font-mono text-xs group" onClick={onSubmitQuestion}>
-            Submit a Question
+            {t('community.submitAQuestion')}
             <MessageSquare className="ml-1.5 h-3.5 w-3.5 group-hover:translate-x-0.5 transition-transform" />
           </Button>
         </div>
@@ -344,6 +349,7 @@ function OfficeHoursCard({ onSubmitQuestion }: { onSubmitQuestion: () => void })
 }
 
 function LeaderboardCard() {
+  const { t } = useTranslation()
   const progress = useProgress()
   const level = getLevel()
   const { user } = useAuth()
@@ -357,9 +363,9 @@ function LeaderboardCard() {
         <div className="px-4 py-3 border-b border-foreground/[0.06] flex items-center justify-between">
           <div className="flex items-center gap-2">
             <Trophy className="w-4 h-4 text-foreground/40" />
-            <h3 className="text-sm font-semibold">Leaderboard</h3>
+            <h3 className="text-sm font-semibold">{t('community.leaderboard')}</h3>
           </div>
-          <span className="text-[10px] font-mono text-foreground/25 uppercase tracking-wider">This month</span>
+          <span className="text-[10px] font-mono text-foreground/25 uppercase tracking-wider">{t('community.thisMonth')}</span>
         </div>
 
         <div className="p-2">
@@ -412,7 +418,7 @@ function LeaderboardCard() {
 
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-1.5 mb-0.5">
-                <span className="text-sm font-medium text-foreground/90 truncate">You</span>
+                <span className="text-sm font-medium text-foreground/90 truncate">{t('community.you')}</span>
                 <TierBadge tier={level.name} />
               </div>
 
@@ -455,6 +461,7 @@ function LeaderboardCard() {
 }
 
 function GuidelinesCard() {
+  const { t } = useTranslation()
   const [open, setOpen] = useState(false)
 
   return (
@@ -466,7 +473,7 @@ function GuidelinesCard() {
         >
           <div className="flex items-center gap-2">
             <Shield className="w-4 h-4 text-foreground/40" />
-            <h3 className="text-sm font-semibold">Guidelines</h3>
+            <h3 className="text-sm font-semibold">{t('community.guidelines')}</h3>
           </div>
           <motion.div
             animate={{ rotate: open ? 180 : 0 }}
@@ -518,6 +525,7 @@ function NewThreadModal({
   onClose: () => void
   onCreated: (thread: Thread) => void
 }) {
+  const { t } = useTranslation()
   const { user } = useAuth()
   const [title, setTitle] = useState('')
   const [content, setContent] = useState('')
@@ -544,9 +552,9 @@ function NewThreadModal({
       setContent('')
       setCategory('discussion')
       onClose()
-      toast.success('Thread created')
+      toast.success(t('community.threadCreated'))
     } catch {
-      toast.error('Failed to create thread')
+      toast.error(t('community.failedCreateThread'))
     } finally {
       setSubmitting(false)
     }
@@ -575,7 +583,7 @@ function NewThreadModal({
             <form onSubmit={handleSubmit}>
               {/* Header */}
               <div className="flex items-center justify-between px-5 py-4 border-b border-foreground/[0.06]">
-                <h2 className="text-lg font-semibold">New Thread</h2>
+                <h2 className="text-lg font-semibold">{t('community.newThreadTitle')}</h2>
                 <button
                   type="button"
                   onClick={onClose}
@@ -590,7 +598,7 @@ function NewThreadModal({
                 <div>
                   <input
                     type="text"
-                    placeholder="Thread title"
+                    placeholder={t('community.threadTitle')}
                     value={title}
                     onChange={(e) => setTitle(e.target.value)}
                     className="w-full bg-foreground/[0.03] border border-foreground/[0.08] rounded-lg px-4 py-3 text-sm text-foreground/80 placeholder:text-foreground/20 focus:outline-none focus:border-foreground/[0.15] transition-all font-mono"
@@ -600,7 +608,7 @@ function NewThreadModal({
 
                 <div>
                   <textarea
-                    placeholder="Write your post... (supports **bold** and `code`)"
+                    placeholder={t('community.writePost')}
                     value={content}
                     onChange={(e) => setContent(e.target.value)}
                     rows={8}
@@ -610,7 +618,7 @@ function NewThreadModal({
 
                 <div>
                   <label className="text-[11px] font-mono text-foreground/40 uppercase tracking-wider block mb-2">
-                    Category
+                    {t('community.category')}
                   </label>
                   <div className="flex flex-wrap gap-2">
                     {Object.entries(categories).map(([key, cat]) => (
@@ -635,7 +643,7 @@ function NewThreadModal({
               {/* Footer */}
               <div className="flex items-center justify-end gap-3 px-5 py-4 border-t border-foreground/[0.06]">
                 <Button type="button" variant="ghost" size="sm" onClick={onClose} className="font-mono text-xs">
-                  Cancel
+                  {t('community.cancel')}
                 </Button>
                 <Button
                   type="submit"
@@ -648,7 +656,7 @@ function NewThreadModal({
                   ) : (
                     <Send className="w-3.5 h-3.5 mr-1.5" />
                   )}
-                  {submitting ? 'Posting...' : 'Post Thread'}
+                  {submitting ? t('community.posting') : t('community.postThread')}
                 </Button>
               </div>
             </form>
@@ -670,6 +678,7 @@ function SubmitQuestionModal({
   open: boolean
   onOpenChange: (open: boolean) => void
 }) {
+  const { t } = useTranslation()
   const { user } = useAuth()
   const [question, setQuestion] = useState('')
   const [context, setContext] = useState('')
@@ -688,12 +697,12 @@ function SubmitQuestionModal({
         `Question:\n${question.trim()}\n\n${context.trim() ? `Context:\n${context.trim()}` : ''}`,
       )
       window.open(`mailto:hello@charlesjackson.dev?subject=${subject}&body=${body}`, '_blank')
-      toast.success('Question submitted — check your email client')
+      toast.success(t('community.questionSubmitted'))
       setQuestion('')
       setContext('')
       onOpenChange(false)
     } catch {
-      toast.error('Failed to submit question')
+      toast.error(t('community.failedSubmitQuestion'))
     } finally {
       setSubmitting(false)
     }
@@ -704,20 +713,20 @@ function SubmitQuestionModal({
       <DialogContent className="sm:max-w-lg">
         <form onSubmit={handleSubmit}>
           <DialogHeader>
-            <DialogTitle className="font-mono">Submit a Question</DialogTitle>
+            <DialogTitle className="font-mono">{t('community.submitQuestionTitle')}</DialogTitle>
             <DialogDescription>
-              Ask a question for the next Office Hours session. Priority goes to capstone students.
+              {t('community.submitQuestionDesc')}
             </DialogDescription>
           </DialogHeader>
 
           <div className="space-y-4 py-4">
             <div className="space-y-2">
               <Label htmlFor="question" className="text-xs font-mono uppercase tracking-wider text-foreground/50">
-                Your Question
+                {t('community.yourQuestion')}
               </Label>
               <Input
                 id="question"
-                placeholder="What would you like to ask?"
+                placeholder={t('community.whatToAsk')}
                 value={question}
                 onChange={(e) => setQuestion(e.target.value)}
                 className="font-mono text-sm"
@@ -727,11 +736,11 @@ function SubmitQuestionModal({
 
             <div className="space-y-2">
               <Label htmlFor="context" className="text-xs font-mono uppercase tracking-wider text-foreground/50">
-                Context <span className="text-foreground/25">(optional)</span>
+                {t('community.context')} <span className="text-foreground/25">({t('community.contextOptional')})</span>
               </Label>
               <Textarea
                 id="context"
-                placeholder="Any relevant context — what you've tried, error messages, links to your code..."
+                placeholder={t('community.contextPlaceholder')}
                 value={context}
                 onChange={(e) => setContext(e.target.value)}
                 rows={4}
@@ -748,7 +757,7 @@ function SubmitQuestionModal({
               className="font-mono text-xs"
               onClick={() => onOpenChange(false)}
             >
-              Cancel
+              {t('community.cancel')}
             </Button>
             <Button
               type="submit"
@@ -761,7 +770,7 @@ function SubmitQuestionModal({
               ) : (
                 <Send className="w-3.5 h-3.5 mr-1.5" />
               )}
-              {submitting ? 'Submitting...' : 'Submit Question'}
+              {submitting ? t('community.submitting') : t('community.submitQuestion')}
             </Button>
           </DialogFooter>
         </form>
@@ -781,6 +790,7 @@ type Tab = 'discussions' | 'announcements'
 // ---------------------------------------------------------------------------
 
 export default function Community() {
+  const { t } = useTranslation()
   const [activeTab, setActiveTab] = useState<Tab>('discussions')
   const [threads, setThreads] = useState<Thread[]>([])
   const [loading, setLoading] = useState(true)
@@ -803,8 +813,8 @@ export default function Community() {
   }, [loadThreads])
 
   const tabs: { id: Tab; label: string; icon: typeof MessageSquare; count?: number }[] = [
-    { id: 'discussions', label: 'Discussions', icon: MessageSquare, count: threads.length },
-    { id: 'announcements', label: 'Announcements', icon: Bell, count: announcements.length },
+    { id: 'discussions', label: t('community.discussions'), icon: MessageSquare, count: threads.length },
+    { id: 'announcements', label: t('community.announcements'), icon: Bell, count: announcements.length },
   ]
 
   function handleThreadCreated(thread: Thread) {

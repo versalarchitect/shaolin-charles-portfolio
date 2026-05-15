@@ -1,4 +1,5 @@
 import { useSyncExternalStore } from 'react'
+import { useTranslation } from 'react-i18next'
 import {
   Compass,
   MapPin,
@@ -19,6 +20,7 @@ function useExplorerState() {
 }
 
 export function ExplorerProgress() {
+  const { t } = useTranslation()
   const state = useExplorerState()
   const visitedCount = state.visitedPages.size
   const totalPages = EXPLORER_PAGES.length
@@ -35,10 +37,10 @@ export function ExplorerProgress() {
             </div>
             <div>
               <h2 className="text-sm font-mono uppercase tracking-wider text-foreground/70">
-                Explorer
+                {t('explorerProgress.explorer')}
               </h2>
               <p className="text-[10px] text-foreground/40 font-mono">
-                0 XP earned
+                0 {t('explorerProgress.xpEarned')}
               </p>
             </div>
           </div>
@@ -55,9 +57,9 @@ export function ExplorerProgress() {
           <div className="flex items-center justify-center w-12 h-12 rounded-full bg-foreground/[0.04] border border-foreground/[0.08] mx-auto mb-3">
             <Compass className="w-5 h-5 text-foreground/20" />
           </div>
-          <p className="text-sm text-foreground/50 mb-1">No pages explored yet</p>
+          <p className="text-sm text-foreground/50 mb-1">{t('explorerProgress.noPages')}</p>
           <p className="text-xs text-foreground/30 font-mono">
-            Start exploring the site to earn curiosity XP!
+            {t('explorerProgress.startExploring')}
           </p>
         </div>
       </div>
@@ -77,7 +79,7 @@ export function ExplorerProgress() {
               Explorer
             </h2>
             <p className="text-[10px] text-foreground/40 font-mono">
-              {state.totalExplorerXp} XP earned
+              {state.totalExplorerXp} {t('explorerProgress.xpEarned')}
             </p>
           </div>
         </div>

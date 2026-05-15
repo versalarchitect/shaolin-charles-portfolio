@@ -1,4 +1,5 @@
 import { useEffect, useState, useCallback } from 'react'
+import { useTranslation } from 'react-i18next'
 import { motion } from 'motion/react'
 import { Trophy, Zap, RefreshCw } from 'lucide-react'
 import { SEO } from '@/components/SEO'
@@ -14,6 +15,7 @@ import type { LeaderboardEntry } from '@/lib/leaderboard-api'
 type Tab = 'all-time' | 'weekly'
 
 export default function LeaderboardPage() {
+  const { t } = useTranslation()
   const { user } = useAuth()
   const [tab, setTab] = useState<Tab>('all-time')
   const [entries, setEntries] = useState<LeaderboardEntry[]>([])
@@ -43,11 +45,11 @@ export default function LeaderboardPage() {
       }
     } catch (err) {
       console.error('Leaderboard fetch error:', err)
-      setError("Couldn’t load leaderboard data.")
+      setError(t('leaderboardPage.couldntLoad'))
     } finally {
       setLoading(false)
     }
-  }, [tab, user])
+  }, [tab, user, t])
 
   useEffect(() => {
     fetchData()
@@ -56,15 +58,15 @@ export default function LeaderboardPage() {
   }, [fetchData])
 
   const tabs: { id: Tab; label: string }[] = [
-    { id: 'all-time', label: 'All Time' },
-    { id: 'weekly', label: 'This Week' },
+    { id: 'all-time', label: t('leaderboardPage.allTime') },
+    { id: 'weekly', label: t('leaderboardPage.thisWeek') },
   ]
 
   return (
     <>
       <SEO
-        title="Leaderboard"
-        description="See how you rank against other learners in The Agentic SaaS Course."
+        title={t('leaderboardPage.title')}
+        description={t('leaderboardPage.subtitle')}
         path="course/leaderboard"
         keywords="leaderboard, ranking, xp, gamification"
       />
@@ -72,9 +74,9 @@ export default function LeaderboardPage() {
       <div className="p-6 lg:p-8 max-w-4xl space-y-8">
         {/* Header */}
         <div>
-          <h1 className="text-2xl font-bold tracking-tight mb-1">Leaderboard</h1>
+          <h1 className="text-2xl font-bold tracking-tight mb-1">{t('leaderboardPage.title')}</h1>
           <p className="text-sm text-muted-foreground">
-            See how you rank against other learners.
+            {t('leaderboardPage.subtitle')}
           </p>
         </div>
 
@@ -116,7 +118,7 @@ export default function LeaderboardPage() {
               className="inline-flex items-center gap-2 text-xs font-mono text-foreground/60 hover:text-foreground/80 transition-colors px-3 py-1.5 rounded-lg border border-foreground/[0.08] hover:bg-foreground/[0.04]"
             >
               <RefreshCw className="w-3 h-3" />
-              Retry
+              {t('leaderboardPage.retry')}
             </button>
           </motion.div>
         )}
@@ -126,7 +128,7 @@ export default function LeaderboardPage() {
           <Leaderboard
             entries={entries}
             currentUserId={user?.id}
-            title={tab === 'all-time' ? 'Top Learners — All Time' : 'Top Learners — This Week'}
+            title={tab === 'all-time' ? t('leaderboardPage.topLearnersAllTime') : t('leaderboardPage.topLearnersThisWeek')}
             loading={loading}
           />
         )}
@@ -145,7 +147,7 @@ export default function LeaderboardPage() {
               </div>
               <div className="flex-1 min-w-0">
                 <p className="text-[10px] font-mono text-foreground/40 uppercase tracking-wider mb-0.5">
-                  Your Position
+                  {t('leaderboardPage.yourPosition')}
                 </p>
                 <p className="text-lg font-mono font-semibold text-foreground/90">
                   #{userRank}
@@ -153,12 +155,12 @@ export default function LeaderboardPage() {
               </div>
               <div className="text-right shrink-0">
                 <p className="text-[10px] font-mono text-foreground/40 uppercase tracking-wider mb-0.5">
-                  Keep going
+                  {t('leaderboardPage.keepGoing')}
                 </p>
                 <p className="text-xs text-foreground/50 flex items-center gap-1">
                   <Zap className="w-3 h-3" />
-                  <span className="hidden sm:inline">Earn XP to climb the ranks</span>
-                  <span className="sm:hidden">Earn XP</span>
+                  <span className="hidden sm:inline">{t('leaderboardPage.earnXpToClimb')}</span>
+                  <span className="sm:hidden">{t('leaderboardPage.earnXp')}</span>
                 </p>
               </div>
             </div>

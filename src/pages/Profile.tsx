@@ -1,4 +1,5 @@
 import { useState, useRef } from 'react'
+import { useTranslation } from 'react-i18next'
 import { motion } from 'motion/react'
 import { Camera, Loader2, Save, Settings, User, Lock, Mail, Trash2, Zap, Flame, Trophy, Palette, Share2, Check, Star, SlidersHorizontal, Volume2 } from 'lucide-react'
 import { toast } from 'sonner'
@@ -27,6 +28,7 @@ function SectionHeader({ title, description }: { title: string; description: str
 }
 
 function ProfileSection() {
+  const { t } = useTranslation()
   const { user } = useAuth()
   const fileInputRef = useRef<HTMLInputElement>(null)
 
@@ -45,8 +47,8 @@ function ProfileSection() {
   async function handleAvatarUpload(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0]
     if (!file || !user) return
-    if (!file.type.startsWith('image/')) { toast.error('Please select an image file'); return }
-    if (file.size > 2 * 1024 * 1024) { toast.error('Image must be under 2 MB'); return }
+    if (!file.type.startsWith('image/')) { toast.error(t('profile.imageFileError')); return }
+    if (file.size > 2 * 1024 * 1024) { toast.error(t('profile.imageSizeError')); return }
 
     setUploading(true)
     try {
@@ -58,7 +60,7 @@ function ProfileSection() {
       const url = `${publicUrl}?t=${Date.now()}`
       setAvatarUrl(url)
       await supabase.auth.updateUser({ data: { avatar_url: url } })
-      toast.success('Photo updated')
+      toast.success(t('profile.photoUpdated'))
     } catch (err) {
       toast.error(err instanceof Error ? err.message : 'Upload failed')
     } finally {
@@ -76,7 +78,7 @@ function ProfileSection() {
       }
       await supabase.auth.updateUser({ data: { avatar_url: null } })
       setAvatarUrl(null)
-      toast.success('Photo removed')
+      toast.success(t('profile.photoRemoved'))
     } catch (err) {
       toast.error(err instanceof Error ? err.message : 'Remove failed')
     } finally {
@@ -99,7 +101,7 @@ function ProfileSection() {
           .from('user_progress')
           .upsert({ user_id: user.id, display_name: dn }, { onConflict: 'user_id' })
       }
-      toast.success('Profile updated')
+      toast.success(t('profile.profileUpdated'))
     } catch (err) {
       toast.error(err instanceof Error ? err.message : 'Save failed')
     } finally {
@@ -111,7 +113,7 @@ function ProfileSection() {
     <div className="space-y-8">
       {/* Avatar card */}
       <div className="rounded-xl border border-foreground/[0.08] bg-foreground/[0.02] p-6">
-        <SectionHeader title="Photo" description="This will be displayed on your profile and in the community." />
+        <SectionHeader title={t('profile.photo')} description={t('profile.photoDesc')} />
         <div className="flex items-center gap-5">
           <button
             type="button"
@@ -141,7 +143,7 @@ function ProfileSection() {
               className="font-mono text-xs"
             >
               <Camera className="w-3.5 h-3.5 mr-1.5" />
-              Upload photo
+              {t('profile.uploadPhoto')}
             </Button>
             {avatarUrl && (
               <Button
@@ -152,50 +154,50 @@ function ProfileSection() {
                 className="font-mono text-xs text-foreground/40 hover:text-red-500"
               >
                 <Trash2 className="w-3.5 h-3.5 mr-1.5" />
-                Remove
+                {t('profile.remove')}
               </Button>
             )}
-            <p className="text-[10px] font-mono text-foreground/30">JPG, PNG or WebP. Max 2 MB.</p>
+            <p className="text-[10px] font-mono text-foreground/30">{t('profile.photoLimit')}</p>
           </div>
         </div>
       </div>
 
       {/* Name card */}
       <div className="rounded-xl border border-foreground/[0.08] bg-foreground/[0.02] p-6">
-        <SectionHeader title="Personal information" description="Update your name as it appears across the platform." />
+        <SectionHeader title={t('profile.personalInfo')} description={t('profile.personalInfoDesc')} />
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
           <div className="space-y-2">
-            <Label htmlFor="firstName" className="text-xs font-mono text-foreground/60">First name</Label>
-            <Input id="firstName" value={firstName} onChange={(e) => setFirstName(e.target.value)} placeholder="First name" maxLength={50} />
+            <Label htmlFor="firstName" className="text-xs font-mono text-foreground/60">{t('profile.firstName')}</Label>
+            <Input id="firstName" value={firstName} onChange={(e) => setFirstName(e.target.value)} placeholder={t('profile.firstName')} maxLength={50} />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="lastName" className="text-xs font-mono text-foreground/60">Last name</Label>
-            <Input id="lastName" value={lastName} onChange={(e) => setLastName(e.target.value)} placeholder="Last name" maxLength={50} />
+            <Label htmlFor="lastName" className="text-xs font-mono text-foreground/60">{t('profile.lastName')}</Label>
+            <Input id="lastName" value={lastName} onChange={(e) => setLastName(e.target.value)} placeholder={t('profile.lastName')} maxLength={50} />
           </div>
         </div>
 
         {displayName && (
           <p className="text-xs font-mono text-foreground/30 mb-2">
-            Display name: <span className="text-foreground/50">{displayName}</span>
+            {t('profile.displayName')}: <span className="text-foreground/50">{displayName}</span>
           </p>
         )}
         <p className="text-[10px] font-mono text-foreground/25 mb-4">
-          This name appears on the leaderboard and your public profile.
+          {t('profile.displayNameNote')}
         </p>
 
         <div className="flex justify-end">
           <Button onClick={handleSave} disabled={saving} size="sm" className="font-mono text-xs">
             {saving
-              ? <><Loader2 className="w-3.5 h-3.5 mr-1.5 animate-spin" /> Saving...</>
-              : <><Save className="w-3.5 h-3.5 mr-1.5" /> Save changes</>}
+              ? <><Loader2 className="w-3.5 h-3.5 mr-1.5 animate-spin" /> {t('profile.saving')}</>
+              : <><Save className="w-3.5 h-3.5 mr-1.5" /> {t('profile.saveChanges')}</>}
           </Button>
         </div>
       </div>
 
       {/* Email card (read-only) */}
       <div className="rounded-xl border border-foreground/[0.08] bg-foreground/[0.02] p-6">
-        <SectionHeader title="Email address" description="Your email is used for sign-in and cannot be changed." />
+        <SectionHeader title={t('profile.emailAddress')} description={t('profile.emailDesc')} />
         <div className="flex items-center gap-3 px-3 py-2.5 rounded-lg bg-foreground/[0.03] border border-foreground/[0.06]">
           <Mail className="w-4 h-4 text-foreground/30 shrink-0" />
           <span className="text-sm font-mono text-foreground/60 truncate">{user?.email}</span>
@@ -207,6 +209,7 @@ function ProfileSection() {
 }
 
 function FeaturedAchievementPicker({ unlockedAchievements }: { unlockedAchievements: string[] }) {
+  const { t } = useTranslation()
   const [featuredId, setFeaturedId] = useState<string | null>(() => {
     try { return localStorage.getItem('featured-achievement') } catch { return null }
   })
@@ -221,19 +224,19 @@ function FeaturedAchievementPicker({ unlockedAchievements }: { unlockedAchieveme
         localStorage.removeItem('featured-achievement')
       }
     } catch {}
-    toast.success(newId ? 'Featured achievement updated' : 'Featured achievement cleared')
+    toast.success(newId ? t('profile.featuredUpdated') : t('profile.featuredCleared'))
   }
 
   const unlocked = ACHIEVEMENTS.filter((a) => unlockedAchievements.includes(a.id))
 
   return (
     <div className="rounded-xl border border-foreground/[0.08] bg-foreground/[0.02] p-6">
-      <SectionHeader title="Featured Achievement" description="Select an achievement to showcase on your public profile." />
+      <SectionHeader title={t('profile.featuredAchievement')} description={t('profile.featuredAchievementDesc')} />
 
       {unlocked.length === 0 ? (
         <div className="text-center py-8">
           <Star className="w-8 h-8 mx-auto mb-3 text-foreground/20" />
-          <p className="text-sm text-foreground/40">Earn achievements to feature one on your profile</p>
+          <p className="text-sm text-foreground/40">{t('profile.earnToFeature')}</p>
         </div>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -270,16 +273,17 @@ function FeaturedAchievementPicker({ unlockedAchievements }: { unlockedAchieveme
 }
 
 function TitleSelector({ unlockedTitles, activeTitle }: { unlockedTitles: string[]; activeTitle: string }) {
+  const { t } = useTranslation()
   function handleSelectTitle(titleId: string) {
     if (!unlockedTitles.includes(titleId)) return
     setActiveTitle(titleId)
     const title = TITLES.find(t => t.id === titleId)
-    if (title) toast.success(`Title set to "${title.name}"`)
+    if (title) toast.success(`${t('profile.titleSet')} "${title.name}"`)
   }
 
   return (
     <div className="rounded-xl border border-foreground/[0.08] bg-foreground/[0.02] p-6">
-      <SectionHeader title="Title" description="Choose a title to display alongside your name." />
+      <SectionHeader title={t('profile.titleSection')} description={t('profile.titleDesc')} />
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
         {TITLES.map((title) => {
@@ -328,6 +332,7 @@ function TitleSelector({ unlockedTitles, activeTitle }: { unlockedTitles: string
 }
 
 function GamificationSection() {
+  const { t } = useTranslation()
   const progress = useProgress()
   const level = getLevel()
   const overall = getOverallProgress()
@@ -337,14 +342,14 @@ function GamificationSection() {
     <div className="space-y-8">
       {/* Level & XP card */}
       <div className="rounded-xl border border-foreground/[0.08] bg-foreground/[0.02] p-6">
-        <SectionHeader title="Level & Progress" description="Your current rank and XP breakdown." />
+        <SectionHeader title={t('profile.levelProgress')} description={t('profile.levelProgressDesc')} />
 
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
           {([
-            { icon: <LevelIcon levelName={level.name} className="w-6 h-6 mx-auto mb-2 text-foreground/60" />, value: level.name, label: 'Current Rank' },
+            { icon: <LevelIcon levelName={level.name} className="w-6 h-6 mx-auto mb-2 text-foreground/60" />, value: level.name, label: t('profile.currentRank') },
             { icon: <Zap className="w-6 h-6 mx-auto mb-2 text-foreground/60" />, value: progress.totalXp.toString(), label: `/ ${TOTAL_XP} XP` },
-            { icon: <Flame className="w-6 h-6 mx-auto mb-2 text-foreground/60" />, value: progress.currentStreak.toString(), label: 'Day Streak' },
-            { icon: <Trophy className="w-6 h-6 mx-auto mb-2 text-foreground/60" />, value: `${overall.percent}%`, label: 'Complete' },
+            { icon: <Flame className="w-6 h-6 mx-auto mb-2 text-foreground/60" />, value: progress.currentStreak.toString(), label: t('profile.dayStreak') },
+            { icon: <Trophy className="w-6 h-6 mx-auto mb-2 text-foreground/60" />, value: `${overall.percent}%`, label: t('profile.completePercent') },
           ] as const).map((stat) => (
             <div key={stat.label} className="text-center p-3 rounded-lg bg-foreground/[0.03] border border-foreground/[0.06]">
               {stat.icon}
@@ -358,7 +363,7 @@ function GamificationSection() {
           <div className="mt-4 flex items-center gap-2 px-3 py-2 rounded-lg bg-foreground/[0.04] border border-foreground/[0.08]">
             <Flame className="w-4 h-4 text-foreground/50" />
             <span className="text-xs font-mono text-foreground/60">
-              Active streak bonus: <span className="font-semibold text-foreground/80">{label}</span> XP multiplier
+              {t('profile.activeStreakBonus')} <span className="font-semibold text-foreground/80">{label}</span> {t('profile.xpMultiplier')}
             </span>
           </div>
         )}
@@ -366,15 +371,15 @@ function GamificationSection() {
 
       {/* Records card */}
       <div className="rounded-xl border border-foreground/[0.08] bg-foreground/[0.02] p-6">
-        <SectionHeader title="Personal Records" description="Your best achievements and all-time stats." />
+        <SectionHeader title={t('profile.personalRecords')} description={t('profile.personalRecordsDesc')} />
 
         <div className="space-y-3">
           {([
-            { label: 'Longest Streak', value: `${progress.longestStreak} days` },
-            { label: 'Total Lessons Completed', value: overall.completed.toString() },
-            { label: 'Achievements Unlocked', value: `${progress.unlockedAchievements.length} / ${ACHIEVEMENTS.length}` },
-            { label: 'Active Days', value: progress.streakDates.length.toString() },
-            { label: 'Daily XP Goal', value: `${progress.dailyXpGoal} XP` },
+            { label: t('profile.longestStreak'), value: `${progress.longestStreak} days` },
+            { label: t('profile.totalLessonsCompleted'), value: overall.completed.toString() },
+            { label: t('profile.achievementsUnlocked'), value: `${progress.unlockedAchievements.length} / ${ACHIEVEMENTS.length}` },
+            { label: t('profile.activeDays'), value: progress.streakDates.length.toString() },
+            { label: t('profile.dailyXpGoal'), value: `${progress.dailyXpGoal} XP` },
           ]).map((r) => (
             <div key={r.label} className="flex items-center justify-between py-2 border-b border-foreground/[0.05] last:border-b-0">
               <span className="text-sm text-foreground/60">{r.label}</span>
@@ -386,12 +391,12 @@ function GamificationSection() {
 
       {/* Badges showcase */}
       <div className="rounded-xl border border-foreground/[0.08] bg-foreground/[0.02] p-6">
-        <SectionHeader title="Badges" description="Earned achievements displayed on your profile." />
+        <SectionHeader title={t('profile.badges')} description={t('profile.badgesDesc')} />
 
         {progress.unlockedAchievements.length === 0 ? (
           <div className="text-center py-8">
             <Trophy className="w-8 h-8 mx-auto mb-3 text-foreground/20" />
-            <p className="text-sm text-foreground/40">Complete lessons to earn badges</p>
+            <p className="text-sm text-foreground/40">{t('profile.completeToEarnBadges')}</p>
           </div>
         ) : (
           <div className="flex flex-wrap gap-2">
@@ -422,10 +427,11 @@ function GamificationSection() {
 }
 
 function AppearanceSection() {
+  const { t } = useTranslation()
   return (
     <div className="space-y-8">
       <div className="rounded-xl border border-foreground/[0.08] bg-foreground/[0.02] p-6">
-        <SectionHeader title="Cosmetic Themes" description="Unlock and apply visual themes as you progress." />
+        <SectionHeader title={t('profile.cosmeticThemes')} description={t('profile.cosmeticThemesDesc')} />
         <ThemeSelector />
       </div>
     </div>
@@ -433,12 +439,13 @@ function AppearanceSection() {
 }
 
 function ShareSection() {
+  const { t } = useTranslation()
   const { user } = useAuth()
 
   return (
     <div className="space-y-8">
       <div className="rounded-xl border border-foreground/[0.08] bg-foreground/[0.02] p-6">
-        <SectionHeader title="Share Your Progress" description="Generate a shareable card or view your public profile." />
+        <SectionHeader title={t('profile.shareProgress')} description={t('profile.shareProgressDesc')} />
         <div className="flex flex-col sm:flex-row gap-3">
           <ShareButton />
           {user && (
@@ -449,7 +456,7 @@ function ShareSection() {
               className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-foreground/[0.05] border border-foreground/[0.08] text-sm font-mono text-foreground/70 hover:text-foreground hover:border-foreground/15 transition-colors"
             >
               <User className="w-4 h-4" />
-              View Public Profile
+              {t('profile.viewPublicProfile')}
             </a>
           )}
         </div>
@@ -479,6 +486,7 @@ function ToggleSwitch({ enabled, onToggle }: { enabled: boolean; onToggle: () =>
 }
 
 function PreferencesSection() {
+  const { t } = useTranslation()
   const [soundEnabled, _setSoundEnabled] = useState(() => getSoundSettings().enabled)
   const [volume, _setVolume] = useState(() => Math.round(getSoundSettings().volume * 100))
   const [notifications, setNotifications] = useState(() => getNotificationSettings())
@@ -513,7 +521,7 @@ function PreferencesSection() {
     <div className="space-y-8">
       {/* Sound section */}
       <div className="rounded-xl border border-foreground/[0.08] bg-foreground/[0.02] p-6">
-        <SectionHeader title="Sound" description="Control audio feedback for interactions and achievements." />
+        <SectionHeader title={t('profile.sound')} description={t('profile.soundDesc')} />
 
         <div className="space-y-5">
           {/* Sound enabled toggle */}
@@ -521,8 +529,8 @@ function PreferencesSection() {
             <div className="flex items-center gap-3">
               <Volume2 className="w-4 h-4 text-foreground/50" />
               <div>
-                <p className="text-sm font-mono text-foreground/80">Sound Effects</p>
-                <p className="text-[10px] font-mono text-foreground/40">Play sounds for XP, achievements, and combos</p>
+                <p className="text-sm font-mono text-foreground/80">{t('profile.soundEffects')}</p>
+                <p className="text-[10px] font-mono text-foreground/40">{t('profile.soundEffectsDesc')}</p>
               </div>
             </div>
             <ToggleSwitch enabled={soundEnabled} onToggle={handleSoundToggle} />
@@ -532,7 +540,7 @@ function PreferencesSection() {
           {soundEnabled && (
             <div className="pl-7 space-y-2">
               <div className="flex items-center justify-between">
-                <label className="text-xs font-mono text-foreground/60">Volume</label>
+                <label className="text-xs font-mono text-foreground/60">{t('profile.volume')}</label>
                 <span className="text-xs font-mono text-foreground/40">{volume}%</span>
               </div>
               <input
@@ -554,7 +562,7 @@ function PreferencesSection() {
               onClick={handleTestSound}
               className="font-mono text-xs"
             >
-              Test Sound
+              {t('profile.testSound')}
             </Button>
           </div>
         </div>
@@ -562,14 +570,14 @@ function PreferencesSection() {
 
       {/* Notification section */}
       <div className="rounded-xl border border-foreground/[0.08] bg-foreground/[0.02] p-6">
-        <SectionHeader title="Notifications" description="Choose which in-app notifications and popups to display." />
+        <SectionHeader title={t('profile.notifications')} description={t('profile.notificationsDesc')} />
 
         <div className="space-y-4">
           {([
-            { key: 'smartTips' as const, label: 'Smart Tips', description: 'Contextual learning nudges' },
-            { key: 'streakWarnings' as const, label: 'Streak Warnings', description: 'Evening streak reminders' },
-            { key: 'dailyReward' as const, label: 'Daily Reward', description: 'Daily login bonus popup' },
-            { key: 'explorerToasts' as const, label: 'Explorer Toasts', description: 'XP notifications when exploring' },
+            { key: 'smartTips' as const, label: t('profile.smartTips'), description: t('profile.smartTipsDesc') },
+            { key: 'streakWarnings' as const, label: t('profile.streakWarnings'), description: t('profile.streakWarningsDesc') },
+            { key: 'dailyReward' as const, label: t('profile.dailyReward'), description: t('profile.dailyRewardDesc') },
+            { key: 'explorerToasts' as const, label: t('profile.explorerToasts'), description: t('profile.explorerToastsDesc') },
           ]).map((item) => (
             <div key={item.key} className="flex items-center justify-between">
               <div>
@@ -588,17 +596,18 @@ function PreferencesSection() {
   )
 }
 
-const SECTIONS = [
-  { id: 'profile', label: 'Profile', icon: User },
-  { id: 'stats', label: 'Stats & Badges', icon: Trophy },
-  { id: 'appearance', label: 'Appearance', icon: Palette },
-  { id: 'preferences', label: 'Preferences', icon: SlidersHorizontal },
-  { id: 'share', label: 'Share', icon: Share2 },
+const SECTION_DEFS = [
+  { id: 'profile', labelKey: 'profile.profileTab', icon: User },
+  { id: 'stats', labelKey: 'profile.statsTab', icon: Trophy },
+  { id: 'appearance', labelKey: 'profile.appearanceTab', icon: Palette },
+  { id: 'preferences', labelKey: 'profile.preferencesTab', icon: SlidersHorizontal },
+  { id: 'share', labelKey: 'profile.shareTab', icon: Share2 },
 ] as const
 
-type SectionId = (typeof SECTIONS)[number]['id']
+type SectionId = (typeof SECTION_DEFS)[number]['id']
 
 export default function SettingsPage() {
+  const { t } = useTranslation()
   const [activeSection, setActiveSection] = useState<SectionId>('profile')
 
   return (
@@ -614,15 +623,15 @@ export default function SettingsPage() {
               <Settings className="w-4.5 h-4.5 text-foreground/60" />
             </div>
             <div>
-              <h1 className="text-xl font-semibold tracking-tight">Settings</h1>
-              <p className="text-xs font-mono text-foreground/40">Manage your account and preferences</p>
+              <h1 className="text-xl font-semibold tracking-tight">{t('profile.settings')}</h1>
+              <p className="text-xs font-mono text-foreground/40">{t('profile.manageAccount')}</p>
             </div>
           </div>
 
           <div className="flex flex-col sm:flex-row gap-8">
             <nav className="sm:w-48 shrink-0">
               <div className="flex sm:flex-col gap-1">
-                {SECTIONS.map((section) => (
+                {SECTION_DEFS.map((section) => (
                   <button
                     key={section.id}
                     type="button"
@@ -630,7 +639,7 @@ export default function SettingsPage() {
                     className={`flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm font-mono font-medium transition-colors text-left w-full ${activeSection === section.id ? 'bg-foreground/10 text-foreground' : 'text-foreground/40 hover:text-foreground/70 hover:bg-foreground/[0.03]'}`}
                   >
                     <section.icon className="w-4 h-4 shrink-0" />
-                    {section.label}
+                    {t(section.labelKey)}
                   </button>
                 ))}
               </div>

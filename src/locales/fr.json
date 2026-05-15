@@ -93,7 +93,12 @@
           "Repérer quand l'IA dévie et comment la rattraper tôt",
           "Diriger une IA pour construire et publier un outil fonctionnel à partir d'un brief"
         ],
-        "tags": ["Bases IA", "Instructions claires", "Résolution de problèmes", "Choix d'outils"]
+        "tags": [
+          "Bases IA",
+          "Instructions claires",
+          "Résolution de problèmes",
+          "Choix d'outils"
+        ]
       },
       "consulting": {
         "title": "Section 2 — Construisez votre premier produit",
@@ -105,7 +110,12 @@
           "Construire comptes, base de données et paiements avec un seul agent IA",
           "Livrer un produit complet que vous avez dirigé, pas codé vous-même"
         ],
-        "tags": ["Briefs", "Contrôle qualité", "Construction", "Livraison"]
+        "tags": [
+          "Briefs",
+          "Contrôle qualité",
+          "Construction",
+          "Livraison"
+        ]
       },
       "mvp": {
         "title": "Section 3 — Dirigez une équipe d'agents IA",
@@ -117,7 +127,12 @@
           "Décomposer les grosses fonctionnalités en tâches ciblées sans conflits",
           "Coordonner le travail des IA et résoudre les désaccords entre agents"
         ],
-        "tags": ["Équipes IA", "Travail parallèle", "Coordination", "Vitesse"]
+        "tags": [
+          "Équipes IA",
+          "Travail parallèle",
+          "Coordination",
+          "Vitesse"
+        ]
       },
       "codeReview": {
         "title": "Section 4 — Concevez vos propres workflows",
@@ -129,7 +144,12 @@
           "Savoir quand faire confiance, rediriger ou surcharger la décision d'une IA",
           "Développer le jugement stratégique — la compétence que l'IA ne peut pas reproduire"
         ],
-        "tags": ["Stratégie", "Workflows", "Pensée système", "Jugement"]
+        "tags": [
+          "Stratégie",
+          "Workflows",
+          "Pensée système",
+          "Jugement"
+        ]
       }
     },
     "skills": {
@@ -649,32 +669,56 @@
       "particleGalaxy": {
         "title": "Galaxie de particules",
         "description": "Simulation de galaxie 3D interactive avec 100 000 particules. Physique accélérée par GPU et shaders personnalisés pour des formations d'étoiles réalistes.",
-        "tech": ["Three.js", "WebGL", "GLSL"]
+        "tech": [
+          "Three.js",
+          "WebGL",
+          "GLSL"
+        ]
       },
       "fluidSimulation": {
         "title": "Dynamique des fluides",
         "description": "Simulation de fluides en temps réel utilisant les équations de Navier-Stokes. Réactif au toucher avec un beau mélange de couleurs.",
-        "tech": ["WebGL", "Fragment Shaders", "Maths"]
+        "tech": [
+          "WebGL",
+          "Fragment Shaders",
+          "Maths"
+        ]
       },
       "geometricPatterns": {
         "title": "Motifs géométriques",
         "description": "Art géométrique généré procéduralement avec des algorithmes récursifs. Chaque rafraîchissement crée une composition unique.",
-        "tech": ["Canvas API", "Algorithmes", "Théorie des couleurs"]
+        "tech": [
+          "Canvas API",
+          "Algorithmes",
+          "Théorie des couleurs"
+        ]
       },
       "morphingShapes": {
         "title": "Formes morphiques",
         "description": "Animations de morphing en CSS pur sans JavaScript. Transitions de formes fluides utilisant les propriétés CSS personnalisées.",
-        "tech": ["CSS", "Keyframes", "Custom Properties"]
+        "tech": [
+          "CSS",
+          "Keyframes",
+          "Custom Properties"
+        ]
       },
       "audioVisualizer": {
         "title": "Réactif au son",
         "description": "Visualiseur alimenté par WebAudio qui répond à la musique en temps réel. L'analyse de fréquence pilote le comportement des particules.",
-        "tech": ["Web Audio API", "Three.js", "FFT"]
+        "tech": [
+          "Web Audio API",
+          "Three.js",
+          "FFT"
+        ]
       },
       "raymarching": {
         "title": "Mondes raymarching",
         "description": "Scènes 3D procédurales rendues entièrement dans des fragment shaders. Les fonctions de distance signées créent un détail infini.",
-        "tech": ["GLSL", "Raymarching", "SDF"]
+        "tech": [
+          "GLSL",
+          "Raymarching",
+          "SDF"
+        ]
       }
     },
     "featured": {
@@ -794,37 +838,67 @@
         "title": "Simulations Monte Carlo",
         "description": "Modélisation probabiliste par échantillonnage aléatoire répété",
         "details": "Exécuter des milliers de simulations pour cartographier les distributions de probabilité et quantifier l'incertitude. Essentiel pour modéliser des systèmes complexes où les solutions analytiques sont impossibles.",
-        "applications": ["Analyse de risque", "Modélisation financière", "Aide à la décision", "Planification de scénarios"]
+        "applications": [
+          "Analyse de risque",
+          "Modélisation financière",
+          "Aide à la décision",
+          "Planification de scénarios"
+        ]
       },
       "transformers": {
         "title": "Modèles Transformer",
         "description": "Architectures basées sur l'attention pour la modélisation de séquences",
         "details": "Construire et affiner des modèles basés sur les transformers pour la prédiction de séquences, en exploitant les mécanismes d'auto-attention pour capturer les dépendances à long terme dans les données.",
-        "applications": ["Séries temporelles", "Prédiction de séquences", "Reconnaissance de motifs", "Extraction de caractéristiques"]
+        "applications": [
+          "Séries temporelles",
+          "Prédiction de séquences",
+          "Reconnaissance de motifs",
+          "Extraction de caractéristiques"
+        ]
       },
       "deepLearning": {
         "title": "Réseaux de neurones profonds",
         "description": "Architectures multicouches pour apprendre des patterns complexes",
         "details": "Concevoir des architectures de réseaux de neurones optimisées pour des tâches de prédiction spécifiques. Des réseaux feedforward aux architectures récurrentes, choisir la bonne topologie est crucial.",
-        "applications": ["Classification", "Régression", "Détection d'anomalies", "Embeddings"]
+        "applications": [
+          "Classification",
+          "Régression",
+          "Détection d'anomalies",
+          "Embeddings"
+        ]
       },
       "nlp": {
         "title": "Traitement du langage naturel",
         "description": "Extraire structure et sens du texte",
         "details": "Traiter et comprendre le langage humain pour extraire des insights, de la reconnaissance d'entités nommées à l'analyse sémantique et l'extraction d'information.",
-        "applications": ["Analyse de texte", "Extraction d'information", "Traitement de documents", "Recherche"]
+        "applications": [
+          "Analyse de texte",
+          "Extraction d'information",
+          "Traitement de documents",
+          "Recherche"
+        ]
       },
       "sentiment": {
         "title": "Analyse de sentiment",
         "description": "Quantifier l'opinion et l'émotion dans le texte",
         "details": "Analyser le texte pour déterminer la polarité du sentiment et le ton émotionnel. Utile pour comprendre le sentiment du marché, les retours clients et l'opinion publique.",
-        "applications": ["Analyse de marché", "Retours clients", "Écoute sociale", "Surveillance de marque"]
+        "applications": [
+          "Analyse de marché",
+          "Retours clients",
+          "Écoute sociale",
+          "Surveillance de marque"
+        ]
       },
       "bayesian": {
         "title": "Inférence bayésienne",
         "description": "Mettre à jour les croyances avec les preuves",
         "details": "Utiliser le théorème de Bayes pour mettre à jour les estimations de probabilité à mesure que de nouvelles données arrivent. Le fondement mathématique pour apprendre des preuves et quantifier l'incertitude.",
-        "applications": ["Tests A/B", "Estimation de paramètres", "Quantification d'incertitude", "Théorie de la décision"]
+        "applications": [
+          "Tests A/B",
+          "Estimation de paramètres",
+          "Quantification d'incertitude",
+          "Théorie de la décision"
+        ]
       }
     },
     "why": {
@@ -875,5 +949,686 @@
       "title": "Parlons prédictions",
       "subtitle": "Intéressé par la modélisation mathématique, l'apprentissage automatique ou les systèmes de prédiction ? J'adore geeker sur ces sujets."
     }
+  },
+  "curriculum": {
+    "meta": {
+      "title": "Programme — Le cours Agentic SaaS",
+      "description": "52 heures à travers 51 leçons et 4 niveaux. Des bases à la direction d'équipes d'agents IA."
+    },
+    "hero": {
+      "badge": "Programme complet",
+      "title": "De zéro à",
+      "titleHighlight": "diriger des équipes IA.",
+      "subtitle": "52 heures à travers 51 leçons interactives. Chaque section vous plonge plus profondément dans la direction d'agents IA — de la compréhension de leur fonctionnement à la gestion d'équipes entières. Vous progressez en livrant de vrais projets."
+    },
+    "stats": {
+      "totalHours": "Heures totales",
+      "lessons": "Leçons",
+      "principles": "Principes",
+      "milestoneProjects": "Projets étapes"
+    },
+    "breakdown": {
+      "title": "Détail du programme",
+      "subtitle": "Chaque section s'appuie sur la précédente. Vous avancez en complétant un projet étape qui prouve que vous êtes prêt pour le niveau suivant."
+    },
+    "milestoneProject": "Projet étape",
+    "cta": {
+      "title": "Prêt à diriger l'IA ?",
+      "subtitle": "52 heures. 4 projets concrets. Des principes qui durent au-delà de la prochaine version IA.",
+      "startLearning": "Commencer",
+      "viewPricing": "Voir les prix"
+    },
+    "app": {
+      "title": "Programme",
+      "subtitle": "Chaque section s'appuie sur la précédente. Le projet étape de chaque section prouve que vous êtes prêt pour la suite.",
+      "courseOverview": "Aperçu du cours",
+      "hours": "Heures",
+      "lessons": "Leçons",
+      "sections": "Sections",
+      "totalXp": "XP total",
+      "jumpToSection": "Aller à la section",
+      "milestoneProjects": "Projets étapes",
+      "complete": "Terminé",
+      "courseComplete": "Cours terminé"
+    },
+    "progress": {
+      "yourProgress": "Votre progression",
+      "complete": "terminé",
+      "earned": "gagné",
+      "completed": "complété"
+    }
+  },
+  "selfUpdatingCourse": {
+    "meta": {
+      "title": "Cours auto-actualisé — Toujours à jour, jamais obsolète",
+      "description": "Un cours vivant qui se met à jour au rythme de l'évolution de l'IA. Chaque fait vérifié contre des sources en direct."
+    },
+    "hero": {
+      "badge": "Cours auto-actualisé",
+      "title": "Un cours qui",
+      "titleBreak": "ne vieillit jamais",
+      "subtitle": "Le paysage de l'IA évolue vite. Ce cours évolue avec lui. Chaque leçon est continuellement vérifiée contre des sources en direct — pour que vous appreniez ce qui est vrai maintenant, pas ce qui l'était il y a six mois.",
+      "verifiedFacts": "Faits vérifiés",
+      "lessons": "Leçons",
+      "modules": "Modules",
+      "exploreCurriculum": "Explorer le programme",
+      "viewPricing": "Voir les prix",
+      "contentLastVerified": "Contenu vérifié pour la dernière fois"
+    },
+    "promises": {
+      "title": "Ce qui rend ce cours différent",
+      "subtitle": "La plupart des cours IA deviennent obsolètes en quelques semaines. Celui-ci ne peut pas.",
+      "alwaysCurrent": {
+        "title": "Toujours à jour",
+        "description": "Quand les outils IA changent, les prix évoluent ou de nouvelles fonctionnalités arrivent — le contenu du cours se met à jour automatiquement. Pas d'informations obsolètes. Pas d'exemples dépassés."
+      },
+      "factVerified": {
+        "title": "Vérifié par les faits",
+        "description": "Chaque affirmation dans chaque leçon est appuyée par un fait vérifié et sourcé. Pas des opinions. Pas « en date de l'année dernière ». Vérifié contre la documentation officielle la plus récente."
+      },
+      "realTimeAwareness": {
+        "title": "Conscience en temps réel",
+        "description": "Le cours surveille des dizaines de sources officielles en continu. Nouvelle version d'un outil IA ? Changement de prix ? Mise à jour de fonctionnalité ? Le cours le sait avant vous."
+      },
+      "transparentFreshness": {
+        "title": "Fraîcheur transparente",
+        "description": "Chaque section affiche quand elle a été vérifiée pour la dernière fois. Vous savez toujours exactement à quel point le contenu est à jour — à l'heure près."
+      }
+    },
+    "freshness": {
+      "title": "Fraîcheur du cours",
+      "subtitle": "Données en direct montrant à quel point le contenu de votre cours est actuel, en ce moment.",
+      "verifiedFacts": "faits vérifiés",
+      "contentSections": "sections de contenu",
+      "sourcesIndexed": "sources indexées",
+      "lastVerified": "dernière vérification",
+      "knowledgeCoverage": "Couverture des connaissances"
+    },
+    "courseSection": {
+      "title": "Programme du cours",
+      "subtitle": "Trois modules. Neuf leçons. Chaque section fondée sur des faits vérifiés et actuels.",
+      "module": "Module",
+      "lessons": "leçons"
+    },
+    "cta": {
+      "title": "Arrêtez d'apprendre l'IA d'hier",
+      "subtitle": "Inscrivez-vous à un cours qui reste à jour aussi vite que l'IA évolue.",
+      "enrollNow": "S'inscrire",
+      "viewFullCurriculum": "Voir le programme complet",
+      "factVerifiedContent": "Contenu vérifié par les faits",
+      "alwaysCurrent": "Toujours à jour",
+      "transparentFreshness": "Fraîcheur transparente"
+    }
+  },
+  "login": {
+    "meta": {
+      "title": "Connexion — Le cours Agentic SaaS",
+      "description": "Connectez-vous pour accéder à vos supports de cours, suivre votre progression et soumettre vos projets étapes."
+    },
+    "branding": {
+      "title": "Les outils changent.",
+      "titleHighlight": "Les principes restent.",
+      "subtitle": "52 heures. 4 projets étapes. 8 principes qui durent au-delà de la prochaine version. Connectez-vous pour accéder à vos supports de cours et suivre votre progression.",
+      "instruction": "Instruction",
+      "lessons": "Leçons",
+      "capstones": "Projets étapes"
+    },
+    "backToHome": "Retour à l'accueil",
+    "welcomeBack": "Bon retour",
+    "createAccount": "Créez votre compte",
+    "resetPassword": "Réinitialiser votre mot de passe",
+    "magicLinkTitle": "Connexion par lien magique",
+    "signinSubtitle": "Connectez-vous pour accéder à vos supports de cours",
+    "signupSubtitle": "Commencez avec le cours Agentic SaaS",
+    "forgotSubtitle": "Entrez votre courriel et nous vous enverrons un lien de réinitialisation",
+    "magicSubtitle": "Entrez votre courriel et nous vous enverrons un lien de connexion",
+    "continueWithGoogle": "Continuer avec Google",
+    "or": "ou",
+    "email": "Courriel",
+    "password": "Mot de passe",
+    "useMagicLink": "Utiliser un lien magique",
+    "forgotPassword": "Mot de passe oublié ?",
+    "signIn": "Se connecter",
+    "createAccountBtn": "Créer un compte",
+    "sendResetLink": "Envoyer le lien",
+    "sendMagicLink": "Envoyer le lien magique",
+    "noAccount": "Pas encore de compte ?",
+    "signUp": "S'inscrire",
+    "hasAccount": "Vous avez déjà un compte ?",
+    "rememberPassword": "Vous vous souvenez de votre mot de passe ?",
+    "preferPassword": "Préférez utiliser un mot de passe ?",
+    "signedIn": "Connexion réussie",
+    "checkEmail": "Vérifiez votre courriel pour confirmer votre compte",
+    "resetLinkSent": "Lien de réinitialisation envoyé à votre courriel",
+    "magicLinkSent": "Lien magique envoyé — vérifiez votre courriel"
+  },
+  "learn": {
+    "lessonLocked": "Leçon verrouillée",
+    "completePrevious": "Complétez les leçons précédentes pour débloquer",
+    "backToDashboard": "Retour au tableau de bord",
+    "notFound": "404",
+    "lessonNotFound": "Leçon introuvable",
+    "lessonNotFoundDesc": "Cette leçon n'existe pas ou a été déplacée.",
+    "previous": "Précédent",
+    "next": "Suivant",
+    "firstLesson": "Première leçon",
+    "courseCompleteNav": "Cours terminé !",
+    "capstone": "Projet étape",
+    "learningObjectives": "Objectifs d'apprentissage",
+    "toolsUsed": "Outils utilisés",
+    "completedXpEarned": "Terminé — {xp} XP gagné",
+    "reviewAnytime": "Vous pouvez revoir cette leçon à tout moment",
+    "markAsComplete": "Marquer comme terminé",
+    "lessonCompleted": "Leçon terminée !",
+    "continueToNext": "Passer à la leçon suivante",
+    "bookmarkRemoved": "Signet supprimé",
+    "lessonBookmarked": "Leçon ajoutée aux signets"
+  },
+  "community": {
+    "title": "Communauté",
+    "subtitle": "Connectez-vous avec d'autres bâtisseurs. Obtenez des réponses. Livrez ensemble.",
+    "newThread": "Nouveau fil",
+    "submitQuestion": "Soumettre une question",
+    "members": "Membres",
+    "online": "En ligne",
+    "threads": "Fils",
+    "thisWeek": "Cette semaine",
+    "discussions": "Discussions",
+    "announcements": "Annonces",
+    "noThreads": "Aucun fil pour le moment. Lancez une discussion !",
+    "officeHours": "Heures de bureau",
+    "withCharles": "avec Charles",
+    "everyThursday": "Chaque jeudi",
+    "recurringWeekly": "Récurrent chaque semaine",
+    "officeHoursDesc": "Soumettez vos questions avant chaque session. Priorité aux étudiants en projet étape.",
+    "submitAQuestion": "Soumettre une question",
+    "leaderboard": "Classement",
+    "thisMonth": "Ce mois-ci",
+    "you": "Vous",
+    "guidelines": "Règles",
+    "newThreadTitle": "Nouveau fil",
+    "threadTitle": "Titre du fil",
+    "writePost": "Rédigez votre message... (supporte **gras** et )",
+    "category": "Catégorie",
+    "cancel": "Annuler",
+    "posting": "Publication...",
+    "postThread": "Publier le fil",
+    "threadCreated": "Fil créé",
+    "failedCreateThread": "Échec de la création du fil",
+    "submitQuestionTitle": "Soumettre une question",
+    "submitQuestionDesc": "Posez une question pour la prochaine session d'heures de bureau. Priorité aux étudiants en projet étape.",
+    "yourQuestion": "Votre question",
+    "whatToAsk": "Que souhaitez-vous demander ?",
+    "context": "Contexte",
+    "contextOptional": "optionnel",
+    "contextPlaceholder": "Tout contexte pertinent — ce que vous avez essayé, messages d'erreur, liens vers votre code...",
+    "submitting": "Envoi...",
+    "questionSubmitted": "Question soumise — vérifiez votre client de messagerie",
+    "failedSubmitQuestion": "Échec de la soumission de la question"
+  },
+  "communityThread": {
+    "backToCommunity": "Retour à la communauté",
+    "like": "J'aime",
+    "save": "Sauvegarder",
+    "saved": "Sauvegardé",
+    "share": "Partager",
+    "copied": "Copié !",
+    "reply": "Répondre",
+    "replies": "Réponses",
+    "showMore": "Afficher {count} de plus",
+    "noReplies": "Aucune réponse pour le moment. Soyez le premier à répondre.",
+    "writeReply": "Écrire une réponse...",
+    "post": "Publier",
+    "threadSaved": "Fil sauvegardé",
+    "bookmarkRemoved": "Signet supprimé"
+  },
+  "leaderboardPage": {
+    "title": "Classement",
+    "subtitle": "Voyez comment vous vous classez parmi les autres apprenants.",
+    "allTime": "Tous les temps",
+    "thisWeek": "Cette semaine",
+    "topLearnersAllTime": "Meilleurs apprenants — Tous les temps",
+    "topLearnersThisWeek": "Meilleurs apprenants — Cette semaine",
+    "yourPosition": "Votre position",
+    "keepGoing": "Continuez",
+    "earnXpToClimb": "Gagnez des XP pour grimper au classement",
+    "earnXp": "Gagnez des XP",
+    "couldntLoad": "Impossible de charger les données du classement.",
+    "retry": "Réessayer"
+  },
+  "profile": {
+    "settings": "Paramètres",
+    "manageAccount": "Gérez votre compte et vos préférences",
+    "profileTab": "Profil",
+    "statsTab": "Stats et badges",
+    "appearanceTab": "Apparence",
+    "preferencesTab": "Préférences",
+    "shareTab": "Partager",
+    "photo": "Photo",
+    "photoDesc": "Elle sera affichée sur votre profil et dans la communauté.",
+    "uploadPhoto": "Télécharger une photo",
+    "remove": "Supprimer",
+    "photoLimit": "JPG, PNG ou WebP. Max 2 Mo.",
+    "personalInfo": "Informations personnelles",
+    "personalInfoDesc": "Mettez à jour votre nom tel qu'il apparaît sur la plateforme.",
+    "firstName": "Prénom",
+    "lastName": "Nom",
+    "displayName": "Nom affiché",
+    "displayNameNote": "Ce nom apparaît dans le classement et sur votre profil public.",
+    "saving": "Enregistrement...",
+    "saveChanges": "Enregistrer",
+    "emailAddress": "Adresse courriel",
+    "emailDesc": "Votre courriel est utilisé pour la connexion et ne peut pas être modifié.",
+    "featuredAchievement": "Réalisation mise en avant",
+    "featuredAchievementDesc": "Sélectionnez une réalisation à mettre en avant sur votre profil public.",
+    "earnToFeature": "Gagnez des réalisations pour en mettre une en avant",
+    "titleSection": "Titre",
+    "titleDesc": "Choisissez un titre à afficher à côté de votre nom.",
+    "levelProgress": "Niveau et progression",
+    "levelProgressDesc": "Votre rang actuel et répartition des XP.",
+    "currentRank": "Rang actuel",
+    "dayStreak": "Jours consécutifs",
+    "completePercent": "Terminé",
+    "activeStreakBonus": "Bonus de série active :",
+    "xpMultiplier": "multiplicateur XP",
+    "personalRecords": "Records personnels",
+    "personalRecordsDesc": "Vos meilleures réalisations et statistiques globales.",
+    "longestStreak": "Plus longue série",
+    "totalLessonsCompleted": "Total de leçons terminées",
+    "achievementsUnlocked": "Réalisations débloquées",
+    "activeDays": "Jours actifs",
+    "dailyXpGoal": "Objectif XP quotidien",
+    "badges": "Badges",
+    "badgesDesc": "Réalisations gagnées affichées sur votre profil.",
+    "completeToEarnBadges": "Complétez des leçons pour gagner des badges",
+    "cosmeticThemes": "Thèmes visuels",
+    "cosmeticThemesDesc": "Débloquez et appliquez des thèmes visuels au fur et à mesure de votre progression.",
+    "shareProgress": "Partager votre progression",
+    "shareProgressDesc": "Générez une carte partageable ou consultez votre profil public.",
+    "viewPublicProfile": "Voir le profil public",
+    "sound": "Son",
+    "soundDesc": "Contrôlez les retours audio pour les interactions et réalisations.",
+    "soundEffects": "Effets sonores",
+    "soundEffectsDesc": "Jouer des sons pour les XP, réalisations et combos",
+    "volume": "Volume",
+    "testSound": "Tester le son",
+    "notifications": "Notifications",
+    "notificationsDesc": "Choisissez quelles notifications et popups afficher.",
+    "smartTips": "Conseils intelligents",
+    "smartTipsDesc": "Suggestions d'apprentissage contextuelles",
+    "streakWarnings": "Alertes de série",
+    "streakWarningsDesc": "Rappels de série en soirée",
+    "dailyReward": "Récompense quotidienne",
+    "dailyRewardDesc": "Popup de bonus de connexion quotidien",
+    "explorerToasts": "Notifications d'exploration",
+    "explorerToastsDesc": "Notifications XP lors de l'exploration",
+    "photoUpdated": "Photo mise à jour",
+    "photoRemoved": "Photo supprimée",
+    "profileUpdated": "Profil mis à jour",
+    "titleSet": "Titre défini à",
+    "featuredUpdated": "Réalisation mise en avant mise à jour",
+    "featuredCleared": "Réalisation mise en avant effacée",
+    "imageFileError": "Veuillez sélectionner un fichier image",
+    "imageSizeError": "L'image doit faire moins de 2 Mo"
+  },
+  "publicProfile": {
+    "notFound": "404",
+    "profileNotFound": "Profil introuvable",
+    "profileNotFoundDesc": "Cet utilisateur n'existe pas ou n'a pas encore configuré son profil.",
+    "goToHome": "Aller à l'accueil",
+    "couldntLoad": "Impossible de charger les données du profil.",
+    "retry": "Réessayer",
+    "totalXp": "XP total",
+    "streak": "Série",
+    "achievements": "Réalisations",
+    "rank": "Rang",
+    "noAchievements": "Aucune réalisation débloquée",
+    "shareProfile": "Partager le profil",
+    "profileLinkCopied": "Lien du profil copié !"
+  },
+  "enrollSuccess": {
+    "meta": {
+      "title": "Bienvenue — Vous êtes inscrit",
+      "description": "Bienvenue au cours Agentic SaaS. Votre inscription est confirmée."
+    },
+    "title": "C'est fait.",
+    "subtitle": "Votre inscription au cours Agentic SaaS est confirmée. Bienvenue dans le parcours de zéro à diriger des équipes d'agents IA.",
+    "checkEmailNote": "Vérifiez votre courriel pour les identifiants de connexion et les prochaines étapes. La section Pour commencer est prête pour vous.",
+    "checkYourEmail": "Vérifiez votre courriel",
+    "checkEmailDesc": "Identifiants de connexion et lien d'accès au cours envoyés à votre courriel.",
+    "getStarted": "Commencer",
+    "getStartedDesc": "Configurez votre espace de travail, rencontrez votre agent IA et publiez votre premier projet.",
+    "goToDashboard": "Aller au tableau de bord",
+    "joinCommunity": "Rejoindre la communauté"
+  },
+  "secretVault": {
+    "classified": "Classifié",
+    "title": "Le coffre-fort",
+    "subtitle": "Vos archives complètes de progression et dossiers cachés",
+    "securityVerified": "Habilitation de sécurité vérifiée",
+    "accessGranted": "ACCÈS ACCORDÉ",
+    "decrypting": "DÉCHIFFREMENT DU CONTENU DU COFFRE...",
+    "hallOfFame": "Temple de la renommée",
+    "hallOfFameDesc": "Accomplissements de pointe",
+    "achievementTimeline": "Chronologie des réalisations",
+    "achievementTimelineDesc": "Historique chronologique des déblocages",
+    "learningJourney": "Parcours d'apprentissage",
+    "learningJourneyDesc": "Chronologie complète",
+    "allTimeStats": "Statistiques globales",
+    "allTimeStatsDesc": "Détails complets",
+    "easterEggs": "Œufs de Pâques",
+    "easterEggsDesc": "Découvertes cachées",
+    "unlockables": "Déblocables",
+    "unlockablesDesc": "Progression de la collection",
+    "totalXp": "XP total",
+    "currentStreak": "Série actuelle",
+    "longestStreak": "Plus longue série",
+    "lessonsDone": "Leçons terminées",
+    "xpSources": "Sources de XP (récentes)",
+    "toolMastery": "Maîtrise des outils",
+    "peakRank": "Rang le plus élevé",
+    "bestStreak": "Meilleure série",
+    "courseProgress": "Progression du cours",
+    "totalAchievements": "Total des réalisations",
+    "challengesConquered": "Défis conquis",
+    "journeyBegins": "Votre parcours commence quand vous gagnez votre première réalisation",
+    "completeToFill": "Complétez des leçons et des défis pour remplir cette chronologie",
+    "found": "TROUVÉ"
+  },
+  "chat": {
+    "title": "Clavardage",
+    "channels": "Canaux",
+    "loadingMessages": "Chargement des messages...",
+    "welcomeTo": "Bienvenue dans",
+    "startConversation": "Lancez la conversation.",
+    "beginningOfChannel": "début du canal",
+    "signInToChat": "Connectez-vous pour clavarder...",
+    "message": "Message",
+    "addReaction": "Ajouter une réaction",
+    "replyInThread": "Répondre dans le fil",
+    "liveRealtime": "En direct — Temps réel"
+  },
+  "sidebar": {
+    "dashboard": "Tableau de bord",
+    "curriculum": "Programme",
+    "leaderboard": "Classement",
+    "analytics": "Analytique",
+    "community": "Communauté",
+    "knowledgeBase": "Base de connaissances",
+    "chat": "Clavardage",
+    "settings": "Paramètres",
+    "pipeline": "Pipeline",
+    "studentAgent": "Agent étudiant",
+    "viewProfile": "Voir le profil",
+    "signOut": "Déconnexion",
+    "xpTo": "XP pour",
+    "streak": "série",
+    "lessons": "leçons"
+  },
+  "commandMenu": {
+    "placeholder": "Où aller ?",
+    "noResults": "Aucun résultat.",
+    "navigate": "naviguer",
+    "open": "ouvrir",
+    "course": "Cours",
+    "personal": "Personnel",
+    "myCourse": "Mon cours",
+    "quickActions": "Actions rapides",
+    "home": "Accueil",
+    "curriculum": "Programme",
+    "principles": "Principes",
+    "pricingTiers": "Tarifs et formules",
+    "blog": "Blog",
+    "aboutCharles": "À propos de Charles",
+    "projects": "Projets",
+    "experiments": "Expériences",
+    "contact": "Contact",
+    "dashboard": "Tableau de bord",
+    "community": "Communauté",
+    "chat": "Clavardage",
+    "profile": "Profil",
+    "goToDashboard": "Aller au tableau de bord",
+    "goToLeaderboard": "Aller au classement",
+    "goToSettings": "Aller aux paramètres",
+    "goToVault": "Aller au coffre-fort",
+    "shareProgress": "Partager la progression",
+    "viewPublicProfile": "Voir le profil public"
+  },
+  "cookies": {
+    "message": "Ce site utilise des cookies pour les analyses.",
+    "accept": "OK",
+    "decline": "Non"
+  },
+  "errors": {
+    "somethingWentWrong": "Une erreur est survenue",
+    "unexpectedError": "Une erreur inattendue s'est produite. Veuillez rafraîchir la page.",
+    "refresh": "Rafraîchir",
+    "goHome": "Retour à l'accueil",
+    "retry": "Réessayer"
+  },
+  "bentoGrid": {
+    "multiAgentOrchestration": "Orchestration multi-agents",
+    "multiAgentDesc": "Coordonnez plusieurs agents IA travaillant en parallèle sur des tâches complexes. Apprenez quand diviser le travail, comment vérifier les résultats et comment fusionner les contributions des agents en un ensemble cohérent.",
+    "toolLadder": "L'échelle des outils",
+    "toolLadderDesc": "coller → compétence → script → agent → MCP",
+    "readBeforeGenerate": "Lire avant de générer",
+    "readBeforeGenerateDesc": "Comprendre avant de créer",
+    "specDriven": "Développement par spécification",
+    "specDrivenDesc": "Définir avant de construire",
+    "agentFirst": "Workflows agent-first",
+    "agentFirstDesc": "Concevoir le travail autour des agents",
+    "errorFirst": "Débogage par l'erreur",
+    "errorFirstDesc": "Lire l'erreur, pas le prompt",
+    "ownConstraints": "Assumez vos contraintes",
+    "ownConstraintsDesc": "Les limites sont des paramètres de conception",
+    "testMatters": "Tester ce qui compte",
+    "testMattersDesc": "La confiance plutôt que la couverture",
+    "tasteIsMoat": "Le goût est le fossé",
+    "tasteIsMoatDesc": "L'IA génère. Vous jugez.",
+    "agentOrchestration": "Orchestration d'agents",
+    "toolLadderBadge": "Échelle des outils",
+    "specWriting": "Rédaction de spécifications",
+    "mcpServers": "Serveurs MCP",
+    "errorFirstDebug": "Débogage par l'erreur",
+    "systemTeardowns": "Déconstruction de systèmes",
+    "capstoneShipping": "Livraison de projets étapes",
+    "judgment": "Jugement"
+  },
+  "pageLoading": {
+    "loading": "Chargement...",
+    "keepGoing": "continuez...",
+    "typeAlong": "tapez si vous voulez",
+    "wpm": "mpm"
+  },
+  "voiceTutor": {
+    "title": "Tuteur vocal",
+    "configure": "Configurez VITE_LIVEKIT_URL pour activer",
+    "startSession": "Commencer une session vocale avec votre tuteur IA",
+    "speaking": "Parle...",
+    "listening": "Écoute...",
+    "ready": "Prêt",
+    "connecting": "Connexion...",
+    "error": "Erreur",
+    "disconnected": "Déconnecté",
+    "collapse": "Réduire",
+    "startVoiceSession": "Démarrer une session vocale",
+    "mute": "Couper le son",
+    "unmute": "Activer le son",
+    "end": "Terminer"
+  },
+  "activityFeed": {
+    "recentActivity": "Activité récente",
+    "noActivity": "Aucune activité",
+    "startLearning": "Commencez à apprendre pour créer votre chronologie.",
+    "showMore": "Afficher plus"
+  },
+  "certificate": {
+    "locked": "Certificat verrouillé",
+    "completeToUnlock": "Complétez le cours pour débloquer votre certificat",
+    "title": "Certificat de réussite",
+    "download": "Télécharger le certificat",
+    "share": "Partager",
+    "generating": "Génération de l'aperçu...",
+    "pdfTitle": "Le cours Agentic SaaS - Certificat de réussite"
+  },
+  "comparisonCard": {
+    "howYouCompare": "Comment vous vous comparez",
+    "youreFirst": "Vous êtes n°1 !",
+    "topPercent": "Top",
+    "aboveAverage": "Au-dessus de la moyenne",
+    "beFirst": "Soyez le premier ici !",
+    "compareNote": "Vous verrez comment vous vous comparez quand d'autres apprenants rejoindront",
+    "yourPoints": "Vos points",
+    "yourStreak": "Votre série",
+    "lessons": "Leçons",
+    "comparedAgainst": "Comparé à"
+  },
+  "explorerProgress": {
+    "explorer": "Explorateur",
+    "xpEarned": "XP gagné",
+    "noPages": "Aucune page explorée",
+    "startExploring": "Commencez à explorer le site pour gagner des XP de curiosité !"
+  },
+  "focusTimer": {
+    "title": "Minuteur de concentration",
+    "autoBreak": "Pause auto",
+    "session": "Session",
+    "of": "sur",
+    "focusing": "Concentration",
+    "break": "Pause",
+    "paused": "En pause",
+    "allDone": "Excellent travail ! Toutes les sessions terminées.",
+    "ready": "Prêt",
+    "totalFocusTime": "Temps de concentration total",
+    "sessionsCompleted": "Sessions terminées",
+    "bestStreak": "Meilleure série"
+  },
+  "journeyTimeline": {
+    "emptyTitle": "Votre chronologie commence quand vous terminez votre première leçon",
+    "emptySubtitle": "Chaque étape apparaîtra ici chronologiquement",
+    "showMore": "Afficher plus",
+    "timeline": "Chronologie"
+  },
+  "leaderboardComponent": {
+    "noRankings": "Aucun classement",
+    "noRankingsDesc": "Complétez des leçons pour gagner des XP et prendre votre place",
+    "startFirstLesson": "Commencer votre première leçon"
+  },
+  "lessonRating": {
+    "howWas": "Comment était cette leçon ?",
+    "rating": "Note",
+    "difficulty": "Difficulté",
+    "thanks": "Merci pour la note ! +3 XP",
+    "rate": "Noter"
+  },
+  "notificationCenter": {
+    "title": "Notifications",
+    "markAllRead": "Tout marquer comme lu",
+    "noNotifications": "Aucune notification",
+    "levelUp": "Niveau supérieur !",
+    "streakAlert": "Série !",
+    "challenge": "Défi :",
+    "unlocked": "Débloqué"
+  },
+  "quickActions": {
+    "resumeLesson": "Reprendre la leçon",
+    "dailyChallenges": "Défis du jour",
+    "focusTimer": "Minuteur",
+    "shareProgress": "Partager la progression",
+    "commandMenu": "Menu de commandes"
+  },
+  "shareCard": {
+    "title": "Partager votre progression",
+    "subtitle": "Téléchargez ou partagez votre carte de réussite",
+    "share": "Partager",
+    "shared": "Partagé !",
+    "copyLink": "Copier le lien",
+    "copied": "Copié !"
+  },
+  "achievementsGrid": {
+    "complete1": "Compléter 1 leçon",
+    "completeTier": "Compléter un niveau",
+    "complete3InDay": "Compléter 3 en un jour"
+  },
+  "statusBadge": {
+    "completed": "Terminé",
+    "inProgress": "En cours",
+    "available": "Disponible",
+    "locked": "Verrouillé"
+  },
+  "skillTree": {
+    "title": "Arbre de compétences",
+    "ariaLabel": "Arbre de compétences : carte de progression des leçons"
+  },
+  "streakCalendar": {
+    "activity": "Activité",
+    "lastDays": "{count} derniers jours",
+    "dayStreak": "jours consécutifs",
+    "less": "Moins",
+    "more": "Plus"
+  },
+  "streakFreeze": {
+    "title": "Gel de série",
+    "ready": "Prêt",
+    "readyDesc": "Prêt à protéger votre série si vous manquez un jour",
+    "usedThisWeek": "Utilisé cette semaine",
+    "locked": "Verrouillé",
+    "lockedDesc": "Maintenez une série de 3 jours pour débloquer",
+    "weeklyRecharge": "Recharge hebdomadaire",
+    "buyExtra": "Acheter un gel supplémentaire : 50 XP",
+    "needMore": "{xp} XP de plus nécessaires",
+    "purchased": "Gel de série supplémentaire acheté ! Votre série est protégée.",
+    "yourXp": "Vos XP"
+  },
+  "streakWarning": {
+    "endsTonight": "Votre série se termine ce soir !",
+    "dontLose": "Ne perdez pas votre série !",
+    "resetsIn": "Votre série se réinitialise bientôt",
+    "dismiss": "Fermer"
+  },
+  "themeSelector": {
+    "title": "Thèmes visuels",
+    "reset": "Réinitialiser",
+    "unlockBy": "Débloquer en atteignant"
+  },
+  "tierProgress": {
+    "title": "Progression par niveau"
+  },
+  "toolMastery": {
+    "title": "Maîtrise des outils",
+    "empty": "Complétez des leçons pour améliorer vos outils"
+  },
+  "unlockGate": {
+    "rank": "rang",
+    "dayStreak": "jours consécutifs",
+    "achievements": "réalisations"
+  },
+  "unlockablesGrid": {
+    "themes": "Thèmes",
+    "secretPages": "Pages secrètes",
+    "bonusContent": "Contenu bonus",
+    "badges": "Badges",
+    "unlocked": "Débloqué",
+    "locked": "Verrouillé",
+    "comingSoon": "Bientôt disponible"
+  },
+  "weeklyChallenges": {
+    "title": "Défis hebdomadaires",
+    "resetsIn": "Réinitialisation dans",
+    "claimReward": "Réclamer la récompense",
+    "failed": "Défi échoué"
+  },
+  "lessonContent": {
+    "loading": "Chargement du contenu de la leçon...",
+    "comingSoon": "Contenu de la leçon bientôt disponible.",
+    "tip": "Conseil :",
+    "warning": "Avertissement :",
+    "note": "Note :"
+  },
+  "recentProjects": {
+    "title": "Projets récents",
+    "subtitle": "Systèmes de production que j'ai construits et livrés.",
+    "lookingDeeper": "Vous cherchez des études de cas techniques approfondies ?",
+    "viewPortfolio": "Voir le portfolio technique"
   }
 }

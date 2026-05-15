@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { motion } from 'motion/react'
 import { BarChart3, Flame, BookOpen, Zap, Crown } from 'lucide-react'
 import { useAuth } from '@/hooks/use-auth'
@@ -110,6 +111,7 @@ function Skeleton() {
 }
 
 export function ComparisonCard() {
+  const { t } = useTranslation()
   const { user } = useAuth()
   const progress = useProgress()
   const overall = getOverallProgress()
@@ -149,9 +151,9 @@ export function ComparisonCard() {
         >
           <BarChart3 className="w-5 h-5 text-foreground/25" />
         </motion.div>
-        <p className="text-sm text-foreground/50 mb-1 font-medium">Be the first one here!</p>
+        <p className="text-sm text-foreground/50 mb-1 font-medium">{t('comparisonCard.beFirst')}</p>
         <p className="text-xs text-foreground/30 font-mono">
-          You'll see how you compare once more learners join.
+          {t('comparisonCard.compareNote')}
         </p>
       </div>
     )
@@ -173,11 +175,11 @@ export function ComparisonCard() {
     : 0
 
   const xpBadge = isNumberOne
-    ? "You're #1!"
+    ? t('comparisonCard.youreFirst')
     : topPercentile
       ? `Top ${topPercentile}%`
       : isAboveAvgXp
-        ? 'Above average'
+        ? t('comparisonCard.aboveAverage')
         : undefined
 
   return (
@@ -186,7 +188,7 @@ export function ComparisonCard() {
         <div className="flex items-center gap-2">
           <BarChart3 className="w-4 h-4 text-foreground/50" />
           <span className="text-[10px] font-mono uppercase tracking-wider text-foreground/40">
-            How You Compare
+            {t('comparisonCard.howYouCompare')}
           </span>
         </div>
         {isNumberOne && (
@@ -205,7 +207,7 @@ export function ComparisonCard() {
       <div className="divide-y divide-foreground/[0.06]">
         <ComparisonRow
           icon={Zap}
-          label="Your Points"
+          label={t('comparisonCard.yourPoints')}
           userValue={progress.totalXp}
           userLabel={`${progress.totalXp.toLocaleString()} pts`}
           avgValue={stats.averageXp}
@@ -217,32 +219,32 @@ export function ComparisonCard() {
 
         <ComparisonRow
           icon={Flame}
-          label="Your Streak"
+          label={t('comparisonCard.yourStreak')}
           userValue={progress.currentStreak}
           userLabel={`${progress.currentStreak} days`}
           avgValue={stats.averageStreak}
           avgLabel={`${stats.averageStreak} days`}
           maxValue={stats.topStreak}
-          badge={isAboveAvgStreak ? 'Above average' : undefined}
+          badge={isAboveAvgStreak ? t('comparisonCard.aboveAverage') : undefined}
           index={1}
         />
 
         <ComparisonRow
           icon={BookOpen}
-          label="Lessons"
+          label={t('comparisonCard.lessons')}
           userValue={overall.completed}
           userLabel={`${overall.completed}/${TOTAL_LESSONS}`}
           avgValue={avgLessonsEstimate}
           avgLabel={`${avgLessonsEstimate}/${TOTAL_LESSONS}`}
           maxValue={TOTAL_LESSONS}
-          badge={isAboveAvgLessons ? 'Above average' : undefined}
+          badge={isAboveAvgLessons ? t('comparisonCard.aboveAverage') : undefined}
           index={2}
         />
       </div>
 
       <div className="mt-2 pt-2 border-t border-foreground/[0.06]">
         <p className="text-[10px] font-mono text-foreground/25 text-center">
-          Compared against {stats.totalUsers.toLocaleString()} learner{stats.totalUsers !== 1 ? 's' : ''}
+          {t('comparisonCard.comparedAgainst')} {stats.totalUsers.toLocaleString()} learner{stats.totalUsers !== 1 ? 's' : ''}
         </p>
       </div>
     </div>

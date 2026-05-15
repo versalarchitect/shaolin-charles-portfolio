@@ -1,14 +1,16 @@
 import { Link } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import { motion } from 'motion/react'
 import { Check } from 'lucide-react'
 import { CURRICULUM } from '@/data/curriculum'
 import { getLessonStatus, getTierProgress } from '@/stores/progress'
 
 export function TierProgress() {
+  const { t } = useTranslation()
   return (
     <div className="space-y-3">
       <h2 className="text-sm font-mono uppercase tracking-wider text-foreground/40">
-        Progress by Tier
+        {t('tierProgress.title')}
       </h2>
 
       <div className="space-y-2">

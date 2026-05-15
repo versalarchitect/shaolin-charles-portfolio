@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next'
 import { motion } from 'motion/react'
 import { Lock, Palette, FileText, BookOpen, Award, Check, Zap } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
@@ -5,11 +6,11 @@ import { UNLOCKABLES, checkUnlocked, getProgress, getUnlockablesByType } from '@
 import type { Unlockable, UnlockableType } from '@/lib/unlockables'
 import { useUnlockState } from './unlock-gate'
 
-const TYPE_META: Record<UnlockableType, { label: string; icon: LucideIcon }> = {
-  theme: { label: 'Themes', icon: Palette },
-  page: { label: 'Secret Pages', icon: FileText },
-  content: { label: 'Bonus Content', icon: BookOpen },
-  badge: { label: 'Badges', icon: Award },
+const TYPE_META: Record<UnlockableType, { labelKey: string; icon: LucideIcon }> = {
+  theme: { labelKey: 'unlockablesGrid.themes', icon: Palette },
+  page: { labelKey: 'unlockablesGrid.secretPages', icon: FileText },
+  content: { labelKey: 'unlockablesGrid.bonusContent', icon: BookOpen },
+  badge: { labelKey: 'unlockablesGrid.badges', icon: Award },
 }
 
 const TYPE_ORDER: UnlockableType[] = ['theme', 'page', 'content', 'badge']
@@ -20,6 +21,7 @@ interface UnlockablesGridProps {
 }
 
 export function UnlockablesGrid({ showCategories = true, compact = false }: UnlockablesGridProps) {
+  const { t } = useTranslation()
   const unlockState = useUnlockState()
   const activeTypes = TYPE_ORDER.filter((type) => getUnlockablesByType(type).length > 0)
 
@@ -51,7 +53,7 @@ export function UnlockablesGrid({ showCategories = true, compact = false }: Unlo
             <div className="flex items-center gap-2">
               <Icon className="w-4 h-4 text-foreground/50" />
               <h3 className="text-xs font-mono uppercase tracking-wider text-foreground/40">
-                {meta.label}
+                {t(meta.labelKey)}
               </h3>
               <span className="text-[10px] font-mono text-foreground/25 ml-auto">
                 {items.filter((u) => checkUnlocked(u, unlockState)).length}/{items.length}
@@ -87,6 +89,7 @@ function UnlockableCard({
   progress: number
   compact: boolean
 }) {
+  const { t } = useTranslation()
   return (
     <motion.div
       className={`relative rounded-xl border transition-all ${
@@ -135,7 +138,7 @@ function UnlockableCard({
           isUnlocked ? 'text-foreground/50' : 'text-foreground/25'
         }`}
       >
-        {isUnlocked ? unlockable.description : unlockable.preview || 'Locked'}
+        {isUnlocked ? unlockable.description : unlockable.preview || t('unlockablesGrid.locked')}
       </p>
 
       {/* Progress bar (only when locked) */}
@@ -167,7 +170,7 @@ function UnlockableCard({
       {isUnlocked && (
         <div className="flex items-center gap-1 text-[10px] font-mono text-foreground/30">
           <Check className="w-2.5 h-2.5" />
-          Unlocked
+          {t('unlockablesGrid.unlocked')}
         </div>
       )}
 

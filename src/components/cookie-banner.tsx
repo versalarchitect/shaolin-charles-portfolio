@@ -1,9 +1,11 @@
 import { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { motion, AnimatePresence } from 'motion/react';
 
 const STORAGE_KEY = 'cookie-consent';
 
 export function CookieBanner() {
+  const { t } = useTranslation();
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
@@ -34,20 +36,20 @@ export function CookieBanner() {
         >
           <div>
             <div className="inline-flex items-center gap-3 px-4 py-2 rounded-lg bg-foreground/[0.06] border border-foreground/[0.08] backdrop-blur-xl text-xs text-foreground/50 font-mono">
-              <span>This site uses cookies for analytics.</span>
+              <span>{t('cookies.message')}</span>
               <button
                 type="button"
                 onClick={decline}
                 className="px-2.5 py-0.5 rounded text-foreground/40 hover:text-foreground/60 transition-colors"
               >
-                No
+                {t('cookies.decline')}
               </button>
               <button
                 type="button"
                 onClick={accept}
                 className="px-2.5 py-0.5 rounded bg-foreground/10 text-foreground/70 hover:bg-foreground/15 hover:text-foreground transition-colors"
               >
-                OK
+                {t('cookies.accept')}
               </button>
             </div>
           </div>

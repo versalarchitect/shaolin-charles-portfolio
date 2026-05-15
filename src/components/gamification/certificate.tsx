@@ -1,6 +1,7 @@
 import { motion } from 'motion/react';
 import { Award, Download, Lock, Share2 } from 'lucide-react';
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { ALL_LESSONS } from '@/data/curriculum';
 import { useAuth } from '@/hooks/use-auth';
 import {
@@ -11,6 +12,7 @@ import {
 import { getLevel, getOverallProgress, useProgress } from '@/stores/progress';
 
 export function Certificate() {
+  const { t } = useTranslation();
   const progress = useProgress();
   const { user } = useAuth();
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -102,7 +104,7 @@ export function Certificate() {
       const blob = await generateCertificate(data);
       const file = new File([blob], 'certificate.png', { type: 'image/png' });
       const shareData = {
-        title: 'The Agentic SaaS Course - Certificate of Completion',
+        title: t('certificate.pdfTitle'),
         text: `I completed The Agentic SaaS Course with ${data.totalXp.toLocaleString()} XP!`,
         files: [file],
       };
@@ -133,11 +135,10 @@ export function Certificate() {
       >
         <Lock className="w-10 h-10 mx-auto mb-4 text-foreground/20" />
         <p className="text-[10px] font-mono uppercase tracking-[0.2em] text-foreground/30 mb-2">
-          Certificate Locked
+          {t('certificate.locked')}
         </p>
         <p className="text-sm text-foreground/50 mb-4">
-          Complete <span className="font-mono text-foreground/70">{remaining}</span> more lesson
-          {remaining !== 1 ? 's' : ''} to earn your certificate
+          {t('certificate.completeToUnlock', { remaining })}
         </p>
         <div className="relative h-1.5 rounded-full bg-foreground/[0.05] overflow-hidden max-w-xs mx-auto">
           <motion.div
@@ -189,7 +190,7 @@ export function Certificate() {
       <div className="text-center mb-4">
         <Award className="w-8 h-8 mx-auto mb-2 text-foreground/60" />
         <p className="text-[10px] font-mono uppercase tracking-[0.2em] text-foreground/40">
-          Certificate of Completion
+          {t('certificate.title')}
         </p>
       </div>
 
@@ -207,7 +208,7 @@ export function Certificate() {
         />
         {!previewRendered && (
           <div className="absolute inset-0 flex items-center justify-center bg-foreground/[0.02]">
-            <p className="text-xs font-mono text-foreground/30">Generating preview...</p>
+            <p className="text-xs font-mono text-foreground/30">{t('certificate.generating')}</p>
           </div>
         )}
       </motion.div>
@@ -220,7 +221,7 @@ export function Certificate() {
           className="flex items-center gap-2 px-5 py-2.5 rounded-lg bg-foreground/10 hover:bg-foreground/15 border border-foreground/10 hover:border-foreground/20 text-sm font-mono text-foreground/80 hover:text-foreground transition-all disabled:opacity-50 disabled:cursor-not-allowed"
         >
           <Download className="w-4 h-4" />
-          Download Certificate
+          {t('certificate.download')}
         </button>
         <button
           onClick={handleShare}
@@ -228,7 +229,7 @@ export function Certificate() {
           className="flex items-center gap-2 px-5 py-2.5 rounded-lg bg-foreground/[0.05] hover:bg-foreground/10 border border-foreground/[0.08] hover:border-foreground/15 text-sm font-mono text-foreground/60 hover:text-foreground/80 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
         >
           <Share2 className="w-4 h-4" />
-          Share
+          {t('certificate.share')}
         </button>
       </div>
     </motion.div>

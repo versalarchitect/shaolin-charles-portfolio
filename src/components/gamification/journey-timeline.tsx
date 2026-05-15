@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { motion } from 'motion/react'
 import { BookOpen, Star, Flame, TrendingUp, ChevronDown } from 'lucide-react'
 import { useProgress, getXpLog, getLevel } from '@/stores/progress'
@@ -43,6 +44,7 @@ function getEventIcon(type: TimelineEventType) {
 
 export function JourneyTimeline({ maxItems = 20, compact = false }: JourneyTimelineProps) {
   const progress = useProgress()
+  const { t } = useTranslation()
   const [showAll, setShowAll] = useState(false)
 
   const events = useMemo(() => {
@@ -159,11 +161,11 @@ export function JourneyTimeline({ maxItems = 20, compact = false }: JourneyTimel
           <BookOpen className="w-4 h-4 text-foreground/15" />
         </div>
         <p className="text-xs text-foreground/35 font-mono mb-1">
-          Your timeline begins when you complete your first lesson
+          {t('journeyTimeline.emptyTitle')}
         </p>
         {!compact && (
           <p className="text-[10px] text-foreground/20 font-mono">
-            Each milestone will appear here chronologically
+            {t('journeyTimeline.emptySubtitle')}
           </p>
         )}
       </div>
@@ -253,7 +255,7 @@ export function JourneyTimeline({ maxItems = 20, compact = false }: JourneyTimel
           className="mt-4 ml-8 inline-flex items-center gap-1.5 text-xs font-mono text-foreground/40 hover:text-foreground/60 transition-colors px-3 py-1.5 rounded-lg border border-foreground/[0.08] hover:bg-foreground/[0.04]"
         >
           <ChevronDown className="w-3 h-3" />
-          Show {events.length - maxItems} more
+          {t('journeyTimeline.showMore').replace('{count}', String(events.length - maxItems))}
         </button>
       )}
     </div>

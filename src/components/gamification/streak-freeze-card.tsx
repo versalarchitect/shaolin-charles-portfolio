@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { useTranslation } from 'react-i18next'
 import { motion, AnimatePresence } from 'motion/react'
 import { Shield, Snowflake, Zap } from 'lucide-react'
 import { toast } from 'sonner'
@@ -48,6 +49,7 @@ function getFreezeStatus(currentStreak: number, usedThisWeek: boolean): FreezeSt
 }
 
 export function StreakFreezeCard({ compact = false }: { compact?: boolean }) {
+  const { t } = useTranslation()
   const progress = useProgress()
   const [extraFreezes, setExtraFreezesState] = useState(getExtraFreezes)
   const [confirmOpen, setConfirmOpen] = useState(false)
@@ -71,27 +73,27 @@ export function StreakFreezeCard({ compact = false }: { compact?: boolean }) {
     setExtraFreezes(1)
     setExtraFreezesState(1)
     setConfirmOpen(false)
-    toast.success('Extra streak freeze purchased! Your streak is protected.')
+    toast.success(t('streakFreeze.purchased'))
   }
 
   const statusConfig = {
     available: {
-      label: 'Ready',
-      description: 'Ready to protect your streak if you miss a day',
+      label: t('streakFreeze.ready'),
+      description: t('streakFreeze.readyDesc'),
       cardBorder: 'border-foreground/[0.12]',
       cardBg: 'bg-foreground/[0.03]',
       iconBg: 'bg-foreground/10',
     },
     used: {
-      label: 'Used this week',
-      description: `Used this week — recharges in ${daysUntilRecharge} day${daysUntilRecharge !== 1 ? 's' : ''}`,
+      label: t('streakFreeze.usedThisWeek'),
+      description: `${t('streakFreeze.usedThisWeek')} — recharges in ${daysUntilRecharge} day${daysUntilRecharge !== 1 ? 's' : ''}`,
       cardBorder: 'border-foreground/[0.08]',
       cardBg: 'bg-foreground/[0.02]',
       iconBg: 'bg-foreground/[0.06]',
     },
     locked: {
-      label: 'Locked',
-      description: 'Maintain a 3-day streak to unlock',
+      label: t('streakFreeze.locked'),
+      description: t('streakFreeze.lockedDesc'),
       cardBorder: 'border-foreground/[0.06]',
       cardBg: 'bg-foreground/[0.02]',
       iconBg: 'bg-foreground/[0.04]',
@@ -118,7 +120,7 @@ export function StreakFreezeCard({ compact = false }: { compact?: boolean }) {
           </div>
           <div className="flex-1 min-w-0">
             <p className="text-sm font-mono font-medium text-foreground/80">
-              Streak Freeze
+              {t('streakFreeze.title')}
               {extraFreezes > 0 && (
                 <span className="ml-1.5 text-[10px] font-mono px-1.5 py-0.5 rounded bg-foreground/10 text-foreground/50">
                   +1 extra
@@ -162,7 +164,7 @@ export function StreakFreezeCard({ compact = false }: { compact?: boolean }) {
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2 mb-1">
               <h3 className="text-sm font-mono font-semibold text-foreground/80">
-                Streak Freeze
+                {t('streakFreeze.title')}
               </h3>
               <span className={`text-[10px] font-mono px-2 py-0.5 rounded-full ${
                 status === 'available'
@@ -188,7 +190,7 @@ export function StreakFreezeCard({ compact = false }: { compact?: boolean }) {
               <div className="mb-3">
                 <div className="flex items-center justify-between mb-1">
                   <span className="text-[9px] font-mono text-foreground/30 uppercase tracking-wider">
-                    Weekly Recharge
+                    {t('streakFreeze.weeklyRecharge')}
                   </span>
                   <span className="text-[9px] font-mono text-foreground/30">
                     {7 - daysUntilRecharge}/7 days
@@ -226,11 +228,11 @@ export function StreakFreezeCard({ compact = false }: { compact?: boolean }) {
                       }`}
                     >
                       <Zap className="w-3 h-3" />
-                      Buy extra freeze: {EXTRA_FREEZE_COST} XP
+                      {t('streakFreeze.buyExtra')}
                     </button>
                     {!canBuyExtra && progress.totalXp < EXTRA_FREEZE_COST && (
                       <span className="text-[10px] font-mono text-foreground/25">
-                        Need {EXTRA_FREEZE_COST - progress.totalXp} more XP
+                        {t('streakFreeze.needMore').replace('{xp}', String(EXTRA_FREEZE_COST - progress.totalXp))}
                       </span>
                     )}
                   </div>
@@ -263,7 +265,7 @@ export function StreakFreezeCard({ compact = false }: { compact?: boolean }) {
           </div>
 
           <div className="flex items-center justify-between px-3 py-2.5 rounded-lg bg-foreground/[0.03] border border-foreground/[0.06]">
-            <span className="text-sm font-mono text-foreground/60">Your XP</span>
+            <span className="text-sm font-mono text-foreground/60">{t('streakFreeze.yourXp')}</span>
             <span className="text-sm font-mono font-semibold">
               {progress.totalXp.toLocaleString()} XP
             </span>

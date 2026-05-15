@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { motion } from 'motion/react'
 import { Star, TrendingUp, Flame, GraduationCap, Compass, Activity, BookOpen, RefreshCw } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
@@ -53,6 +54,7 @@ function getRelativeTime(dateStr: string): string {
 }
 
 export function ActivityFeed({ userId, limit = 10, showHeader = true }: ActivityFeedProps) {
+  const { t } = useTranslation()
   const [events, setEvents] = useState<ActivityEvent[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(false)
@@ -97,7 +99,7 @@ export function ActivityFeed({ userId, limit = 10, showHeader = true }: Activity
         {showHeader && (
           <div className="flex items-center gap-2 mb-4">
             <Activity className="w-4 h-4 text-foreground/40" />
-            <span className="text-sm font-mono font-medium text-foreground/60">Recent Activity</span>
+            <span className="text-sm font-mono font-medium text-foreground/60">{t('activityFeed.recentActivity')}</span>
           </div>
         )}
         {[...Array(3)].map((_, i) => (
@@ -135,14 +137,14 @@ export function ActivityFeed({ userId, limit = 10, showHeader = true }: Activity
         {showHeader && (
           <div className="flex items-center gap-2 mb-4 justify-center">
             <Activity className="w-4 h-4 text-foreground/40" />
-            <span className="text-sm font-mono font-medium text-foreground/60">Recent Activity</span>
+            <span className="text-sm font-mono font-medium text-foreground/60">{t('activityFeed.recentActivity')}</span>
           </div>
         )}
         <div className="flex items-center justify-center w-12 h-12 rounded-full bg-foreground/[0.04] border border-foreground/[0.08] mx-auto mb-3">
           <BookOpen className="w-5 h-5 text-foreground/20" />
         </div>
-        <p className="text-sm text-foreground/40 font-mono mb-1">No activity yet</p>
-        <p className="text-xs text-foreground/30">Start learning to build your timeline.</p>
+        <p className="text-sm text-foreground/40 font-mono mb-1">{t('activityFeed.noActivity')}</p>
+        <p className="text-xs text-foreground/30">{t('activityFeed.startLearning')}</p>
       </div>
     )
   }
@@ -152,7 +154,7 @@ export function ActivityFeed({ userId, limit = 10, showHeader = true }: Activity
       {showHeader && (
         <div className="flex items-center gap-2 mb-4">
           <Activity className="w-4 h-4 text-foreground/40" />
-          <span className="text-sm font-mono font-medium text-foreground/60">Recent Activity</span>
+          <span className="text-sm font-mono font-medium text-foreground/60">{t('activityFeed.recentActivity')}</span>
         </div>
       )}
       <div className="space-y-1">
