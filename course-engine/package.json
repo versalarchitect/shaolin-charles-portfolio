@@ -8,6 +8,7 @@
     "status": "bun run scripts/status.ts",
     "briefing": "bun run scripts/briefing.ts",
     "simulate": "bun run scripts/simulate-student.ts",
+    "agent": "bun run scripts/run-student-agent.ts",
     "test": "bun test",
     "typecheck": "tsc --build"
   }

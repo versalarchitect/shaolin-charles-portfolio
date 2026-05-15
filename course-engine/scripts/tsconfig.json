@@ -9,7 +9,8 @@
       "@course-engine/extraction": ["../packages/extraction/src/index.ts"],
       "@course-engine/regeneration": ["../packages/regeneration/src/index.ts"],
       "@course-engine/briefing": ["../packages/briefing/src/index.ts"],
-      "@course-engine/simulator": ["../packages/simulator/src/index.ts"]
+      "@course-engine/simulator": ["../packages/simulator/src/index.ts"],
+      "@course-engine/student-agent": ["../packages/student-agent/src/index.ts"]
     }
   },
   "include": ["."],
@@ -19,6 +20,7 @@
     { "path": "../packages/extraction" },
     { "path": "../packages/regeneration" },
     { "path": "../packages/briefing" },
-    { "path": "../packages/simulator" }
+    { "path": "../packages/simulator" },
+    { "path": "../packages/student-agent" }
   ]
 }
