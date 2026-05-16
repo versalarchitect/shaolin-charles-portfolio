@@ -308,6 +308,75 @@ const nxSupabaseProject = {
   ],
 }
 
+const compassProject = {
+  id: 'compass',
+  title: 'Compass',
+  subtitle: 'AI-Powered VC Matching Platform',
+  type: 'PROJECT',
+  status: 'live',
+  year: '2026',
+  role: 'Solo Developer',
+  description:
+    'VC matching system for founders raising capital. Ranks 3,000+ funds, identifies the right partner at each firm, produces per-fund briefs with skip/pursue recommendations, and maps warm-intro paths — all powered by a three-loop AI architecture.',
+  longDescription:
+    'Three decoupled loops: Cartographer continuously indexes fund data from public sources, Profiler extracts founder/company features, and the Match loop ranks funds then writes analyst-grade briefs using Claude Opus. The system produces a complete fundraise packet in one pass.',
+  links: {
+    live: 'https://getcompass.vc',
+    github: 'https://github.com/versalarchitect/vc-platform',
+  },
+  techStack: [
+    'Python 3.12',
+    'FastAPI',
+    'PostgreSQL 16',
+    'pgvector',
+    'Claude Opus',
+    'Voyage AI',
+    'Supabase',
+    'Next.js',
+    'Fly.io',
+    'GitHub Actions',
+  ],
+  challenges: [
+    {
+      icon: Brain,
+      title: 'Multi-Agent Orchestration',
+      desc: '5 specialized AI agents (Profiler, Matchmaker, Analyst, Pathfinder, Conductor) with strict data ownership boundaries and cost-controlled Opus calls.',
+    },
+    {
+      icon: Database,
+      title: 'Semantic Fund Matching',
+      desc: 'pgvector embeddings for thesis-to-pitch similarity. Four-stage funnel: hard filters → vector rank → temporal weighting → LLM reasoning.',
+    },
+    {
+      icon: Network,
+      title: 'Warm Intro Mapping',
+      desc: 'Graph-based pathfinding across LinkedIn and email metadata to surface the strongest intro path to each target partner.',
+    },
+  ],
+  features: [
+    {
+      icon: Zap,
+      label: 'Fund Intelligence',
+      desc: 'Cartographer indexes 3,000+ funds from public sources continuously',
+    },
+    {
+      icon: Brain,
+      label: 'Analyst Briefs',
+      desc: 'Opus-powered per-fund briefs with skip/pursue recommendations',
+    },
+    {
+      icon: Network,
+      label: 'Intro Paths',
+      desc: 'Graph algorithm finds warm intro routes to target partners',
+    },
+    {
+      icon: LineChart,
+      label: 'Cost Tracking',
+      desc: 'Every LLM call logged with tokens, cost, and confidence scores',
+    },
+  ],
+}
+
 // Other smaller projects/features
 const otherProjects = [
   {
@@ -375,19 +444,20 @@ export default function Projects() {
         path="/projects"
         image="/og-projects.png"
         imageAlt="Charles Jackson Projects - AI platforms, urban agriculture tech, and Nx Supabase plugin"
-        keywords="predictive platform, augure ai, myurbanfarm.ai, nxsupabase, developer portfolio, react projects, typescript projects, ai prediction platform, urban farming tech, nx monorepo supabase"
+        keywords="predictive platform, augure ai, compass vc matching, getcompass.vc, myurbanfarm.ai, nxsupabase, developer portfolio, react projects, typescript projects, ai prediction platform, vc fundraising tool, urban farming tech, nx monorepo supabase"
         jsonLd={[
           {
             '@type': 'CollectionPage',
             name: 'Projects by Charles Jackson',
-            description: 'Portfolio of production systems: Predictive (AI prediction platform), MyUrbanFarm.ai (urban farming), and NxSupabase (Nx plugin).',
+            description: 'Portfolio of production systems: Predictive (AI prediction platform), Compass (AI-powered VC matching), MyUrbanFarm.ai (urban farming), and NxSupabase (Nx plugin).',
             url: 'https://charlesjackson.dev/projects',
             mainEntity: {
               '@type': 'ItemList',
               itemListElement: [
                 { '@type': 'ListItem', position: 1, name: 'Predictive (Augure)', url: 'https://augure.app' },
-                { '@type': 'ListItem', position: 2, name: 'MyUrbanFarm.ai' },
-                { '@type': 'ListItem', position: 3, name: 'NxSupabase', url: 'https://github.com/versalarchitect' },
+                { '@type': 'ListItem', position: 2, name: 'Compass', url: 'https://getcompass.vc' },
+                { '@type': 'ListItem', position: 3, name: 'MyUrbanFarm.ai' },
+                { '@type': 'ListItem', position: 4, name: 'NxSupabase', url: 'https://github.com/versalarchitect' },
               ],
             },
           },
@@ -605,6 +675,127 @@ export default function Projects() {
                           </div>
                           <div className="text-xs text-muted-foreground">{label}</div>
                         </motion.div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </Card>
+            </HoverCard3D>
+          </RevealOnScroll>
+        </div>
+      </Section>
+
+      {/* Compass — VC Matching Platform */}
+      <Section id="projects-compass" className="py-16 lg:py-24 relative overflow-hidden">
+        <SectionSpots variant="accent" />
+        <div className="container mx-auto px-6 lg:px-8 relative z-10">
+          <RevealOnScroll direction="right">
+            <HoverCard3D className="rounded-2xl" glowColor="rgba(var(--effect-rgb),0.08)" depth={35}>
+              <Card className="overflow-hidden border-foreground/10 bg-gradient-to-br from-background to-foreground/[0.02]" onMouseEnter={() => handleCardHover('compass')}>
+                <div className="p-8 md:p-12 space-y-8">
+                  {/* Header */}
+                  <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-6">
+                    <div>
+                      <div className="flex flex-wrap items-center gap-3 mb-4">
+                        <span className="text-xs font-mono text-green-500 bg-green-500/10 px-3 py-1 rounded flex items-center gap-1.5">
+                          <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
+                          {t('common.live')}
+                        </span>
+                        <span className="text-xs font-mono text-muted-foreground">
+                          {compassProject.year}
+                        </span>
+                      </div>
+                      <h2 className="text-3xl md:text-4xl font-bold mb-2">
+                        {compassProject.title}
+                      </h2>
+                      <p className="text-lg text-muted-foreground">
+                        {compassProject.subtitle}
+                      </p>
+                    </div>
+                    <div className="flex gap-3">
+                      <Magnetic strength={0.2}>
+                        <Button variant="outline" className="font-mono gap-2" asChild>
+                          <a
+                            href={compassProject.links.github}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          >
+                            <Github className="h-4 w-4" />
+                            {t('common.code')}
+                          </a>
+                        </Button>
+                      </Magnetic>
+                      <Magnetic strength={0.2}>
+                        <Button className="font-mono gap-2" asChild>
+                          <a
+                            href={compassProject.links.live}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          >
+                            <ExternalLink className="h-4 w-4" />
+                            {t('common.liveDemo')}
+                          </a>
+                        </Button>
+                      </Magnetic>
+                    </div>
+                  </div>
+
+                  {/* Description */}
+                  <div className="space-y-4">
+                    <p className="text-muted-foreground leading-relaxed text-lg">
+                      {compassProject.description}
+                    </p>
+                    <p className="text-muted-foreground leading-relaxed">
+                      {compassProject.longDescription}
+                    </p>
+                  </div>
+
+                  {/* Features Grid */}
+                  <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
+                    {compassProject.features?.map(({ icon: Icon, label, desc }) => (
+                      <motion.div
+                        key={label}
+                        whileHover={{ y: -4, scale: 1.02 }}
+                        className="p-4 bg-foreground/5 rounded-lg cursor-default group hover:bg-foreground/10 transition-all"
+                      >
+                        <Icon className="h-6 w-6 text-foreground/60 mb-3 group-hover:text-foreground/80 transition-colors" />
+                        <h4 className="font-semibold mb-1">{label}</h4>
+                        <p className="text-xs text-muted-foreground">{desc}</p>
+                      </motion.div>
+                    ))}
+                  </div>
+
+                  {/* Technical Challenges */}
+                  <div className="grid md:grid-cols-3 gap-6 pt-6 border-t border-border">
+                    {compassProject.challenges.map(({ icon: Icon, title, desc }) => (
+                      <motion.div
+                        key={title}
+                        whileHover={{ y: -4 }}
+                        className="space-y-3 p-4 rounded-lg hover:bg-foreground/5 transition-colors cursor-default"
+                      >
+                        <div className="flex items-center gap-2">
+                          <Icon className="h-5 w-5 text-foreground/60" />
+                          <h4 className="text-sm font-bold">{title}</h4>
+                        </div>
+                        <p className="text-xs text-muted-foreground leading-relaxed">{desc}</p>
+                      </motion.div>
+                    ))}
+                  </div>
+
+                  {/* Tech Stack */}
+                  <div className="space-y-4 pt-6 border-t border-border">
+                    <h3 className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                      {t('common.techStack')}
+                    </h3>
+                    <div className="flex flex-wrap gap-2">
+                      {compassProject.techStack.map((tech) => (
+                        <motion.span
+                          key={tech}
+                          whileHover={{ scale: 1.05, y: -2 }}
+                          className="text-xs font-mono bg-muted px-3 py-1.5 rounded cursor-default"
+                        >
+                          {tech}
+                        </motion.span>
                       ))}
                     </div>
                   </div>
