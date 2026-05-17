@@ -62,6 +62,54 @@ const PROJECTS = [
     year: '2025',
   },
   {
+    title: 'GeneMap',
+    subtitle: 'genemap.app',
+    description:
+      'Continuously-updated knowledge graph tracking 800+ gene and cell therapies across 200+ diseases. AI crawlers extract structured claims from clinical registries, preprint servers, and regulatory filings, then score each therapy across six dimensions — evidence quality, mechanism plausibility, safety profile, accessibility, eligibility fit, and maturity trajectory.',
+    url: 'https://genemap.app',
+    tags: ['Next.js 16', 'Expo', 'pgvector', 'Turborepo', 'Claude API', 'Voyage AI'],
+    highlights: [
+      'Multi-dimensional quality scoring (6 axes)',
+      '50K+ claims with full provenance tracking',
+      '72-hour source refresh cadence',
+      'Open data export under CC-BY 4.0',
+    ],
+    status: 'LIVE' as const,
+    year: '2026',
+  },
+  {
+    title: 'Pulse',
+    subtitle: 'getpulse.date',
+    description:
+      'AI-augmented dating app that helps people have better conversations and get to the date. Monorepo with a Next.js marketing site and Expo mobile app backed by Supabase and AI conversation coaching.',
+    url: 'https://getpulse.date',
+    tags: ['Next.js 16', 'Expo', 'React Native', 'Supabase', 'Turborepo', 'NativeWind'],
+    highlights: [
+      'AI conversation coaching and prompts',
+      'Native mobile app with Expo',
+      'Real-time messaging via Supabase',
+      'Shared packages across web & mobile',
+    ],
+    status: 'LIVE' as const,
+    year: '2026',
+  },
+  {
+    title: 'Compass',
+    subtitle: 'getcompass.vc',
+    description:
+      'VC matching system for founders raising capital. Ranks funds by thesis alignment, identifies the right partner at each firm, produces per-fund briefs with skip/pursue recommendations, and maps warm-intro paths through shared connections.',
+    url: 'https://getcompass.vc',
+    tags: ['Python 3.12', 'FastAPI', 'pgvector', 'Voyage AI', 'Claude API', 'Fly.io'],
+    highlights: [
+      'Semantic thesis matching via Voyage embeddings',
+      'Per-fund briefs with skip/pursue recommendations',
+      'Warm-intro path mapping',
+      'Confidence-gated extraction pipeline',
+    ],
+    status: 'LIVE' as const,
+    year: '2026',
+  },
+  {
     title: 'Aedis',
     subtitle: 'getaedis.com',
     description:
