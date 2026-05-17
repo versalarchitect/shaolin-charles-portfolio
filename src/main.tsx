@@ -8,6 +8,16 @@ import PageLoading from './components/page-loading'
 
 injectAnalytics()
 
+window.addEventListener('unhandledrejection', (e) => {
+  if (e.reason?.message?.includes('Failed to fetch dynamically imported module') ||
+      e.reason?.message?.includes('Importing a module script failed')) {
+    if (!sessionStorage.getItem('chunk-reload')) {
+      sessionStorage.setItem('chunk-reload', '1')
+      window.location.reload()
+    }
+  }
+})
+
 // Initialize i18n (must be imported before components)
 import '@/lib/i18n'
 
