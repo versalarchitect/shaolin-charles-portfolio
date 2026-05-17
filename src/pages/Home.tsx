@@ -596,6 +596,27 @@ export default function Home() {
                 status: 'LIVE',
               },
               {
+                title: 'GeneMap',
+                description: 'Knowledge graph tracking 800+ gene therapies across 200+ diseases with AI-powered claim extraction and multi-dimensional scoring.',
+                url: 'https://genemap.app',
+                tags: ['Next.js 16', 'Expo', 'pgvector'],
+                status: 'LIVE',
+              },
+              {
+                title: 'Pulse',
+                description: 'AI-augmented dating app that helps people have better conversations and get to the date.',
+                url: 'https://getpulse.date',
+                tags: ['Next.js 16', 'Expo', 'Supabase'],
+                status: 'LIVE',
+              },
+              {
+                title: 'Compass',
+                description: 'VC matching system for founders. Ranks funds by thesis alignment, maps warm-intro paths.',
+                url: 'https://getcompass.vc',
+                tags: ['Python', 'FastAPI', 'pgvector'],
+                status: 'LIVE',
+              },
+              {
                 title: 'Aedis',
                 description: 'Next-generation platform for building and managing intelligent digital experiences.',
                 url: 'https://getaedis.com',
@@ -831,8 +852,8 @@ export default function Home() {
           <BlurFadeIn delay={0.2}>
             <SpotlightCard spotlightColor="rgba(var(--effect-rgb),0.04)" spotlightSize={600}>
               <Card className="overflow-hidden border-foreground/10 bg-gradient-to-br from-background to-foreground/[0.02] hover:border-foreground/15 transition-colors duration-500">
-                <div className="p-8 md:p-12">
-                  <div className="grid md:grid-cols-2 gap-12 items-center">
+                <div className="p-6 md:p-12">
+                  <div className="grid md:grid-cols-2 gap-8 md:gap-12 items-center">
                     <div className="space-y-6">
                       <div className="flex items-center gap-3">
                         <span className="px-2 py-0.5 bg-green-500/20 text-green-500 text-xs font-mono rounded flex items-center gap-1.5">

@@ -536,6 +536,11 @@ EOF`,
       instruction: 'Create the GitHub Actions workflow directory:',
       expectedCommand: 'mkdir -p .github/workflows',
       hint: 'Use mkdir -p to create nested directories',
+      platforms: {
+        windows: {
+          expectedCommand: 'mkdir .github\\workflows',
+        },
+      },
     },
     {
       type: 'terminal',

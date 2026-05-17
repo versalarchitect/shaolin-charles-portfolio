@@ -267,6 +267,13 @@ const content: LessonContent = {
       instruction: 'Envoyez un webhook de test sans signature valide pour vérifier que votre handler le rejette.',
       expectedCommand: 'curl -X POST http://localhost:3000/api/webhooks/stripe -H "Content-Type: application/json" -d \'{"type":"checkout.session.completed"}\'',
       hint: 'Utilisez curl pour envoyer un POST brut sans les en-têtes de signature Stripe',
+      platforms: {
+        windows: {
+          instruction: 'Envoyez un webhook de test sans signature valide depuis PowerShell pour vérifier que votre handler le rejette.',
+          expectedCommand: 'Invoke-WebRequest -Method POST -Uri http://localhost:3000/api/webhooks/stripe -ContentType "application/json" -Body \'{"type":"checkout.session.completed"}\'',
+          hint: 'Utilisez Invoke-WebRequest dans PowerShell pour envoyer un POST brut sans les en-têtes de signature Stripe',
+        },
+      },
     },
     {
       type: 'checkpoint',

@@ -506,6 +506,7 @@ If you need a utility that doesn't exist in src/lib/, create it in
       instruction: 'Crée la structure de répertoires pour ton architecture de contexte :',
       expectedCommand: 'mkdir -p specs src/contracts src/lib',
       hint: 'Crée les répertoires specs/, src/contracts/ et src/lib/',
+      platforms: { windows: { expectedCommand: 'mkdir specs, src\\contracts, src\\lib' } },
     },
     {
       type: 'code-input',

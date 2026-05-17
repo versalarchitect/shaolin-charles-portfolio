@@ -343,7 +343,7 @@ export const inngest = new Inngest({
       ],
       explanation: 'Les noms d\'événements suivent la convention namespace/action : `user/signup`, `order/placed`, `order/fulfilled`. Utiliser `unknown` au lieu de `any` pour le payload webhook force les handlers à valider les données avant de les utiliser — une mesure de sécurité critique que les agents sautent souvent.',
     },
-    { type: 'terminal', instruction: 'Créez la structure de répertoires pour votre architecture événementielle :', expectedCommand: 'mkdir -p src/inngest/functions src/inngest/events', hint: 'Créez les répertoires src/inngest/functions et src/inngest/events' },
+    { type: 'terminal', instruction: 'Créez la structure de répertoires pour votre architecture événementielle :', expectedCommand: 'mkdir -p src/inngest/functions src/inngest/events', hint: 'Créez les répertoires src/inngest/functions et src/inngest/events', platforms: { windows: { expectedCommand: 'mkdir src\\inngest\\functions, src\\inngest\\events' } } },
     {
       type: 'multiple-choice',
       question: 'Après qu\'un agent a construit du code événementiel, lequel de ces éléments manque-t-il le PLUS fréquemment ?',

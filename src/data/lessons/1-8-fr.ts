@@ -65,6 +65,13 @@ const content: LessonContent = {
       instruction: 'Crée le répertoire de commandes pour tes skills de projet :',
       expectedCommand: 'mkdir -p .claude/commands',
       hint: 'Utilise mkdir avec le flag -p pour créer des répertoires imbriqués',
+      platforms: {
+        windows: {
+          instruction: 'Crée le répertoire de commandes pour tes skills de projet :',
+          expectedCommand: 'mkdir .claude\\commands',
+          hint: 'Utilise mkdir pour créer le répertoire imbriqué (PowerShell crée les dossiers parents automatiquement)',
+        },
+      },
     },
     {
       type: 'code-fill',

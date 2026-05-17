@@ -6,6 +6,7 @@ import { GamificationErrorBoundary } from '@/components/gamification/error-bound
 const StatsBarHeader = lazy(() => import('@/components/gamification/stats-bar-header').then(m => ({ default: m.StatsBarHeader })))
 const StreakWarning = lazy(() => import('@/components/gamification/streak-warning').then(m => ({ default: m.StreakWarning })))
 const QuickActionsFab = lazy(() => import('@/components/gamification/quick-actions-fab').then(m => ({ default: m.QuickActionsFab })))
+const FocusTimerFloat = lazy(() => import('@/components/gamification/focus-timer-float').then(m => ({ default: m.FocusTimerFloat })))
 const StudentAssistant = lazy(() => import('@/components/student-assistant').then(m => ({ default: m.StudentAssistant })))
 const VoiceTutor = lazy(() => import('@/components/voice-tutor').then(m => ({ default: m.VoiceTutor })))
 
@@ -40,6 +41,11 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
       <Suspense fallback={null}>
         <GamificationErrorBoundary silent>
           <QuickActionsFab />
+        </GamificationErrorBoundary>
+      </Suspense>
+      <Suspense fallback={null}>
+        <GamificationErrorBoundary silent>
+          <FocusTimerFloat />
         </GamificationErrorBoundary>
       </Suspense>
       <Suspense fallback={null}>

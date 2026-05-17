@@ -73,6 +73,17 @@ const content: LessonContent = {
         { id: 'shell', answer: 'bash', placeholder: 'quel shell?', hint: 'Le shell Unix standard qui exécute les scripts' },
       ],
       explanation: 'nvm s\'installe en téléchargeant un script depuis GitHub et en le redirigeant vers bash. C\'est un pattern courant pour installer des outils de développement.',
+      platforms: {
+        windows: {
+          instruction: 'Sur Windows, nvm-windows gère les versions de Node.js. Téléchargez et lancez l\'installateur depuis la page des releases GitHub :',
+          language: 'text',
+          template: '1. Allez sur github.com/coreybutler/nvm-windows/releases\n2. Téléchargez {{file}}\n3. Lancez l\'installateur et suivez les instructions',
+          blanks: [
+            { id: 'file', answer: 'nvm-setup.exe', placeholder: 'quel fichier?', hint: 'Le fichier installateur .exe' },
+          ],
+          explanation: 'nvm-windows est un projet distinct de nvm Unix. Il s\'installe via un installateur Windows standard (.exe) plutôt qu\'un script shell.',
+        },
+      },
     },
     {
       type: 'terminal',
@@ -85,6 +96,13 @@ const content: LessonContent = {
       instruction: 'Maintenant, définissez Node 22 comme version par défaut pour qu\'elle soit toujours disponible quand vous ouvrez un nouveau terminal :',
       expectedCommand: 'nvm alias default 22',
       hint: 'nvm alias default <version>',
+      platforms: {
+        windows: {
+          instruction: 'Maintenant, définissez Node 22 comme version active. Sur Windows, nvm-windows utilise "use" au lieu de "alias default" :',
+          expectedCommand: 'nvm use 22',
+          hint: 'nvm use <version>',
+        },
+      },
     },
     {
       type: 'multiple-choice',
@@ -153,6 +171,12 @@ const content: LessonContent = {
       type: 'terminal',
       instruction: 'Ouvrez votre terminal et collez cette commande. Elle télécharge et installe Bun sur votre machine :',
       expectedCommand: 'curl -fsSL https://bun.sh/install | bash',
+      platforms: {
+        windows: {
+          instruction: 'Ouvrez PowerShell et collez cette commande. Elle télécharge et installe Bun sur votre machine :',
+          expectedCommand: 'powershell -c "irm bun.sh/install.ps1 | iex"',
+        },
+      },
     },
     {
       type: 'terminal',
@@ -180,14 +204,33 @@ const content: LessonContent = {
     },
     {
       type: 'code-fill',
-      instruction: 'La plupart des ordinateurs ont déjà Git. Sinon, complétez la commande d\'installation pour votre système. Remplissez le bon nom de paquet pour chaque plateforme :',
+      instruction: 'La plupart des Mac ont déjà Git via les outils en ligne de commande Xcode. Sinon, complétez la commande d\'installation :',
       language: 'bash',
-      template: 'xcode-select --install  # macOS\nsudo apt install {{pkg1}}     # Ubuntu/Debian\nwinget install {{pkg2}}   # Windows',
+      template: '{{cmd}} --install',
       blanks: [
-        { id: 'pkg1', answer: 'git', placeholder: 'paquet?', hint: 'Le nom de l\'outil lui-même, en minuscules' },
-        { id: 'pkg2', answer: 'Git.Git', alternatives: ['git.git'], placeholder: 'ID du paquet?', hint: 'Windows utilise le format Éditeur.Paquet' },
+        { id: 'cmd', answer: 'xcode-select', placeholder: 'quelle commande?', hint: 'L\'outil macOS qui installe les utilitaires de développement' },
       ],
-      explanation: 'Sur Ubuntu, le paquet est simplement "git". Sur Windows avec winget, l\'identifiant du paquet est "Git.Git". Sur macOS, les outils en ligne de commande Xcode incluent Git automatiquement.',
+      explanation: 'Sur macOS, les outils en ligne de commande Xcode incluent Git automatiquement. Exécuter xcode-select --install déclenche le téléchargement.',
+      platforms: {
+        windows: {
+          instruction: 'Installez Git sur Windows en utilisant le gestionnaire de paquets intégré. Complétez la commande d\'installation :',
+          language: 'powershell',
+          template: 'winget install {{pkg}}',
+          blanks: [
+            { id: 'pkg', answer: 'Git.Git', alternatives: ['git.git'], placeholder: 'ID du paquet?', hint: 'Windows utilise le format Éditeur.Paquet' },
+          ],
+          explanation: 'Sur Windows, winget est le gestionnaire de paquets intégré. L\'identifiant du paquet "Git.Git" suit la convention Éditeur.Paquet.',
+        },
+        linux: {
+          instruction: 'Installez Git sur Linux en utilisant votre gestionnaire de paquets. Complétez la commande d\'installation :',
+          language: 'bash',
+          template: 'sudo apt install {{pkg}}',
+          blanks: [
+            { id: 'pkg', answer: 'git', placeholder: 'paquet?', hint: 'Le nom de l\'outil lui-même, en minuscules' },
+          ],
+          explanation: 'Sur Ubuntu/Debian, le paquet est simplement "git". Les autres distros utilisent leurs propres gestionnaires de paquets (ex : dnf install git sur Fedora).',
+        },
+      },
     },
     {
       type: 'terminal',
@@ -269,6 +312,22 @@ const content: LessonContent = {
       ],
       correctIndex: 1,
       explanation: 'Vous allez utiliser le terminal souvent dans ce cours. Les raccourcis (appelés alias) vous permettent de taper des commandes courtes au lieu de longues. Ils vont dans votre fichier de paramètres du terminal (appelé ~/.zshrc sur Mac ou ~/.bashrc sur Linux).',
+      platforms: {
+        windows: {
+          question: 'Que sont les alias PowerShell et où vont-ils?',
+          options: [
+            'Les alias sont des signets de navigateur stockés dans votre barre de favoris',
+            'Les alias sont des commandes raccourcies stockées dans votre profil PowerShell ($PROFILE)',
+            'Les alias sont des branches Git utilisées pour les tests',
+            'Les alias sont des extensions VS Code qui exécutent des commandes',
+          ],
+          correctIndex: 1,
+          explanation: 'Vous allez utiliser le terminal souvent dans ce cours. Les raccourcis (appelés alias) vous permettent de taper des commandes courtes au lieu de longues. Dans PowerShell, ils vont dans votre fichier profil (accessible via la variable $PROFILE).',
+        },
+        linux: {
+          explanation: 'Vous allez utiliser le terminal souvent dans ce cours. Les raccourcis (appelés alias) vous permettent de taper des commandes courtes au lieu de longues. Ils vont dans votre fichier de paramètres du terminal (appelé ~/.bashrc sur la plupart des systèmes Linux).',
+        },
+      },
     },
     {
       type: 'code-fill',
@@ -282,6 +341,23 @@ const content: LessonContent = {
         { id: 'cmd3', answer: 'bun run dev', placeholder: 'commande complète?', hint: 'Utilise bun pour exécuter le script dev' },
       ],
       explanation: 'Chaque alias mappe une abréviation courte à la commande complète. gs = git status, gp = git push, dev = bun run dev. Ça sauve du temps sur les commandes que vous exécutez plusieurs fois par jour.',
+      platforms: {
+        windows: {
+          instruction: 'Complétez ces raccourcis PowerShell. Chaque fonction mappe une commande courte à une plus longue — par exemple, gs exécute git status :',
+          language: 'powershell',
+          filename: '$PROFILE',
+          template: '# Git shortcuts\nfunction gs { {{cmd1}} }\nfunction gc { git commit @args }\nfunction gp { {{cmd2}} }\nfunction gl { git log --oneline -20 }\n\n# Project shortcuts\nfunction dev { {{cmd3}} }',
+          blanks: [
+            { id: 'cmd1', answer: 'git status', placeholder: 'commande complète?', hint: 'gs signifie git s...' },
+            { id: 'cmd2', answer: 'git push', placeholder: 'commande complète?', hint: 'gp signifie git p...' },
+            { id: 'cmd3', answer: 'bun run dev', placeholder: 'commande complète?', hint: 'Utilise bun pour exécuter le script dev' },
+          ],
+          explanation: 'PowerShell utilise des fonctions au lieu d\'alias pour les commandes avec arguments. gs appelle git status, gp appelle git push, dev appelle bun run dev.',
+        },
+        linux: {
+          filename: '~/.bashrc',
+        },
+      },
     },
     {
       type: 'code-input',
@@ -289,6 +365,20 @@ const content: LessonContent = {
       placeholder: 'source ~/.______',
       answer: 'source ~/.zshrc',
       hint: 'Tapez source suivi du chemin vers votre fichier de paramètres : ~/.zshrc',
+      platforms: {
+        windows: {
+          instruction: 'Après avoir modifié votre profil PowerShell, vous devez le recharger. Quelle commande fait ça?',
+          placeholder: '. $______',
+          answer: '. $PROFILE',
+          hint: 'Utilisez le dot-sourcing (.) suivi de la variable du profil',
+        },
+        linux: {
+          instruction: 'Après avoir modifié votre fichier de paramètres du terminal, vous devez le recharger. Quelle commande fait ça? (Le fichier s\'appelle .bashrc)',
+          placeholder: 'source ~/.______',
+          answer: 'source ~/.bashrc',
+          hint: 'Tapez source suivi du chemin vers votre fichier de paramètres : ~/.bashrc',
+        },
+      },
     },
     {
       type: 'checkpoint',
@@ -325,6 +415,18 @@ const content: LessonContent = {
         { id: 'keyfile', answer: 'id_ed25519', alternatives: ['id_ed25519.pub'], placeholder: 'nom du fichier clé?', hint: 'Le fichier de clé privée créé par ssh-keygen avec Ed25519' },
       ],
       explanation: 'ssh-agent est un programme assistant qui garde vos clés en mémoire. ssh-add enregistre votre clé spécifique (id_ed25519) avec l\'agent pour qu\'elle puisse être utilisée automatiquement.',
+      platforms: {
+        windows: {
+          instruction: 'Démarrez le service SSH agent et enregistrez votre nouvelle clé. Remplissez les parties manquantes :',
+          language: 'powershell',
+          template: 'Get-Service {{agent}} | Set-Service -StartupType Automatic\nStart-Service {{agent}}\nssh-add ~\\.ssh\\{{keyfile}}',
+          blanks: [
+            { id: 'agent', answer: 'ssh-agent', placeholder: 'quel service?', hint: 'Le service assistant SSH' },
+            { id: 'keyfile', answer: 'id_ed25519', alternatives: ['id_ed25519.pub'], placeholder: 'nom du fichier clé?', hint: 'Le fichier de clé privée créé par ssh-keygen avec Ed25519' },
+          ],
+          explanation: 'Sur Windows, ssh-agent fonctionne comme un service système. Vous l\'activez avec Set-Service et le démarrez avec Start-Service, puis vous enregistrez votre clé avec ssh-add.',
+        },
+      },
     },
     {
       type: 'order',
@@ -337,6 +439,28 @@ const content: LessonContent = {
         'Sauvegarder la clé',
       ],
       correctOrder: [0, 1, 2, 3, 4],
+      platforms: {
+        windows: {
+          items: [
+            'Copier votre clé publique : cat ~/.ssh/id_ed25519.pub | clip',
+            'Aller sur GitHub et cliquer sur votre photo de profil',
+            'Naviguer vers Settings, puis SSH and GPG keys',
+            'Cliquer New SSH key et coller votre clé',
+            'Sauvegarder la clé',
+          ],
+          correctOrder: [0, 1, 2, 3, 4],
+        },
+        linux: {
+          items: [
+            'Copier votre clé publique : xclip -sel clipboard < ~/.ssh/id_ed25519.pub',
+            'Aller sur GitHub et cliquer sur votre photo de profil',
+            'Naviguer vers Settings, puis SSH and GPG keys',
+            'Cliquer New SSH key et coller votre clé',
+            'Sauvegarder la clé',
+          ],
+          correctOrder: [0, 1, 2, 3, 4],
+        },
+      },
     },
     {
       type: 'terminal',

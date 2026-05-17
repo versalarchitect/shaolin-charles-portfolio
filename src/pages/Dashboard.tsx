@@ -69,7 +69,7 @@ const WelcomeModal = lazy(() => import('@/components/gamification/welcome-modal'
 const Certificate = lazy(() => import('@/components/gamification/certificate').then(m => ({ default: m.Certificate })))
 const JourneyTimeline = lazy(() => import('@/components/gamification/journey-timeline').then(m => ({ default: m.JourneyTimeline })))
 const ComparisonCard = lazy(() => import('@/components/gamification/comparison-card').then(m => ({ default: m.ComparisonCard })))
-const FocusTimer = lazy(() => import('@/components/gamification/focus-timer').then(m => ({ default: m.FocusTimer })))
+const FocusStatsCard = lazy(() => import('@/components/gamification/focus-timer').then(m => ({ default: m.FocusStatsCard })))
 
 const SectionFallback = <div className="h-20 animate-pulse bg-foreground/[0.04] rounded-xl" />
 
@@ -375,7 +375,7 @@ export default function Dashboard() {
           </GamificationErrorBoundary>
           <GamificationErrorBoundary>
             <Suspense fallback={SectionFallback}>
-              <FocusTimer />
+              <FocusStatsCard />
             </Suspense>
           </GamificationErrorBoundary>
         </DashboardSection>

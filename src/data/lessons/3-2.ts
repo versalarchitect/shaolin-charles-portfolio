@@ -354,6 +354,12 @@ const content: LessonContent = {
       instruction: 'Create a CLAUDE.md file at the project root:',
       expectedCommand: 'touch CLAUDE.md',
       hint: 'Create the file with touch',
+      platforms: {
+        windows: {
+          expectedCommand: 'New-Item CLAUDE.md',
+          hint: 'Create the file with New-Item',
+        },
+      },
     },
     {
       type: 'code-input',
@@ -367,6 +373,11 @@ const content: LessonContent = {
       instruction: 'Create a directory-level CLAUDE.md for the cart/checkout agent:',
       expectedCommand: 'mkdir -p src/cart && touch src/cart/CLAUDE.md',
       hint: 'Create the directory and the CLAUDE.md file inside it',
+      platforms: {
+        windows: {
+          expectedCommand: 'mkdir src\\cart; New-Item src\\cart\\CLAUDE.md',
+        },
+      },
     },
     {
       type: 'code-demo',

@@ -330,6 +330,13 @@ const content: LessonContent = {
       instruction: 'Check what the auth agent actually produced (list files):',
       expectedCommand: 'find src/auth -type f -name "*.ts" | sort',
       hint: 'Use find to list all TypeScript files in the auth directory',
+      platforms: {
+        windows: {
+          instruction: 'Check what the auth agent actually produced (list files):',
+          expectedCommand: 'Get-ChildItem -Recurse -Path "src/auth" -Filter "*.ts" -File | Sort-Object Name',
+          hint: 'Use Get-ChildItem to list all TypeScript files in the auth directory',
+        },
+      },
     },
     {
       type: 'code-input',

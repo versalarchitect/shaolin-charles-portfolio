@@ -432,6 +432,7 @@ const content: LessonContent = {
       instruction: 'Créez la structure de répertoires pour le travail en parallèle. Créez les répertoires pour chaque domaine d\'agent :',
       expectedCommand: 'mkdir -p src/auth src/api src/board src/realtime',
       hint: 'Utilisez mkdir -p pour créer les répertoires auth, api, board et realtime sous src/',
+      platforms: { windows: { expectedCommand: 'mkdir src\\auth, src\\api, src\\board, src\\realtime' } },
     },
     {
       type: 'code-fill',

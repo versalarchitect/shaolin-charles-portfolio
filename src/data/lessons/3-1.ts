@@ -432,6 +432,11 @@ const content: LessonContent = {
       instruction: 'Create the directory structure for parallel agent work. Make directories for each agent\'s domain:',
       expectedCommand: 'mkdir -p src/auth src/api src/board src/realtime',
       hint: 'Use mkdir -p to create auth, api, board, and realtime directories under src/',
+      platforms: {
+        windows: {
+          expectedCommand: 'mkdir src\\auth, src\\api, src\\board, src\\realtime',
+        },
+      },
     },
     {
       type: 'code-fill',

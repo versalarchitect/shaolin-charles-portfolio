@@ -73,6 +73,17 @@ const content: LessonContent = {
         { id: 'shell', answer: 'bash', placeholder: 'which shell?', hint: 'The standard Unix shell that runs scripts' },
       ],
       explanation: 'nvm is installed by downloading a script from GitHub and piping it to bash. This is a common pattern for installing developer tools.',
+      platforms: {
+        windows: {
+          instruction: 'On Windows, nvm-windows manages Node.js versions. Download and run the installer from the GitHub releases page:',
+          language: 'text',
+          template: '1. Go to github.com/coreybutler/nvm-windows/releases\n2. Download {{file}}\n3. Run the installer and follow the prompts',
+          blanks: [
+            { id: 'file', answer: 'nvm-setup.exe', placeholder: 'which file?', hint: 'The .exe installer file' },
+          ],
+          explanation: 'nvm-windows is a separate project from Unix nvm. It installs via a standard Windows installer (.exe) rather than a shell script.',
+        },
+      },
     },
     {
       type: 'terminal',
@@ -85,6 +96,13 @@ const content: LessonContent = {
       instruction: 'Now set Node 22 as the default so it is always available when you open a new terminal:',
       expectedCommand: 'nvm alias default 22',
       hint: 'nvm alias default <version>',
+      platforms: {
+        windows: {
+          instruction: 'Now set Node 22 as the active version. On Windows, nvm-windows uses "use" instead of "alias default":',
+          expectedCommand: 'nvm use 22',
+          hint: 'nvm use <version>',
+        },
+      },
     },
     {
       type: 'multiple-choice',
@@ -153,6 +171,12 @@ const content: LessonContent = {
       type: 'terminal',
       instruction: 'Open your terminal and paste this command. It downloads and installs Bun on your machine:',
       expectedCommand: 'curl -fsSL https://bun.sh/install | bash',
+      platforms: {
+        windows: {
+          instruction: 'Open PowerShell and paste this command. It downloads and installs Bun on your machine:',
+          expectedCommand: 'powershell -c "irm bun.sh/install.ps1 | iex"',
+        },
+      },
     },
     {
       type: 'terminal',
@@ -180,14 +204,33 @@ const content: LessonContent = {
     },
     {
       type: 'code-fill',
-      instruction: 'Most computers already have Git. If not, complete the install command for your system. Fill in the correct package name for each platform:',
+      instruction: 'Most Macs already have Git via Xcode Command Line Tools. If not, complete the install command:',
       language: 'bash',
-      template: 'xcode-select --install  # macOS\nsudo apt install {{pkg1}}     # Ubuntu/Debian\nwinget install {{pkg2}}   # Windows',
+      template: '{{cmd}} --install',
       blanks: [
-        { id: 'pkg1', answer: 'git', placeholder: 'package?', hint: 'The tool name itself, lowercase' },
-        { id: 'pkg2', answer: 'Git.Git', alternatives: ['git.git'], placeholder: 'package ID?', hint: 'Windows uses the format Publisher.Package' },
+        { id: 'cmd', answer: 'xcode-select', placeholder: 'which command?', hint: 'The macOS tool that installs developer utilities' },
       ],
-      explanation: 'On Ubuntu, the package is simply "git". On Windows with winget, the package ID is "Git.Git". On macOS, the Xcode Command Line Tools include Git automatically.',
+      explanation: 'On macOS, the Xcode Command Line Tools bundle includes Git automatically. Running xcode-select --install triggers the download.',
+      platforms: {
+        windows: {
+          instruction: 'Install Git on Windows using the built-in package manager. Complete the install command:',
+          language: 'powershell',
+          template: 'winget install {{pkg}}',
+          blanks: [
+            { id: 'pkg', answer: 'Git.Git', alternatives: ['git.git'], placeholder: 'package ID?', hint: 'Windows uses the format Publisher.Package' },
+          ],
+          explanation: 'On Windows, winget is the built-in package manager. The package ID "Git.Git" follows the Publisher.Package convention.',
+        },
+        linux: {
+          instruction: 'Install Git on Linux using your package manager. Complete the install command:',
+          language: 'bash',
+          template: 'sudo apt install {{pkg}}',
+          blanks: [
+            { id: 'pkg', answer: 'git', placeholder: 'package?', hint: 'The tool name itself, lowercase' },
+          ],
+          explanation: 'On Ubuntu/Debian, the package is simply "git". Other distros use their own package managers (e.g., dnf install git on Fedora).',
+        },
+      },
     },
     {
       type: 'terminal',
@@ -269,6 +312,22 @@ const content: LessonContent = {
       ],
       correctIndex: 1,
       explanation: 'You will use the terminal a lot in this course. Shortcuts (called aliases) let you type short commands instead of long ones. They go in your terminal settings file (called ~/.zshrc on Mac or ~/.bashrc on Linux).',
+      platforms: {
+        windows: {
+          question: 'What are PowerShell aliases and where do they go?',
+          options: [
+            'Aliases are browser bookmarks stored in your favorites bar',
+            'Aliases are shortcut commands stored in your PowerShell profile ($PROFILE)',
+            'Aliases are Git branches used for testing',
+            'Aliases are VS Code extensions that run commands',
+          ],
+          correctIndex: 1,
+          explanation: 'You will use the terminal a lot in this course. Shortcuts (called aliases) let you type short commands instead of long ones. In PowerShell, they go in your profile file (accessed via the $PROFILE variable).',
+        },
+        linux: {
+          explanation: 'You will use the terminal a lot in this course. Shortcuts (called aliases) let you type short commands instead of long ones. They go in your terminal settings file (called ~/.bashrc on most Linux systems).',
+        },
+      },
     },
     {
       type: 'code-fill',
@@ -282,6 +341,23 @@ const content: LessonContent = {
         { id: 'cmd3', answer: 'bun run dev', placeholder: 'full command?', hint: 'Uses bun to run the dev script' },
       ],
       explanation: 'Each alias maps a short abbreviation to the full command. gs = git status, gp = git push, dev = bun run dev. This saves typing on commands you run many times a day.',
+      platforms: {
+        windows: {
+          instruction: 'Complete these PowerShell shortcuts. Each function maps a short command to a longer one — for example, gs runs git status:',
+          language: 'powershell',
+          filename: '$PROFILE',
+          template: '# Git shortcuts\nfunction gs { {{cmd1}} }\nfunction gc { git commit @args }\nfunction gp { {{cmd2}} }\nfunction gl { git log --oneline -20 }\n\n# Project shortcuts\nfunction dev { {{cmd3}} }',
+          blanks: [
+            { id: 'cmd1', answer: 'git status', placeholder: 'full command?', hint: 'gs stands for git s...' },
+            { id: 'cmd2', answer: 'git push', placeholder: 'full command?', hint: 'gp stands for git p...' },
+            { id: 'cmd3', answer: 'bun run dev', placeholder: 'full command?', hint: 'Uses bun to run the dev script' },
+          ],
+          explanation: 'PowerShell uses functions instead of aliases for commands with arguments. gs calls git status, gp calls git push, dev calls bun run dev.',
+        },
+        linux: {
+          filename: '~/.bashrc',
+        },
+      },
     },
     {
       type: 'code-input',
@@ -289,6 +365,20 @@ const content: LessonContent = {
       placeholder: 'source ~/.______',
       answer: 'source ~/.zshrc',
       hint: 'Type source followed by the path to your settings file: ~/.zshrc',
+      platforms: {
+        windows: {
+          instruction: 'After editing your PowerShell profile, you need to reload it. What command does that?',
+          placeholder: '. $______',
+          answer: '. $PROFILE',
+          hint: 'Use dot-sourcing (.) followed by the profile variable',
+        },
+        linux: {
+          instruction: 'After editing your terminal settings file, you need to reload it. What command does that? (The file is called .bashrc)',
+          placeholder: 'source ~/.______',
+          answer: 'source ~/.bashrc',
+          hint: 'Type source followed by the path to your settings file: ~/.bashrc',
+        },
+      },
     },
     {
       type: 'checkpoint',
@@ -325,6 +415,18 @@ const content: LessonContent = {
         { id: 'keyfile', answer: 'id_ed25519', alternatives: ['id_ed25519.pub'], placeholder: 'key filename?', hint: 'The private key file created by ssh-keygen with Ed25519' },
       ],
       explanation: 'ssh-agent is a helper program that holds your keys in memory. ssh-add registers your specific key (id_ed25519) with the agent so it can be used automatically.',
+      platforms: {
+        windows: {
+          instruction: 'Start the SSH agent service and register your new key. Fill in the missing parts:',
+          language: 'powershell',
+          template: 'Get-Service {{agent}} | Set-Service -StartupType Automatic\nStart-Service {{agent}}\nssh-add ~\\.ssh\\{{keyfile}}',
+          blanks: [
+            { id: 'agent', answer: 'ssh-agent', placeholder: 'which service?', hint: 'The SSH helper agent service' },
+            { id: 'keyfile', answer: 'id_ed25519', alternatives: ['id_ed25519.pub'], placeholder: 'key filename?', hint: 'The private key file created by ssh-keygen with Ed25519' },
+          ],
+          explanation: 'On Windows, ssh-agent runs as a system service. You enable it with Set-Service and start it with Start-Service, then register your key with ssh-add.',
+        },
+      },
     },
     {
       type: 'order',
@@ -337,6 +439,28 @@ const content: LessonContent = {
         'Save the key',
       ],
       correctOrder: [0, 1, 2, 3, 4],
+      platforms: {
+        windows: {
+          items: [
+            'Copy your public key: cat ~/.ssh/id_ed25519.pub | clip',
+            'Go to GitHub and click your profile picture',
+            'Navigate to Settings, then SSH and GPG keys',
+            'Click New SSH key and paste your key',
+            'Save the key',
+          ],
+          correctOrder: [0, 1, 2, 3, 4],
+        },
+        linux: {
+          items: [
+            'Copy your public key: xclip -sel clipboard < ~/.ssh/id_ed25519.pub',
+            'Go to GitHub and click your profile picture',
+            'Navigate to Settings, then SSH and GPG keys',
+            'Click New SSH key and paste your key',
+            'Save the key',
+          ],
+          correctOrder: [0, 1, 2, 3, 4],
+        },
+      },
     },
     {
       type: 'terminal',

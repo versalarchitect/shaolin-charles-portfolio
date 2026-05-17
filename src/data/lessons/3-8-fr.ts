@@ -536,6 +536,7 @@ EOF`,
       instruction: 'Crée le répertoire du workflow GitHub Actions :',
       expectedCommand: 'mkdir -p .github/workflows',
       hint: 'Utilise mkdir -p pour créer les répertoires imbriqués',
+      platforms: { windows: { expectedCommand: 'mkdir .github\\workflows' } },
     },
     {
       type: 'terminal',

@@ -30,6 +30,7 @@ import { LanguageSwitcher } from '@/components/language-switcher'
 import { useAuth } from '@/hooks/use-auth'
 import { hasPipelineAccess } from '@/lib/pipeline-access'
 import { useTheme } from '@/components/theme-provider'
+import { usePlatform, type Platform } from '@/components/platform-provider'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { supabase } from '@/lib/supabase'
 import { useProgress, getLevel, getNextLevel, getOverallProgress, getStreakMultiplier, getActiveTitle } from '@/stores/progress'
@@ -304,6 +305,13 @@ function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
   const navigate = useNavigate()
   const { user } = useAuth()
   const { setTheme, resolvedTheme } = useTheme()
+  const { platform, setPlatform } = usePlatform()
+
+  const platformOptions: { value: Platform; label: string }[] = [
+    { value: 'macos', label: 'macOS' },
+    { value: 'windows', label: 'Win' },
+    { value: 'linux', label: 'Linux' },
+  ]
 
   const initials = user?.email
     ? user.email.split('@')[0].slice(0, 2).toUpperCase()
@@ -411,9 +419,28 @@ function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
 
       {/* Bottom section */}
       <div className="px-3 pb-4 space-y-2">
+        {/* Platform selector */}
+        <div className="px-3">
+          <div className="flex items-center gap-0.5 rounded-lg bg-foreground/[0.04] border border-foreground/[0.08] p-0.5">
+            {platformOptions.map((opt) => (
+              <button
+                key={opt.value}
+                onClick={() => setPlatform(opt.value)}
+                className={`flex-1 text-[10px] font-mono py-1 rounded-md transition-colors ${
+                  platform === opt.value
+                    ? 'bg-foreground/[0.08] text-foreground/80 border border-foreground/[0.1]'
+                    : 'text-foreground/35 hover:text-foreground/55'
+                }`}
+              >
+                {opt.label}
+              </button>
+            ))}
+          </div>
+        </div>
+
         {/* Language, notifications & theme */}
         <div className="px-3 flex items-center justify-between">
-          <LanguageSwitcher />
+          <LanguageSwitcher align="left" direction="up" />
           <div className="flex items-center gap-1">
             <NotificationCenter />
             <button

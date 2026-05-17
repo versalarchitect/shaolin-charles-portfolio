@@ -8,7 +8,7 @@ const languages = [
   { code: 'fr', name: 'Français', flag: '🇫🇷' },
 ]
 
-export function LanguageSwitcher() {
+export function LanguageSwitcher({ align = 'right', direction = 'down' }: { align?: 'left' | 'right'; direction?: 'up' | 'down' }) {
   const { i18n } = useTranslation()
   const [isOpen, setIsOpen] = useState(false)
   const dropdownRef = useRef<HTMLDivElement>(null)
@@ -48,11 +48,11 @@ export function LanguageSwitcher() {
       <AnimatePresence>
         {isOpen && (
           <motion.div
-            initial={{ opacity: 0, y: -10, scale: 0.95 }}
+            initial={{ opacity: 0, y: direction === 'up' ? 10 : -10, scale: 0.95 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: -10, scale: 0.95 }}
+            exit={{ opacity: 0, y: direction === 'up' ? 10 : -10, scale: 0.95 }}
             transition={{ duration: 0.15 }}
-            className="absolute right-0 top-full mt-2 w-40 rounded-lg border border-border bg-background/95 backdrop-blur-xl shadow-lg overflow-hidden z-50"
+            className={`absolute w-40 rounded-lg border border-border bg-background/95 backdrop-blur-xl shadow-lg overflow-hidden z-50 ${align === 'left' ? 'left-0' : 'right-0'} ${direction === 'up' ? 'bottom-full mb-2' : 'top-full mt-2'}`}
           >
             {languages.map((lang) => (
               <button

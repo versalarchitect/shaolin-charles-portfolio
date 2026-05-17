@@ -414,6 +414,11 @@ export const inngest = new Inngest({
       instruction: 'Create the directory structure for your event-driven architecture:',
       expectedCommand: 'mkdir -p src/inngest/functions src/inngest/events',
       hint: 'Create src/inngest/functions and src/inngest/events directories',
+      platforms: {
+        windows: {
+          expectedCommand: 'mkdir src\\inngest\\functions, src\\inngest\\events',
+        },
+      },
     },
 
     // === VERIFICATION CHECKLIST ===

@@ -65,6 +65,13 @@ const content: LessonContent = {
       instruction: 'Create a folder to store your reusable instructions (skills). This folder is where Claude Code looks for them:',
       expectedCommand: 'mkdir -p .claude/commands',
       hint: 'Use mkdir with the -p flag to create nested directories',
+      platforms: {
+        windows: {
+          instruction: 'Create a folder to store your reusable instructions (skills). This folder is where Claude Code looks for them:',
+          expectedCommand: 'mkdir .claude\\commands',
+          hint: 'Use mkdir to create the nested directory (PowerShell creates parent folders automatically)',
+        },
+      },
     },
     {
       type: 'code-fill',

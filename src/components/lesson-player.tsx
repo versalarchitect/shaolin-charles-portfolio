@@ -19,6 +19,9 @@ import { FlowDiagram } from '@/components/ui/flow-diagram'
 import { awardExplorerXp, recordStepResult } from '@/stores/progress'
 import { highlightCode } from '@/lib/syntax-highlight'
 import { computeLineDiff } from '@/lib/line-diff'
+import { usePlatform } from '@/components/platform-provider'
+import { resolvePlatformStep, stepHasPlatformVariants, getAvailablePlatforms } from '@/lib/platform-utils'
+import { PlatformTabs } from '@/components/platform-tabs'
 
 // ============================================================================
 // Step components
@@ -1432,40 +1435,56 @@ function StepRenderer({
   step: LessonStep
   onComplete: () => void
 }) {
-  switch (step.type) {
-    case 'info':
-      return <InfoStep step={step} />
-    case 'code-demo':
-      return <CodeDemoStep step={step} />
-    case 'terminal':
-      return <TerminalStep step={step} onComplete={onComplete} />
-    case 'multiple-choice':
-      return <MultipleChoiceStep step={step} onComplete={onComplete} />
-    case 'code-input':
-      return <CodeInputStep step={step} onComplete={onComplete} />
-    case 'order':
-      return <OrderStep step={step} onComplete={onComplete} />
-    case 'checklist':
-      return <ChecklistStep step={step} onComplete={onComplete} />
-    case 'checkpoint':
-      return <CheckpointStep step={step} />
-    case 'diagram':
-      return <DiagramStep step={step} />
-    case 'code-fill':
-      return <CodeFillStep step={step} onComplete={onComplete} />
-    case 'compare':
-      return <CompareStep step={step} onComplete={onComplete} />
-    case 'code-diff':
-      return <CodeDiffStep step={step} />
-    case 'interactive-diagram':
-      return <InteractiveDiagramStep step={step} onComplete={onComplete} />
-    case 'prompt-lab':
-      return <PromptLabStep step={step} onComplete={onComplete} />
-    case 'match':
-      return <MatchStep step={step} onComplete={onComplete} />
-    default:
-      return null
+  const { platform } = usePlatform()
+  const hasPlatformVariants = stepHasPlatformVariants(step)
+  const resolved = resolvePlatformStep(step, platform)
+  const platformKey = hasPlatformVariants ? platform : undefined
+
+  const renderStep = () => {
+    switch (resolved.type) {
+      case 'info':
+        return <InfoStep key={platformKey} step={resolved} />
+      case 'code-demo':
+        return <CodeDemoStep key={platformKey} step={resolved} />
+      case 'terminal':
+        return <TerminalStep key={platformKey} step={resolved} onComplete={onComplete} />
+      case 'multiple-choice':
+        return <MultipleChoiceStep key={platformKey} step={resolved} onComplete={onComplete} />
+      case 'code-input':
+        return <CodeInputStep key={platformKey} step={resolved} onComplete={onComplete} />
+      case 'order':
+        return <OrderStep key={platformKey} step={resolved} onComplete={onComplete} />
+      case 'checklist':
+        return <ChecklistStep step={resolved} onComplete={onComplete} />
+      case 'checkpoint':
+        return <CheckpointStep step={resolved} />
+      case 'diagram':
+        return <DiagramStep step={resolved} />
+      case 'code-fill':
+        return <CodeFillStep key={platformKey} step={resolved} onComplete={onComplete} />
+      case 'compare':
+        return <CompareStep step={resolved} onComplete={onComplete} />
+      case 'code-diff':
+        return <CodeDiffStep step={resolved} />
+      case 'interactive-diagram':
+        return <InteractiveDiagramStep step={resolved} onComplete={onComplete} />
+      case 'prompt-lab':
+        return <PromptLabStep step={resolved} onComplete={onComplete} />
+      case 'match':
+        return <MatchStep step={resolved} onComplete={onComplete} />
+      default:
+        return null
+    }
   }
+
+  return (
+    <div className="space-y-3">
+      {hasPlatformVariants && (
+        <PlatformTabs availablePlatforms={getAvailablePlatforms(step)} />
+      )}
+      {renderStep()}
+    </div>
+  )
 }
 
 // ============================================================================

@@ -354,6 +354,7 @@ const content: LessonContent = {
       instruction: 'Créez un fichier CLAUDE.md à la racine du projet :',
       expectedCommand: 'touch CLAUDE.md',
       hint: 'Créez le fichier avec touch',
+      platforms: { windows: { expectedCommand: 'New-Item CLAUDE.md', hint: 'Crée le fichier avec New-Item' } },
     },
     {
       type: 'code-input',
@@ -367,6 +368,7 @@ const content: LessonContent = {
       instruction: 'Créez un CLAUDE.md au niveau répertoire pour l\'agent panier/paiement :',
       expectedCommand: 'mkdir -p src/cart && touch src/cart/CLAUDE.md',
       hint: 'Créez le répertoire et le fichier CLAUDE.md à l\'intérieur',
+      platforms: { windows: { expectedCommand: 'mkdir src\\cart; New-Item src\\cart\\CLAUDE.md' } },
     },
     {
       type: 'code-demo',

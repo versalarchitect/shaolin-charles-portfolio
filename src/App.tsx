@@ -6,6 +6,7 @@ import { Header } from '@/components/header'
 import { Footer } from '@/components/footer'
 import { Toaster } from '@/components/ui/sonner'
 import { ThemeProvider } from '@/components/theme-provider'
+import { PlatformProvider } from '@/components/platform-provider'
 import { CommandMenuProvider } from '@/components/command-menu'
 import { ScrollProgress } from '@/components/ui/scroll-progress'
 import { AppLayout } from '@/components/app-layout'
@@ -47,6 +48,7 @@ export default function App() {
 
   return (
     <ThemeProvider>
+      <PlatformProvider>
       <CommandMenuProvider>
       <SectionGridProvider containerPadding={24}>
         <div className="antialiased font-sans min-h-screen text-foreground relative">
@@ -113,6 +115,7 @@ export default function App() {
         </div>
       </SectionGridProvider>
       </CommandMenuProvider>
+      </PlatformProvider>
     </ThemeProvider>
   )
 }

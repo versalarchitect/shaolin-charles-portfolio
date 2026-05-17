@@ -185,6 +185,13 @@ const content: LessonContent = {
       instruction: 'Search for fetch calls that might be missing error handling in the codebase.',
       expectedCommand: 'grep -rn "await fetch" src/ --include="*.ts" --include="*.tsx"',
       hint: 'Use grep to find all fetch calls across TypeScript files',
+      platforms: {
+        windows: {
+          instruction: 'Search for fetch calls that might be missing error handling in the codebase.',
+          expectedCommand: 'Select-String -Recurse -Path "src/" -Include "*.ts","*.tsx" -Pattern "await fetch"',
+          hint: 'Use Select-String to find all fetch calls across TypeScript files',
+        },
+      },
     },
     {
       type: 'checkpoint',
@@ -303,6 +310,12 @@ const content: LessonContent = {
       instruction: 'Check if any API routes are missing authentication checks.',
       expectedCommand: 'find src/app/api -name "route.ts" -exec grep -L "auth\\|session\\|getUser" {} \\;',
       hint: 'Use find with grep -L to find files that do NOT contain auth-related terms',
+      platforms: {
+        windows: {
+          expectedCommand: 'Get-ChildItem -Recurse -Path "src/app/api" -Filter "route.ts" | Where-Object { -not (Select-String -Path $_ -Pattern "auth|session|getUser" -Quiet) }',
+          hint: 'Use Get-ChildItem with Where-Object and Select-String to find files that do NOT contain auth-related terms',
+        },
+      },
     },
     {
       type: 'checkpoint',

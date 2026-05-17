@@ -118,12 +118,32 @@ const content: LessonContent = {
         { id: 'config_pattern', answer: '*.config.*', alternatives: ['*.config.ts', '*.config.js'], placeholder: '______', hint: 'Glob pattern matching vite.config.ts, tailwind.config.js, etc.' },
       ],
       explanation: 'The find command is your first reconnaissance tool. Use it to discover what files exist, where components live, and what config files control the project. This gives you a map of the project before you ask the agent to change anything.',
+      platforms: {
+        windows: {
+          instruction: 'Complete these PowerShell commands to map the project structure. Get-ChildItem shows you what files exist and where they live.',
+          language: 'powershell',
+          template: '# See all TypeScript/React files\nGet-ChildItem -Recurse -Filter "{{tsx_pattern}}" | Select-Object -First 20\n\n# Find component files specifically\nGet-ChildItem -Path "./src/{{components_dir}}" -Filter "*.tsx"\n\n# Find config files at the root\nGet-ChildItem -Filter "{{config_pattern}}"\n\n# Find test files\nGet-ChildItem -Recurse -Filter "*.test.*"; Get-ChildItem -Recurse -Filter "*.spec.*"',
+          blanks: [
+            { id: 'tsx_pattern', answer: '*.tsx', alternatives: ['*.TSX'], placeholder: '______', hint: 'The glob pattern for TypeScript React files' },
+            { id: 'components_dir', answer: 'components', alternatives: ['Components'], placeholder: '______', hint: 'The standard directory for React components' },
+            { id: 'config_pattern', answer: '*.config.*', alternatives: ['*.config.ts', '*.config.js'], placeholder: '______', hint: 'Glob pattern matching vite.config.ts, tailwind.config.js, etc.' },
+          ],
+          explanation: 'Get-ChildItem (alias: gci, ls, dir) is PowerShell\'s file search tool. Use -Recurse to search subdirectories and -Filter for pattern matching. This gives you a map of the project before you ask the agent to change anything.',
+        },
+      },
     },
     {
       type: 'terminal',
       instruction: 'Use this command to see all the TypeScript React files in your project. This helps you understand what already exists before asking AI to create something new:',
       expectedCommand: 'find . -name "*.tsx" | head -20',
       hint: 'Use find with -name to match the .tsx extension, pipe to head to limit output',
+      platforms: {
+        windows: {
+          instruction: 'Use this command to see all the TypeScript React files in your project. This helps you understand what already exists before asking AI to create something new:',
+          expectedCommand: 'Get-ChildItem -Recurse -Filter "*.tsx" | Select-Object -First 20',
+          hint: 'Use Get-ChildItem -Recurse to search recursively, pipe to Select-Object to limit output',
+        },
+      },
     },
     {
       type: 'code-fill',
@@ -137,12 +157,32 @@ const content: LessonContent = {
         { id: 'state_lib', answer: 'redux', alternatives: ['Redux', 'jotai', 'recoil'], placeholder: '______', hint: 'A popular state management library for React' },
       ],
       explanation: 'Grep is your second reconnaissance tool. It reveals the conventions your project follows: how components are exported, which libraries are used for routing and state, and what patterns exist. This is essential context for writing informed prompts.',
+      platforms: {
+        windows: {
+          instruction: 'Complete these Select-String commands to discover project patterns. Once you know what files exist, Select-String tells you how they work.',
+          language: 'powershell',
+          template: '# How are components exported?\nSelect-String -Recurse -Path "src/components/" -Pattern "{{export_pattern}}" | Select-Object -First 10\nSelect-String -Recurse -Path "src/components/" -Pattern "export function" | Select-Object -First 10\n\n# What routing library is used?\nSelect-String -Recurse -Path "src/" -Pattern "import.*from.*{{router_search}}" | Select-Object -First 5\n\n# What state management exists?\nSelect-String -Recurse -Path "src/" -Pattern "createContext|useContext|zustand|{{state_lib}}" | Select-Object -First 10',
+          blanks: [
+            { id: 'export_pattern', answer: 'export default', alternatives: ['export default function'], placeholder: '______', hint: 'The keyword combo for default exports' },
+            { id: 'router_search', answer: 'router', alternatives: ['Router'], placeholder: '______', hint: 'Keyword found in routing library import paths' },
+            { id: 'state_lib', answer: 'redux', alternatives: ['Redux', 'jotai', 'recoil'], placeholder: '______', hint: 'A popular state management library for React' },
+          ],
+          explanation: 'Select-String (alias: sls) is PowerShell\'s text search tool. It reveals the conventions your project follows: how components are exported, which libraries are used for routing and state, and what patterns exist.',
+        },
+      },
     },
     {
       type: 'terminal',
       instruction: 'Use this command to see how existing components are set up. This tells you the patterns your project follows:',
       expectedCommand: 'grep -r "export default" src/components/ | head -10',
       hint: 'Use grep -r to search recursively through the components directory',
+      platforms: {
+        windows: {
+          instruction: 'Use this command to see how existing components are set up. This tells you the patterns your project follows:',
+          expectedCommand: 'Select-String -Recurse -Path "src/components/" -Pattern "export default" | Select-Object -First 10',
+          hint: 'Use Select-String -Recurse to search recursively through the components directory',
+        },
+      },
     },
     {
       type: 'code-fill',
@@ -308,6 +348,13 @@ const content: LessonContent = {
       instruction: 'Now find all existing pages in your project to see where they live and how they are named:',
       expectedCommand: 'find ./src/pages -name "*.tsx"',
       hint: 'Use find to list .tsx files in the pages directory',
+      platforms: {
+        windows: {
+          instruction: 'Now find all existing pages in your project to see where they live and how they are named:',
+          expectedCommand: 'Get-ChildItem -Path "./src/pages" -Filter "*.tsx"',
+          hint: 'Use Get-ChildItem to list .tsx files in the pages directory',
+        },
+      },
     },
     {
       type: 'code-demo',
