@@ -326,6 +326,12 @@ export async function initSync(userId: string): Promise<void> {
 
     const serverState = await pullState(userId, abortController.signal)
 
+    // Fetch access tier
+    try {
+      const { fetchAccessTier } = await import('@/stores/access')
+      await fetchAccessTier()
+    } catch { /* access tier fetch is non-blocking */ }
+
     if (serverState) {
       localStorage.setItem('agentic-saas-progress', JSON.stringify(serverState))
       lastKnownServerXp = serverState.totalXp

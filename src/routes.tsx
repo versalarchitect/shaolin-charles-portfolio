@@ -2,6 +2,7 @@ import { createBrowserRouter, redirect } from 'react-router-dom'
 import { lazy } from 'react'
 import App from './App'
 import { AuthGuard } from './components/auth-guard'
+import { AccessGuard } from './components/access-guard'
 import { RouteErrorBoundary } from './components/route-error-boundary'
 
 // Lazy load all pages (React Router v7 + React 19 code splitting)
@@ -122,62 +123,62 @@ const router = createBrowserRouter([
         path: 'profile/:userId',
         element: <PublicProfile />,
       },
-      // Course (protected) routes
+      // Course (protected + access-gated) routes
       {
         path: 'course/dashboard',
-        element: <AuthGuard><Dashboard /></AuthGuard>,
+        element: <AuthGuard><AccessGuard><Dashboard /></AccessGuard></AuthGuard>,
       },
       {
         path: 'course/curriculum',
-        element: <AuthGuard><Curriculum /></AuthGuard>,
+        element: <AuthGuard><AccessGuard><Curriculum /></AccessGuard></AuthGuard>,
       },
       {
         path: 'course/learn/:lessonId/:step',
-        element: <AuthGuard><Learn /></AuthGuard>,
+        element: <AuthGuard><AccessGuard><Learn /></AccessGuard></AuthGuard>,
       },
       {
         path: 'course/learn/:lessonId',
-        element: <AuthGuard><Learn /></AuthGuard>,
+        element: <AuthGuard><AccessGuard><Learn /></AccessGuard></AuthGuard>,
       },
       {
         path: 'course/community',
-        element: <AuthGuard><Community /></AuthGuard>,
+        element: <AuthGuard><AccessGuard><Community /></AccessGuard></AuthGuard>,
       },
       {
         path: 'course/community/thread/:threadId',
-        element: <AuthGuard><CommunityThread /></AuthGuard>,
+        element: <AuthGuard><AccessGuard><CommunityThread /></AccessGuard></AuthGuard>,
       },
       {
         path: 'course/chat',
-        element: <AuthGuard><Chat /></AuthGuard>,
+        element: <AuthGuard><AccessGuard><Chat /></AccessGuard></AuthGuard>,
       },
       {
         path: 'course/profile',
-        element: <AuthGuard><Profile /></AuthGuard>,
+        element: <AuthGuard><AccessGuard><Profile /></AccessGuard></AuthGuard>,
       },
       {
         path: 'course/knowledge-base',
-        element: <AuthGuard><InstructorDashboard /></AuthGuard>,
+        element: <AuthGuard><AccessGuard><InstructorDashboard /></AccessGuard></AuthGuard>,
       },
       {
         path: 'course/pipeline',
-        element: <AuthGuard><Pipeline /></AuthGuard>,
+        element: <AuthGuard><AccessGuard><Pipeline /></AccessGuard></AuthGuard>,
       },
       {
         path: 'course/student-agent',
-        element: <AuthGuard><StudentAgent /></AuthGuard>,
+        element: <AuthGuard><AccessGuard><StudentAgent /></AccessGuard></AuthGuard>,
       },
       {
         path: 'course/leaderboard',
-        element: <AuthGuard><Leaderboard /></AuthGuard>,
+        element: <AuthGuard><AccessGuard><Leaderboard /></AccessGuard></AuthGuard>,
       },
       {
         path: 'course/analytics',
-        element: <AuthGuard><Analytics /></AuthGuard>,
+        element: <AuthGuard><AccessGuard><Analytics /></AccessGuard></AuthGuard>,
       },
       {
         path: 'course/vault',
-        element: <AuthGuard><SecretVault /></AuthGuard>,
+        element: <AuthGuard><AccessGuard><SecretVault /></AccessGuard></AuthGuard>,
       },
       // Redirects from old paths
       {

@@ -27,6 +27,8 @@ import { CelebrationParticles } from '@/components/gamification/celebration'
 import { StatusBadge } from '@/components/gamification/shared'
 import { LessonRating } from '@/components/gamification/lesson-rating'
 import { getMotivationalMessage } from '@/lib/motivational'
+import { supabase } from '@/lib/supabase'
+import { useAccessTier, canAccessLesson } from '@/stores/access'
 
 function findLessonAndTier(lessonId: string) {
   for (const tier of CURRICULUM) {
@@ -132,6 +134,41 @@ function LockedState({ lessonTitle }: { lessonTitle: string }) {
   )
 }
 
+function TierRequiredState({ lessonTitle }: { lessonTitle: string }) {
+  const { t } = useTranslation()
+  return (
+    <div className="p-6 lg:p-8 max-w-2xl mx-auto">
+      <div className="text-center space-y-6 py-24">
+        <motion.div
+          className="mx-auto flex items-center justify-center w-16 h-16 rounded-2xl bg-foreground/5 border border-foreground/10"
+          animate={{ y: [0, -6, 0] }}
+          transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
+        >
+          <Lock className="w-7 h-7 text-foreground/40" />
+        </motion.div>
+        <h1 className="text-2xl font-bold">Upgrade Required</h1>
+        <p className="text-foreground/60 leading-relaxed max-w-md mx-auto">
+          <span className="text-foreground/80 font-medium">"{lessonTitle}"</span> requires full course access. Upgrade to unlock all 51 lessons.
+        </p>
+        <div className="flex flex-wrap justify-center gap-3">
+          <Link to="/tiers">
+            <Button className="gap-2 font-mono">
+              <Zap className="w-4 h-4" />
+              View Plans
+            </Button>
+          </Link>
+          <Link to="/course/dashboard">
+            <Button variant="outline" className="gap-2 font-mono">
+              <ArrowLeft className="w-4 h-4" />
+              {t('learn.backToDashboard')}
+            </Button>
+          </Link>
+        </div>
+      </div>
+    </div>
+  )
+}
+
 function BookmarkButton({ lessonId }: { lessonId: string }) {
   const { t } = useTranslation()
   useBookmarks()
@@ -198,6 +235,21 @@ export default function Learn() {
   const stepNumber = step ? parseInt(step, 10) : 1
   const validStep = Number.isNaN(stepNumber) || stepNumber < 1 ? 1 : stepNumber
 
+  const { tier } = useAccessTier()
+  const [serverAccessDenied, setServerAccessDenied] = useState(false)
+
+  useEffect(() => {
+    if (!lessonId || tier === 'admin' || tier === 'paid') return
+    if (!canAccessLesson(lessonId, tier)) {
+      setServerAccessDenied(true)
+      return
+    }
+    supabase.rpc('check_lesson_access', { p_lesson_id: lessonId })
+      .then(({ data }) => {
+        if (data === false) setServerAccessDenied(true)
+      })
+  }, [lessonId, tier])
+
   const [showCelebration, setShowCelebration] = useState(false)
   const [celebrationXp, setCelebrationXp] = useState(0)
 
@@ -255,7 +307,16 @@ export default function Learn() {
     )
   }
 
-  const { tier, lesson } = found
+  const { tier: courseTier, lesson } = found
+
+  if (serverAccessDenied) {
+    return (
+      <>
+        <SEO title={`Upgrade: ${lesson.title}`} description="Upgrade your access to unlock this lesson." noindex />
+        <TierRequiredState lessonTitle={lesson.title} />
+      </>
+    )
+  }
 
   if (status === 'locked') {
     return (
@@ -374,7 +435,7 @@ export default function Learn() {
             </Link>
             <ChevronRight className="w-3.5 h-3.5 shrink-0 text-foreground/25" />
             <span className="truncate text-foreground/35">
-              {tier.name}
+              {courseTier.name}
             </span>
             <ChevronRight className="w-3.5 h-3.5 shrink-0 text-foreground/25" />
             <Link to={`/course/learn/${lessonId}/1`} className="font-mono text-foreground/60 shrink-0 hover:text-foreground transition-colors">{lesson.number}</Link>
@@ -386,7 +447,7 @@ export default function Learn() {
         <div className="mb-8">
           <div className="flex flex-wrap items-center gap-2 mb-3">
             <span className="text-xs font-mono px-2.5 py-1 bg-foreground/[0.05] rounded border border-foreground/[0.08] text-foreground/50">
-              {tier.name}
+              {courseTier.name}
             </span>
             {lesson.isCapstone && (
               <span className="text-xs font-mono px-2.5 py-1 bg-foreground/10 rounded border border-foreground/15 text-foreground/70 flex items-center gap-1">

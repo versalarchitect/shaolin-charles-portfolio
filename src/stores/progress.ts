@@ -513,7 +513,19 @@ function checkWeeklyChallenges() {
 
 if (typeof window !== 'undefined') init()
 
+let _accessTier: import('@/stores/access').AccessTier | undefined
+
+export function setAccessTier(tier: import('@/stores/access').AccessTier) {
+  _accessTier = tier
+}
+
 export function getLessonStatus(lessonId: string): LessonStatus {
+  if (_accessTier && _accessTier !== 'admin' && _accessTier !== 'paid') {
+    const isBetaLesson = lessonId.startsWith('p') || lessonId.startsWith('1-')
+    if (_accessTier === 'none') return 'locked'
+    if (_accessTier === 'beta' && !isBetaLesson) return 'locked'
+  }
+
   const progress = state.lessonProgress[lessonId]
   if (progress) return progress.status
 
