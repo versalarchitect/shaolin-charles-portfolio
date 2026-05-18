@@ -132,6 +132,10 @@ const router = createBrowserRouter([
         element: <AuthGuard><Curriculum /></AuthGuard>,
       },
       {
+        path: 'course/learn/:lessonId/:step',
+        element: <AuthGuard><Learn /></AuthGuard>,
+      },
+      {
         path: 'course/learn/:lessonId',
         element: <AuthGuard><Learn /></AuthGuard>,
       },
@@ -179,6 +183,10 @@ const router = createBrowserRouter([
       {
         path: 'dashboard',
         loader: () => redirect('/course/dashboard'),
+      },
+      {
+        path: 'learn/:lessonId/:step',
+        loader: ({ params }) => redirect(`/course/learn/${params.lessonId}/${params.step}`),
       },
       {
         path: 'learn/:lessonId',

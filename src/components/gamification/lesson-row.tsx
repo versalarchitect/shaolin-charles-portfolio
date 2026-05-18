@@ -10,7 +10,7 @@ export function LessonRow({ lesson, showStatus }: { lesson: Lesson; showStatus?:
 
   return (
     <Link
-      to={isLocked ? '#' : `/learn/${lesson.id}`}
+      to={isLocked ? '#' : `/course/learn/${lesson.id}`}
       className={`flex items-center gap-3 px-5 py-3 transition-colors group ${isLocked ? 'opacity-50 cursor-not-allowed' : 'hover:bg-foreground/[0.03]'}`}
       onClick={(e) => { if (isLocked) e.preventDefault() }}
     >

@@ -89,7 +89,7 @@ function LessonNavCard({ lesson, direction, disabled }: { lesson: Lesson | null;
   }
 
   return (
-    <Link to={`/course/learn/${lesson.id}`} className="group rounded-xl bg-foreground/[0.02] border border-foreground/[0.08] p-4 hover:bg-foreground/[0.04] hover:border-foreground/15 transition-all">
+    <Link to={`/course/learn/${lesson.id}/1`} className="group rounded-xl bg-foreground/[0.02] border border-foreground/[0.08] p-4 hover:bg-foreground/[0.04] hover:border-foreground/15 transition-all">
       <div className={`flex items-center ${isPrev ? '' : 'justify-end'} gap-3`}>
         {isPrev && <Arrow className="w-4 h-4 text-foreground/40 group-hover:text-foreground/70 group-hover:-translate-x-1 transition-all shrink-0" />}
         <div className={`min-w-0 ${isPrev ? '' : 'text-right'}`}>
@@ -177,9 +177,26 @@ function LessonNotFound() {
 
 export default function Learn() {
   const { t } = useTranslation()
-  const { lessonId } = useParams<{ lessonId: string }>()
+  const { lessonId, step } = useParams<{ lessonId: string; step?: string }>()
   const navigate = useNavigate()
   const progress = useProgress()
+
+  useEffect(() => {
+    if (lessonId && !step) {
+      let resumeStep = 1
+      try {
+        const saved = localStorage.getItem(`lesson-steps-completed-${lessonId}`)
+        if (saved) {
+          const completed: number[] = JSON.parse(saved)
+          if (completed.length > 0) resumeStep = Math.max(...completed) + 2
+        }
+      } catch { /* ignore */ }
+      navigate(`/course/learn/${lessonId}/${resumeStep}`, { replace: true })
+    }
+  }, [lessonId, step, navigate])
+
+  const stepNumber = step ? parseInt(step, 10) : 1
+  const validStep = Number.isNaN(stepNumber) || stepNumber < 1 ? 1 : stepNumber
 
   const [showCelebration, setShowCelebration] = useState(false)
   const [celebrationXp, setCelebrationXp] = useState(0)
@@ -222,7 +239,7 @@ export default function Learn() {
     if (!showCelebration) return
     const timer = setTimeout(() => {
       if (adjacent.next) {
-        navigate(`/course/learn/${adjacent.next.id}`)
+        navigate(`/course/learn/${adjacent.next.id}/1`)
       }
       setShowCelebration(false)
     }, 3000)
@@ -259,7 +276,7 @@ export default function Learn() {
       <SEO
         title={`${lesson.number} ${lesson.title}`}
         description={lesson.description}
-        path={`learn/${lessonId}`}
+        path={`learn/${lessonId}/${validStep}`}
       />
       <GamificationToasts />
 
@@ -330,7 +347,7 @@ export default function Learn() {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 1 }}
                 >
-                  <Link to={`/course/learn/${adjacent.next.id}`} onClick={() => setShowCelebration(false)}>
+                  <Link to={`/course/learn/${adjacent.next.id}/1`} onClick={() => setShowCelebration(false)}>
                     <Button size="lg" className="gap-2 font-mono group">
                       {t('learn.continueToNext')}
                       <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
@@ -360,7 +377,7 @@ export default function Learn() {
               {tier.name}
             </span>
             <ChevronRight className="w-3.5 h-3.5 shrink-0 text-foreground/25" />
-            <span className="font-mono text-foreground/60 shrink-0">{lesson.number}</span>
+            <Link to={`/course/learn/${lessonId}/1`} className="font-mono text-foreground/60 shrink-0 hover:text-foreground transition-colors">{lesson.number}</Link>
           </div>
           <StatusBadge status={status} />
         </div>
@@ -424,7 +441,7 @@ export default function Learn() {
         </p>
 
         {/* Interactive lesson player */}
-        <LessonPlayer lessonId={lessonId!} />
+        <LessonPlayer lessonId={lessonId!} initialStep={validStep} />
 
         {/* Learning objectives */}
         {lesson.objectives.length > 0 && (

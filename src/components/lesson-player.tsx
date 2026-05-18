@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback, useMemo, useRef } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { motion, AnimatePresence } from 'motion/react'
 import {
   Check,
@@ -1569,23 +1570,58 @@ function isPassiveStep(step: LessonStep): boolean {
   return false
 }
 
-export function LessonPlayer({ lessonId }: { lessonId: string }) {
+export function LessonPlayer({ lessonId, initialStep = 1 }: { lessonId: string; initialStep?: number }) {
+  const navigate = useNavigate()
   const [content, setContent] = useState<LessonContent | null>(null)
   const [loading, setLoading] = useState(true)
-  const [currentStep, setCurrentStep] = useState(0)
-  const [completedSteps, setCompletedSteps] = useState<Set<number>>(new Set())
+  const [completedSteps, setCompletedSteps] = useState<Set<number>>(() => {
+    try {
+      const saved = localStorage.getItem(`lesson-steps-completed-${lessonId}`)
+      return saved ? new Set(JSON.parse(saved)) : new Set()
+    } catch { return new Set() }
+  })
   const [direction, setDirection] = useState(1)
   const { t } = useTranslation()
 
+  const currentStep = Math.max(0, initialStep - 1)
+  const prevStepRef = useRef(currentStep)
+
+  useEffect(() => {
+    if (currentStep !== prevStepRef.current) {
+      setDirection(currentStep > prevStepRef.current ? 1 : -1)
+      prevStepRef.current = currentStep
+    }
+  }, [currentStep])
+
   useEffect(() => {
     setLoading(true)
-    setCurrentStep(0)
-    setCompletedSteps(new Set())
+    setCompletedSteps(() => {
+      try {
+        const saved = localStorage.getItem(`lesson-steps-completed-${lessonId}`)
+        return saved ? new Set(JSON.parse(saved)) : new Set()
+      } catch { return new Set() }
+    })
     loadLessonContent(lessonId).then((data) => {
       setContent(data)
       setLoading(false)
     })
   }, [lessonId])
+
+  useEffect(() => {
+    if (!content || loading) return
+    const maxStep = content.steps.length
+    if (initialStep > maxStep) {
+      navigate(`/course/learn/${lessonId}/${maxStep}`, { replace: true })
+    } else if (initialStep < 1) {
+      navigate(`/course/learn/${lessonId}/1`, { replace: true })
+    }
+  }, [content, loading, initialStep, lessonId, navigate])
+
+  useEffect(() => {
+    try {
+      localStorage.setItem(`lesson-steps-completed-${lessonId}`, JSON.stringify([...completedSteps]))
+    } catch { /* ignore */ }
+  }, [completedSteps, lessonId])
 
   const totalSteps = content?.steps.length ?? 0
   const step = content?.steps[currentStep]
@@ -1603,20 +1639,18 @@ export function LessonPlayer({ lessonId }: { lessonId: string }) {
 
   const goNext = useCallback(() => {
     if (currentStep < totalSteps - 1) {
-      setDirection(1)
       setCompletedSteps((prev) => new Set(prev).add(currentStep))
       const nextStep = currentStep + 1
-      setCurrentStep(nextStep)
       awardExplorerXp(1, `step-${lessonId}-${nextStep}`)
+      navigate(`/course/learn/${lessonId}/${nextStep + 1}`)
     }
-  }, [currentStep, totalSteps, lessonId])
+  }, [currentStep, totalSteps, lessonId, navigate])
 
   const goPrev = useCallback(() => {
     if (currentStep > 0) {
-      setDirection(-1)
-      setCurrentStep((prev) => prev - 1)
+      navigate(`/course/learn/${lessonId}/${currentStep}`)
     }
-  }, [currentStep])
+  }, [currentStep, lessonId, navigate])
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -1645,6 +1679,8 @@ export function LessonPlayer({ lessonId }: { lessonId: string }) {
     )
   }
 
+  const highestReached = Math.max(currentStep, ...Array.from(completedSteps))
+
   return (
     <div className="space-y-6">
       {/* Progress bar */}
@@ -1660,15 +1696,20 @@ export function LessonPlayer({ lessonId }: { lessonId: string }) {
             transition={{ duration: 0.3, ease: 'easeOut' }}
           />
         </div>
-        {/* Step dots */}
+        {/* Step dots — clickable for visited steps */}
         <div className="flex gap-[2px]">
-          {content.steps.map((s, i) => (
-            <div
+          {content.steps.map((_s, i) => (
+            <button
               key={i}
+              type="button"
+              onClick={() => {
+                if (i <= highestReached) navigate(`/course/learn/${lessonId}/${i + 1}`)
+              }}
               className={`
                 flex-1 h-1 rounded-full transition-colors
+                ${i <= highestReached ? 'cursor-pointer' : 'cursor-default'}
                 ${i < currentStep
-                  ? 'bg-foreground/25'
+                  ? 'bg-foreground/25 hover:bg-foreground/35'
                   : i === currentStep
                     ? 'bg-foreground/40'
                     : 'bg-foreground/[0.06]'

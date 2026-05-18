@@ -34,17 +34,24 @@ const EasterEggHandler = lazy(() => import('@/components/gamification/easter-egg
 
 const APP_ROUTES = ['/course/']
 
+function getPageKey(pathname: string): string {
+  const learnMatch = pathname.match(/^(\/course\/learn\/[^/]+)/)
+  if (learnMatch) return learnMatch[1]
+  return pathname
+}
+
 export default function App() {
   const location = useLocation()
   const isAppPage = APP_ROUTES.some((r) => location.pathname.startsWith(r))
+  const pageKey = getPageKey(location.pathname)
 
   useProgressSync()
 
-  // biome-ignore lint/correctness/useExhaustiveDependencies: pathname is the intentional trigger
+  // biome-ignore lint/correctness/useExhaustiveDependencies: pageKey is the intentional trigger
   useEffect(() => {
     window.scrollTo(0, 0)
     document.dispatchEvent(new Event('prerender-ready'))
-  }, [location.pathname])
+  }, [pageKey])
 
   return (
     <ThemeProvider>
@@ -60,7 +67,7 @@ export default function App() {
             <AppLayout>
               <CourseHooks />
               <AnimatePresence mode="popLayout">
-                <PageTransition key={location.pathname}>
+                <PageTransition key={pageKey}>
                   <Suspense fallback={<PageLoading />}>
                     <Outlet />
                   </Suspense>

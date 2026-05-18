@@ -36,7 +36,7 @@ export function TierProgress() {
                   const status = getLessonStatus(lesson.id)
                   const dotCls = status === 'completed' ? 'bg-foreground/30' : status === 'in_progress' ? 'bg-foreground/15 animate-pulse' : status === 'available' ? 'bg-foreground/10 hover:bg-foreground/15' : 'bg-foreground/[0.04]'
                   return (
-                    <Link key={lesson.id} to={status !== 'locked' ? `/learn/${lesson.id}` : '#'} className={`flex-1 h-1.5 rounded-full transition-colors ${dotCls}`} title={`${lesson.number} — ${lesson.title}`} />
+                    <Link key={lesson.id} to={status !== 'locked' ? `/course/learn/${lesson.id}` : '#'} className={`flex-1 h-1.5 rounded-full transition-colors ${dotCls}`} title={`${lesson.number} — ${lesson.title}`} />
                   )
                 })}
               </div>
