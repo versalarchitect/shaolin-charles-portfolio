@@ -11,6 +11,7 @@ const content: LessonContent = {
     },
     {
       type: 'code-fill',
+      hint: 'Fill in values that match the pattern shown above.',
       instruction: 'Fill in the missing connection counts using the formula n*(n-1)/2. This shows why coordination overhead grows explosively.',
       language: 'text',
       filename: 'coordination-overhead.txt',
@@ -31,6 +32,7 @@ const content: LessonContent = {
     },
     {
       type: 'multiple-choice',
+      hint: 'Read each option carefully — one fits the context best.',
       question: 'You go from 4 agents to 5. How many new coordination connections are added?',
       options: [
         '1 new connection',
@@ -50,6 +52,7 @@ const content: LessonContent = {
     // === PATTERN 1: HUB AND SPOKE ===
     {
       type: 'multiple-choice',
+      hint: 'Eliminate the options that only partially fit.',
       question: 'In the hub-and-spoke pattern, how do agents communicate?',
       options: [
         'Agents communicate directly with each other through shared files',
@@ -101,6 +104,7 @@ const content: LessonContent = {
     },
     {
       type: 'code-fill',
+      hint: 'Use the exact syntax from the lesson examples.',
       instruction: 'Complete this hub-and-spoke setup. Fill in the worktree commands and merge sequence.',
       language: 'bash',
       filename: 'hub-and-spoke.sh',
@@ -126,6 +130,7 @@ git merge feat/settings`,
     },
     {
       type: 'multiple-choice',
+      hint: 'Focus on the primary goal, not secondary benefits.',
       question: 'When does hub-and-spoke break down?',
       options: [
         'When tasks are too simple',
@@ -145,6 +150,7 @@ git merge feat/settings`,
     // === PATTERN 2: PIPELINE ===
     {
       type: 'multiple-choice',
+      hint: 'Think about which option is most specific to this concept.',
       question: 'In a pipeline pattern, how do agents relate to each other?',
       options: [
         'All agents work on the same task simultaneously',
@@ -200,6 +206,7 @@ git merge feat/settings`,
     },
     {
       type: 'code-fill',
+      hint: 'Each blank follows the conventions demonstrated earlier.',
       instruction: 'Complete this pipeline script. Fill in the stage-specific agent prompts.',
       language: 'bash',
       filename: 'pipeline.sh',
@@ -225,6 +232,7 @@ claude -p "{{deploy_prompt}}"`,
     },
     {
       type: 'multiple-choice',
+      hint: 'Consider what the lesson content emphasized.',
       question: 'What is the biggest weakness of the pipeline pattern?',
       options: [
         'Agents can interfere with each other',
@@ -244,6 +252,7 @@ claude -p "{{deploy_prompt}}"`,
     // === PATTERN 3: SWARM ===
     {
       type: 'multiple-choice',
+      hint: 'One option stands out when you think about the core purpose.',
       question: 'What is the key prerequisite for the swarm pattern to work?',
       options: [
         'A powerful central coordinator to assign tasks dynamically',
@@ -308,6 +317,7 @@ claude -p "{{deploy_prompt}}"`,
     },
     {
       type: 'code-fill',
+      hint: 'Look at the surrounding code for context clues.',
       instruction: 'Complete this swarm task pool setup using GitHub Issues. Fill in the task definitions that are self-contained and independent.',
       language: 'bash',
       filename: 'swarm-tasks.sh',
@@ -337,6 +347,7 @@ gh issue create --title "Add input sanitization to comments" --label "{{swarm_la
     // === MATCH: Scaling patterns → use cases ===
     {
       type: 'match',
+      hint: 'Find the unique connection between each pair.',
       instruction: 'Match each fleet pattern to its best use case:',
       leftItems: ['Hub-and-spoke', 'Pipeline', 'Swarm'],
       rightItems: ['Sequential data processing with stage handoffs', 'Central coordinator directing specialist agents', 'Many identical agents working independently on similar tasks'],
@@ -347,6 +358,7 @@ gh issue create --title "Add input sanitization to comments" --label "{{swarm_la
     // === CHOOSING THE RIGHT PATTERN ===
     {
       type: 'multiple-choice',
+      hint: 'Read each option carefully — one fits the context best.',
       question: 'You have 12 API endpoints that each need input validation added. No endpoint depends on another. Which pattern fits best?',
       options: [
         'Hub-and-spoke — you assign each endpoint to an agent',
@@ -359,6 +371,7 @@ gh issue create --title "Add input sanitization to comments" --label "{{swarm_la
     },
     {
       type: 'multiple-choice',
+      hint: 'Eliminate the options that only partially fit.',
       question: 'Your team needs to build a feature, review it for security, test it, and deploy it. Which pattern?',
       options: [
         'Hub-and-spoke',
@@ -371,6 +384,7 @@ gh issue create --title "Add input sanitization to comments" --label "{{swarm_la
     },
     {
       type: 'multiple-choice',
+      hint: 'Focus on the primary goal, not secondary benefits.',
       question: 'You have 3 independent features to build but want to personally review each before merging. Which pattern?',
       options: [
         'Hub-and-spoke — you coordinate and review each agent',
@@ -385,6 +399,7 @@ gh issue create --title "Add input sanitization to comments" --label "{{swarm_la
     // === MEASURING FLEET THROUGHPUT ===
     {
       type: 'multiple-choice',
+      hint: 'Think about which option is most specific to this concept.',
       question: 'A swarm of 5 agents each completing 2 tasks/hour achieves what fleet throughput?',
       options: [
         '2 tasks/hour (limited by individual agent speed)',
@@ -397,6 +412,7 @@ gh issue create --title "Add input sanitization to comments" --label "{{swarm_la
     },
     {
       type: 'code-fill',
+      hint: 'The answer matches the API or syntax just explained.',
       instruction: 'Fill in the throughput calculations for each coordination pattern. Same 5 agents, same 10 tasks, ~15 min per task.',
       language: 'text',
       filename: 'throughput-comparison.txt',
@@ -433,6 +449,7 @@ Swarm:
     // === PRACTICAL EXERCISES ===
     {
       type: 'order',
+      hint: 'Consider what depends on what — prerequisites first.',
       instruction: 'Order these patterns from MOST coordinator involvement to LEAST:',
       items: ['Swarm', 'Hub-and-spoke', 'Pipeline'],
       correctOrder: [1, 2, 0],

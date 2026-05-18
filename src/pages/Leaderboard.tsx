@@ -1,9 +1,10 @@
 import { useEffect, useState, useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 import { motion } from 'motion/react'
-import { Trophy, Zap, RefreshCw } from 'lucide-react'
+import { Trophy, Zap, RefreshCw, Users, Flame, TrendingUp } from 'lucide-react'
 import { SEO } from '@/components/SEO'
 import { Leaderboard } from '@/components/gamification/leaderboard'
+import { AnimatedNumber } from '@/components/ui/aaa-effects'
 import { useAuth } from '@/hooks/use-auth'
 import {
   fetchGlobalLeaderboard,
@@ -13,6 +14,27 @@ import {
 import type { LeaderboardEntry } from '@/lib/leaderboard-api'
 
 type Tab = 'all-time' | 'weekly'
+
+function StatCard({ icon: Icon, label, value, delay }: { icon: React.ElementType; label: string; value: number; delay: number }) {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 12 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.4, delay }}
+      className="rounded-xl border border-foreground/[0.08] bg-gradient-to-br from-foreground/[0.03] to-transparent p-4 space-y-2"
+    >
+      <div className="flex items-center gap-2">
+        <div className="w-7 h-7 rounded-lg bg-foreground/[0.06] border border-foreground/[0.08] flex items-center justify-center">
+          <Icon className="w-3.5 h-3.5 text-foreground/50" />
+        </div>
+        <span className="text-[10px] font-mono uppercase tracking-wider text-foreground/40">{label}</span>
+      </div>
+      <p className="text-2xl font-mono font-bold text-foreground/90 tabular-nums">
+        <AnimatedNumber value={value} />
+      </p>
+    </motion.div>
+  )
+}
 
 export default function LeaderboardPage() {
   const { t } = useTranslation()
@@ -33,7 +55,6 @@ export default function LeaderboardPage() {
           : await fetchWeeklyLeaderboard(10)
       setEntries(data)
 
-      // Fetch user rank if logged in and not already in top 10
       if (user) {
         const inList = data.some((e) => e.user_id === user.id)
         if (!inList) {
@@ -62,6 +83,10 @@ export default function LeaderboardPage() {
     { id: 'weekly', label: t('leaderboardPage.thisWeek') },
   ]
 
+  const totalXp = entries.reduce((sum, e) => sum + (e.total_xp ?? 0), 0)
+  const totalPlayers = entries.length
+  const topStreak = Math.max(0, ...entries.map((e) => e.current_streak))
+
   return (
     <>
       <SEO
@@ -73,12 +98,31 @@ export default function LeaderboardPage() {
 
       <div className="p-6 lg:p-8 max-w-4xl space-y-8">
         {/* Header */}
-        <div>
-          <h1 className="text-2xl font-bold tracking-tight mb-1">{t('leaderboardPage.title')}</h1>
-          <p className="text-sm text-muted-foreground">
-            {t('leaderboardPage.subtitle')}
-          </p>
-        </div>
+        <motion.div
+          initial={{ opacity: 0, y: -8 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4 }}
+          className="space-y-1"
+        >
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-foreground/[0.06] border border-foreground/[0.08] flex items-center justify-center">
+              <Trophy className="w-5 h-5 text-foreground/60" />
+            </div>
+            <div>
+              <h1 className="text-2xl font-bold tracking-tight">{t('leaderboardPage.title')}</h1>
+              <p className="text-sm text-muted-foreground">{t('leaderboardPage.subtitle')}</p>
+            </div>
+          </div>
+        </motion.div>
+
+        {/* Stats row */}
+        {!loading && entries.length > 0 && (
+          <div className="grid grid-cols-3 gap-3">
+            <StatCard icon={Users} label="Players" value={totalPlayers} delay={0.1} />
+            <StatCard icon={Zap} label="Total XP" value={totalXp} delay={0.15} />
+            <StatCard icon={Flame} label="Top Streak" value={topStreak} delay={0.2} />
+          </div>
+        )}
 
         {/* Tabs */}
         <div className="flex gap-1 p-1 rounded-lg bg-foreground/[0.04] border border-foreground/[0.08] w-full sm:w-fit">
@@ -139,18 +183,18 @@ export default function LeaderboardPage() {
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.4, delay: 0.3 }}
-            className="rounded-xl border border-foreground/10 bg-foreground/[0.03] p-4 sm:p-5"
+            className="rounded-2xl border border-foreground/10 bg-gradient-to-br from-foreground/[0.04] to-transparent p-5"
           >
-            <div className="flex items-center gap-3 sm:gap-4">
-              <div className="flex items-center justify-center w-10 h-10 rounded-full bg-foreground/10 shrink-0">
-                <Trophy className="w-5 h-5 text-foreground/60" />
+            <div className="flex items-center gap-4">
+              <div className="flex items-center justify-center w-12 h-12 rounded-xl bg-foreground/[0.06] border border-foreground/[0.08] shrink-0">
+                <TrendingUp className="w-5 h-5 text-foreground/50" />
               </div>
               <div className="flex-1 min-w-0">
                 <p className="text-[10px] font-mono text-foreground/40 uppercase tracking-wider mb-0.5">
                   {t('leaderboardPage.yourPosition')}
                 </p>
-                <p className="text-lg font-mono font-semibold text-foreground/90">
-                  #{userRank}
+                <p className="text-2xl font-mono font-bold text-foreground/90">
+                  #<AnimatedNumber value={userRank} />
                 </p>
               </div>
               <div className="text-right shrink-0">

@@ -81,6 +81,7 @@ const content: LessonContent = {
     // === COMMON AGENT-INTRODUCED BUGS ===
     {
       type: 'multiple-choice',
+      hint: 'Read each option carefully — one fits the context best.',
       question: 'What is the #1 most common bug pattern in agent-built code?',
       options: [
         'Performance issues — agents write slow algorithms',
@@ -93,6 +94,7 @@ const content: LessonContent = {
     },
     {
       type: 'compare',
+      hint: 'Look at the key differences between the two approaches.',
       title: 'Pattern 1 vs Pattern 2: error boundaries vs data shape assumptions',
       body: 'Both are top agent bugs. Both crash in production. Different fixes.',
       question: 'Which pattern causes a white screen crash when the API returns an error?',
@@ -111,6 +113,7 @@ const content: LessonContent = {
     },
     {
       type: 'code-fill',
+      hint: 'Fill in values that match the pattern shown above.',
       instruction: 'Fix the agent-built component by adding proper loading, error, and null-safe handling. Fill in the missing states.',
       language: 'typescript',
       filename: 'src/dashboard/stats.tsx',
@@ -154,6 +157,7 @@ const content: LessonContent = {
     },
     {
       type: 'multiple-choice',
+      hint: 'Eliminate the options that only partially fit.',
       question: 'Which spec addition would MOST effectively prevent "missing error boundary" bugs?',
       options: [
         '"Make sure to handle errors" (general instruction)',
@@ -173,6 +177,7 @@ const content: LessonContent = {
     // === SENTRY SETUP FOR AGENT-BUILT CODE ===
     {
       type: 'multiple-choice',
+      hint: 'Focus on the primary goal, not secondary benefits.',
       question: 'Standard error tracking tells you WHAT broke. For agent-built systems, what additional info do you need?',
       options: [
         'Which programming language was used',
@@ -185,6 +190,7 @@ const content: LessonContent = {
     },
     {
       type: 'code-fill',
+      hint: 'Use the exact syntax from the lesson examples.',
       instruction: 'Complete the Sentry init with agent traceability tags. Fill in the custom tags that map errors to agent sessions.',
       language: 'typescript',
       filename: 'src/lib/monitoring.ts',
@@ -246,6 +252,7 @@ Sentry.init({
     },
     {
       type: 'code-fill',
+      hint: 'Each blank follows the conventions demonstrated earlier.',
       instruction: 'Complete the Sentry configuration for agent-built code monitoring. Fill in the DSN, environment, and sample rate settings.',
       language: 'typescript',
       filename: 'src/lib/monitoring.ts',
@@ -286,6 +293,7 @@ Sentry.init({
     // === TRACING ERRORS TO AGENT SESSIONS ===
     {
       type: 'code-fill',
+      hint: 'Look at the surrounding code for context clues.',
       instruction: 'Complete the trace-back script that maps a production error to the agent session that produced it. Fill in the git commands.',
       language: 'bash',
       filename: 'scripts/trace-to-agent.sh',
@@ -350,6 +358,7 @@ echo "Update the spec for agent '$BRANCH' to prevent this pattern."`,
     // === THE SPEC IMPROVEMENT FEEDBACK LOOP ===
     {
       type: 'multiple-choice',
+      hint: 'Think about which option is most specific to this concept.',
       question: 'A null reference error fires in production. What does this tell you about your spec?',
       options: [
         'The agent introduced a bug — agents are unreliable',
@@ -362,6 +371,7 @@ echo "Update the spec for agent '$BRANCH' to prevent this pattern."`,
     },
     {
       type: 'code-fill',
+      hint: 'The answer matches the API or syntax just explained.',
       instruction: 'Complete the spec requirements checklist derived from production errors. Fill in the missing requirements for data handling and error states.',
       language: 'markdown',
       filename: 'specs/REQUIREMENTS.md',
@@ -411,6 +421,7 @@ echo "Update the spec for agent '$BRANCH' to prevent this pattern."`,
     },
     {
       type: 'multiple-choice',
+      hint: 'Consider what the lesson content emphasized.',
       question: 'You\'ve had three production incidents this month caused by agents not handling nullable API responses. What\'s the highest-leverage fix?',
       options: [
         'Add runtime null checks to all existing code',
@@ -425,6 +436,7 @@ echo "Update the spec for agent '$BRANCH' to prevent this pattern."`,
     // === MONITORING DASHBOARDS ===
     {
       type: 'multiple-choice',
+      hint: 'One option stands out when you think about the core purpose.',
       question: 'Beyond standard monitoring (uptime, latency, error rate), what should you add for agent-built systems?',
       options: [
         'Code complexity metrics and cyclomatic complexity',
@@ -437,6 +449,7 @@ echo "Update the spec for agent '$BRANCH' to prevent this pattern."`,
     },
     {
       type: 'code-fill',
+      hint: 'Fill in values that match the pattern shown above.',
       instruction: 'Complete the React error boundary that catches crashes in agent-built code and tags them for Sentry traceability.',
       language: 'typescript',
       filename: 'src/components/error-boundary.tsx',
@@ -516,6 +529,7 @@ export class AgentCodeBoundary extends Component<Props, State> {
     // === PREVENTING RECURRENCE ===
     {
       type: 'multiple-choice',
+      hint: 'Read each option carefully — one fits the context best.',
       question: 'What is the best production bug?',
       options: [
         'One that is caught quickly by Sentry with full context',
@@ -544,6 +558,7 @@ export class AgentCodeBoundary extends Component<Props, State> {
     },
     {
       type: 'code-fill',
+      hint: 'Use the exact syntax from the lesson examples.',
       instruction: 'Complete the pre-deploy check script that catches common agent patterns. Fill in the grep patterns that detect debug logging, hardcoded URLs, and type escape hatches.',
       language: 'bash',
       filename: 'scripts/agent-code-check.sh',
@@ -603,6 +618,7 @@ exit $ISSUES`,
     // === PUTTING IT TOGETHER ===
     {
       type: 'order',
+      hint: 'Consider what depends on what — prerequisites first.',
       instruction: 'Order the production monitoring feedback loop correctly:',
       items: [
         'Error fires in production (Sentry alert)',
@@ -616,6 +632,7 @@ exit $ISSUES`,
     },
     {
       type: 'multiple-choice',
+      hint: 'Eliminate the options that only partially fit.',
       question: 'After fixing the same class of bug three times (missing null checks), what\'s the most effective long-term solution?',
       options: [
         'Review all agent code manually before every deploy',

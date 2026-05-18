@@ -11,6 +11,7 @@ const content: LessonContent = {
     },
     {
       type: 'multiple-choice',
+      hint: 'Read each option carefully — one fits the context best.',
       question: 'Why do most production systems need a teardown before agents can effectively build and maintain them?',
       options: [
         'The code is too old and needs to be rewritten',
@@ -105,6 +106,7 @@ const content: LessonContent = {
     },
     {
       type: 'code-fill',
+      hint: 'Fill in values that match the pattern shown above.',
       instruction: 'Complete this buildability scorecard. Fill in scores (1-5) and blocker descriptions for each component based on the clues provided.',
       language: 'markdown',
       template: '# Agent-Buildability Scorecard\n\n## Component: User Auth\n- Files in 1 directory, clear naming\n- Boundaries score: ___\n- All other modules depend on it for auth checks\n- Isolation score: ___\n\n## Component: Orders & Checkout\n- Files scattered across 4 directories\n- Boundaries score: ___\n- Primary blocker: ___\n\n## Component: Payments\n- Self-contained module, own directory, consistent patterns\n- Overall assessment: ___',
@@ -120,6 +122,7 @@ const content: LessonContent = {
     },
     {
       type: 'match',
+      hint: 'Find the unique connection between each pair.',
       instruction: 'Match each AI-readiness factor to what it enables for agents:',
       leftItems: [
         'Clear module boundaries',
@@ -138,6 +141,7 @@ const content: LessonContent = {
     },
     {
       type: 'prompt-lab',
+      hint: 'Be specific about what you want — vague prompts get vague responses.',
       instruction: 'Write a prompt directing an agent to assess a codebase for AI-readiness. Be specific about what the agent should evaluate.',
       scenario: 'You have inherited a mid-size TypeScript monolith and want to know how ready it is for agent-parallel development. Write a prompt that directs an agent to perform a thorough AI-readiness assessment.',
       starterPrompt: 'Is this codebase AI-ready?',
@@ -162,6 +166,7 @@ const content: LessonContent = {
     },
     {
       type: 'compare',
+      hint: 'Look at the key differences between the two approaches.',
       title: 'AI-ready vs AI-hostile codebase',
       body: 'See the structural differences between a codebase agents can work in effectively and one that will defeat them.',
       left: {
@@ -189,6 +194,7 @@ const content: LessonContent = {
     // === PHASE 1: MAP ===
     {
       type: 'multiple-choice',
+      hint: 'Eliminate the options that only partially fit.',
       question: 'In Phase 1 (Map), what is a "component" in the teardown methodology?',
       options: [
         'A React component or UI element',
@@ -201,6 +207,7 @@ const content: LessonContent = {
     },
     {
       type: 'code-fill',
+      hint: 'Use the exact syntax from the lesson examples.',
       instruction: 'Complete this component map entry for an e-commerce Orders component. Fill in the dependencies, dependents, and file distribution.',
       language: 'markdown',
       template: '## 4. Orders & Checkout\n- Responsibility: Place orders, track status, handle fulfillment\n- Dependencies: Cart, ___, Inventory, ___\n- Dependents: ___, Analytics\n- Data: orders table, order_items table, ___\n- Files: 24 files across ___ directories',
@@ -216,6 +223,7 @@ const content: LessonContent = {
     },
     {
       type: 'multiple-choice',
+      hint: 'Focus on the primary goal, not secondary benefits.',
       question: 'In the component map above, which component is likely the hardest for agents to work on independently?',
       options: [
         'Payments — because it handles money',
@@ -235,6 +243,7 @@ const content: LessonContent = {
     // === PHASE 2: SCORE ===
     {
       type: 'match',
+      hint: 'Match each term to its most specific definition.',
       instruction: 'Match each buildability factor to what it measures:',
       leftItems: ['Clear Boundaries', 'Consistent Patterns', 'Testable Contracts', 'No Tribal Knowledge', 'Isolation'],
       rightItems: ['Can an agent find all files without guessing?', 'Do all files follow the same structure?', 'Are interfaces well-defined and testable?', 'Can an agent understand without asking a human?', 'Can it be modified without affecting other components?'],
@@ -243,6 +252,7 @@ const content: LessonContent = {
     },
     {
       type: 'multiple-choice',
+      hint: 'Think about which option is most specific to this concept.',
       question: 'A component scores: Boundaries 5, Patterns 5, Contracts 4, Knowledge 5, Isolation 3. Total: 22. What does this mean?',
       options: [
         'Agent-hostile — requires redesign',
@@ -255,6 +265,7 @@ const content: LessonContent = {
     },
     {
       type: 'multiple-choice',
+      hint: 'Consider what the lesson content emphasized.',
       question: 'A component has Boundaries score 2 and Isolation score 1. What do these low scores tell you?',
       options: [
         'The code is buggy and needs testing',
@@ -274,6 +285,7 @@ const content: LessonContent = {
     // === PHASE 3: BLOCKERS ===
     {
       type: 'compare',
+      hint: 'Focus on what makes one approach more appropriate here.',
       title: 'Vague observations vs actionable blockers',
       body: 'Phase 3 produces specific, measurable findings — not vague observations. Each blocker becomes a fix task in Phase 4.',
       left: {
@@ -294,6 +306,7 @@ const content: LessonContent = {
     },
     {
       type: 'match',
+      hint: 'Look for the distinguishing feature of each item.',
       instruction: 'Match each blocker type to the scoring factor it corresponds to:',
       leftItems: ['Order files split across 4 directories', 'Controller uses classes, service uses functions', 'No defined interface between Orders and Payments', '"Shipped orders cannot be cancelled" — undocumented', 'Modifying order total breaks cart display'],
       rightItems: ['Boundaries (score: 2)', 'Patterns (score: 2)', 'Contracts (score: 2)', 'Knowledge (score: 2)', 'Isolation (score: 1)'],
@@ -302,6 +315,7 @@ const content: LessonContent = {
     },
     {
       type: 'multiple-choice',
+      hint: 'One option stands out when you think about the core purpose.',
       question: 'Blocker K1 states: "Orders with status shipped cannot be cancelled — undocumented rule." Where should this knowledge live in an agent-native system?',
       options: [
         'In a README that developers read during onboarding',
@@ -321,6 +335,7 @@ const content: LessonContent = {
     // === PHASE 4: REDESIGN ===
     {
       type: 'match',
+      hint: 'Each left item has exactly one correct right match.',
       instruction: 'Match each blocker type to its targeted fix:',
       leftItems: ['Boundary blockers (files scattered)', 'Pattern blockers (inconsistent conventions)', 'Contract blockers (no defined interfaces)', 'Knowledge blockers (undocumented rules)', 'Isolation blockers (tight coupling)'],
       rightItems: ['Directory restructure to one feature directory', 'Conventions document plus refactoring pass', 'Explicit interface definitions between modules', 'Documentation in CLAUDE.md plus code enforcement', 'Events instead of direct calls (decoupling)'],
@@ -329,6 +344,7 @@ const content: LessonContent = {
     },
     {
       type: 'code-fill',
+      hint: 'Each blank follows the conventions demonstrated earlier.',
       instruction: 'Complete this redesign proposal for the Orders component. Fill in the fixes, effort estimates, and score improvements.',
       language: 'markdown',
       template: '# Redesign Proposal: Orders & Checkout\n\n## Priority 1: Boundaries (unlocks findability)\n- Move all order files to ___\n- Estimated effort: ___ hours\n- Impact: Boundaries score 2 → 5\n\n## Priority 2: Contracts (unlocks parallel work)\n- Define ___ (types + interface)\n- Implement ___: Order.transition(from, to)\n- Estimated effort: 4 hours\n\n## Priority 3: Knowledge (unlocks autonomous work)\n- Create src/features/orders/___\n- Estimated effort: ___ hour\n- Impact: Knowledge score 2 → 5\n\n## Projected Final Score: 9 → ___',
@@ -346,6 +362,7 @@ const content: LessonContent = {
     },
     {
       type: 'order',
+      hint: 'Consider what depends on what — prerequisites first.',
       instruction: 'Order the redesign priorities by impact (fix first → fix last):',
       items: [
         'Pattern consistency (rename files, standardize conventions)',
@@ -365,6 +382,7 @@ const content: LessonContent = {
     // === AGENT-BUILDABILITY FACTORS DEEP DIVE ===
     {
       type: 'multiple-choice',
+      hint: 'Read each option carefully — one fits the context best.',
       question: 'Which of these is an example of tribal knowledge that is a landmine for agents?',
       options: [
         'A well-documented API endpoint',
@@ -377,6 +395,7 @@ const content: LessonContent = {
     },
     {
       type: 'multiple-choice',
+      hint: 'Eliminate the options that only partially fit.',
       question: 'What makes a contract "testable" for agents?',
       options: [
         'It has many comments explaining the code',
@@ -389,6 +408,7 @@ const content: LessonContent = {
     },
     {
       type: 'multiple-choice',
+      hint: 'Focus on the primary goal, not secondary benefits.',
       question: 'You are doing a teardown of an internal tool. The deployment process requires running 3 scripts in a specific order with manual checks between them. How does this affect agent-buildability?',
       options: [
         'It does not — deployment is separate from code architecture',
@@ -403,6 +423,7 @@ const content: LessonContent = {
     // === SYNTHESIS ===
     {
       type: 'multiple-choice',
+      hint: 'Think about which option is most specific to this concept.',
       question: 'When should you run a teardown? Select the scenario that does NOT warrant a teardown.',
       options: [
         'You inherit a codebase and plan to use agents heavily',
@@ -415,6 +436,7 @@ const content: LessonContent = {
     },
     {
       type: 'multiple-choice',
+      hint: 'Consider what the lesson content emphasized.',
       question: 'The Teardown Methodology is primarily about:',
       options: [
         'Judging legacy code and criticizing past decisions',

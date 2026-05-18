@@ -18,6 +18,7 @@ const content: LessonContent = {
     // === FAILURE MODES ===
     {
       type: 'multiple-choice',
+      hint: 'Read each option carefully — one fits the context best.',
       question: 'An agent recommends a caching strategy for your system. It does not know your SLA is 50ms, your database runs on a 2015 server with 4GB RAM, and your compliance team vetoes anything touching PII. Which failure category does this represent?',
       options: [
         'Novel problem — no one has written about this scenario',
@@ -85,6 +86,7 @@ const content: LessonContent = {
     // === OVERRIDE CRITERIA ===
     {
       type: 'multiple-choice',
+      hint: 'Eliminate the options that only partially fit.',
       question: 'You are building override criteria. An agent recommends PostgreSQL read replicas but does not know your ops team is one person. Which of the four override questions does this fail?',
       options: [
         'Is the recommendation based on specific analysis of your codebase?',
@@ -97,6 +99,7 @@ const content: LessonContent = {
     },
     {
       type: 'code-fill',
+      hint: 'Fill in values that match the pattern shown above.',
       instruction: 'Complete this override decision log. Fill in the blanks to document each override with its rationale and outcome — this calibrates your judgment over time.',
       language: 'markdown',
       filename: 'OVERRIDE_LOG.md',
@@ -110,6 +113,7 @@ const content: LessonContent = {
     },
     {
       type: 'multiple-choice',
+      hint: 'Focus on the primary goal, not secondary benefits.',
       question: 'All five agents recommend GraphQL for your new project. Your team has never used GraphQL, your API has 4 endpoints, and you ship in 2 weeks. What do you do?',
       options: [
         'Trust the agents — five agreeing is strong signal',
@@ -129,6 +133,7 @@ const content: LessonContent = {
     // === THE PARADOX ===
     {
       type: 'compare',
+      hint: 'Look at the key differences between the two approaches.',
       title: 'The override paradox: when to trust vs when to override',
       body: 'Agents are right 90% on implementation, wrong 30-40% on architecture. Your job is knowing which category you are in.',
       left: {
@@ -149,6 +154,7 @@ const content: LessonContent = {
     },
     {
       type: 'multiple-choice',
+      hint: 'Think about which option is most specific to this concept.',
       question: 'You have 8 years of experience in payments systems. An agent recommends storing card tokens in a new way you have never seen. What is the right move?',
       options: [
         'Trust the agent — it may know a newer pattern you have not encountered',
@@ -163,6 +169,7 @@ const content: LessonContent = {
     // === MATCH: OVERRIDE SCENARIOS ===
     {
       type: 'match',
+      hint: 'Find the unique connection between each pair.',
       instruction: 'Match each override scenario to the correct decision and reasoning:',
       leftItems: [
         'Agent picks NoSQL for relational data',
@@ -181,6 +188,7 @@ const content: LessonContent = {
     // === PROMPT-LAB: OVERRIDING WRONG ADVICE ===
     {
       type: 'prompt-lab',
+      hint: 'Be specific about what you want — vague prompts get vague responses.',
       instruction: 'Write a prompt overriding an agent that confidently recommends MongoDB for an app that clearly needs relational joins. The agent is wrong — your data is highly relational (users, orders, products with many-to-many relationships). Push back with specific reasoning.',
       scenario: 'You are building an e-commerce platform with users, orders, products, categories, and reviews — all heavily interrelated. An agent recommends MongoDB because "it scales better." You know this data is deeply relational and will require complex joins for reports, dashboards, and order history. Override the agent with a clear, reasoned response.',
       starterPrompt: 'Sounds good, use MongoDB.',
@@ -205,6 +213,7 @@ const content: LessonContent = {
     },
     {
       type: 'compare',
+      hint: 'Focus on what makes one approach more appropriate here.',
       title: 'Deferring to agent consensus vs applying domain expertise',
       body: 'When all agents agree on MongoDB for your clearly relational data, see the difference between deferring and applying your own judgment.',
       left: {
@@ -227,6 +236,7 @@ const content: LessonContent = {
     // === PRACTICAL SCENARIOS ===
     {
       type: 'multiple-choice',
+      hint: 'Consider what the lesson content emphasized.',
       question: 'Your agent fleet recommends refactoring an ugly auth module (callbacks, no tests). But this code has had zero bugs in 18 months, handles 50K daily requests, and compliance approved this exact implementation. What do you do?',
       options: [
         'Refactor — the code quality metrics clearly show it needs improvement',
@@ -239,6 +249,7 @@ const content: LessonContent = {
     },
     {
       type: 'multiple-choice',
+      hint: 'One option stands out when you think about the core purpose.',
       question: 'Three agents recommend breaking your monolith into services. Your monolith deploys in 30 seconds, has 95% test coverage, and your team of two ships features daily. Override?',
       options: [
         'No — microservices are objectively better architecture',
@@ -251,6 +262,7 @@ const content: LessonContent = {
     },
     {
       type: 'multiple-choice',
+      hint: 'Read each option carefully — one fits the context best.',
       question: 'You choose SQLite for a production web app. Every agent says use PostgreSQL for better scaling and concurrency. Your app serves 500 users on a $20/month VPS. SQLite with WAL handles 10x your load. Who is right?',
       options: [
         'The agents — PostgreSQL is objectively better for production',
@@ -270,6 +282,7 @@ const content: LessonContent = {
     // === DOCUMENTING OVERRIDES ===
     {
       type: 'multiple-choice',
+      hint: 'Eliminate the options that only partially fit.',
       question: 'Six months from now, a new team member sees your SQLite choice and thinks it is a mistake. Without documentation, what happens?',
       options: [
         'Nothing — they will ask you about it',
@@ -282,6 +295,7 @@ const content: LessonContent = {
     },
     {
       type: 'code-fill',
+      hint: 'Use the exact syntax from the lesson examples.',
       instruction: 'Complete this Architecture Decision Record. Fill in the override rationale and expected outcomes to make the reasoning explicit and reviewable.',
       language: 'markdown',
       filename: 'docs/adr/003-database-choice.md',
@@ -296,6 +310,7 @@ const content: LessonContent = {
     },
     {
       type: 'order',
+      hint: 'Consider what depends on what — prerequisites first.',
       instruction: 'Order the steps of a proper override decision process:',
       items: [
         'Revisit at 30/60/90 days to calibrate',
@@ -310,6 +325,7 @@ const content: LessonContent = {
     // === CALIBRATION OVER TIME ===
     {
       type: 'multiple-choice',
+      hint: 'Focus on the primary goal, not secondary benefits.',
       question: 'After logging 25 override decisions, you find you override correctly on infrastructure 85% of the time but incorrectly on frontend architecture 60% of the time. What does this data tell you?',
       options: [
         'You should stop overriding entirely',
@@ -322,6 +338,7 @@ const content: LessonContent = {
     },
     {
       type: 'multiple-choice',
+      hint: 'Think about which option is most specific to this concept.',
       question: 'Your override log shows you were wrong 4 out of 5 times when overriding agent recommendations about CSS architecture. What should you change?',
       options: [
         'Stop overriding entirely — agents know more than you',
@@ -341,6 +358,7 @@ const content: LessonContent = {
     // === SYNTHESIS ===
     {
       type: 'multiple-choice',
+      hint: 'Consider what the lesson content emphasized.',
       question: 'What is the key difference between an "agent operator" and an "agent architect"?',
       options: [
         'Operators use more agents than architects',

@@ -12,6 +12,7 @@ const content: LessonContent = {
     // CONVERTED: info → multiple-choice (#1)
     {
       type: 'multiple-choice',
+      hint: 'Read each option carefully — one fits the context best.',
       question: 'What does a merge conflict tell you about your fleet decomposition?',
       options: [
         'Your decomposition was bad and you need to start over',
@@ -62,6 +63,7 @@ const content: LessonContent = {
     // === UNDERSTANDING INTENT — CONVERTED: info → multiple-choice (#3) ===
     {
       type: 'multiple-choice',
+      hint: 'Eliminate the options that only partially fit.',
       question: 'When resolving a merge conflict between two agents, what should you read FIRST?',
       options: [
         'The git diff to see exactly which lines changed',
@@ -75,6 +77,7 @@ const content: LessonContent = {
     // CONVERTED: code-demo (conflict) → code-fill (#4)
     {
       type: 'code-fill',
+      hint: 'Fill in values that match the pattern shown above.',
       instruction: 'This is a merge conflict between two agents. Both modified the main router. Fill in what each agent was adding:',
       language: 'typescript',
       filename: 'src/routes/index.ts',
@@ -89,6 +92,7 @@ const content: LessonContent = {
     },
     {
       type: 'multiple-choice',
+      hint: 'Focus on the primary goal, not secondary benefits.',
       question: 'Looking at this conflict, what\'s the correct resolution?',
       options: [
         'Keep only the auth agent\'s changes (they were first)',
@@ -102,6 +106,7 @@ const content: LessonContent = {
     // CONVERTED: code-demo (resolution) → code-fill (#5)
     {
       type: 'code-fill',
+      hint: 'Use the exact syntax from the lesson examples.',
       instruction: 'Complete the correct resolution that preserves both agents\' intents. Order matters: middleware before the routes it protects.',
       language: 'typescript',
       filename: 'src/routes/index.ts',
@@ -126,6 +131,7 @@ const content: LessonContent = {
     // === COMPARE (already interactive) ===
     {
       type: 'compare',
+      hint: 'Look at the key differences between the two approaches.',
       title: 'Manual vs structured resolution',
       body: 'Two approaches to the same merge conflict. Manual resolution reads diffs line by line. Structured resolution starts by understanding each agent\'s intent before touching any code.',
       question: 'Which approach produces fewer regressions in the merged result?',
@@ -144,6 +150,7 @@ const content: LessonContent = {
     // === MATCH (already interactive) ===
     {
       type: 'match',
+      hint: 'Find the unique connection between each pair.',
       instruction: 'Match each conflict type to the best resolution strategy:',
       leftItems: [
         'Same line edited differently',
@@ -170,6 +177,7 @@ const content: LessonContent = {
     // === RESOLUTION STRATEGIES — CONVERTED: info → multiple-choice (#6) ===
     {
       type: 'multiple-choice',
+      hint: 'Think about which option is most specific to this concept.',
       question: 'What are the three types of merge conflicts in fleet work?',
       options: [
         'Syntax errors, logic errors, and runtime errors',
@@ -183,6 +191,7 @@ const content: LessonContent = {
     // CONVERTED: code-demo (Strategy 1) → code-fill (#7)
     {
       type: 'code-fill',
+      hint: 'Each blank follows the conventions demonstrated earlier.',
       instruction: 'Complete the manual merge commands for resolving an additive conflict:',
       language: 'bash',
       filename: 'terminal',
@@ -197,6 +206,7 @@ const content: LessonContent = {
     // CONVERTED: code-demo (Strategy 2) → code-fill (#8)
     {
       type: 'code-fill',
+      hint: 'Look at the surrounding code for context clues.',
       instruction: 'Complete this agent-assisted merge prompt for complex conflicts:',
       language: 'markdown',
       filename: 'merge-assist-prompt.md',
@@ -212,6 +222,7 @@ const content: LessonContent = {
     // CONVERTED: code-demo (Strategy 3) → code-fill (#9)
     {
       type: 'code-fill',
+      hint: 'The answer matches the API or syntax just explained.',
       instruction: 'Complete the commands for Strategy 3: re-run with better boundaries when the conflict is structural:',
       language: 'bash',
       filename: 'terminal',
@@ -227,6 +238,7 @@ const content: LessonContent = {
     },
     {
       type: 'multiple-choice',
+      hint: 'Consider what the lesson content emphasized.',
       question: 'Two agents both refactored the same utility function differently. One made it async, the other split it into two functions. What strategy?',
       options: [
         'Manual merge — combine both refactors',
@@ -246,6 +258,7 @@ const content: LessonContent = {
     // === PREVENTION — CONVERTED: info → multiple-choice (#10) ===
     {
       type: 'multiple-choice',
+      hint: 'One option stands out when you think about the core purpose.',
       question: 'After resolving a conflict, what should you do to prevent the same class of conflict in the future?',
       options: [
         'Hope it does not happen again',
@@ -259,6 +272,7 @@ const content: LessonContent = {
     // CONVERTED: code-demo → code-fill (#11)
     {
       type: 'code-fill',
+      hint: 'Fill in values that match the pattern shown above.',
       instruction: 'Complete this conflict prevention playbook for the top fleet conflict hotspots:',
       language: 'markdown',
       filename: 'conflict-prevention.md',
@@ -274,6 +288,7 @@ const content: LessonContent = {
     },
     {
       type: 'order',
+      hint: 'Consider what depends on what — prerequisites first.',
       instruction: 'After resolving a conflict, rank these prevention actions from MOST effective (top) to LEAST effective:',
       items: [
         'Update CLAUDE.md with explicit file ownership for the contested area',

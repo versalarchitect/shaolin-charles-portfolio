@@ -18,6 +18,7 @@ const content: LessonContent = {
     // === WRITING VISUAL SPECS ===
     {
       type: 'compare',
+      hint: 'Look at the key differences between the two approaches.',
       title: 'Writing visual specs that constrain without micromanaging',
       body: 'The same anti-patterns from Lesson 2-1 apply to visual specs. Find the sweet spot.',
       question: 'Which approach gives the agent enough guidance to produce good design?',
@@ -43,6 +44,7 @@ const content: LessonContent = {
     // === EVALUATING OUTPUT ===
     {
       type: 'multiple-choice',
+      hint: 'Read each option carefully — one fits the context best.',
       question: 'Your evaluation of agent UI output has two layers. What is Layer 2?',
       options: [
         'Does it pass TypeScript type checks?',
@@ -103,6 +105,7 @@ const content: LessonContent = {
     },
     {
       type: 'multiple-choice',
+      hint: 'Eliminate the options that only partially fit.',
       question: 'An agent delivers a dashboard that meets all acceptance criteria. The cards have p-2 padding and gap-1 between them. Everything is technically correct but feels cramped. What do you do?',
       options: [
         'Accept it — the spec is satisfied',
@@ -122,6 +125,7 @@ const content: LessonContent = {
     // === SPECIFIC VISUAL FEEDBACK ===
     {
       type: 'order',
+      hint: 'Consider what depends on what — prerequisites first.',
       instruction: 'Order these visual feedback statements from worst (vaguest) to best (most actionable):',
       items: [
         'Increase the page title from text-2xl to text-3xl and add mb-8 below it to separate it from the content grid',
@@ -133,6 +137,7 @@ const content: LessonContent = {
     },
     {
       type: 'compare',
+      hint: 'Focus on what makes one approach more appropriate here.',
       title: 'Vague feedback vs specific feedback',
       body: 'The way you describe visual issues determines whether the agent can fix them in one round.',
       question: 'Which feedback will the agent execute correctly on the first try?',
@@ -151,6 +156,7 @@ const content: LessonContent = {
     },
     {
       type: 'code-fill',
+      hint: 'Fill in values that match the pattern shown above.',
       instruction: 'Rewrite this vague visual feedback into specific, actionable directives:',
       language: 'text',
       filename: 'feedback-fix.txt',
@@ -165,6 +171,7 @@ const content: LessonContent = {
     },
     {
       type: 'multiple-choice',
+      hint: 'Focus on the primary goal, not secondary benefits.',
       question: 'Which feedback will produce the best result in a single iteration?',
       options: [
         '"The form needs work"',
@@ -179,6 +186,7 @@ const content: LessonContent = {
     // === COMMON VISUAL ISSUES ===
     {
       type: 'multiple-choice',
+      hint: 'Think about which option is most specific to this concept.',
       question: 'Which of these six common agent UI issues is the MOST impactful on usability?',
       options: [
         'Tight padding (minimal spacing)',
@@ -191,6 +199,7 @@ const content: LessonContent = {
     },
     {
       type: 'code-fill',
+      hint: 'Use the exact syntax from the lesson examples.',
       instruction: 'Fix this flat typographic hierarchy. Each heading level needs distinct size, weight, and style:',
       language: 'tsx',
       filename: 'hierarchy-fix.tsx',
@@ -204,6 +213,7 @@ const content: LessonContent = {
     },
     {
       type: 'match',
+      hint: 'Find the unique connection between each pair.',
       instruction: 'Match each visual issue to its fix:',
       leftItems: ['Everything feels cramped', 'All text looks the same size', 'Related items seem disconnected', 'Buttons too small on mobile'],
       rightItems: ['Increase padding (p-3 → p-6) and gap values', 'Vary font size and weight (text-sm → text-2xl, font-semibold)', 'Group with borders, shared backgrounds, or tighter spacing', 'Set minimum 44px touch targets (min-h-[44px] min-w-[44px])'],
@@ -212,6 +222,7 @@ const content: LessonContent = {
     },
     {
       type: 'code-fill',
+      hint: 'Each blank follows the conventions demonstrated earlier.',
       instruction: 'Complete the Tailwind classes to fix this cramped, flat card:',
       language: 'tsx',
       filename: 'src/components/stat-card.tsx',
@@ -234,6 +245,7 @@ const content: LessonContent = {
     // === GOOD-ENOUGH VS PIXEL-PERFECT ===
     {
       type: 'match',
+      hint: 'Match each term to its most specific definition.',
       instruction: 'Match each visual issue to whether you should fix it or ship it:',
       leftItems: ['Card border is rounded-lg instead of rounded-xl', 'Primary CTA looks identical to a destructive Delete button', 'Gap is gap-4 when gap-5 might look slightly better', 'Navigation hierarchy is completely flat — users cannot find key actions'],
       rightItems: ['FIX: Usability problem, users cannot distinguish safe from dangerous', 'SHIP: Preference difference, not a user experience impact', 'SHIP: Marginal improvement, not worth an iteration', 'FIX: Navigation confusion will cause real user friction'],
@@ -242,6 +254,7 @@ const content: LessonContent = {
     },
     {
       type: 'multiple-choice',
+      hint: 'Consider what the lesson content emphasized.',
       question: 'Which issue is worth another iteration to fix?',
       options: [
         'Card border radius is rounded-lg instead of your preferred rounded-xl',
@@ -281,6 +294,7 @@ const content: LessonContent = {
     // === RESPONSIVE EVALUATION ===
     {
       type: 'multiple-choice',
+      hint: 'One option stands out when you think about the core purpose.',
       question: 'You open dev tools and resize to 375px. Which of these is a FUNCTIONAL failure, not just a cosmetic issue?',
       options: [
         'Cards are in a single column instead of the desktop 3-column grid',
@@ -293,6 +307,7 @@ const content: LessonContent = {
     },
     {
       type: 'multiple-choice',
+      hint: 'Read each option carefully — one fits the context best.',
       question: 'You resize the agent-built interface to 375px and the primary action button is below the fold, requiring a scroll. The agent technically did not violate any spec. What do you do?',
       options: [
         'Accept it — mobile UX is a stretch goal',
@@ -307,6 +322,7 @@ const content: LessonContent = {
     // === SYNTHESIS ===
     {
       type: 'multiple-choice',
+      hint: 'Eliminate the options that only partially fit.',
       question: 'As AI agents get more capable at generating interfaces, what skill becomes MORE valuable, not less?',
       options: [
         'Writing CSS from scratch',

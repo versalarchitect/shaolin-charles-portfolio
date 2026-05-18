@@ -11,6 +11,7 @@ const content: LessonContent = {
     },
     {
       type: 'multiple-choice',
+      hint: 'Read each option carefully — one fits the context best.',
       question: 'The capstone product is a Feedback Board SaaS. Which features make it a real product rather than a toy project?',
       options: [
         'It has a pretty landing page and animated transitions',
@@ -85,6 +86,7 @@ const content: LessonContent = {
     // === PHASE 1: WRITE THE SPEC ===
     {
       type: 'multiple-choice',
+      hint: 'Eliminate the options that only partially fit.',
       question: 'Your first action in the capstone is writing the product spec. Which of these is the most important reason the spec must include all five sections (Goal, Constraints, Acceptance Criteria, Technical Boundaries, Out of Scope)?',
       options: [
         'It makes the document look more professional',
@@ -97,6 +99,7 @@ const content: LessonContent = {
     },
     {
       type: 'code-fill',
+      hint: 'Fill in values that match the pattern shown above.',
       instruction: 'Complete the key sections of this Feedback Board product spec that the agent will use as its execution contract:',
       language: 'markdown',
       filename: 'SPEC.md',
@@ -112,6 +115,7 @@ const content: LessonContent = {
     },
     {
       type: 'code-fill',
+      hint: 'Use the exact syntax from the lesson examples.',
       instruction: 'Complete the Out of Scope section of the Feedback Board spec to prevent scope creep:',
       language: 'markdown',
       filename: 'SPEC.md',
@@ -138,6 +142,7 @@ const content: LessonContent = {
     // === PHASE 2: AUTH + DATABASE ===
     {
       type: 'multiple-choice',
+      hint: 'Focus on the primary goal, not secondary benefits.',
       question: 'Phase 2 splits auth and database into two separate agent prompts. Why not combine them into one prompt?',
       options: [
         'The agent cannot handle both topics in one conversation',
@@ -169,6 +174,7 @@ const content: LessonContent = {
     // === PHASE 3: CORE FEATURES ===
     {
       type: 'multiple-choice',
+      hint: 'Think about which option is most specific to this concept.',
       question: 'Phase 3 directs three features: feedback submission, voting, and admin status. The agent delivers the voting feature but forgot to toggle off votes (clicking again does not remove the vote). What do you do?',
       options: [
         'Accept it — users rarely need to un-vote',
@@ -206,6 +212,7 @@ const content: LessonContent = {
     // === PHASE 4: INTERFACE ===
     {
       type: 'multiple-choice',
+      hint: 'Consider what the lesson content emphasized.',
       question: 'Before directing the interface layout, which visual constraints should you specify to get a polished result on the first attempt?',
       options: [
         'Just say "make it look professional" and let the agent decide',
@@ -224,6 +231,7 @@ const content: LessonContent = {
     },
     {
       type: 'multiple-choice',
+      hint: 'One option stands out when you think about the core purpose.',
       question: 'The agent delivers the board page. Cards have p-2 padding, no gap between them, and the title is the same size as the description. Which feedback do you give?',
       options: [
         '"Make the cards look better"',
@@ -243,6 +251,7 @@ const content: LessonContent = {
     // === PHASE 5: VERIFY EVERYTHING ===
     {
       type: 'multiple-choice',
+      hint: 'Read each option carefully — one fits the context best.',
       question: 'Phase 5 applies every verification skill from Tier 2. Which of these is the MOST dangerous to skip before deploying the Feedback Board?',
       options: [
         'Checking that status badge colors match the spec',
@@ -274,6 +283,7 @@ const content: LessonContent = {
     // === PHASE 6: DEPLOY + DOCUMENT ===
     {
       type: 'multiple-choice',
+      hint: 'Eliminate the options that only partially fit.',
       question: 'Before deploying, you direct the agent to run the build. It passes — but you notice a hardcoded localhost:3000 URL in the codebase. Why is this a problem for production?',
       options: [
         'Localhost URLs are slower than production URLs',
@@ -304,6 +314,7 @@ const content: LessonContent = {
 
     {
       type: 'match',
+      hint: 'Find the unique connection between each pair.',
       instruction: 'Match each Tier 2 skill to the capstone phase where you use it:',
       leftItems: ['Spec writing (2-1)', 'Auth security audit (2-3)', 'Scope discipline (2-10)', 'Code verification (2-8)', 'Deployment (2-11)'],
       rightItems: ['Phase 1: Write the product spec', 'Phase 2: Direct auth + database', 'Phase 3: Direct core features', 'Phase 5: Verify everything', 'Phase 6: Deploy + document'],
@@ -361,6 +372,7 @@ const content: LessonContent = {
     },
     {
       type: 'multiple-choice',
+      hint: 'Focus on the primary goal, not secondary benefits.',
       question: 'You have completed the full capstone — idea to production. What is the core skill you demonstrated across all six phases?',
       options: [
         'Writing efficient code faster than an AI agent',

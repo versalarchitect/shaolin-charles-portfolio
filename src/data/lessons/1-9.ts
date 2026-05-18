@@ -23,6 +23,7 @@ const content: LessonContent = {
     // === BRANCH STRATEGY ===
     {
       type: 'multiple-choice',
+      hint: 'Read each option carefully — one fits the context best.',
       question: 'Why should you create a new branch for EVERY task you give an agent, even small ones?',
       options: [
         'Branches make git commands run faster',
@@ -89,6 +90,7 @@ const content: LessonContent = {
     // === INTERACTIVE: COMPARE, CODE-FILL, INTERACTIVE-DIAGRAM ===
     {
       type: 'compare',
+      hint: 'Look at the key differences between the two approaches.',
       title: 'Focused PR vs mega PR',
       body: 'The size of your pull request directly affects review quality.',
       question: 'Which PR is easier to review and safer to merge?',
@@ -107,6 +109,7 @@ const content: LessonContent = {
     },
     {
       type: 'code-fill',
+      hint: 'Fill in values that match the pattern shown above.',
       instruction: 'Complete the git commands using conventional branch naming and commit format:',
       language: 'shell',
       template: 'git checkout -b {{branch_type}}/{{branch_name}}\n\n# ... make changes ...\n\ngit add src/lib/validation.ts\ngit commit -m "{{commit_type}}: {{commit_desc}}"',
@@ -168,6 +171,7 @@ const content: LessonContent = {
     // === COMMIT HYGIENE ===
     {
       type: 'compare',
+      hint: 'Focus on what makes one approach more appropriate here.',
       title: 'Bad vs good agent commit messages',
       body: 'The commit message is your only context weeks later for why the agent made a choice.',
       question: 'Which style gives reviewers the context they need?',
@@ -186,6 +190,7 @@ const content: LessonContent = {
     },
     {
       type: 'multiple-choice',
+      hint: 'Eliminate the options that only partially fit.',
       question: 'Which commit message best follows conventions for agent-generated code?',
       options: [
         '"Updated several files across the project"',
@@ -200,6 +205,7 @@ const content: LessonContent = {
     // === REVIEWING AGENT PRs ===
     {
       type: 'match',
+      hint: 'Find the unique connection between each pair.',
       instruction: 'When reviewing agent PRs, match each review focus to what you are looking for:',
       leftItems: [
         'Logic errors',
@@ -218,6 +224,7 @@ const content: LessonContent = {
     },
     {
       type: 'code-fill',
+      hint: 'Use the exact syntax from the lesson examples.',
       instruction: 'Complete these git commands to efficiently review an agent PR. Focus on scope first, then dive into specifics:',
       language: 'bash',
       filename: 'review-workflow.sh',
@@ -231,6 +238,7 @@ const content: LessonContent = {
     },
     {
       type: 'multiple-choice',
+      hint: 'Focus on the primary goal, not secondary benefits.',
       question: 'When reviewing an agent PR, what should you focus on most?',
       options: [
         'Code formatting and style consistency',
@@ -250,6 +258,7 @@ const content: LessonContent = {
     // === MERGE CONFLICTS ===
     {
       type: 'multiple-choice',
+      hint: 'Think about which option is most specific to this concept.',
       question: 'When an agent branch has merge conflicts, what should you do?',
       options: [
         'Ask the agent to resolve the conflicts automatically',
@@ -262,6 +271,7 @@ const content: LessonContent = {
     },
     {
       type: 'code-fill',
+      hint: 'Each blank follows the conventions demonstrated earlier.',
       instruction: 'Complete the conflict resolution workflow. Rebase the agent branch onto the latest main:',
       language: 'bash',
       filename: 'resolve-conflicts.sh',
@@ -283,6 +293,7 @@ const content: LessonContent = {
     // === GIT WORKTREES ===
     {
       type: 'code-fill',
+      hint: 'Look at the surrounding code for context clues.',
       instruction: 'Set up git worktrees for parallel agent work. Each worktree creates a separate working directory linked to the same repo:',
       language: 'bash',
       filename: 'worktree-setup.sh',
@@ -296,6 +307,7 @@ const content: LessonContent = {
     },
     {
       type: 'multiple-choice',
+      hint: 'Consider what the lesson content emphasized.',
       question: 'What problem do git worktrees solve for parallel agent workflows?',
       options: [
         'They make git commands run faster',
@@ -310,6 +322,7 @@ const content: LessonContent = {
     // === BEST PRACTICES ===
     {
       type: 'multiple-choice',
+      hint: 'One option stands out when you think about the core purpose.',
       question: 'Which of these is a NON-NEGOTIABLE rule for git with agents?',
       options: [
         'Agents should commit directly to main to save time',
@@ -322,6 +335,7 @@ const content: LessonContent = {
     },
     {
       type: 'code-fill',
+      hint: 'The answer matches the API or syntax just explained.',
       instruction: 'Configure branch protection via GitHub CLI. Prevent agents and humans from bypassing review:',
       language: 'bash',
       filename: 'branch-protection.sh',
@@ -336,6 +350,7 @@ const content: LessonContent = {
     // === WORKFLOW EXERCISE ===
     {
       type: 'order',
+      hint: 'Consider what depends on what — prerequisites first.',
       instruction: 'Order the complete agent git workflow from start to finish:',
       items: [
         'Agent creates commits with clear messages',
@@ -364,6 +379,7 @@ const content: LessonContent = {
     // === FINAL ASSESSMENT ===
     {
       type: 'multiple-choice',
+      hint: 'Read each option carefully — one fits the context best.',
       question: 'An agent created a 150-file PR across 8 different modules. What is the best response?',
       options: [
         'Merge it quickly since the agent probably got it right',

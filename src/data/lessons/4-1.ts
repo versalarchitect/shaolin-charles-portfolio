@@ -18,6 +18,7 @@ const content: LessonContent = {
     // === THE AUDIT FRAMEWORK ===
     {
       type: 'multiple-choice',
+      hint: 'Read each option carefully — one fits the context best.',
       question: 'In the 3-search audit, what does it mean if an agent needs 4+ searches to find all relevant files for a feature?',
       options: [
         'The feature is complex and needs more documentation',
@@ -62,6 +63,7 @@ const content: LessonContent = {
     // === GOOD PATTERNS ===
     {
       type: 'multiple-choice',
+      hint: 'Eliminate the options that only partially fit.',
       question: 'What is the single highest-impact structural decision for agent navigability?',
       options: [
         'Using TypeScript strict mode in all files',
@@ -74,6 +76,7 @@ const content: LessonContent = {
     },
     {
       type: 'code-fill',
+      hint: 'Fill in values that match the pattern shown above.',
       instruction: 'Complete this feature-based directory structure. Fill in the file names following the consistent naming convention.',
       language: 'text',
       filename: 'directory-structure',
@@ -110,6 +113,7 @@ const content: LessonContent = {
     },
     {
       type: 'multiple-choice',
+      hint: 'Focus on the primary goal, not secondary benefits.',
       question: 'Your payments handler is payments.handler.ts. What MUST the users handler be named?',
       options: [
         'userController.ts — a common alternative convention',
@@ -122,6 +126,7 @@ const content: LessonContent = {
     },
     {
       type: 'multiple-choice',
+      hint: 'Think about which option is most specific to this concept.',
       question: 'An agent modifies payments.service.ts and needs to update its test. Where should the test file live?',
       options: [
         '__tests__/features/payments/payments.service.test.ts — in a parallel test directory tree',
@@ -134,6 +139,7 @@ const content: LessonContent = {
     },
     {
       type: 'compare',
+      hint: 'Look at the key differences between the two approaches.',
       title: 'Tangled vs feature-based structure',
       body: 'Layer-based organization scatters related files across the tree. Feature-based colocation puts everything an agent needs in one place.',
       left: {
@@ -165,6 +171,7 @@ const content: LessonContent = {
     },
     {
       type: 'multiple-choice',
+      hint: 'Consider what the lesson content emphasized.',
       question: 'An agent needs to add a new validation rule to the "orders" feature. Which structure lets it find ALL relevant files in one directory listing?',
       options: [
         'src/validators/orders.ts + src/handlers/orders.ts + tests/validators/orders.test.ts',
@@ -184,6 +191,7 @@ const content: LessonContent = {
     // === BAD PATTERNS ===
     {
       type: 'multiple-choice',
+      hint: 'One option stands out when you think about the core purpose.',
       question: 'A shared/utils/ directory has grown to 50+ files. Why is this an anti-pattern for agent navigability?',
       options: [
         'Utility functions should never be shared between features',
@@ -196,6 +204,7 @@ const content: LessonContent = {
     },
     {
       type: 'code-fill',
+      hint: 'Use the exact syntax from the lesson examples.',
       instruction: 'Identify which files in this shared/ directory actually belong in feature modules. Fill in where each misplaced file should go.',
       language: 'text',
       filename: 'anti-pattern-shared',
@@ -222,6 +231,7 @@ const content: LessonContent = {
     },
     {
       type: 'multiple-choice',
+      hint: 'Read each option carefully — one fits the context best.',
       question: 'Module A imports from Module B, which imports from Module A. Why is this especially bad for AI agents?',
       options: [
         'Circular imports cause compilation errors in TypeScript',
@@ -234,6 +244,7 @@ const content: LessonContent = {
     },
     {
       type: 'multiple-choice',
+      hint: 'Eliminate the options that only partially fit.',
       question: 'An agent searches for "payment processing." Which file name helps it find the right file without extra searches?',
       options: [
         'processor.ts — short and concise',
@@ -246,6 +257,7 @@ const content: LessonContent = {
     },
     {
       type: 'multiple-choice',
+      hint: 'Focus on the primary goal, not secondary benefits.',
       question: 'Your shared/utils/ directory has 47 files. An agent needs to find the currency formatter. What is the architectural failure?',
       options: [
         'The currency formatter should be in a separate npm package',
@@ -265,6 +277,7 @@ const content: LessonContent = {
     // === REFACTORING FOR NAVIGABILITY ===
     {
       type: 'multiple-choice',
+      hint: 'Think about which option is most specific to this concept.',
       question: 'When migrating a large codebase to feature-based structure, what should you migrate first?',
       options: [
         'Everything at once for consistency',
@@ -277,6 +290,7 @@ const content: LessonContent = {
     },
     {
       type: 'code-fill',
+      hint: 'Each blank follows the conventions demonstrated earlier.',
       instruction: 'Complete this migration from layer-based to feature-based. Fill in the new file paths and the public API exports.',
       language: 'typescript',
       filename: 'migration-example.ts',
@@ -308,6 +322,7 @@ export type { Payment } from './payments.model'`,
     },
     {
       type: 'multiple-choice',
+      hint: 'Consider what the lesson content emphasized.',
       question: 'The orders feature needs something from the payments feature. Where should it import from?',
       options: [
         'features/payments/payments.service.ts — directly from the internal file',
@@ -320,6 +335,7 @@ export type { Payment } from './payments.model'`,
     },
     {
       type: 'order',
+      hint: 'Consider what depends on what — prerequisites first.',
       instruction: 'Order the refactoring steps for migrating to a feature-based structure:',
       items: [
         'Move domain-specific code from shared/ into the feature module',
@@ -339,6 +355,7 @@ export type { Payment } from './payments.model'`,
     // === NEW INTERACTIVE STEPS ===
     {
       type: 'match',
+      hint: 'Find the unique connection between each pair.',
       instruction: 'Match each project structure concept to the benefit it provides for AI agents:',
       leftItems: ['Feature-based directories', 'Colocation', 'Clear module boundaries', 'Index exports'],
       rightItems: ['AI finds all related code in one listing', 'Tests live next to implementation', 'Agents can work in parallel without conflicts', 'Public API is explicit'],
@@ -347,6 +364,7 @@ export type { Payment } from './payments.model'`,
     },
     {
       type: 'prompt-lab',
+      hint: 'Be specific about what you want — vague prompts get vague responses.',
       instruction: 'Write a prompt directing an AI agent to refactor from a layer-based directory structure to a feature-based structure.',
       scenario: 'You have a Node.js project organized by technical layer: src/controllers/, src/services/, src/models/, src/validators/. There are 3 features: payments, users, and orders. Each feature has files scattered across all 4 directories. You want to reorganize into src/features/[domain]/ with colocated files.',
       starterPrompt: 'Reorganize the project.',
@@ -379,6 +397,7 @@ export type { Payment } from './payments.model'`,
     // === PRACTICAL EVALUATION ===
     {
       type: 'multiple-choice',
+      hint: 'One option stands out when you think about the core purpose.',
       question: 'You run a navigability audit on 5 recent agent tasks with these search counts: 2, 1, 5, 3, 4. What is the average and what does it mean?',
       options: [
         'Average 3.0 — excellent navigability, no action needed',
@@ -391,6 +410,7 @@ export type { Payment } from './payments.model'`,
     },
     {
       type: 'multiple-choice',
+      hint: 'Read each option carefully — one fits the context best.',
       question: 'Your navigability audit shows: payments (2 searches), users (2 searches), notifications (6 searches), orders (3 searches), auth (7 searches). Where do you refactor first?',
       options: [
         'Start with payments since it is already good — make it even better',
@@ -403,6 +423,7 @@ export type { Payment } from './payments.model'`,
     },
     {
       type: 'code-fill',
+      hint: 'Look at the surrounding code for context clues.',
       instruction: 'Complete this ideal project structure. Fill in the directory names that make the codebase self-documenting for agents.',
       language: 'text',
       filename: 'ideal-structure',
@@ -419,6 +440,7 @@ export type { Payment } from './payments.model'`,
     // === SYNTHESIS ===
     {
       type: 'multiple-choice',
+      hint: 'Eliminate the options that only partially fit.',
       question: 'What is the single principle that all agent-friendly architecture decisions should be evaluated against?',
       options: [
         'Minimize the total number of files in the project',

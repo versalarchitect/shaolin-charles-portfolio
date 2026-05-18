@@ -11,6 +11,7 @@ const content: LessonContent = {
     },
     {
       type: 'multiple-choice',
+      hint: 'Read each option carefully — one fits the context best.',
       question: 'Why do AI agents tend to over-architect systems?',
       options: [
         'They are designed to create complex systems',
@@ -121,6 +122,7 @@ const content: LessonContent = {
     },
     {
       type: 'match',
+      hint: 'Find the unique connection between each pair.',
       instruction: 'Match each AI anti-pattern to the problem it causes in your codebase.',
       leftItems: ['God object', 'Over-abstraction', 'Premature optimization', 'Tight coupling'],
       rightItems: ['Single point of failure', 'Unnecessary complexity', 'Wasted effort on non-bottlenecks', 'Changes cascade across modules'],
@@ -129,6 +131,7 @@ const content: LessonContent = {
     },
     {
       type: 'multiple-choice',
+      hint: 'Eliminate the options that only partially fit.',
       question: 'An agent suggests event sourcing because "you might want an audit trail later." You have 50 users and no audit requirement. What is the correct evaluation?',
       options: [
         'Accept — better to have it and not need it',
@@ -141,6 +144,7 @@ const content: LessonContent = {
     },
     {
       type: 'multiple-choice',
+      hint: 'Focus on the primary goal, not secondary benefits.',
       question: 'An agent suggests a microservices architecture. Your team is 2 engineers with a 3-month deadline. Which evaluation question catches this?',
       options: [
         'Question 1: Does it fit requirements? — Microservices solve the wrong problem',
@@ -153,6 +157,7 @@ const content: LessonContent = {
     },
     {
       type: 'match',
+      hint: 'Match each term to its most specific definition.',
       instruction: 'Match each complex architecture to its simpler alternative that solves 90% of the problem:',
       leftItems: ['Microservices', 'Event sourcing', 'CQRS', 'Message queue for 50 emails/day'],
       rightItems: ['Modular monolith with clear seams', 'Append-only log table', 'Separate read/write repositories in same service', 'Synchronous send in the request handler'],
@@ -168,6 +173,7 @@ const content: LessonContent = {
     // === COMMON AI ANTI-PATTERNS ===
     {
       type: 'multiple-choice',
+      hint: 'Think about which option is most specific to this concept.',
       question: 'An agent creates an interface with exactly one implementation, a factory function that produces one type of object, and a plugin system with one plugin. What anti-pattern is this?',
       options: [
         'Premature optimization — the code is not slow enough to need abstraction',
@@ -180,6 +186,7 @@ const content: LessonContent = {
     },
     {
       type: 'compare',
+      hint: 'Look at the key differences between the two approaches.',
       title: 'Over-abstraction vs right-sized modules',
       body: 'The agent created 8 files for something that needs 4. Each abstraction layer adds navigation cost for the next agent.',
       left: {
@@ -200,6 +207,7 @@ const content: LessonContent = {
     },
     {
       type: 'compare',
+      hint: 'Focus on what makes one approach more appropriate here.',
       title: 'Premature optimization vs cargo-culting',
       body: 'Two AI anti-patterns that add complexity for zero benefit. Both stem from agents applying training data patterns without evaluating fit.',
       left: {
@@ -220,6 +228,7 @@ const content: LessonContent = {
     },
     {
       type: 'multiple-choice',
+      hint: 'Consider what the lesson content emphasized.',
       question: 'An agent suggests implementing CQRS (separate read/write models) for your blog platform that has 100 daily active users and standard CRUD operations. What is your evaluation?',
       options: [
         'Accept — CQRS is a best practice for scalable systems',
@@ -239,6 +248,7 @@ const content: LessonContent = {
     // === BUILDING A REVIEW CHECKLIST ===
     {
       type: 'multiple-choice',
+      hint: 'One option stands out when you think about the core purpose.',
       question: 'Why should you use a systematic checklist instead of gut feelings when evaluating agent architecture suggestions?',
       options: [
         'Checklists are faster than thinking',
@@ -251,6 +261,7 @@ const content: LessonContent = {
     },
     {
       type: 'code-fill',
+      hint: 'Fill in values that match the pattern shown above.',
       instruction: 'Complete this architecture review checklist. Fill in the evaluation criteria and scoring dimensions.',
       language: 'markdown',
       template: '# Architecture Review: [Agent Suggestion]\n\n## ___ (1-5)\n- What specific problem does this solve?\n- Do we actually HAVE this problem today?\n- Is the problem proven or ___?\n\n## Constraint Compliance (1-5)\n- ___ can maintain this? (currently: ___ engineers)\n- Fits ___?\n- Operational capacity exists?\n\n## ___ (1-5)\n- Is there a ___ alternative that solves 90%?\n- Can a new team member understand this in < 1 hour?\n\n## Verdict: Accept / Modify / ___',
@@ -268,6 +279,7 @@ const content: LessonContent = {
     },
     {
       type: 'multiple-choice',
+      hint: 'Read each option carefully — one fits the context best.',
       question: 'An agent suggests adding a message queue (RabbitMQ) for handling email notifications in your app that sends ~50 emails/day. Scores: Problem-Solution Fit: 2, Constraint Compliance: 3, Simplicity: 2, Operational Cost: 2, Reversibility: 3. What is your verdict?',
       options: [
         'Accept — message queues are industry standard for async processing',
@@ -287,6 +299,7 @@ const content: LessonContent = {
     // === NEW INTERACTIVE STEPS ===
     {
       type: 'prompt-lab',
+      hint: 'Be specific about what you want — vague prompts get vague responses.',
       instruction: 'Write a prompt rejecting the agent\'s architecture suggestion. The agent has suggested adding Redis caching to your API before any performance profiling has been done. Push back with evidence-based reasoning.',
       scenario: 'Your API serves 200 requests per minute with an average response time of 45ms. The agent says: "Let\'s add Redis caching to improve performance. I\'ll set up a Redis instance, add cache-aside logic to all read endpoints, and implement cache invalidation on writes." There is no evidence of a performance problem.',
       starterPrompt: 'Good idea, add it.',
@@ -317,6 +330,7 @@ const content: LessonContent = {
     },
     {
       type: 'compare',
+      hint: 'Consider the trade-offs discussed in the lesson.',
       title: 'Blindly accepting vs critically evaluating agent suggestions',
       body: 'The agent suggests adding Redis caching. See the difference between accepting without evidence and pushing back with data.',
       left: {
@@ -339,6 +353,7 @@ const content: LessonContent = {
     // === OVERRIDE SCENARIOS ===
     {
       type: 'compare',
+      hint: 'Look at the key differences between the two approaches.',
       title: 'Trust implementation vs override strategy',
       body: 'The agent does not know your team\'s strengths, deployment process, or product roadmap. Know when to trust and when to override.',
       left: {
@@ -359,6 +374,7 @@ const content: LessonContent = {
     },
     {
       type: 'multiple-choice',
+      hint: 'Eliminate the options that only partially fit.',
       question: 'Agent: "This service handles both user management and authentication. These should be separate microservices." Your team is 2 engineers. What is your evaluation?',
       options: [
         'Accept — separation of concerns is always better',
@@ -371,6 +387,7 @@ const content: LessonContent = {
     },
     {
       type: 'multiple-choice',
+      hint: 'Focus on the primary goal, not secondary benefits.',
       question: 'Agent: "Using a JSON file for config is not production-ready. We should use a proper config service with encryption and hot-reload." Your app has 5 config values that change yearly. Override or accept?',
       options: [
         'Accept — configuration services are industry best practice',
@@ -383,6 +400,7 @@ const content: LessonContent = {
     },
     {
       type: 'multiple-choice',
+      hint: 'Think about which option is most specific to this concept.',
       question: 'The agent suggests TypeScript strict mode with no-explicit-any for a rapid prototype that needs to ship in 3 days. You are the only developer. What is your evaluation?',
       options: [
         'Accept — strict types prevent bugs regardless of timeline',
@@ -402,6 +420,7 @@ const content: LessonContent = {
     // === PRACTICAL APPLICATION ===
     {
       type: 'order',
+      hint: 'Consider what depends on what — prerequisites first.',
       instruction: 'Order these architecture review criteria by priority (evaluate first → evaluate last):',
       items: [
         'Reversibility — can we undo this if wrong?',
@@ -414,6 +433,7 @@ const content: LessonContent = {
     },
     {
       type: 'multiple-choice',
+      hint: 'Consider what the lesson content emphasized.',
       question: 'You override an agent\'s microservices suggestion. How should you communicate the override?',
       options: [
         'Just say "no" and move on',
@@ -428,6 +448,7 @@ const content: LessonContent = {
     // === SYNTHESIS ===
     {
       type: 'multiple-choice',
+      hint: 'One option stands out when you think about the core purpose.',
       question: 'At the Architect tier, your primary value is:',
       options: [
         'Writing code faster than agents can',

@@ -81,6 +81,7 @@ const content: LessonContent = {
     // === ERROR ANATOMY ===
     {
       type: 'multiple-choice',
+      hint: 'Read each option carefully — one fits the context best.',
       question: 'Every error message has four parts. Which of these is NOT one of the four parts?',
       options: [
         'The error type (category of problem)',
@@ -93,6 +94,7 @@ const content: LessonContent = {
     },
     {
       type: 'code-fill',
+      hint: 'Fill in values that match the pattern shown above.',
       instruction: 'Fill in the four parts of this dissected Node.js error message:',
       language: 'text',
       template: "TypeError: Cannot read properties of undefined (reading 'map')\n    at renderList (/app/src/components/UserList.tsx:12:18)\n    at Object.render (/app/src/pages/Dashboard.tsx:45:5)\n\n┌─ Type:     {{error_type}}\n├─ Message:  Cannot read properties of undefined (reading 'map')\n├─ File:     {{error_file}}, line 12\n└─ Cause:    '{{undefined_var}}' is undefined when .map() is called",
@@ -105,6 +107,7 @@ const content: LessonContent = {
     },
     {
       type: 'multiple-choice',
+      hint: 'Eliminate the options that only partially fit.',
       question: 'In the error above, which file should you look at FIRST?',
       options: [
         'react-dom/server.js',
@@ -173,6 +176,7 @@ const content: LessonContent = {
     },
     {
       type: 'code-fill',
+      hint: 'Use the exact syntax from the lesson examples.',
       instruction: 'The parser tells you exactly where the problem is. Fill in what the error message reveals:',
       language: 'text',
       template: "{{error_type}}: Unexpected token '}' at line {{line_num}}\n\nfunction greet(name: string) {\n  console.log('Hello, ' + name)\n}} // <-- {{fix_description}}",
@@ -185,6 +189,7 @@ const content: LessonContent = {
     },
     {
       type: 'compare',
+      hint: 'Look at the key differences between the two approaches.',
       title: 'Runtime errors vs Logic errors',
       body: 'Both happen after the code parses, but they behave very differently.',
       question: 'Which type is harder to debug and why?',
@@ -203,6 +208,7 @@ const content: LessonContent = {
     },
     {
       type: 'multiple-choice',
+      hint: 'Focus on the primary goal, not secondary benefits.',
       question: 'Your app renders but shows 0 items instead of 50. What type of error is this?',
       options: [
         'Syntax error — the code has a typo',
@@ -220,6 +226,7 @@ const content: LessonContent = {
     },
     {
       type: 'match',
+      hint: 'Find the unique connection between each pair.',
       instruction: 'Match each error type to the correct investigation approach:',
       leftItems: ['SyntaxError', 'TypeError', 'ReferenceError', 'Logic error'],
       rightItems: ['Check for typos, missing brackets, or invalid syntax', 'Check data types — is a value null, undefined, or the wrong shape?', 'Check if the variable or import exists in this scope', 'Check expected vs actual output — the code runs but produces wrong results'],
@@ -228,6 +235,7 @@ const content: LessonContent = {
     },
     {
       type: 'compare',
+      hint: 'Focus on what makes one approach more appropriate here.',
       title: 'Symptom fix vs root cause fix',
       body: 'When an agent encounters an error, it might fix the symptom instead of the cause.',
       question: 'Which fix actually solves the problem?',
@@ -248,6 +256,7 @@ const content: LessonContent = {
     // === CLASSIFY REAL ERRORS ===
     {
       type: 'order',
+      hint: 'Consider what depends on what — prerequisites first.',
       instruction: 'Put these debugging steps in the correct order:',
       items: [
         'Read the full error message',
@@ -269,6 +278,7 @@ const content: LessonContent = {
     // === PROMPTING AGENTS FOR DEBUGGING ===
     {
       type: 'compare',
+      hint: 'Consider the trade-offs discussed in the lesson.',
       title: 'Vague vs precise debugging prompts',
       body: "How you ask an agent for help determines whether it solves your problem or wastes your time guessing.",
       question: 'Which prompt will get a useful answer from the agent?',
@@ -287,6 +297,7 @@ const content: LessonContent = {
     },
     {
       type: 'code-fill',
+      hint: 'Each blank follows the conventions demonstrated earlier.',
       instruction: 'Complete this debugging prompt to give the agent everything it needs:',
       language: 'text',
       template: "\"I'm getting this error when the {{page_name}} loads:\n\n{{error_type}}: Cannot read properties of undefined (reading 'map')\n  at renderList (src/components/UserList.tsx:12:18)\n\nThe `users` prop is fetched from {{data_source}}.\nWhat's the root cause?\"",
@@ -299,6 +310,7 @@ const content: LessonContent = {
     },
     {
       type: 'multiple-choice',
+      hint: 'Think about which option is most specific to this concept.',
       question: 'What should you ALWAYS include when asking an agent to debug an error?',
       options: [
         'A description of what you were trying to do',
@@ -318,6 +330,7 @@ const content: LessonContent = {
     // === THE 3-STEP DEBUG LOOP ===
     {
       type: 'multiple-choice',
+      hint: 'Consider what the lesson content emphasized.',
       question: 'The 3-step debug loop is: Read the error, form a hypothesis, verify with ___ change(s). How many changes per cycle?',
       options: [
         'As many as needed to fix the bug',
@@ -330,6 +343,7 @@ const content: LessonContent = {
     },
     {
       type: 'code-fill',
+      hint: 'Look at the surrounding code for context clues.',
       instruction: 'Apply the 3-step debug loop to fix a crashing component. Fill in the guard clause:',
       language: 'typescript',
       template: "// Step 1: READ — error says 'users' is undefined at line 12\n// Step 2: HYPOTHESIZE — API hasn't resolved before render\n// Step 3: VERIFY — add a guard clause and test\n\nfunction UserList({ users }: Props) {\n  if ({{guard_check}}) return <p>{{fallback_text}}</p>\n  return users.{{array_method}}(u => <li>{u.name}</li>)\n}",
@@ -344,6 +358,7 @@ const content: LessonContent = {
     // === ROOT CAUSE VS SYMPTOMS ===
     {
       type: 'multiple-choice',
+      hint: 'One option stands out when you think about the core purpose.',
       question: 'The guard clause above stops the crash. But is it a root cause fix or a symptom fix?',
       options: [
         'Root cause fix — it solves why users is undefined',
@@ -371,6 +386,7 @@ const content: LessonContent = {
     // === PRACTICE: CLASSIFY ERRORS ===
     {
       type: 'multiple-choice',
+      hint: 'Read each option carefully — one fits the context best.',
       question: 'You see: "Module not found: Can\'t resolve \'./Userlist\'" but the file is named UserList.tsx. What type of error is this?',
       options: [
         'Runtime error — the module crashes on import',

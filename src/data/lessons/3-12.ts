@@ -68,6 +68,7 @@ const content: LessonContent = {
     // === FLAT VS LAYERED COMPARE ===
     {
       type: 'compare',
+      hint: 'Look at the key differences between the two approaches.',
       title: 'Flat CLAUDE.md vs layered architecture',
       body: 'As your fleet grows, a single CLAUDE.md becomes a bottleneck. Layered context solves this.',
       question: 'Which approach scales to 5+ agents working on different modules?',
@@ -88,6 +89,7 @@ const content: LessonContent = {
     // === WHAT GOES WHERE ===
     {
       type: 'multiple-choice',
+      hint: 'Read each option carefully — one fits the context best.',
       question: 'What type of content belongs in CLAUDE.md (the global context layer)?',
       options: [
         'Feature-specific business logic and endpoint definitions',
@@ -100,6 +102,7 @@ const content: LessonContent = {
     },
     {
       type: 'code-fill',
+      hint: 'Fill in values that match the pattern shown above.',
       instruction: 'Complete this CLAUDE.md for a multi-agent project. Fill in the conventions that ensure consistency across all agents.',
       language: 'markdown',
       filename: 'CLAUDE.md',
@@ -138,6 +141,7 @@ const content: LessonContent = {
     },
     {
       type: 'multiple-choice',
+      hint: 'Eliminate the options that only partially fit.',
       question: 'Which of these belongs in CLAUDE.md vs a per-agent spec?',
       options: [
         'CLAUDE.md: "Use Zod for validation" | Spec: "Validate email, password min 8 chars"',
@@ -152,6 +156,7 @@ const content: LessonContent = {
     // === INTERFACE CONTRACTS ===
     {
       type: 'multiple-choice',
+      hint: 'Focus on the primary goal, not secondary benefits.',
       question: 'What happens when agents build against different assumptions about data shapes (no shared contracts)?',
       options: [
         'Agents automatically negotiate a shared schema at runtime',
@@ -164,6 +169,7 @@ const content: LessonContent = {
     },
     {
       type: 'code-fill',
+      hint: 'Use the exact syntax from the lesson examples.',
       instruction: 'Complete this interface contract file. Fill in the critical type definitions that prevent cross-agent mismatches.',
       language: 'typescript',
       filename: 'src/contracts/index.ts',
@@ -225,6 +231,7 @@ export interface DashboardStats {
     // === CODE-FILL: Module-specific CLAUDE.md ===
     {
       type: 'code-fill',
+      hint: 'Each blank follows the conventions demonstrated earlier.',
       instruction: 'Complete this module-specific CLAUDE.md for a payments agent. Fill in the Stripe patterns, idempotency rule, and webhook handling.',
       language: 'markdown',
       filename: 'payments/CLAUDE.md',
@@ -253,6 +260,7 @@ export interface DashboardStats {
     // === PER-MODULE SPECS ===
     {
       type: 'multiple-choice',
+      hint: 'Think about which option is most specific to this concept.',
       question: 'What should a per-module spec contain so that an agent can complete its task without asking questions?',
       options: [
         'Just the files to create — the agent can figure out the logic from CLAUDE.md',
@@ -265,6 +273,7 @@ export interface DashboardStats {
     },
     {
       type: 'code-fill',
+      hint: 'Look at the surrounding code for context clues.',
       instruction: 'Complete this per-module spec for the API agent. Fill in the return types, auth rules, and database patterns.',
       language: 'markdown',
       filename: 'specs/api-agent.md',
@@ -312,6 +321,7 @@ Build REST API endpoints in \`src/api/\`
     // === KEEPING CONTEXT IN SYNC ===
     {
       type: 'multiple-choice',
+      hint: 'Consider what the lesson content emphasized.',
       question: 'Agent 1 adds a `teamId` field to the user session while Agent 3 builds UI against the original contracts. What is this called?',
       options: [
         'A merge conflict — Git will catch and flag it automatically',
@@ -365,6 +375,7 @@ Build REST API endpoints in \`src/api/\`
     },
     {
       type: 'multiple-choice',
+      hint: 'One option stands out when you think about the core purpose.',
       question: 'Mid-flight, you realize the DashboardStats interface needs a new field (overdueCount). What do you do?',
       options: [
         'Add it to contracts and let agents discover it naturally',
@@ -384,6 +395,7 @@ Build REST API endpoints in \`src/api/\`
     // === AVOIDING DUPLICATION ===
     {
       type: 'multiple-choice',
+      hint: 'Read each option carefully — one fits the context best.',
       question: 'Three agents each create their own `formatDate()` function in their module. What caused this duplication?',
       options: [
         'The agents are not smart enough to reuse code',
@@ -396,6 +408,7 @@ Build REST API endpoints in \`src/api/\`
     },
     {
       type: 'code-fill',
+      hint: 'The answer matches the API or syntax just explained.',
       instruction: 'Complete this shared utilities barrel file. Fill in the imports that prevent agents from duplicating common logic.',
       language: 'typescript',
       filename: 'src/lib/index.ts',
@@ -430,6 +443,7 @@ export { getSession, requireAuth, {{role_helper}} } from './auth'`,
     },
     {
       type: 'code-fill',
+      hint: 'Fill in values that match the pattern shown above.',
       instruction: 'Complete this shared code reference section for a per-module spec. Fill in the specific utilities agents must import instead of recreating.',
       language: 'markdown',
       filename: 'specs/ui-agent.md',
@@ -453,6 +467,7 @@ If you need a utility that doesn't exist in src/lib/, create it in
     },
     {
       type: 'multiple-choice',
+      hint: 'Eliminate the options that only partially fit.',
       question: 'The API agent needs a `slugify` function that doesn\'t exist in shared lib. What should it do?',
       options: [
         'Add slugify to src/lib/index.ts since other agents might need it',
@@ -467,6 +482,7 @@ If you need a utility that doesn't exist in src/lib/, create it in
     // === ADVANCED: CONTEXT BUDGET ===
     {
       type: 'multiple-choice',
+      hint: 'Focus on the primary goal, not secondary benefits.',
       question: 'An agent receives the full 500-line CLAUDE.md, all 12 interface contracts, and a 200-line spec. What is wrong with this approach?',
       options: [
         'Nothing — more context always means better output',
@@ -521,6 +537,7 @@ If you need a utility that doesn't exist in src/lib/, create it in
     },
     {
       type: 'order',
+      hint: 'Consider what depends on what — prerequisites first.',
       instruction: 'Order these steps for setting up multi-agent context:',
       items: [
         'Write CLAUDE.md with universal conventions',

@@ -18,6 +18,7 @@ const content: LessonContent = {
     // === SPEC STRUCTURE ===
     {
       type: 'multiple-choice',
+      hint: 'Read each option carefully — one fits the context best.',
       question: 'A good agent spec has five sections. Which of the following is NOT one of them?',
       options: [
         'Goal: one sentence describing what exists when the agent is done',
@@ -85,6 +86,7 @@ const content: LessonContent = {
     // === REAL EXAMPLE ===
     {
       type: 'code-fill',
+      hint: 'Fill in values that match the pattern shown above.',
       instruction: 'Let us walk through a concrete example. You have a product idea: a bookmark manager with tags. Complete the missing parts of this spec — notice how each section constrains the agent without micromanaging it. The spec says WHAT, not HOW.',
       language: 'markdown',
       filename: 'SPEC.md',
@@ -98,6 +100,7 @@ const content: LessonContent = {
     },
     {
       type: 'multiple-choice',
+      hint: 'Eliminate the options that only partially fit.',
       question: 'Why does the spec say "SQLite via Drizzle ORM" instead of just "a database"?',
       options: [
         'Because SQLite is the only database that works with Next.js',
@@ -117,6 +120,7 @@ const content: LessonContent = {
     // === ANTI-PATTERNS ===
     {
       type: 'compare',
+      hint: 'Look at the key differences between the two approaches.',
       title: 'Two spec anti-patterns',
       body: 'Both of these specs will cause problems. One tells the agent almost nothing. The other writes code in English.',
       question: 'Which failure mode wastes MORE of your time correcting the output?',
@@ -135,6 +139,7 @@ const content: LessonContent = {
     },
     {
       type: 'multiple-choice',
+      hint: 'Focus on the primary goal, not secondary benefits.',
       question: 'A spec has a clear goal and acceptance criteria but no boundaries or scope exclusions. The agent builds everything correctly — then also adds authentication, Docker config, and a CI/CD pipeline. What anti-pattern is this?',
       options: [
         'Too vague — the spec did not specify enough detail',
@@ -147,6 +152,7 @@ const content: LessonContent = {
     },
     {
       type: 'compare',
+      hint: 'Focus on what makes one approach more appropriate here.',
       title: 'Spot the anti-pattern',
       body: 'One of these specs constrains the agent. The other writes code in English.',
       question: 'Which side is the correct approach?',
@@ -165,6 +171,7 @@ const content: LessonContent = {
     },
     {
       type: 'multiple-choice',
+      hint: 'Think about which option is most specific to this concept.',
       question: 'Which spec instruction is an anti-pattern?',
       options: [
         '"Use Tailwind CSS for all styling"',
@@ -184,6 +191,7 @@ const content: LessonContent = {
     // === DELIVERY METHOD ===
     {
       type: 'multiple-choice',
+      hint: 'Consider what the lesson content emphasized.',
       question: 'You are starting a new project that will evolve over weeks. Where should you put the spec so the agent has context on every invocation?',
       options: [
         'In the first prompt message — paste it each time you start a session',
@@ -196,6 +204,7 @@ const content: LessonContent = {
     },
     {
       type: 'compare',
+      hint: 'Consider the trade-offs discussed in the lesson.',
       title: 'CLAUDE.md vs direct prompt',
       body: 'Two valid ways to deliver a spec to the agent. The right choice depends on your project lifecycle.',
       question: 'Which method is better for an ongoing project that evolves over weeks?',
@@ -272,6 +281,7 @@ const content: LessonContent = {
     // === ITERATION ===
     {
       type: 'multiple-choice',
+      hint: 'One option stands out when you think about the core purpose.',
       question: 'The agent builds your bookmark manager. The search works, but it uses client-side filtering instead of the server-side SQL search you intended. How many iteration rounds should you expect when working with specs?',
       options: [
         'Zero — a well-written spec should produce perfect output on the first try',
@@ -284,6 +294,7 @@ const content: LessonContent = {
     },
     {
       type: 'compare',
+      hint: 'Look at the key differences between the two approaches.',
       title: 'Targeted follow-up vs spec rewrite',
       body: 'When something is wrong with the output, you have two correction strategies. The right one depends on what needs to change.',
       question: 'The agent used client-side filtering instead of server-side search. Which correction is appropriate?',
@@ -304,6 +315,7 @@ const content: LessonContent = {
     // === INTERACTIVE EXERCISES ===
     {
       type: 'order',
+      hint: 'Consider what depends on what — prerequisites first.',
       instruction: 'Order the steps of writing a spec from first to last:',
       items: [
         'Define acceptance criteria (testable conditions)',
@@ -316,6 +328,7 @@ const content: LessonContent = {
     },
     {
       type: 'multiple-choice',
+      hint: 'Read each option carefully — one fits the context best.',
       question: 'You give the agent a spec and it builds a feature you explicitly listed in "Out of Scope." What went wrong?',
       options: [
         'The agent is broken and ignoring instructions',
@@ -328,6 +341,7 @@ const content: LessonContent = {
     },
     {
       type: 'code-fill',
+      hint: 'Use the exact syntax from the lesson examples.',
       instruction: 'Complete this Out of Scope section for the bookmark manager. Think about what an eager agent might add that you explicitly do NOT want.',
       language: 'markdown',
       filename: 'SPEC.md',
@@ -350,6 +364,7 @@ const content: LessonContent = {
     // === FINAL SYNTHESIS ===
     {
       type: 'multiple-choice',
+      hint: 'Eliminate the options that only partially fit.',
       question: 'Every ambiguity in your spec becomes a decision the agent makes without you. Which of the following best describes the "spec mindset"?',
       options: [
         'Write specs as detailed as possible — cover every variable name and function signature',

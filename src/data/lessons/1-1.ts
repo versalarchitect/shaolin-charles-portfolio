@@ -18,6 +18,7 @@ const content: LessonContent = {
     // === TOKENIZATION ===
     {
       type: 'multiple-choice',
+      hint: 'Read each option carefully — one fits the context best.',
       question: 'How does AI read your text?',
       options: [
         'It reads complete sentences as single units',
@@ -30,6 +31,7 @@ const content: LessonContent = {
     },
     {
       type: 'multiple-choice',
+      hint: 'Eliminate the options that only partially fit.',
       question: 'How would a typical tokenizer split the word "unhappiness"?',
       options: [
         'One token: "unhappiness"',
@@ -42,6 +44,7 @@ const content: LessonContent = {
     },
     {
       type: 'compare',
+      hint: 'Look at the key differences between the two approaches.',
       title: 'Tokens affect cost and limits',
       body: 'Every AI request costs money based on how many tokens are used — both what you send and what the AI sends back. A simple rule of thumb: 1 token is about 4 characters in English, or roughly 3/4 of a word.',
       question: 'Which prompt uses more tokens and costs more?',
@@ -73,6 +76,7 @@ const content: LessonContent = {
     // === EMBEDDINGS ===
     {
       type: 'multiple-choice',
+      hint: 'Focus on the primary goal, not secondary benefits.',
       question: 'What are embeddings and how do they work?',
       options: [
         'Embeddings are images that AI creates from text',
@@ -85,6 +89,7 @@ const content: LessonContent = {
     },
     {
       type: 'multiple-choice',
+      hint: 'Think about which option is most specific to this concept.',
       question: 'In embedding space, which pair of words would be closest together?',
       options: [
         '"cat" and "calendar"',
@@ -156,6 +161,7 @@ const content: LessonContent = {
     // === ATTENTION ===
     {
       type: 'multiple-choice',
+      hint: 'Consider what the lesson content emphasized.',
       question: 'In the sentence "The cat sat on the mat because it was tired," what does the attention mechanism help the AI figure out?',
       options: [
         'That the sentence is in English',
@@ -168,6 +174,7 @@ const content: LessonContent = {
     },
     {
       type: 'compare',
+      hint: 'Focus on what makes one approach more appropriate here.',
       title: 'Attention in practice',
       body: 'Attention is why prompt structure matters. The model weighs every token against every other token. Putting the most important instruction last (closer to where generation begins) often gets better results.',
       question: 'Which prompt structure will produce more reliable output?',
@@ -186,6 +193,7 @@ const content: LessonContent = {
     },
     {
       type: 'order',
+      hint: 'Consider what depends on what — prerequisites first.',
       instruction: 'Order these prompt sections from LEAST attended to MOST attended by the model (for the final output):',
       items: [
         'System prompt (beginning)',
@@ -204,6 +212,7 @@ const content: LessonContent = {
     // === TEMPERATURE ===
     {
       type: 'match',
+      hint: 'Find the unique connection between each pair.',
       instruction: 'Match each temperature setting to its best use case:',
       leftItems: ['Temperature 0', 'Temperature 0.3', 'Temperature 0.7', 'Temperature 1.0+'],
       rightItems: ['Code refactoring and data extraction', 'Business emails and technical docs', 'Creative writing and brainstorming', 'Experimental and artistic text generation'],
@@ -212,6 +221,7 @@ const content: LessonContent = {
     },
     {
       type: 'multiple-choice',
+      hint: 'One option stands out when you think about the core purpose.',
       question: 'You\'re using an AI agent to refactor production code. What temperature should you use?',
       options: [
         '0 -- completely deterministic',
@@ -226,6 +236,7 @@ const content: LessonContent = {
     // === HALLUCINATION ===
     {
       type: 'multiple-choice',
+      hint: 'Read each option carefully — one fits the context best.',
       question: 'Why does AI sometimes write confident-sounding but wrong information (hallucination)?',
       options: [
         'Because the AI is intentionally lying',
@@ -269,6 +280,7 @@ const content: LessonContent = {
     },
     {
       type: 'compare',
+      hint: 'Consider the trade-offs discussed in the lesson.',
       title: 'Spotting hallucination risk',
       body: 'Learn to recognize prompts that are likely to produce hallucinations vs ones that keep the model grounded.',
       question: 'Which prompt is safer and less likely to cause hallucination?',
@@ -287,6 +299,7 @@ const content: LessonContent = {
     },
     {
       type: 'multiple-choice',
+      hint: 'Eliminate the options that only partially fit.',
       question: 'Which prompt is MOST likely to cause a hallucination?',
       options: [
         '"Summarize this document: [full text pasted]"',
@@ -315,6 +328,7 @@ const content: LessonContent = {
     // === PUTTING IT TOGETHER ===
     {
       type: 'order',
+      hint: 'Think about what needs to exist before each next step.',
       instruction: 'Put the AI processing pipeline in the correct order, from your input to the final response:',
       items: [
         'Your text enters as raw characters',

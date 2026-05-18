@@ -70,6 +70,7 @@ const content: LessonContent = {
     // === LEVEL 1: PASTE ===
     {
       type: 'multiple-choice',
+      hint: 'Read each option carefully — one fits the context best.',
       question: 'What is the key limitation of Level 1 (Paste) AI usage?',
       options: [
         'It cannot understand code',
@@ -82,6 +83,7 @@ const content: LessonContent = {
     },
     {
       type: 'multiple-choice',
+      hint: 'Eliminate the options that only partially fit.',
       question: 'Which task is BEST suited for paste-level AI?',
       options: [
         'Refactoring 50 files to use a new API',
@@ -96,6 +98,7 @@ const content: LessonContent = {
     // === LEVEL 2: SKILL ===
     {
       type: 'multiple-choice',
+      hint: 'Focus on the primary goal, not secondary benefits.',
       question: 'When should you create a reusable skill instead of pasting the same prompt?',
       options: [
         'Only for tasks that take more than an hour',
@@ -108,6 +111,7 @@ const content: LessonContent = {
     },
     {
       type: 'code-fill',
+      hint: 'Fill in values that match the pattern shown above.',
       instruction: 'Complete this skill definition. A skill encapsulates reusable instructions that you invoke by name on any file.',
       language: 'markdown',
       filename: '.claude/skills/a11y-review.md',
@@ -135,6 +139,7 @@ const content: LessonContent = {
     // === LEVEL 3: SCRIPT ===
     {
       type: 'multiple-choice',
+      hint: 'Think about which option is most specific to this concept.',
       question: 'A Node script reads your git diff on every push, sends it to Claude, and posts a review to Slack. Which level of the Tool Ladder is this?',
       options: [
         'Level 1: Paste',
@@ -147,6 +152,7 @@ const content: LessonContent = {
     },
     {
       type: 'code-fill',
+      hint: 'Use the exact syntax from the lesson examples.',
       instruction: 'Complete this CI script that auto-reviews PRs. It reads the diff, sends it to Claude, and logs the review. No human needed.',
       language: 'typescript',
       filename: 'scripts/review-diff.ts',
@@ -160,6 +166,7 @@ const content: LessonContent = {
     },
     {
       type: 'multiple-choice',
+      hint: 'Consider what the lesson content emphasized.',
       question: 'What makes a script different from a skill?',
       options: [
         'Scripts use a different AI model',
@@ -179,6 +186,7 @@ const content: LessonContent = {
     // === LEVEL 4: AGENT ===
     {
       type: 'multiple-choice',
+      hint: 'One option stands out when you think about the core purpose.',
       question: 'What distinguishes an agent (Level 4) from a script (Level 3)?',
       options: [
         'Agents are faster because they skip the planning step',
@@ -197,6 +205,7 @@ const content: LessonContent = {
     },
     {
       type: 'code-fill',
+      hint: 'Each blank follows the conventions demonstrated earlier.',
       instruction: 'Complete this agent-level prompt. A single instruction that would take multiple paste-level interactions.',
       language: 'text',
       template: "Add a /health endpoint to the API that returns:\n- server {{metric_1}}\n- {{metric_2}} connection status\n- current memory usage\n\nInclude {{include_what}}. Use the existing error handling pattern\nfrom the other routes.",
@@ -211,6 +220,7 @@ const content: LessonContent = {
     // === LEVEL 5: MCP ===
     {
       type: 'multiple-choice',
+      hint: 'Read each option carefully — one fits the context best.',
       question: 'What does MCP (Model Context Protocol) add on top of agent mode?',
       options: [
         'A graphical user interface for the agent',
@@ -223,6 +233,7 @@ const content: LessonContent = {
     },
     {
       type: 'code-fill',
+      hint: 'Look at the surrounding code for context clues.',
       instruction: 'Complete this MCP server config. You tell Claude Code which external tools to connect. Each server exposes capabilities the agent can use.',
       language: 'json',
       filename: '.claude/settings.json',
@@ -242,6 +253,7 @@ const content: LessonContent = {
     // === MATCH EXERCISE ===
     {
       type: 'match',
+      hint: 'Find the unique connection between each pair.',
       instruction: 'Match each tool level to its description:',
       leftItems: [
         'Level 1: Paste',
@@ -264,6 +276,7 @@ const content: LessonContent = {
     // === COMPARE: PASTE vs MCP ===
     {
       type: 'compare',
+      hint: 'Look at the key differences between the two approaches.',
       title: 'Level 1 vs Level 5',
       body: 'The gap between the bottom and top of the ladder is enormous. Compare how the same task — "check if our API is down" — looks at each extreme.',
       question: 'Which approach catches the outage faster and with less effort?',
@@ -383,6 +396,7 @@ const content: LessonContent = {
     // === CLASSIFY TASKS ===
     {
       type: 'multiple-choice',
+      hint: 'Eliminate the options that only partially fit.',
       question: 'When classifying a task for the right tool level, which set of questions should you ask?',
       options: [
         'How long will it take? How much does the AI cost? Is the task fun?',
@@ -395,6 +409,7 @@ const content: LessonContent = {
     },
     {
       type: 'multiple-choice',
+      hint: 'Focus on the primary goal, not secondary benefits.',
       question: 'Task: "What does the ?? operator do in JavaScript?" — Which level?',
       options: [
         'Paste',
@@ -407,6 +422,7 @@ const content: LessonContent = {
     },
     {
       type: 'multiple-choice',
+      hint: 'Think about which option is most specific to this concept.',
       question: 'Task: "Every morning, summarize yesterday\'s GitHub issues and post to Slack." — Which level?',
       options: [
         'Paste',
@@ -419,6 +435,7 @@ const content: LessonContent = {
     },
     {
       type: 'multiple-choice',
+      hint: 'Consider what the lesson content emphasized.',
       question: 'Task: "Refactor the auth module to use the new token format, update all call sites, and fix the tests." — Which level?',
       options: [
         'Paste',
@@ -438,6 +455,7 @@ const content: LessonContent = {
     // === ORDER EXERCISE ===
     {
       type: 'order',
+      hint: 'Consider what depends on what — prerequisites first.',
       instruction: 'Order the tool ladder from LEAST to MOST capability:',
       items: ['Agent', 'Paste', 'MCP', 'Skill', 'Script'],
       correctOrder: [1, 3, 4, 0, 2],
@@ -446,6 +464,7 @@ const content: LessonContent = {
     // === KEY INSIGHT ===
     {
       type: 'multiple-choice',
+      hint: 'One option stands out when you think about the core purpose.',
       question: 'You realize you have been running the same /review skill manually on every PR for the past two weeks. What should you do?',
       options: [
         'Keep using the skill -- it works fine',

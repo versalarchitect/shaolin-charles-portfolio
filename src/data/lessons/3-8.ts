@@ -75,6 +75,7 @@ const content: LessonContent = {
     // === CODE-FILL: tsconfig strict mode ===
     {
       type: 'code-fill',
+      hint: 'Fill in values that match the pattern shown above.',
       instruction: 'Complete the strict TypeScript configuration that catches contract mismatches between agent outputs. Fill in the key compiler options.',
       language: 'json',
       filename: 'tsconfig.json',
@@ -127,6 +128,7 @@ const content: LessonContent = {
     // === PIPELINE COMPONENTS ===
     {
       type: 'compare',
+      hint: 'Look at the key differences between the two approaches.',
       title: 'Type checking vs linting: different classes of errors',
       body: 'Both are automated gates, but they catch fundamentally different problems.',
       question: 'Which gate catches contract mismatches between agents (e.g., Agent A returns `{ data: User }` but Agent B expects `{ user: User }`)?',
@@ -145,6 +147,7 @@ const content: LessonContent = {
     },
     {
       type: 'code-fill',
+      hint: 'Use the exact syntax from the lesson examples.',
       instruction: 'Complete the ESLint configuration that encodes CLAUDE.md forbidden patterns as automated rules. Fill in the rule names and values.',
       language: 'javascript',
       filename: 'eslint.config.js',
@@ -195,6 +198,7 @@ export default tseslint.config(
     },
     {
       type: 'multiple-choice',
+      hint: 'Read each option carefully — one fits the context best.',
       question: 'Why run the linter AFTER type checking, not before?',
       options: [
         'Linting is slower than type checking',
@@ -214,6 +218,7 @@ export default tseslint.config(
     // === TESTING IN AGENT SPECS ===
     {
       type: 'multiple-choice',
+      hint: 'Eliminate the options that only partially fit.',
       question: 'When should tests be created for agent-built code?',
       options: [
         'After the agent finishes — add tests in a separate PR',
@@ -226,6 +231,7 @@ export default tseslint.config(
     },
     {
       type: 'code-fill',
+      hint: 'Each blank follows the conventions demonstrated earlier.',
       instruction: 'Complete the task spec that requires tests as non-optional deliverables. Fill in the test file paths and the Definition of Done command.',
       language: 'markdown',
       filename: 'TASK-AUTH.md',
@@ -272,6 +278,7 @@ export default tseslint.config(
     },
     {
       type: 'code-fill',
+      hint: 'Look at the surrounding code for context clues.',
       instruction: 'Complete the Vitest configuration with coverage thresholds that agents must hit. Fill in the provider and threshold values.',
       language: 'typescript',
       filename: 'vitest.config.ts',
@@ -331,6 +338,7 @@ export default defineConfig({
     // === CI CONFIGURATION ===
     {
       type: 'code-fill',
+      hint: 'The answer matches the API or syntax just explained.',
       instruction: 'Complete the GitHub Actions workflow that automatically verifies every agent branch. Fill in the trigger pattern and pipeline stages.',
       language: 'yaml',
       filename: '.github/workflows/verify-agent.yml',
@@ -398,6 +406,7 @@ jobs:
     // === BRANCH PROTECTION ===
     {
       type: 'multiple-choice',
+      hint: 'Focus on the primary goal, not secondary benefits.',
       question: 'CI runs the pipeline, but what mechanically prevents merging a failed branch?',
       options: [
         'Team agreement not to merge failing branches',
@@ -410,6 +419,7 @@ jobs:
     },
     {
       type: 'code-fill',
+      hint: 'Fill in values that match the pattern shown above.',
       instruction: 'Complete the GitHub CLI command to configure branch protection. Fill in the API settings that enforce pipeline pass before merge.',
       language: 'bash',
       filename: 'terminal',
@@ -453,6 +463,7 @@ EOF`,
     },
     {
       type: 'multiple-choice',
+      hint: 'Think about which option is most specific to this concept.',
       question: 'An agent\'s branch fails the pipeline on the lint stage. The type check and tests pass. What do you do?',
       options: [
         'Override branch protection and merge — tests pass, lint is just style',
@@ -521,6 +532,7 @@ EOF`,
     // === HANDS-ON EXERCISE ===
     {
       type: 'multiple-choice',
+      hint: 'Consider what the lesson content emphasized.',
       question: 'You are about to wire up a real verification pipeline. What is the correct order of config files to create?',
       options: [
         'CI workflow first, then tsconfig, then eslint — CI is the top priority',
@@ -563,6 +575,7 @@ EOF`,
     },
     {
       type: 'multiple-choice',
+      hint: 'One option stands out when you think about the core purpose.',
       question: 'You want faster pipeline feedback. Which stage should you move earlier (cheaper to run, catches common errors)?',
       options: [
         'Integration tests — they catch the most bugs',

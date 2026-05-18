@@ -22,6 +22,45 @@ import { computeLineDiff } from '@/lib/line-diff'
 import { usePlatform } from '@/components/platform-provider'
 import { resolvePlatformStep, stepHasPlatformVariants, getAvailablePlatforms } from '@/lib/platform-utils'
 import { PlatformTabs } from '@/components/platform-tabs'
+import { useConfetti } from '@/components/ui/confetti'
+
+// ============================================================================
+// Shared hint button
+// ============================================================================
+
+function HintButton({ hint }: { hint?: string }) {
+  const [shown, setShown] = useState(false)
+  const { t } = useTranslation()
+  if (!hint) return null
+
+  return (
+    <AnimatePresence>
+      {!shown ? (
+        <motion.button
+          key="btn"
+          type="button"
+          onClick={() => setShown(true)}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          className="flex items-center gap-1.5 text-xs text-foreground/40 hover:text-foreground/60 transition-colors"
+        >
+          <Lightbulb className="w-3.5 h-3.5" />
+          {t('gamification.showHint')}
+        </motion.button>
+      ) : (
+        <motion.div
+          key="hint"
+          initial={{ opacity: 0, height: 0 }}
+          animate={{ opacity: 1, height: 'auto' }}
+          className="rounded-lg bg-foreground/[0.03] border border-foreground/[0.08] px-3.5 py-2.5 text-xs text-foreground/50 leading-relaxed"
+        >
+          <Lightbulb className="w-3.5 h-3.5 inline mr-1.5 -mt-0.5 text-foreground/30" />
+          {hint}
+        </motion.div>
+      )}
+    </AnimatePresence>
+  )
+}
 
 // ============================================================================
 // Step components
@@ -243,7 +282,8 @@ function MultipleChoiceStep({
       )}
 
       {!submitted && (
-        <div className="flex justify-end">
+        <div className="flex items-center justify-between">
+          <HintButton hint={step.hint} />
           <Button
             onClick={handleSubmit}
             disabled={selected === null}
@@ -377,6 +417,8 @@ function OrderStep({
 
   const [order, setOrder] = useState(shuffled)
   const [status, setStatus] = useState<'idle' | 'correct' | 'wrong'>('idle')
+  const [dragIndex, setDragIndex] = useState<number | null>(null)
+  const [dragOverIndex, setDragOverIndex] = useState<number | null>(null)
   const moveItem = (from: number, to: number) => {
     const next = [...order]
     const [item] = next.splice(from, 1)
@@ -403,14 +445,27 @@ function OrderStep({
           <motion.div
             key={itemIndex}
             layout
+            draggable
+            onDragStart={() => setDragIndex(position)}
+            onDragOver={(e) => { e.preventDefault(); setDragOverIndex(position) }}
+            onDragEnd={() => {
+              if (dragIndex !== null && dragOverIndex !== null && dragIndex !== dragOverIndex) {
+                moveItem(dragIndex, dragOverIndex)
+              }
+              setDragIndex(null)
+              setDragOverIndex(null)
+            }}
             className={`
-              flex items-center gap-3 px-4 py-3 rounded-xl border-2 transition-colors
+              flex items-center gap-3 px-4 py-3 rounded-xl border-2 transition-colors cursor-grab active:cursor-grabbing select-none
               ${status === 'correct'
                 ? 'border-green-500/30 bg-green-500/5'
                 : status === 'wrong'
                   ? 'border-red-500/30 bg-red-500/5'
-                  : 'border-foreground/[0.08] bg-foreground/[0.02]'
+                  : dragOverIndex === position && dragIndex !== null && dragIndex !== position
+                    ? 'border-foreground/20 bg-foreground/[0.05]'
+                    : 'border-foreground/[0.08] bg-foreground/[0.02]'
               }
+              ${dragIndex === position ? 'opacity-40' : ''}
             `}
           >
             <div className="flex gap-1">
@@ -431,6 +486,11 @@ function OrderStep({
                 <svg width="12" height="12" viewBox="0 0 12 12"><path d="M6 10 L10 4 L2 4 Z" fill="currentColor" /></svg>
               </button>
             </div>
+            <svg className="w-4 h-4 text-foreground/20 shrink-0" viewBox="0 0 16 16" fill="currentColor">
+              <circle cx="5" cy="3" r="1.5" /><circle cx="11" cy="3" r="1.5" />
+              <circle cx="5" cy="8" r="1.5" /><circle cx="11" cy="8" r="1.5" />
+              <circle cx="5" cy="13" r="1.5" /><circle cx="11" cy="13" r="1.5" />
+            </svg>
             <span className="w-6 h-6 rounded-full bg-foreground/10 flex items-center justify-center text-xs font-mono text-foreground/50 shrink-0">
               {position + 1}
             </span>
@@ -439,7 +499,8 @@ function OrderStep({
         ))}
       </div>
       {status !== 'correct' && (
-        <div className="flex justify-end">
+        <div className="flex items-center justify-between">
+          <HintButton hint={step.hint} />
           <Button onClick={handleCheck} className="font-mono gap-2 h-12 px-6" size="lg">
             {t('gamification.checkOrder')} <ChevronRight className="w-4 h-4" />
           </Button>
@@ -681,24 +742,27 @@ function CodeFillStep({
         </motion.div>
       )}
 
-      <div className="flex justify-end gap-3">
-        {submitted && !allCorrect && (
-          <Button onClick={handleRetry} variant="outline" className="font-mono gap-2">
-            <RotateCcw className="w-4 h-4" />
-            {t('gamification.tryAgain')}
-          </Button>
-        )}
-        {!allCorrect && (
-          <Button
-            onClick={handleCheck}
-            disabled={Object.values(values).some((v) => !v.trim())}
-            className="font-mono gap-2 h-12 px-6"
-            size="lg"
-          >
-            {t('gamification.check')}
-            <ChevronRight className="w-4 h-4" />
-          </Button>
-        )}
+      <div className="flex items-center justify-between gap-3">
+        <HintButton hint={step.hint} />
+        <div className="flex gap-3">
+          {submitted && !allCorrect && (
+            <Button onClick={handleRetry} variant="outline" className="font-mono gap-2">
+              <RotateCcw className="w-4 h-4" />
+              {t('gamification.tryAgain')}
+            </Button>
+          )}
+          {!allCorrect && (
+            <Button
+              onClick={handleCheck}
+              disabled={Object.values(values).some((v) => !v.trim())}
+              className="font-mono gap-2 h-12 px-6"
+              size="lg"
+            >
+              {t('gamification.check')}
+              <ChevronRight className="w-4 h-4" />
+            </Button>
+          )}
+        </div>
       </div>
     </div>
   )
@@ -796,7 +860,8 @@ function CompareStep({
       )}
 
       {isInteractive && !submitted && (
-        <div className="flex justify-end">
+        <div className="flex items-center justify-between">
+          <HintButton hint={step.hint} />
           <Button
             onClick={handleSubmit}
             disabled={!selected}
@@ -1099,7 +1164,8 @@ function PromptLabStep({
 
       {/* Send button */}
       {!submitted && (
-        <div className="flex justify-end">
+        <div className="flex items-center justify-between">
+          <HintButton hint={step.hint} />
           <Button
             onClick={handleSend}
             disabled={!prompt.trim()}
@@ -1401,24 +1467,27 @@ function MatchStep({
         </motion.div>
       )}
 
-      <div className="flex justify-end gap-3">
-        {submitted && !allCorrect && (
-          <Button onClick={handleRetry} variant="outline" className="font-mono gap-2">
-            <RotateCcw className="w-4 h-4" />
-            {t('gamification.tryAgain')}
-          </Button>
-        )}
-        {!allCorrect && !submitted && (
-          <Button
-            onClick={handleCheck}
-            disabled={pairs.size === 0}
-            className="font-mono gap-2 h-12 px-6"
-            size="lg"
-          >
-            {t('gamification.check')}
-            <ChevronRight className="w-4 h-4" />
-          </Button>
-        )}
+      <div className="flex items-center justify-between gap-3">
+        {!submitted && <HintButton hint={step.hint} />}
+        <div className="flex gap-3 ml-auto">
+          {submitted && !allCorrect && (
+            <Button onClick={handleRetry} variant="outline" className="font-mono gap-2">
+              <RotateCcw className="w-4 h-4" />
+              {t('gamification.tryAgain')}
+            </Button>
+          )}
+          {!allCorrect && !submitted && (
+            <Button
+              onClick={handleCheck}
+              disabled={pairs.size === 0}
+              className="font-mono gap-2 h-12 px-6"
+              size="lg"
+            >
+              {t('gamification.check')}
+              <ChevronRight className="w-4 h-4" />
+            </Button>
+          )}
+        </div>
       </div>
     </div>
   )
@@ -1525,9 +1594,12 @@ export function LessonPlayer({ lessonId }: { lessonId: string }) {
   const isLastStep = currentStep === totalSteps - 1
   const progressPercent = totalSteps > 0 ? Math.round(((currentStep + 1) / totalSteps) * 100) : 0
 
+  const fireConfetti = useConfetti()
+
   const handleStepComplete = useCallback(() => {
     setCompletedSteps((prev) => new Set(prev).add(currentStep))
-  }, [currentStep])
+    fireConfetti({ origin: { x: 0.5, y: 0.85 }, spread: 80, particleCount: 50, startVelocity: 30 })
+  }, [currentStep, fireConfetti])
 
   const goNext = useCallback(() => {
     if (currentStep < totalSteps - 1) {

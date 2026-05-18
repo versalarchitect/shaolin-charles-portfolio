@@ -504,6 +504,8 @@ function OrderExercise({ step }: { step: Extract<LessonStep, { type: 'order' }> 
 
   const [order, setOrder] = useState(shuffled)
   const [status, setStatus] = useState<'idle' | 'correct' | 'wrong'>('idle')
+  const [dragIndex, setDragIndex] = useState<number | null>(null)
+  const [dragOverIndex, setDragOverIndex] = useState<number | null>(null)
 
   const move = (from: number, to: number) => {
     const next = [...order]
@@ -527,13 +529,26 @@ function OrderExercise({ step }: { step: Extract<LessonStep, { type: 'order' }> 
       <p className="text-xs text-foreground/80">{step.instruction}</p>
       <div className="space-y-1">
         {order.map((itemIdx, pos) => (
-          <div
+          <motion.div
             key={itemIdx}
-            className={`flex items-center gap-2 px-2.5 py-1.5 rounded-lg border text-xs transition-colors ${
+            layout
+            draggable
+            onDragStart={() => setDragIndex(pos)}
+            onDragOver={(e) => { e.preventDefault(); setDragOverIndex(pos) }}
+            onDragEnd={() => {
+              if (dragIndex !== null && dragOverIndex !== null && dragIndex !== dragOverIndex) {
+                move(dragIndex, dragOverIndex)
+              }
+              setDragIndex(null)
+              setDragOverIndex(null)
+            }}
+            className={`flex items-center gap-2 px-2.5 py-1.5 rounded-lg border text-xs transition-colors cursor-grab active:cursor-grabbing select-none ${
               status === 'correct' ? 'border-green-500/30 bg-green-500/5'
               : status === 'wrong' ? 'border-red-500/30 bg-red-500/5'
-              : 'border-foreground/[0.08] bg-foreground/[0.02]'
-            }`}
+              : dragOverIndex === pos && dragIndex !== null && dragIndex !== pos
+                ? 'border-foreground/20 bg-foreground/[0.05]'
+                : 'border-foreground/[0.08] bg-foreground/[0.02]'
+            } ${dragIndex === pos ? 'opacity-40' : ''}`}
           >
             <div className="flex gap-0.5">
               <button type="button" onClick={() => pos > 0 && move(pos, pos - 1)} disabled={pos === 0} className="p-0.5 text-foreground/30 hover:text-foreground/60 disabled:opacity-20">
@@ -543,9 +558,14 @@ function OrderExercise({ step }: { step: Extract<LessonStep, { type: 'order' }> 
                 <svg width="10" height="10" viewBox="0 0 12 12"><path d="M6 10 L10 4 L2 4 Z" fill="currentColor" /></svg>
               </button>
             </div>
+            <svg className="w-3 h-3 text-foreground/20 shrink-0" viewBox="0 0 16 16" fill="currentColor">
+              <circle cx="5" cy="3" r="1.5" /><circle cx="11" cy="3" r="1.5" />
+              <circle cx="5" cy="8" r="1.5" /><circle cx="11" cy="8" r="1.5" />
+              <circle cx="5" cy="13" r="1.5" /><circle cx="11" cy="13" r="1.5" />
+            </svg>
             <span className="font-mono text-foreground/40 text-[10px]">{pos + 1}</span>
             <span className="text-foreground/70">{step.items[itemIdx]}</span>
-          </div>
+          </motion.div>
         ))}
       </div>
       {status !== 'correct' && (

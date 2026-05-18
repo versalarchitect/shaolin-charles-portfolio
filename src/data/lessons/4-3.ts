@@ -11,6 +11,7 @@ const content: LessonContent = {
     },
     {
       type: 'multiple-choice',
+      hint: 'Read each option carefully — one fits the context best.',
       question: 'A fleet of 5 agents working in parallel should build 5x faster. What prevents this in practice?',
       options: [
         'Agents are not fast enough individually',
@@ -125,6 +126,7 @@ const content: LessonContent = {
     },
     {
       type: 'match',
+      hint: 'Find the unique connection between each pair.',
       instruction: 'Match each module to the agent best suited to own it. Consider domain expertise and specialization.',
       leftItems: ['Auth module', 'Payments module', 'API layer', 'UI components'],
       rightItems: ['Agent-1 (security focus)', 'Agent-2 (Stripe specialist)', 'Agent-3 (REST patterns)', 'Agent-4 (React/Tailwind)'],
@@ -133,6 +135,7 @@ const content: LessonContent = {
     },
     {
       type: 'multiple-choice',
+      hint: 'Eliminate the options that only partially fit.',
       question: 'You run 20 parallel agent sessions. 4 produce merge conflicts. What is your conflict rate and what does it mean?',
       options: [
         '4% — boundaries work perfectly',
@@ -152,6 +155,7 @@ const content: LessonContent = {
     // === INTERFACE CONTRACTS ===
     {
       type: 'multiple-choice',
+      hint: 'Focus on the primary goal, not secondary benefits.',
       question: 'What does an interface contract define between two modules?',
       options: [
         'Which agent should build which module',
@@ -164,6 +168,7 @@ const content: LessonContent = {
     },
     {
       type: 'code-fill',
+      hint: 'Fill in values that match the pattern shown above.',
       instruction: 'Complete this interface contract between Orders and Payments. Fill in the types, fields, and event names so both modules can build independently.',
       language: 'typescript',
       template: '// Contract: Orders → Payments\n// Neither module imports the other\'s internal files.\n\nexport interface ChargeRequest {\n  orderId: string\n  customerId: string\n  amountCents: ___\n  currency: \'USD\' | \'EUR\' | \'GBP\'\n  idempotencyKey: ___\n}\n\nexport interface ChargeResult {\n  success: ___\n  transactionId?: string\n  failureReason?: string\n}\n\nexport interface PaymentGateway {\n  charge(request: ___): Promise<ChargeResult>\n  refund(transactionId: string, amountCents: number): Promise<___>\n}',
@@ -179,6 +184,7 @@ const content: LessonContent = {
     },
     {
       type: 'multiple-choice',
+      hint: 'Think about which option is most specific to this concept.',
       question: 'In contract-first development, who writes the contract file and when?',
       options: [
         'Agent A writes it after building Module A',
@@ -191,6 +197,7 @@ const content: LessonContent = {
     },
     {
       type: 'multiple-choice',
+      hint: 'Consider what the lesson content emphasized.',
       question: 'Two agents are building the Orders module and Payments module in parallel. Agent A (Orders) needs to call Agent B\'s (Payments) charge function. How should this work?',
       options: [
         'Agent A imports directly from Payments internal files and builds against the current implementation',
@@ -210,6 +217,7 @@ const content: LessonContent = {
     // === NEW INTERACTIVE STEPS ===
     {
       type: 'code-fill',
+      hint: 'Use the exact syntax from the lesson examples.',
       instruction: 'Complete this interface contract that two agents will share. Fill in the type names, field types, and return types so both agents can build independently.',
       language: 'typescript',
       template: '// Contract: Orders module → Payments module\n// Both agents build against this shared agreement.\n\nexport interface ___ {\n  orderId: ___\n  customerId: string\n  amountCents: ___\n  currency: \'USD\' | \'EUR\'\n  idempotencyKey: string\n}\n\nexport interface ___ {\n  success: boolean\n  transactionId?: string\n  failureReason?: ___\n}\n\nexport interface PaymentGateway {\n  charge(request: ChargeRequest): Promise<___>\n  refund(transactionId: string): Promise<ChargeResult>\n}',
@@ -226,6 +234,7 @@ const content: LessonContent = {
     },
     {
       type: 'compare',
+      hint: 'Look at the key differences between the two approaches.',
       title: 'Shared mutable state vs contract-based isolation',
       body: 'Two approaches to multi-agent coordination. One creates conflicts; the other enables true parallel work.',
       left: {
@@ -248,6 +257,7 @@ const content: LessonContent = {
     // === ELIMINATING SHARED MUTABLE STATE ===
     {
       type: 'multiple-choice',
+      hint: 'One option stands out when you think about the core purpose.',
       question: 'Which of these is NOT an example of shared mutable state that kills parallelism?',
       options: [
         'A central routes.ts file that every feature adds routes to',
@@ -272,6 +282,7 @@ const content: LessonContent = {
     },
     {
       type: 'compare',
+      hint: 'Focus on what makes one approach more appropriate here.',
       title: 'Shared types file vs module-owned types',
       body: 'Types belong where they are used. Cross-module types live in the contract between those specific modules.',
       left: {
@@ -292,6 +303,7 @@ const content: LessonContent = {
     },
     {
       type: 'multiple-choice',
+      hint: 'Read each option carefully — one fits the context best.',
       question: 'Your app has a single database migration file that 3 agents need to modify simultaneously for their respective features. What is the best solution?',
       options: [
         'Use a locking mechanism so agents take turns editing the file',
@@ -311,6 +323,7 @@ const content: LessonContent = {
     // === DESIGNING BOUNDARIES ===
     {
       type: 'multiple-choice',
+      hint: 'Eliminate the options that only partially fit.',
       question: 'What is the correct rule for drawing module boundaries?',
       options: [
         'One module per file — keep everything small',
@@ -323,6 +336,7 @@ const content: LessonContent = {
     },
     {
       type: 'match',
+      hint: 'Match each term to its most specific definition.',
       instruction: 'Match each boundary litmus test to what it validates:',
       leftItems: ['Single-agent test', 'Parallel test', 'Contract test'],
       rightItems: ['Can one agent complete a full feature within this module alone?', 'Can two agents work on different modules without file conflicts?', 'Can the interface between modules be defined in under 20 lines of types?'],
@@ -331,6 +345,7 @@ const content: LessonContent = {
     },
     {
       type: 'code-fill',
+      hint: 'Each blank follows the conventions demonstrated earlier.',
       instruction: 'Complete this well-bounded module structure. Fill in the file names following the [domain].[role].ts convention.',
       language: 'text',
       template: 'src/features/\n├── payments/\n│   ├── CLAUDE.md              # Module-specific rules\n│   ├── ___    # HTTP layer (routes, request parsing)\n│   ├── ___    # Business logic\n│   ├── payments.repository.ts # Database queries\n│   ├── ___     # Validation (Zod)\n│   ├── payments.types.ts      # Internal types\n│   ├── payments.test.ts       # Tests\n│   └── ___               # Public API (only this is importable)\n│\nsrc/contracts/\n├── ___   # Interface between orders ↔ payments',
@@ -346,6 +361,7 @@ const content: LessonContent = {
     },
     {
       type: 'order',
+      hint: 'Consider what depends on what — prerequisites first.',
       instruction: 'Order these steps for designing module boundaries in a new system:',
       items: [
         'Implement each module independently (one agent per module)',
@@ -365,6 +381,7 @@ const content: LessonContent = {
     // === VALIDATION ===
     {
       type: 'order',
+      hint: 'Think about what needs to exist before each next step.',
       instruction: 'Order these steps for empirically validating boundary effectiveness:',
       items: [
         'Calculate conflict rate: conflicting files / total modified files',
@@ -378,6 +395,7 @@ const content: LessonContent = {
     },
     {
       type: 'match',
+      hint: 'Look for the distinguishing feature of each item.',
       instruction: 'Match each common boundary failure to its fix:',
       leftItems: ['Multiple agents edit app config file', 'Agents conflict on database schema file', 'Agents both modify shared error types', 'Agents conflict on test setup file'],
       rightItems: ['Each module registers its own config', 'Per-module migration files', 'Each module defines its own error types', 'Each module has its own test setup'],
@@ -386,6 +404,7 @@ const content: LessonContent = {
     },
     {
       type: 'multiple-choice',
+      hint: 'Focus on the primary goal, not secondary benefits.',
       question: 'After running 10 parallel agent sessions, you find that 3 produced conflicts — all on src/middleware/auth.ts. What does this tell you?',
       options: [
         'The auth middleware is buggy and needs to be rewritten',
@@ -400,6 +419,7 @@ const content: LessonContent = {
     // === SYNTHESIS ===
     {
       type: 'multiple-choice',
+      hint: 'Think about which option is most specific to this concept.',
       question: 'Module boundaries in agent-native systems are:',
       options: [
         'A code organization preference that makes things look tidy',

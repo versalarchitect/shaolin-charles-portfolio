@@ -12,6 +12,7 @@ const content: LessonContent = {
     // CONVERTED: info → multiple-choice (#1)
     {
       type: 'multiple-choice',
+      hint: 'Read each option carefully — one fits the context best.',
       question: 'Why does a second agent verify better than the builder agent?',
       options: [
         'The second agent has more computing power available',
@@ -84,6 +85,7 @@ const content: LessonContent = {
     // === PROMPT LAB (already interactive) ===
     {
       type: 'prompt-lab',
+      hint: 'Be specific about what you want — vague prompts get vague responses.',
       instruction: 'Write a verification prompt that instructs a verifier agent to check the builder agent\'s auth implementation.',
       scenario: 'A builder agent just implemented login/signup using Supabase Auth. You need a second agent to verify: correct RLS policies, no exposed service keys, proper session handling, and error states.',
       starterPrompt: 'Check the auth code.',
@@ -110,6 +112,7 @@ const content: LessonContent = {
     // === WHAT VERIFICATION IS NOT — CONVERTED: info → compare (#2 — merge two concepts) ===
     {
       type: 'compare',
+      hint: 'Look at the key differences between the two approaches.',
       title: 'Verification vs Code Review',
       body: 'These are two different activities with different goals. Understanding the distinction is critical for writing effective verification prompts.',
       question: 'Which one checks compliance against the spec?',
@@ -126,6 +129,7 @@ const content: LessonContent = {
     },
     {
       type: 'multiple-choice',
+      hint: 'Eliminate the options that only partially fit.',
       question: 'Which of these is a verification concern vs. a code review concern?',
       options: [
         'The function uses var instead of const (code review)',
@@ -140,6 +144,7 @@ const content: LessonContent = {
     // === SETTING UP VERIFICATION — CONVERTED: info → multiple-choice (#3) ===
     {
       type: 'multiple-choice',
+      hint: 'Focus on the primary goal, not secondary benefits.',
       question: 'What inputs does the verify agent need?',
       options: [
         'The build agent\'s conversation history and the output',
@@ -153,6 +158,7 @@ const content: LessonContent = {
     // CONVERTED: code-demo → code-fill (#4)
     {
       type: 'code-fill',
+      hint: 'Fill in values that match the pattern shown above.',
       instruction: 'Complete this verification prompt template that forces systematic checking:',
       language: 'markdown',
       filename: 'VERIFY-PROMPT.md',
@@ -174,6 +180,7 @@ const content: LessonContent = {
     // === VERIFICATION CRITERIA — CONVERTED: info → multiple-choice (#5) ===
     {
       type: 'multiple-choice',
+      hint: 'Think about which option is most specific to this concept.',
       question: 'A file compiles without errors. Does that mean it passes verification?',
       options: [
         'Yes — compilation proves the code is correct',
@@ -187,6 +194,7 @@ const content: LessonContent = {
     // CONVERTED: code-demo → code-fill (#6)
     {
       type: 'code-fill',
+      hint: 'Use the exact syntax from the lesson examples.',
       instruction: 'Complete these structured verification criteria ordered by severity:',
       language: 'markdown',
       filename: 'verification-criteria.md',
@@ -202,6 +210,7 @@ const content: LessonContent = {
     },
     {
       type: 'order',
+      hint: 'Consider what depends on what — prerequisites first.',
       instruction: 'Rank verification criteria from MOST critical (top) to LEAST critical:',
       items: [
         'Functional completeness (all spec items implemented)',
@@ -215,6 +224,7 @@ const content: LessonContent = {
     // === CATCHING INTEGRATION ISSUES — CONVERTED: info → multiple-choice (#7) ===
     {
       type: 'multiple-choice',
+      hint: 'Consider what the lesson content emphasized.',
       question: 'What is the verify agent\'s MOST valuable role in fleet work?',
       options: [
         'Checking code style and formatting consistency',
@@ -228,6 +238,7 @@ const content: LessonContent = {
     // CONVERTED: code-demo → code-fill (#8)
     {
       type: 'code-fill',
+      hint: 'Each blank follows the conventions demonstrated earlier.',
       instruction: 'Complete this integration verification prompt that checks the seams between agent outputs:',
       language: 'markdown',
       filename: 'VERIFY-INTEGRATION.md',
@@ -243,6 +254,7 @@ const content: LessonContent = {
     },
     {
       type: 'multiple-choice',
+      hint: 'One option stands out when you think about the core purpose.',
       question: 'Agent A exports `getUser(id: string): Promise<User>`. Agent B calls `getUser(id: string, includeProfile: boolean)`. The verify agent should:',
       options: [
         'Flag Agent B as wrong — it doesn\'t match the export',
@@ -262,6 +274,7 @@ const content: LessonContent = {
     // === THE VERIFICATION LOOP — CONVERTED: info → compare (#9 — merge loop info + report code-demo) ===
     {
       type: 'compare',
+      hint: 'Focus on what makes one approach more appropriate here.',
       title: 'Responding to verification failures',
       body: 'When verification finds issues, your response depends on the severity. Here are two scenarios from the same verification report.',
       question: 'Which response is appropriate for which severity level?',
@@ -279,6 +292,7 @@ const content: LessonContent = {
     // CONVERTED: code-demo (verification report) → code-fill (#10)
     {
       type: 'code-fill',
+      hint: 'Look at the surrounding code for context clues.',
       instruction: 'Complete this real verification report. Fill in the verdict for each item based on the description:',
       language: 'markdown',
       filename: 'verification-report.md',
@@ -347,6 +361,7 @@ const content: LessonContent = {
     },
     {
       type: 'multiple-choice',
+      hint: 'Read each option carefully — one fits the context best.',
       question: 'You receive the verification report. 2 items are FAIL, 8 are PASS. What do you do?',
       options: [
         'Reject the entire output and re-run the build agent',

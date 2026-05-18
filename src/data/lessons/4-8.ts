@@ -65,6 +65,7 @@ const content: LessonContent = {
     // === COMPARE: OPEN-ENDED VS CONSTRAINED ===
     {
       type: 'compare',
+      hint: 'Look at the key differences between the two approaches.',
       title: 'Open-ended vs Constrained spec',
       body: 'See how constraints eliminate deliberation and make agents execute immediately.',
       left: {
@@ -87,6 +88,7 @@ const content: LessonContent = {
     // === CODE-FILL: ADD CONSTRAINTS ===
     {
       type: 'code-fill',
+      hint: 'Fill in values that match the pattern shown above.',
       instruction: 'Add constraints to this open-ended spec. Fill in the blanks with specific technology choices, boundaries, and exclusions to eliminate agent deliberation.',
       language: 'markdown',
       filename: 'specs/constrained-feature.md',
@@ -107,6 +109,7 @@ const content: LessonContent = {
     // === PROMPT-LAB: CONSTRAINED SPEC ===
     {
       type: 'prompt-lab',
+      hint: 'Be specific about what you want — vague prompts get vague responses.',
       instruction: 'Write a constrained spec for a notification system. Specify the technology, file boundaries, and what is explicitly excluded. The more constraints you add, the faster the agent will execute.',
       scenario: 'You need a notification system for your application. It should use Supabase Realtime for in-app notifications, be contained to a single directory, and must NOT include email, SMS, or push notification integration for this version. Write a spec that eliminates all agent deliberation.',
       starterPrompt: 'Build notifications.',
@@ -131,6 +134,7 @@ const content: LessonContent = {
     },
     {
       type: 'match',
+      hint: 'Find the unique connection between each pair.',
       instruction: 'Match each constraint type to a concrete example:',
       leftItems: [
         'Technology constraint',
@@ -163,6 +167,7 @@ const content: LessonContent = {
     // === MONOREPO BOUNDARIES ===
     {
       type: 'multiple-choice',
+      hint: 'Read each option carefully — one fits the context best.',
       question: 'What transforms a monorepo from "just a folder with multiple projects" into a system enabling parallel agent work?',
       options: [
         'Using a monorepo tool like Nx or Turborepo',
@@ -175,6 +180,7 @@ const content: LessonContent = {
     },
     {
       type: 'code-fill',
+      hint: 'Use the exact syntax from the lesson examples.',
       instruction: 'Complete this Nx project configuration that prevents agents from reaching across package boundaries. Fill in the tags and build targets.',
       language: 'json',
       filename: 'packages/auth/project.json',
@@ -188,6 +194,7 @@ const content: LessonContent = {
     },
     {
       type: 'code-fill',
+      hint: 'Each blank follows the conventions demonstrated earlier.',
       instruction: 'Complete this ESLint rule that enforces module boundaries. Fill in the dependency constraints so auth can only import from shared and auth.',
       language: 'json',
       filename: '.eslintrc.json',
@@ -201,6 +208,7 @@ const content: LessonContent = {
     },
     {
       type: 'multiple-choice',
+      hint: 'Eliminate the options that only partially fit.',
       question: 'Why are enforced module boundaries more valuable when agents build than when humans build?',
       options: [
         'Because agents write worse code than humans',
@@ -220,6 +228,7 @@ const content: LessonContent = {
     // === DEPLOYMENT CONTRACTS ===
     {
       type: 'multiple-choice',
+      hint: 'Focus on the primary goal, not secondary benefits.',
       question: 'A deployment contract states: "this package deploys independently." What does that single statement force?',
       options: [
         'The package must use Docker containers',
@@ -232,6 +241,7 @@ const content: LessonContent = {
     },
     {
       type: 'code-fill',
+      hint: 'Look at the surrounding code for context clues.',
       instruction: 'Complete this CLAUDE.md deployment contract. Fill in the rules that ensure independent deployability.',
       language: 'markdown',
       filename: 'packages/billing/CLAUDE.md',
@@ -246,6 +256,7 @@ const content: LessonContent = {
     },
     {
       type: 'multiple-choice',
+      hint: 'Think about which option is most specific to this concept.',
       question: 'A deployment contract forces "all external communication via HTTP API or message queue." How does this help agent parallelism?',
       options: [
         'HTTP is faster than direct imports',
@@ -260,6 +271,7 @@ const content: LessonContent = {
     // === API VERSIONING ===
     {
       type: 'multiple-choice',
+      hint: 'Consider what the lesson content emphasized.',
       question: 'Without API versioning, changing an endpoint breaks every consumer simultaneously. With versioning, what becomes possible?',
       options: [
         'You can delete old endpoints immediately',
@@ -272,6 +284,7 @@ const content: LessonContent = {
     },
     {
       type: 'code-fill',
+      hint: 'The answer matches the API or syntax just explained.',
       instruction: 'Complete this versioned API. Fill in the v2 endpoint path, the additional parameter, and the HATEOAS action links.',
       language: 'typescript',
       filename: 'packages/api/src/routes/subscriptions.ts',
@@ -292,6 +305,7 @@ const content: LessonContent = {
     // === EVALUATING CONSTRAINTS ===
     {
       type: 'multiple-choice',
+      hint: 'One option stands out when you think about the core purpose.',
       question: 'A constraint forces agents to write boilerplate code for every file but has never caught an actual error. What should you do with it?',
       options: [
         'Keep it — boilerplate enforces consistency',
@@ -304,6 +318,7 @@ const content: LessonContent = {
     },
     {
       type: 'multiple-choice',
+      hint: 'Read each option carefully — one fits the context best.',
       question: 'A constraint requires agents to "remember" to add a changelog entry for every PR. Is this a real constraint?',
       options: [
         'Yes — it enforces documentation discipline',
@@ -316,6 +331,7 @@ const content: LessonContent = {
     },
     {
       type: 'multiple-choice',
+      hint: 'Eliminate the options that only partially fit.',
       question: 'Which constraint is HURTING agent velocity without providing value?',
       options: [
         'All files must pass TypeScript strict mode before merge',
@@ -328,6 +344,7 @@ const content: LessonContent = {
     },
     {
       type: 'multiple-choice',
+      hint: 'Focus on the primary goal, not secondary benefits.',
       question: 'Which of these is a harmful constraint that served humans but obstructs agents?',
       options: [
         'TypeScript strict mode with zero any usage',
@@ -340,6 +357,7 @@ const content: LessonContent = {
     },
     {
       type: 'order',
+      hint: 'Consider what depends on what — prerequisites first.',
       instruction: 'Order these constraints from MOST valuable to LEAST valuable for agent fleet parallelism:',
       items: [
         'Enforced module boundaries via lint rules',
@@ -359,6 +377,7 @@ const content: LessonContent = {
     // === CONSTRAINT ARCHITECTURE ===
     {
       type: 'multiple-choice',
+      hint: 'Think about which option is most specific to this concept.',
       question: 'What is the difference between individual constraints and a constraint SYSTEM?',
       options: [
         'A system just has more constraints',
@@ -371,6 +390,7 @@ const content: LessonContent = {
     },
     {
       type: 'code-fill',
+      hint: 'Fill in values that match the pattern shown above.',
       instruction: 'Complete this constraint system CLAUDE.md. Fill in the rules for each layer that together enable zero-coordination agent parallelism.',
       language: 'markdown',
       filename: 'CLAUDE.md',
@@ -387,6 +407,7 @@ const content: LessonContent = {
     },
     {
       type: 'multiple-choice',
+      hint: 'Consider what the lesson content emphasized.',
       question: 'Your constraint system says "shared types live in @repo/shared-types — the only cross-cut." Why is this ONE exception important?',
       options: [
         'It makes the code DRY',
@@ -401,6 +422,7 @@ const content: LessonContent = {
     // === REAL-WORLD APPLICATION ===
     {
       type: 'multiple-choice',
+      hint: 'One option stands out when you think about the core purpose.',
       question: 'What is the highest-value FIRST constraint to add when adopting agent fleets?',
       options: [
         'API versioning between all services',
@@ -413,6 +435,7 @@ const content: LessonContent = {
     },
     {
       type: 'compare',
+      hint: 'Focus on what makes one approach more appropriate here.',
       title: 'Manual coordination vs Constraint-automated coordination',
       body: 'Your competitor has 10 engineers. You have 2 engineers directing agent fleets. Who ships faster?',
       left: {

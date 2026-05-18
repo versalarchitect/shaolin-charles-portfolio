@@ -18,6 +18,7 @@ const content: LessonContent = {
     // === SYMPTOMS ===
     {
       type: 'compare',
+      hint: 'Look at the key differences between the two approaches.',
       title: 'Symptom: contradicting earlier decisions',
       body: 'The agent makes choices early in a session, then makes opposite choices later. This is not indecision — it is memory loss.',
       question: 'Which side shows context exhaustion?',
@@ -36,6 +37,7 @@ const content: LessonContent = {
     },
     {
       type: 'multiple-choice',
+      hint: 'Read each option carefully — one fits the context best.',
       question: 'The agent asks "what database are you using?" after it already set up Drizzle with SQLite an hour ago. What does this indicate?',
       options: [
         'The agent wants to confirm your choice before proceeding',
@@ -48,6 +50,7 @@ const content: LessonContent = {
     },
     {
       type: 'multiple-choice',
+      hint: 'Eliminate the options that only partially fit.',
       question: 'The agent built a REST API with proper error responses for the first 4 endpoints, but endpoint 5 returns raw errors to the client. What is most likely happening?',
       options: [
         'The agent decided a different error strategy was better',
@@ -67,6 +70,7 @@ const content: LessonContent = {
     // === STRUCTURING TASKS ===
     {
       type: 'multiple-choice',
+      hint: 'Focus on the primary goal, not secondary benefits.',
       question: 'When should you establish your most important architectural decisions in an agent session?',
       options: [
         'In the middle of the session when the agent has warmed up',
@@ -129,6 +133,7 @@ const content: LessonContent = {
     },
     {
       type: 'multiple-choice',
+      hint: 'Think about which option is most specific to this concept.',
       question: 'Why should you break a build into chunks across fresh sessions instead of one marathon session?',
       options: [
         'Agents work faster in shorter sessions',
@@ -141,6 +146,7 @@ const content: LessonContent = {
     },
     {
       type: 'code-fill',
+      hint: 'Fill in values that match the pattern shown above.',
       instruction: 'Complete this session plan with the right completion criteria for each chunk:',
       language: 'markdown',
       filename: 'session-plan.md',
@@ -162,6 +168,7 @@ const content: LessonContent = {
     // === WHEN TO START FRESH ===
     {
       type: 'multiple-choice',
+      hint: 'Consider what the lesson content emphasized.',
       question: 'At what point should you definitely start a fresh session?',
       options: [
         'After every 10 messages to be safe',
@@ -180,6 +187,7 @@ const content: LessonContent = {
     },
     {
       type: 'multiple-choice',
+      hint: 'One option stands out when you think about the core purpose.',
       question: 'You are 40 messages into a session. The agent just built a component using CSS modules, but your project uses Tailwind (as stated in CLAUDE.md). What should you do?',
       options: [
         'Tell the agent to refactor to Tailwind and continue the session',
@@ -194,6 +202,7 @@ const content: LessonContent = {
     // === CLAUDE.MD AS PERSISTENT CONTEXT ===
     {
       type: 'multiple-choice',
+      hint: 'Read each option carefully — one fits the context best.',
       question: 'Why is CLAUDE.md the best place for architectural decisions?',
       options: [
         'It is the only file the agent can read',
@@ -206,6 +215,7 @@ const content: LessonContent = {
     },
     {
       type: 'code-fill',
+      hint: 'Use the exact syntax from the lesson examples.',
       instruction: 'Complete this CLAUDE.md to anchor critical decisions across sessions:',
       language: 'markdown',
       filename: 'CLAUDE.md',
@@ -220,6 +230,7 @@ const content: LessonContent = {
     },
     {
       type: 'compare',
+      hint: 'Focus on what makes one approach more appropriate here.',
       title: 'Monolithic spec vs modular specs',
       body: 'For larger projects, how you organize specs affects context consumption.',
       question: 'Which approach uses context more efficiently?',
@@ -245,6 +256,7 @@ const content: LessonContent = {
     // === INTERACTIVE EXERCISES ===
     {
       type: 'compare',
+      hint: 'Consider the trade-offs discussed in the lesson.',
       title: 'Session planning: chaos vs control',
       body: 'How you plan your session determines whether the agent maintains quality throughout.',
       question: 'Which session plan keeps the agent effective longer?',
@@ -263,6 +275,7 @@ const content: LessonContent = {
     },
     {
       type: 'match',
+      hint: 'Find the unique connection between each pair.',
       instruction: 'Match each symptom of context exhaustion to its underlying cause:',
       leftItems: ['Agent contradicts earlier decisions', 'Agent re-asks questions you already answered', 'Code quality declines mid-session', 'Agent ignores project conventions'],
       rightItems: ['Earlier instructions were compressed out of context', 'Your answers were lost during context compaction', 'Attention spread too thin across remaining tokens', 'CLAUDE.md conventions dropped from active memory'],
@@ -271,6 +284,7 @@ const content: LessonContent = {
     },
     {
       type: 'code-fill',
+      hint: 'Each blank follows the conventions demonstrated earlier.',
       instruction: 'Complete this CLAUDE.md section to preserve decisions across sessions:',
       language: 'markdown',
       filename: 'CLAUDE.md',
@@ -287,6 +301,7 @@ const content: LessonContent = {
     // === PRACTICAL WORKFLOW ===
     {
       type: 'multiple-choice',
+      hint: 'Eliminate the options that only partially fit.',
       question: 'What should you do FIRST when starting a new agent session?',
       options: [
         'Start coding immediately to save time',
@@ -299,6 +314,7 @@ const content: LessonContent = {
     },
     {
       type: 'order',
+      hint: 'Consider what depends on what — prerequisites first.',
       instruction: 'Order the context management workflow from session start to session end:',
       items: [
         'Commit working code and update CLAUDE.md',

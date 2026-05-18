@@ -63,6 +63,7 @@ const content: LessonContent = {
     // === PHASE 1: SPEC ===
     {
       type: 'code-fill',
+      hint: 'Fill in values that match the pattern shown above.',
       instruction: 'A spec is the most important prompt you will write. It is not a vague wish list — it is a precise contract. Complete the missing sections of this spec for the Commit Message Generator.',
       language: 'markdown',
       filename: 'SPEC.md',
@@ -76,6 +77,7 @@ const content: LessonContent = {
     },
     {
       type: 'multiple-choice',
+      hint: 'Read each option carefully — one fits the context best.',
       question: 'Why does the spec include an "Out of Scope" section?',
       options: [
         'To document features for the next sprint',
@@ -102,6 +104,7 @@ const content: LessonContent = {
     // === INTERACTIVE: PROMPT-LAB, COMPARE ===
     {
       type: 'prompt-lab',
+      hint: 'Be specific about what you want — vague prompts get vague responses.',
       instruction: 'Write a prompt to start the capstone implementation. Include spec elements you learned in this tier.',
       scenario: 'You have a spec for a URL shortener tool. You need to direct Claude Code to scaffold the project. The spec says: Next.js App Router, TypeScript strict, SQLite via Drizzle ORM, Tailwind CSS, no auth needed.',
       starterPrompt: 'Build me a URL shortener.',
@@ -126,6 +129,7 @@ const content: LessonContent = {
     },
     {
       type: 'compare',
+      hint: 'Look at the key differences between the two approaches.',
       title: 'All-at-once vs phased build',
       body: 'Two approaches to building a complete project with an AI agent.',
       question: 'Which approach gives you more control over the output?',
@@ -158,6 +162,7 @@ const content: LessonContent = {
     },
     {
       type: 'code-fill',
+      hint: 'Use the exact syntax from the lesson examples.',
       instruction: 'Give the agent a single focused instruction referencing your spec. Complete the scaffold prompt — specify the files you want created.',
       language: 'text',
       filename: 'prompt-to-claude-code.txt',
@@ -222,6 +227,7 @@ const content: LessonContent = {
     // === PHASE 3: IMPLEMENT ===
     {
       type: 'code-fill',
+      hint: 'Each blank follows the conventions demonstrated earlier.',
       instruction: 'This prompt gives Claude Code exactly what to build for the serverless function. Complete the key requirements — model name, error handling, and environment variable usage.',
       language: 'text',
       filename: 'prompt-api-route.txt',
@@ -235,6 +241,7 @@ const content: LessonContent = {
     },
     {
       type: 'multiple-choice',
+      hint: 'Eliminate the options that only partially fit.',
       question: 'Why prompt the agent to implement one component at a time instead of the whole app at once?',
       options: [
         'Claude Code has a file size limit and cannot write large files',
@@ -255,6 +262,7 @@ const content: LessonContent = {
     },
     {
       type: 'order',
+      hint: 'Consider what depends on what — prerequisites first.',
       instruction: 'Order the implementation prompts from first to last for this project:',
       items: [
         'Wire components together in App.tsx',
@@ -294,6 +302,7 @@ const content: LessonContent = {
     },
     {
       type: 'multiple-choice',
+      hint: 'Focus on the primary goal, not secondary benefits.',
       question: 'You notice the agent hardcoded the model as "claude-3-opus" instead of "claude-sonnet-4-20250514" from your spec. What should you do?',
       options: [
         'Deploy anyway — both models work fine',
@@ -326,6 +335,7 @@ const content: LessonContent = {
     },
     {
       type: 'code-fill',
+      hint: 'Look at the surrounding code for context clues.',
       instruction: 'Set your API key as an environment variable (never in git), then deploy. Complete the deployment commands with the correct Vercel CLI syntax.',
       language: 'bash',
       filename: 'deploy.sh',
@@ -339,6 +349,7 @@ const content: LessonContent = {
     },
     {
       type: 'multiple-choice',
+      hint: 'Think about which option is most specific to this concept.',
       question: 'Your deployment fails with "Error: ANTHROPIC_API_KEY is not defined." What went wrong?',
       options: [
         'The Vite build cannot access server-side environment variables',
@@ -368,6 +379,7 @@ const content: LessonContent = {
     },
     {
       type: 'order',
+      hint: 'Think about what needs to exist before each next step.',
       instruction: 'Order the Tier 1 skills as they were applied in this capstone:',
       items: [
         'Context management (keep prompts focused)',

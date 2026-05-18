@@ -11,6 +11,7 @@ const content: LessonContent = {
     },
     {
       type: 'multiple-choice',
+      hint: 'Read each option carefully — one fits the context best.',
       question: 'When you say "5 agents on parallel worktrees" to your engineering manager, what do they most likely hear?',
       options: [
         'An efficient way to parallelize development work',
@@ -59,6 +60,7 @@ const content: LessonContent = {
     },
     {
       type: 'multiple-choice',
+      hint: 'Eliminate the options that only partially fit.',
       question: 'You say "module boundary enforcement via eslint rules and Nx tags." What does your engineering manager most likely hear?',
       options: [
         'A smart architectural decision that prevents cross-team conflicts',
@@ -78,6 +80,7 @@ const content: LessonContent = {
     // === COMPARE: JARGON VS BUSINESS ===
     {
       type: 'compare',
+      hint: 'Look at the key differences between the two approaches.',
       title: 'Technical jargon vs Business translation',
       body: 'The same decisions, communicated two different ways. One gets funded, the other gets blank stares.',
       left: {
@@ -100,6 +103,7 @@ const content: LessonContent = {
     // === CONCRETE TRANSLATIONS ===
     {
       type: 'compare',
+      hint: 'Focus on what makes one approach more appropriate here.',
       title: 'Architecture proposal: technical vs stakeholder',
       body: 'The exact same architecture, written for two audiences. One gets blank stares. The other gets funded.',
       left: {
@@ -120,6 +124,7 @@ const content: LessonContent = {
     },
     {
       type: 'multiple-choice',
+      hint: 'Focus on the primary goal, not secondary benefits.',
       question: 'The stakeholder version never mentions "agents," "CLAUDE.md," or "worktrees." Why?',
       options: [
         'Because stakeholders would not approve AI-related expenses',
@@ -139,6 +144,7 @@ const content: LessonContent = {
     // === CODE-FILL: STAKEHOLDER TRANSLATION ===
     {
       type: 'code-fill',
+      hint: 'Fill in values that match the pattern shown above.',
       instruction: 'Complete this stakeholder translation table by filling in the business outcome for each technical decision.',
       language: 'markdown',
       filename: 'docs/translation-table.md',
@@ -156,6 +162,7 @@ const content: LessonContent = {
     // === DEFENDING UNDER SCRUTINY ===
     {
       type: 'multiple-choice',
+      hint: 'Think about which option is most specific to this concept.',
       question: 'A stakeholder asks: "How do you know agents will not introduce bugs?" What is the strongest response?',
       options: [
         'AI has gotten very good at writing code — the error rate is low',
@@ -168,6 +175,7 @@ const content: LessonContent = {
     },
     {
       type: 'multiple-choice',
+      hint: 'Consider what the lesson content emphasized.',
       question: 'A VP pushes back: "Can we just hire more engineers instead of using AI?" What is the most compelling counter-argument?',
       options: [
         'AI is the future — we need to adopt it early',
@@ -180,6 +188,7 @@ const content: LessonContent = {
     },
     {
       type: 'code-fill',
+      hint: 'Use the exact syntax from the lesson examples.',
       instruction: 'Complete this evidence package that you would present before any architecture proposal meeting. Hard numbers silence theoretical objections.',
       language: 'markdown',
       filename: 'docs/pilot-results.md',
@@ -195,6 +204,7 @@ const content: LessonContent = {
     },
     {
       type: 'multiple-choice',
+      hint: 'One option stands out when you think about the core purpose.',
       question: 'A VP asks: "What happens if Claude goes down? Are we dependent on a single AI vendor?" Best response?',
       options: [
         'Claude never goes down — Anthropic has excellent uptime',
@@ -214,6 +224,7 @@ const content: LessonContent = {
     // === BUILDING CREDIBILITY ===
     {
       type: 'multiple-choice',
+      hint: 'Read each option carefully — one fits the context best.',
       question: 'Two architects propose agent-first architecture to leadership. Architect A has beautiful slides with industry benchmarks. Architect B has a rebuilt billing module that shipped in 3 days with zero bugs. Who has more credibility?',
       options: [
         'Architect A — polished presentations show professionalism',
@@ -226,6 +237,7 @@ const content: LessonContent = {
     },
     {
       type: 'multiple-choice',
+      hint: 'Eliminate the options that only partially fit.',
       question: 'What is the most important principle of the credibility ladder?',
       options: [
         'Start with a big proposal to show ambition',
@@ -238,6 +250,7 @@ const content: LessonContent = {
     },
     {
       type: 'order',
+      hint: 'Consider what depends on what — prerequisites first.',
       instruction: 'Order the credibility-building steps from first to last:',
       items: [
         'Propose full architecture adoption to leadership',
@@ -252,6 +265,7 @@ const content: LessonContent = {
     // === STAKEHOLDER MATCHING ===
     {
       type: 'match',
+      hint: 'Find the unique connection between each pair.',
       instruction: 'Match each stakeholder concern to the evidence type that addresses it:',
       leftItems: ['Will it break production?', 'How much will it cost?', 'When will it ship?', 'Is it worth the investment?'],
       rightItems: ['Test coverage + rollback plan', 'Time estimate + team allocation', 'Milestone timeline', 'ROI calculation with before/after metrics'],
@@ -260,6 +274,7 @@ const content: LessonContent = {
     },
     {
       type: 'prompt-lab',
+      hint: 'Be specific about what you want — vague prompts get vague responses.',
       instruction: 'Write a stakeholder update explaining a technical refactoring in business terms.',
       scenario: 'You spent 2 weeks refactoring a monolith into independent modules using agent-first architecture. The CTO wants to know why it took 2 weeks and what the business got for it. You need to write an update that emphasizes business outcomes, not technical details.',
       starterPrompt: 'We refactored the code.',
@@ -286,6 +301,7 @@ const content: LessonContent = {
     // === COMMON STAKEHOLDER PERSONAS ===
     {
       type: 'match',
+      hint: 'Match each term to its most specific definition.',
       instruction: 'Match each stakeholder role to the lead metric they care about most:',
       leftItems: ['CTO', 'VP of Engineering', 'Product Manager', 'CFO'],
       rightItems: ['Cost per feature ($8,000 to $850)', 'Feature delivery speed (3 weeks to 3 days)', 'Team productivity without proportional hiring', 'Technical risk and architectural entropy'],
@@ -294,6 +310,7 @@ const content: LessonContent = {
     },
     {
       type: 'code-fill',
+      hint: 'Each blank follows the conventions demonstrated earlier.',
       instruction: 'Complete this audience-specific talking points document. Fill in the key metric that resonates most with each stakeholder.',
       language: 'markdown',
       filename: 'docs/talking-points.md',
@@ -308,6 +325,7 @@ const content: LessonContent = {
     },
     {
       type: 'multiple-choice',
+      hint: 'Focus on the primary goal, not secondary benefits.',
       question: 'You are presenting to the CFO. Which metric do you lead with?',
       options: [
         'Test coverage improvement (67% to 94%)',
@@ -327,6 +345,7 @@ const content: LessonContent = {
     // === HANDLING RESISTANCE ===
     {
       type: 'compare',
+      hint: 'Consider the trade-offs discussed in the lesson.',
       title: 'When they say no: arguing vs persistence',
       body: 'Two approaches when your proposal gets rejected. One burns bridges. The other builds an irresistible case over time.',
       left: {

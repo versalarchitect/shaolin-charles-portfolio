@@ -18,6 +18,7 @@ const content: LessonContent = {
     // === COMMON MISTAKES ===
     {
       type: 'multiple-choice',
+      hint: 'Read each option carefully — one fits the context best.',
       question: 'What is the single most frequent mistake in agent-generated code?',
       options: [
         'Using deprecated APIs',
@@ -30,6 +31,7 @@ const content: LessonContent = {
     },
     {
       type: 'code-fill',
+      hint: 'Fill in values that match the pattern shown above.',
       instruction: 'This agent-generated function has no failure path. Add the missing error handling checks:',
       language: 'typescript',
       filename: 'src/actions/get-user.ts',
@@ -53,6 +55,7 @@ const content: LessonContent = {
     },
     {
       type: 'compare',
+      hint: 'Look at the key differences between the two approaches.',
       title: 'Mistake 2: Wrong assumptions about data',
       body: 'The agent assumes data is always present and well-shaped. Compare the unsafe vs safe approach.',
       question: 'Which code safely handles potentially missing nested data?',
@@ -71,6 +74,7 @@ const content: LessonContent = {
     },
     {
       type: 'multiple-choice',
+      hint: 'Eliminate the options that only partially fit.',
       question: 'Agent-built CRUD operations typically handle the happy path. Which edge case is MOST commonly skipped?',
       options: [
         'Create with all required fields present',
@@ -83,6 +87,7 @@ const content: LessonContent = {
     },
     {
       type: 'multiple-choice',
+      hint: 'Focus on the primary goal, not secondary benefits.',
       question: 'An agent builds a DELETE endpoint for posts. It runs `db.delete(posts).where(eq(posts.id, id))`. What edge case is most likely missing?',
       options: [
         'The delete does not return the deleted post',
@@ -161,6 +166,7 @@ const content: LessonContent = {
     },
     {
       type: 'match',
+      hint: 'Find the unique connection between each pair.',
       instruction: 'Match each verification category to the pattern you should search for:',
       leftItems: ['Error handling gaps', 'Null safety issues', 'Security vulnerabilities', 'Async correctness'],
       rightItems: ['grep for Promise.all with unbounded arrays, missing await', 'grep for .env, hardcoded keys, innerHTML, as any', 'grep for missing try/catch around fetch, db calls', 'grep for missing ?. optional chaining, no fallback defaults'],
@@ -169,6 +175,7 @@ const content: LessonContent = {
     },
     {
       type: 'code-fill',
+      hint: 'Use the exact syntax from the lesson examples.',
       instruction: 'Complete these grep commands to find unhandled external calls in agent-generated code:',
       language: 'bash',
       filename: 'verification-commands.sh',
@@ -202,6 +209,7 @@ const content: LessonContent = {
     // === DATA INTEGRITY ===
     {
       type: 'match',
+      hint: 'Match each term to its most specific definition.',
       instruction: 'Match each data integrity check to its expected database behavior:',
       leftItems: ['Insert duplicate email', 'Delete user who has posts', 'Update only the name field', 'Update any field in a row'],
       rightItems: ['updatedAt timestamp auto-updates', 'Throws unique constraint violation', 'Email field remains unchanged (not nulled)', 'Either cascades or throws FK violation'],
@@ -210,6 +218,7 @@ const content: LessonContent = {
     },
     {
       type: 'multiple-choice',
+      hint: 'Think about which option is most specific to this concept.',
       question: 'The agent created a users table with an email column but no unique constraint. The TypeScript schema says `email: text("email").notNull()`. Is this safe?',
       options: [
         'Yes — notNull prevents duplicate empty emails',
@@ -224,6 +233,7 @@ const content: LessonContent = {
     // === VERIFY BEFORE COMMIT WORKFLOW ===
     {
       type: 'multiple-choice',
+      hint: 'Consider what the lesson content emphasized.',
       question: 'What is the correct verify-before-commit workflow for agent-generated code?',
       options: [
         'Run tests, then commit if they pass',
@@ -236,6 +246,7 @@ const content: LessonContent = {
     },
     {
       type: 'code-fill',
+      hint: 'Each blank follows the conventions demonstrated earlier.',
       instruction: 'Complete this pre-commit verification script that catches common agent mistakes:',
       language: 'bash',
       filename: 'scripts/verify.sh',
@@ -262,6 +273,7 @@ const content: LessonContent = {
     // === ASYNC CORRECTNESS ===
     {
       type: 'order',
+      hint: 'Consider what depends on what — prerequisites first.',
       instruction: 'Rank these async bugs from most dangerous (hardest to detect) to least:',
       items: [
         'Parallel mutations that should be in a transaction (race condition)',
@@ -273,6 +285,7 @@ const content: LessonContent = {
     },
     {
       type: 'multiple-choice',
+      hint: 'One option stands out when you think about the core purpose.',
       question: 'An agent writes getDashboard() that runs 3 independent DB queries sequentially with await. What is the issue?',
       options: [
         'It will crash because queries cannot be sequential',
@@ -285,6 +298,7 @@ const content: LessonContent = {
     },
     {
       type: 'multiple-choice',
+      hint: 'Read each option carefully — one fits the context best.',
       question: 'An agent writes: `const users = await Promise.all(userIds.map(id => db.query.users.findFirst({where: eq(users.id, id)})))`. What should you verify?',
       options: [
         'That Promise.all is imported correctly',
@@ -326,6 +340,7 @@ const content: LessonContent = {
     // === PUTTING IT ALL TOGETHER ===
     {
       type: 'multiple-choice',
+      hint: 'Eliminate the options that only partially fit.',
       question: 'How much time does the full verification ritual add per commit, and how much debugging time does it prevent per week?',
       options: [
         '1-2 minutes per commit, prevents 30 minutes/week',
@@ -338,6 +353,7 @@ const content: LessonContent = {
     },
     {
       type: 'order',
+      hint: 'Think about what needs to exist before each next step.',
       instruction: 'Order the verify-before-commit workflow steps:',
       items: [
         'Run automated checks (tsc, lint, tests)',

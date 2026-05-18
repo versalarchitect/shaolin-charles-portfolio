@@ -76,6 +76,7 @@ const content: LessonContent = {
     // === WHAT TO INCLUDE ===
     {
       type: 'multiple-choice',
+      hint: 'Read each option carefully — one fits the context best.',
       question: 'Which CLAUDE.md section defines patterns every agent MUST follow — like naming conventions, directory structure rules, and import ordering?',
       options: [
         'Constraints — technology and performance limits',
@@ -88,6 +89,7 @@ const content: LessonContent = {
     },
     {
       type: 'multiple-choice',
+      hint: 'Eliminate the options that only partially fit.',
       question: 'An agent introduces a new ORM library because it "seemed better." Your CLAUDE.md does not mention approved libraries. What CLAUDE.md section would have prevented this?',
       options: [
         'Conventions — it would mandate naming patterns',
@@ -100,6 +102,7 @@ const content: LessonContent = {
     },
     {
       type: 'compare',
+      hint: 'Look at the key differences between the two approaches.',
       title: 'Patterns section: abstract rule vs executable example',
       body: 'Agents learn better from examples than from abstract rules. The Patterns section transforms CLAUDE.md from policy into executable knowledge.',
       left: {
@@ -120,6 +123,7 @@ const content: LessonContent = {
     },
     {
       type: 'multiple-choice',
+      hint: 'Focus on the primary goal, not secondary benefits.',
       question: 'What is the difference between Constraints and Anti-patterns in a CLAUDE.md?',
       options: [
         'There is no difference — they are the same thing',
@@ -132,6 +136,7 @@ const content: LessonContent = {
     },
     {
       type: 'code-fill',
+      hint: 'Fill in values that match the pattern shown above.',
       instruction: 'Complete this real CLAUDE.md conventions section. Fill in the naming patterns, rules, and anti-patterns with specific, imperative language.',
       language: 'markdown',
       template: '# Project: Invoice Platform\n\n## Conventions\n\n### File Naming\n- Feature files: `___`\n- Test files: `___` (collocated in same directory)\n- Types: `[domain].types.ts`\n- NEVER use generic names: `___`\n\n### Directory Structure\n- New features: `___`\n- Each feature exports via `index.ts`\n\n### Imports\n- Feature imports use the index: `import { createInvoice } from \'@/features/invoices\'`\n- NEVER import ___',
@@ -153,6 +158,7 @@ const content: LessonContent = {
 
     {
       type: 'compare',
+      hint: 'Focus on what makes one approach more appropriate here.',
       title: 'Soft language vs imperative commands',
       body: 'Agents interpret vague language as optional. Imperative commands get followed consistently.',
       left: {
@@ -173,6 +179,7 @@ const content: LessonContent = {
     },
     {
       type: 'code-fill',
+      hint: 'Use the exact syntax from the lesson examples.',
       instruction: 'Complete this CLAUDE.md template. Fill in the blanks with specific, imperative conventions that an agent must follow.',
       language: 'markdown',
       template: '# Project: Task Manager API\n\n## Conventions\n\n### Naming\n- Feature files: `___`\n- Test files: collocated, named `___`\n- NEVER use generic names: utils.ts, helpers.ts\n\n## Constraints\n\n### Technology\n- Validation: ___ (no other library permitted)\n- Testing: ___ (not Jest)\n\n### Forbidden Anti-Patterns\n- Never create a ___ file\n- Never ___ without explicit approval\n- Never use `___` type — use unknown and narrow',
@@ -192,6 +199,7 @@ const content: LessonContent = {
     // === CONSTRAINTS SECTION ===
     {
       type: 'code-fill',
+      hint: 'Each blank follows the conventions demonstrated earlier.',
       instruction: 'Complete this CLAUDE.md constraints section. Each constraint blocks a specific failure mode agents commonly trigger.',
       language: 'markdown',
       template: '## Constraints\n\n### Technology\n- Database: PostgreSQL via ___ (no raw SQL)\n- Validation: ___ (not joi, not yup)\n- Testing: ___ (not Jest)\n- DO NOT add new ___ without explicit approval\n\n### Performance\n- No ___ file operations\n- No file larger than ___ lines (split at that threshold)\n\n### Security\n- Never log ___ (email, name, address, payment info)\n- No secrets in code — all from ___',
@@ -210,6 +218,7 @@ const content: LessonContent = {
     },
     {
       type: 'multiple-choice',
+      hint: 'Think about which option is most specific to this concept.',
       question: 'Your CLAUDE.md says "Consider using Zod for validation." An agent uses Joi instead. Whose fault is it?',
       options: [
         'The agent ignored the instruction',
@@ -224,6 +233,7 @@ const content: LessonContent = {
     // === LAYERING ===
     {
       type: 'multiple-choice',
+      hint: 'Consider what the lesson content emphasized.',
       question: 'Your CLAUDE.md is getting long and you need module-specific rules for the payments module (e.g., "all monetary values in cents"). Where should these rules live?',
       options: [
         'Add them to the root CLAUDE.md — everything in one file',
@@ -236,6 +246,7 @@ const content: LessonContent = {
     },
     {
       type: 'code-fill',
+      hint: 'Look at the surrounding code for context clues.',
       instruction: 'Complete this directory-level CLAUDE.md for a payments module. Fill in the module-specific rules that keep agents safe when working with money.',
       language: 'markdown',
       template: '# Payments Module\n\n## Module-Specific Rules\n- All monetary values in ___ (integer). NEVER use ___ for money.\n- Every mutation requires an ___ in the request header.\n- Payment state machine: draft → pending → completed | failed | ___.\n- State transitions are the ONLY way to change payment status.\n- Never ___ a payment record — use soft-delete.\n\n## Dependencies\n- This module depends on: ___\n- NEVER introduce a dependency on features/notifications from here',
@@ -259,6 +270,7 @@ const content: LessonContent = {
     // === TESTING YOUR CLAUDE.MD ===
     {
       type: 'multiple-choice',
+      hint: 'One option stands out when you think about the core purpose.',
       question: 'How do you test if your CLAUDE.md actually works?',
       options: [
         'Read it yourself and check for typos',
@@ -271,6 +283,7 @@ const content: LessonContent = {
     },
     {
       type: 'multiple-choice',
+      hint: 'Read each option carefully — one fits the context best.',
       question: 'An agent deviates from your expectations. Your CLAUDE.md documents the rule, but the agent still broke it. What is the most likely cause?',
       options: [
         'The agent model is too weak to follow rules',
@@ -285,6 +298,7 @@ const content: LessonContent = {
     // === ANTI-PATTERNS ===
     {
       type: 'compare',
+      hint: 'Consider the trade-offs discussed in the lesson.',
       title: 'Anti-pattern: too long vs too vague',
       body: 'Both extremes defeat the purpose of CLAUDE.md. One overloads context; the other provides no actionable guidance.',
       left: {
@@ -305,6 +319,7 @@ const content: LessonContent = {
     },
     {
       type: 'multiple-choice',
+      hint: 'Eliminate the options that only partially fit.',
       question: 'Your CLAUDE.md says "use server actions for mutations" in the conventions section, but a later section says "create API routes for all endpoints." An agent encounters both rules. What happens?',
       options: [
         'The agent follows both rules simultaneously',
@@ -317,6 +332,7 @@ const content: LessonContent = {
     },
     {
       type: 'multiple-choice',
+      hint: 'Focus on the primary goal, not secondary benefits.',
       question: 'Your CLAUDE.md is 1800 lines and agents consistently ignore the rules in the bottom half. What is the best fix?',
       options: [
         'Add "IMPORTANT:" prefix to the rules being ignored',
@@ -336,6 +352,7 @@ const content: LessonContent = {
     // === NEW INTERACTIVE STEPS ===
     {
       type: 'match',
+      hint: 'Find the unique connection between each pair.',
       instruction: 'Match each CLAUDE.md section to its purpose:',
       leftItems: ['Conventions', 'Constraints', 'Anti-patterns', 'Architecture decisions'],
       rightItems: ['How to name and structure', 'What technology limits apply', 'What to never do', 'Why things are the way they are'],
@@ -344,6 +361,7 @@ const content: LessonContent = {
     },
     {
       type: 'prompt-lab',
+      hint: 'Be specific about what you want — vague prompts get vague responses.',
       instruction: 'Write CLAUDE.md conventions for a new TypeScript API project. The conventions must be specific and imperative enough that any agent would produce identical output.',
       scenario: 'You are starting a new TypeScript REST API. You need to write the Conventions section of CLAUDE.md. The project uses feature-based modules, Zod for validation, Vitest for testing, and Drizzle ORM for database access. You want strict naming, no generic files, and colocated tests.',
       starterPrompt: 'Add some rules to the project.',
@@ -387,6 +405,7 @@ const content: LessonContent = {
     // === PRACTICAL EXERCISE ===
     {
       type: 'multiple-choice',
+      hint: 'Think about which option is most specific to this concept.',
       question: 'You are building a CLAUDE.md from scratch. Which four questions give you 80% of an effective coordination protocol?',
       options: [
         'What framework? What database? What hosting? What CI/CD?',
@@ -399,6 +418,7 @@ const content: LessonContent = {
     },
     {
       type: 'order',
+      hint: 'Consider what depends on what — prerequisites first.',
       instruction: 'Order these CLAUDE.md sections from most critical (top of file) to least critical (bottom):',
       items: [
         'Development commands (how to run, test, build)',
@@ -411,6 +431,7 @@ const content: LessonContent = {
     },
     {
       type: 'code-fill',
+      hint: 'The answer matches the API or syntax just explained.',
       instruction: 'Complete this minimal CLAUDE.md template. Fill in the key patterns, constraints, and anti-patterns that make it effective.',
       language: 'markdown',
       template: '# [Project Name]\n\n## Architecture\n- Feature modules: `src/features/___/`\n- Each module: handler, service, schema, test, index.ts\n\n## Conventions\n- Files: `___` (e.g., `payments.handler.ts`)\n- Tests: collocated, named `___`\n- Imports: always from feature ___, never internal files\n\n## Constraints\n- No file over ___ lines\n- No ___ — use ORM query builder\n\n## Anti-Patterns (NEVER do these)\n- Never create ___\n- Never use `___` type — use `unknown` and narrow',
@@ -431,6 +452,7 @@ const content: LessonContent = {
     // === SYNTHESIS ===
     {
       type: 'multiple-choice',
+      hint: 'Consider what the lesson content emphasized.',
       question: 'What is the primary difference between a README and a CLAUDE.md?',
       options: [
         'A README is for public repos, CLAUDE.md is for private repos',

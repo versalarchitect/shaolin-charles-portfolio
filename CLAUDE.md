@@ -344,6 +344,44 @@ Asymmetric grid for displaying skills/expertise.
 - Large decorative numbers in backgrounds
 - Tech tags at bottom of each card
 
+### Lesson Hints System
+
+All interactive lesson step types support an optional `hint?: string` field. When present, a lightbulb "Show Hint" button appears next to the action button. Clicking it reveals a styled clue panel.
+
+**Supported step types:** `multiple-choice`, `code-input`, `code-fill`, `order`, `compare`, `match`, `terminal`, `prompt-lab`
+
+**Writing good hints:**
+- 1 short sentence, max ~15 words
+- Narrows down the answer WITHOUT giving it away
+- Written in the same language as the step content
+- Placed after content fields, before `platforms` in the data
+
+**UI component:** `HintButton` in `lesson-player.tsx` — reusable, renders inline with action buttons. Animates from button → revealed clue panel with `AnimatePresence`.
+
+### Confetti (`@/components/ui/confetti`)
+
+Canvas-based confetti burst effect. Fires when the user answers a step correctly.
+
+**`useConfetti()` hook** — returns a `fire(options?)` function. Creates a temporary full-screen canvas, animates particles, and self-cleans.
+
+**`ConfettiBurst` component** — declarative wrapper. Pass `trigger={boolean}` to fire.
+
+**Options:**
+| Prop | Default | Description |
+|------|---------|-------------|
+| `particleCount` | 60 | Number of particles |
+| `spread` | 70 | Cone angle in degrees |
+| `startVelocity` | 35 | Initial launch speed |
+| `gravity` | 0.6 | Downward acceleration |
+| `colors` | Rainbow array | Particle colors |
+| `origin` | `{ x: 0.5, y: 1 }` | Launch point (0-1 viewport fraction) |
+| `decay` | 0.92 | Velocity decay per frame |
+| `scalar` | 1 | Size multiplier |
+| `shapes` | `['square', 'circle']` | Particle shapes |
+| `duration` | 2500 | Max animation time (ms) |
+
+Respects `prefers-reduced-motion`.
+
 ### Effects Library (`@/components/ui/aaa-effects`)
 
 | Component | Purpose |

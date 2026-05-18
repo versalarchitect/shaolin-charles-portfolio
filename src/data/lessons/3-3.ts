@@ -64,6 +64,7 @@ const content: LessonContent = {
     // === WHAT IS A WORKTREE ===
     {
       type: 'compare',
+      hint: 'Look at the key differences between the two approaches.',
       title: 'Worktree vs Clone',
       body: 'Two ways to give agents separate working directories. One is lightweight and fast, the other is heavy and slow.',
       question: 'Which approach is better for parallel agents working on the same project?',
@@ -80,6 +81,7 @@ const content: LessonContent = {
     },
     {
       type: 'multiple-choice',
+      hint: 'Read each option carefully — one fits the context best.',
       question: 'What do all worktrees in a repo share?',
       options: [
         'The same working directory files',
@@ -94,6 +96,7 @@ const content: LessonContent = {
     // === CORE COMMANDS ===
     {
       type: 'multiple-choice',
+      hint: 'Eliminate the options that only partially fit.',
       question: 'Git worktrees boil down to four commands. Which command creates a new worktree with a new branch?',
       options: [
         'git worktree list -b <branch>',
@@ -106,6 +109,7 @@ const content: LessonContent = {
     },
     {
       type: 'code-fill',
+      hint: 'Fill in values that match the pattern shown above.',
       instruction: 'Complete these git worktree commands for creating agent workspaces:',
       language: 'bash',
       filename: 'terminal',
@@ -125,6 +129,7 @@ const content: LessonContent = {
     },
     {
       type: 'code-fill',
+      hint: 'Use the exact syntax from the lesson examples.',
       instruction: 'Complete these worktree management commands:',
       language: 'bash',
       filename: 'terminal',
@@ -197,6 +202,7 @@ const content: LessonContent = {
     // === PRACTICAL SETUP ===
     {
       type: 'multiple-choice',
+      hint: 'Focus on the primary goal, not secondary benefits.',
       question: 'You have a feature that breaks into three independent tasks: auth, API, and UI. Where should each agent work?',
       options: [
         'All three agents work in the main repo directory on different branches',
@@ -209,6 +215,7 @@ const content: LessonContent = {
     },
     {
       type: 'code-fill',
+      hint: 'Each blank follows the conventions demonstrated earlier.',
       instruction: 'Complete this full parallel setup for three agents with worktrees:',
       language: 'bash',
       filename: 'terminal',
@@ -230,6 +237,7 @@ const content: LessonContent = {
     },
     {
       type: 'multiple-choice',
+      hint: 'Think about which option is most specific to this concept.',
       question: 'Why should each agent run in its own worktree directory instead of the main repo?',
       options: [
         'The main repo is read-only',
@@ -249,6 +257,7 @@ const content: LessonContent = {
     // === MERGE STRATEGY ===
     {
       type: 'multiple-choice',
+      hint: 'Consider what the lesson content emphasized.',
       question: 'All three agents finish. You need to merge their branches back into main. What should you merge FIRST?',
       options: [
         'The largest branch (most changes)',
@@ -261,6 +270,7 @@ const content: LessonContent = {
     },
     {
       type: 'code-fill',
+      hint: 'Look at the surrounding code for context clues.',
       instruction: 'Complete this sequential merge strategy — auth first (independent), then api, then ui:',
       language: 'bash',
       filename: 'terminal',
@@ -273,6 +283,7 @@ const content: LessonContent = {
     },
     {
       type: 'order',
+      hint: 'Consider what depends on what — prerequisites first.',
       instruction: 'Order these merge steps from first to last:',
       items: [
         'Merge the branch with most shared-code changes',
@@ -334,6 +345,7 @@ const content: LessonContent = {
     // === CONFLICT RESOLUTION ===
     {
       type: 'multiple-choice',
+      hint: 'One option stands out when you think about the core purpose.',
       question: 'Even with worktree isolation, Agent 1 adds a new export to src/index.ts and Agent 3 also adds an export to src/index.ts. What happens at merge?',
       options: [
         'Git automatically merges both additions perfectly',
@@ -346,6 +358,7 @@ const content: LessonContent = {
     },
     {
       type: 'code-fill',
+      hint: 'The answer matches the API or syntax just explained.',
       instruction: 'Complete the conflict resolution — keep both exports from different agents:',
       language: 'typescript',
       filename: 'src/index.ts',
@@ -359,6 +372,7 @@ const content: LessonContent = {
     },
     {
       type: 'multiple-choice',
+      hint: 'Read each option carefully — one fits the context best.',
       question: 'Two agents both added new exports to the same index file. What is the most common resolution?',
       options: [
         'Delete one agent\'s export',
@@ -378,6 +392,7 @@ const content: LessonContent = {
     // === CLEANUP ===
     {
       type: 'multiple-choice',
+      hint: 'Eliminate the options that only partially fit.',
       question: 'After merging all branches, you have three worktree directories still on disk. What should you do?',
       options: [
         'Leave them — they might be useful later',
@@ -390,6 +405,7 @@ const content: LessonContent = {
     },
     {
       type: 'code-fill',
+      hint: 'Fill in values that match the pattern shown above.',
       instruction: 'Complete the full cleanup sequence after merging:',
       language: 'bash',
       filename: 'terminal',
@@ -411,6 +427,7 @@ const content: LessonContent = {
     // === INTERACTIVE: CODE-FILL ===
     {
       type: 'code-fill',
+      hint: 'Use the exact syntax from the lesson examples.',
       instruction: 'Complete the git worktree commands for setting up parallel agent workspaces:',
       language: 'shell',
       template: '# Create isolated worktrees for two agents\ngit worktree add ../{{dir1}} -b {{branch1}}\ngit worktree add ../{{dir2}} -b {{branch2}}\n\n# After agents finish, clean up\ngit worktree {{cleanup}} ../agent-auth\ngit worktree {{cleanup}} ../agent-api',
@@ -460,6 +477,7 @@ const content: LessonContent = {
     // === ANTI-PATTERNS ===
     {
       type: 'multiple-choice',
+      hint: 'Focus on the primary goal, not secondary benefits.',
       question: 'What happens if you try to check out the same branch in two worktrees?',
       options: [
         'It works fine — both worktrees share the branch',

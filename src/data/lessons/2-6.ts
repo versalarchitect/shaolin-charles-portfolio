@@ -74,6 +74,7 @@ const content: LessonContent = {
     },
     {
       type: 'code-fill',
+      hint: 'Fill in values that match the pattern shown above.',
       instruction: 'Complete this integration spec with the critical requirements an agent would otherwise miss:',
       language: 'markdown',
       filename: 'specs/payments.md',
@@ -89,6 +90,7 @@ const content: LessonContent = {
     },
     {
       type: 'multiple-choice',
+      hint: 'Read each option carefully — one fits the context best.',
       question: 'Why does the spec say "Fulfillment happens via webhook, not on redirect"?',
       options: [
         'Webhooks are faster than redirects',
@@ -108,6 +110,7 @@ const content: LessonContent = {
     // === DIRECTING THE BUILD ===
     {
       type: 'multiple-choice',
+      hint: 'Eliminate the options that only partially fit.',
       question: 'How should you direct an agent through a Stripe integration?',
       options: [
         'Hand the agent the full spec and say "build it"',
@@ -120,6 +123,7 @@ const content: LessonContent = {
     },
     {
       type: 'code-fill',
+      hint: 'Use the exact syntax from the lesson examples.',
       instruction: 'Complete this Phase 1 prompt to set up the Stripe SDK correctly:',
       language: 'text',
       filename: 'prompt-phase-1.txt',
@@ -139,6 +143,7 @@ const content: LessonContent = {
     },
     {
       type: 'code-fill',
+      hint: 'Each blank follows the conventions demonstrated earlier.',
       instruction: 'Complete the webhook handler prompt with the critical security and reliability requirements:',
       language: 'text',
       filename: 'prompt-phase-3.txt',
@@ -166,6 +171,7 @@ const content: LessonContent = {
     // === IDEMPOTENCY ===
     {
       type: 'multiple-choice',
+      hint: 'Focus on the primary goal, not secondary benefits.',
       question: 'Why is idempotency the most critical requirement for webhook handlers?',
       options: [
         'Stripe requires it in their terms of service',
@@ -178,6 +184,7 @@ const content: LessonContent = {
     },
     {
       type: 'code-fill',
+      hint: 'Look at the surrounding code for context clues.',
       instruction: 'Complete the idempotent fulfillment pattern with the check-then-create logic:',
       language: 'typescript',
       filename: 'src/lib/fulfill-order.ts',
@@ -192,6 +199,7 @@ const content: LessonContent = {
     },
     {
       type: 'multiple-choice',
+      hint: 'Think about which option is most specific to this concept.',
       question: 'The agent builds a webhook handler that uses the Stripe event ID as the idempotency key. Is this correct?',
       options: [
         'No — you should use the checkout session ID because events can be re-sent with new IDs',
@@ -204,6 +212,7 @@ const content: LessonContent = {
     },
     {
       type: 'compare',
+      hint: 'Look at the key differences between the two approaches.',
       title: 'Webhook without vs with idempotency',
       body: 'Stripe sends webhooks at least once — sometimes multiple times. Your handler must handle duplicates.',
       question: 'Which handler is safe when Stripe retries the same webhook?',
@@ -222,6 +231,7 @@ const content: LessonContent = {
     },
     {
       type: 'code-fill',
+      hint: 'The answer matches the API or syntax just explained.',
       instruction: 'Complete the idempotent fulfillment logic:',
       language: 'typescript',
       filename: 'src/lib/fulfill-order.ts',
@@ -238,6 +248,7 @@ const content: LessonContent = {
     // === FAILURE VERIFICATION ===
     {
       type: 'multiple-choice',
+      hint: 'Consider what the lesson content emphasized.',
       question: 'The happy path works. What should you test NEXT?',
       options: [
         'Deploy to production and monitor for errors',
@@ -250,6 +261,7 @@ const content: LessonContent = {
     },
     {
       type: 'code-fill',
+      hint: 'Fill in values that match the pattern shown above.',
       instruction: 'Complete these failure test scenarios with the expected behavior:',
       language: 'bash',
       filename: 'test-failures.sh',
@@ -284,6 +296,7 @@ const content: LessonContent = {
     // === PARTIAL FAILURES ===
     {
       type: 'multiple-choice',
+      hint: 'One option stands out when you think about the core purpose.',
       question: 'Fulfillment has 3 steps: DB update, email, and access provisioning. The DB update succeeds but email fails. What should happen?',
       options: [
         'Roll back everything — the user did not get confirmation so the order should not exist',
@@ -296,6 +309,7 @@ const content: LessonContent = {
     },
     {
       type: 'compare',
+      hint: 'Focus on what makes one approach more appropriate here.',
       title: 'Critical vs non-critical failure handling',
       body: 'Partial failures require separating operations that must succeed from those that can retry later.',
       question: 'Which approach correctly handles a failed email during fulfillment?',
@@ -316,6 +330,7 @@ const content: LessonContent = {
     // === APPLYING THE PATTERN ===
     {
       type: 'multiple-choice',
+      hint: 'Read each option carefully — one fits the context best.',
       question: 'The Stripe pattern (spec failures, phase the build, verify idempotency) applies to which other integrations?',
       options: [
         'Only payment processors like PayPal and Paddle',
@@ -328,6 +343,7 @@ const content: LessonContent = {
     },
     {
       type: 'order',
+      hint: 'Consider what depends on what — prerequisites first.',
       instruction: 'Order the steps for directing an agent through any third-party integration:',
       items: [
         'Verify failure cases with real test scenarios',

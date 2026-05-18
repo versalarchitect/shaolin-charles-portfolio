@@ -121,6 +121,7 @@ const content: LessonContent = {
     // === WHAT BELONGS IN CLAUDE.MD ===
     {
       type: 'multiple-choice',
+      hint: 'Read each option carefully — one fits the context best.',
       question: 'CLAUDE.md contains the decisions agents need to make consistently. What does NOT belong in a multi-agent CLAUDE.md?',
       options: [
         'API style: REST with JSON responses',
@@ -133,6 +134,7 @@ const content: LessonContent = {
     },
     {
       type: 'code-fill',
+      hint: 'Fill in values that match the pattern shown above.',
       instruction: 'Complete this multi-agent CLAUDE.md that prevents agents from making contradictory decisions:',
       language: 'markdown',
       filename: 'CLAUDE.md',
@@ -148,6 +150,7 @@ const content: LessonContent = {
     },
     {
       type: 'multiple-choice',
+      hint: 'Eliminate the options that only partially fit.',
       question: 'Which of these does NOT belong in a multi-agent CLAUDE.md?',
       options: [
         'API style: REST with JSON responses',
@@ -167,6 +170,7 @@ const content: LessonContent = {
     // === LAYERING: PROJECT + DIRECTORY ===
     {
       type: 'multiple-choice',
+      hint: 'Focus on the primary goal, not secondary benefits.',
       question: 'A single root CLAUDE.md covers project-wide decisions. But when agents work in specific directories, they need domain-specific guidance too. How does Claude handle this?',
       options: [
         'Claude only reads the root CLAUDE.md — directory-level files are ignored',
@@ -179,6 +183,7 @@ const content: LessonContent = {
     },
     {
       type: 'code-fill',
+      hint: 'Use the exact syntax from the lesson examples.',
       instruction: 'Complete this directory-level CLAUDE.md for the API agent that layers on top of the root rules:',
       language: 'markdown',
       filename: 'src/api/CLAUDE.md',
@@ -193,6 +198,7 @@ const content: LessonContent = {
     },
     {
       type: 'code-fill',
+      hint: 'Each blank follows the conventions demonstrated earlier.',
       instruction: 'Complete this directory-level CLAUDE.md for the UI agent with component-specific patterns:',
       language: 'markdown',
       filename: 'src/components/CLAUDE.md',
@@ -206,6 +212,7 @@ const content: LessonContent = {
     },
     {
       type: 'multiple-choice',
+      hint: 'Think about which option is most specific to this concept.',
       question: 'Agent working in `src/api/` reads which CLAUDE.md files?',
       options: [
         'Only src/api/CLAUDE.md',
@@ -225,6 +232,7 @@ const content: LessonContent = {
     // === PREVENTING CONTRADICTORY DECISIONS ===
     {
       type: 'multiple-choice',
+      hint: 'Consider what the lesson content emphasized.',
       question: 'Agent A uses Axios for HTTP, Agent B uses fetch, Agent C creates a custom wrapper. What CLAUDE.md section would have prevented this?',
       options: [
         'A "Getting Started" tutorial section',
@@ -237,6 +245,7 @@ const content: LessonContent = {
     },
     {
       type: 'code-fill',
+      hint: 'Look at the surrounding code for context clues.',
       instruction: 'Complete these decision categories that prevent agents from choosing different libraries for the same job:',
       language: 'markdown',
       filename: 'CLAUDE.md',
@@ -250,6 +259,7 @@ const content: LessonContent = {
     },
     {
       type: 'order',
+      hint: 'Consider what depends on what — prerequisites first.',
       instruction: 'Order these from MOST likely to cause agent contradictions (top) to LEAST likely:',
       items: [
         'Which HTTP client library to use',
@@ -263,6 +273,7 @@ const content: LessonContent = {
     // === UPDATING SHARED CONTEXT ===
     {
       type: 'multiple-choice',
+      hint: 'One option stands out when you think about the core purpose.',
       question: 'During a parallel run, Agent A discovers the auth library requires async initialization. Who should update CLAUDE.md with this information?',
       options: [
         'Agent A should update CLAUDE.md directly',
@@ -275,6 +286,7 @@ const content: LessonContent = {
     },
     {
       type: 'code-fill',
+      hint: 'The answer matches the API or syntax just explained.',
       instruction: 'Complete this mid-session CLAUDE.md update that propagates a discovery from one agent to all others:',
       language: 'markdown',
       filename: 'CLAUDE.md',
@@ -288,6 +300,7 @@ const content: LessonContent = {
     },
     {
       type: 'multiple-choice',
+      hint: 'Read each option carefully — one fits the context best.',
       question: 'During a parallel run, Agent B discovers a critical pattern. What do you do?',
       options: [
         'Let Agent B update CLAUDE.md directly',
@@ -324,6 +337,7 @@ const content: LessonContent = {
     // === INTERACTIVE: CODE-FILL ===
     {
       type: 'code-fill',
+      hint: 'Fill in values that match the pattern shown above.',
       instruction: 'Complete the CLAUDE.md coordination section that keeps all agents consistent:',
       language: 'markdown',
       template: '## Architecture Decisions (DO NOT DEVIATE)\n\n- **Naming**: All functions use {{naming}} style\n- **Error handling**: Always {{errorPattern}} with a code\n- **Styling**: {{stylingRule}} only. No CSS modules, no inline styles.\n- **Exports**: Use {{exportType}} exports only. No default exports.',
@@ -339,6 +353,7 @@ const content: LessonContent = {
     // === HANDS-ON EXERCISE ===
     {
       type: 'multiple-choice',
+      hint: 'Eliminate the options that only partially fit.',
       question: 'You are about to run 4 agents on an e-commerce project: auth, product catalog, cart/checkout, and admin dashboard. What is the FIRST thing you write before dispatching any agent?',
       options: [
         'The product catalog component',

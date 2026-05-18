@@ -18,6 +18,7 @@ const content: LessonContent = {
     // === SCAFFOLD PROMPTS ===
     {
       type: 'multiple-choice',
+      hint: 'Read each option carefully — one fits the context best.',
       question: 'When directing an agent to scaffold a project, which of the following should you NOT specify in your prompt?',
       options: [
         'The framework and version (e.g., Next.js 15, App Router)',
@@ -30,6 +31,7 @@ const content: LessonContent = {
     },
     {
       type: 'compare',
+      hint: 'Look at the key differences between the two approaches.',
       title: 'What to specify vs what to leave to the agent',
       body: 'A scaffold prompt should constrain decisions that are expensive to change later, but leave implementation details to the agent.',
       question: 'Which side contains the right things to specify?',
@@ -48,6 +50,7 @@ const content: LessonContent = {
     },
     {
       type: 'code-fill',
+      hint: 'Fill in values that match the pattern shown above.',
       instruction: 'This prompt gives Claude Code enough to scaffold correctly. Complete the missing route specifications and rendering decisions.',
       language: 'text',
       filename: 'scaffold-prompt.txt',
@@ -68,6 +71,7 @@ const content: LessonContent = {
     // === CREATE NEXT APP ===
     {
       type: 'multiple-choice',
+      hint: 'Eliminate the options that only partially fit.',
       question: 'You want the agent to scaffold a Next.js project from scratch. Which approach is correct?',
       options: [
         'Always run create-next-app yourself first, then invite the agent',
@@ -86,6 +90,7 @@ const content: LessonContent = {
     },
     {
       type: 'code-fill',
+      hint: 'Use the exact syntax from the lesson examples.',
       instruction: 'If you want the agent to handle everything including the initial create command, complete this scaffold prompt with the right technology choices.',
       language: 'text',
       filename: 'full-scaffold-prompt.txt',
@@ -101,6 +106,7 @@ const content: LessonContent = {
     // === RENDERING STRATEGY ===
     {
       type: 'compare',
+      hint: 'Focus on what makes one approach more appropriate here.',
       title: 'Server Components vs Client Components',
       body: 'The most important architectural decision in a Next.js app. The agent must choose correctly per route — your job is to verify.',
       question: 'A page that fetches bookmarks from a database and displays them as a list — which rendering is correct?',
@@ -119,6 +125,7 @@ const content: LessonContent = {
     },
     {
       type: 'multiple-choice',
+      hint: 'Focus on the primary goal, not secondary benefits.',
       question: 'A page fetches data AND has an interactive delete button. What is the correct pattern?',
       options: [
         'Make the entire page a client component',
@@ -131,6 +138,7 @@ const content: LessonContent = {
     },
     {
       type: 'multiple-choice',
+      hint: 'Think about which option is most specific to this concept.',
       question: 'A /dashboard page fetches user bookmarks from a database and displays them as a static list. What rendering strategy is correct?',
       options: [
         'Client component with useEffect to fetch data on mount',
@@ -200,6 +208,7 @@ const content: LessonContent = {
     // === REDIRECTING THE AGENT ===
     {
       type: 'match',
+      hint: 'Find the unique connection between each pair.',
       instruction: 'Match each scaffold problem to the correct redirect instruction:',
       leftItems: ['Agent added "use client" to a data-only page', 'Agent created API routes instead of server actions', 'Layout hierarchy is flat instead of nested', 'Agent made every component a client component'],
       rightItems: ['Move shared UI into dashboard/layout.tsx to wrap child routes', 'Remove "use client", use direct DB query in the component body', 'Remove API routes, create actions.ts with "use server" directive', 'Keep page as server component, extract only interactive elements to client children'],
@@ -208,6 +217,7 @@ const content: LessonContent = {
     },
     {
       type: 'code-fill',
+      hint: 'Each blank follows the conventions demonstrated earlier.',
       instruction: 'The agent created API routes instead of server actions. Complete this redirect prompt with the correct fix.',
       language: 'text',
       filename: 'redirect-prompt.txt',
@@ -220,6 +230,7 @@ const content: LessonContent = {
     },
     {
       type: 'multiple-choice',
+      hint: 'Consider what the lesson content emphasized.',
       question: 'The agent scaffolded /settings as a server component. The page contains a form where users toggle notification preferences. Is this correct?',
       options: [
         'Yes — forms can work in server components via server actions',
@@ -239,6 +250,7 @@ const content: LessonContent = {
     // === LAYOUT HIERARCHY ===
     {
       type: 'multiple-choice',
+      hint: 'One option stands out when you think about the core purpose.',
       question: 'The agent put the sidebar navigation in the root layout (app/layout.tsx). The landing page at "/" now incorrectly shows the sidebar. What is the correct fix?',
       options: [
         'Add a conditional to hide the sidebar on the landing page',
@@ -251,6 +263,7 @@ const content: LessonContent = {
     },
     {
       type: 'code-fill',
+      hint: 'Look at the surrounding code for context clues.',
       instruction: 'Verify the agent produces the correct layout hierarchy. Complete the missing rendering annotations for each page.',
       language: 'text',
       filename: 'expected-structure.txt',
@@ -263,6 +276,7 @@ const content: LessonContent = {
     },
     {
       type: 'order',
+      hint: 'Consider what depends on what — prerequisites first.',
       instruction: 'Order the steps of directing an agent through a scaffold:',
       items: [
         'Redirect incorrect architectural decisions',
@@ -277,6 +291,7 @@ const content: LessonContent = {
     // === VERIFICATION ===
     {
       type: 'multiple-choice',
+      hint: 'Read each option carefully — one fits the context best.',
       question: 'After the agent scaffolds your project, what is the FIRST thing you should verify?',
       options: [
         'Code quality and variable naming',
@@ -295,6 +310,7 @@ const content: LessonContent = {
     },
     {
       type: 'code-fill',
+      hint: 'The answer matches the API or syntax just explained.',
       instruction: 'You can ask Claude Code to self-verify the scaffold. Complete this verification prompt with the right checks.',
       language: 'text',
       filename: 'verify-prompt.txt',
@@ -314,6 +330,7 @@ const content: LessonContent = {
     // === COMMON PATTERNS ===
     {
       type: 'code-fill',
+      hint: 'Fill in values that match the pattern shown above.',
       instruction: 'The most common correct pattern: server component page that fetches data, with small client component children for interactivity. Complete the missing parts of this implementation.',
       language: 'typescript',
       filename: 'src/app/dashboard/bookmarks/page.tsx',
@@ -326,6 +343,7 @@ const content: LessonContent = {
     },
     {
       type: 'multiple-choice',
+      hint: 'Eliminate the options that only partially fit.',
       question: 'The agent created a single BookmarkList client component that fetches data with useEffect AND handles delete interactions. What is the correct redirect?',
       options: [
         'Leave it — client components can fetch data too',
@@ -340,6 +358,7 @@ const content: LessonContent = {
     // === ADVANCED CONSIDERATIONS ===
     {
       type: 'match',
+      hint: 'Match each term to its most specific definition.',
       instruction: 'Apply the cost-of-change heuristic. Match each decision to how expensive it is to change later:',
       leftItems: ['Routing structure and URL paths', 'Server vs client component boundaries', 'Component file naming', 'Tailwind CSS classes', 'Layout nesting hierarchy'],
       rightItems: ['Trivial — find and replace', 'Cheap — search and rename', 'Moderate — move files, update shared state', 'Expensive — restructuring cascades through the app', 'Expensive — affects URLs, navigation, data flow'],
@@ -362,6 +381,7 @@ const content: LessonContent = {
     },
     {
       type: 'order',
+      hint: 'Think about what needs to exist before each next step.',
       instruction: 'Rank these decisions from MOST expensive to change (first) to LEAST expensive (last):',
       items: [
         'Component CSS classes',
@@ -374,6 +394,7 @@ const content: LessonContent = {
     },
     {
       type: 'multiple-choice',
+      hint: 'Focus on the primary goal, not secondary benefits.',
       question: 'You direct the agent to scaffold an app. It creates API routes for all data fetching instead of using server components with direct DB access. What do you do?',
       options: [
         'Accept it — API routes work fine for data fetching',

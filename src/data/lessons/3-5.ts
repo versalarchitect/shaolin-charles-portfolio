@@ -65,6 +65,7 @@ const content: LessonContent = {
     // === SETUP: WORKTREES — CONVERTED: info → multiple-choice (#2) ===
     {
       type: 'multiple-choice',
+      hint: 'Read each option carefully — one fits the context best.',
       question: 'Why does each agent get its own git worktree instead of working in the same directory?',
       options: [
         'Worktrees make the code run faster',
@@ -90,6 +91,7 @@ const content: LessonContent = {
     // CONVERTED: code-demo → code-fill (#3)
     {
       type: 'code-fill',
+      hint: 'Fill in values that match the pattern shown above.',
       instruction: 'Complete this fleet setup script that creates worktrees for parallel agent work:',
       language: 'bash',
       filename: 'setup-fleet.sh',
@@ -113,6 +115,7 @@ const content: LessonContent = {
     // === ASSIGN TASKS — CONVERTED: info → multiple-choice (#4) ===
     {
       type: 'multiple-choice',
+      hint: 'Eliminate the options that only partially fit.',
       question: 'What makes a good per-agent task specification?',
       options: [
         'A high-level description like "build the auth system"',
@@ -126,6 +129,7 @@ const content: LessonContent = {
     // CONVERTED: code-demo (Auth spec) + code-demo (API spec) → compare (#5)
     {
       type: 'compare',
+      hint: 'Look at the key differences between the two approaches.',
       title: 'Per-agent task specs: Auth vs API',
       body: 'Each agent gets its own equally specific spec. Notice how file ownership is explicit and non-overlapping between agents.',
       question: 'What is the key property that prevents merge conflicts between these two agents?',
@@ -142,6 +146,7 @@ const content: LessonContent = {
     },
     {
       type: 'multiple-choice',
+      hint: 'Focus on the primary goal, not secondary benefits.',
       question: 'The API agent needs to import auth middleware but the auth agent is building it in parallel. How is this handled?',
       options: [
         'The API agent waits for the auth agent to finish',
@@ -161,6 +166,7 @@ const content: LessonContent = {
     // === ORCHESTRATION: MONITORING — CONVERTED: info → multiple-choice (#6) ===
     {
       type: 'multiple-choice',
+      hint: 'Think about which option is most specific to this concept.',
       question: 'How often should you check each agent\'s progress during the first fleet run?',
       options: [
         'Once at the very end when all agents are done',
@@ -174,6 +180,7 @@ const content: LessonContent = {
     // CONVERTED: code-demo → code-fill (#7)
     {
       type: 'code-fill',
+      hint: 'Use the exact syntax from the lesson examples.',
       instruction: 'Complete this fleet status check script to monitor all agents:',
       language: 'bash',
       filename: 'check-fleet.sh',
@@ -199,6 +206,7 @@ const content: LessonContent = {
     },
     {
       type: 'multiple-choice',
+      hint: 'Consider what the lesson content emphasized.',
       question: 'Agent 3 (UI) has been running for 12 minutes and created 0 files. What do you do?',
       options: [
         'Wait longer — some tasks take time to start',
@@ -213,6 +221,7 @@ const content: LessonContent = {
     // === MERGING — CONVERTED: info → multiple-choice (#8) ===
     {
       type: 'multiple-choice',
+      hint: 'One option stands out when you think about the core purpose.',
       question: 'All agents have finished. What is the merging strategy for fleet outputs?',
       options: [
         'Merge all branches at once with a single command',
@@ -238,6 +247,7 @@ const content: LessonContent = {
     // CONVERTED: code-demo (verify-merge) → code-fill (#9)
     {
       type: 'code-fill',
+      hint: 'Each blank follows the conventions demonstrated earlier.',
       instruction: 'Complete the post-merge verification script that checks the integrated codebase:',
       language: 'bash',
       filename: 'verify-merge.sh',
@@ -259,6 +269,7 @@ const content: LessonContent = {
     // === INTERACTIVE: CODE-FILL (already interactive) ===
     {
       type: 'code-fill',
+      hint: 'Look at the surrounding code for context clues.',
       instruction: 'Complete the fleet launch script to set up parallel agent workspaces:',
       language: 'bash',
       filename: 'launch-fleet.sh',
@@ -309,6 +320,7 @@ const content: LessonContent = {
     // === CLEANUP — CONVERTED: info → multiple-choice (#10) ===
     {
       type: 'multiple-choice',
+      hint: 'Read each option carefully — one fits the context best.',
       question: 'After merging all fleet branches, why should you remove the worktrees?',
       options: [
         'Worktrees consume git storage and slow down future operations',

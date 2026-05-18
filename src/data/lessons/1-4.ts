@@ -65,6 +65,7 @@ const content: LessonContent = {
     // === THE ANTI-PATTERN ===
     {
       type: 'code-fill',
+      hint: 'Fill in values that match the pattern shown above.',
       instruction: 'Here is what happens when you skip reading. The agent has no context, so it makes wrong assumptions. Fill in what your project actually uses vs what the agent assumed.',
       language: 'text',
       template: '# You type:\n"Add a login page to my app"\n\n# The agent assumes:\n- React Router (your app uses {{actual_router}})\n- Tailwind CSS (your app uses {{actual_css}})\n- A new AuthContext (your app already has one in {{auth_path}})\n- fetch() for API calls (your app uses axios with interceptors)\n\n# Result: a "working" component that breaks everything',
@@ -77,6 +78,7 @@ const content: LessonContent = {
     },
     {
       type: 'multiple-choice',
+      hint: 'Read each option carefully — one fits the context best.',
       question: 'Why does blind generation produce code that conflicts with the existing codebase?',
       options: [
         'The AI model is not powerful enough',
@@ -96,6 +98,7 @@ const content: LessonContent = {
     // === THE EXPLORATION WORKFLOW ===
     {
       type: 'multiple-choice',
+      hint: 'Eliminate the options that only partially fit.',
       question: 'Before asking an AI agent to modify code, what three types of reconnaissance should you run?',
       options: [
         'build, test, deploy',
@@ -108,6 +111,7 @@ const content: LessonContent = {
     },
     {
       type: 'code-fill',
+      hint: 'Use the exact syntax from the lesson examples.',
       instruction: 'Complete these find commands to map the project structure. The find command shows you what files exist and where they live.',
       language: 'bash',
       filename: 'terminal',
@@ -147,6 +151,7 @@ const content: LessonContent = {
     },
     {
       type: 'code-fill',
+      hint: 'Each blank follows the conventions demonstrated earlier.',
       instruction: 'Complete these grep commands to discover project patterns. Once you know what files exist, grep tells you how they work.',
       language: 'bash',
       filename: 'terminal',
@@ -186,6 +191,7 @@ const content: LessonContent = {
     },
     {
       type: 'code-fill',
+      hint: 'Look at the surrounding code for context clues.',
       instruction: 'Complete these read commands. These anchor files tell you more about the project than any other source.',
       language: 'bash',
       filename: 'terminal',
@@ -220,6 +226,7 @@ const content: LessonContent = {
     },
     {
       type: 'order',
+      hint: 'Consider what depends on what — prerequisites first.',
       instruction: 'Order these exploration steps from FIRST to LAST:',
       items: [
         'Write the prompt for the agent',
@@ -276,6 +283,7 @@ const content: LessonContent = {
     // === CONTEXT-AWARE PROMPTS ===
     {
       type: 'multiple-choice',
+      hint: 'Focus on the primary goal, not secondary benefits.',
       question: 'What makes a "context-aware prompt" different from a regular prompt?',
       options: [
         'It uses more polite language',
@@ -302,6 +310,7 @@ const content: LessonContent = {
     },
     {
       type: 'multiple-choice',
+      hint: 'Think about which option is most specific to this concept.',
       question: 'Which prompt will produce the most consistent code?',
       options: [
         '"Build me a data table component"',
@@ -319,6 +328,7 @@ const content: LessonContent = {
     },
     {
       type: 'compare',
+      hint: 'Look at the key differences between the two approaches.',
       title: 'Blind prompt vs informed prompt',
       body: 'The same task produces very different results depending on whether you read the codebase first.',
       question: 'Which prompt will produce code that matches existing project patterns?',
@@ -367,6 +377,7 @@ const content: LessonContent = {
     // === COMMON MISTAKES ===
     {
       type: 'multiple-choice',
+      hint: 'Consider what the lesson content emphasized.',
       question: 'You need to add a feature to an unfamiliar codebase. What should you do FIRST?',
       options: [
         'Ask the agent to add the feature immediately',

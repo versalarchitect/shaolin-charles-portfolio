@@ -18,6 +18,7 @@ const content: LessonContent = {
     // === IDENTIFYING DIVERGENCE ===
     {
       type: 'multiple-choice',
+      hint: 'Read each option carefully — one fits the context best.',
       question: 'The agent built something that does not match your spec. What is the FIRST thing you should do?',
       options: [
         'Tell the agent "this is all wrong, start over"',
@@ -82,6 +83,7 @@ const content: LessonContent = {
     },
     {
       type: 'multiple-choice',
+      hint: 'Eliminate the options that only partially fit.',
       question: 'The agent built a working REST API with 6 endpoints, but your spec asked for GraphQL with a single /graphql endpoint. What is this?',
       options: [
         'A bug — the agent made a mistake in the implementation',
@@ -101,6 +103,7 @@ const content: LessonContent = {
     // === TARGETED CORRECTIONS ===
     {
       type: 'multiple-choice',
+      hint: 'Focus on the primary goal, not secondary benefits.',
       question: 'The agent used client-side navigation instead of server-side redirects. Which correction prompt is best?',
       options: [
         '"The checkout flow is wrong. Fix it."',
@@ -113,6 +116,7 @@ const content: LessonContent = {
     },
     {
       type: 'compare',
+      hint: 'Look at the key differences between the two approaches.',
       title: 'Vague correction vs targeted correction',
       body: 'The precision of your correction determines whether the agent fixes the problem or creates new ones.',
       question: 'Which correction prompt will produce the best result?',
@@ -131,6 +135,7 @@ const content: LessonContent = {
     },
     {
       type: 'multiple-choice',
+      hint: 'Think about which option is most specific to this concept.',
       question: 'Why should you add "Only modify this file" to correction prompts?',
       options: [
         'It makes the agent work faster',
@@ -167,6 +172,7 @@ const content: LessonContent = {
     // === WHEN TO RESTART ===
     {
       type: 'multiple-choice',
+      hint: 'Consider what the lesson content emphasized.',
       question: 'The agent used the wrong state management pattern and it touches 6 files. What is the most efficient recovery?',
       options: [
         'Give targeted corrections to each of the 6 files one at a time',
@@ -179,6 +185,7 @@ const content: LessonContent = {
     },
     {
       type: 'multiple-choice',
+      hint: 'One option stands out when you think about the core purpose.',
       question: 'After saving divergent work on a branch, what should you do BEFORE starting a fresh session?',
       options: [
         'Delete the branch to avoid confusion',
@@ -197,6 +204,7 @@ const content: LessonContent = {
     },
     {
       type: 'code-fill',
+      hint: 'Fill in values that match the pattern shown above.',
       instruction: 'Complete this revised spec that prevents the same divergence from happening again:',
       language: 'markdown',
       filename: 'specs/checkout-v2.md',
@@ -211,6 +219,7 @@ const content: LessonContent = {
     },
     {
       type: 'multiple-choice',
+      hint: 'Read each option carefully — one fits the context best.',
       question: 'The agent built authentication with bcrypt password hashing, but you wanted OAuth only (no passwords). The auth touches 8 files. What should you do?',
       options: [
         'Give targeted corrections to each of the 8 files one at a time',
@@ -230,6 +239,7 @@ const content: LessonContent = {
     // === RECOVERY WORKFLOW ===
     {
       type: 'multiple-choice',
+      hint: 'Eliminate the options that only partially fit.',
       question: 'What determines whether recovery takes minutes or hours?',
       options: [
         'The size of the codebase',
@@ -248,6 +258,7 @@ const content: LessonContent = {
     },
     {
       type: 'code-fill',
+      hint: 'Use the exact syntax from the lesson examples.',
       instruction: 'Complete this recovery prompt template with the right sections:',
       language: 'text',
       filename: 'recovery-template.txt',
@@ -262,6 +273,7 @@ const content: LessonContent = {
     },
     {
       type: 'order',
+      hint: 'Consider what depends on what — prerequisites first.',
       instruction: 'Order the recovery workflow steps:',
       items: [
         'Verify the fix did not introduce new divergence',
@@ -276,6 +288,7 @@ const content: LessonContent = {
     // === PROMPT LAB: REDIRECT AN AGENT ===
     {
       type: 'prompt-lab',
+      hint: 'Be specific about what you want — vague prompts get vague responses.',
       instruction: 'The agent used client-side filtering instead of server-side. Write a redirect prompt to fix this specific issue.',
       scenario: 'You asked the agent to add search to a bookmarks page. It fetched ALL bookmarks from Supabase and filtered them in JavaScript using .filter(). This works but is slow with many bookmarks. You want it to use Supabase\'s .ilike() for server-side filtering instead.',
       starterPrompt: 'This is wrong. Fix it.',
@@ -302,6 +315,7 @@ const content: LessonContent = {
     // === PREVENTION ===
     {
       type: 'multiple-choice',
+      hint: 'Focus on the primary goal, not secondary benefits.',
       question: 'The agent keeps using REST when you want GraphQL across different projects. What is the long-term fix?',
       options: [
         'Switch to a different AI model that defaults to GraphQL',

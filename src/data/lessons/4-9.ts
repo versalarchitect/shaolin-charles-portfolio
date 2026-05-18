@@ -67,6 +67,7 @@ const content: LessonContent = {
     // === DIMENSIONS OF TASTE ===
     {
       type: 'multiple-choice',
+      hint: 'Read each option carefully — one fits the context best.',
       question: 'An agent builds a comprehensive notification system (queue, retry logic, templates, preferences) for an app with 200 users that only needs password reset emails. What does taste say?',
       options: [
         'Ship it — comprehensive solutions are always better',
@@ -79,6 +80,7 @@ const content: LessonContent = {
     },
     {
       type: 'multiple-choice',
+      hint: 'Eliminate the options that only partially fit.',
       question: 'Your codebase uses functional patterns (pure functions, composition, immutable data). An agent writes a class with mutable state that works and passes tests. What is the taste problem?',
       options: [
         'Classes are always worse than functions',
@@ -91,6 +93,7 @@ const content: LessonContent = {
     },
     {
       type: 'multiple-choice',
+      hint: 'Focus on the primary goal, not secondary benefits.',
       question: 'An agent creates a 500-line abstraction to avoid repeating 3 lines of code. What taste dimension does this violate?',
       options: [
         'Simplicity — the code is too complex',
@@ -103,6 +106,7 @@ const content: LessonContent = {
     },
     {
       type: 'multiple-choice',
+      hint: 'Think about which option is most specific to this concept.',
       question: 'An agent creates a 200-line generic form validation library to validate 3 forms in your app. Each form has 2-4 fields. What does taste tell you?',
       options: [
         'Approve it — reusable libraries are always good engineering',
@@ -122,6 +126,7 @@ const content: LessonContent = {
     // === ELEGANCE VS CLEVERNESS ===
     {
       type: 'multiple-choice',
+      hint: 'Consider what the lesson content emphasized.',
       question: 'An agent produces a one-liner chaining 6 array methods with type gymnastics. It is impressive and correct. Is this elegant code?',
       options: [
         'Yes — fewer lines means better code',
@@ -134,6 +139,7 @@ const content: LessonContent = {
     },
     {
       type: 'compare',
+      hint: 'Look at the key differences between the two approaches.',
       title: 'Clever code vs Elegant code',
       body: 'The clever version is a dense one-liner with chained operations. The elegant version uses readable, named functions with clear flow. Which would you rather debug at 2am?',
       left: {
@@ -165,6 +171,7 @@ const content: LessonContent = {
     },
     {
       type: 'match',
+      hint: 'Find the unique connection between each pair.',
       instruction: 'Match each code quality to its indicator:',
       leftItems: ['Elegant', 'Clever', 'Over-engineered', 'Simple'],
       rightItems: [
@@ -178,6 +185,7 @@ const content: LessonContent = {
     },
     {
       type: 'prompt-lab',
+      hint: 'Be specific about what you want — vague prompts get vague responses.',
       instruction: 'Write a prompt asking an agent to refactor clever code into elegant code.',
       scenario: 'An agent produced a dense one-liner that chains filter, reduce, and spread operations to transform an array into a grouped object. It works and passes tests, but no one on the team can read it without pausing for 30 seconds. You need to ask the agent to refactor it for readability.',
       starterPrompt: 'This is fine.',
@@ -202,6 +210,7 @@ const content: LessonContent = {
     },
     {
       type: 'multiple-choice',
+      hint: 'One option stands out when you think about the core purpose.',
       question: 'Which quality makes the "elegant" version better for a production codebase?',
       options: [
         'It is faster at runtime',
@@ -216,6 +225,7 @@ const content: LessonContent = {
     // === YOUR AESTHETIC AS FILTER ===
     {
       type: 'compare',
+      hint: 'Focus on what makes one approach more appropriate here.',
       title: 'Producer mindset vs Curator mindset',
       body: 'In an agent-augmented world, your role shifts. Which mindset produces better systems?',
       left: {
@@ -236,6 +246,7 @@ const content: LessonContent = {
     },
     {
       type: 'multiple-choice',
+      hint: 'Read each option carefully — one fits the context best.',
       question: 'Two agents produce working solutions to the same problem. Solution A is 40 lines with clear variable names and a comment explaining WHY. Solution B is 15 lines using advanced TypeScript features. Both pass all tests. Which do you ship?',
       options: [
         'Solution B — less code is always better',
@@ -255,6 +266,7 @@ const content: LessonContent = {
     // === WHAT TO CUT ===
     {
       type: 'multiple-choice',
+      hint: 'Eliminate the options that only partially fit.',
       question: 'An agent will never say "do not build this feature." Why is knowing what to cut the hardest taste skill?',
       options: [
         'Because cutting features wastes the agent\'s work',
@@ -267,6 +279,7 @@ const content: LessonContent = {
     },
     {
       type: 'multiple-choice',
+      hint: 'Focus on the primary goal, not secondary benefits.',
       question: 'Before shipping an agent-built feature, you apply the feature test. The answers are: users would NOT notice if it disappeared, it DILUTES the core experience, and it requires DISPROPORTIONATE maintenance. What do you do?',
       options: [
         'Ship it anyway — someone asked for it',
@@ -279,6 +292,7 @@ const content: LessonContent = {
     },
     {
       type: 'multiple-choice',
+      hint: 'Think about which option is most specific to this concept.',
       question: 'An agent builds a beautiful dark mode toggle with three themes (light, dark, system) and smooth transitions. Your app is an internal admin dashboard used by 4 people during business hours. Ship it?',
       options: [
         'Yes — it is well-built and users might appreciate it',
@@ -298,6 +312,7 @@ const content: LessonContent = {
     // === TASTE IN PRACTICE ===
     {
       type: 'multiple-choice',
+      hint: 'Consider what the lesson content emphasized.',
       question: 'Why should you write down evaluation criteria BEFORE reviewing agent output, rather than judging by feel?',
       options: [
         'To create documentation for the team',
@@ -310,6 +325,7 @@ const content: LessonContent = {
     },
     {
       type: 'code-fill',
+      hint: 'Fill in values that match the pattern shown above.',
       instruction: 'Complete this taste rubric for reviewing agent output. Fill in the key evaluation questions for each dimension.',
       language: 'markdown',
       filename: 'REVIEW_RUBRIC.md',
@@ -326,6 +342,7 @@ const content: LessonContent = {
     },
     {
       type: 'order',
+      hint: 'Consider what depends on what — prerequisites first.',
       instruction: 'Order these taste dimensions from MOST impactful to LEAST impactful on long-term system health:',
       items: [
         'Elegance of individual functions',
@@ -345,6 +362,7 @@ const content: LessonContent = {
     // === THE IRREPLACEABLE SKILL ===
     {
       type: 'multiple-choice',
+      hint: 'One option stands out when you think about the core purpose.',
       question: 'Code generation, testing, and deployment will all be automated. What CANNOT be automated?',
       options: [
         'Writing complex algorithms',
@@ -357,6 +375,7 @@ const content: LessonContent = {
     },
     {
       type: 'multiple-choice',
+      hint: 'Read each option carefully — one fits the context best.',
       question: 'A practitioner with taste reviews agent output and immediately sees "this abstraction will not survive the next feature request." What skill is this?',
       options: [
         'Technical knowledge of design patterns',

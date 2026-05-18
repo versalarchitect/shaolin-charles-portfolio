@@ -23,6 +23,7 @@ const content: LessonContent = {
     // === PHASE 1: MAP THE SYSTEM ===
     {
       type: 'multiple-choice',
+      hint: 'Read each option carefully — one fits the context best.',
       question: 'ShopFlow has 6 domains in a monolith with extensive cross-imports. What is your FIRST job before redesigning?',
       options: [
         'Start extracting the simplest module immediately',
@@ -72,6 +73,7 @@ const content: LessonContent = {
     },
     {
       type: 'multiple-choice',
+      hint: 'Eliminate the options that only partially fit.',
       question: 'Looking at the architecture diagram, which domain is the BIGGEST blocker to parallel agent development?',
       options: [
         'Auth — it has the most test coverage so agents will struggle with it',
@@ -91,6 +93,7 @@ const content: LessonContent = {
     // === PHASE 2: SCORE AGENT-BUILDABILITY ===
     {
       type: 'multiple-choice',
+      hint: 'Focus on the primary goal, not secondary benefits.',
       question: 'Agent-buildability scores a component on 4 dimensions. Which of these is NOT one of them?',
       options: [
         'Isolation: can this domain be modified without touching others?',
@@ -103,6 +106,7 @@ const content: LessonContent = {
     },
     {
       type: 'code-fill',
+      hint: 'Fill in values that match the pattern shown above.',
       instruction: 'Complete the buildability assessment by filling in the scores and analysis based on the rubric: Isolation (0-3), Testability (0-3), Interface (0-2), Documentation (0-2).',
       language: 'markdown',
       filename: 'docs/buildability-assessment.md',
@@ -118,6 +122,7 @@ const content: LessonContent = {
     },
     {
       type: 'order',
+      hint: 'Consider what depends on what — prerequisites first.',
       instruction: 'Order these domains from FIRST to extract into an independent package to LAST:',
       items: [
         'Orders (2/10 buildability, highest coupling)',
@@ -137,6 +142,7 @@ const content: LessonContent = {
     // === PHASE 3: IDENTIFY BLOCKERS ===
     {
       type: 'multiple-choice',
+      hint: 'Think about which option is most specific to this concept.',
       question: 'You have buildability scores. What should you identify next?',
       options: [
         'Start fixing the lowest-scoring module',
@@ -149,6 +155,7 @@ const content: LessonContent = {
     },
     {
       type: 'match',
+      hint: 'Find the unique connection between each pair.',
       instruction: 'Match each architectural blocker to its fix:',
       leftItems: [
         'Bidirectional coupling (Orders ↔ Inventory)',
@@ -165,6 +172,7 @@ const content: LessonContent = {
     },
     {
       type: 'multiple-choice',
+      hint: 'Consider what the lesson content emphasized.',
       question: 'Why is "shared database with no schema boundaries" the hardest blocker to fix?',
       options: [
         'Because databases are complex technology',
@@ -184,6 +192,7 @@ const content: LessonContent = {
     // === PHASE 4: THE REDESIGN ===
     {
       type: 'multiple-choice',
+      hint: 'One option stands out when you think about the core purpose.',
       question: 'What is the target for every domain in the redesigned architecture?',
       options: [
         'All code in one repository with shared imports',
@@ -232,6 +241,7 @@ const content: LessonContent = {
     },
     {
       type: 'code-fill',
+      hint: 'Use the exact syntax from the lesson examples.',
       instruction: 'Complete the root CLAUDE.md protocol that governs every agent in the system. This is the constitution — package-level CLAUDE.md files add rules but cannot override these.',
       language: 'markdown',
       filename: 'CLAUDE.md',
@@ -247,6 +257,7 @@ const content: LessonContent = {
     },
     {
       type: 'code-fill',
+      hint: 'Each blank follows the conventions demonstrated earlier.',
       instruction: 'Complete the payments package CLAUDE.md. Each domain has its own protocol scoping agent work precisely — an agent assigned to payments literally cannot affect orders.',
       language: 'markdown',
       filename: 'packages/payments/CLAUDE.md',
@@ -268,6 +279,7 @@ const content: LessonContent = {
     // === PHASE 4 INTERACTIVE EXERCISES ===
     {
       type: 'match',
+      hint: 'Match each term to its most specific definition.',
       instruction: 'Match each migration phase to its primary deliverable:',
       leftItems: ['Foundation', 'Extraction', 'Integration', 'Verification'],
       rightItems: ['Shared types + event bus', 'Module-specific implementations', 'Cross-module communication', 'End-to-end test suite'],
@@ -276,6 +288,7 @@ const content: LessonContent = {
     },
     {
       type: 'compare',
+      hint: 'Look at the key differences between the two approaches.',
       title: 'Naive migration vs Phased migration',
       body: 'Two approaches to migrating the ShopFlow monolith. One is tempting. The other actually works.',
       left: {
@@ -309,6 +322,7 @@ const content: LessonContent = {
     // === PHASE 4 CONTINUED: TASK GRAPH ===
     {
       type: 'multiple-choice',
+      hint: 'Read each option carefully — one fits the context best.',
       question: 'What defines the critical path in the migration task graph?',
       options: [
         'The domain with the most code (Orders, 28K LOC)',
@@ -385,6 +399,7 @@ const content: LessonContent = {
     },
     {
       type: 'multiple-choice',
+      hint: 'Eliminate the options that only partially fit.',
       question: 'Why does Orders extraction come AFTER Auth, Payments, and Inventory?',
       options: [
         'Because Orders has the most code',
@@ -404,6 +419,7 @@ const content: LessonContent = {
     // === CODE-FILL: MIGRATION SPEC ===
     {
       type: 'code-fill',
+      hint: 'Look at the surrounding code for context clues.',
       instruction: 'Complete this migration spec with phase descriptions, agent assignments, and interface contracts.',
       language: 'markdown',
       filename: 'docs/migration-spec.md',
@@ -425,6 +441,7 @@ const content: LessonContent = {
     // === PROMPT-LAB: AGENT PROMPTS FOR MIGRATION ===
     {
       type: 'prompt-lab',
+      hint: 'Be specific about what you want — vague prompts get vague responses.',
       instruction: 'Write a prompt to assign an agent to one domain extraction in the ShopFlow migration. Include enough specificity that the agent can execute immediately.',
       scenario: 'You are assigning an agent to extract the Payments domain from the ShopFlow monolith into an independent package. The event bus and @shop/shared-types are already in place. The agent needs clear scope, constraints, and verification steps.',
       starterPrompt: 'Refactor the app.',
@@ -451,6 +468,7 @@ const content: LessonContent = {
     // === PHASE 5: PROFESSIONAL PRESENTATION ===
     {
       type: 'order',
+      hint: 'Think about what needs to exist before each next step.',
       instruction: 'Order the sections of a professional architecture redesign document from first to last:',
       items: [
         'Executive summary (one paragraph for leadership)',
@@ -463,6 +481,7 @@ const content: LessonContent = {
     },
     {
       type: 'code-fill',
+      hint: 'The answer matches the API or syntax just explained.',
       instruction: 'Complete the executive summary. One paragraph. This is what the CTO reads — if it does not compel them, they will not read the rest.',
       language: 'markdown',
       filename: 'docs/architecture-redesign.md',
@@ -479,6 +498,7 @@ const content: LessonContent = {
     },
     {
       type: 'code-fill',
+      hint: 'Fill in values that match the pattern shown above.',
       instruction: 'Complete the migration timeline. Stakeholders need: how long, what could go wrong, and how you mitigate risk.',
       language: 'markdown',
       filename: 'docs/migration-plan.md',
@@ -496,6 +516,7 @@ const content: LessonContent = {
     },
     {
       type: 'multiple-choice',
+      hint: 'Focus on the primary goal, not secondary benefits.',
       question: 'The migration plan includes "shadow mode: new system processes in parallel, compare outputs." Why is this critical for the Orders migration?',
       options: [
         'Because Orders has the most code',
@@ -515,6 +536,7 @@ const content: LessonContent = {
     // === FINAL SYNTHESIS ===
     {
       type: 'multiple-choice',
+      hint: 'Think about which option is most specific to this concept.',
       question: 'What separates an agent USER from an agent-system ARCHITECT?',
       options: [
         'An architect uses more expensive AI models',

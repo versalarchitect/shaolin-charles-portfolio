@@ -10,6 +10,7 @@ const content: LessonContent = {
     },
     {
       type: 'multiple-choice',
+      hint: 'Read each option carefully — one fits the context best.',
       question: 'Why do we deploy before writing any real code?',
       options: [
         'Deployment is the easiest part',
@@ -61,6 +62,7 @@ const content: LessonContent = {
     // === VERCEL ACCOUNT ===
     {
       type: 'multiple-choice',
+      hint: 'Eliminate the options that only partially fit.',
       question: 'When creating a Vercel account, which signup method should you use and why?',
       options: [
         'Email signup — it is more secure',
@@ -73,6 +75,7 @@ const content: LessonContent = {
     },
     {
       type: 'multiple-choice',
+      hint: 'Focus on the primary goal, not secondary benefits.',
       question: 'Why sign up with GitHub instead of email?',
       options: [
         'Email signup is broken',
@@ -85,6 +88,7 @@ const content: LessonContent = {
     },
     {
       type: 'order',
+      hint: 'Consider what depends on what — prerequisites first.',
       instruction: 'Put the Vercel account setup steps in the correct order:',
       items: [
         'Go to vercel.com',
@@ -102,6 +106,7 @@ const content: LessonContent = {
     // === CREATE PROJECT ===
     {
       type: 'multiple-choice',
+      hint: 'Think about which option is most specific to this concept.',
       question: 'What is Next.js and why are we using it?',
       options: [
         'A database tool for storing user information',
@@ -120,16 +125,19 @@ const content: LessonContent = {
     },
     {
       type: 'terminal',
+      hint: 'Check the exact command syntax — flags and arguments matter.',
       instruction: 'Now navigate into your new project folder by pasting this command:',
       expectedCommand: 'cd my-first-deploy',
     },
     {
       type: 'terminal',
+      hint: 'Review the terminal instructions from the previous step.',
       instruction: 'Start the development server. This runs your project locally so you can see it in your browser:',
       expectedCommand: 'bun dev',
     },
     {
       type: 'multiple-choice',
+      hint: 'Consider what the lesson content emphasized.',
       question: 'After running bun dev, what URL should you open to see your project running locally?',
       options: [
         'http://vercel.com/preview',
@@ -149,6 +157,7 @@ const content: LessonContent = {
     // === PUSH TO GITHUB ===
     {
       type: 'multiple-choice',
+      hint: 'One option stands out when you think about the core purpose.',
       question: 'When creating a new GitHub repository for your project, why should you NOT check "Add a README" or "Add .gitignore"?',
       options: [
         'GitHub charges extra for those files',
@@ -167,11 +176,13 @@ const content: LessonContent = {
     },
     {
       type: 'terminal',
+      hint: 'The command follows the CLI pattern shown above.',
       instruction: 'Send your code up to GitHub for the first time. The -u flag remembers this connection so you will not need to type it again:',
       expectedCommand: 'git push -u origin main',
     },
     {
       type: 'multiple-choice',
+      hint: 'Read each option carefully — one fits the context best.',
       question: 'What does the -u flag do in git push -u origin main?',
       options: [
         'Uploads all branches at once',
@@ -191,6 +202,7 @@ const content: LessonContent = {
     // === DEPLOY ===
     {
       type: 'order',
+      hint: 'Think about what needs to exist before each next step.',
       instruction: 'Put the Vercel deployment steps in the correct order:',
       items: [
         'Go to vercel.com/new in your browser',
@@ -203,6 +215,7 @@ const content: LessonContent = {
     },
     {
       type: 'multiple-choice',
+      hint: 'Eliminate the options that only partially fit.',
       question: 'After deploying your first project, what kind of URL do you get from Vercel?',
       options: [
         'A localhost URL that only works on your computer',
@@ -222,6 +235,7 @@ const content: LessonContent = {
     // === AUTO DEPLOY ===
     {
       type: 'multiple-choice',
+      hint: 'Focus on the primary goal, not secondary benefits.',
       question: 'What happens when you push code to GitHub after connecting Vercel?',
       options: [
         'Nothing — you need to manually click Deploy each time',
@@ -234,6 +248,7 @@ const content: LessonContent = {
     },
     {
       type: 'code-fill',
+      hint: 'Fill in values that match the pattern shown above.',
       instruction: 'Complete the homepage component to display a centered "Hello, Vercel." heading:',
       language: 'tsx',
       filename: 'src/app/page.tsx',
@@ -246,6 +261,7 @@ const content: LessonContent = {
     },
     {
       type: 'terminal',
+      hint: 'Check the exact command syntax — flags and arguments matter.',
       instruction: 'Tell Git to include all your changes in the next save. This is called "staging":',
       expectedCommand: 'git add .',
     },
@@ -257,11 +273,13 @@ const content: LessonContent = {
     },
     {
       type: 'terminal',
+      hint: 'Review the terminal instructions from the previous step.',
       instruction: 'Send your changes to GitHub. Vercel will automatically detect the update and publish it:',
       expectedCommand: 'git push',
     },
     {
       type: 'multiple-choice',
+      hint: 'Think about which option is most specific to this concept.',
       question: 'How long does a typical Vercel deployment take after pushing code?',
       options: [
         'About 30 minutes',
@@ -310,6 +328,7 @@ const content: LessonContent = {
     },
     {
       type: 'multiple-choice',
+      hint: 'Consider what the lesson content emphasized.',
       question: 'What triggers a PRODUCTION deployment on Vercel?',
       options: [
         'Any git push to any branch',
@@ -322,6 +341,7 @@ const content: LessonContent = {
     },
     {
       type: 'terminal',
+      hint: 'The command follows the CLI pattern shown above.',
       instruction: 'Create a test branch (a separate workspace for experimenting). This will not affect your live site:',
       expectedCommand: 'git checkout -b test-preview',
     },
@@ -334,6 +354,7 @@ const content: LessonContent = {
     },
     {
       type: 'multiple-choice',
+      hint: 'One option stands out when you think about the core purpose.',
       question: 'Why are preview deployments important?',
       options: [
         'They make your site load faster for users',
@@ -351,6 +372,7 @@ const content: LessonContent = {
     },
     {
       type: 'compare',
+      hint: 'Look at the key differences between the two approaches.',
       title: 'Production vs Preview deployments',
       body: 'Every push triggers a deployment, but the type depends on which branch you push to.',
       question: 'Which deployment type should you use to test changes before going live?',
@@ -371,12 +393,14 @@ const content: LessonContent = {
     // === FINAL ===
     {
       type: 'order',
+      hint: 'Follow the logical sequence from setup to execution.',
       instruction: 'Put the deploy pipeline in the correct order:',
       items: ['Edit code locally', 'Git commit', 'Git push to main', 'Vercel auto-builds', 'Site is live'],
       correctOrder: [0, 1, 2, 3, 4],
     },
     {
       type: 'match',
+      hint: 'Find the unique connection between each pair.',
       instruction: 'Match each step in the deployment pipeline to what it accomplishes:',
       leftItems: ['Link Vercel to GitHub', 'Run bun dev', 'git push -u origin main', 'Push to a feature branch'],
       rightItems: ['Enables automatic deployments on push', 'Tests your project locally before deploying', 'Triggers a production deployment', 'Creates a preview deployment for safe testing'],

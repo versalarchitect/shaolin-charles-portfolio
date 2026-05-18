@@ -6,6 +6,7 @@ const content: LessonContent = {
     // === INTRO ===
     {
       type: 'multiple-choice',
+      hint: 'Read each option carefully — one fits the context best.',
       question: 'Claude Code is an AI assistant that lives in your terminal. Where does it operate?',
       options: [
         'In a web browser like a normal chatbot',
@@ -18,6 +19,7 @@ const content: LessonContent = {
     },
     {
       type: 'multiple-choice',
+      hint: 'Eliminate the options that only partially fit.',
       question: 'What makes Claude Code different from a regular AI chatbot?',
       options: [
         'It has a prettier interface',
@@ -49,6 +51,7 @@ const content: LessonContent = {
     },
     {
       type: 'order',
+      hint: 'Consider what depends on what — prerequisites first.',
       instruction: 'Put the Claude Code installation steps in the correct order:',
       items: [
         'Run npm install -g @anthropic-ai/claude-code',
@@ -95,6 +98,7 @@ const content: LessonContent = {
     },
     {
       type: 'compare',
+      hint: 'Look at the key differences between the two approaches.',
       title: 'Before MCP vs After MCP',
       body: 'MCP is like a USB port — a universal standard that lets Claude Code plug into any service.',
       question: 'Which approach is more maintainable as you add more tools?',
@@ -113,6 +117,7 @@ const content: LessonContent = {
     },
     {
       type: 'multiple-choice',
+      hint: 'Focus on the primary goal, not secondary benefits.',
       question: 'What does an MCP server provide to Claude Code?',
       options: [
         'A faster internet connection',
@@ -127,6 +132,7 @@ const content: LessonContent = {
     // === CONFIGURE MCP SERVER ===
     {
       type: 'code-fill',
+      hint: 'Fill in values that match the pattern shown above.',
       instruction: 'Add the filesystem MCP server to your project settings. This gives Claude Code enhanced abilities to read and search your files. Fill in the missing configuration:',
       language: 'json',
       filename: '.claude/settings.json',
@@ -154,6 +160,7 @@ const content: LessonContent = {
     // === SKILLS & HOOKS ===
     {
       type: 'code-fill',
+      hint: 'Use the exact syntax from the lesson examples.',
       instruction: 'Skills are saved instructions you can reuse anytime with a slash command. Complete this skill file that defines how Claude Code should create React components:',
       language: 'markdown',
       filename: '.claude/skills/component.md',
@@ -168,6 +175,7 @@ const content: LessonContent = {
     },
     {
       type: 'code-fill',
+      hint: 'Each blank follows the conventions demonstrated earlier.',
       instruction: 'Hooks are automatic actions that run without you asking. Complete this hook that automatically lints files after Claude Code edits them:',
       language: 'json',
       filename: '.claude/settings.json',
@@ -180,6 +188,7 @@ const content: LessonContent = {
     },
     {
       type: 'multiple-choice',
+      hint: 'Think about which option is most specific to this concept.',
       question: 'What is the purpose of a Claude Code skill?',
       options: [
         'To replace other software tools',
@@ -197,6 +206,7 @@ const content: LessonContent = {
     },
     {
       type: 'match',
+      hint: 'Find the unique connection between each pair.',
       instruction: 'Match each Claude Code capability to what it does:',
       leftItems: ['Read tool', 'Edit tool', 'Bash tool', 'Agent tool', 'MCP servers'],
       rightItems: ['View file contents without modifying', 'Make precise changes to existing files', 'Run shell commands and scripts', 'Delegate complex tasks to sub-agents', 'Connect to external tools and APIs'],
@@ -242,6 +252,7 @@ const content: LessonContent = {
     },
     {
       type: 'order',
+      hint: 'Think about what needs to exist before each next step.',
       instruction: 'Put these steps in the correct order. This is how you direct an AI agent to build something:',
       items: [
         'You describe the intent in natural language',
@@ -254,6 +265,7 @@ const content: LessonContent = {
     },
     {
       type: 'match',
+      hint: 'Match each term to its most specific definition.',
       instruction: 'Match each configuration you just completed to its file location:',
       leftItems: ['MCP server configuration', 'Component generator skill', 'Auto-lint hook', 'Project instructions'],
       rightItems: ['.claude/settings.json (mcpServers section)', '.claude/skills/component.md', '.claude/settings.json (hooks section)', 'CLAUDE.md in project root'],

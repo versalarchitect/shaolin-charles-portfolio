@@ -16,6 +16,7 @@ const content: LessonContent = {
     },
     {
       type: 'compare',
+      hint: 'Look at the key differences between the two approaches.',
       title: 'Environment variables: wrong vs right',
       body: 'How you handle environment variables determines whether your app works in production and whether secrets leak.',
       question: 'Which approach is safe for production?',
@@ -36,6 +37,7 @@ const content: LessonContent = {
     // === VERCEL CONFIGURATION ===
     {
       type: 'multiple-choice',
+      hint: 'Read each option carefully — one fits the context best.',
       question: 'What does the agent need to produce for a proper Vercel deployment configuration?',
       options: [
         'Only a vercel.json file',
@@ -48,6 +50,7 @@ const content: LessonContent = {
     },
     {
       type: 'match',
+      hint: 'Find the unique connection between each pair.',
       instruction: 'Match each environment variable to its correct classification:',
       leftItems: ['NEXT_PUBLIC_APP_URL', 'SUPABASE_SERVICE_ROLE_KEY', 'NEXT_PUBLIC_SUPABASE_ANON_KEY', 'SESSION_SECRET'],
       rightItems: ['Secret: server-only, 32+ char for cookie signing', 'Public: safe for browser, canonical URL', 'Secret: server-only, admin database access', 'Public: safe for browser, anonymous/public key'],
@@ -62,6 +65,7 @@ const content: LessonContent = {
     },
     {
       type: 'code-fill',
+      hint: 'Fill in values that match the pattern shown above.',
       instruction: 'Complete the .env.example file. Public vars use NEXT_PUBLIC_ prefix, secrets do not.',
       language: 'shell',
       filename: '.env.example',
@@ -83,6 +87,7 @@ const content: LessonContent = {
     // === SECURITY AUDIT ===
     {
       type: 'order',
+      hint: 'Consider what depends on what — prerequisites first.',
       instruction: 'Order these three security audit categories from highest risk to lowest:',
       items: [
         'Data over-exposure: returning full DB records with sensitive fields',
@@ -93,6 +98,7 @@ const content: LessonContent = {
     },
     {
       type: 'code-fill',
+      hint: 'Use the exact syntax from the lesson examples.',
       instruction: 'Complete these security audit prompts to direct the agent before deploying:',
       language: 'text',
       filename: 'security-audit.txt',
@@ -108,6 +114,7 @@ const content: LessonContent = {
     },
     {
       type: 'multiple-choice',
+      hint: 'Eliminate the options that only partially fit.',
       question: 'The agent built a Next.js app with a server action that deletes user data. The action works correctly but has no session check — any HTTP request can trigger it. What type of security issue is this?',
       options: [
         'Secret leakage',
@@ -127,6 +134,7 @@ const content: LessonContent = {
     // === PREVIEW DEPLOYMENT WORKFLOW ===
     {
       type: 'multiple-choice',
+      hint: 'Focus on the primary goal, not secondary benefits.',
       question: 'Why should you never deploy directly to production without a preview deployment first?',
       options: [
         'Preview deployments are faster to build',
@@ -201,6 +209,7 @@ const content: LessonContent = {
     // === DNS AND DOMAIN ===
     {
       type: 'order',
+      hint: 'Think about what needs to exist before each next step.',
       instruction: 'Order the steps for setting up a custom domain on Vercel:',
       items: [
         'Wait for DNS propagation (up to 48 hours, usually minutes)',
@@ -213,6 +222,7 @@ const content: LessonContent = {
     },
     {
       type: 'code-fill',
+      hint: 'Each blank follows the conventions demonstrated earlier.',
       instruction: 'Complete this DNS documentation that the agent should produce for your domain setup:',
       language: 'markdown',
       filename: 'DEPLOY.md',
@@ -228,6 +238,7 @@ const content: LessonContent = {
     // === ROLLBACK STRATEGY ===
     {
       type: 'compare',
+      hint: 'Focus on what makes one approach more appropriate here.',
       title: 'Rollback strategy when things break',
       body: 'Production breaks happen. Your rollback plan should be faster than your fix time.',
       question: 'Which approach restores service fastest when production breaks?',
@@ -252,6 +263,7 @@ const content: LessonContent = {
     },
     {
       type: 'multiple-choice',
+      hint: 'Think about which option is most specific to this concept.',
       question: 'Your production deploy breaks at 3pm. Users are affected. What is the correct order of operations?',
       options: [
         'Debug the issue → fix it → push a new deploy → verify',
@@ -271,6 +283,7 @@ const content: LessonContent = {
     // === PRODUCTION CHECKLIST ===
     {
       type: 'match',
+      hint: 'Match each term to its most specific definition.',
       instruction: 'Match each production readiness category to what you need to verify:',
       leftItems: ['Environment', 'Security', 'Performance', 'Error handling'],
       rightItems: ['Errors show user-friendly messages, not stack traces', 'All vars set in Vercel, no hardcoded localhost URLs', 'No leaked secrets, all mutations authenticated', 'No client-side fetching of large datasets, images optimized'],
@@ -300,6 +313,7 @@ const content: LessonContent = {
     // === SYNTHESIS ===
     {
       type: 'multiple-choice',
+      hint: 'Consider what the lesson content emphasized.',
       question: 'In the deploy workflow, what is the agent\'s role vs your role?',
       options: [
         'The agent handles everything including judgment calls',

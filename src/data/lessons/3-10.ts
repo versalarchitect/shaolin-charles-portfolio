@@ -79,6 +79,7 @@ const content: LessonContent = {
     // === PROMPT LAB: Write a Recovery Directive ===
     {
       type: 'prompt-lab',
+      hint: 'Be specific about what you want — vague prompts get vague responses.',
       instruction: 'The auth agent is stuck in a loop, editing the same file repeatedly. Write a recovery directive.',
       scenario: 'Your fleet of 4 agents is building a SaaS app. The auth agent has been running for 20 minutes and its git log shows the same file (src/lib/auth.ts) being edited 15 times with contradictory changes. The other 3 agents are working fine.',
       starterPrompt: 'Fix the auth agent.',
@@ -105,6 +106,7 @@ const content: LessonContent = {
     // === DETECTION SIGNALS ===
     {
       type: 'multiple-choice',
+      hint: 'Read each option carefully — one fits the context best.',
       question: 'What are the three clearest indicators that an agent in your fleet is failing?',
       options: [
         'Slow execution time, high memory usage, and large file sizes',
@@ -117,6 +119,7 @@ const content: LessonContent = {
     },
     {
       type: 'code-fill',
+      hint: 'Fill in values that match the pattern shown above.',
       instruction: 'Complete the fleet health check script. Fill in the git commands that detect agent trouble: file churn, TypeScript errors, and commit activity.',
       language: 'bash',
       filename: 'scripts/fleet-health.sh',
@@ -174,6 +177,7 @@ done`,
     },
     {
       type: 'multiple-choice',
+      hint: 'Eliminate the options that only partially fit.',
       question: 'An agent has modified 35 files without making a single commit in 8 minutes. What does this signal?',
       options: [
         'The agent is working on a large feature — give it more time',
@@ -188,6 +192,7 @@ done`,
     // === ISOLATION TECHNIQUES ===
     {
       type: 'multiple-choice',
+      hint: 'Focus on the primary goal, not secondary benefits.',
       question: 'You have detected a failing agent. What is the primary goal of the isolation step?',
       options: [
         'Understand why the agent failed before taking any action',
@@ -218,6 +223,7 @@ done`,
     },
     {
       type: 'code-fill',
+      hint: 'Use the exact syntax from the lesson examples.',
       instruction: 'Complete the isolation script that preserves the failed agent\'s work, checks for bad commits, and resets to a clean state.',
       language: 'bash',
       filename: 'scripts/isolate-agent.sh',
@@ -274,6 +280,7 @@ echo "Worktree clean. Ready for recovery agent."`,
     // === RECOVERY STRATEGIES ===
     {
       type: 'compare',
+      hint: 'Look at the key differences between the two approaches.',
       title: 'Recovery: re-run same spec vs improved spec',
       body: 'After isolating a failing agent, you need to complete the work. Two approaches:',
       question: 'Which approach prevents the same failure from recurring?',
@@ -292,6 +299,7 @@ echo "Worktree clean. Ready for recovery agent."`,
     },
     {
       type: 'multiple-choice',
+      hint: 'Think about which option is most specific to this concept.',
       question: 'You inspect the stash and see the payments agent modified `src/auth/session.ts` and `src/types/contracts.ts`. What went wrong?',
       options: [
         'The payments agent found bugs in auth and helpfully fixed them',
@@ -306,6 +314,7 @@ echo "Worktree clean. Ready for recovery agent."`,
     // === IMPROVED SPEC FOR RECOVERY ===
     {
       type: 'code-fill',
+      hint: 'Each blank follows the conventions demonstrated earlier.',
       instruction: 'Complete the recovery spec with explicit constraints learned from the failure. Fill in the file ownership rules and the DO NOT restrictions.',
       language: 'markdown',
       filename: 'specs/payments-recovery.md',
@@ -369,6 +378,7 @@ src/payments/
     // === CASCADE PREVENTION ===
     {
       type: 'multiple-choice',
+      hint: 'Consider what the lesson content emphasized.',
       question: 'The API agent cannot resolve a type error, so it modifies the shared contracts file. What happens to the other agents?',
       options: [
         'Nothing — each agent works in its own worktree',
@@ -439,6 +449,7 @@ src/payments/
     // === PUTTING IT TOGETHER ===
     {
       type: 'order',
+      hint: 'Consider what depends on what — prerequisites first.',
       instruction: 'Order the fleet failure response procedure correctly:',
       items: [
         'Detect anomaly (high churn, type errors, no commits)',
@@ -453,6 +464,7 @@ src/payments/
     },
     {
       type: 'multiple-choice',
+      hint: 'One option stands out when you think about the core purpose.',
       question: 'You detect a failing agent but the other three are running fine. Should you stop the entire fleet?',
       options: [
         'Yes — any failure could be a sign of a broader problem',

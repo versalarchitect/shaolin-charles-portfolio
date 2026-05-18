@@ -11,6 +11,7 @@ const content: LessonContent = {
     },
     {
       type: 'multiple-choice',
+      hint: 'Read each option carefully — one fits the context best.',
       question: 'In a coupled system with 10 agents, how many coordination paths exist? (Formula: N*(N-1)/2)',
       options: [
         '10 paths — one per agent',
@@ -73,6 +74,7 @@ const content: LessonContent = {
     },
     {
       type: 'compare',
+      hint: 'Look at the key differences between the two approaches.',
       title: 'Coupled vs decoupled: scaling with agents',
       body: 'See how coordination cost differs as you add more agents to each architecture style.',
       left: {
@@ -146,6 +148,7 @@ const content: LessonContent = {
     },
     {
       type: 'code-fill',
+      hint: 'Fill in values that match the pattern shown above.',
       instruction: 'Complete this event-driven architecture configuration. Fill in the event names, handler paths, and retry policies.',
       language: 'yaml',
       template: 'event-bus:\n  events:\n    - name: ___\n      handler: ___\n      retry:\n        maxAttempts: ___\n        backoff: exponential\n\n    - name: ___\n      handler: ___\n      retry:\n        maxAttempts: 5\n        backoff: exponential\n\n    - name: ___\n      handler: src/features/notifications/on-order-shipped.ts\n      retry:\n        maxAttempts: ___\n        backoff: linear',
@@ -163,6 +166,7 @@ const content: LessonContent = {
     },
     {
       type: 'match',
+      hint: 'Find the unique connection between each pair.',
       instruction: 'Match each decoupling pattern to the mechanism it uses:',
       leftItems: [
         'Event bus',
@@ -200,6 +204,7 @@ const content: LessonContent = {
     // === EVENT-DRIVEN ARCHITECTURE ===
     {
       type: 'multiple-choice',
+      hint: 'Eliminate the options that only partially fit.',
       question: 'In an event-driven system, how do modules communicate?',
       options: [
         'Direct function calls between modules',
@@ -212,6 +217,7 @@ const content: LessonContent = {
     },
     {
       type: 'code-fill',
+      hint: 'Use the exact syntax from the lesson examples.',
       instruction: 'Complete this event-driven module setup. Fill in the event names and listener patterns.',
       language: 'typescript',
       template: '// Event Definition (shared contract)\nexport interface OrderEvents {\n  \'___\': {\n    orderId: string\n    customerId: string\n    totalCents: number\n  }\n}\n\n// Orders module (Agent A)\nexport async function placeOrder(input: PlaceOrderInput) {\n  const order = await db.orders.create(input)\n  eventBus.emit(\'___\', {\n    orderId: order.id,\n    customerId: input.customerId,\n    totalCents: order.totalCents,\n  })\n  return order\n}\n\n// Payments module (Agent B)\neventBus.on(\'___\', async (event) => {\n  await ___(event.customerId, event.totalCents)\n})',
@@ -226,6 +232,7 @@ const content: LessonContent = {
     },
     {
       type: 'multiple-choice',
+      hint: 'Focus on the primary goal, not secondary benefits.',
       question: 'With direct function calls, adding a notification on order placement requires modifying the Orders module. With events, what does the notification agent do instead?',
       options: [
         'Modify the Orders module to add a call to the notification service',
@@ -238,6 +245,7 @@ const content: LessonContent = {
     },
     {
       type: 'multiple-choice',
+      hint: 'Think about which option is most specific to this concept.',
       question: 'A new business requirement: when an order is placed, update the customer loyalty points. In an event-driven system, which files does the agent need to modify?',
       options: [
         'orders.service.ts (to call the loyalty update) and loyalty.service.ts (to implement it)',
@@ -257,6 +265,7 @@ const content: LessonContent = {
     // === CONTRACT-FIRST DEVELOPMENT ===
     {
       type: 'multiple-choice',
+      hint: 'Consider what the lesson content emphasized.',
       question: 'In contract-first development, what happens BEFORE any implementation begins?',
       options: [
         'Agent A builds Module A, then other agents build against it',
@@ -269,6 +278,7 @@ const content: LessonContent = {
     },
     {
       type: 'code-fill',
+      hint: 'Each blank follows the conventions demonstrated earlier.',
       instruction: 'Complete this contract-first workflow. Fill in the contract types and agent assignments.',
       language: 'typescript',
       template: '// STEP 1: Architect writes ALL contracts\n\nexport interface API {\n  \'POST /orders\': {\n    body: { items: CartItem[]; shippingAddress: ___ }\n    response: { orderId: ___; estimatedDelivery: Date }\n  }\n}\n\nexport interface SystemEvents {\n  \'order.placed\': { orderId: string; customerId: string; totalCents: ___ }\n  \'___\': { orderId: string; transactionId: string }\n}\n\nexport interface OrderRepository {\n  create(input: CreateOrderInput): Promise<___>\n  findById(id: string): Promise<Order | null>\n}',
@@ -284,6 +294,7 @@ const content: LessonContent = {
     },
     {
       type: 'multiple-choice',
+      hint: 'One option stands out when you think about the core purpose.',
       question: 'In contract-first development, what is the architect\'s primary output?',
       options: [
         'Working code for the core module',
@@ -303,6 +314,7 @@ const content: LessonContent = {
     // === MODULAR MONOLITH ===
     {
       type: 'compare',
+      hint: 'Focus on what makes one approach more appropriate here.',
       title: 'Microservices vs modular monolith for agent fleets',
       body: 'You do not need microservices to get agent parallelism. A modular monolith gives the same development isolation with far less operational overhead.',
       left: {
@@ -323,6 +335,7 @@ const content: LessonContent = {
     },
     {
       type: 'code-fill',
+      hint: 'Look at the surrounding code for context clues.',
       instruction: 'Complete this modular monolith boundary enforcement. Fill in the import rules and enforcement mechanism.',
       language: 'typescript',
       template: '// Modular Monolith Rules:\n// 1. Modules ONLY import from other modules via ___\n// 2. No module accesses another module\'s ___ tables\n// 3. Cross-module communication via ___ OR defined interfaces\n// 4. Each module owns its own ___\n\n// src/features/orders/index.ts — PUBLIC API\nexport { placeOrder, cancelOrder } from \'./orders.service\'\nexport type { Order, OrderStatus } from \'./orders.types\'\n// Everything else is ___ — other modules cannot import it',
@@ -338,6 +351,7 @@ const content: LessonContent = {
     },
     {
       type: 'multiple-choice',
+      hint: 'Read each option carefully — one fits the context best.',
       question: 'What is the primary advantage of a modular monolith over microservices for agent fleet development?',
       options: [
         'Better performance due to no network calls between modules',
@@ -357,6 +371,7 @@ const content: LessonContent = {
     // === EVENT SOURCING & CQRS ===
     {
       type: 'multiple-choice',
+      hint: 'Eliminate the options that only partially fit.',
       question: 'Why is event sourcing agent-friendly?',
       options: [
         'It makes the code simpler',
@@ -369,6 +384,7 @@ const content: LessonContent = {
     },
     {
       type: 'code-fill',
+      hint: 'The answer matches the API or syntax just explained.',
       instruction: 'Complete this event sourcing state derivation. Fill in the event types and state transitions.',
       language: 'typescript',
       template: '// Event Store (append-only, never conflicts)\n\n// Agent A appends:\nawait eventStore.append({\n  aggregateId: orderId,\n  type: \'___\',\n  data: { customerId, items, totalCents },\n})\n\n// Agent B appends simultaneously:\nawait eventStore.append({\n  aggregateId: orderId,\n  type: \'___\',\n  data: { transactionId, amountCents },\n})\n\n// Derive state by replaying:\nfunction deriveOrderState(events: DomainEvent[]): OrderState {\n  return events.reduce((state, event) => {\n    switch (event.type) {\n      case \'OrderPlaced\':\n        return { ...state, status: \'___\' }\n      case \'PaymentCharged\':\n        return { ...state, status: \'___\' }\n      default: return state\n    }\n  }, {} as OrderState)\n}',
@@ -383,6 +399,7 @@ const content: LessonContent = {
     },
     {
       type: 'multiple-choice',
+      hint: 'Focus on the primary goal, not secondary benefits.',
       question: 'When is event sourcing NOT justified?',
       options: [
         'When you need a complete audit trail',
@@ -397,6 +414,7 @@ const content: LessonContent = {
     // === SCALE FACTOR ===
     {
       type: 'multiple-choice',
+      hint: 'Think about which option is most specific to this concept.',
       question: 'You currently use 3 agents. You add a 4th. The system builds SLOWER. What does this mean?',
       options: [
         'The 4th agent is defective',
@@ -409,6 +427,7 @@ const content: LessonContent = {
     },
     {
       type: 'multiple-choice',
+      hint: 'Consider what the lesson content emphasized.',
       question: 'You are using 4 agents in parallel. Adding a 5th agent makes the total build time LONGER. What is the most likely architectural cause?',
       options: [
         'The 5th agent is slower than the others',
@@ -428,6 +447,7 @@ const content: LessonContent = {
     // === PATTERN SELECTION ===
     {
       type: 'multiple-choice',
+      hint: 'One option stands out when you think about the core purpose.',
       question: 'For a fleet of 2-3 agents, which pattern is usually sufficient?',
       options: [
         'Full event sourcing with CQRS',
@@ -440,6 +460,7 @@ const content: LessonContent = {
     },
     {
       type: 'order',
+      hint: 'Consider what depends on what — prerequisites first.',
       instruction: 'Order these architectural patterns from simplest (fewest agents) to most complex (largest fleets):',
       items: [
         'Event sourcing for high-contention state',
@@ -452,6 +473,7 @@ const content: LessonContent = {
     },
     {
       type: 'match',
+      hint: 'Match each term to its most specific definition.',
       instruction: 'Match each fleet size to the appropriate architectural pattern:',
       leftItems: ['1-2 agents', '3-5 agents', '5-8 agents', '8+ agents'],
       rightItems: ['Feature directories + direct function calls', 'Modular monolith + interface contracts', 'Event-driven + contract-first workflow', 'Event sourcing + CQRS + full contract suite'],
@@ -462,6 +484,7 @@ const content: LessonContent = {
     // === SYNTHESIS ===
     {
       type: 'multiple-choice',
+      hint: 'Read each option carefully — one fits the context best.',
       question: 'Your architecture IS the limit on how many agents can work in parallel. A well-designed system scales:',
       options: [
         'Logarithmically — each new agent adds diminishing returns',
@@ -474,6 +497,7 @@ const content: LessonContent = {
     },
     {
       type: 'multiple-choice',
+      hint: 'Eliminate the options that only partially fit.',
       question: 'An event-driven modular monolith with 6 independent feature modules. You want to add a 7th feature that needs data from 3 existing modules. How do you design it to maintain parallelism?',
       options: [
         'Have the new module import directly from the 3 existing modules',

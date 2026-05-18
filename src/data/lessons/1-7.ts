@@ -73,6 +73,7 @@ const content: LessonContent = {
     // === CORE CONCEPTS ===
     {
       type: 'multiple-choice',
+      hint: 'Read each option carefully — one fits the context best.',
       question: 'In MCP, which layer is the boundary that the AI client never crosses?',
       options: [
         'The Client — it limits what tools the AI can see',
@@ -85,6 +86,7 @@ const content: LessonContent = {
     },
     {
       type: 'multiple-choice',
+      hint: 'Eliminate the options that only partially fit.',
       question: 'In MCP architecture, what wire format carries messages between client and server?',
       options: [
         'GraphQL',
@@ -149,6 +151,7 @@ const content: LessonContent = {
     // === CONFIGURATION ===
     {
       type: 'multiple-choice',
+      hint: 'Focus on the primary goal, not secondary benefits.',
       question: 'MCP server configs can live at two levels. Which level is shared with your team via git?',
       options: [
         '~/.claude/settings.json (user-level)',
@@ -161,6 +164,7 @@ const content: LessonContent = {
     },
     {
       type: 'code-fill',
+      hint: 'Fill in values that match the pattern shown above.',
       instruction: 'Complete this MCP configuration to register a Supabase server that Claude Code launches as a child process:',
       language: 'json',
       template: '{\n  "{{config_key}}": {\n    "supabase": {\n      "{{launch_key}}": "npx",\n      "args": ["-y", "@supabase/mcp-server"],\n      "{{secrets_key}}": {\n        "SUPABASE_ACCESS_TOKEN": "your-token"\n      }\n    }\n  }\n}',
@@ -182,6 +186,7 @@ const content: LessonContent = {
     // === TOOLS VS RESOURCES ===
     {
       type: 'compare',
+      hint: 'Look at the key differences between the two approaches.',
       title: 'Tools vs Resources',
       body: 'MCP servers expose two types of capabilities that Claude Code treats very differently.',
       question: 'Which type requires explicit user approval before executing?',
@@ -200,6 +205,7 @@ const content: LessonContent = {
     },
     {
       type: 'multiple-choice',
+      hint: 'Think about which option is most specific to this concept.',
       question: 'Which of these is an MCP "tool" (action) rather than a "resource" (data)?',
       options: [
         'List all tables in a database',
@@ -219,6 +225,7 @@ const content: LessonContent = {
     // === BUILDING A SERVER ===
     {
       type: 'code-fill',
+      hint: 'Use the exact syntax from the lesson examples.',
       instruction: 'Complete this minimal MCP server that reads a file and returns its contents. A server can be under 40 lines of code:',
       language: 'typescript',
       filename: 'my-mcp-server.ts',
@@ -232,6 +239,7 @@ const content: LessonContent = {
     },
     {
       type: 'order',
+      hint: 'Consider what depends on what — prerequisites first.',
       instruction: 'Order the steps to build an MCP server from first to last:',
       items: [
         'Register tools with input schemas',
@@ -246,6 +254,7 @@ const content: LessonContent = {
     // === REGISTERING YOUR SERVER ===
     {
       type: 'code-fill',
+      hint: 'Each blank follows the conventions demonstrated earlier.',
       instruction: 'Register your custom MCP server in the config. Point Claude Code at your server script:',
       language: 'json',
       filename: '.claude/settings.json',
@@ -271,6 +280,7 @@ const content: LessonContent = {
     // === DEBUGGING ===
     {
       type: 'match',
+      hint: 'Find the unique connection between each pair.',
       instruction: 'Match each MCP failure symptom to its most likely fix:',
       leftItems: [
         'Server binary not found',
@@ -289,6 +299,7 @@ const content: LessonContent = {
     },
     {
       type: 'code-fill',
+      hint: 'Look at the surrounding code for context clues.',
       instruction: 'Use the debugging command inside Claude Code to check which servers are connected:',
       language: 'text',
       template: "# Inside Claude Code, check MCP status:\n{{debug_command}}\n\n# Common output when a server fails:\n# {{fail_symbol}} my-server — failed to start\n#   Error: Cannot find module '@modelcontextprotocol/sdk'\n\n# Fix: ensure the package is installed or use npx {{auto_flag}}",
@@ -301,6 +312,7 @@ const content: LessonContent = {
     },
     {
       type: 'multiple-choice',
+      hint: 'Consider what the lesson content emphasized.',
       question: 'An MCP server tool is not showing up in Claude Code. What is the most likely cause?',
       options: [
         'The tool has a bug in its handler function',
@@ -320,6 +332,7 @@ const content: LessonContent = {
     // === REAL-WORLD PRACTICE ===
     {
       type: 'match',
+      hint: 'Match each term to its most specific definition.',
       instruction: 'Match each MCP server to what it gives your agent:',
       leftItems: [
         'Supabase MCP',
@@ -338,6 +351,7 @@ const content: LessonContent = {
     },
     {
       type: 'code-fill',
+      hint: 'The answer matches the API or syntax just explained.',
       instruction: 'Complete this multi-server config. Each server adds a category of capabilities to your agent:',
       language: 'json',
       template: '{\n  "mcpServers": {\n    "supabase": {\n      "command": "npx",\n      "args": ["-y", "@supabase/mcp-server"],\n      "env": {\n        "SUPABASE_ACCESS_TOKEN": "{{token_syntax}}"\n      }\n    },\n    "{{vcs_server}}": {\n      "command": "npx",\n      "args": ["-y", "@modelcontextprotocol/server-github"],\n      "env": {\n        "{{token_key}}": "${GH_TOKEN}"\n      }\n    }\n  }\n}',
@@ -350,6 +364,7 @@ const content: LessonContent = {
     },
     {
       type: 'multiple-choice',
+      hint: 'One option stands out when you think about the core purpose.',
       question: 'Why do MCP server configs use env variables like "${SUPABASE_TOKEN}" instead of hardcoding secrets?',
       options: [
         'Hardcoded values are slower to parse',
@@ -364,6 +379,7 @@ const content: LessonContent = {
     // === SECURITY ===
     {
       type: 'multiple-choice',
+      hint: 'Read each option carefully — one fits the context best.',
       question: 'An MCP server runs with the same permissions as your user account. What is the MOST important security practice?',
       options: [
         'Only use MCP servers written in TypeScript',
@@ -378,6 +394,7 @@ const content: LessonContent = {
     // === MATCH EXERCISE ===
     {
       type: 'match',
+      hint: 'Look for the distinguishing feature of each item.',
       instruction: 'Match each MCP concept to its role:',
       leftItems: [
         'MCP Client',
@@ -407,6 +424,7 @@ const content: LessonContent = {
     },
     {
       type: 'order',
+      hint: 'Think about what needs to exist before each next step.',
       instruction: 'Order the MCP request lifecycle from start to finish:',
       items: [
         'Server executes the tool handler',

@@ -77,6 +77,7 @@ const content: LessonContent = {
     // === TOKEN COUNTING ===
     {
       type: 'multiple-choice',
+      hint: 'Read each option carefully — one fits the context best.',
       question: 'What is a "token" in the context of AI language models?',
       options: [
         'A single character of text',
@@ -89,6 +90,7 @@ const content: LessonContent = {
     },
     {
       type: 'multiple-choice',
+      hint: 'Eliminate the options that only partially fit.',
       question: 'Approximately how many tokens is the sentence "The quick brown fox jumps over the lazy dog" (44 characters)?',
       options: [
         '5 tokens',
@@ -101,6 +103,7 @@ const content: LessonContent = {
     },
     {
       type: 'code-fill',
+      hint: 'Fill in values that match the pattern shown above.',
       instruction: 'Fill in the token estimation heuristics. These rules of thumb let you quickly estimate token usage without any tools.',
       language: 'text',
       filename: 'token-heuristics.txt',
@@ -128,6 +131,7 @@ const content: LessonContent = {
     // === WHAT FILLS THE WINDOW ===
     {
       type: 'multiple-choice',
+      hint: 'Focus on the primary goal, not secondary benefits.',
       question: 'When you start a Claude Code session, the context window is not empty. Which statement best describes what is already loaded before you type anything?',
       options: [
         'Only the system prompt is loaded — everything else waits for your first message',
@@ -140,6 +144,7 @@ const content: LessonContent = {
     },
     {
       type: 'order',
+      hint: 'Consider what depends on what — prerequisites first.',
       instruction: 'Order these from MOST tokens consumed to LEAST in a typical Claude Code session:',
       items: [
         'Code files read by the agent',
@@ -158,6 +163,7 @@ const content: LessonContent = {
     },
     {
       type: 'code-fill',
+      hint: 'Use the exact syntax from the lesson examples.',
       instruction: 'Before starting a complex task, sketch out your token budget. Fill in the missing values to see whether this session still has room.',
       language: 'text',
       filename: 'session-budget.txt',
@@ -178,6 +184,7 @@ const content: LessonContent = {
     // === CONTEXT EXHAUSTION ===
     {
       type: 'multiple-choice',
+      hint: 'Think about which option is most specific to this concept.',
       question: 'You\'ve been chatting with Claude Code for 30 minutes and it starts repeating instructions you already gave. What is the most likely cause?',
       options: [
         'A bug in the AI model',
@@ -190,6 +197,7 @@ const content: LessonContent = {
     },
     {
       type: 'multiple-choice',
+      hint: 'Consider what the lesson content emphasized.',
       question: 'Which is NOT a symptom of context window exhaustion?',
       options: [
         'The model forgets instructions from earlier in the session',
@@ -246,6 +254,7 @@ const content: LessonContent = {
     },
     {
       type: 'multiple-choice',
+      hint: 'One option stands out when you think about the core purpose.',
       question: 'What does Claude Code preserve when it compacts the conversation?',
       options: [
         'The exact wording of every message in the session',
@@ -263,6 +272,7 @@ const content: LessonContent = {
     },
     {
       type: 'compare',
+      hint: 'Look at the key differences between the two approaches.',
       title: 'Fresh session vs exhausted session',
       body: 'The same agent behaves very differently depending on how much context has been consumed.',
       question: 'Which session state is more likely to produce reliable, high-quality code?',
@@ -281,6 +291,7 @@ const content: LessonContent = {
     },
     {
       type: 'match',
+      hint: 'Find the unique connection between each pair.',
       instruction: 'Match each context consumer to its approximate token cost:',
       leftItems: ['System prompt', 'CLAUDE.md file', 'Large code file (500 lines)', 'Conversation history (30 min)'],
       rightItems: ['~2,000 tokens', '1,000–5,000 tokens', '5,000–15,000 tokens', '20,000–80,000 tokens'],
@@ -291,6 +302,7 @@ const content: LessonContent = {
     // === STRATEGIES ===
     {
       type: 'multiple-choice',
+      hint: 'Read each option carefully — one fits the context best.',
       question: 'You\'ve exchanged 25 messages with Claude Code and notice it\'s forgetting earlier decisions. What is the single most effective thing you can do?',
       options: [
         'Repeat all your instructions in the next message',
@@ -303,6 +315,7 @@ const content: LessonContent = {
     },
     {
       type: 'multiple-choice',
+      hint: 'Eliminate the options that only partially fit.',
       question: 'Why is CLAUDE.md effective as "external memory" for the AI agent?',
       options: [
         'It is stored in the cloud and never deleted',
@@ -315,6 +328,7 @@ const content: LessonContent = {
     },
     {
       type: 'code-fill',
+      hint: 'Each blank follows the conventions demonstrated earlier.',
       instruction: 'Complete this spec file for a complex task. A spec file lives on disk so the agent can re-read it after compaction — unlike a long prompt that gets summarized away.',
       language: 'markdown',
       filename: 'specs/refactor-auth.md',
@@ -328,6 +342,7 @@ const content: LessonContent = {
     },
     {
       type: 'multiple-choice',
+      hint: 'Focus on the primary goal, not secondary benefits.',
       question: 'Why is a spec file more effective than a long initial prompt for complex tasks?',
       options: [
         'Spec files are faster to write',

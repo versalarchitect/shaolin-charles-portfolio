@@ -18,6 +18,7 @@ const content: LessonContent = {
     // === PHASE 1: DECOMPOSITION ===
     {
       type: 'multiple-choice',
+      hint: 'Read each option carefully — one fits the context best.',
       question: 'The Team Dashboard has 4 surfaces: Project Status, Velocity Metrics, Member Contributions, and Activity Feed. How should you map agents?',
       options: [
         'One agent builds all four surfaces sequentially',
@@ -58,6 +59,7 @@ const content: LessonContent = {
     },
     {
       type: 'multiple-choice',
+      hint: 'Eliminate the options that only partially fit.',
       question: 'Looking at this dependency graph, which agents can start simultaneously if you define contracts first?',
       options: [
         'Only Auth and API (UI and Real-time have dependencies)',
@@ -77,6 +79,7 @@ const content: LessonContent = {
     // === PHASE 2: WORKTREE SETUP ===
     {
       type: 'multiple-choice',
+      hint: 'Focus on the primary goal, not secondary benefits.',
       question: 'Why do four parallel agents each need their own git worktree?',
       options: [
         'Worktrees run faster than regular branches',
@@ -126,6 +129,7 @@ const content: LessonContent = {
     // === PHASE 3: WRITE CONTRACTS AND SPECS ===
     {
       type: 'multiple-choice',
+      hint: 'Think about which option is most specific to this concept.',
       question: 'Before launching any agent, what two things must the orchestrator write?',
       options: [
         'Test suites and CI/CD pipelines',
@@ -138,6 +142,7 @@ const content: LessonContent = {
     },
     {
       type: 'code-fill',
+      hint: 'Fill in values that match the pattern shown above.',
       instruction: 'Complete these shared contracts for the Team Dashboard. Fill in the critical type definitions that all four agents depend on.',
       language: 'typescript',
       filename: 'src/contracts/dashboard.ts',
@@ -186,6 +191,7 @@ export interface WsMessage {
     },
     {
       type: 'code-fill',
+      hint: 'Use the exact syntax from the lesson examples.',
       instruction: 'Complete this UI agent spec. Fill in the file ownership boundaries, data fetching patterns, and required component states.',
       language: 'markdown',
       filename: 'specs/ui-agent.md',
@@ -242,6 +248,7 @@ You MUST NOT MODIFY: anything outside src/components/dashboard/
     // === PHASE 4: LAUNCH THE FLEET ===
     {
       type: 'multiple-choice',
+      hint: 'Consider what the lesson content emphasized.',
       question: 'When you launch all four agents, what does your role shift to?',
       options: [
         'Writing more code alongside the agents',
@@ -254,6 +261,7 @@ You MUST NOT MODIFY: anything outside src/components/dashboard/
     },
     {
       type: 'code-fill',
+      hint: 'Each blank follows the conventions demonstrated earlier.',
       instruction: 'Complete this fleet launch script. Fill in the worktree paths and spec references for each agent.',
       language: 'bash',
       filename: 'scripts/launch-fleet.sh',
@@ -284,6 +292,7 @@ claude --worktree {{realtime_worktree}} \\
     },
     {
       type: 'code-fill',
+      hint: 'Look at the surrounding code for context clues.',
       instruction: 'Complete this fleet configuration script. Fill in the agent assignments, worktree paths, and merge order.',
       language: 'bash',
       filename: 'scripts/fleet-config.sh',
@@ -329,6 +338,7 @@ MERGE_ORDER="{{merge_order}}"`,
     // === PHASE 5: MONITOR AND INTERVENE ===
     {
       type: 'multiple-choice',
+      hint: 'One option stands out when you think about the core purpose.',
       question: 'What three health signals should you check every 3-5 minutes while agents build?',
       options: [
         'Code coverage, bundle size, and deploy status',
@@ -341,6 +351,7 @@ MERGE_ORDER="{{merge_order}}"`,
     },
     {
       type: 'code-fill',
+      hint: 'The answer matches the API or syntax just explained.',
       instruction: 'Complete this fleet monitoring script. Fill in the health check commands that detect stuck agents and boundary violations.',
       language: 'bash',
       filename: 'scripts/monitor-fleet.sh',
@@ -381,6 +392,7 @@ done`,
     },
     {
       type: 'multiple-choice',
+      hint: 'Read each option carefully — one fits the context best.',
       question: 'The monitor shows the API agent has 12 TypeScript errors and its last commit was 7 minutes ago. The auth agent has 0 errors and committed 1 minute ago. What do you do?',
       options: [
         'Stop both agents — the TypeScript errors might be from a bad contract',
@@ -400,6 +412,7 @@ done`,
     // === PHASE 6: CROSS-AGENT VERIFICATION ===
     {
       type: 'multiple-choice',
+      hint: 'Eliminate the options that only partially fit.',
       question: 'All four agents are done. Why must you verify cross-agent compatibility BEFORE merging?',
       options: [
         'Merging automatically resolves all type mismatches',
@@ -412,6 +425,7 @@ done`,
     },
     {
       type: 'code-fill',
+      hint: 'Fill in values that match the pattern shown above.',
       instruction: 'Complete this cross-agent verification script. Fill in the grep patterns that detect compatibility issues between agents.',
       language: 'bash',
       filename: 'scripts/verify-compatibility.sh',
@@ -464,6 +478,7 @@ done`,
     // === PHASE 7: RESOLVE CONFLICTS AND MERGE ===
     {
       type: 'multiple-choice',
+      hint: 'Focus on the primary goal, not secondary benefits.',
       question: 'In what order should you merge four agent branches (Auth, API, UI, Real-time)?',
       options: [
         'Merge all four simultaneously to save time',
@@ -568,6 +583,7 @@ done`,
     },
     {
       type: 'multiple-choice',
+      hint: 'Think about which option is most specific to this concept.',
       question: 'You see merge conflicts in source code (not just config files). What does this indicate?',
       options: [
         'Normal parallel development — resolve the conflicts manually',
@@ -587,6 +603,7 @@ done`,
     // === PHASE 8: SHIP ===
     {
       type: 'multiple-choice',
+      hint: 'Consider what the lesson content emphasized.',
       question: 'The code is merged. What is the correct final verification sequence before shipping?',
       options: [
         'Just run the build — if it passes, ship it',
@@ -599,6 +616,7 @@ done`,
     },
     {
       type: 'code-fill',
+      hint: 'Use the exact syntax from the lesson examples.',
       instruction: 'Complete this final ship sequence. Fill in the verification commands that must all pass before pushing.',
       language: 'bash',
       filename: 'scripts/ship.sh',
@@ -664,6 +682,7 @@ echo "Deployed. Team Dashboard built by 4 coordinated agents."`,
     // === RETROSPECTIVE ===
     {
       type: 'multiple-choice',
+      hint: 'One option stands out when you think about the core purpose.',
       question: 'What is the total number of phases in a complete fleet sprint?',
       options: [
         '4 phases: plan, build, test, ship',

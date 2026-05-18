@@ -23,6 +23,7 @@ const content: LessonContent = {
     // === SPECCING THE AUTH SYSTEM ===
     {
       type: 'multiple-choice',
+      hint: 'Read each option carefully — one fits the context best.',
       question: 'Before telling the agent to build auth, you need a spec. Which section is MOST critical to include to prevent the agent from leaving security holes?',
       options: [
         'Supported OAuth providers (Google, GitHub)',
@@ -35,6 +36,7 @@ const content: LessonContent = {
     },
     {
       type: 'code-fill',
+      hint: 'Fill in values that match the pattern shown above.',
       instruction: 'Give the agent a structured auth spec. Complete the RLS contract section — this is what prevents the agent from skipping policies.',
       language: 'markdown',
       filename: 'auth-spec.md',
@@ -55,6 +57,7 @@ const content: LessonContent = {
     // === DIRECTING SUPABASE AUTH SETUP ===
     {
       type: 'order',
+      hint: 'Consider what depends on what — prerequisites first.',
       instruction: 'Directing the agent through Supabase auth requires sequencing. Order these steps correctly — if you dump everything at once, the agent will skip steps or make conflicting decisions:',
       items: [
         'Write RLS policies for every table',
@@ -73,6 +76,7 @@ const content: LessonContent = {
     },
     {
       type: 'code-fill',
+      hint: 'Use the exact syntax from the lesson examples.',
       instruction: 'The agent generates the Supabase client. Verify it uses the correct key type — the WRONG key here is a critical security vulnerability.',
       language: 'typescript',
       filename: 'src/lib/supabase.ts',
@@ -85,6 +89,7 @@ const content: LessonContent = {
     },
     {
       type: 'code-fill',
+      hint: 'Each blank follows the conventions demonstrated earlier.',
       instruction: 'The agent generates OAuth helpers. Complete the critical parts — the redirect URL must use a dynamic origin (not hardcoded) and scopes should be minimal.',
       language: 'typescript',
       filename: 'src/lib/auth.ts',
@@ -105,6 +110,7 @@ const content: LessonContent = {
     // === ROW-LEVEL SECURITY ===
     {
       type: 'multiple-choice',
+      hint: 'Eliminate the options that only partially fit.',
       question: 'What is the biggest risk when agents create new database tables?',
       options: [
         'The agent might use incorrect column types',
@@ -117,6 +123,7 @@ const content: LessonContent = {
     },
     {
       type: 'code-fill',
+      hint: 'Look at the surrounding code for context clues.',
       instruction: 'Complete the RLS policies for a profiles table. Watch for: auth.uid() used correctly, separate policies per operation, no blanket USING (true).',
       language: 'sql',
       filename: 'supabase/migrations/002_rls_profiles.sql',
@@ -130,6 +137,7 @@ const content: LessonContent = {
     },
     {
       type: 'multiple-choice',
+      hint: 'Focus on the primary goal, not secondary benefits.',
       question: 'An agent creates a new "comments" table but does not add any RLS policies. What happens when a logged-in user queries this table?',
       options: [
         'They see only their own comments (default safe behavior)',
@@ -199,6 +207,7 @@ const content: LessonContent = {
     // === INTERACTIVE RLS EXERCISES ===
     {
       type: 'compare',
+      hint: 'Look at the key differences between the two approaches.',
       title: 'Dangerous vs secure RLS policy',
       body: 'Row-Level Security policies determine who can access what data. One mistake exposes everything.',
       question: 'Which policy correctly restricts access to the row owner?',
@@ -217,6 +226,7 @@ const content: LessonContent = {
     },
     {
       type: 'code-fill',
+      hint: 'The answer matches the API or syntax just explained.',
       instruction: 'Complete the RLS policies for a comments table. Users can read all comments, but only insert and delete their own.',
       language: 'sql',
       filename: 'supabase/migrations/003_rls_comments.sql',
@@ -231,6 +241,7 @@ const content: LessonContent = {
     },
     {
       type: 'match',
+      hint: 'Find the unique connection between each pair.',
       instruction: 'Match each security gap to what it exposes:',
       leftItems: ['RLS not enabled on table', 'Policy uses USING (true)', 'Missing WITH CHECK on INSERT', 'Service role key in client code'],
       rightItems: ['Anyone can insert rows as any user', 'All rows visible to all users', 'Complete table bypass — no security at all', 'Full admin access from the browser console'],
@@ -241,6 +252,7 @@ const content: LessonContent = {
     // === VERIFICATION METHODOLOGY ===
     {
       type: 'multiple-choice',
+      hint: 'Think about which option is most specific to this concept.',
       question: 'The agent\'s auth code runs without errors. How many access paths do you need to test for each protected resource?',
       options: [
         'One — if it works for an authenticated user, it works',
@@ -259,6 +271,7 @@ const content: LessonContent = {
     },
     {
       type: 'code-fill',
+      hint: 'Fill in values that match the pattern shown above.',
       instruction: 'Test RLS from the terminal by simulating different access levels. Complete the curl commands that verify security from an attacker\'s perspective.',
       language: 'bash',
       filename: 'test-rls.sh',
@@ -271,6 +284,7 @@ const content: LessonContent = {
     },
     {
       type: 'multiple-choice',
+      hint: 'Consider what the lesson content emphasized.',
       question: 'You test a protected endpoint while logged out and it returns data. What is the most likely cause?',
       options: [
         'The JWT token expired',
@@ -290,6 +304,7 @@ const content: LessonContent = {
     // === COMMON AGENT SECURITY HOLES ===
     {
       type: 'order',
+      hint: 'Think about what needs to exist before each next step.',
       instruction: 'Rank the top agent-generated security holes from MOST dangerous (first) to least (last):',
       items: [
         'Service role key used in client-side code (bypasses all RLS)',
@@ -314,6 +329,7 @@ const content: LessonContent = {
     },
     {
       type: 'multiple-choice',
+      hint: 'One option stands out when you think about the core purpose.',
       question: 'What makes the service role key dangerous in client-side code?',
       options: [
         'It expires faster than the anon key',
@@ -328,6 +344,7 @@ const content: LessonContent = {
     // === TARGETED FEEDBACK ===
     {
       type: 'compare',
+      hint: 'Focus on what makes one approach more appropriate here.',
       title: 'Vague vs surgical security feedback',
       body: 'When you find a security hole, the way you tell the agent matters. One approach leads to a different mistake. The other gets it fixed.',
       question: 'Which feedback will reliably fix the security hole?',
@@ -366,6 +383,7 @@ const content: LessonContent = {
     },
     {
       type: 'order',
+      hint: 'Follow the logical sequence from setup to execution.',
       instruction: 'Order the auth verification steps from first to last:',
       items: [
         'Test cross-user access (user A accessing user B data)',

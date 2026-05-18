@@ -18,6 +18,7 @@ const content: LessonContent = {
     // === COMPARE: Synchronous vs Event-Driven ===
     {
       type: 'compare',
+      hint: 'Look at the key differences between the two approaches.',
       title: 'Synchronous vs event-driven execution',
       body: 'Background jobs can run synchronously (blocking) or event-driven (resilient).',
       question: 'Which approach survives a server restart mid-execution?',
@@ -101,6 +102,7 @@ const content: LessonContent = {
     // === INNGEST INTRODUCTION ===
     {
       type: 'code-fill',
+      hint: 'Fill in values that match the pattern shown above.',
       instruction: 'Complete the Inngest durable step function for user signup. Each step.run() is individually retryable. Fill in the function config, event trigger, and idempotency key.',
       language: 'typescript',
       filename: 'src/inngest/functions/user-signup.ts',
@@ -164,6 +166,7 @@ export const handleUserSignup = inngest.createFunction(
     },
     {
       type: 'multiple-choice',
+      hint: 'Read each option carefully — one fits the context best.',
       question: 'If the welcome email fails on the third attempt, what happens to the user record and Stripe customer?',
       options: [
         'They are rolled back — the entire function fails',
@@ -178,6 +181,7 @@ export const handleUserSignup = inngest.createFunction(
     // === SPECIFYING EVENT FLOWS FOR AGENTS ===
     {
       type: 'multiple-choice',
+      hint: 'Eliminate the options that only partially fit.',
       question: 'What four things must your spec explicitly define so agents build event-driven (not synchronous) systems?',
       options: [
         'Database schema, API endpoints, UI components, deployment config',
@@ -190,6 +194,7 @@ export const handleUserSignup = inngest.createFunction(
     },
     {
       type: 'code-fill',
+      hint: 'Use the exact syntax from the lesson examples.',
       instruction: 'Complete the agent spec for an event-driven order processing job. Fill in the trigger event, idempotency strategy, and failure handling for the critical payment step.',
       language: 'markdown',
       filename: 'specs/agent-background-jobs.md',
@@ -245,6 +250,7 @@ Event: \`___BLANK_1___\` -- fired when checkout completes
     // === IDEMPOTENCY DEEP DIVE ===
     {
       type: 'multiple-choice',
+      hint: 'Focus on the primary goal, not secondary benefits.',
       question: 'In event-driven systems, handlers will be called multiple times. What property must every handler have?',
       options: [
         'Atomicity — all steps succeed or all fail together',
@@ -257,6 +263,7 @@ Event: \`___BLANK_1___\` -- fired when checkout completes
     },
     {
       type: 'compare',
+      hint: 'Focus on what makes one approach more appropriate here.',
       title: 'Idempotency patterns: database writes vs external APIs',
       body: 'Different contexts require different idempotency strategies.',
       question: 'Which pattern should you use when writing to your own database?',
@@ -284,6 +291,7 @@ Event: \`___BLANK_1___\` -- fired when checkout completes
     // === PARTIAL FAILURE HANDLING ===
     {
       type: 'multiple-choice',
+      hint: 'Think about which option is most specific to this concept.',
       question: 'Step 1 succeeds, step 2 succeeds, step 3 fails. You have a user record and a Stripe customer but no welcome email. What is this scenario called?',
       options: [
         'Complete failure — the entire function should be rolled back',
@@ -296,6 +304,7 @@ Event: \`___BLANK_1___\` -- fired when checkout completes
     },
     {
       type: 'multiple-choice',
+      hint: 'Consider what the lesson content emphasized.',
       question: 'A 5-step order flow fails at step 4 (notify warehouse). Steps 1-3 (validate, charge, email) succeeded. What should happen?',
       options: [
         'Roll back everything — refund the charge, un-send the email',
@@ -368,6 +377,7 @@ Event: \`___BLANK_1___\` -- fired when checkout completes
     },
     {
       type: 'code-fill',
+      hint: 'Each blank follows the conventions demonstrated earlier.',
       instruction: 'Complete the Inngest client setup with type-safe event definitions. This is the foundation that all functions import from.',
       language: 'typescript',
       filename: 'src/inngest/client.ts',
@@ -424,6 +434,7 @@ export const inngest = new Inngest({
     // === VERIFICATION CHECKLIST ===
     {
       type: 'multiple-choice',
+      hint: 'One option stands out when you think about the core purpose.',
       question: 'After an agent builds event-driven code, which of these does it MOST frequently miss?',
       options: [
         'Function naming conventions and code formatting',
@@ -454,6 +465,7 @@ export const inngest = new Inngest({
     // === ADVANCED: COMPOSING EVENT CHAINS ===
     {
       type: 'code-fill',
+      hint: 'Look at the surrounding code for context clues.',
       instruction: 'Complete the chained event handlers. Handler A emits an event that triggers Handler B. Fill in the event names and the step that emits the downstream event.',
       language: 'typescript',
       filename: 'src/inngest/functions/onboarding-chain.ts',
@@ -520,6 +532,7 @@ export const onOnboardingStart = inngest.createFunction(
     },
     {
       type: 'multiple-choice',
+      hint: 'Read each option carefully — one fits the context best.',
       question: 'Why emit events between handlers instead of calling handler functions directly?',
       options: [
         'It\'s faster because events are processed in parallel',
@@ -539,6 +552,7 @@ export const onOnboardingStart = inngest.createFunction(
     // === PUTTING IT TOGETHER ===
     {
       type: 'order',
+      hint: 'Consider what depends on what — prerequisites first.',
       instruction: 'Order these steps for speccing an event-driven system for an agent:',
       items: [
         'Define event types and payloads (type-safe schemas)',

@@ -92,6 +92,7 @@ const content: LessonContent = {
     // === THE METRICS ===
     {
       type: 'multiple-choice',
+      hint: 'Read each option carefully — one fits the context best.',
       question: 'An auth module is imported by 47 components, referenced by middleware, and called by 3 services via HTTP. Does this favor refactoring or rewriting?',
       options: [
         'Rewriting — start fresh with a clean implementation',
@@ -104,6 +105,7 @@ const content: LessonContent = {
     },
     {
       type: 'multiple-choice',
+      hint: 'Eliminate the options that only partially fit.',
       question: 'A component has 90% test coverage but ugly code (callbacks, inconsistent naming). A different component has 10% coverage but clean architecture. Which favors refactoring vs rewriting?',
       options: [
         'Both should be refactored',
@@ -116,6 +118,7 @@ const content: LessonContent = {
     },
     {
       type: 'multiple-choice',
+      hint: 'Focus on the primary goal, not secondary benefits.',
       question: 'A module has circular dependencies and god objects (structural debt). Another has inconsistent naming and callback-style async (cosmetic debt). Which requires a rewrite?',
       options: [
         'Both need rewrites',
@@ -128,6 +131,7 @@ const content: LessonContent = {
     },
     {
       type: 'multiple-choice',
+      hint: 'Think about which option is most specific to this concept.',
       question: 'A component encodes years of edge-case handling learned through production incidents, documented nowhere except the code itself. Should you rewrite it?',
       options: [
         'Yes — agents can rebuild anything from a spec',
@@ -140,6 +144,7 @@ const content: LessonContent = {
     },
     {
       type: 'multiple-choice',
+      hint: 'Consider what the lesson content emphasized.',
       question: 'A payment processing module has: 12 dependents, 92% test coverage, callbacks instead of async/await, and well-documented edge cases in code comments. Refactor or rewrite?',
       options: [
         'Rewrite — callbacks are outdated and agents can build async/await versions easily',
@@ -159,6 +164,7 @@ const content: LessonContent = {
     // === THE STRANGLER FIG PATTERN ===
     {
       type: 'multiple-choice',
+      hint: 'One option stands out when you think about the core purpose.',
       question: 'The strangler fig pattern builds the new system around the old one. Why is it especially powerful with agent fleets?',
       options: [
         'Agents prefer incremental work',
@@ -171,6 +177,7 @@ const content: LessonContent = {
     },
     {
       type: 'code-fill',
+      hint: 'Fill in values that match the pattern shown above.',
       instruction: 'Complete this strangler fig adapter. Fill in the adapter function that wraps the modern async implementation in the old callback interface.',
       language: 'typescript',
       filename: 'packages/auth/src/adapter.ts',
@@ -184,6 +191,7 @@ const content: LessonContent = {
     },
     {
       type: 'multiple-choice',
+      hint: 'Read each option carefully — one fits the context best.',
       question: 'The strangler fig pattern is especially powerful with agent fleets because:',
       options: [
         'Agents are better at writing adapters than humans',
@@ -203,6 +211,7 @@ const content: LessonContent = {
     // === STRANGLER FIG IN PRACTICE ===
     {
       type: 'code-fill',
+      hint: 'Use the exact syntax from the lesson examples.',
       instruction: 'Complete this strangler fig migration plan by filling in the blanks for each step.',
       language: 'markdown',
       filename: 'docs/strangler-fig-plan.md',
@@ -217,6 +226,7 @@ const content: LessonContent = {
     },
     {
       type: 'match',
+      hint: 'Find the unique connection between each pair.',
       instruction: 'Match each rebuild indicator to its recommended decision:',
       leftItems: ['Test coverage >80%', 'Test coverage <20%', 'Clear module boundaries', 'Global state everywhere'],
       rightItems: ['Safe to refactor incrementally', 'Consider full rewrite', 'Strangler fig viable', 'Rewrite likely necessary'],
@@ -238,6 +248,7 @@ const content: LessonContent = {
     // === WHEN TO ACTUALLY REWRITE ===
     {
       type: 'multiple-choice',
+      hint: 'Eliminate the options that only partially fit.',
       question: 'All four conditions must be true to justify a rewrite: (1) poorly tested, (2) well-understood business logic, (3) low coupling, (4) structural debt. A module has 92% test coverage but ugly callbacks. Should you rewrite?',
       options: [
         'Yes — callbacks are outdated',
@@ -250,6 +261,7 @@ const content: LessonContent = {
     },
     {
       type: 'multiple-choice',
+      hint: 'Focus on the primary goal, not secondary benefits.',
       question: 'Before approving a rewrite, you must verify: can you write a complete spec capturing every edge case? You find 15 edge cases documented only as code comments, with no external spec. What does this tell you?',
       options: [
         'The code is well-documented, proceed with the rewrite',
@@ -262,6 +274,7 @@ const content: LessonContent = {
     },
     {
       type: 'code-fill',
+      hint: 'Each blank follows the conventions demonstrated earlier.',
       instruction: 'Complete this rewrite feasibility assessment. Fill in the scoring criteria that determine whether to rewrite or refactor.',
       language: 'markdown',
       filename: 'docs/rewrite-assessment.md',
@@ -277,6 +290,7 @@ const content: LessonContent = {
     },
     {
       type: 'order',
+      hint: 'Consider what depends on what — prerequisites first.',
       instruction: 'Order these components from MOST justified rewrite to LEAST justified rewrite:',
       items: [
         'Auth module: 12 dependents, 92% coverage, callbacks, well-documented edge cases',
@@ -296,6 +310,7 @@ const content: LessonContent = {
     // === COMPARE: STRANGLER FIG VS BIG BANG ===
     {
       type: 'compare',
+      hint: 'Look at the key differences between the two approaches.',
       title: 'Strangler fig vs Big bang rewrite',
       body: 'Two migration strategies with very different risk profiles and timelines.',
       left: {
@@ -318,6 +333,7 @@ const content: LessonContent = {
     // === CARRYING DEBT INTENTIONALLY ===
     {
       type: 'multiple-choice',
+      hint: 'Think about which option is most specific to this concept.',
       question: 'An ugly-but-working auth module has no bugs, no one modifies it, and users never see its code. Should you fix it?',
       options: [
         'Yes — ugly code should always be cleaned up',
@@ -330,6 +346,7 @@ const content: LessonContent = {
     },
     {
       type: 'multiple-choice',
+      hint: 'Consider what the lesson content emphasized.',
       question: 'You have a module with 400 lines of callback-based code, no tests, but rock-solid stability (zero bugs in 14 months). An agent fleet could rewrite it in 2 hours. Should you?',
       options: [
         'Yes — agent time is cheap and the new version will be cleaner',
@@ -344,6 +361,7 @@ const content: LessonContent = {
     // === DATA-DRIVEN DECISIONS ===
     {
       type: 'multiple-choice',
+      hint: 'One option stands out when you think about the core purpose.',
       question: 'A module has 0 commits in 6 months and 0 bugs. Another has 45 commits in 6 months and 12 bugs. Which module\'s technical debt is MORE expensive to carry?',
       options: [
         'The first — zero activity means it is abandoned and risky',
@@ -356,6 +374,7 @@ const content: LessonContent = {
     },
     {
       type: 'code-fill',
+      hint: 'Look at the surrounding code for context clues.',
       instruction: 'Complete this module assessment script. Fill in the commands that gather the metrics you need before deciding whether to refactor or rewrite.',
       language: 'bash',
       filename: 'scripts/assess-module.sh',
@@ -376,6 +395,7 @@ const content: LessonContent = {
     // === SYNTHESIS ===
     {
       type: 'multiple-choice',
+      hint: 'Read each option carefully — one fits the context best.',
       question: 'Agent fleets make both refactoring and rewriting cheaper. Does this make the decision between them easier or harder?',
       options: [
         'Easier — just try both and pick the winner',

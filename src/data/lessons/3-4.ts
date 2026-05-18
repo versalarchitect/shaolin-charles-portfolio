@@ -12,6 +12,7 @@ const content: LessonContent = {
     // CONVERTED: info → multiple-choice (#1)
     {
       type: 'multiple-choice',
+      hint: 'Read each option carefully — one fits the context best.',
       question: 'What is a task graph (DAG) used for in agent orchestration?',
       options: [
         'It tracks how much time each agent has spent coding',
@@ -24,6 +25,7 @@ const content: LessonContent = {
     },
     {
       type: 'multiple-choice',
+      hint: 'Eliminate the options that only partially fit.',
       question: 'In a task graph, what does an edge from Task A to Task B mean?',
       options: [
         'A and B can run in parallel',
@@ -75,6 +77,7 @@ const content: LessonContent = {
     // === READING THE GRAPH — CONVERTED: info → multiple-choice (#3) ===
     {
       type: 'multiple-choice',
+      hint: 'Focus on the primary goal, not secondary benefits.',
       question: 'Looking at the task graph, why are Auth and Database able to run in parallel?',
       options: [
         'They both depend on API, which runs first',
@@ -87,6 +90,7 @@ const content: LessonContent = {
     },
     {
       type: 'multiple-choice',
+      hint: 'Think about which option is most specific to this concept.',
       question: 'In the task graph above, which tasks can run in parallel?',
       options: [
         'Spec and Auth',
@@ -101,6 +105,7 @@ const content: LessonContent = {
     // === CRITICAL PATH — CONVERTED: info → multiple-choice (#4) ===
     {
       type: 'multiple-choice',
+      hint: 'Consider what the lesson content emphasized.',
       question: 'What is the critical path in a task graph?',
       options: [
         'The path with the fewest tasks',
@@ -140,6 +145,7 @@ const content: LessonContent = {
     },
     {
       type: 'multiple-choice',
+      hint: 'One option stands out when you think about the core purpose.',
       question: 'If you could speed up one task to reduce total project time, which should you target?',
       options: [
         'DB (1h) — it is the shortest task',
@@ -159,6 +165,7 @@ const content: LessonContent = {
     // === FINDING THE CRITICAL PATH — CONVERTED: info → multiple-choice (#6) ===
     {
       type: 'multiple-choice',
+      hint: 'Read each option carefully — one fits the context best.',
       question: 'What is the algorithm for finding the critical path in a task graph?',
       options: [
         'Pick the task with the most dependencies and follow it to the end',
@@ -171,6 +178,7 @@ const content: LessonContent = {
     },
     {
       type: 'order',
+      hint: 'Consider what depends on what — prerequisites first.',
       instruction: 'Order these steps for finding the critical path:',
       items: [
         'Pick the path with the longest total duration',
@@ -184,6 +192,7 @@ const content: LessonContent = {
     // === INTERFACE CONTRACTS — CONVERTED: info → compare (#7 — merging two info concepts) ===
     {
       type: 'compare',
+      hint: 'Look at the key differences between the two approaches.',
       title: 'Sequential dependency vs interface contract',
       body: 'When Task B depends on Task A, you have two approaches. One blocks progress. The other unlocks parallel work.',
       question: 'Which approach lets both agents work simultaneously?',
@@ -218,6 +227,7 @@ const content: LessonContent = {
     // CONVERTED: code-demo → code-fill (#8)
     {
       type: 'code-fill',
+      hint: 'Fill in values that match the pattern shown above.',
       instruction: 'Complete this shared interface contract that both the API and UI agents will build against. Define the types so neither agent blocks the other.',
       language: 'typescript',
       filename: 'src/types/api-contract.ts',
@@ -233,6 +243,7 @@ const content: LessonContent = {
     },
     {
       type: 'multiple-choice',
+      hint: 'Eliminate the options that only partially fit.',
       question: 'Why does defining an interface contract increase parallelism?',
       options: [
         'It makes the code run faster at runtime',
@@ -252,6 +263,7 @@ const content: LessonContent = {
     // === RE-SEQUENCING — CONVERTED: info+info → compare (#9) ===
     {
       type: 'compare',
+      hint: 'Focus on what makes one approach more appropriate here.',
       title: 'Static plan vs dynamic re-sequencing',
       body: "Plans don't survive contact with reality. Should you stick to the original schedule or adapt on the fly?",
       question: 'Which approach makes better use of agent capacity when things go off-plan?',
@@ -269,6 +281,7 @@ const content: LessonContent = {
     // CONVERTED: code-demo → code-fill (#10)
     {
       type: 'code-fill',
+      hint: 'Use the exact syntax from the lesson examples.',
       instruction: 'Complete this orchestration log showing dynamic re-sequencing when Agent B finishes early:',
       language: 'text',
       filename: 'agent-orchestration-log.txt',
@@ -283,6 +296,7 @@ const content: LessonContent = {
     },
     {
       type: 'multiple-choice',
+      hint: 'Focus on the primary goal, not secondary benefits.',
       question: 'An agent finishes its task 30 minutes early. What should you do?',
       options: [
         'Let it wait until the next planned task is ready',
@@ -297,6 +311,7 @@ const content: LessonContent = {
     // === INTERACTIVE: MATCH ===
     {
       type: 'match',
+      hint: 'Find the unique connection between each pair.',
       instruction: 'Match each task relationship to its dependency type:',
       leftItems: ['Auth system -> API routes need it', 'UI components (independent)', 'Payment system -> needs API types', 'Test suite -> needs all features'],
       rightItems: ['Blocking dependency -- must complete first', 'Independent -- can run in parallel', 'Partial dependency -- needs interface contract only', 'Gate -- blocks final integration'],
@@ -339,6 +354,7 @@ const content: LessonContent = {
     // === PRACTICE: DECOMPOSE A TODO APP — CONVERTED: info → multiple-choice (#11) ===
     {
       type: 'multiple-choice',
+      hint: 'Think about which option is most specific to this concept.',
       question: 'You are building a todo app with auth, database, API, frontend, and deployment. Which task should come first?',
       options: [
         'Build the React UI so stakeholders can see progress',
@@ -351,6 +367,7 @@ const content: LessonContent = {
     },
     {
       type: 'order',
+      hint: 'Think about what needs to exist before each next step.',
       instruction: 'Order these todo app tasks by dependency (what must come first):',
       items: [
         'Deploy to production',
@@ -364,6 +381,7 @@ const content: LessonContent = {
     // CONVERTED: code-demo → code-fill (#12 — bonus conversion for margin)
     {
       type: 'code-fill',
+      hint: 'Each blank follows the conventions demonstrated earlier.',
       instruction: 'Complete this prompt for Claude Code to decompose a feature into a task graph:',
       language: 'text',
       filename: 'prompt.txt',
@@ -388,6 +406,7 @@ const content: LessonContent = {
     // CONVERTED: diagram(decision tree implied) → interactive-diagram of 3 patterns (#13 — extra)
     {
       type: 'multiple-choice',
+      hint: 'Consider what the lesson content emphasized.',
       question: 'Which dependency pattern represents the greatest opportunity for parallelism?',
       options: [
         'Chain — strict sequential tasks',

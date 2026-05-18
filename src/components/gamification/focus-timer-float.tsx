@@ -12,6 +12,19 @@ const SESSIONS_PER_CYCLE = 4
 const SHORT_BREAK_MINUTES = 5
 const LONG_BREAK_MINUTES = 15
 const FOCUS_STATS_KEY = 'focus-stats'
+const FOCUS_POS_KEY = 'focus-timer-pos'
+
+function loadPosition(): { x: number; y: number } {
+  try {
+    const raw = localStorage.getItem(FOCUS_POS_KEY)
+    if (raw) return JSON.parse(raw)
+  } catch { /* ignore */ }
+  return { x: 0, y: 0 }
+}
+
+function savePosition(pos: { x: number; y: number }) {
+  try { localStorage.setItem(FOCUS_POS_KEY, JSON.stringify(pos)) } catch { /* ignore */ }
+}
 
 interface FocusStats { totalMinutes: number; sessionsCompleted: number; bestStreak: number }
 
@@ -77,9 +90,13 @@ export function FocusTimerFloat() {
   const [autoBreak, setAutoBreak] = useState(true)
   const [tickSound, setTickSound] = useState(false)
   const [totalXpAwarded, setTotalXpAwarded] = useState(0)
+  const [dragPos, setDragPos] = useState(loadPosition)
+  const [isDragging, setIsDragging] = useState(false)
+  const dragRef = useRef(false)
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null)
   const tickCountRef = useRef(0)
   const panelRef = useRef<HTMLDivElement>(null)
+  const constraintsRef = useRef<HTMLDivElement>(null)
 
   const totalSeconds = timerState === 'break'
     ? (cycleSessionCount >= SESSIONS_PER_CYCLE ? LONG_BREAK_MINUTES : SHORT_BREAK_MINUTES) * 60
@@ -154,10 +171,29 @@ export function FocusTimerFloat() {
   const isActive = timerState === 'running' || timerState === 'paused' || timerState === 'break'
 
   return (
-    <div ref={panelRef} className="fixed top-4 right-4 z-50 lg:right-6">
+    <>
+    <div ref={constraintsRef} className="fixed inset-0 z-50 pointer-events-none" />
+    <motion.div
+      ref={panelRef}
+      drag
+      dragMomentum={false}
+      dragConstraints={constraintsRef}
+      dragElastic={0.1}
+      initial={dragPos}
+      onDragStart={() => { setIsDragging(true); dragRef.current = true }}
+      onDragEnd={(_, info) => {
+        setIsDragging(false)
+        const newPos = { x: dragPos.x + info.offset.x, y: dragPos.y + info.offset.y }
+        setDragPos(newPos)
+        savePosition(newPos)
+        setTimeout(() => { dragRef.current = false }, 0)
+      }}
+      className="fixed top-4 right-4 z-50 lg:right-6 touch-none"
+      style={{ cursor: isDragging ? 'grabbing' : 'grab' }}
+    >
       {/* Pill */}
       <motion.button
-        onClick={() => setExpanded(!expanded)}
+        onClick={() => { if (!dragRef.current) setExpanded(!expanded) }}
         whileHover={{ scale: 1.03 }}
         whileTap={{ scale: 0.97 }}
         className={`flex items-center gap-2 rounded-full border backdrop-blur-md shadow-lg transition-colors ${
@@ -313,6 +349,7 @@ export function FocusTimerFloat() {
           </motion.div>
         )}
       </AnimatePresence>
-    </div>
+    </motion.div>
+    </>
   )
 }

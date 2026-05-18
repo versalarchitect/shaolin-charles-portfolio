@@ -23,6 +23,7 @@ const content: LessonContent = {
     // === SPECCING A DATABASE ===
     {
       type: 'multiple-choice',
+      hint: 'Read each option carefully — one fits the context best.',
       question: 'Which element is MOST important to include in a database spec for an AI agent?',
       options: [
         'The color scheme for the database admin panel',
@@ -35,6 +36,7 @@ const content: LessonContent = {
     },
     {
       type: 'code-fill',
+      hint: 'Fill in values that match the pattern shown above.',
       instruction: 'Complete this database spec by filling in the relationship types and constraints:',
       language: 'markdown',
       filename: 'database-spec.md',
@@ -56,6 +58,7 @@ const content: LessonContent = {
     // === DIRECTING SCHEMA GENERATION ===
     {
       type: 'multiple-choice',
+      hint: 'Eliminate the options that only partially fit.',
       question: 'When asking an agent to generate database migrations, what is the best approach?',
       options: [
         'Ask for the entire database schema in one migration file',
@@ -74,6 +77,7 @@ const content: LessonContent = {
     },
     {
       type: 'code-fill',
+      hint: 'Use the exact syntax from the lesson examples.',
       instruction: 'Complete this migration to create a properly constrained workspace members junction table:',
       language: 'sql',
       filename: 'supabase/migrations/001_add_workspaces.sql',
@@ -96,6 +100,7 @@ const content: LessonContent = {
     // === REVIEWING MIGRATIONS ===
     {
       type: 'multiple-choice',
+      hint: 'Focus on the primary goal, not secondary benefits.',
       question: 'Which of these is the MOST common mistake agents make in generated migrations?',
       options: [
         'Using the wrong SQL dialect',
@@ -108,6 +113,7 @@ const content: LessonContent = {
     },
     {
       type: 'code-fill',
+      hint: 'Each blank follows the conventions demonstrated earlier.',
       instruction: 'The agent generated a broken tasks table. Fill in the missing constraints to fix it:',
       language: 'sql',
       filename: 'supabase/migrations/002_add_tasks.sql',
@@ -122,6 +128,7 @@ const content: LessonContent = {
     },
     {
       type: 'multiple-choice',
+      hint: 'Think about which option is most specific to this concept.',
       question: 'Why is a missing index on a foreign key column a serious problem?',
       options: [
         'It prevents the FK constraint from being enforced',
@@ -136,6 +143,7 @@ const content: LessonContent = {
     // === COMMON DATA MODELING MISTAKES ===
     {
       type: 'compare',
+      hint: 'Look at the key differences between the two approaches.',
       title: 'Denormalized vs normalized data modeling',
       body: 'Agents often denormalize where normalization is needed. Spot the structural difference.',
       question: 'Which approach handles tags correctly for a blog platform?',
@@ -154,6 +162,7 @@ const content: LessonContent = {
     },
     {
       type: 'multiple-choice',
+      hint: 'Consider what the lesson content emphasized.',
       question: 'An agent stores tags as a TEXT[] array column on the posts table. Why might this be wrong?',
       options: [
         'Postgres does not support array columns',
@@ -173,6 +182,7 @@ const content: LessonContent = {
     // === INTERACTIVE DATABASE EXERCISES ===
     {
       type: 'compare',
+      hint: 'Focus on what makes one approach more appropriate here.',
       title: 'Agent-generated migration: spot the problems',
       body: 'Agents generate technically valid SQL that often misses structural safeguards.',
       question: 'Which migration is safer to run in production?',
@@ -191,6 +201,7 @@ const content: LessonContent = {
     },
     {
       type: 'code-fill',
+      hint: 'Look at the surrounding code for context clues.',
       instruction: 'Fix this migration by adding the missing constraints:',
       language: 'sql',
       filename: 'supabase/migrations/002_fix_tasks.sql',
@@ -204,6 +215,7 @@ const content: LessonContent = {
     },
     {
       type: 'match',
+      hint: 'Find the unique connection between each pair.',
       instruction: 'Match each ON DELETE behavior to the right relationship:',
       leftItems: ['CASCADE', 'SET NULL', 'RESTRICT'],
       rightItems: ['Child is meaningless without parent (task without project)', 'Child can exist independently (comment without author)', 'Deletion should be blocked if children exist (user with active orders)'],
@@ -265,6 +277,7 @@ const content: LessonContent = {
     // === ITERATIVE REFINEMENT ===
     {
       type: 'multiple-choice',
+      hint: 'One option stands out when you think about the core purpose.',
       question: 'You find 3 issues in an agent-generated migration. What is the best correction approach?',
       options: [
         'Ask the agent to regenerate the entire migration from scratch',
@@ -292,6 +305,7 @@ const content: LessonContent = {
     },
     {
       type: 'code-fill',
+      hint: 'The answer matches the API or syntax just explained.',
       instruction: 'Choose the correct ON DELETE behavior for each foreign key relationship:',
       language: 'sql',
       filename: 'cascade-examples.sql',
@@ -305,6 +319,7 @@ const content: LessonContent = {
     },
     {
       type: 'multiple-choice',
+      hint: 'Read each option carefully — one fits the context best.',
       question: 'A user deletes their account. Their comments reference other users\' posts. What CASCADE behavior is appropriate for the comment.user_id FK?',
       options: [
         'CASCADE — delete all their comments',
@@ -324,6 +339,7 @@ const content: LessonContent = {
     // === ORDER EXERCISE ===
     {
       type: 'order',
+      hint: 'Consider what depends on what — prerequisites first.',
       instruction: 'Order the steps of a migration review from first to last:',
       items: [
         'Check CASCADE behavior on all FKs',

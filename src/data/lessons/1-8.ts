@@ -23,6 +23,7 @@ const content: LessonContent = {
     // === SKILL FILE STRUCTURE ===
     {
       type: 'code-fill',
+      hint: 'Fill in values that match the pattern shown above.',
       instruction: 'Complete this skill file that runs a full pre-commit check. Skills are markdown files in .claude/commands/:',
       language: 'markdown',
       filename: '.claude/commands/pre-commit.md',
@@ -36,6 +37,7 @@ const content: LessonContent = {
     },
     {
       type: 'multiple-choice',
+      hint: 'Read each option carefully — one fits the context best.',
       question: 'A skill file at .claude/commands/deploy/staging.md becomes which slash command?',
       options: [
         '/deploy/staging',
@@ -48,6 +50,7 @@ const content: LessonContent = {
     },
     {
       type: 'multiple-choice',
+      hint: 'Eliminate the options that only partially fit.',
       question: 'Where do you place a skill file so your entire team can use it?',
       options: [
         '~/.claude/commands/',
@@ -75,6 +78,7 @@ const content: LessonContent = {
     },
     {
       type: 'code-fill',
+      hint: 'Use the exact syntax from the lesson examples.',
       instruction: 'Complete this review skill that accepts a file path as a parameter:',
       language: 'markdown',
       filename: '.claude/commands/review.md',
@@ -96,6 +100,7 @@ const content: LessonContent = {
     // === HOOKS: AUTOMATIC TRIGGERS ===
     {
       type: 'compare',
+      hint: 'Look at the key differences between the two approaches.',
       title: 'Skills vs Hooks',
       body: 'Both extend Claude Code, but they trigger in opposite ways.',
       question: 'Which one fires automatically without you typing anything?',
@@ -164,6 +169,7 @@ const content: LessonContent = {
     // === HOOK CONFIGURATION ===
     {
       type: 'code-fill',
+      hint: 'Each blank follows the conventions demonstrated earlier.',
       instruction: 'Complete this hook configuration. Hooks are defined in settings.json with event types, matchers, and shell commands:',
       language: 'json',
       filename: '.claude/settings.json',
@@ -177,6 +183,7 @@ const content: LessonContent = {
     },
     {
       type: 'multiple-choice',
+      hint: 'Focus on the primary goal, not secondary benefits.',
       question: 'What is the purpose of the "matcher" field in a hook configuration?',
       options: [
         'It matches file paths to determine which files to watch',
@@ -191,6 +198,7 @@ const content: LessonContent = {
     // === HOOK EVENTS ===
     {
       type: 'match',
+      hint: 'Find the unique connection between each pair.',
       instruction: 'Match each hook environment variable to the context it provides:',
       leftItems: [
         '$CLAUDE_TOOL_NAME',
@@ -209,6 +217,7 @@ const content: LessonContent = {
     },
     {
       type: 'code-fill',
+      hint: 'Look at the surrounding code for context clues.',
       instruction: 'Complete this hook script that blocks destructive git commands. Three hook events exist: PreToolUse (before), PostToolUse (after), and Notification.',
       language: 'bash',
       filename: 'block-destructive.sh',
@@ -229,6 +238,7 @@ const content: LessonContent = {
     // === PRACTICAL EXAMPLES ===
     {
       type: 'multiple-choice',
+      hint: 'Think about which option is most specific to this concept.',
       question: 'A PostToolUse hook on Write runs "npx eslint --fix" on every file Claude creates. What does this accomplish?',
       options: [
         'It blocks Claude from writing files that have lint errors',
@@ -241,6 +251,7 @@ const content: LessonContent = {
     },
     {
       type: 'code-fill',
+      hint: 'The answer matches the API or syntax just explained.',
       instruction: 'Complete this PostToolUse hook that auto-lints files after both Write and Edit operations:',
       language: 'json',
       filename: '.claude/settings.json (partial)',
@@ -256,6 +267,7 @@ const content: LessonContent = {
     // === CHAINING SKILLS ===
     {
       type: 'multiple-choice',
+      hint: 'Consider what the lesson content emphasized.',
       question: 'A /deploy skill references /pre-commit and /check-deploy in its instructions. What design principle does this follow?',
       options: [
         'Dependency injection — skills inject behavior into each other',
@@ -268,6 +280,7 @@ const content: LessonContent = {
     },
     {
       type: 'code-fill',
+      hint: 'Fill in values that match the pattern shown above.',
       instruction: 'Complete this deployment skill that chains other skills in a pipeline:',
       language: 'markdown',
       filename: '.claude/commands/ship.md',
@@ -281,6 +294,7 @@ const content: LessonContent = {
     },
     {
       type: 'multiple-choice',
+      hint: 'One option stands out when you think about the core purpose.',
       question: 'What is the recommended approach when building complex skill workflows?',
       options: [
         'Put everything in one large skill file',
@@ -295,6 +309,7 @@ const content: LessonContent = {
     // === SHARING SKILLS ===
     {
       type: 'multiple-choice',
+      hint: 'Read each option carefully — one fits the context best.',
       question: 'You have a personal code review checklist you use across all projects. Where should this skill file live?',
       options: [
         '.claude/commands/ (project-level)',
@@ -315,6 +330,7 @@ const content: LessonContent = {
     // === ADVANCED PATTERNS ===
     {
       type: 'code-fill',
+      hint: 'Use the exact syntax from the lesson examples.',
       instruction: 'Complete this combined hooks config. Hooks enforce guardrails automatically while skills provide on-demand workflows:',
       language: 'json',
       filename: '.claude/settings.json',
@@ -328,6 +344,7 @@ const content: LessonContent = {
     },
     {
       type: 'order',
+      hint: 'Consider what depends on what — prerequisites first.',
       instruction: 'Order the steps to set up a complete skill + hook workflow:',
       items: [
         'Test the skill by invoking it with /command-name',
@@ -342,6 +359,7 @@ const content: LessonContent = {
     // === INTERACTIVE: COMPARE, MATCH, CODE-FILL ===
     {
       type: 'compare',
+      hint: 'Focus on what makes one approach more appropriate here.',
       title: 'Inline instructions vs saved skills',
       body: 'You can type the same instruction every time, or save it as a reusable skill file.',
       question: 'Which approach scales better across projects?',
@@ -360,6 +378,7 @@ const content: LessonContent = {
     },
     {
       type: 'match',
+      hint: 'Match each term to its most specific definition.',
       instruction: 'Match each hook type to its purpose:',
       leftItems: ['PreToolUse', 'PostToolUse', 'Notification'],
       rightItems: ['Validate or block an action before it runs', 'Run cleanup or checks after an action completes', 'React to events like errors or status changes'],
@@ -368,6 +387,7 @@ const content: LessonContent = {
     },
     {
       type: 'code-fill',
+      hint: 'Each blank follows the conventions demonstrated earlier.',
       instruction: 'Complete this hook configuration to auto-lint every file the agent writes:',
       language: 'json',
       template: '{\n  "hooks": {\n    "{{event_type}}": [\n      {\n        "{{filter_key}}": "{{tool_name}}",\n        "command": "npx eslint --fix \\"$CLAUDE_FILE_PATH\\""\n      }\n    ]\n  }\n}',
@@ -389,6 +409,7 @@ const content: LessonContent = {
     },
     {
       type: 'multiple-choice',
+      hint: 'Eliminate the options that only partially fit.',
       question: 'A PreToolUse hook exits with code 1. What happens?',
       options: [
         'The tool runs anyway but logs a warning',

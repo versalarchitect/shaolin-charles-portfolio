@@ -10,6 +10,7 @@ const content: LessonContent = {
     },
     {
       type: 'match',
+      hint: 'Find the unique connection between each pair.',
       instruction: 'Before we start, match each tool to its one-line description. You will install all of these:',
       leftItems: ['Node.js', 'Bun', 'Git', 'VS Code', 'SSH keys'],
       rightItems: ['Engine that runs your apps', 'Installs project dependencies quickly', 'Tracks changes like version history', 'Text editor where you review code', 'Secure login for GitHub'],
@@ -53,6 +54,7 @@ const content: LessonContent = {
     // === NODE.JS ===
     {
       type: 'multiple-choice',
+      hint: 'Read each option carefully — one fits the context best.',
       question: 'What is Node.js and why do we need it?',
       options: [
         'A web browser for viewing websites',
@@ -65,6 +67,7 @@ const content: LessonContent = {
     },
     {
       type: 'code-fill',
+      hint: 'Fill in values that match the pattern shown above.',
       instruction: 'nvm (Node Version Manager) manages which version of Node.js your computer uses. Complete the install command by filling in the tool name and shell:',
       language: 'bash',
       template: 'curl -o- https://raw.githubusercontent.com/{{tool}}-sh/{{tool}}/v0.40.3/install.sh | {{shell}}',
@@ -106,6 +109,7 @@ const content: LessonContent = {
     },
     {
       type: 'multiple-choice',
+      hint: 'Eliminate the options that only partially fit.',
       question: 'Why do we use nvm instead of installing Node.js directly from the website?',
       options: [
         'nvm makes Node.js run faster',
@@ -157,6 +161,7 @@ const content: LessonContent = {
     // === BUN ===
     {
       type: 'multiple-choice',
+      hint: 'Focus on the primary goal, not secondary benefits.',
       question: 'What does Bun do and why do we use it instead of npm?',
       options: [
         'Bun is a web browser that renders JavaScript',
@@ -169,6 +174,7 @@ const content: LessonContent = {
     },
     {
       type: 'terminal',
+      hint: 'Check the exact command syntax — flags and arguments matter.',
       instruction: 'Open your terminal and paste this command. It downloads and installs Bun on your machine:',
       expectedCommand: 'curl -fsSL https://bun.sh/install | bash',
       platforms: {
@@ -180,6 +186,7 @@ const content: LessonContent = {
     },
     {
       type: 'terminal',
+      hint: 'Review the terminal instructions from the previous step.',
       instruction: 'Close and reopen your terminal, then paste this command to confirm Bun installed correctly. You should see a version number:',
       expectedCommand: 'bun --version',
     },
@@ -192,6 +199,7 @@ const content: LessonContent = {
     // === GIT ===
     {
       type: 'multiple-choice',
+      hint: 'Think about which option is most specific to this concept.',
       question: 'What is the best way to describe what Git does?',
       options: [
         'Git is a cloud storage service like Google Drive',
@@ -204,6 +212,7 @@ const content: LessonContent = {
     },
     {
       type: 'code-fill',
+      hint: 'Use the exact syntax from the lesson examples.',
       instruction: 'Most Macs already have Git via Xcode Command Line Tools. If not, complete the install command:',
       language: 'bash',
       template: '{{cmd}} --install',
@@ -246,6 +255,7 @@ const content: LessonContent = {
     },
     {
       type: 'multiple-choice',
+      hint: 'Consider what the lesson content emphasized.',
       question: 'Why should your Git email match your GitHub email?',
       options: [
         'Git won\'t work otherwise',
@@ -265,6 +275,7 @@ const content: LessonContent = {
     // === VS CODE ===
     {
       type: 'multiple-choice',
+      hint: 'One option stands out when you think about the core purpose.',
       question: 'Why do we use VS Code as our code editor?',
       options: [
         'It is the only editor that supports JavaScript',
@@ -277,12 +288,14 @@ const content: LessonContent = {
     },
     {
       type: 'order',
+      hint: 'Consider what depends on what — prerequisites first.',
       instruction: 'Install these VS Code extensions (add-ons that make coding easier). Put them in this order, most important first:',
       items: ['ESLint', 'Tailwind CSS IntelliSense', 'Prettier', 'Error Lens'],
       correctOrder: [0, 1, 2, 3],
     },
     {
       type: 'code-fill',
+      hint: 'Each blank follows the conventions demonstrated earlier.',
       instruction: 'Complete the VS Code settings to automatically clean up code formatting every time you save a file:',
       language: 'json',
       filename: 'settings.json',
@@ -303,6 +316,7 @@ const content: LessonContent = {
     // === SHELL ALIASES ===
     {
       type: 'multiple-choice',
+      hint: 'Read each option carefully — one fits the context best.',
       question: 'What are terminal aliases and where do they go?',
       options: [
         'Aliases are browser bookmarks stored in your favorites bar',
@@ -331,6 +345,7 @@ const content: LessonContent = {
     },
     {
       type: 'code-fill',
+      hint: 'Look at the surrounding code for context clues.',
       instruction: 'Complete these terminal shortcuts. Each alias maps a short command to a longer one — for example, gs runs git status:',
       language: 'bash',
       filename: '~/.zshrc',
@@ -389,6 +404,7 @@ const content: LessonContent = {
     // === SSH KEYS ===
     {
       type: 'multiple-choice',
+      hint: 'Eliminate the options that only partially fit.',
       question: 'What are SSH keys and why do we need them?',
       options: [
         'SSH keys are encryption tools that protect your files from viruses',
@@ -407,6 +423,7 @@ const content: LessonContent = {
     },
     {
       type: 'code-fill',
+      hint: 'The answer matches the API or syntax just explained.',
       instruction: 'Activate the SSH helper program and register your new key. Fill in the missing parts:',
       language: 'bash',
       template: 'eval "$({{agent}} -s)"\nssh-add ~/.ssh/{{keyfile}}',
@@ -430,6 +447,7 @@ const content: LessonContent = {
     },
     {
       type: 'order',
+      hint: 'Think about what needs to exist before each next step.',
       instruction: 'Put these steps for adding your SSH key to GitHub in the correct order:',
       items: [
         'Copy your public key: cat ~/.ssh/id_ed25519.pub | pbcopy',
@@ -464,6 +482,7 @@ const content: LessonContent = {
     },
     {
       type: 'terminal',
+      hint: 'The command follows the CLI pattern shown above.',
       instruction: 'Test your connection to GitHub. If it works, you will see a message saying "successfully authenticated":',
       expectedCommand: 'ssh -T git@github.com',
     },
@@ -476,6 +495,7 @@ const content: LessonContent = {
     // === INTERACTIVE REVIEW ===
     {
       type: 'match',
+      hint: 'Match each term to its most specific definition.',
       instruction: 'Match each tool to its purpose in your development setup:',
       leftItems: ['Node.js', 'Bun', 'Git', 'VS Code', 'SSH Key'],
       rightItems: ['JavaScript runtime for running code', 'Fast package manager and bundler', 'Version control for tracking changes', 'Code editor with extensions', 'Secure authentication with GitHub'],
@@ -484,6 +504,7 @@ const content: LessonContent = {
     },
     {
       type: 'code-fill',
+      hint: 'Fill in values that match the pattern shown above.',
       instruction: 'Complete the VS Code settings to enable automatic formatting on save:',
       language: 'json',
       filename: '.vscode/settings.json',
@@ -499,6 +520,7 @@ const content: LessonContent = {
     // === VERIFICATION ===
     {
       type: 'match',
+      hint: 'Look for the distinguishing feature of each item.',
       instruction: 'Match each verification command to what you should see as output:',
       leftItems: ['node --version', 'bun --version', 'git --version', 'ssh -T git@github.com', 'gs'],
       rightItems: ['v22.x.x or higher', 'A version like 1.x.x', 'A version like 2.x.x', '"successfully authenticated"', 'Your git status output'],

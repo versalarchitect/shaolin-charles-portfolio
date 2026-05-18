@@ -18,6 +18,7 @@ const content: LessonContent = {
     // === WHAT A SPEC IS NOT ===
     {
       type: 'multiple-choice',
+      hint: 'Read each option carefully — one fits the context best.',
       question: 'What does an AI agent NOT need in a spec?',
       options: [
         'Acceptance criteria it can verify',
@@ -30,6 +31,7 @@ const content: LessonContent = {
     },
     {
       type: 'multiple-choice',
+      hint: 'Eliminate the options that only partially fit.',
       question: 'Which of these belongs in a spec for an AI agent?',
       options: [
         'Market research on competitor products',
@@ -44,6 +46,7 @@ const content: LessonContent = {
     // === WHAT A SPEC IS ===
     {
       type: 'multiple-choice',
+      hint: 'Focus on the primary goal, not secondary benefits.',
       question: 'How many sections does a good agent spec have, and what are they?',
       options: [
         '3 sections: Title, Description, Code Examples',
@@ -105,6 +108,7 @@ const content: LessonContent = {
     // === THE TEMPLATE ===
     {
       type: 'code-fill',
+      hint: 'Fill in values that match the pattern shown above.',
       instruction: 'Complete the spec template by filling in the section headers. This is the structure you will use for every feature you direct an agent to build.',
       language: 'markdown',
       filename: 'spec-template.md',
@@ -120,6 +124,7 @@ const content: LessonContent = {
     // === COMPARE: VAGUE VS SPECIFIC ===
     {
       type: 'compare',
+      hint: 'Look at the key differences between the two approaches.',
       title: 'Vague vs Specific: spot the difference',
       body: 'Look at these two instructions for the same feature. One gives the agent room to guess. The other removes ambiguity.',
       question: 'Which instruction will produce more reliable agent output?',
@@ -140,6 +145,7 @@ const content: LessonContent = {
     // === REAL EXAMPLE ===
     {
       type: 'multiple-choice',
+      hint: 'Think about which option is most specific to this concept.',
       question: 'You ask an agent to "build me a settings page" without a spec. What is the most likely outcome?',
       options: [
         'A perfectly matching settings page on the first try',
@@ -152,6 +158,7 @@ const content: LessonContent = {
     },
     {
       type: 'code-fill',
+      hint: 'Use the exact syntax from the lesson examples.',
       instruction: 'Study this real spec and fill in the key constraints. Every line removes ambiguity. The agent knows exactly what to build and, critically, what NOT to build.',
       language: 'markdown',
       filename: 'specs/user-settings.md',
@@ -165,6 +172,7 @@ const content: LessonContent = {
     },
     {
       type: 'multiple-choice',
+      hint: 'Consider what the lesson content emphasized.',
       question: 'Why does the spec explicitly say "Must NOT add password change" and "Must NOT add avatar upload"?',
       options: [
         'To save time writing the spec',
@@ -184,6 +192,7 @@ const content: LessonContent = {
     // === HOW SPECS PREVENT SCOPE CREEP ===
     {
       type: 'multiple-choice',
+      hint: 'One option stands out when you think about the core purpose.',
       question: 'Without constraints in a spec, agents tend to:',
       options: [
         'Produce minimal, incomplete output',
@@ -244,6 +253,7 @@ const content: LessonContent = {
     },
     {
       type: 'multiple-choice',
+      hint: 'Read each option carefully — one fits the context best.',
       question: 'The agent produced code that does not match your spec. What should you do?',
       options: [
         'Manually edit the generated code to fix it',
@@ -258,6 +268,7 @@ const content: LessonContent = {
     // === REVIEWING AGAINST A SPEC ===
     {
       type: 'multiple-choice',
+      hint: 'Eliminate the options that only partially fit.',
       question: 'How should you review agent output against a spec?',
       options: [
         'Ask "does it look right?" and trust your gut',
@@ -270,6 +281,7 @@ const content: LessonContent = {
     },
     {
       type: 'order',
+      hint: 'Consider what depends on what — prerequisites first.',
       instruction: 'Order these review steps from first to last:',
       items: [
         'Open the acceptance criteria checklist',
@@ -289,6 +301,7 @@ const content: LessonContent = {
     },
     {
       type: 'code-fill',
+      hint: 'Each blank follows the conventions demonstrated earlier.',
       instruction: 'Complete this spec by filling in the blanks. Each blank needs a specific, concrete answer.',
       language: 'markdown',
       filename: 'specs/dark-mode.md',
@@ -306,6 +319,7 @@ const content: LessonContent = {
     },
     {
       type: 'multiple-choice',
+      hint: 'Focus on the primary goal, not secondary benefits.',
       question: 'Which is the best acceptance criterion for a dark mode toggle?',
       options: [
         'The toggle looks nice',
@@ -347,6 +361,7 @@ const content: LessonContent = {
     // === PROMPT LAB: WRITE A SPEC PROMPT ===
     {
       type: 'prompt-lab',
+      hint: 'Be specific about what you want — vague prompts get vague responses.',
       instruction: 'Write a prompt that instructs an AI agent to build a feature. Include the key elements of a good spec.',
       scenario: 'You need a contact form on your website. It should have name, email, and message fields, validate inputs, and send submissions to a Supabase table. You want to give this to Claude Code as a single prompt.',
       starterPrompt: 'Build me a contact form.',
@@ -400,6 +415,7 @@ const content: LessonContent = {
     // === FINAL QUIZ ===
     {
       type: 'multiple-choice',
+      hint: 'Think about which option is most specific to this concept.',
       question: 'An agent builds a feature that works perfectly but includes two extra helper functions you did not ask for. According to spec-driven development, what should you do?',
       options: [
         'Keep them -- extra code is a bonus',

@@ -71,6 +71,7 @@ const content: LessonContent = {
     // === TASK DECOMPOSITION ===
     {
       type: 'multiple-choice',
+      hint: 'Read each option carefully — one fits the context best.',
       question: 'Task decomposition means breaking a product into agent-sized work units. What is the golden rule of multi-agent file ownership?',
       options: [
         'Each agent should work on the smallest possible files',
@@ -83,6 +84,7 @@ const content: LessonContent = {
     },
     {
       type: 'multiple-choice',
+      hint: 'Eliminate the options that only partially fit.',
       question: 'Two agents both need to modify `src/App.tsx` to add their routes. What should you do?',
       options: [
         'Let them both edit it and merge manually',
@@ -158,6 +160,7 @@ const content: LessonContent = {
     },
     {
       type: 'multiple-choice',
+      hint: 'Focus on the primary goal, not secondary benefits.',
       question: 'In the dependency graph above, which tasks can start at the same time?',
       options: [
         'Auth, API, UI, and Payments',
@@ -177,6 +180,7 @@ const content: LessonContent = {
     // === THE SPEC / CONTRACTS STEP ===
     {
       type: 'multiple-choice',
+      hint: 'Think about which option is most specific to this concept.',
       question: 'Before any agent starts coding, you define shared contracts (interfaces, API shapes, types). Why is this step critical for parallel work?',
       options: [
         'It makes the TypeScript compiler happy',
@@ -189,6 +193,7 @@ const content: LessonContent = {
     },
     {
       type: 'code-fill',
+      hint: 'Fill in values that match the pattern shown above.',
       instruction: 'Complete this shared contract file that all agents will import. No agent modifies it — you write it before they start:',
       language: 'typescript',
       filename: 'src/types/contracts.ts',
@@ -212,6 +217,7 @@ const content: LessonContent = {
     // === AGENT DISPATCH PATTERN ===
     {
       type: 'code-fill',
+      hint: 'Use the exact syntax from the lesson examples.',
       instruction: 'Complete this CLAUDE.md dispatch plan that assigns parallel agents with exclusive file ownership:',
       language: 'markdown',
       filename: 'CLAUDE.md',
@@ -284,6 +290,7 @@ const content: LessonContent = {
     },
     {
       type: 'multiple-choice',
+      hint: 'Consider what the lesson content emphasized.',
       question: 'Two agents need to add items to the same Zustand store. What does the decision tree say?',
       options: [
         'Parallelize — Zustand handles concurrency',
@@ -298,6 +305,7 @@ const content: LessonContent = {
     // === FAILURE MODES ===
     {
       type: 'order',
+      hint: 'Consider what depends on what — prerequisites first.',
       instruction: 'Rank these multi-agent failure modes from MOST common (top) to LEAST common:',
       items: [
         'Shared file conflicts (two agents edit the same file)',
@@ -309,6 +317,7 @@ const content: LessonContent = {
     },
     {
       type: 'multiple-choice',
+      hint: 'One option stands out when you think about the core purpose.',
       question: 'How do you prevent agents from making inconsistent assumptions (e.g., Agent A expects User.name while Agent B expects User.firstName)?',
       options: [
         'Let agents decide individually and reconcile at merge time',
@@ -328,6 +337,7 @@ const content: LessonContent = {
     // === MATCH EXERCISE ===
     {
       type: 'match',
+      hint: 'Find the unique connection between each pair.',
       instruction: 'Match each decomposition strategy to its best use case:',
       leftItems: [
         'Fan-out / Fan-in',
@@ -348,6 +358,7 @@ const content: LessonContent = {
     // === PROMPT LAB: DECOMPOSITION PROMPT ===
     {
       type: 'prompt-lab',
+      hint: 'Be specific about what you want — vague prompts get vague responses.',
       instruction: 'Write a decomposition prompt that breaks a SaaS dashboard build into agent-sized tasks with clear boundaries.',
       scenario: 'You need to build a SaaS dashboard with user authentication, a data visualization page, an API layer, and a billing page. Write a prompt to dispatch multiple agents in parallel.',
       starterPrompt: 'Build the dashboard with multiple agents.',
@@ -380,6 +391,7 @@ const content: LessonContent = {
     // === COMPARE: MONOLITHIC vs MULTI-AGENT ===
     {
       type: 'compare',
+      hint: 'Look at the key differences between the two approaches.',
       title: 'Single agent vs agent fleet',
       body: 'The same SaaS dashboard build, two approaches. One agent doing everything sequentially versus four agents working in parallel with clear boundaries.',
       question: 'Which approach finishes faster with fewer integration issues?',
@@ -398,6 +410,7 @@ const content: LessonContent = {
     // === HANDS-ON EXERCISE ===
     {
       type: 'multiple-choice',
+      hint: 'Read each option carefully — one fits the context best.',
       question: 'You are building a task management app with auth, a Kanban board UI, a REST API, and real-time WebSocket updates. Which tasks can start in parallel from the beginning?',
       options: [
         'Auth, API, UI, and WebSocket — all four are independent',
@@ -417,6 +430,7 @@ const content: LessonContent = {
     },
     {
       type: 'multiple-choice',
+      hint: 'Eliminate the options that only partially fit.',
       question: 'Why can\'t the Kanban board UI start at the same time as Auth and API?',
       options: [
         'The UI is always the last thing built',
@@ -440,6 +454,7 @@ const content: LessonContent = {
     },
     {
       type: 'code-fill',
+      hint: 'Each blank follows the conventions demonstrated earlier.',
       instruction: 'Complete this task graph documentation that assigns agents to phases with clear ownership and dependencies:',
       language: 'markdown',
       filename: 'CLAUDE.md',
@@ -455,6 +470,7 @@ const content: LessonContent = {
     },
     {
       type: 'multiple-choice',
+      hint: 'Focus on the primary goal, not secondary benefits.',
       question: 'The Kanban UI depends on the API response shapes. How can you make the UI agent start in parallel with the API agent instead of waiting?',
       options: [
         'Have the UI agent guess the response shapes and fix them later',

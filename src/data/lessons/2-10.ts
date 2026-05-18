@@ -16,6 +16,7 @@ const content: LessonContent = {
     },
     {
       type: 'compare',
+      hint: 'Look at the key differences between the two approaches.',
       title: 'Broad scope vs focused tasks',
       body: 'The width of your prompt directly affects output quality.',
       question: 'Which approach produces higher-quality code?',
@@ -81,6 +82,7 @@ const content: LessonContent = {
     // === FILE BOUNDARIES ===
     {
       type: 'multiple-choice',
+      hint: 'Read each option carefully — one fits the context best.',
       question: 'What is the most concrete way to constrain the scope of an agent task?',
       options: [
         'Tell the agent to "be careful"',
@@ -93,6 +95,7 @@ const content: LessonContent = {
     },
     {
       type: 'code-fill',
+      hint: 'Fill in values that match the pattern shown above.',
       instruction: 'Complete this prompt with proper file boundaries to prevent the agent from touching unrelated code:',
       language: 'text',
       filename: 'prompt.txt',
@@ -119,6 +122,7 @@ const content: LessonContent = {
     // === FUNCTION BOUNDARIES ===
     {
       type: 'compare',
+      hint: 'Focus on what makes one approach more appropriate here.',
       title: 'Function boundaries: one task per prompt',
       body: 'Even within a single file, you can constrain scope to a single function.',
       question: 'Which prompt produces more focused, reviewable output?',
@@ -137,6 +141,7 @@ const content: LessonContent = {
     },
     {
       type: 'multiple-choice',
+      hint: 'Eliminate the options that only partially fit.',
       question: 'You ask the agent to implement validateSession. It also creates a refreshToken function and wires both into middleware. What principle did you violate?',
       options: [
         'You did not set a file boundary',
@@ -149,6 +154,7 @@ const content: LessonContent = {
     },
     {
       type: 'code-fill',
+      hint: 'Use the exact syntax from the lesson examples.',
       instruction: 'Complete this narrowly-scoped prompt with proper file and scope boundaries:',
       language: 'text',
       template: 'Implement the validateSession function.\n\nBOUNDARIES:\n- Only create/modify files in {{allowed_dir}}\n- Do NOT touch {{forbidden_1}} or {{forbidden_2}}\n- Use the existing {{existing_fn}} from src/lib/auth.ts\n\nACCEPTANCE CRITERIA:\n- Returns user object if session valid\n- Returns null if session expired or invalid\n- Throws on database connection failure',
@@ -164,6 +170,7 @@ const content: LessonContent = {
     // === TOKEN BUDGETS ===
     {
       type: 'compare',
+      hint: 'Consider the trade-offs discussed in the lesson.',
       title: 'Token budgets: keeping prompts focused',
       body: 'Every token of context competes for the agent\'s attention. Only include what is relevant.',
       question: 'Which prompt gives the agent the best chance of producing correct output?',
@@ -189,6 +196,7 @@ const content: LessonContent = {
     // === SPLITTING LARGE TASKS ===
     {
       type: 'multiple-choice',
+      hint: 'Focus on the primary goal, not secondary benefits.',
       question: 'How do you build a complex system from narrow-scope tasks without it feeling disjointed?',
       options: [
         'Let the agent figure out how the pieces connect',
@@ -201,6 +209,7 @@ const content: LessonContent = {
     },
     {
       type: 'match',
+      hint: 'Find the unique connection between each pair.',
       instruction: 'Match each auth system sub-task to its correct file boundary:',
       leftItems: ['Database schema (tables only)', 'Session helpers (create, validate, delete)', 'Password utilities (hash, verify)', 'Auth API routes (login, register, logout)'],
       rightItems: ['src/lib/auth/password.ts — standalone, no DB calls', 'src/db/schema/auth.ts — no application logic', 'src/app/api/auth/ — imports from helpers, does NOT modify them', 'src/lib/auth/session.ts — uses schema, does NOT create API routes'],
@@ -209,6 +218,7 @@ const content: LessonContent = {
     },
     {
       type: 'order',
+      hint: 'Consider what depends on what — prerequisites first.',
       instruction: 'Order these tasks from narrowest scope (most constrained) to broadest:',
       items: [
         'Build the full authentication system with UI, API, and database',
@@ -227,6 +237,7 @@ const content: LessonContent = {
     // === PRINCIPLE 5 ===
     {
       type: 'multiple-choice',
+      hint: 'Think about which option is most specific to this concept.',
       question: 'When you write "only touch src/components/auth/" in a prompt, you are communicating to:',
       options: [
         'Only the agent — so it knows where to work',
@@ -239,6 +250,7 @@ const content: LessonContent = {
     },
     {
       type: 'order',
+      hint: 'Think about what needs to exist before each next step.',
       instruction: 'Order these architectural thinking steps that scope constraints force you to do:',
       items: [
         'Define interface contracts between pieces up front',
@@ -252,6 +264,7 @@ const content: LessonContent = {
     // === REAL CLAUDE CODE FLAGS ===
     {
       type: 'match',
+      hint: 'Match each term to its most specific definition.',
       instruction: 'Match each scope constraint mechanism to when you would use it:',
       leftItems: ['CLAUDE.md file', 'Inline prompt instructions', 'File path references in prompt', 'Do NOT implement section'],
       rightItems: ['Per-task constraints for a single prompt', 'Persistent project-wide boundaries that apply to every task', 'Prevent the agent from pre-building things you have not asked for', 'Point the agent to exactly the right file to modify'],
@@ -279,6 +292,7 @@ const content: LessonContent = {
     // === WHEN TO BROADEN SCOPE ===
     {
       type: 'compare',
+      hint: 'Look at the key differences between the two approaches.',
       title: 'When wider scope is justified',
       body: 'Not every task should be micro-scoped. Sometimes coupling makes wider scope more efficient.',
       question: 'Which scenario justifies a single wide-scope prompt?',
@@ -297,6 +311,7 @@ const content: LessonContent = {
     },
     {
       type: 'multiple-choice',
+      hint: 'Consider what the lesson content emphasized.',
       question: 'Which task is better done as a SINGLE wide-scope prompt rather than split into narrow tasks?',
       options: [
         'Build login form + implement password hashing',
@@ -311,6 +326,7 @@ const content: LessonContent = {
     // === SYNTHESIS ===
     {
       type: 'multiple-choice',
+      hint: 'One option stands out when you think about the core purpose.',
       question: 'What is the ROI of spending one minute defining scope constraints in a prompt?',
       options: [
         'It wastes time — agents work better with creative freedom',
@@ -323,6 +339,7 @@ const content: LessonContent = {
     },
     {
       type: 'prompt-lab',
+      hint: 'Be specific about what you want — vague prompts get vague responses.',
       instruction: 'Write a narrowly-scoped prompt that directs the agent to implement only the validateSession function.',
       scenario: 'You need a function that checks if a user\'s session is still valid. It should use the existing getSessionToken() helper from src/lib/auth.ts, query the sessions table, and return the user object or null. You do NOT want the agent to touch any other files.',
       starterPrompt: 'Add session validation to the app.',

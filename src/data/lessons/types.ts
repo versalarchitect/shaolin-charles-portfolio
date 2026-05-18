@@ -49,18 +49,18 @@ export type LessonStep =
   | { type: 'info'; title: string; body: string; platforms?: Partial<Record<Platform, { title?: string; body: string }>> }
   | { type: 'code-demo'; title?: string; body: string; code: string; language: string; filename?: string; platforms?: Partial<Record<Platform, { body?: string; code: string; language?: string; filename?: string }>> }
   | { type: 'terminal'; instruction: string; expectedCommand: string; hint?: string; platforms?: Partial<Record<Platform, { instruction?: string; expectedCommand: string; hint?: string }>> }
-  | { type: 'multiple-choice'; question: string; options: string[]; correctIndex: number; explanation: string; platforms?: Partial<Record<Platform, { question?: string; options?: string[]; correctIndex?: number; explanation?: string }>> }
+  | { type: 'multiple-choice'; question: string; options: string[]; correctIndex: number; explanation: string; hint?: string; platforms?: Partial<Record<Platform, { question?: string; options?: string[]; correctIndex?: number; explanation?: string }>> }
   | { type: 'code-input'; instruction: string; placeholder: string; answer: string; hint?: string; platforms?: Partial<Record<Platform, { instruction?: string; placeholder?: string; answer: string; hint?: string }>> }
-  | { type: 'order'; instruction: string; items: string[]; correctOrder: number[]; platforms?: Partial<Record<Platform, { instruction?: string; items: string[]; correctOrder: number[] }>> }
+  | { type: 'order'; instruction: string; items: string[]; correctOrder: number[]; hint?: string; platforms?: Partial<Record<Platform, { instruction?: string; items: string[]; correctOrder: number[] }>> }
   | { type: 'checklist'; title: string; items: string[] }
   | { type: 'checkpoint'; xp: number; message: string }
   | { type: 'diagram'; title: string; body?: string; diagram: DiagramData }
-  | { type: 'code-fill'; instruction: string; language: string; template: string; blanks: CodeFillBlank[]; filename?: string; explanation?: string; platforms?: Partial<Record<Platform, { instruction?: string; language?: string; template: string; blanks: CodeFillBlank[]; filename?: string; explanation?: string }>> }
-  | { type: 'compare'; title: string; body?: string; left: ComparePanel; right: ComparePanel; question?: string; correctSide?: 'left' | 'right'; explanation?: string }
-  | { type: 'match'; instruction: string; leftItems: string[]; rightItems: string[]; correctPairs: Record<number, number>; explanation?: string }
+  | { type: 'code-fill'; instruction: string; language: string; template: string; blanks: CodeFillBlank[]; filename?: string; explanation?: string; hint?: string; platforms?: Partial<Record<Platform, { instruction?: string; language?: string; template: string; blanks: CodeFillBlank[]; filename?: string; explanation?: string }>> }
+  | { type: 'compare'; title: string; body?: string; left: ComparePanel; right: ComparePanel; question?: string; correctSide?: 'left' | 'right'; explanation?: string; hint?: string }
+  | { type: 'match'; instruction: string; leftItems: string[]; rightItems: string[]; correctPairs: Record<number, number>; explanation?: string; hint?: string }
   | { type: 'code-diff'; title: string; body?: string; language: string; filename?: string; before: string; after: string; question?: string; highlightLines?: number[]; explanation?: string }
   | { type: 'interactive-diagram'; title: string; body?: string; diagram: DiagramData; stages: DiagramStage[] }
-  | { type: 'prompt-lab'; instruction: string; scenario: string; starterPrompt?: string; responses: PromptLabResponse[]; fallbackResponse: { response: string; feedback: string } }
+  | { type: 'prompt-lab'; instruction: string; scenario: string; starterPrompt?: string; responses: PromptLabResponse[]; fallbackResponse: { response: string; feedback: string }; hint?: string }
 
 export interface LessonContent {
   lessonId: string
