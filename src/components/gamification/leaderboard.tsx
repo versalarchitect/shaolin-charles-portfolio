@@ -12,6 +12,23 @@ interface LeaderboardProps {
   loading?: boolean
 }
 
+const AVATAR_PALETTES = [
+  { from: 'from-rose-500/40', to: 'to-pink-600/30', text: 'text-rose-200' },
+  { from: 'from-violet-500/40', to: 'to-purple-600/30', text: 'text-violet-200' },
+  { from: 'from-blue-500/40', to: 'to-cyan-600/30', text: 'text-blue-200' },
+  { from: 'from-emerald-500/40', to: 'to-teal-600/30', text: 'text-emerald-200' },
+  { from: 'from-amber-500/40', to: 'to-orange-600/30', text: 'text-amber-200' },
+  { from: 'from-sky-500/40', to: 'to-indigo-600/30', text: 'text-sky-200' },
+  { from: 'from-fuchsia-500/40', to: 'to-pink-600/30', text: 'text-fuchsia-200' },
+  { from: 'from-lime-500/40', to: 'to-green-600/30', text: 'text-lime-200' },
+] as const
+
+function nameToColor(name: string) {
+  let hash = 0
+  for (let i = 0; i < name.length; i++) hash = name.charCodeAt(i) + ((hash << 5) - hash)
+  return AVATAR_PALETTES[Math.abs(hash) % AVATAR_PALETTES.length]
+}
+
 const MEDAL_COLORS = [
   { bg: 'from-amber-500/20 to-yellow-500/10', border: 'border-amber-500/30', text: 'text-amber-400', ring: 'ring-amber-500/20' },
   { bg: 'from-slate-300/20 to-slate-400/10', border: 'border-slate-400/30', text: 'text-slate-300', ring: 'ring-slate-400/20' },
@@ -19,11 +36,12 @@ const MEDAL_COLORS = [
 ] as const
 
 function PodiumAvatar({ name, url, rank }: { name: string; url?: string; rank: number }) {
-  const color = MEDAL_COLORS[rank - 1]
+  const medal = MEDAL_COLORS[rank - 1]
+  const palette = nameToColor(name)
   const size = rank === 1 ? 'w-16 h-16' : 'w-12 h-12'
   const textSize = rank === 1 ? 'text-lg' : 'text-sm'
 
-  const initials = name
+  const initials = (name || '?')
     .split(' ')
     .map((w) => w[0])
     .join('')
@@ -32,20 +50,20 @@ function PodiumAvatar({ name, url, rank }: { name: string; url?: string; rank: n
 
   return (
     <div className="relative">
-      <div className={`${size} rounded-full ring-2 ${color.ring} overflow-hidden`}>
+      <div className={`${size} rounded-full ring-2 ${medal.ring} overflow-hidden`}>
         {url ? (
           <img src={url} alt={name} className="w-full h-full object-cover" />
         ) : (
-          <div className={`w-full h-full bg-gradient-to-br ${color.bg} flex items-center justify-center`}>
-            <span className={`${textSize} font-mono font-bold text-foreground/70`}>{initials}</span>
+          <div className={`w-full h-full bg-gradient-to-br ${palette.from} ${palette.to} flex items-center justify-center`}>
+            <span className={`${textSize} font-mono font-bold ${palette.text}`}>{initials}</span>
           </div>
         )}
       </div>
-      <div className={`absolute -bottom-1 -right-1 w-6 h-6 rounded-full bg-background border-2 ${color.border} flex items-center justify-center`}>
+      <div className={`absolute -bottom-1 -right-1 w-6 h-6 rounded-full bg-background border-2 ${medal.border} flex items-center justify-center`}>
         {rank === 1 ? (
-          <Crown className={`w-3.5 h-3.5 ${color.text}`} />
+          <Crown className={`w-3.5 h-3.5 ${medal.text}`} />
         ) : (
-          <Medal className={`w-3.5 h-3.5 ${color.text}`} />
+          <Medal className={`w-3.5 h-3.5 ${medal.text}`} />
         )}
       </div>
     </div>
@@ -110,6 +128,8 @@ function PodiumCard({ entry, isCurrentUser, maxXp }: { entry: LeaderboardEntry; 
 }
 
 function Avatar({ name, url }: { name: string; url?: string }) {
+  const palette = nameToColor(name)
+
   if (url) {
     return (
       <img
@@ -120,7 +140,7 @@ function Avatar({ name, url }: { name: string; url?: string }) {
     )
   }
 
-  const initials = name
+  const initials = (name || '?')
     .split(' ')
     .map((w) => w[0])
     .join('')
@@ -128,8 +148,8 @@ function Avatar({ name, url }: { name: string; url?: string }) {
     .toUpperCase()
 
   return (
-    <div className="w-8 h-8 rounded-full bg-foreground/10 border border-foreground/[0.08] flex items-center justify-center">
-      <span className="text-xs font-mono font-semibold text-foreground/60">{initials}</span>
+    <div className={`w-8 h-8 rounded-full bg-gradient-to-br ${palette.from} ${palette.to} border border-foreground/[0.08] flex items-center justify-center`}>
+      <span className={`text-xs font-mono font-semibold ${palette.text}`}>{initials}</span>
     </div>
   )
 }

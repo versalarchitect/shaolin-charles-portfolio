@@ -184,10 +184,10 @@ function AchievementCard({ id, name, description, emoji, xpReward, isUnlocked, i
         }`}>
           {isUnlocked ? <AIcon className="w-5 h-5" /> : <Lock className="w-4 h-4" />}
         </div>
-        <p className={`text-xs font-medium ${isUnlocked ? 'text-foreground/80' : 'text-foreground/50'}`}>
-          {isUnlocked ? name : '???'}
+        <p className={`text-xs font-medium ${isUnlocked ? 'text-foreground/80' : 'text-foreground/40'}`}>
+          {name}
         </p>
-        {isUnlocked && (
+        {(isUnlocked || description) && (
           <p className="text-[10px] text-foreground/40 mt-0.5">{description}</p>
         )}
         <div className={`mt-1.5 inline-flex items-center gap-0.5 text-[10px] font-mono ${

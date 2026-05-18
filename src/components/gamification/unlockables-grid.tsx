@@ -129,7 +129,7 @@ function UnlockableCard({
           isUnlocked ? 'text-foreground/80' : 'text-foreground/40'
         }`}
       >
-        {isUnlocked ? unlockable.name : '???'}
+        {unlockable.name}
       </p>
 
       {/* Description */}

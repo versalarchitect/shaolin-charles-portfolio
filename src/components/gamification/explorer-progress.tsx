@@ -206,7 +206,7 @@ export function ExplorerProgress() {
                       unlocked ? 'text-foreground/80' : 'text-foreground/50'
                     }`}
                   >
-                    {unlocked ? achievement.name : '???'}
+                    {achievement.name}
                   </p>
                   <p className="text-[10px] text-foreground/40 truncate">
                     {achievement.description}

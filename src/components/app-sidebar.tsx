@@ -32,6 +32,7 @@ import { hasPipelineAccess } from '@/lib/pipeline-access'
 import { useTheme } from '@/components/theme-provider'
 import { usePlatform, type Platform } from '@/components/platform-provider'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { nameToAvatarColor } from '@/lib/avatar-colors'
 import { supabase } from '@/lib/supabase'
 import { useProgress, getLevel, getNextLevel, getOverallProgress, getStreakMultiplier, getActiveTitle } from '@/stores/progress'
 import { TOTAL_LESSONS } from '@/data/curriculum'
@@ -143,6 +144,7 @@ function SidebarProfile({
   const displayName = user.user_metadata?.display_name
     || user.email?.split('@')[0]
     || 'Student'
+  const avatarPalette = nameToAvatarColor(displayName)
 
   const xpIntoLevel = progress.totalXp - level.minXp
   const xpForLevel = nextLevel ? nextLevel.minXp - level.minXp : 1
@@ -158,7 +160,7 @@ function SidebarProfile({
           {user.user_metadata?.avatar_url && (
             <AvatarImage src={user.user_metadata.avatar_url} alt={displayName} />
           )}
-          <AvatarFallback className="bg-foreground/10 text-foreground/80 text-xs font-mono font-semibold">
+          <AvatarFallback className={`${avatarPalette.bg} ${avatarPalette.text} text-xs font-mono font-semibold`}>
             {initials}
           </AvatarFallback>
         </Avatar>

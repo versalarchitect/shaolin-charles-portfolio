@@ -10,6 +10,7 @@ import {
 } from './ui/dropdown-menu'
 import { LayoutDashboard, Users, Settings, LogOut } from 'lucide-react'
 import { useAuth } from '@/hooks/use-auth'
+import { nameToAvatarColor } from '@/lib/avatar-colors'
 
 export function UserAvatar() {
   const { user } = useAuth()
@@ -17,9 +18,12 @@ export function UserAvatar() {
 
   if (!user) return null
 
-  const initials = user.email
-    ? user.email.split('@')[0].slice(0, 2).toUpperCase()
+  const displayName = user.user_metadata?.full_name || user.email || ''
+  const initials = displayName
+    ? displayName.includes('@') ? displayName.split('@')[0].slice(0, 2).toUpperCase() : displayName.split(' ').map((w: string) => w[0]).join('').slice(0, 2).toUpperCase()
     : '?'
+
+  const palette = nameToAvatarColor(displayName)
 
   const handleSignOut = async () => {
     await supabase.auth.signOut()
@@ -34,7 +38,7 @@ export function UserAvatar() {
             {user.user_metadata?.avatar_url && (
               <AvatarImage src={user.user_metadata.avatar_url} alt="Profile" />
             )}
-            <AvatarFallback className="bg-foreground/10 text-foreground/80 text-xs font-mono font-semibold">
+            <AvatarFallback className={`${palette.bg} ${palette.text} text-xs font-mono font-semibold`}>
               {initials}
             </AvatarFallback>
           </Avatar>
