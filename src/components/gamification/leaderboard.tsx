@@ -76,9 +76,9 @@ function PodiumCard({ entry, isCurrentUser, maxXp }: { entry: LeaderboardEntry; 
 
       <PodiumAvatar name={entry.display_name} url={entry.avatar_url} rank={entry.rank} />
 
-      <div className="text-center min-w-0 w-full">
-        <p className={`font-semibold truncate ${isFirst ? 'text-sm' : 'text-xs'} ${isCurrentUser ? 'text-foreground' : 'text-foreground/80'}`}>
-          {entry.display_name}
+      <div className="text-center w-full">
+        <p className={`font-semibold leading-tight ${isFirst ? 'text-sm' : 'text-xs'} text-foreground`}>
+          {entry.display_name || 'Anonymous'}
           {isCurrentUser && <span className="ml-1 text-[9px] font-mono text-foreground/40">(you)</span>}
         </p>
         {entry.current_streak > 0 && (
