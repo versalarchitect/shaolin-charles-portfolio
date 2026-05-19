@@ -1,5 +1,6 @@
 import { Suspense, lazy, useEffect } from 'react'
-import { Outlet, useLocation } from 'react-router-dom'
+import { Outlet } from 'react-router-dom'
+import { useLocalizedPathname } from '@/lib/localized-router'
 import { AnimatePresence } from 'motion/react'
 import PageLoading from '@/components/page-loading'
 import { Header } from '@/components/header'
@@ -41,9 +42,9 @@ function getPageKey(pathname: string): string {
 }
 
 export default function App() {
-  const location = useLocation()
-  const isAppPage = APP_ROUTES.some((r) => location.pathname.startsWith(r))
-  const pageKey = getPageKey(location.pathname)
+  const pathname = useLocalizedPathname()
+  const isAppPage = APP_ROUTES.some((r) => pathname.startsWith(r))
+  const pageKey = getPageKey(pathname)
 
   useProgressSync()
 
@@ -95,7 +96,7 @@ export default function App() {
                 {/* Add top padding for fixed header */}
                 <main id="main-content" className="pt-16 min-h-screen">
                   <AnimatePresence mode="popLayout">
-                    <PageTransition key={location.pathname}>
+                    <PageTransition key={pathname}>
                       <Suspense fallback={<PageLoading />}>
                         <Outlet />
                       </Suspense>

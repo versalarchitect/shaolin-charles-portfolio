@@ -4,6 +4,8 @@ import App from './App'
 import { AuthGuard } from './components/auth-guard'
 import { AccessGuard } from './components/access-guard'
 import { RouteErrorBoundary } from './components/route-error-boundary'
+import { LanguageLayout } from './components/language-layout'
+import { SUPPORTED_LANGS, DEFAULT_LANG, type SupportedLang } from './lib/localized-router'
 
 // Lazy load all pages (React Router v7 + React 19 code splitting)
 const Home = lazy(() => import('./pages/Home'))
@@ -37,12 +39,9 @@ const PublicProfile = lazy(() => import('./pages/PublicProfile'))
 const AuthCallback = lazy(() => import('./pages/AuthCallback'))
 const NotFound = lazy(() => import('./pages/NotFound'))
 
-// Create router
-const router = createBrowserRouter([
+const langRouteChildren = [
   {
-    path: '/',
     element: <App />,
-    errorElement: <RouteErrorBoundary />,
     children: [
       // Homepage
       {
@@ -84,7 +83,8 @@ const router = createBrowserRouter([
       },
       {
         path: 'art',
-        loader: () => redirect('/art/abstract'),
+        loader: ({ params }: { params: Record<string, string | undefined> }) =>
+          redirect(`/${params.lang}/art/abstract`),
       },
       {
         path: 'art/:category',
@@ -92,7 +92,8 @@ const router = createBrowserRouter([
       },
       {
         path: 'interests',
-        loader: () => redirect('/instructor'),
+        loader: ({ params }: { params: Record<string, string | undefined> }) =>
+          redirect(`/${params.lang}/instructor`),
       },
       {
         path: 'contact',
@@ -183,23 +184,28 @@ const router = createBrowserRouter([
       // Redirects from old paths
       {
         path: 'dashboard',
-        loader: () => redirect('/course/dashboard'),
+        loader: ({ params }: { params: Record<string, string | undefined> }) =>
+          redirect(`/${params.lang}/course/dashboard`),
       },
       {
         path: 'learn/:lessonId/:step',
-        loader: ({ params }) => redirect(`/course/learn/${params.lessonId}/${params.step}`),
+        loader: ({ params }: { params: Record<string, string | undefined> }) =>
+          redirect(`/${params.lang}/course/learn/${params.lessonId}/${params.step}`),
       },
       {
         path: 'learn/:lessonId',
-        loader: ({ params }) => redirect(`/course/learn/${params.lessonId}`),
+        loader: ({ params }: { params: Record<string, string | undefined> }) =>
+          redirect(`/${params.lang}/course/learn/${params.lessonId}`),
       },
       {
         path: 'community',
-        loader: () => redirect('/course/community'),
+        loader: ({ params }: { params: Record<string, string | undefined> }) =>
+          redirect(`/${params.lang}/course/community`),
       },
       {
         path: 'community/thread/:threadId',
-        loader: ({ params }) => redirect(`/course/community/thread/${params.threadId}`),
+        loader: ({ params }: { params: Record<string, string | undefined> }) =>
+          redirect(`/${params.lang}/course/community/thread/${params.threadId}`),
       },
       // 404 catch-all (must be last)
       {
@@ -208,7 +214,30 @@ const router = createBrowserRouter([
       },
     ],
   },
+]
+
+// Create router
+const router = createBrowserRouter([
+  // Root → redirect to default language
+  {
+    path: '/',
+    loader: () => redirect(`/${DEFAULT_LANG}`),
+  },
+  // Language-prefixed routes
+  {
+    path: '/:lang',
+    element: <LanguageLayout />,
+    errorElement: <RouteErrorBoundary />,
+    loader: ({ params, request }) => {
+      const lang = params.lang
+      if (!SUPPORTED_LANGS.includes(lang as SupportedLang)) {
+        const url = new URL(request.url)
+        return redirect(`/${DEFAULT_LANG}${url.pathname}${url.search}`)
+      }
+      return null
+    },
+    children: langRouteChildren,
+  },
 ])
 
 export default router
-

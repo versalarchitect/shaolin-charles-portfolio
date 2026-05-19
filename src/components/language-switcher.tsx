@@ -1,21 +1,23 @@
-import { useTranslation } from 'react-i18next'
+import { useNavigate as useRouterNavigate, useLocation } from 'react-router-dom'
 import { motion, AnimatePresence } from 'motion/react'
 import { useState, useRef, useEffect } from 'react'
 import { Globe, Check } from 'lucide-react'
+import { useLang, switchLangInPath, SUPPORTED_LANGS, type SupportedLang } from '@/lib/localized-router'
 
-const languages = [
-  { code: 'en', name: 'English', flag: '🇬🇧' },
-  { code: 'fr', name: 'Français', flag: '🇫🇷' },
+const languages: { code: SupportedLang; name: string; flag: string }[] = [
+  { code: 'en', name: 'English', flag: '\u{1F1EC}\u{1F1E7}' },
+  { code: 'fr', name: 'Français', flag: '\u{1F1EB}\u{1F1F7}' },
 ]
 
 export function LanguageSwitcher({ align = 'right', direction = 'down' }: { align?: 'left' | 'right'; direction?: 'up' | 'down' }) {
-  const { i18n } = useTranslation()
+  const currentLang = useLang()
+  const navigate = useRouterNavigate()
+  const location = useLocation()
   const [isOpen, setIsOpen] = useState(false)
   const dropdownRef = useRef<HTMLDivElement>(null)
 
-  const currentLang = languages.find((l) => l.code === i18n.language) || languages[0]
+  const currentLangObj = languages.find((l) => l.code === currentLang) || languages[0]
 
-  // Close dropdown when clicking outside
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
@@ -27,8 +29,11 @@ export function LanguageSwitcher({ align = 'right', direction = 'down' }: { alig
     return () => document.removeEventListener('mousedown', handleClickOutside)
   }, [])
 
-  const changeLanguage = (code: string) => {
-    i18n.changeLanguage(code)
+  const changeLanguage = (code: SupportedLang) => {
+    if (code !== currentLang) {
+      const newPath = switchLangInPath(location.pathname, code)
+      navigate(newPath + location.search + location.hash, { replace: true })
+    }
     setIsOpen(false)
   }
 
@@ -39,10 +44,10 @@ export function LanguageSwitcher({ align = 'right', direction = 'down' }: { alig
         whileTap={{ scale: 0.95 }}
         onClick={() => setIsOpen(!isOpen)}
         className="flex items-center gap-1.5 px-2.5 py-2 rounded-lg bg-background border border-border text-muted-foreground hover:text-foreground hover:border-foreground/30 transition-colors"
-        aria-label={`Change language, current: ${currentLang.name}`}
+        aria-label={`Change language, current: ${currentLangObj.name}`}
       >
         <Globe className="h-4 w-4" />
-        <span className="text-xs font-mono uppercase">{currentLang.code}</span>
+        <span className="text-xs font-mono uppercase">{currentLangObj.code}</span>
       </motion.button>
 
       <AnimatePresence>
@@ -61,7 +66,7 @@ export function LanguageSwitcher({ align = 'right', direction = 'down' }: { alig
                 className={`
                   w-full flex items-center gap-3 px-4 py-2.5 text-sm transition-colors
                   ${
-                    i18n.language === lang.code
+                    currentLang === lang.code
                       ? 'bg-muted text-foreground'
                       : 'text-muted-foreground hover:bg-muted hover:text-foreground'
                   }
@@ -69,7 +74,7 @@ export function LanguageSwitcher({ align = 'right', direction = 'down' }: { alig
               >
                 <span className="text-base">{lang.flag}</span>
                 <span className="flex-1 text-left">{lang.name}</span>
-                {i18n.language === lang.code && (
+                {currentLang === lang.code && (
                   <Check className="h-4 w-4 text-foreground" />
                 )}
               </button>
