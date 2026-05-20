@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom'
+import { Link } from '@/lib/localized-router'
 import { Check, Lock, Star, Play } from 'lucide-react'
 import type { Lesson } from '@/data/curriculum'
 import { getLessonStatus } from '@/stores/progress'

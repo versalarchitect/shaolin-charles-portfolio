@@ -1,5 +1,6 @@
 import { useState, Suspense, lazy, useRef, useEffect, useCallback } from 'react'
-import { useParams, useNavigate } from 'react-router-dom'
+import { useParams } from 'react-router-dom'
+import { useNavigate } from '@/lib/localized-router'
 import { useTranslation } from 'react-i18next'
 import { SEO } from '@/components/SEO'
 import { motion, AnimatePresence } from 'motion/react'

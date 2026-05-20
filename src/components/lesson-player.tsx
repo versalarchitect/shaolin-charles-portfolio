@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback, useMemo, useRef } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate } from '@/lib/localized-router'
 import { motion, AnimatePresence } from 'motion/react'
 import {
   Check,

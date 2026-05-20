@@ -1,6 +1,7 @@
 import type React from 'react'
 import { useState, useEffect, useRef, useCallback, useMemo } from 'react'
-import { useParams, Link, useNavigate } from 'react-router-dom'
+import { useParams } from 'react-router-dom'
+import { Link, useNavigate } from '@/lib/localized-router'
 import { useTranslation } from 'react-i18next'
 import { SEO } from '@/components/SEO'
 import {

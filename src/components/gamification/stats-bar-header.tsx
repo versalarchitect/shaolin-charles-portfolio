@@ -1,4 +1,4 @@
-import { useNavigate } from 'react-router-dom'
+import { useNavigate } from '@/lib/localized-router'
 import { motion, AnimatePresence } from 'motion/react'
 import { Zap, Flame } from 'lucide-react'
 import { useProgress, getStreakMultiplier } from '@/stores/progress'

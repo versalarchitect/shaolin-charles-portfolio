@@ -1,4 +1,4 @@
-import { Link, useLocation } from 'react-router-dom'
+import { Link, useLocalizedPathname } from '@/lib/localized-router'
 import { useTranslation } from 'react-i18next'
 import { SEO } from '@/components/SEO'
 import { Button } from '@/components/ui/button'
@@ -53,7 +53,7 @@ const tiers = CURRICULUM.map((tier) => ({
 
 export default function Curriculum() {
   const { isLoggedIn } = useAuth()
-  const { pathname } = useLocation()
+  const pathname = useLocalizedPathname()
 
   // /course/curriculum (auth-guarded) shows the app view; /curriculum shows marketing (with optional progress)
   if (isLoggedIn && pathname.startsWith('/course')) {

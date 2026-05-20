@@ -1,5 +1,5 @@
 import { Suspense, lazy, useEffect, useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link } from '@/lib/localized-router'
 import { motion } from 'motion/react'
 import {
   Check,

@@ -1,5 +1,5 @@
 import { useState, useCallback } from 'react'
-import { Link } from 'react-router-dom'
+import { Link } from '@/lib/localized-router'
 import { useTranslation } from 'react-i18next'
 import { tArray } from '@/lib/safe-t'
 import { SEO } from '@/components/SEO'

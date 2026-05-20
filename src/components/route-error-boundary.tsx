@@ -1,5 +1,6 @@
 import { useTranslation } from 'react-i18next'
-import { useRouteError, Link } from 'react-router-dom'
+import { useRouteError } from 'react-router-dom'
+import { Link } from '@/lib/localized-router'
 
 export function RouteErrorBoundary() {
   const { t } = useTranslation()

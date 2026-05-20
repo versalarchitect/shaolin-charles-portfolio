@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect, useCallback, type KeyboardEvent } from 'react'
 import { useTranslation } from 'react-i18next'
-import { useParams, Link, Navigate } from 'react-router-dom'
+import { useParams } from 'react-router-dom'
+import { Link, Navigate } from '@/lib/localized-router'
 import { SEO } from '@/components/SEO'
 import { Button } from '@/components/ui/button'
 import { motion, AnimatePresence } from 'motion/react'

@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Link, useLocation } from 'react-router-dom'
+import { Link, useLocalizedPathname } from '@/lib/localized-router'
 import { motion, AnimatePresence, useReducedMotion } from 'motion/react'
 import { useTranslation } from 'react-i18next'
 import { Button } from './ui/button'
@@ -24,7 +24,7 @@ const APP_ROUTES = ['/course/']
 export function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [logoSpin, setLogoSpin] = useState(false)
-  const location = useLocation()
+  const pathname = useLocalizedPathname()
   const prefersReducedMotion = useReducedMotion()
   const { t } = useTranslation()
   const { isLoggedIn } = useAuth()
@@ -32,7 +32,7 @@ export function Header() {
   const { setOpen: openCommandMenu } = useCommandMenu()
   const { handleClick: handleSpeedClick } = useSpeedClickEgg()
 
-  const isAppPage = APP_ROUTES.some((r) => location.pathname.startsWith(r))
+  const isAppPage = APP_ROUTES.some((r) => pathname.startsWith(r))
   const marketingNav = HEADER_NAV.map((item) => ({ name: t(item.nameKey), href: item.href }))
   const navigation = isAppPage ? APP_NAV : marketingNav
 
@@ -91,7 +91,7 @@ export function Header() {
           transition={{ duration: 0.5, delay: 0.1 }}
         >
           {navigation.map((item) => {
-            const isActive = location.pathname === item.href
+            const isActive = pathname === item.href
 
             return (
               <Link
@@ -241,7 +241,7 @@ export function Header() {
                 <div className="flex-1 overflow-y-auto p-4">
                   <nav className="space-y-1">
                     {navigation.map((item, index) => {
-                      const isActive = location.pathname === item.href
+                      const isActive = pathname === item.href
 
                       return (
                         <motion.div

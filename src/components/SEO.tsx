@@ -1,4 +1,5 @@
 import { Helmet } from 'react-helmet-async'
+import { useLang } from '@/lib/localized-router'
 
 const SITE_URL = 'https://charlesjackson.dev'
 const SITE_NAME = 'Charles Jackson'
@@ -35,7 +36,8 @@ export function SEO({
   article,
   jsonLd,
 }: SEOProps) {
-  const url = `${SITE_URL}${path ? `/${path.replace(/^\//, '')}` : ''}`
+  const lang = useLang()
+  const url = `${SITE_URL}/${lang}${path ? `/${path.replace(/^\//, '')}` : ''}`
   const fullTitle = path === '' ? title : `${title} | ${SITE_NAME}`
 
   const imageUrl = image
@@ -67,9 +69,9 @@ export function SEO({
       <link rel="canonical" href={url} />
 
       {/* Hreflang alternate links */}
-      <link rel="alternate" hreflang="en" href={url} />
-      <link rel="alternate" hreflang="fr" href={`${url}${url.includes('?') ? '&' : '?'}lng=fr`} />
-      <link rel="alternate" hreflang="x-default" href={url} />
+      <link rel="alternate" hrefLang="en" href={url.replace(`/${lang}/`, '/en/')} />
+      <link rel="alternate" hrefLang="fr" href={url.replace(`/${lang}/`, '/fr/')} />
+      <link rel="alternate" hrefLang="x-default" href={url.replace(`/${lang}/`, '/fr/')} />
 
       {/* Open Graph */}
       <meta property="og:type" content={type} />

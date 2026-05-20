@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect, useCallback } from 'react'
 import { motion, AnimatePresence, useReducedMotion } from 'motion/react'
-import { Link } from 'react-router-dom'
+import { Link } from '@/lib/localized-router'
 import { MessageSquare, X, Send, Loader2, Bot, User, Sparkles, Globe, RotateCcw, ArrowRight } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { Button } from './ui/button'

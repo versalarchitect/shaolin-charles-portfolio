@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link } from '@/lib/localized-router'
 import { useTranslation } from 'react-i18next'
 import { SEO } from '@/components/SEO'
 import { Button } from '@/components/ui/button'

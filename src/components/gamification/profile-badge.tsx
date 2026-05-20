@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link } from '@/lib/localized-router'
 import { motion } from 'motion/react'
 import { Zap, Flame } from 'lucide-react'
 import { useAuth } from '@/hooks/use-auth'

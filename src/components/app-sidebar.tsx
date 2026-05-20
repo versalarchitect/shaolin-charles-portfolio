@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Link, useLocation, useNavigate } from 'react-router-dom'
+import { Link, useNavigate, useLocalizedPathname } from '@/lib/localized-router'
 import { motion, AnimatePresence } from 'motion/react'
 import {
   LayoutDashboard,
@@ -303,7 +303,7 @@ function SidebarProfile({
 
 function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
   const { t } = useTranslation()
-  const location = useLocation()
+  const pathname = useLocalizedPathname()
   const navigate = useNavigate()
   const { user } = useAuth()
   const { setTheme, resolvedTheme } = useTheme()
@@ -350,8 +350,8 @@ function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
       <nav className="px-3 space-y-1">
         {NAV_ITEMS.map((item) => {
           const isActive =
-            location.pathname === item.href ||
-            (item.href !== '/' && location.pathname.startsWith(`${item.href}/`))
+            pathname === item.href ||
+            (item.href !== '/' && pathname.startsWith(`${item.href}/`))
 
           return (
             <Link
@@ -374,7 +374,7 @@ function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
         })}
 
         {hasPipelineAccess(user?.email) && (() => {
-          const isActive = location.pathname === '/course/pipeline'
+          const isActive = pathname === '/course/pipeline'
           return (
             <Link
               to="/course/pipeline"
@@ -395,7 +395,7 @@ function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
         })()}
 
         {hasPipelineAccess(user?.email) && (() => {
-          const isActive = location.pathname === '/course/student-agent'
+          const isActive = pathname === '/course/student-agent'
           return (
             <Link
               to="/course/student-agent"

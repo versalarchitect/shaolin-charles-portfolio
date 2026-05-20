@@ -1,4 +1,4 @@
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from '@/lib/localized-router'
 import { supabase } from '@/lib/supabase'
 import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar'
 import {

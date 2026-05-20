@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Link, Navigate, useSearchParams } from 'react-router-dom'
+import { useSearchParams } from 'react-router-dom'
+import { Link, Navigate } from '@/lib/localized-router'
 import { useAuth } from '@/hooks/use-auth'
 import { SEO } from '@/components/SEO'
 import { Button } from '@/components/ui/button'

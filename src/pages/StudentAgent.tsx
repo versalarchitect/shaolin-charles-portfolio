@@ -21,7 +21,7 @@ import {
 } from 'lucide-react';
 import { AnimatePresence, motion } from 'motion/react';
 import { useEffect, useRef, useState } from 'react';
-import { Navigate } from 'react-router-dom';
+import { Navigate } from '@/lib/localized-router';
 import { toast } from 'sonner';
 import { SEO } from '@/components/SEO';
 import { useAuth } from '@/hooks/use-auth';

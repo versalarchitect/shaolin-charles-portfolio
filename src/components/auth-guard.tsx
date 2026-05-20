@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
-import { Navigate, useLocation } from 'react-router-dom'
+import { useLocation } from 'react-router-dom'
+import { Navigate } from '@/lib/localized-router'
 import { supabase } from '@/lib/supabase'
 import PageLoading from './page-loading'
 

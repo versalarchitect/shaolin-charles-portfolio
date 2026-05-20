@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom'
+import { Link } from '@/lib/localized-router'
 import { motion } from 'motion/react'
 import { useTranslation } from 'react-i18next'
 import { Mail, ArrowUpRight } from 'lucide-react'

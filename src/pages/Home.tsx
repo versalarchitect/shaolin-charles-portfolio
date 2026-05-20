@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef, type MouseEvent } from 'react'
-import { Link } from 'react-router-dom'
+import { Link } from '@/lib/localized-router'
 import { useTranslation } from 'react-i18next'
 import { trackInteraction } from '@/lib/explorer'
 import { tArray } from '@/lib/safe-t'

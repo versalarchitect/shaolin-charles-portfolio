@@ -1,6 +1,6 @@
 import { motion } from 'motion/react'
 import { useTranslation } from 'react-i18next'
-import { Link } from 'react-router-dom'
+import { Link } from '@/lib/localized-router'
 import { Crown, Flame, Medal, Trophy, Zap } from 'lucide-react'
 import { AnimatedNumber } from '@/components/ui/aaa-effects'
 import type { LeaderboardEntry } from '@/lib/leaderboard-api'

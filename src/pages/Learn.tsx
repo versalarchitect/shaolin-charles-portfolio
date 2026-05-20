@@ -1,7 +1,8 @@
 import { useState, useEffect, useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 import { toast } from 'sonner'
-import { useParams, Link, useNavigate } from 'react-router-dom'
+import { useParams } from 'react-router-dom'
+import { Link, useNavigate } from '@/lib/localized-router'
 import { motion, AnimatePresence } from 'motion/react'
 import {
   ArrowLeft,

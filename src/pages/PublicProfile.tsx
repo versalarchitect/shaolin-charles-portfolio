@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { useParams, Link } from 'react-router-dom'
+import { useParams } from 'react-router-dom'
+import { Link } from '@/lib/localized-router'
 import { motion } from 'motion/react'
 import { Zap, Flame, Trophy, BookOpen, ArrowLeft, UserX, RefreshCw, Share2 } from 'lucide-react'
 import { toast } from 'sonner'

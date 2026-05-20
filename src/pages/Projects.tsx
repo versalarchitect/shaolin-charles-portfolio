@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef, useCallback } from 'react'
-import { Link } from 'react-router-dom'
+import { Link } from '@/lib/localized-router'
 import { SEO } from '@/components/SEO'
 import { useTranslation } from 'react-i18next'
 import { trackInteraction } from '@/lib/explorer'

@@ -1,5 +1,5 @@
 import { useMemo, useState, useCallback } from 'react'
-import { Link } from 'react-router-dom'
+import { Link } from '@/lib/localized-router'
 import { useTranslation } from 'react-i18next'
 import { motion } from 'motion/react'
 import { Check, Lock } from 'lucide-react'

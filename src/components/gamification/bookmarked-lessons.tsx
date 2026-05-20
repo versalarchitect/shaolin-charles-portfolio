@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom'
+import { Link } from '@/lib/localized-router'
 import { motion } from 'motion/react'
 import { Bookmark, Clock, Zap, X } from 'lucide-react'
 import { CURRICULUM, ALL_LESSONS } from '@/data/curriculum'

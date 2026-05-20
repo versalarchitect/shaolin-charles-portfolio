@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate } from '@/lib/localized-router'
 import { motion, AnimatePresence } from 'motion/react'
 import { Bell, Check, AtSign } from 'lucide-react'
 import { useNotifications, markRead, markAllRead, addNotification, initServerNotifications } from '@/stores/notifications'
