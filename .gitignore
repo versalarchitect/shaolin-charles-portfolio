@@ -7,25 +7,21 @@ dist/
 # Vercel
 .vercel
 
-# IDE
-.idea/
-.vscode/
-*.swp
-*.swo
-
-# OS
-.DS_Store
-Thumbs.db
-
-# Environment
+# Local env
 .env
-.env.local
-.env.*.local
+.env.*
+!.env.example
 
 # Logs
 *.log
 npm-debug.log*
 
-# TypeScript cache
+# Editor / OS
+.idea/
+.vscode/
+*.swp
+.DS_Store
+Thumbs.db
+
+# TS cache
 *.tsbuildinfo
-.env*.local

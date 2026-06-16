@@ -1,688 +1,94 @@
-# Charles Portfolio - Development Guidelines
+<!--
+  Project memory for Claude Code. Lean by design (Anthropic's guidance: a bloated
+  CLAUDE.md gets ignored). Litmus test for every line: "would removing this cause
+  a mistake on THIS repo?" If not, cut it. Inherits ~/.claude/CLAUDE.md and
+  ~/code/CLAUDE.md — don't repeat those here.
+-->
 
-> Design philosophy (animation-first, visual density, shadcn/ui) is inherited from `~/code/CLAUDE.md`. Project rules below extend but never override the global defaults.
+# charlesjackson.dev
 
-## Project Overview
+Personal site for Charles Jackson — a minimal, monochrome "agent interface": a soft
+shaded black-&-white surface with a precise, cursor-driven HUD. Vite + React SPA,
+deployed to **charlesjackson.dev** on Vercel.
 
-Personal portfolio website for Charles Jackson showcasing projects, skills, and 3D art experiments.
+The brand is the product. **Read `BRAND.md` before any visual or copy change** —
+it is the source of truth for colour, type, motion, the ASCII system, and content rules.
 
-### Live URLs
-
-- **Primary**: https://charlesjackson.dev
-- **WWW**: https://www.charlesjackson.dev
-- **Vercel**: https://shaolin-charles.vercel.app
-
-### Repository
-
-- **GitHub**: https://github.com/versalarchitect/shaolin-charles-portfolio
-
-### Deployment
-
-- **Platform**: Vercel
-- **Project**: `shaolin-charles` under `charles-jacksons-projects` team
-- **Framework**: Vite + React
-- **Auto-deploy**: Pushes to `main` branch trigger production deployments
-
-### Deployment Workflow
-
-The standard workflow for deploying changes:
+## Commands
 
 ```bash
-# 1. Build the project
-bun run build
-
-# 2. Run the linter (fix any new errors you introduced)
-bun run lint
-
-# 3. Stage and commit changes
-git add .
-git commit -m "Description of changes"
-
-# 4. Push to trigger Vercel deployment
-git push origin main
-
-# 5. Check Vercel logs for deployment status
-#    - Go to: https://vercel.com/charles-jacksons-projects/shaolin-charles
-#    - Or use: vercel logs --scope charles-jacksons-projects
+bun dev          # dev server (localhost:3000; falls through if taken)
+bun run build    # production build → dist/
+bun run typecheck   # tsc --noEmit
+bun run lint     # biome lint ./src
+bun run check    # biome lint+format, writes fixes
 ```
 
-**Important:**
-- Always build before pushing to catch errors locally
-- Lint errors will NOT block Vercel deployment, but fix them anyway
-- **Always verify the deploy succeeded** after pushing — poll `gh api repos/versalarchitect/shaolin-charles-portfolio/commits/<sha>/status` until terminal state and report the result
-- Vercel auto-deploys on push to `main` - no manual deployment needed
-- Check Vercel dashboard for build logs if deployment fails
-
-### Development
-
-```bash
-# From monorepo root
-npx nx dev charles-web      # Start dev server
-npx nx build charles-web    # Production build
-npx nx lint charles-web     # Run linter
-
-# From this directory (standalone)
-bun run dev                 # Start dev server
-bun run build               # Production build
-```
-
-### Tech Stack
-
-| Category | Technology |
-|----------|------------|
-| Framework | React 19 + TypeScript |
-| Build | Vite 7 |
-| Styling | Tailwind CSS 4 |
-| Animation | Framer Motion |
-| 3D | Three.js |
-| Icons | Lucide React |
-| i18n | i18next (EN/FR) |
-
-## Course Engine (Self-Updating Course)
-
-An agentic pipeline under `course-engine/` that monitors AI documentation, extracts knowledge facts, and auto-updates course content when facts change.
-
-**IMPORTANT: The course engine implementation is proprietary.** Do NOT expose pipeline architecture, source monitoring details, extraction methods, or tech stack (Ollama, pgvector, etc.) on the public website or in marketing copy. The public-facing message is about **outcomes** (always current, fact-verified, transparent freshness) — never about **how** it works. This is a competitive advantage.
-
-### Architecture
-
-```
-course-engine/
-├── packages/
-│   ├── core/          # Types, Supabase DB client, LLM wrapper
-│   ├── monitors/      # Source fetchers (Anthropic docs, changelog, GitHub releases)
-│   ├── extraction/    # Fact extraction + supersession detection
-│   ├── regeneration/  # Content regeneration (quality-checked proposals)
-│   └── briefing/      # Daily briefings (pipeline activity summaries)
-├── scripts/
-│   ├── run-pipeline.ts         # Main 4-stage pipeline
-│   ├── backfill-extraction.ts  # Reprocess unprocessed events
-│   ├── status.ts               # System health dashboard
-│   └── briefing.ts             # Run daily briefing
-└── fixtures/          # Sample data for testing
-```
-
-### Running the Pipeline
-
-Requires Ollama running locally with `qwen2.5:7b`:
-
-```bash
-# Start Ollama (if not running as service)
-brew services start ollama
-
-# Daily pipeline: monitor → extract → flag → regenerate
-cd course-engine && bun run pipeline
-
-# Backfill extraction on historical events
-cd course-engine && bun run backfill
-
-# System health check
-cd course-engine && bun run status
-
-# Daily briefing summary
-cd course-engine && bun run briefing
-
-# Flags: --monitor-only, --extract-only, --dry-run, --limit=N
-```
-
-### LLM Backend Selection
-
-The LLM wrapper auto-detects the backend:
-1. `ANTHROPIC_API_KEY` set → Anthropic (Haiku fast / Opus smart)
-2. Otherwise → Ollama at `localhost:11434` (qwen2.5:7b)
-3. Override with `LLM_BACKEND=anthropic|hf-inference|local`
-
-### Supabase Tables
-
-`source_events`, `knowledge_facts`, `content_blocks`, `course_modules`, `lessons`, `regeneration_proposals`, `pipeline_runs` — schema at `supabase/migrations/20260429000000_course_engine.sql`. Public read-only RLS policies are set for the frontend to display live stats.
-
-### Source Monitors
-
-- **Anthropic Documentation** — 10 curated doc pages (models, tool use, caching, etc.)
-- **Anthropic Changelog** — news feed extraction
-- **GitHub Releases** — 7 repos: Anthropic SDKs (Python/TS), Claude Code, Vercel AI SDK, LangChain.js, OpenAI SDKs (Python/Node)
-
-### Current Status
-
-Phases 1–4 and partial Phase 6 complete. 284 active facts from 59 source events across 3 source types. 3 modules, 9 lessons, 30 content blocks seeded and linked to fact IDs. Regeneration engine, briefing system, and GitHub release monitor operational. See `course-engine/ROADMAP.md` for remaining phases (5, 7, 8).
-
-### Marketing Pages
-
-- `/self-updating-course` — public landing page with live Supabase stats (fact count, freshness, coverage bars). Shows outcomes only — no implementation details.
-- Home page "A Course That Rewrites Itself" section with live stats grid.
-- `useCourseStats` hook at `src/hooks/use-course-stats.ts` fetches live data from Supabase.
-
-## Design Philosophy
-
-Monochromatic theme with depth. Every section earns its scroll through visual substance and animation.
-
-## Content Guidelines
-
-### Social Links
-- **GitHub**: Yes - display in footer, header, contact page, and home page
-- **LinkedIn**: No - do not display anywhere on the site
-- **Email**: Yes - primary contact method
-
-### Role Titles
-- **Predictive (Augure)**: "Founder & Principal Developer"
-- **MyUrbanFarm.ai**: "CTO & Principal Software Developer"
-- **NxSupabase**: "Creator & Maintainer"
-
-### Footer
-- Keep it minimal - copyright only
-- No "made with love" or "built with React & TypeScript" taglines
-
-## Design System
-
-### Color Palette
-- **Monochromatic theme** - Black, white, and grays only
-- Use `foreground/5`, `foreground/10`, `foreground/20` for subtle overlays
-- No colors except for occasional green status indicators
-
-### Theme System (Light / Dark)
-
-The site supports both light and dark modes. Default is dark. Users toggle via the Sun/Moon button in the header (persisted to `localStorage` key `"theme"`).
-
-**Architecture:**
-- **CSS variables** in `globals.css`: `:root` defines light mode values, `.dark` overrides for dark mode
-- **ThemeProvider** (`src/components/theme-provider.tsx`): React context providing `theme`, `setTheme`, and `resolvedTheme`. Supports `'light' | 'dark' | 'system'`
-- **FOUC prevention**: Inline `<script>` in `index.html` reads localStorage before first paint to set the correct class on `<html>`
-- **`--effect-rgb`**: CSS variable (`0, 0, 0` in light / `255, 255, 255` in dark) used for all background effects, glows, and gradients via `rgba(var(--effect-rgb), <opacity>)`
-
-**Rules for new components:**
-- Use Tailwind semantic tokens (`bg-background`, `text-foreground`, `border-border`, etc.) — they auto-adapt
-- For inline styles with glow/gradient effects, use `rgba(var(--effect-rgb), <opacity>)` instead of hardcoded `rgba(255,255,255,...)`
-- Never hardcode `bg-white`, `text-white`, `bg-black`, `text-black` for themed surfaces — use `bg-background`, `text-foreground` etc.
-- If a component needs theme info in JS: `const { resolvedTheme } = useTheme()`
-- Sonner toast uses `resolvedTheme` — keep it in sync
-
-**Intentionally dark-only contexts (do not theme):**
-- **Art.tsx fullscreen overlay** (`bg-black`) — 3D/generative art always renders on dark canvas
-- **`palette.ts`** — Canvas-based generative art strokes; CSS vars don't work in canvas
-- **Custom cursor** (`bg-white` + `mix-blend-difference`) — inverts automatically on any background
-
-### Section Boundary Grid (Primary)
-The signature design element that visually delineates content sections.
-
-**Purpose:**
-- **Grid lines** define the content boundaries - they show where the container edges are (vertical) and where sections begin/end (horizontal)
-- **"+" markers** highlight the intersections - they draw attention to section corners, making the grid structure feel intentional rather than accidental
-- Together, they create a technical/blueprint aesthetic that reinforces the developer portfolio theme
-
-**Visual behavior:**
-- Vertical lines run the full page height at container padding positions (left and right edges of content)
-- Horizontal lines span edge-to-edge at section boundaries (top and bottom of each `<Section>`)
-- "+" markers appear only where vertical and horizontal lines intersect (4 corners per section)
-- Lines are subtle (low opacity), markers are more visible (3:1 contrast ratio)
-
-**Implementation:**
-```tsx
-// In App.tsx - wrap with provider and add the grid
-import { SectionGridProvider, SectionBoundaryGrid, Section } from '@/components/ui/gradient-background'
-
-<SectionGridProvider containerPadding={24}>
-  <SectionBoundaryGrid intensity={1} markerSize={14} />
-  {/* ... content ... */}
-</SectionGridProvider>
-
-// In page components - use Section wrapper instead of <section>
-<Section id="hero" className="...">
-  {/* section content */}
-</Section>
-```
-
-**Key props:**
-- `containerPadding`: Distance from viewport edge to vertical lines (default: 24px, matches `px-6`)
-- `intensity`: Overall visibility scale (default: 1). Use 0.5 for subtle, 1 for default, 1.5+ for emphasis. Preserves 3:1 contrast ratio between markers (more visible) and lines.
-- `markerSize`: Size of + markers in pixels (default: 12)
-
-### Intersection Grid (Cal.com Style - Legacy)
-Repeating "+" symbols across the entire background - Cal.com inspired pattern.
-
-**Still available but not primary:**
-```tsx
-import { IntersectionGrid } from '@/components/ui/gradient-background'
-
-// Basic usage - tiled plus markers with radial fade
-<IntersectionGrid opacity={0.06} fadeCenter={true} gridSize={80} />
-```
-
-**Design principles:**
-- **Sparse spacing** - 80-140px between plus markers
-- **Subtle opacity** - 0.04-0.15 opacity range
-- **Background element only** - Always use `pointer-events-none`
-
-### Typography
-- Name "Charles Jackson" should always be on **one line** (use `whitespace-nowrap`)
-- Font: Geist (variable weight)
-- Monospace: Geist Mono for technical elements
-
-### Floating Elements
-- Tech badges floating on the right side of hero
-- Subtle animations (gentle float, slight rotation)
-- Should complement, not distract from main content
-
-### Animation Tools
-- Framer Motion for smooth interactions
-- Magnetic buttons for interactive elements
-
-### Opacity & Transparency Scale
-
-Use consistent opacity values for the monochromatic theme:
-
-| Opacity | Use Case | Example |
-|---------|----------|---------|
-| `foreground/[0.02]` | Subtle backgrounds, large watermark numbers | Card backgrounds |
-| `foreground/[0.03]` | Slightly more visible backgrounds | Open accordion state |
-| `foreground/[0.04]` | Icon box backgrounds | Small bento cards |
-| `foreground/[0.05]` | Default subtle fills | Badges, tags |
-| `foreground/[0.08]` | Default borders | Card borders |
-| `foreground/10` | Slightly visible borders | Hover states |
-| `foreground/15` | Hover borders | Interactive elements |
-| `foreground/20` | Active/focus borders | Open states |
-| `foreground/40` | Muted text | Secondary labels |
-| `foreground/60` | Icons, subtle text | Icon default state |
-| `foreground/70` | Semi-visible text | Descriptions |
-| `foreground/80` | Near-full text | Primary text |
-
-### Border Radius Scale
-
-| Radius | Use Case |
-|--------|----------|
-| `rounded` | Small tags, badges |
-| `rounded-lg` | Icon boxes, small cards |
-| `rounded-xl` | Standard cards |
-| `rounded-2xl` | Large cards, accordions |
-| `rounded-full` | Pills, circular buttons |
-
-### Spacing Conventions
-
-- **Container padding**: `px-6 lg:px-8` (24px to 32px)
-- **Section padding**: `py-24 lg:py-32` (96px to 128px)
-- **Card padding**: `p-6 md:p-8` (24px to 32px)
-- **Gap between cards**: `gap-3 md:gap-4` (12px to 16px)
-
-## UI Components
-
-### Accordion (`@/components/ui/accordion`)
-
-Large, expandable sections with rich content support.
-
-```tsx
-import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from '@/components/ui/accordion'
-
-<Accordion type="single" defaultValue="first-item">
-  <AccordionItem value="first-item" index={0}>
-    <AccordionTrigger
-      value="first-item"
-      subtitle="Optional subtitle"
-      icon={<Icon className="w-6 h-6 text-foreground/70" />}
-    >
-      Title
-    </AccordionTrigger>
-    <AccordionContent value="first-item">
-      {/* Rich content: description, bullet points, tags */}
-    </AccordionContent>
-  </AccordionItem>
-</Accordion>
-```
-
-**Features:**
-- Plus/Minus toggle button (fills on open)
-- Large watermark index numbers (01, 02, 03...)
-- Subtitle support in trigger
-- Icon rotation animation on open
-- Decorative separator line in content
-
-### Bento Grid (`@/components/bento-grid`)
-
-Asymmetric grid for displaying skills/expertise.
-
-**Structure:**
-- One featured card (2x2 span) with large styling
-- Multiple smaller cards (1x1) with compact styling
-- Large decorative numbers in backgrounds
-- Tech tags at bottom of each card
-
-### Lesson Hints System
-
-All interactive lesson step types support an optional `hint?: string` field. When present, a lightbulb "Show Hint" button appears next to the action button. Clicking it reveals a styled clue panel.
-
-**Supported step types:** `multiple-choice`, `code-input`, `code-fill`, `order`, `compare`, `match`, `terminal`, `prompt-lab`
-
-**Writing good hints:**
-- 1 short sentence, max ~15 words
-- Narrows down the answer WITHOUT giving it away
-- Written in the same language as the step content
-- Placed after content fields, before `platforms` in the data
-
-**UI component:** `HintButton` in `lesson-player.tsx` — reusable, renders inline with action buttons. Animates from button → revealed clue panel with `AnimatePresence`.
-
-### Confetti (`@/components/ui/confetti`)
-
-Canvas-based confetti burst effect. Fires when the user answers a step correctly.
-
-**`useConfetti()` hook** — returns a `fire(options?)` function. Creates a temporary full-screen canvas, animates particles, and self-cleans.
-
-**`ConfettiBurst` component** — declarative wrapper. Pass `trigger={boolean}` to fire.
-
-**Options:**
-| Prop | Default | Description |
-|------|---------|-------------|
-| `particleCount` | 60 | Number of particles |
-| `spread` | 70 | Cone angle in degrees |
-| `startVelocity` | 35 | Initial launch speed |
-| `gravity` | 0.6 | Downward acceleration |
-| `colors` | Rainbow array | Particle colors |
-| `origin` | `{ x: 0.5, y: 1 }` | Launch point (0-1 viewport fraction) |
-| `decay` | 0.92 | Velocity decay per frame |
-| `scalar` | 1 | Size multiplier |
-| `shapes` | `['square', 'circle']` | Particle shapes |
-| `duration` | 2500 | Max animation time (ms) |
-
-Respects `prefers-reduced-motion`.
-
-### Effects Library (`@/components/ui/aaa-effects`)
-
-| Component | Purpose |
-|-----------|---------|
-| `TiltCard` | 3D tilt effect on hover |
-| `SpotlightCard` | Mouse-following spotlight gradient |
-| `ScrollFadeIn` | Fade in on scroll into view |
-| `BlurFadeIn` | Blur + fade entrance animation |
-| `Magnetic` | Magnetic cursor attraction |
-| `AnimatedNumber` | Count-up number animation |
-| `StaggerContainer` | Staggered children animations |
-| `GlowBorder` | Subtle glow effect on borders |
-
-### Decorative Patterns
-
-**Large Watermark Numbers:**
-```tsx
-<div className="absolute -right-4 -top-4 text-[180px] font-bold leading-none text-foreground/[0.02] select-none pointer-events-none">
-  01
-</div>
-```
-
-**Corner Accent Lines:**
-```tsx
-<div className="absolute top-0 right-0 w-24 h-24">
-  <div className="absolute top-6 right-6 w-px h-12 bg-gradient-to-b from-foreground/20 to-transparent" />
-  <div className="absolute top-6 right-6 w-12 h-px bg-gradient-to-r from-foreground/20 to-transparent" />
-</div>
-```
-
-**Decorative Separator:**
-```tsx
-<div className="h-px bg-gradient-to-r from-foreground/10 via-foreground/5 to-transparent" />
-```
-
-### Button Patterns
-
-**Primary CTA:**
-```tsx
-<Button size="lg" className="h-12 px-8 font-mono group">
-  Label
-  <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
-</Button>
-```
-
-**Icon-only (circular):**
-```tsx
-<motion.a
-  whileHover={{ scale: 1.1, y: -2 }}
-  whileTap={{ scale: 0.95 }}
-  className="flex items-center justify-center w-11 h-11 rounded-full bg-foreground/5 border border-foreground/10 text-muted-foreground hover:text-foreground hover:border-foreground/20 hover:bg-foreground/10 transition-all"
->
-  <Icon className="h-5 w-5" />
-</motion.a>
-```
-
-### Tag/Badge Patterns
-
-**Tech tag (small):**
-```tsx
-<span className="text-xs font-mono px-3 py-1.5 bg-foreground/[0.05] rounded-full border border-foreground/10 text-foreground/60">
-  React
-</span>
-```
-
-**Status badge:**
-```tsx
-<span className="px-2 py-0.5 bg-green-500/20 text-green-500 text-xs font-mono rounded flex items-center gap-1.5">
-  <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
-  LIVE
-</span>
-```
-
-## 3D Assets & Model Libraries
-
-Open source CC0 libraries for Three.js scenes. Use these based on scene requirements.
-
-### Library Selection Guide
-
-| Scene Type | Primary Library | Why |
-|------------|-----------------|-----|
-| City/Urban | Kenney | Modular building kits, roads, vehicles |
-| Nature/Outdoor | Quaternius | Trees, rocks, plants, terrain |
-| Characters/NPCs | Quaternius | Rigged low-poly characters with animations |
-| Asian/Fantasy | Quaternius + Poly Pizza | Temples, lanterns, themed architecture |
-| Sci-Fi/Space | Kenney | Spaceships, planets, space stations |
-| Interior | Poly Pizza | Furniture, appliances, decor |
-| Prototype/Testing | Khronos glTF | Reference models, format validation |
-
-### Kenney (kenney.nl/assets)
-
-**Best for:** Modular kits, UI elements, game-ready assets
-
-| Asset Pack | URL | Use Case |
-|------------|-----|----------|
-| City Kit (Roads) | `kenney.nl/assets/city-kit-roads` | Streets, intersections, sidewalks |
-| City Kit (Commercial) | `kenney.nl/assets/city-kit-commercial` | Shops, offices, urban buildings |
-| City Kit (Suburban) | `kenney.nl/assets/city-kit-suburban` | Houses, residential areas |
-| Nature Kit | `kenney.nl/assets/nature-kit` | Trees, rocks, grass patches |
-| Space Kit | `kenney.nl/assets/space-kit` | Spaceships, asteroids, planets |
-| Furniture Kit | `kenney.nl/assets/furniture-kit` | Interior decoration |
-| Car Kit | `kenney.nl/assets/car-kit` | Vehicles for city scenes |
-
-```bash
-# Download City Kit Roads
-curl -L -o city-roads.zip "https://kenney.nl/assets/city-kit-roads/releases/1/kenney_city-kit-roads.zip"
-unzip city-roads.zip -d public/models/kenney/city-roads/
-```
-
-### Quaternius (quaternius.com)
-
-**Best for:** Characters, nature, fantasy/medieval themes
-
-| Asset Pack | Description |
-|------------|-------------|
-| Ultimate Nature Pack | 100+ trees, rocks, bushes, flowers |
-| Ultimate Buildings | Medieval, fantasy, Asian-style buildings |
-| Animated Characters | Rigged humans, animals with walk/idle/run |
-| Stylized Characters | Cartoon-style NPCs |
-| Ultimate Space Kit | Detailed spacecraft and stations |
-| Fantasy Buildings | Castles, towers, temples |
-
-```bash
-# Clone full library (recommended - all assets)
-git clone --depth 1 https://github.com/quaternius/lowpoly-assets public/models/quaternius/
-
-# Or browse: https://quaternius.com/packs.html
-```
-
-### Poly Pizza (poly.pizza)
-
-**Best for:** Searching for specific items, community-contributed models
-
-- Searchable database of 10,000+ free models
-- Filter by license (CC0, CC-BY)
-- Direct GLB downloads
-- API available for programmatic access
-
-```bash
-# Search and download via browser, then:
-# https://poly.pizza/m/XXXXX -> Download GLB
-
-# Example: Japanese lantern
-curl -L -o lantern.glb "https://poly.pizza/api/download/dLbKgYMVRG"
-```
-
-### Khronos glTF Sample Assets
-
-**Best for:** Testing loaders, format reference, PBR examples
-
-```bash
-# Get specific model
-curl -L -o public/models/damaged-helmet.glb \
-  "https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Assets/main/Models/DamagedHelmet/glTF-Binary/DamagedHelmet.glb"
-
-# Clone all samples
-git clone --depth 1 https://github.com/KhronosGroup/glTF-Sample-Assets public/models/gltf-samples/
-```
-
-### Loading Models in Three.js
-
-```typescript
-import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js'
-import { DRACOLoader } from 'three/addons/loaders/DRACOLoader.js'
-
-// Setup Draco for compressed models
-const dracoLoader = new DRACOLoader()
-dracoLoader.setDecoderPath('https://www.gstatic.com/draco/versioned/decoders/1.5.6/')
-
-const loader = new GLTFLoader()
-loader.setDRACOLoader(dracoLoader)
-
-// Load model
-loader.load('/models/building.glb', (gltf) => {
-  gltf.scene.traverse((child) => {
-    if (child instanceof THREE.Mesh) {
-      child.castShadow = true
-      child.receiveShadow = true
-    }
-  })
-  scene.add(gltf.scene)
-})
-```
-
-### Performance Guidelines
-
-| Guideline | Recommendation |
-|-----------|----------------|
-| Format | GLB (binary) over GLTF (JSON + separate files) |
-| Compression | Use Draco for models > 500KB |
-| Polygon count | < 10K triangles per model for web |
-| Textures | Max 1024x1024, prefer 512x512 |
-| Instancing | Use `InstancedMesh` for repeated objects |
-| LOD | Implement for large scenes (> 50 models) |
-
-### Directory Structure
-
-```
-public/models/
-├── kenney/
-│   ├── city-roads/
-│   ├── city-commercial/
-│   └── nature/
-├── quaternius/
-│   ├── buildings/
-│   ├── nature/
-│   └── characters/
-├── poly-pizza/
-│   └── [downloaded models by theme]
-├── kaylousberg/
-│   └── [low-poly packs]
-└── custom/
-    └── [project-specific models]
-```
-
-### Model Selection Workflow
-
-When building a themed 3D scene, follow this process:
-
-**1. Identify Scene Requirements**
-```
-Scene: Asian Night City
-├── Architecture: pagodas, houses, temples, bridges
-├── Props: lanterns, stone lamps, barrels, crates
-├── Nature: cherry trees, bamboo, lotus, rocks
-├── Lighting: lantern glow, moonlight, fireflies
-└── Atmosphere: fog, water reflections, stars
-```
-
-**2. Search Libraries by Category**
-
-| Category | Search Terms | Priority Libraries |
-|----------|--------------|-------------------|
-| Architecture | "pagoda", "temple", "japanese house" | Poly Pizza, Quaternius |
-| Props | "lantern", "stone lamp", "barrel" | Kay Lousberg, Kenney |
-| Nature | "cherry tree", "bamboo", "rock" | Quaternius Nature Pack |
-| Vehicles | "boat", "cart", "rickshaw" | Kenney, Poly Pizza |
-
-**3. Evaluate Models**
-- **Poly count**: < 5K for props, < 15K for hero objects
-- **Style consistency**: Match art direction (low-poly, stylized, realistic)
-- **License**: Prefer CC0, accept CC-BY with attribution
-- **Format**: GLB preferred, GLTF acceptable
-
-**4. Download & Organize**
-```bash
-# Create themed subfolder
-mkdir -p public/models/poly-pizza/asian-city
-
-# Download with descriptive names
-curl -L -o public/models/poly-pizza/asian-city/pagoda-main.glb "URL"
-curl -L -o public/models/poly-pizza/asian-city/stone-lantern.glb "URL"
-```
-
-**5. Track Attribution**
-Create `public/models/ATTRIBUTION.md`:
-```markdown
-# Model Attribution
-
-## Poly Pizza
-- pagoda-main.glb - "Pagoda" by Artist Name (CC-BY 3.0)
-- stone-lantern.glb - "Japanese Stone Lamp" by Flopsi (CC-BY 3.0)
-
-## Quaternius (CC0)
-- cherry-tree.glb - Ultimate Nature Pack
-```
-
-### Kay Lousberg (kaylousberg.com)
-
-**Best for:** Low-poly props, modular pieces, consistent style
-
-GitHub: `github.com/KayLousberg/free-3d-assets`
-
-| Pack | Contents |
-|------|----------|
-| Prototype Kit | Basic shapes, platforms, ramps |
-| Nature Pack | Trees, rocks, grass |
-| Dungeon Pack | Medieval props, chests, barrels |
-| Holiday Pack | Seasonal decorations |
-
-```bash
-# Clone Kay Lousberg's free assets
-git clone --depth 1 https://github.com/KayLousberg/free-3d-assets public/models/kaylousberg/
-```
-
-### Poly Pizza Download Methods
-
-Poly Pizza models require manual download or API access:
-
-```bash
-# Method 1: Direct GLB URL (when available)
-curl -L -o model.glb "https://poly.pizza/download/{model-id}/glb"
-
-# Method 2: Via poly.pizza page - download manually
-# Visit: https://poly.pizza/m/{model-id}
-# Click "Download" → Select GLB format
-
-# Common Model IDs for Asian Scenes:
-# Pagoda: 1zS7ucaAd4J, d1M5ncMBUDi, eHOI2VgW1ol
-# Torii Gate: cXyQGUwmlA5, 07__lYTDdEH
-# Stone Lamp: 5gZfOZIW92k
-# Lantern: 9YMVn5hMiv8
-# Red Lantern: 7PZhxLFiGc2
-```
+Use **bun** (not npm/yarn). `bun run check` before committing.
+
+## Stack
+
+React 19 · TypeScript · Vite 8 · Tailwind v4 (`@tailwindcss/vite`) · Motion
+(`motion/react`) · lucide-react · shadcn/ui (new-york). Biome for lint+format.
+
+## Architecture (the non-obvious parts)
+
+- **`src/lib/site.ts`** — all copy and links. Edit content here, not in components.
+- **`src/lib/pointer.ts`** — global pointer state read by rAF loops *without* React
+  re-renders. The hero HUD and custom cursor read it inside their own tick.
+- **`src/components/hero-hud.tsx`** — the hero's centre interaction: faint crosshair
+  guides + a live coordinate readout track the cursor, a static reticle marks centre.
+  Writes transforms/`textContent` directly each frame; gates on `prefers-reduced-motion`.
+- **`src/components/custom-cursor.tsx`** — reticle cursor via `mix-blend-difference`.
+- **Theme:** `src/hooks/use-theme.tsx`, default **light**. Dark = `.dark` on `<html>`;
+  an inline script in `index.html` sets it before first paint (no FOUC).
+- **Background:** soft off-white (`--background`), never flat `#fff`; subtle corner
+  shading via `body::before` + `--shade-rgb`. `--effect-rgb` carries the theme colour
+  into HUD/cursor effects.
+
+## Code style
+
+- Biome: single quotes, no semicolons, trailing commas, 2-space, width 100.
+- `cn()` (`@/lib/utils`) to compose classes. `@/*` → `src/*`.
+- **Semantic Tailwind tokens only** — `bg-background`, `text-foreground`,
+  `border-border`. Greys via `text-foreground/60`. Never hardcode `bg-white`/`text-black`.
+- `font-mono` = Geist Mono for anything technical; `font-sans` = Geist for prose.
+
+## Brand rules — do not violate (full guide in `BRAND.md`)
+
+- **Monochrome only.** Black & white; greys are foreground-at-opacity. No accent colours.
+- **Light is the default**, a soft shaded off-white — never flat `#fff`.
+- **24px gutters.** Content sits 24px from every viewport edge (`px-6`, `*-6`).
+- **Never two lines.** Wordmark, role lockup, footer name — each stays on one line.
+- **Role rides with the name** in the top bar (`CHARLES JACKSON │ agentic systems
+  engineer`); the theme toggle is a **bare** icon beside it — no sphere, never after the links.
+- **GitHub + email only. NEVER add LinkedIn.** Footer stays minimal.
+- **No mascots / ASCII faces.** The interaction is a calm precision HUD, not a character.
+- Every interaction respects `prefers-reduced-motion`.
+
+## Workflow
+
+- **Explore → plan → code → verify.** Use plan mode for multi-file or unfamiliar
+  changes; skip it for one-line fixes you could describe in a sentence.
+- **YOU MUST verify before calling work done:** `bun run build` + `bun run typecheck`
+  + `bun run lint` all green, **and** screenshot the UI at 1440px and 375px in
+  **both** light and dark. Type-checking proves the code compiles, not that the
+  feature looks right.
+- `/clear` between unrelated tasks to keep context clean.
+
+## Deploy
+
+- Pushing to **`main`** auto-deploys on Vercel (framework `vite` → `dist/`).
+- No PRs unless explicitly asked — push direct to `main` (see `~/code/CLAUDE.md`).
+- Always confirm the deploy went green after pushing.
+- Remote: `versalarchitect/shaolin-charles-portfolio` (the historical repo name;
+  the brand is unrelated — don't reintroduce old branding).
+
+## Gotchas
+
+- **Fonts:** Chakra Petch = `font-display` (cybernetic wordmark/name), Space Grotesk =
+  `font-sans`, Space Mono = `font-mono`. Imported in `src/main.tsx`; families in `@theme`.
+- **Tailwind v4** lives in `src/globals.css` (`@theme inline`, `@custom-variant dark`).
+  Biome can't parse Tailwind directives, so `*.css` is excluded in `biome.json` — keep it that way.
+- **Fontsource** CSS side-effect imports need the module declaration in `src/vite-env.d.ts`.
+- TS 6: no `baseUrl` (deprecated) — path aliases resolve via `paths` + `moduleResolution: bundler`.

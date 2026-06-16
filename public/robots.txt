@@ -1,5 +1,2 @@
-# robots.txt — charlesjackson.dev
 User-agent: *
 Allow: /
-
-Sitemap: https://charlesjackson.dev/sitemap.xml

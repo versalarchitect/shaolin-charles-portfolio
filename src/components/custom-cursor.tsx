@@ -1,140 +1,94 @@
-import { useEffect, useState } from 'react'
-import { motion, useMotionValue, useSpring } from 'motion/react'
+import { useEffect, useRef } from 'react'
+import { pointer } from '@/lib/pointer'
 
+/**
+ * A technical "reticle" cursor. mix-blend-difference + white means it inverts
+ * against whatever is under it, so it reads in both light and dark themes.
+ * Disabled for touch / coarse pointers (native cursor stays).
+ */
 export function CustomCursor() {
-  const [isVisible, setIsVisible] = useState(false)
-  const [isHovering, setIsHovering] = useState(false)
-  const [isClicking, setIsClicking] = useState(false)
-
-  const cursorX = useMotionValue(0)
-  const cursorY = useMotionValue(0)
-
-  const springConfig = { damping: 25, stiffness: 400 }
-  const cursorXSpring = useSpring(cursorX, springConfig)
-  const cursorYSpring = useSpring(cursorY, springConfig)
+  const ringRef = useRef<HTMLDivElement>(null)
+  const dotRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
-    const handleMouseMove = (e: MouseEvent) => {
-      cursorX.set(e.clientX)
-      cursorY.set(e.clientY)
-      setIsVisible(true)
+    if (!window.matchMedia('(pointer: fine)').matches) return
+    const ring = ringRef.current
+    const dot = dotRef.current
+    if (!ring || !dot) return
+
+    document.documentElement.classList.add('cursor-reticle')
+
+    let rx = pointer.x
+    let ry = pointer.y
+    let scale = 1
+    let targetScale = 1
+    let raf = 0
+
+    const loop = () => {
+      rx += (pointer.x - rx) * 0.2
+      ry += (pointer.y - ry) * 0.2
+      scale += (targetScale - scale) * 0.2
+
+      const shown = pointer.active ? '1' : '0'
+      dot.style.opacity = shown
+      ring.style.opacity = pointer.active ? '0.9' : '0'
+      dot.style.transform = `translate(${pointer.x}px, ${pointer.y}px) translate(-50%, -50%)`
+      ring.style.transform = `translate(${rx}px, ${ry}px) translate(-50%, -50%) scale(${scale})`
+      raf = requestAnimationFrame(loop)
+    }
+    raf = requestAnimationFrame(loop)
+
+    const onMove = (e: PointerEvent) => {
+      const el = e.target as HTMLElement | null
+      const interactive = el?.closest?.('a, button, [role="button"], [data-cursor="hover"]')
+      targetScale = interactive ? 1.7 : 1
+    }
+    const onDown = () => {
+      targetScale *= 0.6
+    }
+    const onUp = (e: PointerEvent) => {
+      const el = e.target as HTMLElement | null
+      targetScale = el?.closest?.('a, button, [role="button"], [data-cursor="hover"]') ? 1.7 : 1
     }
 
-    const handleMouseLeave = () => setIsVisible(false)
-    const handleMouseEnter = () => setIsVisible(true)
-    const handleMouseDown = () => setIsClicking(true)
-    const handleMouseUp = () => setIsClicking(false)
-
-    // Check for hoverable elements
-    const handleHoverCheck = (e: MouseEvent) => {
-      const target = e.target as HTMLElement
-      const isHoverable =
-        target.tagName === 'A' ||
-        target.tagName === 'BUTTON' ||
-        target.closest('a') ||
-        target.closest('button') ||
-        target.classList.contains('cursor-pointer') ||
-        target.closest('.cursor-pointer')
-
-      setIsHovering(!!isHoverable)
-    }
-
-    window.addEventListener('mousemove', handleMouseMove)
-    window.addEventListener('mousemove', handleHoverCheck)
-    window.addEventListener('mouseleave', handleMouseLeave)
-    window.addEventListener('mouseenter', handleMouseEnter)
-    window.addEventListener('mousedown', handleMouseDown)
-    window.addEventListener('mouseup', handleMouseUp)
+    window.addEventListener('pointermove', onMove, { passive: true })
+    window.addEventListener('pointerdown', onDown, { passive: true })
+    window.addEventListener('pointerup', onUp, { passive: true })
 
     return () => {
-      window.removeEventListener('mousemove', handleMouseMove)
-      window.removeEventListener('mousemove', handleHoverCheck)
-      window.removeEventListener('mouseleave', handleMouseLeave)
-      window.removeEventListener('mouseenter', handleMouseEnter)
-      window.removeEventListener('mousedown', handleMouseDown)
-      window.removeEventListener('mouseup', handleMouseUp)
+      cancelAnimationFrame(raf)
+      document.documentElement.classList.remove('cursor-reticle')
+      window.removeEventListener('pointermove', onMove)
+      window.removeEventListener('pointerdown', onDown)
+      window.removeEventListener('pointerup', onUp)
     }
-  }, [cursorX, cursorY])
-
-  // Hide on mobile/touch devices
-  if (typeof window !== 'undefined' && 'ontouchstart' in window) {
-    return null
-  }
-
-  return (
-    <>
-      {/* Main cursor dot */}
-      <motion.div
-        className="fixed top-0 left-0 pointer-events-none z-[9999] mix-blend-difference"
-        style={{
-          x: cursorXSpring,
-          y: cursorYSpring,
-        }}
-        animate={{
-          scale: isClicking ? 0.8 : isHovering ? 1.5 : 1,
-          opacity: isVisible ? 1 : 0,
-        }}
-        transition={{ duration: 0.15 }}
-      >
-        <div
-          className="relative -translate-x-1/2 -translate-y-1/2"
-          style={{
-            width: isHovering ? 40 : 12,
-            height: isHovering ? 40 : 12,
-          }}
-        >
-          <div
-            className={`absolute inset-0 rounded-full bg-white transition-all duration-200 ${
-              isHovering ? 'opacity-20' : 'opacity-100'
-            }`}
-          />
-          {isHovering && (
-            <div className="absolute inset-0 rounded-full border border-white/50" />
-          )}
-        </div>
-      </motion.div>
-
-      {/* Trailing glow */}
-      <motion.div
-        className="fixed top-0 left-0 pointer-events-none z-[9998]"
-        style={{
-          x: cursorXSpring,
-          y: cursorYSpring,
-        }}
-        animate={{
-          opacity: isVisible ? 0.3 : 0,
-        }}
-      >
-        <div
-          className="relative -translate-x-1/2 -translate-y-1/2 w-32 h-32 rounded-full"
-          style={{
-            background: 'radial-gradient(circle, rgba(var(--effect-rgb),0.1) 0%, transparent 70%)',
-          }}
-        />
-      </motion.div>
-    </>
-  )
-}
-
-// Simpler spotlight that follows cursor (for backgrounds)
-export function CursorSpotlight() {
-  const [position, setPosition] = useState({ x: 0, y: 0 })
-
-  useEffect(() => {
-    const handleMouseMove = (e: MouseEvent) => {
-      setPosition({ x: e.clientX, y: e.clientY })
-    }
-
-    window.addEventListener('mousemove', handleMouseMove)
-    return () => window.removeEventListener('mousemove', handleMouseMove)
   }, [])
 
   return (
-    <div
-      className="pointer-events-none fixed inset-0 z-30 transition-opacity duration-300"
-      style={{
-        background: `radial-gradient(800px circle at ${position.x}px ${position.y}px, rgba(var(--effect-rgb),0.03), transparent 40%)`,
-      }}
-    />
+    <>
+      <div
+        ref={ringRef}
+        aria-hidden
+        className="pointer-events-none fixed left-0 top-0 z-[9999] opacity-0 will-change-transform"
+        style={{ mixBlendMode: 'difference' }}
+      >
+        <svg width="34" height="34" viewBox="0 0 34 34" fill="none" stroke="#fff" strokeWidth="1.25">
+          <title>cursor</title>
+          {/* corner brackets */}
+          <path d="M3 9V3h6" />
+          <path d="M25 3h6v6" />
+          <path d="M31 25v6h-6" />
+          <path d="M9 31H3v-6" />
+          {/* centre ticks */}
+          <path d="M17 13v3M17 18v3M13 17h3M18 17h3" strokeWidth="1" />
+        </svg>
+      </div>
+      <div
+        ref={dotRef}
+        aria-hidden
+        className="pointer-events-none fixed left-0 top-0 z-[9999] h-[5px] w-[5px] rounded-full bg-white opacity-0 will-change-transform"
+        style={{ mixBlendMode: 'difference' }}
+      />
+    </>
   )
 }

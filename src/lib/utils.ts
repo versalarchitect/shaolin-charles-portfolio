@@ -1,13 +1,14 @@
-import { clsx, type ClassValue } from 'clsx'
+import { type ClassValue, clsx } from 'clsx'
 import { twMerge } from 'tailwind-merge'
 
-/**
- * Tailwind CSS class name merger
- * Combines clsx for conditional classes and tailwind-merge to handle conflicts
- * @param inputs - Class names to merge
- * @returns Merged class string
- */
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
 
+export const clamp = (v: number, min: number, max: number) => Math.min(max, Math.max(min, v))
+
+export const lerp = (a: number, b: number, t: number) => a + (b - a) * t
+
+/** Smooth, frame-rate-independent easing toward a target. */
+export const damp = (current: number, target: number, smoothing: number, dt: number) =>
+  lerp(current, target, 1 - smoothing ** (dt * 60))

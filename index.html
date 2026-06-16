@@ -1,281 +1,39 @@
-<!DOCTYPE html>
-<html lang="fr">
+<!doctype html>
+<html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <script>
-      (function() {
-        try {
-          var t = localStorage.getItem('theme') || 'dark';
-          var d = t === 'dark' || (t === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches);
-          document.documentElement.classList.toggle('dark', d);
-          document.documentElement.style.colorScheme = d ? 'dark' : 'light';
-          document.documentElement.style.setProperty('--shell-bg', d ? '#141417' : '#f9f9f9');
-          document.documentElement.style.setProperty('--shell-fg', d ? '#f5f5f7' : '#09090b');
-          var ct = localStorage.getItem('cosmetic-theme');
-          if (ct && ['midnight','ghost','terminal','blueprint'].indexOf(ct) !== -1) {
-            document.documentElement.classList.add('cosmetic-' + ct);
-          }
-          var lang = localStorage.getItem('charles-portfolio-lang');
-          if (lang) document.documentElement.lang = lang;
-        } catch(e) { document.documentElement.classList.add('dark'); }
-      })();
-    </script>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
 
-    <!-- Primary Meta Tags -->
-    <title>Charles Jackson — Learn to Direct AI Agents That Build Real Software</title>
-    <meta name="title" content="Charles Jackson — Learn to Direct AI Agents That Build Real Software" />
-    <meta name="description" content="No coding required. Learn to direct AI agents that build real software for your business. 52 hours from zero to orchestrating teams of AI agents. $4,500, lifetime access." />
-    <meta name="author" content="Charles Jackson" />
-    <meta name="keywords" content="ai agent course for entrepreneurs, direct ai agents, ai agent orchestration, build software with ai, no code ai course, ai for business owners, ai agents for non-technical founders, charles jackson" />
-    <meta name="creator" content="Charles Jackson" />
-    <meta name="publisher" content="Charles Jackson" />
-    <meta name="generator" content="Vite + React" />
-    <meta name="referrer" content="origin-when-cross-origin" />
+    <title>Charles Jackson — Agentic Systems Engineer</title>
+    <meta
+      name="description"
+      content="Charles Jackson builds agentic systems — software that perceives, decides, and acts."
+    />
 
-    <!-- Resource Hints for Performance -->
-    <link rel="preconnect" href="https://myfdondnarpvqvasyxtl.supabase.co" />
-    <link rel="dns-prefetch" href="https://myfdondnarpvqvasyxtl.supabase.co" />
+    <meta name="theme-color" content="#f3f2f0" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0a0a0a" media="(prefers-color-scheme: dark)" />
 
-    <!-- Web App Manifest -->
-    <link rel="manifest" href="/site.webmanifest" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
 
-    <!-- Canonical URL -->
-    <link rel="canonical" href="https://charlesjackson.dev" />
-
-    <!-- Hreflang for multilingual SEO -->
-    <link rel="alternate" hreflang="en" href="https://charlesjackson.dev" />
-    <link rel="alternate" hreflang="fr" href="https://charlesjackson.dev/?lng=fr" />
-    <link rel="alternate" hreflang="x-default" href="https://charlesjackson.dev/?lng=fr" />
-
-    <!-- Open Graph / Facebook / LinkedIn / Discord / Slack / WhatsApp / Telegram / iMessage -->
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://charlesjackson.dev" />
-    <meta property="og:site_name" content="Charles Jackson" />
-    <meta property="og:title" content="Direct AI Agents That Build Real Software — The Agentic SaaS Course" />
-    <meta property="og:description" content="No coding required. 52 hours from zero to directing teams of AI agents that build working software. $4,500, lifetime access." />
-    <meta property="og:image" content="https://charlesjackson.dev/og-image.png" />
-    <meta property="og:image:secure_url" content="https://charlesjackson.dev/og-image.png" />
-    <meta property="og:image:type" content="image/png" />
-    <meta property="og:image:width" content="1200" />
-    <meta property="og:image:height" content="630" />
-    <meta property="og:image:alt" content="The Agentic SaaS Course — Charles Jackson" />
-    <meta property="og:locale" content="en_US" />
-    <meta property="og:locale:alternate" content="fr_CA" />
-
-    <!-- Twitter / X -->
+    <meta property="og:title" content="Charles Jackson — Agentic Systems Engineer" />
+    <meta property="og:description" content="Software that perceives, decides, and acts." />
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:site" content="@shaolincharles" />
-    <meta name="twitter:creator" content="@shaolincharles" />
-    <meta name="twitter:domain" content="charlesjackson.dev" />
-    <meta name="twitter:url" content="https://charlesjackson.dev" />
-    <meta name="twitter:title" content="Direct AI Agents That Build Real Software — The Agentic SaaS Course" />
-    <meta name="twitter:description" content="No coding required. 52 hours from zero to directing teams of AI agents that build working software. $4,500, lifetime access." />
-    <meta name="twitter:image" content="https://charlesjackson.dev/og-image.png" />
-    <meta name="twitter:image:alt" content="The Agentic SaaS Course — Charles Jackson" />
 
-    <!-- Schema.org / Google+ / Pinterest microdata -->
-    <meta itemprop="name" content="Direct AI Agents That Build Real Software — The Agentic SaaS Course" />
-    <meta itemprop="description" content="No coding required. 52 hours from zero to directing teams of AI agents that build working software. $4,500, lifetime access." />
-    <meta itemprop="image" content="https://charlesjackson.dev/og-image.png" />
-
-    <!-- LinkedIn specific (uses OG but sometimes needs nudging) -->
-    <meta name="linkedin:owner" content="Charles Jackson" />
-
-    <!-- Favicon and Icons -->
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
-    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
-    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
-
-    <!-- Theme Color (for browser UI) -->
-    <meta name="theme-color" content="#09090b" media="(prefers-color-scheme: dark)" />
-    <meta name="theme-color" content="#f9f9f9" media="(prefers-color-scheme: light)" />
-    <meta name="msapplication-TileColor" content="#09090b" />
-    <meta name="color-scheme" content="dark light" />
-
-    <!-- Apple Mobile Web App -->
-    <meta name="mobile-web-app-capable" content="yes" />
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-    <meta name="apple-mobile-web-app-title" content="Charles Jackson" />
-    <meta name="format-detection" content="telephone=no" />
-
-    <!-- Robots -->
-    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
-    <meta name="googlebot" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
-
-    <!-- Geo Tags -->
-    <meta name="geo.region" content="CA-QC" />
-    <meta name="geo.placename" content="Montreal" />
-
-    <!-- Structured Data / JSON-LD: WebSite (sitelinks search box) -->
-    <script type="application/ld+json">
-      {
-        "@context": "https://schema.org",
-        "@type": "WebSite",
-        "name": "Charles Jackson",
-        "alternateName": "The Agentic SaaS Course",
-        "url": "https://charlesjackson.dev",
-        "inLanguage": ["en", "fr"],
-        "publisher": {
-          "@type": "Person",
-          "name": "Charles Jackson"
-        }
-      }
-    </script>
-
-    <!-- Structured Data / JSON-LD: Person -->
-    <script type="application/ld+json">
-      {
-        "@context": "https://schema.org",
-        "@type": "Person",
-        "name": "Charles Jackson",
-        "url": "https://charlesjackson.dev",
-        "image": "https://charlesjackson.dev/og-image.png",
-        "jobTitle": "AI Agent Orchestration Instructor",
-        "description": "Instructor teaching entrepreneurs and builders how to direct AI agents that build real software. 10+ years building products for startups that raised $400M+.",
-        "sameAs": [
-          "https://github.com/versalarchitect"
-        ],
-        "knowsAbout": ["React", "Next.js", "TypeScript", "Python", "Node.js", "PostgreSQL", "Supabase", "Claude Code", "AI-Assisted Development", "Software Architecture", "Web Development", "Vercel"],
-        "address": {
-          "@type": "PostalAddress",
-          "addressLocality": "Montreal",
-          "addressRegion": "Quebec",
-          "addressCountry": "CA"
-        },
-        "worksFor": {
-          "@type": "Organization",
-          "name": "Predictive (Augure)",
-          "url": "https://augure.app"
-        }
-      }
-    </script>
-
-    <!-- Structured Data / JSON-LD: Course -->
-    <script type="application/ld+json">
-      {
-        "@context": "https://schema.org",
-        "@type": "Course",
-        "name": "The Agentic SaaS Course",
-        "description": "No coding required. Learn to direct AI agents that build real software for your business. 52 hours from zero to orchestrating teams of AI agents. 4 tiers, 4 real-world projects, 8 principles.",
-        "url": "https://charlesjackson.dev",
-        "provider": {
-          "@type": "Person",
-          "name": "Charles Jackson",
-          "url": "https://charlesjackson.dev/instructor"
-        },
-        "educationalLevel": "Beginner to Advanced",
-        "teaches": ["Multi-Agent Orchestration", "AI Agent Coordination", "Context Windows", "Token Management", "MCP Servers", "Spec-Driven Development", "Agent Verification", "Production Agent Systems", "System Architecture", "Claude Code"],
-        "numberOfCredits": "52 hours",
-        "hasCourseInstance": [
-          {
-            "@type": "CourseInstance",
-            "courseMode": "Online",
-            "courseWorkload": "PT52H"
-          }
-        ],
-        "aggregateRating": {
-          "@type": "AggregateRating",
-          "ratingValue": "5",
-          "reviewCount": "3",
-          "bestRating": "5",
-          "worstRating": "1"
-        },
-        "review": [
-          {
-            "@type": "Review",
-            "author": { "@type": "Person", "name": "Alex Chen" },
-            "reviewRating": { "@type": "Rating", "ratingValue": "5", "bestRating": "5" },
-            "reviewBody": "This course completely changed how I think about AI-assisted development. The principles stuck with me long after the tools changed."
-          },
-          {
-            "@type": "Review",
-            "author": { "@type": "Person", "name": "Sarah Martinez" },
-            "reviewRating": { "@type": "Rating", "ratingValue": "5", "bestRating": "5" },
-            "reviewBody": "The capstone system is genius. You can't fake your way through—you have to actually ship. Worth every dollar."
-          },
-          {
-            "@type": "Review",
-            "author": { "@type": "Person", "name": "Jordan Osei" },
-            "reviewRating": { "@type": "Rating", "ratingValue": "5", "bestRating": "5" },
-            "reviewBody": "I went from copying ChatGPT outputs to actually understanding when to use AI and when not to. Highly recommended."
-          }
-        ]
-      }
-    </script>
-
-    <!-- Structured Data / JSON-LD: FAQ -->
-    <script type="application/ld+json">
-      {
-        "@context": "https://schema.org",
-        "@type": "FAQPage",
-        "mainEntity": [
-          {
-            "@type": "Question",
-            "name": "How long is the Agentic SaaS Course?",
-            "acceptedAnswer": {
-              "@type": "Answer",
-              "text": "52 hours of interactive instruction across 51 lessons in 4 tiers: Understand How AI Works (8 hours), Direct a Single Agent (12 hours), Orchestrate Multiple Agents (15 hours), and Design Your Agent Workflow (15 hours), plus 2 hours of prework."
-            }
-          },
-          {
-            "@type": "Question",
-            "name": "What will I build during the course?",
-            "acceptedAnswer": {
-              "@type": "Answer",
-              "text": "You'll ship 4 real-world projects, one per tier: an agent-built tool deployed live (Tier 1), a complete product built by directing one agent (Tier 2), a live product built by a coordinated team of agents (Tier 3), and a system designed for agent workflows (Tier 4)."
-            }
-          },
-          {
-            "@type": "Question",
-            "name": "What technologies does the course cover?",
-            "acceptedAnswer": {
-              "@type": "Answer",
-              "text": "The course teaches multi-agent orchestration using Claude Code, Next.js, TypeScript, Supabase, and Vercel. The focus is on orchestration patterns — task splitting, agent verification, parallel coordination — that transfer to any AI tool or stack."
-            }
-          },
-          {
-            "@type": "Question",
-            "name": "How much does the course cost?",
-            "acceptedAnswer": {
-              "@type": "Answer",
-              "text": "The Agentic SaaS Course is $4,500 USD — a one-time payment for lifetime access to all 4 tiers, 52 hours of instruction, 51 lessons, and all future updates. No subscriptions, no hidden fees."
-            }
-          },
-          {
-            "@type": "Question",
-            "name": "Who is the instructor?",
-            "acceptedAnswer": {
-              "@type": "Answer",
-              "text": "Charles Jackson has 10+ years of experience building products for startups that raised $400M+ combined. He's the CTO of MicroHabitat and founder of Cursuum, and teaches entrepreneurs how to direct AI agents."
-            }
-          }
-        ]
-      }
-    </script>
-
-    <!-- Structured Data / JSON-LD: BreadcrumbList -->
-    <script type="application/ld+json">
-      {
-        "@context": "https://schema.org",
-        "@type": "BreadcrumbList",
-        "itemListElement": [
-          { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://charlesjackson.dev/" },
-          { "@type": "ListItem", "position": 2, "name": "Curriculum", "item": "https://charlesjackson.dev/curriculum" },
-          { "@type": "ListItem", "position": 3, "name": "Principles", "item": "https://charlesjackson.dev/principles" },
-          { "@type": "ListItem", "position": 4, "name": "Tiers", "item": "https://charlesjackson.dev/tiers" },
-          { "@type": "ListItem", "position": 5, "name": "Instructor", "item": "https://charlesjackson.dev/instructor" },
-          { "@type": "ListItem", "position": 6, "name": "About", "item": "https://charlesjackson.dev/about" },
-          { "@type": "ListItem", "position": 7, "name": "Projects", "item": "https://charlesjackson.dev/projects" },
-          { "@type": "ListItem", "position": 8, "name": "Blog", "item": "https://charlesjackson.dev/blog" },
-          { "@type": "ListItem", "position": 9, "name": "Contact", "item": "https://charlesjackson.dev/contact" }
-        ]
-      }
+    <script>
+      // FOUC-free theme. Default is LIGHT: stay light unless the user explicitly
+      // chose dark, or chose "system" and the OS prefers dark.
+      (function () {
+        try {
+          var t = localStorage.getItem('theme')
+          var dark = t === 'dark' || (t === 'system' && matchMedia('(prefers-color-scheme: dark)').matches)
+          if (dark) document.documentElement.classList.add('dark')
+        } catch (e) {}
+      })()
     </script>
   </head>
   <body>
-    <div id="app-shell" style="position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:var(--shell-bg,#141417);color:var(--shell-fg,#f5f5f7);font-family:system-ui,sans-serif;z-index:9999;transition:opacity 0.3s ease-out"><div style="text-align:center"><div style="font-size:clamp(2rem,5vw,3.5rem);font-weight:700;letter-spacing:-0.02em;margin-bottom:0.5rem">Charles Jackson</div><div style="font-size:1rem;opacity:0.5">Loading...</div></div></div>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
