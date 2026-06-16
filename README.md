@@ -1,8 +1,8 @@
 # charlesjackson.dev
 
-Personal site for **Charles Jackson** — agentic systems engineer. A monochrome,
-ASCII-driven "agent interface": a living black-and-white surface that reacts to
-your cursor. Light mode by default, with a dark toggle.
+Personal site for **Charles Jackson** — agentic systems engineer. A minimal,
+monochrome interface: a soft shaded black-and-white surface with a cursor-driven
+gravity field and a reticle cursor. Light mode.
 
 ```bash
 bun install
@@ -16,12 +16,13 @@ React 19 · TypeScript · Vite · Tailwind v4 · Motion · shadcn/ui · Biome ·
 
 ## Highlights
 
-- **Interactive ASCII field** — a canvas of monospace glyphs that blooms into
-  shapes under the cursor (`src/components/ascii-field.tsx`).
-- **The agent** — an ASCII face whose eyes track your cursor, blinks, and reacts
-  (`src/components/agent-face.tsx`).
-- **Reticle cursor** — a crosshair that inverts over any surface.
-- Fully themed (light default / dark), responsive, and `prefers-reduced-motion`-aware.
+- **Cursor gravity** — a soft shade-mass in the background is pulled toward the
+  cursor with heavy inertia (`src/components/cursor-gravity.tsx`).
+- **Reticle cursor** — a crosshair that inverts over any surface
+  (`src/components/custom-cursor.tsx`).
+- **Minimal & monochrome** — soft shaded off-white, Chakra Petch / Space Grotesk /
+  Space Mono, a strict 24px viewport frame.
+- Responsive and `prefers-reduced-motion`-aware.
 
 ## Conventions
 

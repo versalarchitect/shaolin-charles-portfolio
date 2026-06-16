@@ -15,7 +15,7 @@ export function BottomBar() {
           <span key={k} className="flex items-center gap-2">
             <span className="text-foreground/30">{k}</span>
             {k === 'sys' && (
-              <span className="relative flex h-1 w-1">
+              <span aria-hidden className="relative flex h-1 w-1">
                 <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-foreground/50" />
                 <span className="relative inline-flex h-1 w-1 rounded-full bg-foreground/80" />
               </span>

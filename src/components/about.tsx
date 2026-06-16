@@ -6,7 +6,7 @@ const SPECS: [string, string][] = [
   ['focus', 'agents · llm systems'],
   ['stack', 'typescript · python'],
   ['location', 'remote / montréal'],
-  ['status', 'open to work'],
+  ['status', 'building'],
 ]
 
 export function About() {
@@ -17,7 +17,7 @@ export function About() {
         label="about"
         title={
           <>
-            Software that acts — <span className="text-foreground/40">not just responds.</span>
+            I build software <span className="text-foreground/40">that runs itself.</span>
           </>
         }
       />

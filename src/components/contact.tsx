@@ -1,7 +1,7 @@
 import { site } from '@/lib/site'
 import { Reveal, Section, SectionHeader } from './section'
 import { SpotlightCard } from './spotlight-card'
-import { Button } from './ui/button'
+import { buttonVariants } from './ui/button'
 
 export function Contact() {
   return (
@@ -11,7 +11,7 @@ export function Contact() {
         label="contact"
         title={
           <>
-            Let's build something <span className="text-foreground/40">autonomous.</span>
+            Find me <span className="text-foreground/40">here.</span>
           </>
         }
       />
@@ -21,26 +21,32 @@ export function Contact() {
           <div className="grid items-center gap-10 md:grid-cols-2">
             <div>
               <p className="max-w-md text-lg text-foreground/65 md:text-xl">
-                Building an agent, an LLM product, or something that should run itself? I'm taking on
-                select work.
+                Building an agent, an LLM product, or something that should run itself? Email's the
+                best way to reach me.
               </p>
 
               <div className="mt-8 flex flex-wrap gap-3">
-                <a href={`mailto:${site.email}`}>
-                  <Button size="lg" data-cursor="hover">
-                    email me
-                    <span aria-hidden className="font-mono">
-                      ↗
-                    </span>
-                  </Button>
+                <a
+                  href={`mailto:${site.email}`}
+                  data-cursor="hover"
+                  className={buttonVariants({ size: 'lg' })}
+                >
+                  email me
+                  <span aria-hidden className="font-mono">
+                    ↗
+                  </span>
                 </a>
-                <a href={site.github} target="_blank" rel="noreferrer noopener">
-                  <Button size="lg" variant="outline" data-cursor="hover">
-                    github
-                    <span aria-hidden className="font-mono">
-                      ↗
-                    </span>
-                  </Button>
+                <a
+                  href={site.github}
+                  target="_blank"
+                  rel="noreferrer noopener"
+                  data-cursor="hover"
+                  className={buttonVariants({ size: 'lg', variant: 'outline' })}
+                >
+                  github
+                  <span aria-hidden className="font-mono">
+                    ↗
+                  </span>
                 </a>
               </div>
 

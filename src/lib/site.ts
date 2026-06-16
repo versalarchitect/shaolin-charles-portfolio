@@ -14,14 +14,6 @@ export const site = {
   github: 'https://github.com/versalarchitect',
   githubHandle: 'versalarchitect',
 
-  // Hero rotating taglines (typed out one after another)
-  taglines: [
-    'software that perceives, decides, and acts.',
-    'i build agents that build.',
-    'autonomous systems, end to end.',
-    'humans set intent. agents do the rest.',
-  ],
-
   nav: [
     { label: 'about', href: '#about' },
     { label: 'work', href: '#work' },
@@ -30,8 +22,8 @@ export const site = {
   ],
 
   manifesto: [
-    'I design and ship autonomous software — systems that observe a goal, reason about it, and take real action without a human in the loop for every step.',
-    'The interesting work now lives between models and the world: tools, memory, orchestration, and the taste to know when the machine should act and when it should ask.',
+    'Engineer and founder, working on agentic systems — software that takes a goal and carries it out: planning, using tools, and acting without a person steering every step.',
+    'I build the products and the companies around them. The part that interests me is making autonomy dependable enough to trust with real work.',
   ],
 
   capabilities: [
@@ -53,15 +45,39 @@ export const site = {
     {
       tag: '04',
       title: 'Creative engineering',
-      body: 'Generative & real-time graphics — canvas, shaders, and interfaces that feel alive.',
+      body: 'Generative and real-time graphics — canvas, shaders, and motion.',
     },
   ],
 
-  // Placeholder slots — real case studies get wired in later.
   work: [
-    { id: '01', name: 'PROJECT_ONE', kind: 'autonomous agent platform', status: 'in flight' },
-    { id: '02', name: 'PROJECT_TWO', kind: 'real-time LLM interface', status: 'in flight' },
-    { id: '03', name: 'PROJECT_THREE', kind: 'creative systems lab', status: 'soon' },
+    {
+      id: '01',
+      name: 'Predictive',
+      kind: 'agentic software company',
+      domain: 'predictive.company',
+      url: 'https://predictive.company',
+    },
+    {
+      id: '02',
+      name: 'MicroHabitat',
+      kind: 'urban farming at city scale',
+      domain: 'microhabitat.com',
+      url: 'https://microhabitat.com',
+    },
+    {
+      id: '03',
+      name: 'MyUrbanFarm',
+      kind: 'the platform behind the farms',
+      domain: 'myurbanfarm.ai',
+      url: 'https://myurbanfarm.ai',
+    },
+    {
+      id: '04',
+      name: 'Direct AI Agents',
+      kind: 'learn to direct AI coding agents',
+      domain: 'directaiagents.com',
+      url: 'https://directaiagents.com',
+    },
   ],
 } as const
 

@@ -1,6 +1,7 @@
 import { About } from './components/about'
 import { BottomBar } from './components/bottom-bar'
 import { Capabilities } from './components/capabilities'
+import { ChromeField } from './components/chrome-field'
 import { Contact } from './components/contact'
 import { CustomCursor } from './components/custom-cursor'
 import { Footer } from './components/footer'
@@ -11,6 +12,7 @@ import { Work } from './components/work'
 export function App() {
   return (
     <>
+      <ChromeField />
       <CustomCursor />
       <Nav />
       <main>
