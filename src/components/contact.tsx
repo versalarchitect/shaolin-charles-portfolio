@@ -75,7 +75,7 @@ export function Contact() {
                     <span className="text-foreground/30">re&nbsp;&nbsp;</span>a new system
                   </p>
                   <p>
-                    <span className="text-foreground/30">loc&nbsp;</span>remote / montréal
+                    <span className="text-foreground/30">loc&nbsp;</span>remote / vancouver
                   </p>
                   <p>
                     <span className="text-foreground/30">eta&nbsp;</span>&lt; 24h

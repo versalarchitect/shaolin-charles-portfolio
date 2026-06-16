@@ -5,7 +5,7 @@ const SPECS: [string, string][] = [
   ['role', 'agentic systems eng.'],
   ['focus', 'agents · llm systems'],
   ['stack', 'typescript · python'],
-  ['location', 'remote / montréal'],
+  ['location', 'remote / vancouver'],
   ['status', 'building'],
 ]
 
@@ -34,7 +34,7 @@ export function About() {
         </div>
 
         <Reveal delay={0.12} className="lg:col-span-5">
-          <div className="overflow-hidden rounded-2xl border border-foreground/12 bg-foreground/[0.02]">
+          <div className="overflow-hidden rounded-2xl border border-foreground/10 bg-background/55 shadow-lg shadow-foreground/[0.06] backdrop-blur-md">
             <div className="flex items-center justify-between border-b border-foreground/10 px-4 py-2.5 font-mono text-[11px] text-foreground/45">
               <span>~/charles.spec</span>
               <span aria-hidden>◦ ◦ ◦</span>

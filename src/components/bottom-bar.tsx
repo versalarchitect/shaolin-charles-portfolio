@@ -1,7 +1,7 @@
 const CELLS: [string, string][] = [
-  ['lat', '45.50°N'],
-  ['lon', '73.56°W'],
-  ['loc', 'Montréal'],
+  ['lat', '49.28°N'],
+  ['lon', '123.12°W'],
+  ['loc', 'Vancouver'],
   ['sys', 'online'],
   ['ver', '1.0'],
 ]

@@ -2,9 +2,9 @@ import { useEffect, useRef } from 'react'
 import { pointer } from '@/lib/pointer'
 
 /**
- * A soft "chrome" background — a slow, creamy liquid-metal flow with a faint
- * sparkle that ripples toward the cursor. Pure WebGL, monochrome, very subtle.
- * Falls back silently to the flat page background if WebGL is unavailable.
+ * A soft "chrome" background — a slow, creamy liquid-metal flow that ripples
+ * toward the cursor. Pure WebGL, monochrome, very subtle. Falls back silently
+ * to the flat page background if WebGL is unavailable.
  */
 
 const VERT = `
@@ -42,26 +42,28 @@ void main(){
   vec2 p = vec2(uv.x * asp, uv.y);
   float t = u_time;
 
-  // domain-warped flow → soft metallic waves
-  vec2 q = vec2(fbm(p * 1.8 + vec2(0.0, t * 0.05)), fbm(p * 1.8 + vec2(t * 0.04, 0.0) + 4.3));
-  float n = fbm(p * 2.6 + q * 1.4);
-  float bands = 0.5 + 0.5 * sin((n * 4.0 + q.x * 1.5) * 3.14159 + t * 0.15);
-  bands = smoothstep(0.12, 0.88, bands);
+  // liquid domain warp → flowing chrome
+  vec2 w = vec2(fbm(p * 1.5 + vec2(0.0, t * 0.045)), fbm(p * 1.5 + vec2(t * 0.038, 2.1)));
+  float n = fbm(p * 2.4 + w * 1.3);
 
-  // cursor influence — soft brighten + ripple toward the pointer
+  // broad soft waves blended with a finer ripple for reflective depth
+  float waves = 0.5 + 0.5 * sin((n * 3.2 + w.x * 1.5) * 3.14159 + t * 0.12);
+  float fine = 0.5 + 0.5 * sin((n * 7.5 + w.y * 2.0) * 3.14159 - t * 0.16);
+  waves = smoothstep(0.22, 0.78, waves);
+  waves = mix(waves, fine, 0.2);
+
+  // soft metallic sheen riding the crests
+  float sheen = smoothstep(0.74, 0.99, waves);
+
+  // cursor — soft brighten + gentle ripple
   vec2 m = vec2(u_mouse.x * asp, u_mouse.y);
   float md = distance(p, m);
-  float infl = exp(-md * md * 5.0);
-  bands += infl * (0.16 + 0.12 * sin(md * 26.0 - t * 1.6));
+  float infl = exp(-md * md * 4.5);
+  waves += infl * (0.1 + 0.08 * sin(md * 22.0 - t * 1.4));
 
-  vec3 col = mix(u_dark, u_light, clamp(bands, 0.0, 1.0));
-  col = mix(u_base, col, 0.55);
-
-  // sparkle — sparse twinkling points
-  vec2 sg = floor(uv * vec2(asp, 1.0) * 260.0);
-  float sh = hash(sg + floor(t * 1.3));
-  float spark = step(0.986, sh) * (0.55 + 0.45 * sin(t * 7.0 + sh * 50.0));
-  col += spark * 0.16;
+  vec3 col = mix(u_dark, u_light, clamp(waves, 0.0, 1.0));
+  col = mix(u_base, col, 0.42);
+  col += sheen * 0.04;
 
   gl_FragColor = vec4(col, 1.0);
 }
