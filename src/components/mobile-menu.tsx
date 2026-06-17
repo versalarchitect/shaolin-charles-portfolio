@@ -31,7 +31,7 @@ export function MobileMenu() {
         onClick={() => setOpen(true)}
         aria-label="Open menu"
         aria-expanded={open}
-        className="fixed right-6 top-6 z-[55] font-mono text-[11px] uppercase tracking-[0.2em] text-foreground/70 transition-colors hover:text-foreground"
+        className="fixed right-2 top-2 z-[55] p-4 font-mono text-[11px] uppercase tracking-[0.2em] text-foreground/70 transition-colors hover:text-foreground"
       >
         menu
       </button>

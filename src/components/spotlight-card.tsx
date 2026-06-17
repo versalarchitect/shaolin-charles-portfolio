@@ -8,6 +8,15 @@ type Props = HTMLAttributes<HTMLDivElement> & {
   radius?: number
 }
 
+/**
+ * The spotlight follows a real cursor and only shows on :hover — neither exists
+ * on touch, yet pointermove still fires during a scroll. Decide once so touch
+ * devices skip the getBoundingClientRect layout work entirely (keeps scrolling
+ * smooth on phones).
+ */
+const FINE_POINTER =
+  typeof window !== 'undefined' && window.matchMedia('(pointer: fine)').matches
+
 /** A bordered card with a monochrome spotlight that follows the cursor. */
 export function SpotlightCard({ className, children, radius = 360, ...props }: Props) {
   const ref = useRef<HTMLDivElement>(null)
@@ -23,7 +32,7 @@ export function SpotlightCard({ className, children, radius = 360, ...props }: P
   return (
     <div
       ref={ref}
-      onPointerMove={onMove}
+      onPointerMove={FINE_POINTER ? onMove : undefined}
       className={cn(
         'group glass-surface relative overflow-hidden rounded-2xl border border-foreground/15 shadow-2xl shadow-foreground/10 transition-[box-shadow,border-color] duration-300 hover:border-foreground/30 hover:shadow-foreground/[0.18]',
         className,

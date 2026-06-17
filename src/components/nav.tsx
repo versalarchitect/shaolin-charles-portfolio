@@ -22,7 +22,7 @@ export function Nav() {
       className={cn(
         'fixed inset-x-0 top-0 z-50 border-b transition-all duration-300',
         show
-          ? 'translate-y-0 border-foreground/10 bg-background/75 opacity-100 backdrop-blur-xl'
+          ? 'nav-surface translate-y-0 border-foreground/10 opacity-100'
           : 'pointer-events-none -translate-y-full border-transparent opacity-0',
       )}
     >

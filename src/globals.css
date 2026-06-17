@@ -113,6 +113,22 @@
   }
 }
 
+/* Sticky-nav surface. Frosted glass on real pointers; on touch a fixed backdrop
+   blur is re-sampled every scroll frame (severe jank), so fall back to a
+   near-opaque fill — visually almost identical, far cheaper to composite. */
+.nav-surface {
+  background-color: rgba(var(--background-rgb), 0.72);
+  -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: blur(16px);
+}
+@media (pointer: coarse) {
+  .nav-surface {
+    background-color: rgba(var(--background-rgb), 0.97);
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+}
+
 /* Global reduced-motion guard (JS loops are gated separately). */
 @media (prefers-reduced-motion: reduce) {
   html {
