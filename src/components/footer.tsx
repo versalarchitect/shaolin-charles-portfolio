@@ -19,7 +19,10 @@ export function Footer() {
             className="group inline-flex items-center gap-1.5 text-foreground/70 transition-colors hover:text-foreground"
           >
             email
-            <span aria-hidden className="text-foreground/40">
+            <span
+              aria-hidden
+              className="text-foreground/40 transition-transform duration-200 group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
+            >
               ↗
             </span>
           </a>
@@ -31,14 +34,17 @@ export function Footer() {
             className="group inline-flex items-center gap-1.5 text-foreground/70 transition-colors hover:text-foreground"
           >
             github
-            <span aria-hidden className="text-foreground/40">
+            <span
+              aria-hidden
+              className="text-foreground/40 transition-transform duration-200 group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
+            >
               ↗
             </span>
           </a>
         </div>
 
         <span className="font-mono text-[10px] uppercase tracking-[0.22em] text-foreground/35">
-          © 2026 · {site.domain}
+          © {new Date().getFullYear()} · {site.domain}
         </span>
       </div>
     </footer>

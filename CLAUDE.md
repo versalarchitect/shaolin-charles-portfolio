@@ -8,11 +8,13 @@
 # charlesjackson.dev
 
 Personal site for Charles Jackson — a minimal, monochrome "agent interface": a soft
-shaded black-&-white surface with a precise, cursor-driven HUD. Vite + React SPA,
-deployed to **charlesjackson.dev** on Vercel.
+shaded black-&-white surface under a liquid-chrome WebGL field that ripples toward the
+cursor, with a reticle cursor. Vite + React SPA, deployed to **charlesjackson.dev** on Vercel.
 
-The brand is the product. **Read `BRAND.md` before any visual or copy change** —
-it is the source of truth for colour, type, motion, the ASCII system, and content rules.
+The brand is the product. **Read `BRAND.md` before any visual or copy change** — it is the
+source of truth for colour, type, motion, layout, and content rules. A **`brand-keeper`
+subagent** (`.claude/agents/brand-keeper.md`) encodes those rules — invoke it before and
+after any visual or copy change to catch drift.
 
 ## Commands
 
@@ -34,17 +36,17 @@ React 19 · TypeScript · Vite 8 · Tailwind v4 (`@tailwindcss/vite`) · Motion
 ## Architecture (the non-obvious parts)
 
 - **`src/lib/site.ts`** — all copy and links. Edit content here, not in components.
-- **`src/lib/pointer.ts`** — global pointer state read by rAF loops *without* React
-  re-renders. The hero HUD and custom cursor read it inside their own tick.
-- **`src/components/hero-hud.tsx`** — the hero's centre interaction: faint crosshair
-  guides + a live coordinate readout track the cursor, a static reticle marks centre.
-  Writes transforms/`textContent` directly each frame; gates on `prefers-reduced-motion`.
-- **`src/components/custom-cursor.tsx`** — reticle cursor via `mix-blend-difference`.
-- **Theme:** `src/hooks/use-theme.tsx`, default **light**. Dark = `.dark` on `<html>`;
-  an inline script in `index.html` sets it before first paint (no FOUC).
-- **Background:** soft off-white (`--background`), never flat `#fff`; subtle corner
-  shading via `body::before` + `--shade-rgb`. `--effect-rgb` carries the theme colour
-  into HUD/cursor effects.
+- **`src/lib/pointer.ts`** — global pointer state (x / y / active) read inside a rAF loop
+  *without* React re-renders. The custom cursor tracks it each frame.
+- **`src/components/chrome-field.tsx`** — THE background: a full-viewport WebGL "chrome"
+  field (FBM-noise + domain-warped liquid-metal waves over the off-white base) that ripples
+  toward the cursor. Drops render scale and freezes on coarse pointers / reduced-motion.
+- **`src/components/custom-cursor.tsx`** — reticle cursor via `mix-blend-difference`,
+  fine-pointer only. (No centre HUD — the old `hero-hud.tsx` was removed.)
+- **Theme:** **light-only.** `src/hooks/use-theme.tsx` + the `index.html` inline script
+  still understand `.dark` on `<html>`, but the toggle was removed, so nothing flips it.
+- **Background colour:** soft off-white (`--background`), never flat `#fff`. `--effect-rgb`
+  carries the theme colour into the chrome field + cursor effects.
 
 ## Code style
 
@@ -52,7 +54,8 @@ React 19 · TypeScript · Vite 8 · Tailwind v4 (`@tailwindcss/vite`) · Motion
 - `cn()` (`@/lib/utils`) to compose classes. `@/*` → `src/*`.
 - **Semantic Tailwind tokens only** — `bg-background`, `text-foreground`,
   `border-border`. Greys via `text-foreground/60`. Never hardcode `bg-white`/`text-black`.
-- `font-mono` = Geist Mono for anything technical; `font-sans` = Geist for prose.
+- `font-mono` = Space Mono (technical); `font-sans` = Space Grotesk (prose);
+  `font-display` = Chakra Petch (wordmark/name).
 
 ## Brand rules — do not violate (full guide in `BRAND.md`)
 
@@ -60,8 +63,8 @@ React 19 · TypeScript · Vite 8 · Tailwind v4 (`@tailwindcss/vite`) · Motion
 - **Light is the default**, a soft shaded off-white — never flat `#fff`.
 - **24px gutters.** Content sits 24px from every viewport edge (`px-6`, `*-6`).
 - **Never two lines.** Wordmark, role lockup, footer name — each stays on one line.
-- **Role rides with the name** in the top bar (`CHARLES JACKSON │ agentic systems
-  engineer`); the theme toggle is a **bare** icon beside it — no sphere, never after the links.
+- **Role on its own line** directly under the wordmark (`CHARLES JACKSON`, then `agentic
+  systems engineer`) — never joined with a `│`. Light-only: there is **no theme toggle**.
 - **GitHub + email only. NEVER add LinkedIn.** Footer stays minimal.
 - **No mascots / ASCII faces.** The interaction is a calm precision HUD, not a character.
 - Every interaction respects `prefers-reduced-motion`.
@@ -71,9 +74,9 @@ React 19 · TypeScript · Vite 8 · Tailwind v4 (`@tailwindcss/vite`) · Motion
 - **Explore → plan → code → verify.** Use plan mode for multi-file or unfamiliar
   changes; skip it for one-line fixes you could describe in a sentence.
 - **YOU MUST verify before calling work done:** `bun run build` + `bun run typecheck`
-  + `bun run lint` all green, **and** screenshot the UI at 1440px and 375px in
-  **both** light and dark. Type-checking proves the code compiles, not that the
-  feature looks right.
+  + `bun run lint` all green; run the **`brand-keeper`** subagent on the diff; **and**
+  screenshot the UI at 1440px and 375px (the site is light-only). Type-checking proves the
+  code compiles, not that the feature looks right.
 - `/clear` between unrelated tasks to keep context clean.
 
 ## Deploy

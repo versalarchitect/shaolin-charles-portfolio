@@ -12,9 +12,9 @@
 systems that perceive a goal, reason about it, and act.
 
 **The idea.** The site is a **precision instrument**. A calm, monochrome surface,
-framed at its four corners, mostly empty in the centre — where a quiet cursor-driven
-HUD responds to you. Sophistication lives in the detail, not in density. Nothing is
-loud, nothing is a gimmick, nothing looks childish.
+framed at its four corners, mostly empty in the centre — where a slow liquid-chrome
+field bends toward your cursor. Sophistication lives in the detail, not in density.
+Nothing is loud, nothing is a gimmick, nothing looks childish.
 
 **Personality.** Precise · restrained · autonomous · exact.
 
@@ -31,7 +31,7 @@ loud, nothing is a gimmick, nothing looks childish.
 
 | Do | Don't |
 |---|---|
-| `> perceive · decide · act` | "Welcome to my amazing portfolio!" |
+| `> focused on building predictive systems` | "Welcome to my amazing portfolio!" |
 | `agentic systems engineer` | "I'm passionate about leveraging synergy 🚀" |
 
 ---
@@ -49,11 +49,10 @@ at reduced opacity — never separate hues.
 | `--effect-rgb` | `10, 10, 10` | `250, 250, 250` |
 | `--shade-rgb` | `28, 26, 22` | `210, 214, 224` |
 
-- **Never flat `#FFFFFF`.** The base is a soft off-white, and `body::before` lays four
-  *very subtle* radial gradients into the corners (`rgba(var(--shade-rgb), ~0.04)`) so
-  the page has depth without colour. In dark mode the corners glow faintly lighter.
-- **All effects** (HUD, glows, spotlights) use `rgba(var(--effect-rgb), a)` so they
-  invert correctly between themes.
+- **Never flat `#FFFFFF`.** The base is a soft off-white; the **chrome field** (§5) lays
+  slow monochrome depth over it, so the page is never flat-bright.
+- **All effects** (chrome field, glows, spotlights) use `rgba(var(--effect-rgb), a)` so they
+  read correctly on the off-white base.
 - **Inverted selection** (`::selection` → ink on paper / paper on ink).
 - **No status colours** — "online / available" is a small pulsing mono dot, never green.
 
@@ -81,22 +80,23 @@ as childish.
 
 ---
 
-## 5. The Interface — a precision HUD (the signature)
+## 5. The Interface — the chrome field (the signature)
 
-The centrepiece is **not** decoration or ASCII art. It is a calm instrument
-(`hero-hud.tsx`):
+The centrepiece is **not** decoration, a HUD, or ASCII art. It is a calm, full-viewport
+**liquid-chrome field** (`chrome-field.tsx`) behind everything:
 
-- **Crosshair guides** — faint hairlines (`foreground/15`) track the cursor across the
-  empty centre. Subtle, exact, never a glowing bloom.
-- **Live readout** — a small mono coordinate (`0.685 : 0.427`) follows the cursor.
-- **Centre reticle** — a static dashed ring + `+`, the focal anchor; a slow rotation
-  under `motion-safe`.
-- **Reticle cursor** (`custom-cursor.tsx`) — a crosshair that inverts over any surface
-  via `mix-blend-difference`; fine-pointer only.
+- **Liquid-metal waves** — a WebGL fragment shader (FBM noise + domain warping over the
+  off-white base) renders slow, monochrome chrome that drifts. Subtle, never busy.
+- **Cursor ripple** — the field bends gently *toward* the pointer. It rewards attention;
+  it never chases or demands it.
+- **Reticle cursor** (`custom-cursor.tsx`) — a crosshair that inverts over any surface via
+  `mix-blend-difference`; fine-pointer only.
+- **Restraint built in** — render scale drops and the field freezes on coarse pointers and
+  under `prefers-reduced-motion`.
 
 **Hard nos for this layer:** no constant radial that chases the mouse, no random vector
-fields, no ASCII "face" / mascot, no character animations. The interaction is felt in
-the *subtlety* — it should reward attention, not demand it.
+fields, no ASCII "face" / mascot, no character animations, no centre crosshair-HUD. The
+interaction is felt in the *subtlety*.
 
 ---
 
@@ -105,10 +105,10 @@ the *subtlety* — it should reward attention, not demand it.
 Animation communicates; it is not decoration. (Inherits the animation-first philosophy
 from `~/code/CLAUDE.md`.)
 
-- **Cursor HUD** — guides + readout track the pointer; eased, faint.
+- **Chrome field** — slow liquid-metal drift; bends toward the cursor; eased, faint.
 - **Scroll reveals** — fade (+ small rise), staggered, `once: true`, ease `[0.22,1,0.36,1]`.
-- **Theme toggle** — a bare icon (no border) cross-fades sun/moon.
-- **Micro-interactions** — link hover, button press scale, spotlight cards.
+- **Micro-interactions** — link hover, button press scale, spotlight cards, directional
+  arrows (`↗`/`↓`) that nudge on hover.
 - **Budgets:** 150–300ms micro, 300–600ms reveals. GPU-only (`transform`, `opacity`).
   Always honour `prefers-reduced-motion`.
 
@@ -121,8 +121,9 @@ from `~/code/CLAUDE.md`.)
 - **The hero is a frame.** Four corners carry content; the centre is empty but for the
   HUD. Top bar = identity left, links right. Bottom bar = telemetry strip. Footer = the
   big cybernetic name (bottom-left) + channels (bottom-right).
-- **Top-bar lockup:** `CHARLES JACKSON` │ `agentic systems engineer` + a **bare** theme
-  icon — in that order, the role riding with the name, on one line.
+- **Top-bar lockup:** the `CHARLES JACKSON` wordmark with `agentic systems engineer` on its
+  own line directly beneath it (not joined by a `│`); nav links sit top-right. Light-only —
+  no theme toggle.
 - **Content sections** (about/work/stack/contact) are centred columns (`max-w-6xl`),
   not full-bleed.
 - **Cards** (`spotlight-card.tsx`): `rounded-2xl`, `border-foreground/10`,
@@ -147,7 +148,7 @@ from `~/code/CLAUDE.md`.)
 - ✗ The ASCII agent face / any mascot or character animation.
 - ✗ A constant radial or random vector field chasing the cursor.
 - ✗ Two-line wraps — the wordmark, role lockup, and footer name stay one line.
-- ✗ The theme toggle inside a circle/sphere, or trailing the nav links.
+- ✗ Re-introducing a theme toggle (the site is light-only), or a centre crosshair-HUD.
 - ✗ Content closer than 24px to a viewport edge.
 - ✗ LinkedIn, anywhere. Hardcoded `bg-white`/`text-black`. Heavy shadows.
 

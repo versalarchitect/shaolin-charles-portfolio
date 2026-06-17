@@ -29,10 +29,13 @@ export function Contact() {
                 <a
                   href={`mailto:${site.email}`}
                   data-cursor="hover"
-                  className={buttonVariants({ size: 'lg' })}
+                  className={buttonVariants({ size: 'lg', className: 'group' })}
                 >
                   email me
-                  <span aria-hidden className="font-mono">
+                  <span
+                    aria-hidden
+                    className="font-mono transition-transform duration-200 group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
+                  >
                     ↗
                   </span>
                 </a>
@@ -41,10 +44,13 @@ export function Contact() {
                   target="_blank"
                   rel="noreferrer noopener"
                   data-cursor="hover"
-                  className={buttonVariants({ size: 'lg', variant: 'outline' })}
+                  className={buttonVariants({ size: 'lg', variant: 'outline', className: 'group' })}
                 >
                   github
-                  <span aria-hidden className="font-mono">
+                  <span
+                    aria-hidden
+                    className="font-mono transition-transform duration-200 group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
+                  >
                     ↗
                   </span>
                 </a>
