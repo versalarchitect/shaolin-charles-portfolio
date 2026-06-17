@@ -14,16 +14,18 @@ export function Hero() {
 
   return (
     <section id="top" className="relative flex min-h-[100svh] flex-col">
-      {/* masthead: big cybernetic name · role · theme (left), links (right) */}
+      {/* masthead: the h1 wordmark + role (left), primary nav (right) */}
       <motion.div {...reveal(0)} className="px-6 pt-6">
         <div className="flex items-end justify-between gap-6">
-          <a
-            href="#top"
-            data-cursor="hover"
-            className="whitespace-nowrap font-display text-[1.6rem] font-bold uppercase leading-[0.82] tracking-tight transition-opacity hover:opacity-70 sm:text-4xl lg:text-5xl xl:text-6xl"
-          >
-            Charles Jackson
-          </a>
+          <h1 className="m-0 whitespace-nowrap font-display text-[1.6rem] font-bold uppercase leading-[0.82] tracking-tight sm:text-4xl lg:text-5xl xl:text-6xl">
+            <a
+              href="#top"
+              data-cursor="hover"
+              className="inline-block transition-opacity hover:opacity-70"
+            >
+              Charles Jackson
+            </a>
+          </h1>
 
           <nav aria-label="Primary" className="hidden lg:block">
             <ul className="flex shrink-0 items-center gap-6 pb-1.5">
@@ -48,7 +50,7 @@ export function Hero() {
         </p>
       </motion.div>
 
-      {/* interactive frame — the gravity well lives in the page background */}
+      {/* interactive frame — the chrome field lives in the page background */}
       <div className="relative flex-1">
         <motion.div
           {...reveal(0.2)}

@@ -9,7 +9,6 @@ import './globals.css'
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import { App } from './App'
-import { ThemeProvider } from './hooks/use-theme'
 import { initPointer } from './lib/pointer'
 
 initPointer()
@@ -19,8 +18,6 @@ if (!root) throw new Error('Root element #root not found')
 
 createRoot(root).render(
   <StrictMode>
-    <ThemeProvider>
-      <App />
-    </ThemeProvider>
+    <App />
   </StrictMode>,
 )

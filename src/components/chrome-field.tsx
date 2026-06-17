@@ -73,17 +73,11 @@ void main(){
 }
 `
 
+// the chrome gradient — base fill, light crest, dark trough (monochrome, light-only)
 const PALETTE = {
-  light: {
-    base: [0.953, 0.949, 0.941],
-    light: [0.995, 0.99, 0.978],
-    dark: [0.9, 0.895, 0.884],
-  },
-  dark: {
-    base: [0.04, 0.04, 0.043],
-    light: [0.15, 0.15, 0.16],
-    dark: [0.02, 0.02, 0.026],
-  },
+  base: [0.953, 0.949, 0.941],
+  light: [0.995, 0.99, 0.978],
+  dark: [0.9, 0.895, 0.884],
 }
 
 function compile(gl: WebGLRenderingContext, type: number, src: string) {
@@ -134,15 +128,9 @@ export function ChromeField() {
     const uLight = gl.getUniformLocation(prog, 'u_light')
     const uDark = gl.getUniformLocation(prog, 'u_dark')
 
-    const setPalette = () => {
-      const p = document.documentElement.classList.contains('dark') ? PALETTE.dark : PALETTE.light
-      gl.uniform3fv(uBase, p.base)
-      gl.uniform3fv(uLight, p.light)
-      gl.uniform3fv(uDark, p.dark)
-    }
-    setPalette()
-    const mo = new MutationObserver(setPalette)
-    mo.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] })
+    gl.uniform3fv(uBase, PALETTE.base)
+    gl.uniform3fv(uLight, PALETTE.light)
+    gl.uniform3fv(uDark, PALETTE.dark)
 
     // Render close to 1:1 on real pointers (crisp, no upscale blur); lighter on
     // touch devices for battery/perf.
@@ -190,7 +178,6 @@ export function ChromeField() {
     return () => {
       cancelAnimationFrame(raf)
       window.removeEventListener('resize', resize)
-      mo.disconnect()
       gl.deleteProgram(prog)
       gl.deleteShader(vs)
       gl.deleteShader(fs)

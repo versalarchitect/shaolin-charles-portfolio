@@ -14,8 +14,7 @@ type Props = HTMLAttributes<HTMLDivElement> & {
  * devices skip the getBoundingClientRect layout work entirely (keeps scrolling
  * smooth on phones).
  */
-const FINE_POINTER =
-  typeof window !== 'undefined' && window.matchMedia('(pointer: fine)').matches
+const FINE_POINTER = typeof window !== 'undefined' && window.matchMedia('(pointer: fine)').matches
 
 /** A bordered card with a monochrome spotlight that follows the cursor. */
 export function SpotlightCard({ className, children, radius = 360, ...props }: Props) {

@@ -10,8 +10,7 @@
       content="Charles Jackson — engineer and founder building agentic systems, and the companies around them."
     />
 
-    <meta name="theme-color" content="#f3f2f0" media="(prefers-color-scheme: light)" />
-    <meta name="theme-color" content="#0a0a0a" media="(prefers-color-scheme: dark)" />
+    <meta name="theme-color" content="#f3f2f0" />
 
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
 
@@ -40,18 +39,6 @@
         "description": "Engineer and founder building agentic systems, and the companies around them.",
         "sameAs": ["https://github.com/versalarchitect"]
       }
-    </script>
-
-    <script>
-      // FOUC-free theme. Default is LIGHT: stay light unless the user explicitly
-      // chose dark, or chose "system" and the OS prefers dark.
-      (function () {
-        try {
-          var t = localStorage.getItem('theme')
-          var dark = t === 'dark' || (t === 'system' && matchMedia('(prefers-color-scheme: dark)').matches)
-          if (dark) document.documentElement.classList.add('dark')
-        } catch (e) {}
-      })()
     </script>
   </head>
   <body>
