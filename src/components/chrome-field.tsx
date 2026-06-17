@@ -25,7 +25,8 @@ float hash(vec2 p){ return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453123
 
 float noise(vec2 p){
   vec2 i = floor(p), f = fract(p);
-  vec2 u = f * f * (3.0 - 2.0 * f);
+  // quintic (C2) interpolation — smoother than smoothstep, no derivative seams
+  vec2 u = f * f * f * (f * (f * 6.0 - 15.0) + 10.0);
   return mix(mix(hash(i), hash(i + vec2(1.0, 0.0)), u.x),
              mix(hash(i + vec2(0.0, 1.0)), hash(i + vec2(1.0, 1.0)), u.x), u.y);
 }
@@ -64,6 +65,9 @@ void main(){
   vec3 col = mix(u_dark, u_light, clamp(waves, 0.0, 1.0));
   col = mix(u_base, col, 0.42);
   col += sheen * 0.04;
+
+  // triangular dither — removes 8-bit banding across the smooth gradients
+  col += (hash(gl_FragCoord.xy) + hash(gl_FragCoord.xy + 17.0) - 1.0) / 255.0;
 
   gl_FragColor = vec4(col, 1.0);
 }
@@ -140,7 +144,9 @@ export function ChromeField() {
     const mo = new MutationObserver(setPalette)
     mo.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] })
 
-    const SCALE = 0.55
+    // Render close to 1:1 on real pointers (crisp, no upscale blur); lighter on
+    // touch devices for battery/perf.
+    const SCALE = window.matchMedia('(pointer: fine)').matches ? 1 : 0.6
     const resize = () => {
       const w = Math.max(1, Math.floor(window.innerWidth * SCALE))
       const h = Math.max(1, Math.floor(window.innerHeight * SCALE))
@@ -152,7 +158,11 @@ export function ChromeField() {
     resize()
     window.addEventListener('resize', resize)
 
-    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    // Render a single static frame for reduced-motion AND touch devices —
+    // an animated fullscreen shader is a battery/perf drain on phones.
+    const reduce =
+      window.matchMedia('(prefers-reduced-motion: reduce)').matches ||
+      window.matchMedia('(pointer: coarse)').matches
     const t0 = performance.now()
     let mx = 0.5
     let my = 0.5

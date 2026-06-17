@@ -1,4 +1,4 @@
-import { type VariantProps, cva } from 'class-variance-authority'
+import { cva, type VariantProps } from 'class-variance-authority'
 import type { ButtonHTMLAttributes } from 'react'
 import { cn } from '@/lib/utils'
 
@@ -8,7 +8,8 @@ const buttonVariants = cva(
     variants: {
       variant: {
         solid: 'bg-foreground text-background hover:opacity-85',
-        outline: 'border border-foreground/20 hover:border-foreground/55 hover:bg-foreground/[0.04]',
+        outline:
+          'border border-foreground/20 hover:border-foreground/55 hover:bg-foreground/[0.04]',
         ghost: 'hover:bg-foreground/[0.06]',
       },
       size: {

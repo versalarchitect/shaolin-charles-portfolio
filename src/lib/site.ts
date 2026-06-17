@@ -78,6 +78,13 @@ export const site = {
       domain: 'directaiagents.com',
       url: 'https://directaiagents.com',
     },
+    {
+      id: '05',
+      name: 'Cursuum',
+      kind: 'ai-powered scheduling',
+      domain: 'cursuum.com',
+      url: 'https://cursuum.com',
+    },
   ],
 } as const
 

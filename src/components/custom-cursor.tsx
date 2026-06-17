@@ -72,7 +72,14 @@ export function CustomCursor() {
         className="pointer-events-none fixed left-0 top-0 z-[9999] opacity-0 will-change-transform"
         style={{ mixBlendMode: 'difference' }}
       >
-        <svg width="34" height="34" viewBox="0 0 34 34" fill="none" stroke="#fff" strokeWidth="1.25">
+        <svg
+          width="34"
+          height="34"
+          viewBox="0 0 34 34"
+          fill="none"
+          stroke="#fff"
+          strokeWidth="1.25"
+        >
           <title>cursor</title>
           {/* corner brackets */}
           <path d="M3 9V3h6" />

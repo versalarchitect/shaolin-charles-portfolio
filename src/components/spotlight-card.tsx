@@ -25,7 +25,7 @@ export function SpotlightCard({ className, children, radius = 360, ...props }: P
       ref={ref}
       onPointerMove={onMove}
       className={cn(
-        'group relative overflow-hidden rounded-2xl border border-foreground/10 bg-background/55 shadow-lg shadow-foreground/[0.06] backdrop-blur-md transition-colors duration-300 hover:border-foreground/25',
+        'group glass-surface relative overflow-hidden rounded-2xl border border-foreground/15 shadow-2xl shadow-foreground/10 transition-[box-shadow,border-color] duration-300 hover:border-foreground/30 hover:shadow-foreground/[0.18]',
         className,
       )}
       {...props}

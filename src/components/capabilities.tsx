@@ -55,7 +55,7 @@ export function Capabilities() {
           {TECH.map((t) => (
             <li
               key={t}
-              className="rounded-full border border-foreground/10 bg-background/50 px-3 py-1.5 font-mono text-xs text-foreground/60 backdrop-blur-sm"
+              className="glass-surface rounded-full border border-foreground/10 px-3 py-1.5 font-mono text-xs text-foreground/60"
             >
               {t}
             </li>

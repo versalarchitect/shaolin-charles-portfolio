@@ -54,8 +54,8 @@ export function Contact() {
             </div>
 
             {/* a quiet technical panel where the face used to be */}
-            <div className="hidden md:block">
-              <div className="rounded-xl border border-foreground/10 bg-background/40 p-5 font-mono text-xs">
+            <div>
+              <div className="glass-surface rounded-xl border border-foreground/10 p-5 font-mono text-xs">
                 <div className="flex items-center justify-between border-b border-foreground/10 pb-3 text-foreground/45">
                   <span>~/transmission</span>
                   <span className="flex items-center gap-1.5">

@@ -10,7 +10,7 @@ const CELLS: [string, string][] = [
 export function BottomBar() {
   return (
     <div className="border-t border-foreground/10">
-      <div className="flex flex-wrap items-center justify-between gap-x-8 gap-y-2 px-6 py-3 font-mono text-[10px] uppercase tracking-[0.22em]">
+      <div className="flex flex-wrap items-center justify-center gap-x-5 gap-y-1.5 px-6 py-3 font-mono text-[10px] uppercase tracking-[0.22em] sm:justify-between sm:gap-x-8">
         {CELLS.map(([k, v]) => (
           <span key={k} className="flex items-center gap-2">
             <span className="text-foreground/30">{k}</span>

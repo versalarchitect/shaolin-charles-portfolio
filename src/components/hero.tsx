@@ -20,7 +20,7 @@ export function Hero() {
           <a
             href="#top"
             data-cursor="hover"
-            className="whitespace-nowrap font-display text-3xl font-bold uppercase leading-[0.82] tracking-tight transition-opacity hover:opacity-70 sm:text-5xl xl:text-6xl"
+            className="whitespace-nowrap font-display text-[1.6rem] font-bold uppercase leading-[0.82] tracking-tight transition-opacity hover:opacity-70 sm:text-4xl lg:text-5xl xl:text-6xl"
           >
             Charles Jackson
           </a>
@@ -61,7 +61,7 @@ export function Hero() {
           {...reveal(0.28)}
           href="#about"
           data-cursor="hover"
-          className="group absolute bottom-6 right-6 flex items-center gap-2 whitespace-nowrap font-mono text-[11px] uppercase tracking-[0.25em] text-foreground/45 transition-colors hover:text-foreground"
+          className="group absolute bottom-6 right-6 hidden items-center gap-2 whitespace-nowrap font-mono text-[11px] uppercase tracking-[0.25em] text-foreground/45 transition-colors hover:text-foreground sm:flex"
         >
           scroll
           <span className="inline-block transition-transform duration-300 group-hover:translate-y-0.5">
