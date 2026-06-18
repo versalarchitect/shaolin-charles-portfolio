@@ -9,22 +9,30 @@
       name="description"
       content="Charles Jackson — engineer and founder building agentic systems, and the companies around them."
     />
+    <meta
+      name="robots"
+      content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1"
+    />
 
     <meta name="theme-color" content="#f3f2f0" />
 
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
 
     <meta property="og:type" content="website" />
-    <meta property="og:url" content="https://charlesjackson.dev" />
+    <meta property="og:site_name" content="Charles Jackson" />
+    <meta property="og:locale" content="en_US" />
+    <meta property="og:url" content="https://charlesjackson.dev/" />
     <meta property="og:title" content="Charles Jackson — Agentic Systems Engineer" />
     <meta property="og:description" content="Engineer and founder building agentic systems." />
     <meta property="og:image" content="https://charlesjackson.dev/og-image.png" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Charles Jackson — Agentic Systems Engineer" />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="Charles Jackson — Agentic Systems Engineer" />
     <meta name="twitter:description" content="Engineer and founder building agentic systems." />
     <meta name="twitter:image" content="https://charlesjackson.dev/og-image.png" />
+    <meta name="twitter:image:alt" content="Charles Jackson — Agentic Systems Engineer" />
 
     <link rel="canonical" href="https://charlesjackson.dev/" />
     <meta name="author" content="Charles Jackson" />
@@ -32,12 +40,60 @@
     <script type="application/ld+json">
       {
         "@context": "https://schema.org",
-        "@type": "Person",
-        "name": "Charles Jackson",
-        "url": "https://charlesjackson.dev",
-        "jobTitle": "Agentic Systems Engineer",
-        "description": "Engineer and founder building agentic systems, and the companies around them.",
-        "sameAs": ["https://github.com/versalarchitect"]
+        "@graph": [
+          {
+            "@type": "WebSite",
+            "@id": "https://charlesjackson.dev/#website",
+            "url": "https://charlesjackson.dev/",
+            "name": "Charles Jackson",
+            "description": "Engineer and founder building agentic systems, and the companies around them.",
+            "publisher": { "@id": "https://charlesjackson.dev/#charles" },
+            "inLanguage": "en"
+          },
+          {
+            "@type": "ProfilePage",
+            "@id": "https://charlesjackson.dev/#profilepage",
+            "url": "https://charlesjackson.dev/",
+            "name": "Charles Jackson — Agentic Systems Engineer",
+            "isPartOf": { "@id": "https://charlesjackson.dev/#website" },
+            "dateModified": "2026-06-18",
+            "mainEntity": { "@id": "https://charlesjackson.dev/#charles" }
+          },
+          {
+            "@type": "Person",
+            "@id": "https://charlesjackson.dev/#charles",
+            "name": "Charles Jackson",
+            "url": "https://charlesjackson.dev/",
+            "jobTitle": "Agentic Systems Engineer",
+            "description": "Engineer and founder building agentic systems, and the companies around them.",
+            "knowsAbout": [
+              "Agentic AI systems",
+              "AI agent orchestration",
+              "Large language model systems",
+              "Retrieval-augmented generation",
+              "LLM evaluation",
+              "Full-stack TypeScript and React",
+              "Edge and serverless architecture",
+              "Generative and real-time graphics"
+            ],
+            "sameAs": ["https://github.com/versalarchitect"]
+          },
+          {
+            "@type": "ItemList",
+            "@id": "https://charlesjackson.dev/#work",
+            "name": "Selected work",
+            "itemListOrder": "https://schema.org/ItemListUnordered",
+            "numberOfItems": 6,
+            "itemListElement": [
+              { "@type": "ListItem", "position": 1, "item": { "@type": "Organization", "name": "Predictive", "description": "Agentic software company", "url": "https://predictive.company" } },
+              { "@type": "ListItem", "position": 2, "item": { "@type": "Organization", "name": "MicroHabitat", "description": "Urban farming at city scale", "url": "https://microhabitat.com" } },
+              { "@type": "ListItem", "position": 3, "item": { "@type": "Organization", "name": "MyUrbanFarm", "description": "The platform behind the farms", "url": "https://myurbanfarm.ai" } },
+              { "@type": "ListItem", "position": 4, "item": { "@type": "Organization", "name": "Direct AI Agents", "description": "Learn to direct AI coding agents", "url": "https://directaiagents.com" } },
+              { "@type": "ListItem", "position": 5, "item": { "@type": "Organization", "name": "Cursuum", "description": "AI-powered scheduling", "url": "https://cursuum.com" } },
+              { "@type": "ListItem", "position": 6, "item": { "@type": "Organization", "name": "Crucible", "description": "Provably-fair casino and duels", "url": "https://crucible.bet" } }
+            ]
+          }
+        ]
       }
     </script>
   </head>

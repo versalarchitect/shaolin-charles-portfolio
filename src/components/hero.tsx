@@ -13,11 +13,11 @@ export function Hero() {
         }
 
   return (
-    <section id="top" className="relative flex min-h-[100svh] flex-col">
+    <section id="top" className="relative flex min-h-[100svh] flex-col px-6 pb-6 pt-6">
       {/* masthead: the h1 wordmark + role (left), primary nav (right) */}
-      <motion.div {...reveal(0)} className="px-6 pt-6">
+      <motion.div {...reveal(0)}>
         <div className="flex items-end justify-between gap-6">
-          <h1 className="m-0 whitespace-nowrap font-display text-[1.6rem] font-bold uppercase leading-[0.82] tracking-tight sm:text-4xl lg:text-5xl xl:text-6xl">
+          <h1 className="m-0 whitespace-nowrap font-display text-[1.45rem] font-bold uppercase leading-[0.82] tracking-tight min-[360px]:text-[1.6rem] sm:text-4xl lg:text-5xl xl:text-6xl">
             <a
               href="#top"
               data-cursor="hover"
@@ -50,11 +50,13 @@ export function Hero() {
         </p>
       </motion.div>
 
-      {/* interactive frame — the chrome field lives in the page background */}
-      <div className="relative flex-1">
+      {/* hero footer — pushed to the foot of the viewport but kept in normal flow
+          (mt-auto + a min gap), so a short viewport can never clip it or pin it
+          below the fold. The chrome field lives in the page background. */}
+      <div className="mt-auto flex items-end justify-between gap-6 pt-24">
         <motion.div
           {...reveal(0.2)}
-          className="absolute bottom-6 left-6 whitespace-nowrap font-mono text-xs tracking-wide text-foreground/60 sm:text-sm"
+          className="font-mono text-xs tracking-wide text-foreground/60 sm:text-sm"
         >
           <span className="text-foreground/35">&gt; </span>focused on building predictive systems
         </motion.div>
@@ -63,7 +65,7 @@ export function Hero() {
           {...reveal(0.28)}
           href="#about"
           data-cursor="hover"
-          className="group absolute bottom-6 right-6 hidden items-center gap-2 whitespace-nowrap font-mono text-[11px] uppercase tracking-[0.25em] text-foreground/45 transition-colors hover:text-foreground sm:flex"
+          className="group hidden items-center gap-2 whitespace-nowrap font-mono text-[11px] uppercase tracking-[0.25em] text-foreground/45 transition-colors hover:text-foreground sm:flex"
         >
           scroll
           <span className="inline-block transition-transform duration-300 group-hover:translate-y-0.5">

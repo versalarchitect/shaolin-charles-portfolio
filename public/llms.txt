@@ -1,0 +1,32 @@
+# Charles Jackson
+
+> Engineer and founder building agentic systems — software that takes a goal and
+> carries it out (planning, using tools, acting without a person steering every
+> step) — and the companies around them.
+
+## About
+
+Charles Jackson is an Agentic Systems Engineer and founder. He builds autonomous
+AI agent products and the companies around them, focused on making autonomy
+dependable enough to trust with real work. Remote / Vancouver.
+
+## Focus areas
+
+- Agent orchestration: multi-step agents, tool use, planning loops, and the guardrails that keep them on task
+- LLM systems: retrieval, evals, structured output, and pipelines that stay correct as models change
+- Full-stack product: TypeScript, React, edge & serverless — interfaces that make autonomy legible to people
+- Creative engineering: generative and real-time graphics — canvas, shaders, and motion
+
+## Selected work
+
+- [Predictive](https://predictive.company): agentic software company
+- [MicroHabitat](https://microhabitat.com): urban farming at city scale
+- [MyUrbanFarm](https://myurbanfarm.ai): the platform behind the farms
+- [Direct AI Agents](https://directaiagents.com): learn to direct AI coding agents
+- [Cursuum](https://cursuum.com): AI-powered scheduling
+- [Crucible](https://crucible.bet): provably-fair casino and duels
+
+## Contact
+
+- GitHub: https://github.com/versalarchitect
+- Email: charles@charlesjackson.dev

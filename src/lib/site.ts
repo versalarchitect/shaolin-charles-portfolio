@@ -85,6 +85,13 @@ export const site = {
       domain: 'cursuum.com',
       url: 'https://cursuum.com',
     },
+    {
+      id: '06',
+      name: 'Crucible',
+      kind: 'provably-fair casino & duels',
+      domain: 'crucible.bet',
+      url: 'https://crucible.bet',
+    },
   ],
 } as const
 
