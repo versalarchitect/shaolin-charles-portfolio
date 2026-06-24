@@ -1,43 +1,46 @@
-import { createBrowserRouter, redirect } from 'react-router-dom'
-import { lazy } from 'react'
-import App from './App'
-import { AuthGuard } from './components/auth-guard'
-import { AccessGuard } from './components/access-guard'
-import { RouteErrorBoundary } from './components/route-error-boundary'
-import { LanguageLayout } from './components/language-layout'
-import { SUPPORTED_LANGS, DEFAULT_LANG, type SupportedLang } from './lib/localized-router'
+import { lazy } from 'react';
+import { createBrowserRouter, redirect } from 'react-router-dom';
+import App from './App';
+import { AccessGuard } from './components/access-guard';
+import { AuthGuard } from './components/auth-guard';
+import { LanguageLayout } from './components/language-layout';
+import { OwnerGuard } from './components/owner-guard';
+import { RouteErrorBoundary } from './components/route-error-boundary';
+import { DEFAULT_LANG, SUPPORTED_LANGS, type SupportedLang } from './lib/localized-router';
 
 // Lazy load all pages (React Router v7 + React 19 code splitting)
-const Home = lazy(() => import('./pages/Home'))
-const Curriculum = lazy(() => import('./pages/Curriculum'))
-const Principles = lazy(() => import('./pages/Principles'))
-const Tiers = lazy(() => import('./pages/Tiers'))
-const Instructor = lazy(() => import('./pages/Instructor'))
-const About = lazy(() => import('./pages/About'))
-const Projects = lazy(() => import('./pages/Projects'))
-const Blog = lazy(() => import('./pages/Blog'))
-const BlogPost = lazy(() => import('./pages/BlogPost'))
-const Art = lazy(() => import('./pages/Art'))
-const Contact = lazy(() => import('./pages/Contact'))
-const Login = lazy(() => import('./pages/Login'))
-const EnrollSuccess = lazy(() => import('./pages/EnrollSuccess'))
-const Dashboard = lazy(() => import('./pages/Dashboard'))
-const Learn = lazy(() => import('./pages/Learn'))
-const Community = lazy(() => import('./pages/Community'))
-const CommunityThread = lazy(() => import('./pages/CommunityThread'))
-const Chat = lazy(() => import('./pages/Chat'))
-const Profile = lazy(() => import('./pages/Profile'))
-const InstructorDashboard = lazy(() => import('./pages/InstructorDashboard'))
-const SelfUpdatingCourse = lazy(() => import('./pages/SelfUpdatingCourse'))
-const RecentProjects = lazy(() => import('./pages/RecentProjects'))
-const Pipeline = lazy(() => import('./pages/Pipeline'))
-const StudentAgent = lazy(() => import('./pages/StudentAgent'))
-const Leaderboard = lazy(() => import('./pages/Leaderboard'))
-const Analytics = lazy(() => import('./pages/Analytics'))
-const SecretVault = lazy(() => import('./pages/SecretVault'))
-const PublicProfile = lazy(() => import('./pages/PublicProfile'))
-const AuthCallback = lazy(() => import('./pages/AuthCallback'))
-const NotFound = lazy(() => import('./pages/NotFound'))
+const Home = lazy(() => import('./pages/Home'));
+const Curriculum = lazy(() => import('./pages/Curriculum'));
+const Principles = lazy(() => import('./pages/Principles'));
+const Tiers = lazy(() => import('./pages/Tiers'));
+const Instructor = lazy(() => import('./pages/Instructor'));
+const About = lazy(() => import('./pages/About'));
+const Projects = lazy(() => import('./pages/Projects'));
+const Blog = lazy(() => import('./pages/Blog'));
+const BlogPost = lazy(() => import('./pages/BlogPost'));
+const Art = lazy(() => import('./pages/Art'));
+const Contact = lazy(() => import('./pages/Contact'));
+const Login = lazy(() => import('./pages/Login'));
+const EnrollSuccess = lazy(() => import('./pages/EnrollSuccess'));
+const Dashboard = lazy(() => import('./pages/Dashboard'));
+const Learn = lazy(() => import('./pages/Learn'));
+const Community = lazy(() => import('./pages/Community'));
+const CommunityThread = lazy(() => import('./pages/CommunityThread'));
+const Chat = lazy(() => import('./pages/Chat'));
+const Profile = lazy(() => import('./pages/Profile'));
+const InstructorDashboard = lazy(() => import('./pages/InstructorDashboard'));
+const SelfUpdatingCourse = lazy(() => import('./pages/SelfUpdatingCourse'));
+const RecentProjects = lazy(() => import('./pages/RecentProjects'));
+const Pipeline = lazy(() => import('./pages/Pipeline'));
+const StudentAgent = lazy(() => import('./pages/StudentAgent'));
+const Leaderboard = lazy(() => import('./pages/Leaderboard'));
+const Analytics = lazy(() => import('./pages/Analytics'));
+const SecretVault = lazy(() => import('./pages/SecretVault'));
+const PublicProfile = lazy(() => import('./pages/PublicProfile'));
+const AuthCallback = lazy(() => import('./pages/AuthCallback'));
+const Invoicing = lazy(() => import('./pages/Invoicing'));
+const InvoicingClient = lazy(() => import('./pages/InvoicingClient'));
+const NotFound = lazy(() => import('./pages/NotFound'));
 
 const langRouteChildren = [
   {
@@ -127,59 +130,143 @@ const langRouteChildren = [
       // Course (protected + access-gated) routes
       {
         path: 'course/dashboard',
-        element: <AuthGuard><AccessGuard><Dashboard /></AccessGuard></AuthGuard>,
+        element: (
+          <AuthGuard>
+            <AccessGuard>
+              <Dashboard />
+            </AccessGuard>
+          </AuthGuard>
+        ),
       },
       {
         path: 'course/curriculum',
-        element: <AuthGuard><AccessGuard><Curriculum /></AccessGuard></AuthGuard>,
+        element: (
+          <AuthGuard>
+            <AccessGuard>
+              <Curriculum />
+            </AccessGuard>
+          </AuthGuard>
+        ),
       },
       {
         path: 'course/learn/:lessonId/:step',
-        element: <AuthGuard><AccessGuard><Learn /></AccessGuard></AuthGuard>,
+        element: (
+          <AuthGuard>
+            <AccessGuard>
+              <Learn />
+            </AccessGuard>
+          </AuthGuard>
+        ),
       },
       {
         path: 'course/learn/:lessonId',
-        element: <AuthGuard><AccessGuard><Learn /></AccessGuard></AuthGuard>,
+        element: (
+          <AuthGuard>
+            <AccessGuard>
+              <Learn />
+            </AccessGuard>
+          </AuthGuard>
+        ),
       },
       {
         path: 'course/community',
-        element: <AuthGuard><AccessGuard><Community /></AccessGuard></AuthGuard>,
+        element: (
+          <AuthGuard>
+            <AccessGuard>
+              <Community />
+            </AccessGuard>
+          </AuthGuard>
+        ),
       },
       {
         path: 'course/community/thread/:threadId',
-        element: <AuthGuard><AccessGuard><CommunityThread /></AccessGuard></AuthGuard>,
+        element: (
+          <AuthGuard>
+            <AccessGuard>
+              <CommunityThread />
+            </AccessGuard>
+          </AuthGuard>
+        ),
       },
       {
         path: 'course/chat',
-        element: <AuthGuard><AccessGuard><Chat /></AccessGuard></AuthGuard>,
+        element: (
+          <AuthGuard>
+            <AccessGuard>
+              <Chat />
+            </AccessGuard>
+          </AuthGuard>
+        ),
       },
       {
         path: 'course/profile',
-        element: <AuthGuard><AccessGuard><Profile /></AccessGuard></AuthGuard>,
+        element: (
+          <AuthGuard>
+            <AccessGuard>
+              <Profile />
+            </AccessGuard>
+          </AuthGuard>
+        ),
       },
       {
         path: 'course/knowledge-base',
-        element: <AuthGuard><AccessGuard><InstructorDashboard /></AccessGuard></AuthGuard>,
+        element: (
+          <AuthGuard>
+            <AccessGuard>
+              <InstructorDashboard />
+            </AccessGuard>
+          </AuthGuard>
+        ),
       },
       {
         path: 'course/pipeline',
-        element: <AuthGuard><AccessGuard><Pipeline /></AccessGuard></AuthGuard>,
+        element: (
+          <AuthGuard>
+            <AccessGuard>
+              <Pipeline />
+            </AccessGuard>
+          </AuthGuard>
+        ),
       },
       {
         path: 'course/student-agent',
-        element: <AuthGuard><AccessGuard><StudentAgent /></AccessGuard></AuthGuard>,
+        element: (
+          <AuthGuard>
+            <AccessGuard>
+              <StudentAgent />
+            </AccessGuard>
+          </AuthGuard>
+        ),
       },
       {
         path: 'course/leaderboard',
-        element: <AuthGuard><AccessGuard><Leaderboard /></AccessGuard></AuthGuard>,
+        element: (
+          <AuthGuard>
+            <AccessGuard>
+              <Leaderboard />
+            </AccessGuard>
+          </AuthGuard>
+        ),
       },
       {
         path: 'course/analytics',
-        element: <AuthGuard><AccessGuard><Analytics /></AccessGuard></AuthGuard>,
+        element: (
+          <AuthGuard>
+            <AccessGuard>
+              <Analytics />
+            </AccessGuard>
+          </AuthGuard>
+        ),
       },
       {
         path: 'course/vault',
-        element: <AuthGuard><AccessGuard><SecretVault /></AccessGuard></AuthGuard>,
+        element: (
+          <AuthGuard>
+            <AccessGuard>
+              <SecretVault />
+            </AccessGuard>
+          </AuthGuard>
+        ),
       },
       // Redirects from old paths
       {
@@ -207,6 +294,23 @@ const langRouteChildren = [
         loader: ({ params }: { params: Record<string, string | undefined> }) =>
           redirect(`/${params.lang}/course/community/thread/${params.threadId}`),
       },
+      // Owner-only freelance invoicing tool
+      {
+        path: 'app/invoicing',
+        element: (
+          <OwnerGuard>
+            <Invoicing />
+          </OwnerGuard>
+        ),
+      },
+      {
+        path: 'app/invoicing/:clientSlug',
+        element: (
+          <OwnerGuard>
+            <InvoicingClient />
+          </OwnerGuard>
+        ),
+      },
       // 404 catch-all (must be last)
       {
         path: '*',
@@ -214,7 +318,7 @@ const langRouteChildren = [
       },
     ],
   },
-]
+];
 
 // Create router
 const router = createBrowserRouter([
@@ -229,15 +333,15 @@ const router = createBrowserRouter([
     element: <LanguageLayout />,
     errorElement: <RouteErrorBoundary />,
     loader: ({ params, request }) => {
-      const lang = params.lang
+      const lang = params.lang;
       if (!SUPPORTED_LANGS.includes(lang as SupportedLang)) {
-        const url = new URL(request.url)
-        return redirect(`/${DEFAULT_LANG}${url.pathname}${url.search}`)
+        const url = new URL(request.url);
+        return redirect(`/${DEFAULT_LANG}${url.pathname}${url.search}`);
       }
-      return null
+      return null;
     },
     children: langRouteChildren,
   },
-])
+]);
 
-export default router
+export default router;
